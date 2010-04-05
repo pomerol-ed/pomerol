@@ -1,0 +1,44 @@
+CXX=g++
+CXXFLAGS= -O3 -g -Wall -fPIC $(INCLUDES)
+BINPATH=../bin
+
+LINKS=-L../lib -L/opt/local/lib -lboost_system-mt -lboost_filesystem-mt ../lib/libiniparser.a
+#LINKS=-L../lib -L/sw/lib /sw/lib/libboost_filesystem.a ../lib/libiniparser.a
+
+JSONCPP_PATH=../jsoncpp/include
+EIGEN_INCLUDE=/opt/local/include/eigen2
+INCLUDES=-I$(EIGEN_INCLUDE) -I$(JSONCPP_PATH) -I. -I/opt/local/include
+
+objects=getStates.o hpart.o Hamiltonian.o green.o iniconfig.o output.o CCXpair.o BitClassification.o
+objects2=getStates.o hpart.o Hamiltonian.o iniconfig.o output.o CCXpart.o FieldOperators.o BitClassification.o
+
+default :  main
+
+iniconfig.o: iniconfig.cpp iniconfig.h
+getStates.o : getStates.h getStates.cpp config.h
+hpart.o : getStates.h config.h hpart.h hpart.cpp
+Hamiltonian.o : getStates.h config.h hpart.h Hamiltonian.h Hamiltonian.cpp
+CCXpair.o : getStates.h config.h hpart.h CCXpair.h CCXpair.cpp
+CCXpart.o : getStates.h config.h hpart.h CCXpart.h CCXpart.cpp
+FieldOperators.o : getStates.h config.h hpart.h CCXpart.h CCXpart.cpp FieldOperators.h
+green.o : getStates.h config.h hpart.h CCXpair.h green.h green.cpp
+output.o: output.cpp output.h
+BitClassification.o: BitClassification.h BitClassification.cpp 
+
+libmeat.so: $(objects)
+	$(CXX) -shared $(objects) -o libmeat.so
+
+libmeat.a: $(objects)
+	ar -cvr libmeat.a $(objects)
+
+main : main.cpp libmeat.a
+	$(CXX) $(CXXFLAGS) main.cpp libmeat.a ../lib/lib_json.a -o $(BINPATH)/mini $(LINKS)
+
+main_sep : main_sep.cpp $(objects2)
+	$(CXX) $(CXXFLAGS) main_sep.cpp $(objects2) ../lib/lib_json.a -o $(BINPATH)/mini $(LINKS)
+
+evef_dump : evef_dump.cpp libmeat.a
+	$(CXX) $(CXXFLAGS) evef_dump.cpp libmeat.a -o $(BINPATH)/evef_dump $(LINKS)
+
+clean:
+	rm -f *.o *.a

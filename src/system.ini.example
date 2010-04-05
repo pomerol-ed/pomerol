@@ -1,0 +1,33 @@
+[system]
+N_bit = 10   	; the whole size of the system
+N_bit_m = 6	; the size of the multiorbital. This can be either 0 ( no multiorbital ) or 6 (p-orbital). D-orbital will be implemented as soon as it would be needed.
+
+J_c = 0.33	; inner hoppings on multiorbital
+U_c = 1.29	; interaction on multiorbital
+Us_c = 1.05	; interaction on s-orbitals
+mu_c = 0.	; chem. potential on multiorbital
+mus_c = 0.	; chem. potential on s-orbitals
+t_c = 0.51	; hoppings between s-orbitals and "Lz=0"
+ts_c = 0.25	; hoppings between s-orbitals
+
+[Green Function]
+
+betta = 30	; inverse temperature
+
+matsubara = 1   ; if matsubara == 1 -> output on matsubara frequencies. If matsubara == 0 -> output on a complex frequency w' + iw"
+
+i = 1		; Index of first site in the Greens Function
+j = 1 		; Index of second site in the Greens Function
+
+points = 35	; number of Matsubarars in case they are needed
+
+Imw = 0.001	; (matsubara=0) value of w"
+w_min = -10	; minimum value of w'
+w_max = 10	; maximum value of w'
+step = 0.5	; step delta w'
+
+[output]
+path = ./output   ; path to the output files. This directory will be cleaned during program runtime
+dump_ev_ef = true ; Flag determines whether the EigenValues and EigenFunction of hamiltonian would be dumped
+dump_c_cx = true  ; Flag determines whether the rotated creation and annihilation operator matrices would be dumped
+dump_green = true ; Flag determines whether the Greens Function would be dumped

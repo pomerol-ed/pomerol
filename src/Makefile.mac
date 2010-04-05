@@ -1,0 +1,38 @@
+CXX=g++
+CXXFLAGS= -O3 -g -Wall -fPIC $(INCLUDES)
+BINPATH=../bin
+
+LINKS=-L../lib -L/opt/local/lib -lboost_system-mt -lboost_filesystem-mt ../lib/libiniparser.a
+#LINKS=-L../lib -L/sw/lib /sw/lib/libboost_filesystem.a ../lib/libiniparser.a
+
+JSONCPP_PATH=../jsoncpp/include
+EIGEN_INCLUDE=/opt/local/include/eigen2
+INCLUDES=-I$(EIGEN_INCLUDE) -I$(JSONCPP_PATH) -I. -I/opt/local/include
+
+objects=getstates.o hpart.o hamiltonian.o green.o iniconfig.o output.o CCXpair.o
+
+default :  main
+
+iniconfig.o: iniconfig.cpp iniconfig.h
+getstates.o : getstates.h getstates.cpp config.h
+hpart.o : getstates.h config.h hpart.h hpart.cpp
+hamiltonian.o : getstates.h config.h hpart.h hamiltonian.h hamiltonian.cpp
+CCXpair.o : getstates.h config.h hpart.h CCXpair.h CCXpair.cpp
+CCXpart.o : getstates.h config.h hpart.h CCXpart.h CCXpart.cpp
+green.o : getstates.h config.h hpart.h CCXpair.h green.h green.cpp
+output.o: output.cpp output.h
+
+libmeat.so: $(objects)
+	$(CXX) -shared $(objects) -o libmeat.so
+
+libmeat.a: $(objects)
+	ar -cvr libmeat.a $(objects)
+
+main : main.cpp libmeat.a
+	$(CXX) $(CXXFLAGS) main.cpp libmeat.a -o $(BINPATH)/mini $(LINKS)
+
+evef_dump : evef_dump.cpp libmeat.a
+	$(CXX) $(CXXFLAGS) evef_dump.cpp libmeat.a -o $(BINPATH)/evef_dump $(LINKS)
+
+clean:
+	rm -f *.o *.a
