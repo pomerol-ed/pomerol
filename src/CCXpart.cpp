@@ -22,7 +22,7 @@ RealSparseMatrixType& FieldOperatorPart::value()						//return UXCU
 	return elements;
 }
 
-QuantumState DestructionOperatorPart::retK(QuantumState L)							//return K for C
+QuantumState AnnihilationOperatorPart::retK(QuantumState L)							//return K for C
 {	
 
 	return( L + (1<<i) );
@@ -36,7 +36,7 @@ QuantumState CreationOperatorPart::retK(QuantumState L)							//return K for CX
 
 }
 
-int DestructionOperatorPart::mFunc(QuantumState state1, QuantumState state2, int i)
+int AnnihilationOperatorPart::mFunc(QuantumState state1, QuantumState state2, int i)
 {
 	int flag=1, p=0;
 	for (int m=0; m<S.N_b(); m++)
@@ -93,7 +93,7 @@ void FieldOperatorPart::print_to_screen()						//print to screen C and CX
 		};
 }	
 
-bool DestructionOperatorPart::checkL(QuantumState L)
+bool AnnihilationOperatorPart::checkL(QuantumState L)
 {
 	return (S.n_i(L,i)==0);
 }

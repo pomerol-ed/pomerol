@@ -2,8 +2,8 @@
 #define __OPERATOR_CONTAINERS__
 
 #include "config.h"
-#include "getstates.h"
-#include "hamiltonian.h"
+#include "getStates.h"
+#include "Hamiltonian.h"
 #include "output.h"
 #include "hpart.h"
 #include "Hamiltonian.h" 

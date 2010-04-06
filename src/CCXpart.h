@@ -1,8 +1,8 @@
 #ifndef ____DEFINE_CCXPART____
 #define ____DEFINE_CCXPART____
 #include "config.h"
-#include "getstates.h"
-#include "hamiltonian.h"
+#include "getStates.h"
+#include "Hamiltonian.h"
 #include "output.h"
 #include "hpart.h"
 
@@ -48,13 +48,13 @@ public:
   	RealSparseMatrixType &value();
 };
 
-class DestructionOperatorPart : public FieldOperatorPart
+class AnnihilationOperatorPart : public FieldOperatorPart
 {
   QuantumState retK(QuantumState L);	
   int mFunc(QuantumState state1, QuantumState state2, int i);
   bool checkL(QuantumState L);
   public :
-  DestructionOperatorPart(
+  AnnihilationOperatorPart(
   		  int i_,
   		  getStates &S_, 
                   getHpart &h_from_, 

@@ -22,8 +22,8 @@ class GreensFunctionPart
   RealType value;
 
   public:
-    GreensFunctionPart(int w_, int i_, int j_, getStates &S_, FieldOperatorPart &CX_, FieldOperatorPart &C_, getHpart &H_n_, getHpart &H_m_, output_handle &OUT_):
-	    w(w_),i(i_),j(j_),System(S_), CX(CX_), C(C_), H_n(H_n_), H_m(H_m_), OUT(output_handle(OUT_.path()+"//Gw")){};
+    GreensFunctionPart(getStates &S_, AnnihilationOperatorPart& C, CreationOperatorPart& CX, output_handle &OUT):
+	    System(S), CX(CX), C(C), OUT(output_handle(OUT.path()+"//Gw")){};
     RealType& getValue();
 };
 
