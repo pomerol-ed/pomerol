@@ -1,5 +1,5 @@
 #include "config.h"
-#include "getstates.h"
+#include "getStates.h"
 #include "hpart.h"
 //#include "CCXpair.h"
 #include "output.h"
@@ -26,6 +26,7 @@ Hamiltonian H(Formula,S,OUT,input);
 
 //matrixs operatorsCiCXj(S,H,OUT);
 
+IniConfig* pIni;
 
 int main()
 {	
@@ -40,17 +41,17 @@ int main()
 	Formula.printHoppingMatrix();
 	//determination of system
 	
-	IniConfig Ini(input);
+	pIni = new IniConfig(input);
 	
-	int N_bit = Ini["system:N_bit"];
-	int N_bit_m = Ini["system:N_bit_m"];
+	int N_bit = (*pIni)["system:N_bit"];
+	int N_bit_m = (*pIni)["system:N_bit_m"];
 
-	OUT = output_handle(Ini["output:path"]);
+	OUT = output_handle((*pIni)["output:path"]);
 
 	// parameters of Green Function
 	
-	int i = Ini["Green Function:i"];
-	int j = Ini["Green Function:j"];
+	int i = (*pIni)["Green Function:i"];
+	int j = (*pIni)["Green Function:j"];
 
 	S.inigetStates(N_bit, N_bit_m);
 
@@ -92,6 +93,11 @@ int main()
 	CX.prepare();
 	CX.compute();
 	CX.dump();
+    
+    // DEBUG
+    RealType = (*pIni)["Green Function:beta"];
+    DensityMatrix rho(H,beta);
+    
 //	CX.print_to_screen();
 
 

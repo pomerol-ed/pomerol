@@ -1,31 +1,26 @@
-#include "green.h"
+#include "GreensFunction.h"
 
-extern IniConfig* pConfig;
-
-green::greenTerm::greenTerm(ComplexType Residue, ComplexType Pole) : Residue(Residue), Pole(Pole) {};
-ComplexType green::greenTerm::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
-
-green::green(Hamiltonian& H, AnnihilationOperator& C, CreationOperator& CX, output_handle &OUT) :
+GreensFunction::GreensFunction(Hamiltonian& H, AnnihilationOperator& C, CreationOperator& CX, output_handle &OUT) :
     H(H), C(C), CX(CX)
 {
     green_path = output_handle(OUT.path() + "/Green_func");
-
-    RealType beta = (*pConfig)["Green Function:beta"];              //inverse temperature   
-    precompute(beta);
+    
+    
 }
 
-void green::precompute(RealType beta)
+GreensFunction::~GreensFunction()
 {
-    //GreensFunctionPart::precompute(beta, &Terms);
+    
 }
 
-ComplexType green::operator()(ComplexType Frequency)
+ComplexType GreensFunction::operator()(ComplexType Frequency)
 {
-    ComplexType G = 0;
-    for(std::list<greenTerm>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm)
-        G += (*pTerm)(Frequency);
-        
-    return G;
+    
+}
+
+string GreensFunction::path()
+{
+    return green_path.fullpath();
 }
 
 /*using std::stringstream;
@@ -225,4 +220,3 @@ void green::dump()
 
 */
 
-string green::path(){ return green_path.fullpath(); }

@@ -18,6 +18,11 @@ RealType getHpart::reV(int m)									//return V(m)
 	return V(m);
 }
 
+int getHpart::size(void)
+{
+    return N_state_m;
+}
+
 QuantumNumbers getHpart::id()
 {
 	return hpart_id;

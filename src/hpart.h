@@ -32,12 +32,12 @@ private:
 
 	int hop;					//fit4a for inhopfuncW_3
 	
-    	void add_diag(int st, RealType F_0, double F_2);					     //function creates diagonal elements of Hamilt
+    void add_diag(int st, RealType F_0, double F_2);					     //function creates diagonal elements of Hamilt
 	void add_nondiag(int st1, int st2, RealType F_2);					     //function creates nondiagonal elements of Hamilt
 	
 	
 	int measurefunc(long int state1, long int state2, int i, int j, int k, int l);	     // basic function for next two functions
-    	int inhopfuncW_2(long int state1, long int state2,int i, int j);	             // function checks probability adding nondiagonal elements
+    int inhopfuncW_2(long int state1, long int state2,int i, int j);	             // function checks probability adding nondiagonal elements
 	int inhopfuncW_3(long int state1, long int state2, int i, int j, int *p);	     // similar previous function
 	
 	// s-orbital functions
@@ -64,10 +64,11 @@ public:
 	void inigetHpart( RealType J_c, double U_c, double Us_c, double mu_c, double mus_c, 
 	RealType t_c, double ts_c, const string &ev_path_, const string &ef_path_);				 //initialization getHpart
 	
+    int size(void);
 	RealType reH(int m, int n);		//return H(m,n)
 	RealType reV(int m);			//return V(m)
 
-	void diagonalization();			//method of process diagonalization
+	void diagonalization();			    //method of process diagonalization
 	QuantumNumbers id();				//return id of current hpart
 	
 	void dump();				//writing Eigen Values and Eigen Vectors in output file

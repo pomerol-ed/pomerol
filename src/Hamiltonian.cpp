@@ -1,6 +1,8 @@
 #include "Hamiltonian.h"
 #include "iniconfig.h"
 
+extern IniConfig* pIni;
+
 Hamiltonian::Hamiltonian(BitClassification &F_,getStates &S_,output_handle &OUT_, string& config_path_):Formula(F_),S(S_),OUT(OUT_),config_path(config_path_){}
 
 void Hamiltonian::enter(bool diag, bool dump)
@@ -10,13 +12,13 @@ void Hamiltonian::enter(bool diag, bool dump)
 	output_handle OUT_EVec(OUT.path()+"/EigenVec");		// create output_folders
 	output_handle OUT_EVal(OUT.path()+"/EigenVal");		// create output_folders
 
-	RealType J = Ini["system:J_c"];
-	RealType U = Ini["system:U_c"];
-	RealType Us = Ini["system:Us_c"];
-	RealType mu = Ini["system:mu_c"];
-	RealType mus = Ini["system:mus_c"];
-	RealType t = Ini["system:t_c"];
-	RealType ts = Ini["system:ts_c"];
+	RealType J = (*pIni)["system:J_c"];
+	RealType U = (*pIni)["system:U_c"];
+	RealType Us = (*pIni)["system:Us_c"];
+	RealType mu = (*pIni)["system:mu_c"];
+	RealType mus = (*pIni)["system:mus_c"];
+	RealType t = (*pIni)["system:t_c"];
+	RealType ts = (*pIni)["system:ts_c"];
 
 	Hpart = new getHpart * [S.NumberOfBlocks()];
 	for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
@@ -47,7 +49,7 @@ getHpart& Hamiltonian::block(BlockNumber in)
 RealType Hamiltonian::eigenval(QuantumState &state)
 {
  int inner_state = S.inner_state(state);
- return (*this).block(S.getStateInfo(state)).reV(inner_state);
+ return block(S.getStateInfo(state)).reV(inner_state);
 }
 
 void Hamiltonian::diagonalize()
