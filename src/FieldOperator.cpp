@@ -1,4 +1,4 @@
-#include "FieldOperators.h"
+#include "FieldOperator.h"
 
 void CreationOperator::prepare()
 {
@@ -25,7 +25,7 @@ FieldOperatorPart& OperatorContainer::part(QuantumNumbers in)
   return *Data[System.getBlockNumber(in)];
 }
 
-QuantumNumbers CreationOperator::where(QuantumNumbers in)
+QuantumNumbers CreationOperator::where(QuantumNumbers in) // Require explicit knowledge of QuantumNumbers structure - Not very good
 {
   int lz, spin;
   System.getSiteInfo(bit,lz,spin);

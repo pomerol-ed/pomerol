@@ -4,9 +4,9 @@
 #include <list>
 
 #include "config.h"
-#include "getStates.h"
+#include "StatesClassification.h"
 #include "hpart.h"
-#include "FieldOperators.h"
+#include "FieldOperator.h"
 #include "DensityMatrixPart.h"
 
 class GreensFunctionPart

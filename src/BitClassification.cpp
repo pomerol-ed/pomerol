@@ -191,3 +191,8 @@ RealMatrixType& BitClassification::getHoppingMatrix()
 {
   return HoppingMatrix;
 }
+
+const int& BitClassification::getBitSize() const
+{
+	return N_bit;
+}

@@ -60,6 +60,7 @@ public:
 	void printBitInfoList();
 	void printHoppingMatrix();
 	RealMatrixType& getHoppingMatrix();
+	const int& getBitSize() const;
 private:
 	enum OrbitalValue {s=0, p=1, d=2, f=3};
 	std::map<std::string, OrbitalValue> mapOrbitalValue;

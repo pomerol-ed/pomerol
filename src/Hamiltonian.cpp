@@ -3,7 +3,7 @@
 
 extern IniConfig* pIni;
 
-Hamiltonian::Hamiltonian(BitClassification &F_,getStates &S_,output_handle &OUT_, string& config_path_):Formula(F_),S(S_),OUT(OUT_),config_path(config_path_){}
+Hamiltonian::Hamiltonian(BitClassification &F_,StatesClassification &S_,output_handle &OUT_, string& config_path_):Formula(F_),S(S_),OUT(OUT_),config_path(config_path_){}
 
 void Hamiltonian::enter(bool diag, bool dump)
 {

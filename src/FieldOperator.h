@@ -2,17 +2,17 @@
 #define __OPERATOR_CONTAINERS__
 
 #include "config.h"
-#include "getStates.h"
+#include "StatesClassification.h"
 #include "Hamiltonian.h"
 #include "output.h"
 #include "hpart.h"
 #include "Hamiltonian.h" 
-#include "CCXpart.h"
+#include "FieldOperatorPart.h"
 
 class OperatorContainer
 {
 protected:
-	getStates &System;
+	StatesClassification &System;
 	Hamiltonian &H;
 	output_handle OUT;
 
@@ -26,7 +26,7 @@ protected:
 	virtual	QuantumNumbers where(QuantumNumbers in)=0;
 
 public:
-	OperatorContainer(getStates &System_, Hamiltonian &H_, output_handle &OUT_, int bit_):System(System_),H(H_),OUT(OUT_),bit(bit_){size=0;};	
+	OperatorContainer(StatesClassification &System_, Hamiltonian &H_, output_handle &OUT_, int bit_):System(System_),H(H_),OUT(OUT_),bit(bit_){size=0;};	
 
 
 	FieldOperatorPart& part(BlockNumber in);
@@ -44,13 +44,13 @@ public:
 	BlockNumber where(BlockNumber in);
 	QuantumNumbers where(QuantumNumbers in);
 
-	CreationOperator(getStates &System_, Hamiltonian &H_, output_handle &OUT_, int bit_):OperatorContainer(System_,H_,OUT_,bit_){};
+	CreationOperator(StatesClassification &System_, Hamiltonian &H_, output_handle &OUT_, int bit_):OperatorContainer(System_,H_,OUT_,bit_){};
 };
 
 class AnnihilationOperator : public OperatorContainer
 {
 public:
-	AnnihilationOperator(getStates &System_, Hamiltonian &H_, output_handle &OUT_, int bit_):OperatorContainer(System_,H_,OUT_,bit_){};
+	AnnihilationOperator(StatesClassification &System_, Hamiltonian &H_, output_handle &OUT_, int bit_):OperatorContainer(System_,H_,OUT_,bit_){};
 };
 
 #endif

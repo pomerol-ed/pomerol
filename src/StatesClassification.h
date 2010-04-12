@@ -33,7 +33,7 @@ const QuantumNumbers ERROR_QUANTUM_NUMBERS = QuantumNumbers(0,-1,-1);
 
 #define QuantumState unsigned long int
 
-class getStates {
+class StatesClassification {
 
 	QuantumState N_state;			//2^N_bit number of states
 
@@ -50,9 +50,9 @@ class getStates {
 
 	void putstates();			//function gets all clasificated states with Lz = "Lz", N_up = "N_up", N_down = "N_down"
 public:		
-	getStates() {}
+	StatesClassification() {}
 
-	void inigetStates(int N_BIT, int N_BIT_M);     				//inicialization getStates
+	void iniStatesClassification(int N_BIT, int N_BIT_M);     				//inicialization StatesClassification
 
 	const int N_b();							//return N_bit
 	const int N_b_m();							//return N_bit_m

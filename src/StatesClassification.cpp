@@ -1,4 +1,4 @@
-#include "getStates.h"
+#include "StatesClassification.h"
 
 //struct QuantumNumbers
 
@@ -21,20 +21,20 @@ std::ostream& operator<<(std::ostream& output,const QuantumNumbers& out)
   return output;
 }
 
-//class getStates
+//class StatesClassification
 
-const vector<QuantumState>& getStates::clstates( QuantumNumbers in )			//return st[in.Lz][in.N_up][in.N_down]
+const vector<QuantumState>& StatesClassification::clstates( QuantumNumbers in )			//return st[in.Lz][in.N_up][in.N_down]
 {
 	return st[in.Lz][in.N_up][in.N_down];
 }
 
 
-const QuantumState getStates::cst( QuantumNumbers in, int m )			//return st[in.Lz][in.N_up][in.N_down][m]
+const QuantumState StatesClassification::cst( QuantumNumbers in, int m )			//return st[in.Lz][in.N_up][in.N_down][m]
 {
 	return st[in.Lz][in.N_up][in.N_down][m];
 }
 
-const long int getStates::inner_state(QuantumState state)
+const long int StatesClassification::inner_state(QuantumState state)
 {
   int ST=-1;				// "state" in part of Hamilt			
   for (unsigned int n=0; n<(*this).clstates((*this).getStateInfo(state)).size(); n++ )
@@ -44,7 +44,7 @@ const long int getStates::inner_state(QuantumState state)
  return ST;
 }
 
-BlockNumber getStates::getBlockNumber(QuantumNumbers in)
+BlockNumber StatesClassification::getBlockNumber(QuantumNumbers in)
 {
   if ((in.Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + in.N_up*(N_bit/2 + 1) + in.N_down) <= ((int) BLOCKNUMBERLIMIT) 
 	&& 
@@ -55,7 +55,7 @@ BlockNumber getStates::getBlockNumber(QuantumNumbers in)
   else return -1;
 }
 
-QuantumNumbers getStates::getBlockInfo(BlockNumber in)
+QuantumNumbers StatesClassification::getBlockInfo(BlockNumber in)
 {
   if (in <= maximumBlockNumber_) 
 	  return blockInfo[in];
@@ -63,34 +63,34 @@ QuantumNumbers getStates::getBlockInfo(BlockNumber in)
 	  return ERROR_QUANTUM_NUMBERS;
 }
 
-void getStates::getSiteInfo(int bit, int& lz, int& spin)
+void StatesClassification::getSiteInfo(int bit, int& lz, int& spin)
 {
   spin = (bit>=N_bit/2)?-1:1; 
   bit%=(N_bit/2);
   lz = (bit>=N_bit_m/2)?0:bit-(*this).L();
 }
-BlockNumber getStates::NumberOfBlocks()
+BlockNumber StatesClassification::NumberOfBlocks()
 {
 	return maximumBlockNumber_+1; 
 }
-const int getStates::N_b()						//return N_bit
+const int StatesClassification::N_b()						//return N_bit
 {
 	return N_bit;
 }
-const int getStates::N_b_m()						//return N_bit_m
+const int StatesClassification::N_b_m()						//return N_bit_m
 {
 	return N_bit_m;
 }
-const QuantumState getStates::N_st()
+const QuantumState StatesClassification::N_st()
 {
 	return N_state;
 }
-const int getStates::L()
+const int StatesClassification::L()
 {
 	return (N_bit_m/2-1)/2;
 }
 
-void getStates::inigetStates( int N_BIT, int N_BIT_M )		 	//inicialization getStates 
+void StatesClassification::iniStatesClassification( int N_BIT, int N_BIT_M )		 	//inicialization StatesClassification 
 {
 	N_bit = N_BIT;
 	N_bit_m = N_BIT_M;
@@ -98,7 +98,7 @@ void getStates::inigetStates( int N_BIT, int N_BIT_M )		 	//inicialization getSt
 	putstates();
 }
 
-void getStates::putstates()
+void StatesClassification::putstates()
 {
 	
 	vector<QuantumState> null;						//creation null vectors
@@ -176,7 +176,7 @@ void getStates::putstates()
 	}
 }
 
-QuantumNumbers getStates::getStateInfo(int num)						//returns Lz,N_up,N_down for number num
+QuantumNumbers StatesClassification::getStateInfo(int num)						//returns Lz,N_up,N_down for number num
 {
 	
 	int Lz_max=0;								//begining of calculating Lz,N_up,N_down
@@ -212,7 +212,7 @@ QuantumNumbers getStates::getStateInfo(int num)						//returns Lz,N_up,N_down fo
 
 }
 
-int getStates::n_i(long int state, int i)
+int StatesClassification::n_i(long int state, int i)
 {
 	return ((state&(1<<i))>>i);
 }

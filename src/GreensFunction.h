@@ -3,8 +3,8 @@
 
 #include "config.h"
 #include "output.h"
-#include "getStates.h"
-#include "FieldOperators.h"
+#include "StatesClassification.h"
+#include "FieldOperator.h"
 
 class GreensFunction {
     

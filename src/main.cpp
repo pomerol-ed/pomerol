@@ -1,13 +1,12 @@
 #include "config.h"
-#include "getStates.h"
+#include "StatesClassification.h"
 #include "hpart.h"
-//#include "CCXpair.h"
 #include "output.h"
-//#include "green.h"
 #include "Hamiltonian.h"
-#include "CCXpart.h"
-#include "FieldOperators.h"
+#include "FieldOperatorPart.h"
+#include "FieldOperator.h"
 #include "BitClassification.h"
+#include "GreensFunction.h"
 
 #include "iniconfig.h"
 
@@ -15,7 +14,7 @@
 string input = "system.ini";
 
 BitClassification Formula;
-getStates S; 
+StatesClassification S; 
 output_handle OUT;
 Hamiltonian H(Formula,S,OUT,input);
 
@@ -53,7 +52,7 @@ int main()
 	int i = (*pIni)["Green Function:i"];
 	int j = (*pIni)["Green Function:j"];
 
-	S.inigetStates(N_bit, N_bit_m);
+	S.iniStatesClassification(N_bit, N_bit_m);
 
 
 	//end of determination	
@@ -95,13 +94,12 @@ int main()
 	CX.dump();
     
     // DEBUG
-    RealType = (*pIni)["Green Function:beta"];
-    DensityMatrix rho(H,beta);
+        RealType = (*pIni)["Green Function:beta"];
+        DensityMatrix rho(H,beta);
     
 //	CX.print_to_screen();
 
 
-//	DestructionOperatorPart test(1,S,H.block(0,1,0),H.block(0,0,0),OUT);
 //	test.enter();
 	//test.print_to_screen();
 	/*

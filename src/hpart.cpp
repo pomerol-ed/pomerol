@@ -1,5 +1,5 @@
 #include "hpart.h"
-#include "getStates.h"
+#include "StatesClassification.h"
 #include <fstream>
 #include <sstream>
 

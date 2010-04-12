@@ -1,7 +1,7 @@
 #ifndef ____DEFINE_CCXPART____
 #define ____DEFINE_CCXPART____
 #include "config.h"
-#include "getStates.h"
+#include "StatesClassification.h"
 #include "Hamiltonian.h"
 #include "output.h"
 #include "hpart.h"
@@ -20,7 +20,7 @@ protected:
 	int i;
 	RealSparseMatrixType elements;			//vector of notrivial elements of rotated matrix C
 
-	getStates &S;
+	StatesClassification &S;
 	getHpart &h_from;
 	getHpart &h_to;
 	output_handle OUT;			//output path handler
@@ -33,7 +33,7 @@ protected:
 public:
 	FieldOperatorPart(
 		int i_, 
-		getStates &S_, 
+		StatesClassification &S_, 
 		getHpart &h_from_,
 		getHpart &h_to_, 
 		output_handle &OUT_
@@ -56,7 +56,7 @@ class AnnihilationOperatorPart : public FieldOperatorPart
   public :
   AnnihilationOperatorPart(
   		  int i_,
-  		  getStates &S_, 
+  		  StatesClassification &S_, 
                   getHpart &h_from_, 
 		  getHpart &h_to_, 
 		  output_handle &OUT_
@@ -72,7 +72,7 @@ class CreationOperatorPart : public FieldOperatorPart
   public :
   CreationOperatorPart(
   		   int i_,
-  		   getStates &S_, 
+  		   StatesClassification &S_, 
 		   getHpart &h_from_, 
 		   getHpart &h_to_,
 		   output_handle &OUT_

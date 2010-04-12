@@ -2,12 +2,12 @@
 #define ____DEFINE_HPART____
 #include "config.h"
 #include "BitClassification.h"
-#include "getStates.h"
+#include "StatesClassification.h"
 
 class getHpart {
 
 	BitClassification &Formula;
-	getStates &S;
+	StatesClassification &S;
 
 	RealType F_0, F_2, Us, mu, mus, t, ts,U,J;	//U = F_0 +4*F_2/25, J = 3*F_2/25
 	int ** W1; int ** W2; int ** W3;		//matrix {Wn}
@@ -59,7 +59,7 @@ private:
 
 public:
 
-	getHpart(BitClassification &F_, getStates &S_, QuantumNumbers id_) : Formula(F_),S(S_),hpart_id(id_){};
+	getHpart(BitClassification &F_, StatesClassification &S_, QuantumNumbers id_) : Formula(F_),S(S_),hpart_id(id_){};
 	
 	void inigetHpart( RealType J_c, double U_c, double Us_c, double mu_c, double mus_c, 
 	RealType t_c, double ts_c, const string &ev_path_, const string &ef_path_);				 //initialization getHpart

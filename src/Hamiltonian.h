@@ -2,7 +2,7 @@
 #define ____DEFINE_HAMILTONIAN____
 #include "config.h"
 #include "BitClassification.h"
-#include "getStates.h"
+#include "StatesClassification.h"
 #include "hpart.h"
 #include "output.h"
 #include <vector>
@@ -13,13 +13,13 @@ class Hamiltonian
 
 
   BitClassification &Formula;
-  getStates& S;
+  StatesClassification& S;
   output_handle &OUT;
   string config_path;
 
 public :
 
-  Hamiltonian(BitClassification &F_, getStates &S_,output_handle &OUT_, string &config_path_);
+  Hamiltonian(BitClassification &F_, StatesClassification &S_,output_handle &OUT_, string &config_path_);
   void enter(bool diag=false,bool dump=false);
 
   getHpart& block(const QuantumNumbers &in);
