@@ -1,7 +1,7 @@
 #include "GreensFunction.h"
 
-GreensFunction::GreensFunction(Hamiltonian& H, AnnihilationOperator& C, CreationOperator& CX, output_handle &OUT) :
-    H(H), C(C), CX(CX)
+GreensFunction::GreensFunction(Hamiltonian& H, AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM, output_handle &OUT)/* :
+    H(H), C(C), CX(CX)*/
 {
     green_path = output_handle(OUT.path() + "/Green_func");
     
@@ -15,7 +15,8 @@ GreensFunction::~GreensFunction()
 
 ComplexType GreensFunction::operator()(ComplexType Frequency)
 {
-    
+      // TODO
+      return 0;
 }
 
 string GreensFunction::path()
