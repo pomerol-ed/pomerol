@@ -1,25 +1,41 @@
 #include "GreensFunction.h"
 
-GreensFunction::GreensFunction(Hamiltonian& H, AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM, output_handle &OUT)/* :
-    H(H), C(C), CX(CX)*/
+extern IniConfig* pIni;
+
+GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H, 
+                               AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM,
+                               output_handle &OUT) : S(S)
 {
     green_path = output_handle(OUT.path() + "/Green_func");
     
+    int num = S.NumberOfBlocks();
     
+    parts = new GreensFunctionPart* [num];
+    for (BlockNumber current_block=0;current_block<num;current_block++)
+    {
+      parts[current_block] = new GreensFunctionPart(C.part(current_block), CX.part(current_block),
+                                                    H.block(current_block), DM.block(current_block));
+      //Hpart[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block));
+      //Hpart[current_block]->iniHamiltonianPart( J, U, Us, mu, mus, t, ts, OUT_EVal.path(), OUT_EVec.path());
+    }
 }
 
 GreensFunction::~GreensFunction()
 {
-    
+    delete[] parts;
 }
 
 ComplexType GreensFunction::operator()(ComplexType Frequency)
 {
-      // TODO
-      return 0;
+      int num = S.NumberOfBlocks();
+      
+      ComplexType Value = 0;
+      for (BlockNumber current_block=0;current_block<num;current_block++)
+          Value += (*parts[current_block])(Frequency);
+      return Value;
 }
 
-string GreensFunction::path()
+string GreensFunction::getPath()
 {
     return green_path.fullpath();
 }
@@ -185,39 +201,40 @@ void green::building()							//building Green Function
 	}
 }
 
+*/
+
 //other functions
-
-void green::dump()
+/*
+void GreensFunction::dump()
 {
-	IniConfig Ini("system.ini");					//parameters of building Green Function
-	int matsubara = Ini["Green Function:matsubara"];		//w = iw or w = w' + iw"
+	bool matsubara = (*pIni)["Green Function:matsubara"];		//w = iw or w = w' + iw"
+	int points = 0;
 
-	int points =0;
-
+    RealType step;
+    
 	if (matsubara)
 	{
-		 points = Ini["Green Function:points"];			//number of points Green Function
+		 points = (*pIni)["Green Function:points"];			//number of points Green Function 
 	}
 	else
 	{
-		int w_min = Ini["Green Function:w_min"];		//minimum value of w'
-		int w_max = Ini["Green Function:w_max"];		//maximum value of w'
-		RealType step = Ini["Green Function:step"];		//step delta w'
+		int w_min = (*pIni)["Green Function:w_min"];		//minimum value of w'
+		int w_max = (*pIni)["Green Function:w_max"];		//maximum value of w'
+		step = (*pIni)["Green Function:step"];      		//step delta w'
 
-		points = int((w_max-w_min)/step  + 1);			//number of points Green Function
+		points = int((w_max-w_min)/step  + 1);		    	//number of points Green Function
 	}
 
-	stringstream filename;
-	filename << (*this).green_path.path() << "//G(w)" << i << j << ".dat";
-  	ofstream outHpart;
-	outHpart.open(filename.str().c_str());
+    int i = (*pIni)["Green Function:i"];
+    int j = (*pIni)["Green Function:j"];
+    
+	std::stringstream filename;
+	filename << green_path.path() << "/G(w)" << i << j << ".dat";
+    ofstream output(filename.str());
 	
 	for (int k=0; k<points; k++)
 		outHpart << k << "\t" << std::setprecision(9) << real(G_ij[k]) << "\t" << imag(G_ij[k]) << endl;
 		
 	outHpart.close();
 }
-
-
 */
-

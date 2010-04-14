@@ -16,6 +16,9 @@ class DensityMatrix
 public:
     DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType beta);
     
+    DensityMatrixPart& block(const QuantumNumbers &in);
+    DensityMatrixPart& block(BlockNumber in);  
+    
     RealType operator()( QuantumState &state );
 };
 

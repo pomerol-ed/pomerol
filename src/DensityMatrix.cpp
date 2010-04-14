@@ -20,3 +20,13 @@ RealType DensityMatrix::operator()( QuantumState &state )
     
     return parts[block_num].weight(inner_state);
 }
+
+DensityMatrixPart& DensityMatrix::block(QuantumState &in)
+{
+    return *(parts[S.getBlockNumber(in)]);
+}
+
+DensityMatrixPart& DensityMatrix::block(BlockNumber in)
+{
+    return *(parts[in]);
+}

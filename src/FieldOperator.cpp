@@ -68,7 +68,3 @@ void OperatorContainer::dump()
 	    Data[mapNontrivialBlocks[b_in]]->dump();
   };
 }
-
-
-
-
