@@ -1,11 +1,11 @@
 #include "config.h"
-#include "StatesClassification.h"
-#include "hpart.h"
 #include "output.h"
+#include "BitClassification.h"
+#include "StatesClassification.h"
+#include "HamiltonianPart.h"
 #include "Hamiltonian.h"
 #include "FieldOperatorPart.h"
 #include "FieldOperator.h"
-#include "BitClassification.h"
 #include "GreensFunction.h"
 
 #include "iniconfig.h"
@@ -20,7 +20,7 @@ Hamiltonian H(Formula,S,OUT,input);
 
 
 //(S,OUT,"system.ini",true,true);
-//vector<getHpart> **Hpart;
+//vector<HamiltonianPart> **Hpart;
 
 
 //matrixs operatorsCiCXj(S,H,OUT);
@@ -94,8 +94,8 @@ int main()
 	CX.dump();
     
     // DEBUG
-        RealType = (*pIni)["Green Function:beta"];
-        DensityMatrix rho(H,beta);
+    RealType beta = (*pIni)["Green Function:beta"];
+    DensityMatrix rho(S,H,beta);
     
 //	CX.print_to_screen();
 
@@ -133,7 +133,7 @@ int main()
 
 	green GF_ij(i,j,S,H,operatorsCiCXj,OUT);
 	
-	if ((bool) Ini["output:dump_green"])
+	if ((bool) (*pIni)["output:dump_green"])
 	{
 		GF_ij.dump();
 	

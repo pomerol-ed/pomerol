@@ -1,4 +1,4 @@
-#include "hpart.h"
+#include "HamiltonianPart.h"
 #include "StatesClassification.h"
 #include <fstream>
 #include <sstream>
@@ -7,29 +7,29 @@
 
 using std::stringstream;
 
-// class getHpart
+// class HamiltonianPart
 
-RealType getHpart::reH(int m, int n)								//return  H(m,n)
+RealType HamiltonianPart::reH(int m, int n)								//return  H(m,n)
 {
 	return H(m,n);
 }
-RealType getHpart::reV(int m)									//return V(m)
+RealType HamiltonianPart::reV(int m)									//return V(m)
 {
 	return V(m);
 }
 
-int getHpart::size(void)
+int HamiltonianPart::size(void)
 {
     return N_state_m;
 }
 
-QuantumNumbers getHpart::id()
+QuantumNumbers HamiltonianPart::id()
 {
 	return hpart_id;
 }
 
-void getHpart::inigetHpart( RealType J_c, double U_c, double Us_c, double mu_c, double mus_c, 
-RealType t_c, double ts_c, const string &ev_path_, const string &ef_path_ )		//initialization getHpart
+void HamiltonianPart::iniHamiltonianPart( RealType J_c, double U_c, double Us_c, double mu_c, double mus_c, 
+RealType t_c, double ts_c, const string &ev_path_, const string &ef_path_ )		//initialization HamiltonianPart
 { 		
 	F_0 = U_c - 4*J_c/3;
 	F_2 = 25*J_c/3;
@@ -51,7 +51,7 @@ RealType t_c, double ts_c, const string &ev_path_, const string &ef_path_ )		//i
 	putHamilt();
 }
 
-void getHpart::putmatrix()										// inicialization {Wn}
+void HamiltonianPart::putmatrix()										// inicialization {Wn}
 {
 	W1 = new int * [S.N_b_m()/2];
 	for (int i=0;i<S.N_b_m()/2;i++)
@@ -120,7 +120,7 @@ void getHpart::putmatrix()										// inicialization {Wn}
 		
 }
 
-void getHpart::putHamilt()
+void HamiltonianPart::putHamilt()
 {	
 
 	H.resize(N_state_m,N_state_m);				//creation of H[i][j]=0 
@@ -153,7 +153,7 @@ void getHpart::putHamilt()
 
 // multiorbital functions:
 
-void getHpart::add_diag(int st, RealType F_0, double F_2)				//diagonal elements of Hamilt
+void HamiltonianPart::add_diag(int st, RealType F_0, double F_2)				//diagonal elements of Hamilt
 {
 	int state = S.cst(hpart_id,st);					//real state	
 
@@ -229,7 +229,7 @@ void getHpart::add_diag(int st, RealType F_0, double F_2)				//diagonal elements
 	}
 }
 
-int getHpart::measurefunc(long int state1, long int state2, int i, int j, int k, int l)		//auxiliary function
+int HamiltonianPart::measurefunc(long int state1, long int state2, int i, int j, int k, int l)		//auxiliary function
 {
 	int flag=1, p=0;
 	for (int m=0; m<S.N_b();m++)								//checking of "hopping" between state1 and state2
@@ -256,13 +256,13 @@ int getHpart::measurefunc(long int state1, long int state2, int i, int j, int k,
 	return (flag*(1-2*(p%2)));
 }
 
-int getHpart::inhopfuncW_2(long int state1, long int state2,int i, int j)		//type of overturn
+int HamiltonianPart::inhopfuncW_2(long int state1, long int state2,int i, int j)		//type of overturn
 {
 	int result = measurefunc(state1, state2, i, j, j+S.N_b()/2, i-S.N_b()/2);
 	return result;
 }
 
-int getHpart::inhopfuncW_3(long int state1, long int state2,int i, int j, int * p)	//type of overturn
+int HamiltonianPart::inhopfuncW_3(long int state1, long int state2,int i, int j, int * p)	//type of overturn
 {
 	int result=0;
 	for (int m=1; m<S.N_b_m()/2; m++)
@@ -276,7 +276,7 @@ int getHpart::inhopfuncW_3(long int state1, long int state2,int i, int j, int * 
 	return result;
 }
 
-void getHpart::add_nondiag(int st1, int st2, RealType F_2)				//nondiagonal elements of Hamilt 
+void HamiltonianPart::add_nondiag(int st1, int st2, RealType F_2)				//nondiagonal elements of Hamilt 
 {
 	int state1 = S.cst(hpart_id,st1);						//real state1
 	int state2 = S.cst(hpart_id,st2);						//real state2
@@ -321,7 +321,7 @@ void getHpart::add_nondiag(int st1, int st2, RealType F_2)				//nondiagonal elem
  
 // s-orbital functions
 
-void getHpart::add_U(int st, RealType Us)				//interactions on s-orbital
+void HamiltonianPart::add_U(int st, RealType Us)				//interactions on s-orbital
 {
 	int state = S.cst(hpart_id,st);			//real state
 
@@ -332,7 +332,7 @@ void getHpart::add_U(int st, RealType Us)				//interactions on s-orbital
 
 // chem. potentials
 
-void getHpart::add_mu(int st, RealType mu)			//adds chem. potential on multiorbital
+void HamiltonianPart::add_mu(int st, RealType mu)			//adds chem. potential on multiorbital
 {
 	int state = S.cst(hpart_id,st);			//real state
 	
@@ -344,7 +344,7 @@ void getHpart::add_mu(int st, RealType mu)			//adds chem. potential on multiorbi
 	
 }
 
-void getHpart::add_mus(int st, RealType mus)			//adds chem. potential on s-orbitals
+void HamiltonianPart::add_mus(int st, RealType mus)			//adds chem. potential on s-orbitals
 {
 	int state = S.cst(hpart_id,st);			//real state
 	
@@ -358,7 +358,7 @@ void getHpart::add_mus(int st, RealType mus)			//adds chem. potential on s-orbit
 
 // hopping functions
 
-int getHpart::checkhop(long int state1, long int state2, int i, int j)			//analog measurefunc
+int HamiltonianPart::checkhop(long int state1, long int state2, int i, int j)			//analog measurefunc
 {
 	int flag=1, p=0;
 	for (int m=0; m<S.N_b(); m++)
@@ -381,7 +381,7 @@ int getHpart::checkhop(long int state1, long int state2, int i, int j)			//analo
 	return (flag*(1-2*(p%2)));
 }
 
-int getHpart::hoppingfunc(long int state1, long int state2, int i)				//checks hopping between  state1 and state2
+int HamiltonianPart::hoppingfunc(long int state1, long int state2, int i)				//checks hopping between  state1 and state2
 {												//set rules of hopping between s-orbitals and Lz=0
 	int result=0;
 	int orbital;
@@ -418,14 +418,14 @@ int getHpart::hoppingfunc(long int state1, long int state2, int i)				//checks h
 	return result;
 }
 
-void getHpart::add_hopping(RealMatrixType& HoppingMatrix)
+void HamiltonianPart::add_hopping(RealMatrixType& HoppingMatrix)
 {
   for (int i=0;i<HoppingMatrix.rows();i++)
 	  for (int j=0;j<HoppingMatrix.cols();j++)
 		  if (i!=j) add_hopping(i,j,HoppingMatrix(i,j));
 }
 
-void getHpart::add_hopping(int i, int j, RealType t)
+void HamiltonianPart::add_hopping(int i, int j, RealType t)
 {
 
   for ( int st1=0; st1<N_state_m; st1++)
@@ -443,7 +443,7 @@ void getHpart::add_hopping(int i, int j, RealType t)
     	}
     }
 }
-void getHpart::add_hopping_everywhere(int st1, int st2, RealType t, double ts) 	//adds hopping elements in Hamilt
+void HamiltonianPart::add_hopping_everywhere(int st1, int st2, RealType t, double ts) 	//adds hopping elements in Hamilt
 {
 	int state1 = S.cst(hpart_id,st1);				//real state1
 	int state2 = S.cst(hpart_id,st2);				//real state2
@@ -470,7 +470,7 @@ void getHpart::add_hopping_everywhere(int st1, int st2, RealType t, double ts) 	
 
 //other functions
 
-void getHpart::diagonalization()					//method of diagonalization classificated part of Hamiltonian
+void HamiltonianPart::diagonalization()					//method of diagonalization classificated part of Hamiltonian
 {
 	if (N_state_m == 1)
 	{	
@@ -486,13 +486,13 @@ void getHpart::diagonalization()					//method of diagonalization classificated p
 	}
 }
 
-void getHpart::print_to_screen()					//ptint part of Hamiltonian to screen
+void HamiltonianPart::print_to_screen()					//ptint part of Hamiltonian to screen
 {
 	cout << H << endl;
 	cout << endl;
 }
 
-void getHpart::dump()							//writing Eigen Values in output file
+void HamiltonianPart::dump()							//writing Eigen Values in output file
 {
 	int Lz_max=0;
 	for(int L=(S.N_b_m()/2-1)/2;L>0;L--)

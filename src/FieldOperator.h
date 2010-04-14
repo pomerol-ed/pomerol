@@ -2,10 +2,9 @@
 #define __OPERATOR_CONTAINERS__
 
 #include "config.h"
-#include "StatesClassification.h"
-#include "Hamiltonian.h"
 #include "output.h"
-#include "hpart.h"
+#include "StatesClassification.h"
+#include "HamiltonianPart.h"
 #include "Hamiltonian.h" 
 #include "FieldOperatorPart.h"
 

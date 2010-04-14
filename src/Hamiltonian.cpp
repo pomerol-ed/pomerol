@@ -20,11 +20,11 @@ void Hamiltonian::enter(bool diag, bool dump)
 	RealType t = (*pIni)["system:t_c"];
 	RealType ts = (*pIni)["system:ts_c"];
 
-	Hpart = new getHpart * [S.NumberOfBlocks()];
+	Hpart = new HamiltonianPart * [S.NumberOfBlocks()];
 	for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
 	{
-	  Hpart[current_block] = new getHpart(Formula,S,S.getBlockInfo(current_block));
-	  Hpart[current_block]->inigetHpart( J, U, Us, mu, mus, t, ts, OUT_EVal.path(), OUT_EVec.path());
+	  Hpart[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block));
+	  Hpart[current_block]->iniHamiltonianPart( J, U, Us, mu, mus, t, ts, OUT_EVal.path(), OUT_EVec.path());
 
 	  if (diag) Hpart[current_block]->diagonalization();
 	  if (dump) Hpart[current_block]->dump();
@@ -36,12 +36,12 @@ void Hamiltonian::enter(bool diag, bool dump)
 	}
 }
 
-getHpart& Hamiltonian::block(const QuantumNumbers &in)
+HamiltonianPart& Hamiltonian::block(const QuantumNumbers &in)
 {
   return *Hpart[S.getBlockNumber(in)];
 }
 
-getHpart& Hamiltonian::block(BlockNumber in)
+HamiltonianPart& Hamiltonian::block(BlockNumber in)
 {
   return *Hpart[in];
 }

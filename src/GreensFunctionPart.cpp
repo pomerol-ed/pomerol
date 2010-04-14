@@ -4,7 +4,7 @@ GreensFunctionPart::greenTerm::greenTerm(ComplexType Residue, ComplexType Pole) 
 ComplexType GreensFunctionPart::greenTerm::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
 
 GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOperatorPart& CX, 
-                                        getHpart& Hpart, DensityMatrixPart& DMpart)
+                                        HamiltonianPart& Hpart, DensityMatrixPart& DMpart)
 {
     // TODO
 }

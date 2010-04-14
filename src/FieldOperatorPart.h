@@ -1,10 +1,10 @@
 #ifndef ____DEFINE_CCXPART____
 #define ____DEFINE_CCXPART____
 #include "config.h"
-#include "StatesClassification.h"
-#include "Hamiltonian.h"
 #include "output.h"
-#include "hpart.h"
+#include "StatesClassification.h"
+#include "HamiltonianPart.h"
+#include "Hamiltonian.h"
 
 struct valC {
 	QuantumState n;					//number of line of matrix C or CX
@@ -21,8 +21,8 @@ protected:
 	RealSparseMatrixType elements;			//vector of notrivial elements of rotated matrix C
 
 	StatesClassification &S;
-	getHpart &h_from;
-	getHpart &h_to;
+	HamiltonianPart &h_from;
+	HamiltonianPart &h_to;
 	output_handle OUT;			//output path handler
 
 	// basic functions
@@ -34,8 +34,8 @@ public:
 	FieldOperatorPart(
 		int i_, 
 		StatesClassification &S_, 
-		getHpart &h_from_,
-		getHpart &h_to_, 
+		HamiltonianPart &h_from_,
+		HamiltonianPart &h_to_, 
 		output_handle &OUT_
 	       ):i(i_), S(S_), h_from(h_from_),h_to(h_to_), OUT(OUT_) {};
 
@@ -57,8 +57,8 @@ class AnnihilationOperatorPart : public FieldOperatorPart
   AnnihilationOperatorPart(
   		  int i_,
   		  StatesClassification &S_, 
-                  getHpart &h_from_, 
-		  getHpart &h_to_, 
+          HamiltonianPart &h_from_, 
+		  HamiltonianPart &h_to_, 
 		  output_handle &OUT_
 		):FieldOperatorPart(i_,S_,h_from_,h_to_,OUT_){OUT=output_handle(OUT_.path()+"//matrixC");};
 	    //   ):i(i_), S(S_), h_from(h_from_),h_to(h_to_) {OUT=output_handle(OUT_.path()+"//matrixC");}
@@ -73,8 +73,8 @@ class CreationOperatorPart : public FieldOperatorPart
   CreationOperatorPart(
   		   int i_,
   		   StatesClassification &S_, 
-		   getHpart &h_from_, 
-		   getHpart &h_to_,
+		   HamiltonianPart &h_from_, 
+		   HamiltonianPart &h_to_,
 		   output_handle &OUT_
 		 ):FieldOperatorPart(i_,S_,h_from_,h_to_,OUT_){OUT=output_handle(OUT_.path()+"//matrixCX");};
 };

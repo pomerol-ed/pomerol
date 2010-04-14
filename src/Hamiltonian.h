@@ -3,13 +3,13 @@
 #include "config.h"
 #include "BitClassification.h"
 #include "StatesClassification.h"
-#include "hpart.h"
+#include "HamiltonianPart.h"
 #include "output.h"
 #include <vector>
 
 class Hamiltonian
 {
-  getHpart **Hpart;
+  HamiltonianPart **Hpart;
 
 
   BitClassification &Formula;
@@ -22,8 +22,8 @@ public :
   Hamiltonian(BitClassification &F_, StatesClassification &S_,output_handle &OUT_, string &config_path_);
   void enter(bool diag=false,bool dump=false);
 
-  getHpart& block(const QuantumNumbers &in);
-  getHpart& block(BlockNumber in);
+  HamiltonianPart& block(const QuantumNumbers &in);
+  HamiltonianPart& block(BlockNumber in);
   RealType eigenval( QuantumState &state );
 
   void diagonalize();

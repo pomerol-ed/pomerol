@@ -1,10 +1,10 @@
-#ifndef ____DEFINE_HPART____
-#define ____DEFINE_HPART____
+#ifndef ____DEFINE_HAMILTONIAN_PART____
+#define ____DEFINE_HAMILTONIAN_PART____
 #include "config.h"
 #include "BitClassification.h"
 #include "StatesClassification.h"
 
-class getHpart {
+class HamiltonianPart {
 
 	BitClassification &Formula;
 	StatesClassification &S;
@@ -59,10 +59,10 @@ private:
 
 public:
 
-	getHpart(BitClassification &F_, StatesClassification &S_, QuantumNumbers id_) : Formula(F_),S(S_),hpart_id(id_){};
+	HamiltonianPart(BitClassification &F_, StatesClassification &S_, QuantumNumbers id_) : Formula(F_),S(S_),hpart_id(id_){};
 	
-	void inigetHpart( RealType J_c, double U_c, double Us_c, double mu_c, double mus_c, 
-	RealType t_c, double ts_c, const string &ev_path_, const string &ef_path_);				 //initialization getHpart
+	void iniHamiltonianPart( RealType J_c, double U_c, double Us_c, double mu_c, double mus_c, 
+	RealType t_c, double ts_c, const string &ev_path_, const string &ef_path_);				 //initialization HamiltonianPart
 	
     int size(void);
 	RealType reH(int m, int n);		//return H(m,n)
@@ -77,4 +77,4 @@ public:
 };
 
 						//structure of values rotated C or CX
-#endif // endif :: #ifndef ____DEFINE_HPART____
+#endif // endif :: #ifndef ____DEFINE_HAMILTONIAN_PART____

@@ -69,16 +69,6 @@ end_do_once
 #define end_do_once }; };
 //@}
 
-/** Name of the pointer to the global IniInput object.
-**
-** This pointer should be declared as global and initialized in main.cpp
-** Other modules requiring access to the object must declare it as
-\verbatim
-extern GLOBAL_INI_INPUT_POINTER;
-\endverbatim
-**/
-#define GLOBAL_INI_INPUT_POINTER	pGlobalIniInput
-
 // Maybe temporary
 using std::cout;
 using std::endl;

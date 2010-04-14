@@ -5,7 +5,7 @@
 
 #include "config.h"
 #include "StatesClassification.h"
-#include "hpart.h"
+#include "HamiltonianPart.h"
 #include "FieldOperator.h"
 #include "DensityMatrixPart.h"
 
@@ -23,9 +23,9 @@ class GreensFunctionPart
   
 public:
     GreensFunctionPart(AnnihilationOperatorPart& C, CreationOperatorPart& CX, 
-                       getHpart& Hpart, DensityMatrixPart& DMpart);
+                       HamiltonianPart& Hpart, DensityMatrixPart& DMpart);
  
-    ComplexType operator()(RealType Frequency);
+    ComplexType operator()(ComplexType Frequency);
 };
 
 #endif // endif :: #ifndef ____DEFINE_GREENS_FUNCTION_PART____
