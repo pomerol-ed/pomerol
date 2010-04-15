@@ -14,6 +14,8 @@
 class GreensFunction {
     
     StatesClassification& S;
+    
+    BlockNumber NumOfBlocks;
     GreensFunctionPart** parts;
     
     output_handle green_path;

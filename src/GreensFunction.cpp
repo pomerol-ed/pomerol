@@ -6,15 +6,17 @@ GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H,
                                AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM,
                                output_handle &OUT) : S(S)
 {
-    green_path = output_handle(OUT.path() + "/Green_func");
+    green_path = output_handle(OUT.path() + "/Green_func");   
+    NumOfBlocks = S.NumberOfBlocks();
     
-    int num = S.NumberOfBlocks();
-    
-    parts = new GreensFunctionPart* [num];
-    for (BlockNumber current_block=0;current_block<num;current_block++)
+    parts = new GreensFunctionPart* [NumOfBlocks];
+    for (BlockNumber current_block=0;current_block<NumOfBlocks;current_block++)
     {
-      parts[current_block] = new GreensFunctionPart(C.part(current_block), CX.part(current_block),
+      parts[current_block] = new GreensFunctionPart((AnnihilationOperatorPart&)C.part(current_block),
+                                                    (CreationOperatorPart&)CX.part(current_block),
                                                     H.block(current_block), DM.block(current_block));
+                                                    
+      #warning TODO: GreensFunction constructor                                               
       //Hpart[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block));
       //Hpart[current_block]->iniHamiltonianPart( J, U, Us, mu, mus, t, ts, OUT_EVal.path(), OUT_EVec.path());
     }
@@ -26,11 +28,9 @@ GreensFunction::~GreensFunction()
 }
 
 ComplexType GreensFunction::operator()(ComplexType Frequency)
-{
-      int num = S.NumberOfBlocks();
-      
+{     
       ComplexType Value = 0;
-      for (BlockNumber current_block=0;current_block<num;current_block++)
+      for (BlockNumber current_block=0;current_block<NumOfBlocks;current_block++)
           Value += (*parts[current_block])(Frequency);
       return Value;
 }

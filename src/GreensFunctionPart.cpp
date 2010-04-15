@@ -6,7 +6,7 @@ ComplexType GreensFunctionPart::greenTerm::operator()(ComplexType Frequency) con
 GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOperatorPart& CX, 
                                         HamiltonianPart& Hpart, DensityMatrixPart& DMpart)
 {
-    // TODO
+    #warning TODO: GreensFunctionPart constructor
 }
 
 ComplexType GreensFunctionPart::operator()(ComplexType Frequency)

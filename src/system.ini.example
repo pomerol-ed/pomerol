@@ -12,7 +12,7 @@ ts_c = 0.25	; hoppings between s-orbitals
 
 [Green Function]
 
-betta = 30	; inverse temperature
+beta = 30	; inverse temperature
 
 matsubara = 1   ; if matsubara == 1 -> output on matsubara frequencies. If matsubara == 0 -> output on a complex frequency w' + iw"
 

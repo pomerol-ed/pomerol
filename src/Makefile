@@ -2,7 +2,7 @@ JSONCPP_PATH=../jsoncpp/include
 EIGEN_INCLUDE=$(shell pkg-config --cflags-only-I eigen2)
 INCLUDES=-I$(JSONCPP_PATH) $(EIGEN_INCLUDE)
 
-LINKS=-L../lib -lboost_system-mt -lboost_filesystem-mt
+LINKS=-L../lib
 # FIXME
 ifeq ($(shell uname),Darwin)
 LINKS += -L/opt/local/lib ../lib/libiniparser.a

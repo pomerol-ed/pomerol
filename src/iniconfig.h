@@ -1,3 +1,6 @@
+#ifndef __INICONFIG__
+#define __INICONFIG__ 
+
 /** \file iniconfig.h
 **	\brief Declaration of IniConfig and IniValue classes.
 **	A brief description of the ini-file format is here: http://ndevilla.free.fr/iniparser/html/index.html#inidef
@@ -99,3 +102,5 @@ public:
 	/** Cast IniValue to a complex number. In the ini-file complex numbers are defined as '(re,im)'. */
 	operator std::complex<double>() throw(IniConfig::exValueTypeMismatch);
 };
+
+ #endif // endif :: ___OUTPATH_H___

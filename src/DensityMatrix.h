@@ -1,8 +1,6 @@
 #ifndef ____DEFINE_DENSITY_MATRIX____
 #define ____DEFINE_DENSITY_MATRIX____
 
-#include <vector>
-
 #include "StatesClassification.h"
 #include "BitClassification.h"
 #include "Hamiltonian.h"
@@ -11,10 +9,13 @@
 class DensityMatrix
 {
     StatesClassification& S;
-    std::vector<DensityMatrixPart> parts;
+    
+    BlockNumber NumOfBlocks;
+    DensityMatrixPart** parts;
 
 public:
     DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType beta);
+    ~DensityMatrix();
     
     DensityMatrixPart& block(const QuantumNumbers &in);
     DensityMatrixPart& block(BlockNumber in);  
