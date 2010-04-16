@@ -36,12 +36,12 @@ void Hamiltonian::enter(bool diag, bool dump)
 	}
 }
 
-HamiltonianPart& Hamiltonian::block(const QuantumNumbers &in)
+HamiltonianPart& Hamiltonian::part(const QuantumNumbers &in)
 {
   return *Hpart[S.getBlockNumber(in)];
 }
 
-HamiltonianPart& Hamiltonian::block(BlockNumber in)
+HamiltonianPart& Hamiltonian::part(BlockNumber in)
 {
   return *Hpart[in];
 }
@@ -49,7 +49,7 @@ HamiltonianPart& Hamiltonian::block(BlockNumber in)
 RealType Hamiltonian::eigenval(QuantumState &state)
 {
  int inner_state = S.inner_state(state);
- return block(S.getStateInfo(state)).reV(inner_state);
+ return part(S.getStateInfo(state)).reV(inner_state);
 }
 
 void Hamiltonian::diagonalize()

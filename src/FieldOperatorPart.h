@@ -18,7 +18,7 @@ struct valC {
 class FieldOperatorPart {
 protected:
 	int i;
-	RealSparseMatrixType elements;			//vector of notrivial elements of rotated matrix C
+//	RealSparseMatrixType elements;			//vector of notrivial elements of rotated matrix C
 
 	StatesClassification &S;
 	HamiltonianPart &h_from;
@@ -39,17 +39,17 @@ public:
 		output_handle &OUT_
 	       ):i(i_), S(S_), h_from(h_from_),h_to(h_to_), OUT(OUT_) {};
 
-  	void compute();
-	void dump();
-	void print_to_screen();						//print to screen matrices UXCU UXCXU
+  	virtual void compute()=0;
+	virtual void dump()=0;
+	virtual void print_to_screen()=0;				//print to screen matrices UXCU UXCXU
 
 	const string& path();							//output paths
-
-  	RealSparseMatrixType &value();
 };
 
 class AnnihilationOperatorPart : public FieldOperatorPart
 {
+  RowMajorMatrixType elements;
+  
   QuantumState retK(QuantumState L);	
   int mFunc(QuantumState state1, QuantumState state2, int i);
   bool checkL(QuantumState L);
@@ -62,10 +62,18 @@ class AnnihilationOperatorPart : public FieldOperatorPart
 		  output_handle &OUT_
 		):FieldOperatorPart(i_,S_,h_from_,h_to_,OUT_){OUT=output_handle(OUT_.path()+"//matrixC");};
 	    //   ):i(i_), S(S_), h_from(h_from_),h_to(h_to_) {OUT=output_handle(OUT_.path()+"//matrixC");}
+        
+    virtual void compute();
+    virtual void dump();
+    virtual void print_to_screen();               //print to screen matrices UXCU
+
+    RowMajorMatrixType &value();
 };
 
 class CreationOperatorPart : public FieldOperatorPart
 {
+  ColMajorMatrixType elements;
+  
   QuantumState retK(QuantumState L);	
   int mFunc(QuantumState state1, QuantumState state2, int i);	
   bool checkL(QuantumState L);
@@ -77,6 +85,12 @@ class CreationOperatorPart : public FieldOperatorPart
 		   HamiltonianPart &h_to_,
 		   output_handle &OUT_
 		 ):FieldOperatorPart(i_,S_,h_from_,h_to_,OUT_){OUT=output_handle(OUT_.path()+"//matrixCX");};
+                 
+    virtual void compute();
+    virtual void dump();
+    virtual void print_to_screen();               //print to screen matrices UXCXU
+    
+    ColMajorMatrixType &value();
 };
 
 #endif // endif :: #ifdef ____DEFINE_CCXPAIR____

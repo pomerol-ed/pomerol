@@ -91,11 +91,11 @@ int main()
 	CreationOperator CX(S,H,OUT,i);
 	CX.prepare();
 	CX.compute();
-	CX.dump();
+	//CX.dump();
     
     // DEBUG
-    RealType beta = (*pIni)["Green Function:beta"];
-    DensityMatrix rho(S,H,beta);
+    //RealType beta = (*pIni)["Green Function:beta"];
+    //DensityMatrix rho(S,H,beta);
     
 //	CX.print_to_screen();
 

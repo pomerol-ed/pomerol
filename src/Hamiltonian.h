@@ -22,8 +22,8 @@ public :
   Hamiltonian(BitClassification &F_, StatesClassification &S_,output_handle &OUT_, string &config_path_);
   void enter(bool diag=false,bool dump=false);
 
-  HamiltonianPart& block(const QuantumNumbers &in);
-  HamiltonianPart& block(BlockNumber in);
+  HamiltonianPart& part(const QuantumNumbers &in);
+  HamiltonianPart& part(BlockNumber in);
   RealType eigenval( QuantumState &state );
 
   void diagonalize();

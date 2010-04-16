@@ -14,11 +14,7 @@ GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H,
     {
       parts[current_block] = new GreensFunctionPart((AnnihilationOperatorPart&)C.part(current_block),
                                                     (CreationOperatorPart&)CX.part(current_block),
-                                                    H.block(current_block), DM.block(current_block));
-                                                    
-      #warning TODO: GreensFunction constructor                                               
-      //Hpart[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block));
-      //Hpart[current_block]->iniHamiltonianPart( J, U, Us, mu, mus, t, ts, OUT_EVal.path(), OUT_EVec.path());
+                                                    H.part(current_block), DM.part(current_block));
     }
 }
 

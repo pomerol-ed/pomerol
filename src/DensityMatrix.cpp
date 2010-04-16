@@ -7,7 +7,7 @@ DensityMatrix::DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType b
     
     RealType Z = 0;
     for(BlockNumber n = 0; n < NumOfBlocks; n++){
-        parts[n] = new DensityMatrixPart(H.block(n),beta);
+        parts[n] = new DensityMatrixPart(H.part(n),beta);
         Z += parts[n]->getZ();
     }
     for(BlockNumber n = 0; n < NumOfBlocks; n++) parts[n]->normalize(Z);
@@ -26,12 +26,12 @@ RealType DensityMatrix::operator()( QuantumState &state )
     return parts[block_num]->weight(inner_state);
 }
 
-DensityMatrixPart& DensityMatrix::block(const QuantumNumbers &in)
+DensityMatrixPart& DensityMatrix::part(const QuantumNumbers &in)
 {
     return *parts[S.getBlockNumber(in)];
 }
 
-DensityMatrixPart& DensityMatrix::block(BlockNumber in)
+DensityMatrixPart& DensityMatrix::part(BlockNumber in)
 {
     return *parts[in];
 }

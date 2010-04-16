@@ -31,7 +31,7 @@ struct QuantumNumbers {
 
 const QuantumNumbers ERROR_QUANTUM_NUMBERS = QuantumNumbers(0,-1,-1);
 
-#define QuantumState unsigned long int
+typedef unsigned long int QuantumState;
 
 class StatesClassification {
 

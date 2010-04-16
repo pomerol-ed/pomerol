@@ -5,10 +5,10 @@ void CreationOperator::prepare()
   Data = new FieldOperatorPart * [System.NumberOfBlocks()];
   for (BlockNumber b=0;b<System.NumberOfBlocks();b++)
     {
-      if ((*this).where(b).isCorrect()) 
+      if (where(b).isCorrect()) 
       {
-	 Data[b]=new CreationOperatorPart(bit,System,H.block(b),H.block((*this).where(b)),OUT);
-         cout << "Entering Creation Operator part " << System.getBlockInfo(b) << "->" << System.getBlockInfo((*this).where(b)) << endl; 
+	 Data[b]=new CreationOperatorPart(bit,System,H.part(b),H.part(where(b)),OUT);
+         cout << "Entering Creation Operator part " << System.getBlockInfo(b) << "->" << System.getBlockInfo(where(b)) << endl; 
 	 mapNontrivialBlocks[size]=b;
          size++;
       }    

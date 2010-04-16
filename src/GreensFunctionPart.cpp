@@ -5,8 +5,34 @@ ComplexType GreensFunctionPart::greenTerm::operator()(ComplexType Frequency) con
 
 GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOperatorPart& CX, 
                                         HamiltonianPart& Hpart, DensityMatrixPart& DMpart)
-{
-    #warning TODO: GreensFunctionPart constructor
+{ 
+    RowMajorMatrixType& Cmatrix = C.value();
+    ColMajorMatrixType& CXmatrix = CX.value();
+    QuantumState outerSize = Cmatrix.outerSize();
+    
+    for(QuantumState m=0; m<outerSize; ++m){
+        RowMajorMatrixType::InnerIterator Cinner(Cmatrix,m);
+        ColMajorMatrixType::InnerIterator CXinner(CXmatrix,m);
+        
+        while(Cinner && CXinner){
+            QuantumState C_n = Cinner.index();
+            QuantumState CX_n = CXinner.index();
+            
+            if(C_n == CX_n){
+                ComplexType Residue = Cinner.value() * CXinner.value() * 
+                                      (DMpart.weight(m) + DMpart.weight(C_n));
+                ComplexType Pole = Hpart.reV(C_n) - Hpart.reV(m);
+              
+                Terms.push_back(greenTerm(Residue,Pole));
+              
+                ++Cinner;
+                ++CXinner;
+            }else{
+                if(CX_n < C_n) for(;QuantumState(CXinner.index())<C_n; ++CXinner);
+                else for(;QuantumState(Cinner.index())<CX_n; ++Cinner);
+            }
+        }
+    }
 }
 
 ComplexType GreensFunctionPart::operator()(ComplexType Frequency)
