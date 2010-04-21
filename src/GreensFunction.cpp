@@ -14,7 +14,8 @@ GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H,
     {
       parts[current_block] = new GreensFunctionPart((AnnihilationOperatorPart&)C.part(current_block),
                                                     (CreationOperatorPart&)CX.part(current_block),
-                                                    H.part(current_block), DM.part(current_block));
+                                                    H.part(current_block), DM.part(current_block)); 
+#warning - check parts
     }
 }
 

@@ -91,7 +91,7 @@ int main()
 	CreationOperator CX(S,H,OUT,i);
 	CX.prepare();
 	CX.compute();
-	//CX.dump();
+	CX.dump();
     
     // DEBUG
     //RealType beta = (*pIni)["Green Function:beta"];
