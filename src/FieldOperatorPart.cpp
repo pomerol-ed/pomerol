@@ -113,7 +113,7 @@ void FieldOperatorPart::dump()							//writing FieldOperatorPart C[M_sigma] and 
 	outCpart << std::setprecision(DUMP_FLOATING_POINT_NUMBERS) << elements << endl;
 
 	outCpart.close();
-	cout << "The part of creation operator " << h_from.id() << "->" << h_to.id() << " is dumped to " << filename.str() << "." << endl;
+	cout << "The part of field operator " << h_from.id() << "->" << h_to.id() << " is dumped to " << filename.str() << "." << endl;
 }
 
 const string &FieldOperatorPart::path()

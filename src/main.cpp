@@ -93,6 +93,10 @@ int main()
 	CX.compute();
 	CX.dump();
     
+	AnnihilationOperator C(S,H,OUT,j);
+	C.prepare();
+	C.compute();
+	C.dump();
     // DEBUG
     //RealType beta = (*pIni)["Green Function:beta"];
     //DensityMatrix rho(S,H,beta);

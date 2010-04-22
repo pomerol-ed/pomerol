@@ -17,8 +17,8 @@ protected:
 
 	int bit;
 	FieldOperatorPart **Data;
-	//vector<FieldOperatorPart*> MappedData;
-	std::map<unsigned int,BlockNumber> mapNontrivialBlocks;
+	std::map<unsigned int,BlockNumber> mapNontrivialParts;		// A map from non-zero parts to their BlockNumber indices
+	std::map<unsigned int,BlockNumber> mapLeftToRightPart;		// A map from output index to input index, hence there is a unique transform
 	unsigned int size;
 
 	virtual	BlockNumber where(BlockNumber in)=0;
@@ -28,8 +28,10 @@ public:
 	OperatorContainer(StatesClassification &System_, Hamiltonian &H_, output_handle &OUT_, int bit_):System(System_),H(H_),OUT(OUT_),bit(bit_){size=0;};	
 
 
-	FieldOperatorPart& part(BlockNumber in);
-	FieldOperatorPart& part(QuantumNumbers in);
+	FieldOperatorPart& getPartLeftIndex(BlockNumber in);
+	FieldOperatorPart& getPartLeftIndex(QuantumNumbers in);
+	FieldOperatorPart& getPartRightIndex(BlockNumber out);
+	FieldOperatorPart& getPartRightIndex(QuantumNumbers out);
 
 	void compute();
 	void dump();
@@ -49,6 +51,9 @@ public:
 class AnnihilationOperator : public OperatorContainer
 {
 public:
+	void prepare();
+	BlockNumber where(BlockNumber in);
+	QuantumNumbers where(QuantumNumbers in);
 	AnnihilationOperator(StatesClassification &System_, Hamiltonian &H_, output_handle &OUT_, int bit_):OperatorContainer(System_,H_,OUT_,bit_){};
 };
 
