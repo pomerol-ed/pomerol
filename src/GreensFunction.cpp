@@ -12,8 +12,8 @@ GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H,
     parts = new GreensFunctionPart* [NumOfBlocks];
     for (BlockNumber current_block=0;current_block<NumOfBlocks;current_block++)
     {
-      parts[current_block] = new GreensFunctionPart((AnnihilationOperatorPart&)C.part(current_block),
-                                                    (CreationOperatorPart&)CX.part(current_block),
+      parts[current_block] = new GreensFunctionPart((AnnihilationOperatorPart&)C.getPartFromRightIndex(current_block),
+                                                    (CreationOperatorPart&)CX.getPartFromRightIndex(current_block),
                                                     H.part(current_block), DM.part(current_block)); 
 #warning - check parts
     }

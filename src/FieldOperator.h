@@ -28,10 +28,10 @@ public:
 	OperatorContainer(StatesClassification &System_, Hamiltonian &H_, output_handle &OUT_, int bit_):System(System_),H(H_),OUT(OUT_),bit(bit_){size=0;};	
 
 
-	FieldOperatorPart& getPartLeftIndex(BlockNumber in);
-	FieldOperatorPart& getPartLeftIndex(QuantumNumbers in);
-	FieldOperatorPart& getPartRightIndex(BlockNumber out);
-	FieldOperatorPart& getPartRightIndex(QuantumNumbers out);
+	FieldOperatorPart& getPartFromLeftIndex(BlockNumber in);
+	FieldOperatorPart& getPartFromLeftIndex(QuantumNumbers in);
+	FieldOperatorPart& getPartFromRightIndex(BlockNumber out);
+	FieldOperatorPart& getPartFromRightIndex(QuantumNumbers out);
 
 	void compute();
 	void dump();

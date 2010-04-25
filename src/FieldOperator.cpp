@@ -33,22 +33,22 @@ void AnnihilationOperator::prepare()
 }
 
 
-FieldOperatorPart& OperatorContainer::getPartRightIndex(BlockNumber in)
+FieldOperatorPart& OperatorContainer::getPartFromRightIndex(BlockNumber in)
 {
   return *Data[in];
 }
 
-FieldOperatorPart& OperatorContainer::getPartRightIndex(QuantumNumbers in)
+FieldOperatorPart& OperatorContainer::getPartFromRightIndex(QuantumNumbers in)
 {
   return *Data[System.getBlockNumber(in)];
 }
 
-FieldOperatorPart& OperatorContainer::getPartLeftIndex(BlockNumber in)
+FieldOperatorPart& OperatorContainer::getPartFromLeftIndex(BlockNumber in)
 {
   return *Data[mapLeftToRightPart[in]];
 }
 
-FieldOperatorPart& OperatorContainer::getPartLeftIndex(QuantumNumbers in)
+FieldOperatorPart& OperatorContainer::getPartFromLeftIndex(QuantumNumbers in)
 {
   return *Data[mapLeftToRightPart[System.getBlockNumber(in)]];
 }

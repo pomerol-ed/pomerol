@@ -9,6 +9,10 @@ LINKS += -L/opt/local/lib ../lib/libiniparser.a
 INCLUDES += -I/opt/local/include
 else
 LINKS += -liniparser
+ifneq ($(shell echo $(EIGEN_INCLUDE) | head -c2),"-I")
+	INCLUDES += -I/usr/include/eigen2
+	EIGEN_INCLUDE=
+endif
 endif
 
 CXXFLAGS= -O3 -g -Wall -fPIC $(INCLUDES)
