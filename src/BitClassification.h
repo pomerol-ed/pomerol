@@ -1,3 +1,12 @@
+// pomerol/trunk/BitClassification.h
+// This file is a part of pomerol diagonalization code
+
+/** \file BitClassification.h
+**  \brief Declaration of BitInfo & BitClassification classes.
+** 
+**  \author	Andrey Antipov (antipov@ct-qmc.org)
+*/
+
 #ifndef __BIT_CLASSIFICATION__
 #define __BIT_CLASSIFICATION__
 
@@ -7,12 +16,10 @@
 #include <string>
 
 
-struct HoppingElement
-{
-  unsigned short from;
-  unsigned short to;
-  RealType Value;
-};
+//! BitInfo - a class to reproduce full information about the given bit
+/**
+ * BitInfo class is an abstract class to handle all info about current bit.  
+ */ 
 
 class BitInfo
 {

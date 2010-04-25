@@ -11,6 +11,7 @@ DensityMatrix::DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType b
         Z += parts[n]->getZ();
     }
     for(BlockNumber n = 0; n < NumOfBlocks; n++) parts[n]->normalize(Z);
+    cout << "Partition Function = " << Z << endl;
 }
 
 DensityMatrix::~DensityMatrix()
