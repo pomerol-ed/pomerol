@@ -1,20 +1,20 @@
 #include "DensityMatrixPart.h"
 
-DensityMatrixPart::DensityMatrixPart(HamiltonianPart& hpart, RealType beta)
+DensityMatrixPart::DensityMatrixPart(HamiltonianPart& hpart, RealType beta) :
+    hpart(hpart), beta(beta)
 {
-    QuantumState partSize = hpart.size();
-  
+    partSize = hpart.size();
     weights.resize(partSize);
-    
+}
+
+RealType DensityMatrixPart::prepare(void)
+{
     Z_part = 0;
     for(QuantumState m = 0; m < partSize; ++m){
         weights(m) = exp(-beta*hpart.reV(m));
         Z_part += weights(m);
     }
-}
-
-RealType DensityMatrixPart::getZ(void)
-{
+  
     return Z_part;
 }
 

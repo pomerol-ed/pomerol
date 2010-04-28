@@ -20,7 +20,8 @@ public:
     DensityMatrixPart& part(const QuantumNumbers &in);
     DensityMatrixPart& part(BlockNumber in);  
     
-    RealType operator()( QuantumState &state );
+    void prepare(void);
+    RealType operator()(QuantumState &state);
 };
 
 #endif // endif :: #ifndef ____DEFINE_DENSITY_MATRIX____

@@ -13,7 +13,11 @@
 
 class GreensFunction {
     
-    StatesClassification& S;
+    StatesClassification S;
+    Hamiltonian H;
+    AnnihilationOperator C;
+    CreationOperator CX;
+    DensityMatrix DM;
     
     BlockNumber NumOfBlocks;
     GreensFunctionPart** parts;
@@ -26,6 +30,7 @@ public:
                    output_handle &OUT);
     ~GreensFunction();
     
+    void prepare(void);
     ComplexType operator()(ComplexType Frequency);
     
     //void dump(void);

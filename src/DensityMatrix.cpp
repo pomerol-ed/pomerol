@@ -4,19 +4,20 @@ DensityMatrix::DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType b
 {
     NumOfBlocks = S.NumberOfBlocks();
     parts = new DensityMatrixPart* [NumOfBlocks];
-    
-    RealType Z = 0;
-    for(BlockNumber n = 0; n < NumOfBlocks; n++){
-        parts[n] = new DensityMatrixPart(H.part(n),beta);
-        Z += parts[n]->getZ();
-    }
-    for(BlockNumber n = 0; n < NumOfBlocks; n++) parts[n]->normalize(Z);
-    cout << "Partition Function = " << Z << endl;
+    for(BlockNumber n = 0; n < NumOfBlocks; n++) parts[n] = new DensityMatrixPart(H.part(n),beta);
 }
 
 DensityMatrix::~DensityMatrix()
 {
     delete[] parts;
+}
+
+void DensityMatrix::prepare(void)
+{
+    RealType Z = 0;
+    for(BlockNumber n = 0; n < NumOfBlocks; n++) Z += parts[n]->prepare();
+    for(BlockNumber n = 0; n < NumOfBlocks; n++) parts[n]->normalize(Z);
+    cout << "Partition Function = " << Z << endl;
 }
 
 RealType DensityMatrix::operator()( QuantumState &state )

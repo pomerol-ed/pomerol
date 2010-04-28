@@ -4,8 +4,12 @@ GreensFunctionPart::greenTerm::greenTerm(ComplexType Residue, ComplexType Pole) 
 ComplexType GreensFunctionPart::greenTerm::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
 
 GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOperatorPart& CX, 
-                                        HamiltonianPart& Hpart, DensityMatrixPart& DMpart)
-{ 
+                                        HamiltonianPart& Hpart, DensityMatrixPart& DMpart) :
+                                        Hpart(Hpart), C(C), CX(CX), DMpart(DMpart)
+{}
+
+void GreensFunctionPart::prepare(void)
+{
     RowMajorMatrixType& Cmatrix = C.value();
     ColMajorMatrixType& CXmatrix = CX.value();
     QuantumState outerSize = Cmatrix.outerSize();
@@ -32,7 +36,7 @@ GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOpe
                 else for(;QuantumState(Cinner.index())<CX_n; ++Cinner);
             }
         }
-    }
+    }  
 }
 
 ComplexType GreensFunctionPart::operator()(ComplexType Frequency)

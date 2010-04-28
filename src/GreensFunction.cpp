@@ -4,24 +4,28 @@ extern IniConfig* pIni;
 
 GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H, 
                                AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM,
-                               output_handle &OUT) : S(S)
+                               output_handle &OUT) : S(S), H(H), C(C), CX(CX), DM(DM)
 {
     green_path = output_handle(OUT.path() + "/Green_func");   
     NumOfBlocks = S.NumberOfBlocks();
     
     parts = new GreensFunctionPart* [NumOfBlocks];
     for (BlockNumber current_block=0;current_block<NumOfBlocks;current_block++)
-    {
-      parts[current_block] = new GreensFunctionPart((AnnihilationOperatorPart&)C.getPartFromRightIndex(current_block),
-                                                    (CreationOperatorPart&)CX.getPartFromRightIndex(current_block),
-                                                    H.part(current_block), DM.part(current_block)); 
-#warning - check parts
-    }
+        parts[current_block] = new GreensFunctionPart(
+            (AnnihilationOperatorPart&)C.getPartFromLeftIndex(current_block),
+            (CreationOperatorPart&)CX.getPartFromRightIndex(current_block),
+            H.part(current_block), DM.part(current_block));
 }
 
 GreensFunction::~GreensFunction()
 {
     delete[] parts;
+}
+
+void GreensFunction::prepare(void)
+{
+    for (BlockNumber current_block=0;current_block<NumOfBlocks;current_block++)
+        parts[current_block]->prepare();
 }
 
 ComplexType GreensFunction::operator()(ComplexType Frequency)
