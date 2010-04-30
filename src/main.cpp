@@ -14,16 +14,9 @@
 string input = "system.ini";
 
 BitClassification Formula;
-StatesClassification S; 
+StatesClassification S(Formula); 
 output_handle OUT;
 Hamiltonian H(Formula,S,OUT,input);
-
-
-//(S,OUT,"system.ini",true,true);
-//vector<HamiltonianPart> **Hpart;
-
-
-//matrixs operatorsCiCXj(S,H,OUT);
 
 IniConfig* pIni;
 
@@ -42,9 +35,6 @@ int main()
 	
 	pIni = new IniConfig(input);
 	
-	int N_bit = (*pIni)["system:N_bit"];
-	int N_bit_m = (*pIni)["system:N_bit_m"];
-
 	OUT = output_handle((*pIni)["output:path"]);
 
 	// parameters of Green Function
@@ -52,7 +42,7 @@ int main()
 	int i = (*pIni)["Green Function:i"];
 	int j = (*pIni)["Green Function:j"];
 
-	S.iniStatesClassification(N_bit, N_bit_m);
+	S.iniStatesClassification();
 
 
 	//end of determination	

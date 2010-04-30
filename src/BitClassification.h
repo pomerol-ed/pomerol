@@ -67,6 +67,7 @@ public:
 	void printBitInfoList();
 	void printHoppingMatrix();
 	RealMatrixType& getHoppingMatrix();
+	std::vector<BitInfo*> &getBitInfoList();
 	const int& getBitSize() const;
 private:
 	enum OrbitalValue {s=0, p=1, d=2, f=3};

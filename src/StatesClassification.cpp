@@ -90,16 +90,18 @@ const int StatesClassification::L()
 	return (N_bit_m/2-1)/2;
 }
 
-void StatesClassification::iniStatesClassification( int N_BIT, int N_BIT_M )		 	//inicialization StatesClassification 
+void StatesClassification::iniStatesClassification()		 	//inicialization StatesClassification 
 {
-	N_bit = N_BIT;
-	N_bit_m = N_BIT_M;
-	N_state = ( 1 << N_BIT ) ;
-	putstates();
-}
-
-void StatesClassification::putstates()
-{
+	N_bit = Formula.getBitSize(); 
+	N_state = ( 1 << N_bit ); 
+	N_bit_m=0;
+	#warning : bad N_bit_m definition. Actually existence of N_bit_m is definetely bad.
+  	for (vector<BitInfo*>::iterator it=Formula.getBitInfoList().begin(); it != Formula.getBitInfoList().end(); it++ ) 
+	{
+		if ((*it)->type == "p") { N_bit_m = 6; break;};
+		if ((*it)->type == "d") { N_bit_m = 10; break; };
+		if ((*it)->type == "f") { N_bit_m = 14; break; };
+	}
 	
 	vector<QuantumState> null;						//creation null vectors
 	int Lz_max=0;
