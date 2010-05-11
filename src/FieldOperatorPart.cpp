@@ -17,9 +17,9 @@ valC::valC(QuantumState line, QuantumState column, RealType C_nm)	//inicializati
 
 //class FieldOperatorPart								//rotates matrixes C and CX 
 
-RealSparseMatrixType& FieldOperatorPart::value()						//return UXCU
+RowMajorMatrixType& AnnihilationOperatorPart::value()
 {
-	return elements;
+    return elements;
 }
 
 QuantumState AnnihilationOperatorPart::retK(QuantumState L)							//return K for C
@@ -27,6 +27,11 @@ QuantumState AnnihilationOperatorPart::retK(QuantumState L)							//return K for
 
 	return( L + (1<<i) );
 
+}
+
+ColMajorMatrixType& CreationOperatorPart::value()
+{
+    return elements;
 }
 
 QuantumState CreationOperatorPart::retK(QuantumState L)							//return K for CX

@@ -8,13 +8,14 @@ GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOpe
                                         Hpart(Hpart), C(C), CX(CX), DMpart(DMpart)
 {}
 
-void GreensFunctionPart::prepare(void)
+void GreensFunctionPart::compute(void)
 {
     RowMajorMatrixType& Cmatrix = C.value();
     ColMajorMatrixType& CXmatrix = CX.value();
     QuantumState outerSize = Cmatrix.outerSize();
-    
+      
     for(QuantumState m=0; m<outerSize; ++m){
+        cout << "m=" << m << endl;
         RowMajorMatrixType::InnerIterator Cinner(Cmatrix,m);
         ColMajorMatrixType::InnerIterator CXinner(CXmatrix,m);
         
@@ -36,7 +37,7 @@ void GreensFunctionPart::prepare(void)
                 else for(;QuantumState(Cinner.index())<CX_n; ++Cinner);
             }
         }
-    }  
+    }
 }
 
 ComplexType GreensFunctionPart::operator()(ComplexType Frequency)

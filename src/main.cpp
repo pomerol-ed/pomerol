@@ -88,8 +88,17 @@ int main()
 	C.compute();
 	C.dump();
     // DEBUG
-        RealType beta = (*pIni)["Green Function:beta"];
-        DensityMatrix rho(S,H,beta);
+    RealType beta = (*pIni)["Green Function:beta"];
+    DensityMatrix rho(S,H,beta);
+    rho.compute();
+    
+    GreensFunction G(S,H,C,CX,rho,OUT);
+    G.compute();
+    //StatesClassification& _S(S);
+    //CreationOperator& _CX(CX);
+    //AnnihilationOperator& _C(C);
+    //Hamiltonian& _H(H);
+    //DensityMatrix& _rho(rho);
     
 //	CX.print_to_screen();
 

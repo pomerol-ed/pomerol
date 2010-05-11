@@ -5,7 +5,7 @@
 
 class DensityMatrixPart
 {
-    HamiltonianPart hpart;
+    HamiltonianPart& hpart;
     RealType beta;
   
     QuantumState partSize;
@@ -16,7 +16,7 @@ public:
     DensityMatrixPart(HamiltonianPart& hpart, RealType beta);
     void normalize(RealType Z);
     
-    RealType prepare(void);
+    RealType compute(void);
     RealType weight(int m);
 };
 

@@ -7,7 +7,7 @@ DensityMatrixPart::DensityMatrixPart(HamiltonianPart& hpart, RealType beta) :
     weights.resize(partSize);
 }
 
-RealType DensityMatrixPart::prepare(void)
+RealType DensityMatrixPart::compute(void)
 {
     Z_part = 0;
     for(QuantumState m = 0; m < partSize; ++m){

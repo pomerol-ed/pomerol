@@ -8,31 +8,32 @@ GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H,
 {
     green_path = output_handle(OUT.path() + "/Green_func");   
     NumOfBlocks = S.NumberOfBlocks();
-    
+
     parts = new GreensFunctionPart* [NumOfBlocks];
-    for (BlockNumber current_block=0;current_block<NumOfBlocks;current_block++)
-        parts[current_block] = new GreensFunctionPart(
-            (AnnihilationOperatorPart&)C.getPartFromLeftIndex(current_block),
-            (CreationOperatorPart&)CX.getPartFromRightIndex(current_block),
-            H.part(current_block), DM.part(current_block));
+    for (BlockNumber n = 0; n < NumOfBlocks; n++)
+        parts[n] = new GreensFunctionPart(
+            (AnnihilationOperatorPart&)C.getPartFromLeftIndex(n),
+            (CreationOperatorPart&)CX.getPartFromRightIndex(n),
+            H.part(n), DM.part(n));
 }
 
 GreensFunction::~GreensFunction()
 {
+    for(BlockNumber n = 0; n < NumOfBlocks; n++) delete parts[n];
     delete[] parts;
 }
 
-void GreensFunction::prepare(void)
+void GreensFunction::compute(void)
 {
-    for (BlockNumber current_block=0;current_block<NumOfBlocks;current_block++)
-        parts[current_block]->prepare();
+    for (BlockNumber n = 0; n < NumOfBlocks; n++)
+        parts[n]->compute();
 }
 
 ComplexType GreensFunction::operator()(ComplexType Frequency)
 {     
       ComplexType Value = 0;
-      for (BlockNumber current_block=0;current_block<NumOfBlocks;current_block++)
-          Value += (*parts[current_block])(Frequency);
+      for (BlockNumber n = 0; n < NumOfBlocks; n++)
+          Value += (*parts[n])(Frequency);
       return Value;
 }
 

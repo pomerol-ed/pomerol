@@ -16,7 +16,7 @@ endif
 endif
 
 CXXFLAGS= -O3 -g -Wall -fPIC $(INCLUDES)
-BINPATH=~/bin
+BINPATH=../bin
 
 objects=iniconfig.o output.o StatesClassification.o BitClassification.o \
 	HamiltonianPart.o Hamiltonian.o FieldOperatorPart.o FieldOperator.o \

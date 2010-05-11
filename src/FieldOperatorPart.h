@@ -44,8 +44,6 @@ public:
 	void print_to_screen();						//print to screen matrices UXCU UXCXU
 
 	const string& path();							//output paths
-
-  	RealSparseMatrixType &value();
 };
 
 class AnnihilationOperatorPart : public FieldOperatorPart

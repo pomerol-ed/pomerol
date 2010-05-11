@@ -9,13 +9,14 @@ DensityMatrix::DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType b
 
 DensityMatrix::~DensityMatrix()
 {
+    for(BlockNumber n = 0; n < NumOfBlocks; n++) delete parts[n];
     delete[] parts;
 }
 
-void DensityMatrix::prepare(void)
+void DensityMatrix::compute(void)
 {
     RealType Z = 0;
-    for(BlockNumber n = 0; n < NumOfBlocks; n++) Z += parts[n]->prepare();
+    for(BlockNumber n = 0; n < NumOfBlocks; n++) Z += parts[n]->compute();
     for(BlockNumber n = 0; n < NumOfBlocks; n++) parts[n]->normalize(Z);
     cout << "Partition Function = " << Z << endl;
 }
