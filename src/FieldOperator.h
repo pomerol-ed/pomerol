@@ -8,15 +8,17 @@
 #include "Hamiltonian.h" 
 #include "FieldOperatorPart.h"
 
-class OperatorContainer
+template<class PartType> class OperatorContainer
 {
 protected:
+    std::string operatorName;
+  
 	StatesClassification &System;
 	Hamiltonian &H;
 	output_handle OUT;
 
 	int bit;
-	FieldOperatorPart **Data;
+	PartType **Data;
 	std::map<unsigned int,BlockNumber> mapNontrivialParts;		// A map from non-zero parts to their BlockNumber indices
 	std::map<unsigned int,BlockNumber> mapLeftToRightPart;		// A map from output index to input index, hence there is a unique transform
 	unsigned int size;
@@ -25,36 +27,110 @@ protected:
 	virtual	QuantumNumbers where(QuantumNumbers in)=0;
 
 public:
-	OperatorContainer(StatesClassification &System_, Hamiltonian &H_, output_handle &OUT_, int bit_):System(System_),H(H_),OUT(OUT_),bit(bit_){size=0;};	
+	OperatorContainer(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit);
 
+	PartType& getPartFromLeftIndex(BlockNumber in);
+	PartType& getPartFromLeftIndex(QuantumNumbers in);
+	PartType& getPartFromRightIndex(BlockNumber out);
+	PartType& getPartFromRightIndex(QuantumNumbers out);
 
-	FieldOperatorPart& getPartFromLeftIndex(BlockNumber in);
-	FieldOperatorPart& getPartFromLeftIndex(QuantumNumbers in);
-	FieldOperatorPart& getPartFromRightIndex(BlockNumber out);
-	FieldOperatorPart& getPartFromRightIndex(QuantumNumbers out);
-
+    void prepare();
+    
 	void compute();
 	void dump();
 	void print_to_screen();
 };
 
-class CreationOperator : public OperatorContainer
+class CreationOperator : public OperatorContainer<CreationOperatorPart>
 {
 public:
-	void prepare();
 	BlockNumber where(BlockNumber in);
 	QuantumNumbers where(QuantumNumbers in);
 
-	CreationOperator(StatesClassification &System_, Hamiltonian &H_, output_handle &OUT_, int bit_):OperatorContainer(System_,H_,OUT_,bit_){};
+	CreationOperator(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit);
 };
 
-class AnnihilationOperator : public OperatorContainer
+class AnnihilationOperator : public OperatorContainer<AnnihilationOperatorPart>
 {
 public:
-	void prepare();
 	BlockNumber where(BlockNumber in);
 	QuantumNumbers where(QuantumNumbers in);
-	AnnihilationOperator(StatesClassification &System_, Hamiltonian &H_, output_handle &OUT_, int bit_):OperatorContainer(System_,H_,OUT_,bit_){};
+	AnnihilationOperator(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit);
 };
+
+template<class PartType> 
+OperatorContainer<PartType>::OperatorContainer(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit) : 
+    System(System), H(H), OUT(OUT), bit(bit)
+{
+    size=0;
+}
+
+template<class PartType>
+void OperatorContainer<PartType>::prepare()
+{
+  Data = new PartType* [System.NumberOfBlocks()];
+  for (BlockNumber b=0;b<System.NumberOfBlocks();b++)
+    {
+      if (where(b).isCorrect()) 
+      {
+     Data[b]=new PartType(bit,System,H.part(b),H.part(where(b)),OUT);
+         cout << "Entering " << operatorName << " Operator part " << System.getBlockInfo(b) << "->" << System.getBlockInfo(where(b)) << endl; 
+         mapNontrivialParts[size]=b;
+         mapLeftToRightPart[where(b)]=b;
+         size++;
+      }    
+    }
+}
+
+template<class PartType>
+PartType& OperatorContainer<PartType>::getPartFromRightIndex(BlockNumber in)
+{
+  return *Data[in];
+}
+
+template<class PartType>
+PartType& OperatorContainer<PartType>::getPartFromRightIndex(QuantumNumbers in)
+{
+  return *Data[System.getBlockNumber(in)];
+}
+
+template<class PartType>
+PartType& OperatorContainer<PartType>::getPartFromLeftIndex(BlockNumber in)
+{
+  return *Data[mapLeftToRightPart[in]];
+}
+
+template<class PartType>
+PartType& OperatorContainer<PartType>::getPartFromLeftIndex(QuantumNumbers in)
+{
+  return *Data[mapLeftToRightPart[System.getBlockNumber(in)]];
+}
+
+template<class PartType>
+void OperatorContainer<PartType>::print_to_screen()
+{
+  for (unsigned int b_in=0;b_in<(*this).size;b_in++)
+  {
+        Data[mapNontrivialParts[b_in]]->print_to_screen();
+  };
+}
+
+template<class PartType>
+void OperatorContainer<PartType>::compute()
+{
+  for (unsigned int b_in=0;b_in<(*this).size;b_in++)
+  {
+        Data[mapNontrivialParts[b_in]]->compute();
+  };
+}
+
+template<class PartType>
+void OperatorContainer<PartType>::dump()
+{
+  for (unsigned int b_in=0;b_in<(*this).size;b_in++)
+  {
+        Data[mapNontrivialParts[b_in]]->dump();
+  };
+}
 
 #endif

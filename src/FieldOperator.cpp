@@ -1,56 +1,15 @@
 #include "FieldOperator.h"
 
-void CreationOperator::prepare()
+CreationOperator::CreationOperator(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit) : 
+    OperatorContainer<CreationOperatorPart>(System,H,OUT,bit)
 {
-  Data = new FieldOperatorPart * [System.NumberOfBlocks()];
-  for (BlockNumber b=0;b<System.NumberOfBlocks();b++)
-    {
-      if (where(b).isCorrect()) 
-      {
-	 Data[b]=new CreationOperatorPart(bit,System,H.part(b),H.part(where(b)),OUT);
-         cout << "Entering Creation Operator part " << System.getBlockInfo(b) << "->" << System.getBlockInfo(where(b)) << endl; 
-	 mapNontrivialParts[size]=b;
-	 mapLeftToRightPart[where(b)]=b;
-         size++;
-      }    
-    }
+    operatorName = "Creation";
 }
 
-void AnnihilationOperator::prepare()
+AnnihilationOperator::AnnihilationOperator(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit) : 
+    OperatorContainer<AnnihilationOperatorPart>(System,H,OUT,bit)
 {
-  Data = new FieldOperatorPart * [System.NumberOfBlocks()];
-  for (BlockNumber b=0;b<System.NumberOfBlocks();b++)
-    {
-      if (where(b).isCorrect()) 
-      {
-	 Data[b]=new AnnihilationOperatorPart(bit,System,H.part(b),H.part(where(b)),OUT);
-         cout << "Entering Annihilation Operator part " << System.getBlockInfo(b) << "->" << System.getBlockInfo(where(b)) << endl; 
-	 mapNontrivialParts[size]=b;
-	 mapLeftToRightPart[where(b)]=b;
-         size++;
-      }    
-    }
-}
-
-
-FieldOperatorPart& OperatorContainer::getPartFromRightIndex(BlockNumber in)
-{
-  return *Data[in];
-}
-
-FieldOperatorPart& OperatorContainer::getPartFromRightIndex(QuantumNumbers in)
-{
-  return *Data[System.getBlockNumber(in)];
-}
-
-FieldOperatorPart& OperatorContainer::getPartFromLeftIndex(BlockNumber in)
-{
-  return *Data[mapLeftToRightPart[in]];
-}
-
-FieldOperatorPart& OperatorContainer::getPartFromLeftIndex(QuantumNumbers in)
-{
-  return *Data[mapLeftToRightPart[System.getBlockNumber(in)]];
+    operatorName = "Annihilation";
 }
 
 QuantumNumbers CreationOperator::where(QuantumNumbers in) // Require explicit knowledge of QuantumNumbers structure - Not very good
@@ -91,28 +50,4 @@ BlockNumber AnnihilationOperator::where(BlockNumber in)
   QuantumNumbers q_out = (*this).where(q_in);
   BlockNumber out = System.getBlockNumber(q_out);
   return out;
-}
-
-void OperatorContainer::print_to_screen()
-{
-  for (unsigned int b_in=0;b_in<(*this).size;b_in++)
-  {
-	    Data[mapNontrivialParts[b_in]]->print_to_screen();
-  };
-}
-
-void OperatorContainer::compute()
-{
-  for (unsigned int b_in=0;b_in<(*this).size;b_in++)
-  {
-	    Data[mapNontrivialParts[b_in]]->compute();
-  };
-}
-
-void OperatorContainer::dump()
-{
-  for (unsigned int b_in=0;b_in<(*this).size;b_in++)
-  {
-	    Data[mapNontrivialParts[b_in]]->dump();
-  };
 }
