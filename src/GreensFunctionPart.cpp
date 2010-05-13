@@ -10,12 +10,12 @@ GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOpe
 
 void GreensFunctionPart::compute(void)
 {
+    DEBUG("entering GreensFunctionPart::compute()")
     RowMajorMatrixType& Cmatrix = C.value();
     ColMajorMatrixType& CXmatrix = CX.value();
     QuantumState outerSize = Cmatrix.outerSize();
       
     for(QuantumState m=0; m<outerSize; ++m){
-        cout << "m=" << m << endl;
         RowMajorMatrixType::InnerIterator Cinner(Cmatrix,m);
         ColMajorMatrixType::InnerIterator CXinner(CXmatrix,m);
         

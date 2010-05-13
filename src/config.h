@@ -12,7 +12,7 @@
 #define _CONFIG_H
 
 /** \cond */
-#define NDEBUG
+//#define NDEBUG
 /** \endcond */
 
 #include<Eigen/Core>
@@ -81,5 +81,14 @@ using std::ostream;
 using std::ofstream;
 using std::vector;
 using std::string;
+
+#define INFO(MSG)       std::cout << MSG << std::endl;
+#define ERROR(MSG)      std::cerr << MSG << std::endl;
+
+#ifdef NDEBUG
+  #define DEBUG(x)
+#else
+  #define DEBUG(x)  INFO(x)
+#endif
 
 #endif /* #ifndef _CONFIG_H */

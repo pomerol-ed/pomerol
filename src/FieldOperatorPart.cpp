@@ -14,17 +14,17 @@ valC::valC(QuantumState line, QuantumState column, RealType C_nm)	//inicializati
 // Functions of specialized classes
 
 AnnihilationOperatorPart::AnnihilationOperatorPart(int i, StatesClassification &S, 
-                                                   HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle &OUT) :
+                                                   HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT) :
 FieldOperatorPart<RowMajorMatrixType>(i,S,h_from,h_to,OUT)
 {
-    OUT = output_handle(OUT.path()+"//matrixC");
+    OUT = output_handle(OUT.path()+"/matrixC");
 }
 
 CreationOperatorPart::CreationOperatorPart(int i, StatesClassification &S, 
-                                                  HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle &OUT) :
+                                                  HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT) :
 FieldOperatorPart<ColMajorMatrixType>(i,S,h_from,h_to,OUT)
 {
-    OUT = output_handle(OUT.path()+"//matrixCX");
+    OUT = output_handle(OUT.path()+"/matrixCX");
 }
 
 QuantumState AnnihilationOperatorPart::retK(QuantumState L)							//return K for C
