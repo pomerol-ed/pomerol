@@ -10,7 +10,6 @@ GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOpe
 
 void GreensFunctionPart::compute(void)
 {
-    DEBUG("entering GreensFunctionPart::compute()")
     RowMajorMatrixType& Cmatrix = C.value();
     ColMajorMatrixType& CXmatrix = CX.value();
     QuantumState outerSize = Cmatrix.outerSize();
@@ -22,7 +21,6 @@ void GreensFunctionPart::compute(void)
         while(Cinner && CXinner){
             QuantumState C_n = Cinner.index();
             QuantumState CX_n = CXinner.index();
-            
             if(C_n == CX_n){
                 ComplexType Residue = Cinner.value() * CXinner.value() * 
                                       (DMpart.weight(m) + DMpart.weight(C_n));

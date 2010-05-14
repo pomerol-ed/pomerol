@@ -38,10 +38,7 @@ typedef Eigen::Matrix<RealType,Eigen::Dynamic,1,Eigen::AutoAlign> RealVectorType
 /** Dense vector of integers. */
 typedef Eigen::Matrix<int,Eigen::Dynamic,1,Eigen::AutoAlign> IntVectorType;
 
-/** Sparse complex matrix with the column-major storage order. */
-typedef Eigen::SparseMatrix<ComplexType,Eigen::ColMajor> SparseMatrixType;
-typedef Eigen::DynamicSparseMatrix<RealType> RealSparseMatrixType;
-
+/** Sparse complex matrix */
 typedef Eigen::SparseMatrix<ComplexType,Eigen::ColMajor> ColMajorMatrixType;
 typedef Eigen::SparseMatrix<ComplexType,Eigen::RowMajor> RowMajorMatrixType;
 

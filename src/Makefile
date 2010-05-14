@@ -30,7 +30,7 @@ BitClassification.o: BitClassification.h BitClassification.cpp
 StatesClassification.o: StatesClassification.h StatesClassification.cpp config.h
 HamiltonianPart.o: StatesClassification.h config.h HamiltonianPart.h HamiltonianPart.cpp
 Hamiltonian.o: StatesClassification.h config.h HamiltonianPart.h Hamiltonian.h Hamiltonian.cpp
-FieldOperatorPart.o: StatesClassification.h config.h HamiltonianPart.h FieldOperatorPart.h FieldOperatorPart.cpp
+FieldOperatorPart.o: StatesClassification.h config.h HamiltonianPart.h FieldOperatorPart.h FieldOperatorPart.tmpl.h FieldOperatorPart.cpp
 FieldOperator.o: StatesClassification.h config.h HamiltonianPart.h FieldOperatorPart.h FieldOperatorPart.cpp FieldOperator.h
 DensityMatrixPart.o: DensityMatrixPart.h DensityMatrixPart.cpp
 DensityMatrix.o: DensityMatrix.h DensityMatrix.cpp

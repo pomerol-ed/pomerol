@@ -1,4 +1,5 @@
 #include "FieldOperatorPart.h"
+#include "FieldOperatorPart.tmpl.h"
 
 using std::stringstream;
 
@@ -15,17 +16,19 @@ valC::valC(QuantumState line, QuantumState column, RealType C_nm)	//inicializati
 
 AnnihilationOperatorPart::AnnihilationOperatorPart(int i, StatesClassification &S, 
                                                    HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT) :
-FieldOperatorPart<RowMajorMatrixType>(i,S,h_from,h_to,OUT)
-{
-    OUT = output_handle(OUT.path()+"/matrixC");
-}
+FieldOperatorPart<RowMajorMatrixType>(i,S,h_from,h_to,output_handle(OUT.path()+"/matrixC"))
+{}
 
 CreationOperatorPart::CreationOperatorPart(int i, StatesClassification &S, 
                                                   HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT) :
-FieldOperatorPart<ColMajorMatrixType>(i,S,h_from,h_to,OUT)
-{
-    OUT = output_handle(OUT.path()+"/matrixCX");
-}
+FieldOperatorPart<ColMajorMatrixType>(i,S,h_from,h_to,output_handle(OUT.path()+"/matrixCX"))
+{}
+
+template void FieldOperatorPart<RowMajorMatrixType>::dump();
+template void FieldOperatorPart<ColMajorMatrixType>::dump();
+
+template RowMajorMatrixType& FieldOperatorPart<RowMajorMatrixType>::value();
+template ColMajorMatrixType& FieldOperatorPart<ColMajorMatrixType>::value();
 
 QuantumState AnnihilationOperatorPart::retK(QuantumState L)							//return K for C
 {	

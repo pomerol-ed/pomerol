@@ -81,19 +81,19 @@ int main()
 	CreationOperator CX(S,H,OUT,i);
 	CX.prepare();
 	CX.compute();
-	//CX.dump();
+	CX.dump();
     
-	//AnnihilationOperator C(S,H,OUT,j);
-	//C.prepare();
-	//C.compute();
-	//C.dump();
+	AnnihilationOperator C(S,H,OUT,j);
+	C.prepare();
+	C.compute();
+	C.dump();
     // DEBUG
-    //RealType beta = (*pIni)["Green Function:beta"];
-    //DensityMatrix rho(S,H,beta);
-    //rho.compute();
+    RealType beta = (*pIni)["Green Function:beta"];
+    DensityMatrix rho(S,H,beta);
+    rho.compute();
     
-    //GreensFunction G(S,H,C,CX,rho,OUT);
-    //G.compute();
+    GreensFunction G(S,H,C,CX,rho,OUT);
+    G.compute();
     //StatesClassification& _S(S);
     //CreationOperator& _CX(CX);
     //AnnihilationOperator& _C(C);
