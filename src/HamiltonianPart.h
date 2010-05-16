@@ -42,6 +42,7 @@ private:
 	
 	// s-orbital functions
 	
+	//void add_U(int st, unsigned short bit_up, unsigned short bit_down, RealType Us);
 	void add_U(int st, RealType Us);
 
 	//chem. potentials

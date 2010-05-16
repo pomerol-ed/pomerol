@@ -321,6 +321,7 @@ void HamiltonianPart::add_nondiag(int st1, int st2, RealType F_2)				//nondiagon
  
 // s-orbital functions
 
+//void HamiltonianPart::add_U(int st, unsigned short bit_up, unsigned short bit_down, RealType Us)				//interactions on s-orbital
 void HamiltonianPart::add_U(int st, RealType Us)				//interactions on s-orbital
 {
 	int state = S.cst(hpart_id,st);			//real state

@@ -128,7 +128,7 @@ unsigned short BitClassification::findBit(const unsigned short &site, const unsi
   return -1;
 }
 
-vector<unsigned short>& BitClassification::findBits(const unsigned short &site)
+vector<unsigned short>& BitClassification::findBits(const unsigned short &site) // This method find all bits, which correspond to a given site
 {
   static std::vector<unsigned short> result;
   for (unsigned short bit = 0; bit < BitInfoList.size(); bit++ ) 
@@ -138,11 +138,17 @@ vector<unsigned short>& BitClassification::findBits(const unsigned short &site)
 
 void BitClassification::printHoppingMatrix()
 {
-	//cout << std::setw(7) << std::left << HoppingMatrix << endl;
 	cout << HoppingMatrix << endl;
 }
 
+//void BitClassification::createRecipe()
+//{
+
+//}
 void BitClassification::defineHopping()
+/*
+ * This procedure defines a Hopping Matrix from a Lattice input file
+ */
 {
 
 Json::Value sites = root["sites"];
@@ -200,3 +206,4 @@ const int& BitClassification::getBitSize() const
 {
 	return N_bit;
 }
+

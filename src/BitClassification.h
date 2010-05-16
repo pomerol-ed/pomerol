@@ -11,6 +11,7 @@
 #define __BIT_CLASSIFICATION__
 
 #include "config.h"
+#include "term.h"
 #include <json/json.h>
 #include <map>
 #include <string>
@@ -57,7 +58,7 @@ public:
 
 class BitClassification
 {
-  	Json::Value root;   // will contains the root value after parsing.
+  	Json::Value root; 
 	int N_bit;
 	RealMatrixType HoppingMatrix;
 	vector<BitInfo*> BitInfoList;

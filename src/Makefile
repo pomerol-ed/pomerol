@@ -18,7 +18,7 @@ endif
 CXXFLAGS= -O3 -g -Wall -fPIC $(INCLUDES)
 BINPATH=../bin
 
-objects=iniconfig.o output.o StatesClassification.o BitClassification.o \
+objects=iniconfig.o output.o StatesClassification.o Term.o BitClassification.o \
 	HamiltonianPart.o Hamiltonian.o FieldOperatorPart.o FieldOperator.o \
 	DensityMatrixPart.o DensityMatrix.o GreensFunctionPart.o GreensFunction.o
 
@@ -26,7 +26,8 @@ default :  main
 
 iniconfig.o: iniconfig.cpp iniconfig.h
 output.o: output.cpp output.h
-BitClassification.o: BitClassification.h BitClassification.cpp
+Term.o:	Term.cpp Term.h
+BitClassification.o: BitClassification.h BitClassification.cpp Term.h
 StatesClassification.o: StatesClassification.h StatesClassification.cpp config.h
 HamiltonianPart.o: StatesClassification.h config.h HamiltonianPart.h HamiltonianPart.cpp
 Hamiltonian.o: StatesClassification.h config.h HamiltonianPart.h Hamiltonian.h Hamiltonian.cpp
