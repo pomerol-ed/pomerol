@@ -23,21 +23,6 @@ IniConfig* pIni;
 
 int main()
 {	
-	cout << "=======================" << endl;
-	cout << "Terms check" << endl;
-	cout << "=======================" << endl;
-	std::vector<Term<4>*> TermsList;
-	for (int tmp=0;tmp<10;tmp++)
-	{
-	Term<4>* T2=new nnTerm (0,tmp/2,tmp);
-//	~T();
-
-	TermsList.push_back(T2);
-	}
-
-	for ( std::vector<Term<4>*>::iterator it=TermsList.begin() ; it < TermsList.end(); it++ )
-		    cout << **it << endl;
-//	exit(0);
 
 	Formula.readin();
 	cout << "=======================" << endl;
