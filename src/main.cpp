@@ -23,7 +23,6 @@ IniConfig* pIni;
 
 int main()
 {	
-
 	Formula.readin();
 	cout << "=======================" << endl;
 	cout << "System Info" << endl;
@@ -33,6 +32,11 @@ int main()
 	cout << "Hopping Matrix" << endl;
 	cout << "=======================" << endl;
 	Formula.printHoppingMatrix();
+	cout << "=======================" << endl;
+	cout << "Terms check" << endl;
+	cout << "=======================" << endl;
+	Formula.printTerms();
+	exit(0);
 	//determination of system
 	
 	pIni = new IniConfig(input);

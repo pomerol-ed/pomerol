@@ -16,14 +16,13 @@ template <int len> class Term
  * It can be either nn term, or spin_flip or other type of terms
  */
 {
-protected:
+public:
    string type;
    bool diag; // Determine, whether the term is diagonal or not
    bool order[len]; // Order is a sequence of true/false values. True means operation operator, false - annihilation operator
    unsigned short bit[len]; // The bits which are
    RealType Value; // Define which value to add
   // ~Term();
-public:
    friend std::ostream & (operator << <>) (ostream &, const Term<len> &);  
 };
 
@@ -35,15 +34,21 @@ public:
    friend std::ostream & (operator <<) (ostream &,const nnTerm&);
 };
 
+class spinflipTerm : public Term<4> {
+public:
+   spinflipTerm(unsigned short bit1, unsigned short bit2, unsigned short bit3, unsigned short bit4, RealType Val);
+   friend std::ostream & (operator <<) (ostream &,const spinflipTerm&);
+};
+
 /*==A GENERIC TERM METHODS======================================*/
 
 template <int len> std::ostream& operator<<(std::ostream& output,const Term<len>& out)
 {
 if (len == 4 && out.type == "nn") { output << (nnTerm&) out; return output; }; 
 
-     output << "A generic ";
-     output << ((out.diag)?"diagonal ":"non-diagonal");
-     output << "term : " << out.Value << "*(";
+     output << "A ";
+     output << ((out.diag)?"diagonal ":"non-diagonal ");
+     output << out.type << " term : " << out.Value << "*(";
 
      for (unsigned short it=0;it<len;++it)
      {

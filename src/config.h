@@ -18,7 +18,6 @@
 #include<Eigen/Core>
 #include<Eigen/Sparse>
 #include<Eigen/QR>
-
 /** Real floating point type. */
 typedef double RealType;
 /** Complex type. */

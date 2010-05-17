@@ -32,6 +32,8 @@ private:
 
 	int hop;					//fit4a for inhopfuncW_3
 	
+	void add_nnTerm(int st, nnTerm *T);
+	void add_spinflipTerm(int st, spinflipTerm *T);
     void add_diag(int st, RealType F_0, double F_2);					     //function creates diagonal elements of Hamilt
 	void add_nondiag(int st1, int st2, RealType F_2);					     //function creates nondiagonal elements of Hamilt
 	

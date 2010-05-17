@@ -151,6 +151,16 @@ void HamiltonianPart::putHamilt()
 
 }
 
+void HamiltonianPart::add_nnTerm(int inner_state, nnTerm *T)
+{
+	int state = S.cst(hpart_id,inner_state);					//real state	
+      	H(inner_state,inner_state)+=F_0*S.n_i(state,T->bit[0])*S.n_i(state,T->bit[2]);	
+};
+
+void HamiltonianPart::add_spinflipTerm(int inner_state, spinflipTerm *T)
+{
+	int state = S.cst(hpart_id,inner_state);					//real state	
+};
 // multiorbital functions:
 
 void HamiltonianPart::add_diag(int st, RealType F_0, double F_2)				//diagonal elements of Hamilt

@@ -54,7 +54,17 @@ public:
 	void print_to_screen(){cout << *this << endl;};
 };
 
+struct TermsList // A list of terms of different orders
+{
+   std::vector<Term<2>*> Terms1Order;
+   std::vector<Term<4>*> Terms2Order;
+   std::vector<Term<6>*> Terms3Order;
+   std::vector<Term<8>*> Terms4Order;
+   std::vector<Term<10>*> Terms5Order;
 
+   TermsList(){Terms1Order.resize(0); Terms2Order.resize(0);Terms3Order.resize(0);Terms4Order.resize(0);Terms5Order.resize(0);};
+   friend std::ostream& operator<<(std::ostream& output,TermsList& out);
+};
 
 class BitClassification
 {
@@ -62,11 +72,13 @@ class BitClassification
 	int N_bit;
 	RealMatrixType HoppingMatrix;
 	vector<BitInfo*> BitInfoList;
+	TermsList Terms;
 public:
 	BitClassification();
 	int readin();
 	void printBitInfoList();
 	void printHoppingMatrix();
+	void printTerms();
 	RealMatrixType& getHoppingMatrix();
 	std::vector<BitInfo*> &getBitInfoList();
 	const int& getBitSize() const;
@@ -75,6 +87,9 @@ private:
 	std::map<std::string, OrbitalValue> mapOrbitalValue;
 	void defineBits();
 	void defineHopping();
+	void defineTerms();
+	void definePorbitalSphericalTerms(pBitInfo **Bits);
+	void definePorbitalNativeTerms(pBitInfo **Bits);
 	vector<unsigned short>& findBits(const unsigned short &site);
 	unsigned short findBit(const unsigned short &site,const unsigned short &spin);
 };

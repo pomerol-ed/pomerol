@@ -20,3 +20,20 @@ std::ostream& operator<<(std::ostream& output,const nnTerm& out)
    output << "Diagonal " << out.type << " term, " << out.Value << "*(n_{" <<out.bit[0] <<"}n_{"<< out.bit[2] << "})"; 
    return output;
 }
+
+spinflipTerm::spinflipTerm(unsigned short bit1, unsigned short bit2, unsigned short bit3, unsigned short bit4, RealType Val)
+{
+  diag = false;
+  Value = Val;
+  bit[0]=bit1; bit[1]=bit2;
+  bit[2]=bit3; bit[3]=bit4;
+  
+  order[0]=true;
+  order[1]=true;
+  order[2]=false;
+  order[3]=false;
+
+  type="spin-flip";
+}
+
+
