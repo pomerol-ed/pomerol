@@ -1,4 +1,4 @@
-// pomerol/trunk/BitClassification.h
+// pomerol/trunk/src/BitClassification.h
 // This file is a part of pomerol diagonalization code
 
 /** \file BitClassification.h
