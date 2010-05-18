@@ -267,7 +267,6 @@ void BitClassification::definePorbitalSphericalTerms(pBitInfo **list)
 {
 	RealType F0 = list[0]->U - 4./3.* list[1]->J; 
 	RealType F2 = list[0]->J*25/3.;
-   	
 	Eigen::Matrix3i  W1,W2,W3;
 	
 	W1 << 1,-2, 1,   -2, 4,-2,   1,-2, 1;
