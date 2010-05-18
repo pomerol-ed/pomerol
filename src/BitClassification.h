@@ -11,7 +11,7 @@
 #define __BIT_CLASSIFICATION__
 
 #include "config.h"
-#include "term.h"
+#include "Term.h"
 #include <json/json.h>
 #include <map>
 #include <string>
