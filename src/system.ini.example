@@ -1,7 +1,4 @@
 [system]
-N_bit = 10   	; the whole size of the system
-N_bit_m = 6	; the size of the multiorbital. This can be either 0 ( no multiorbital ) or 6 (p-orbital). D-orbital will be implemented as soon as it would be needed.
-
 J_c = 0.33	; inner hoppings on multiorbital
 U_c = 1.29	; interaction on multiorbital
 Us_c = 1.05	; interaction on s-orbitals
