@@ -49,7 +49,6 @@ int main()
 
 	S.iniStatesClassification();
 
-
 	//end of determination	
 	
 	cout << "=======================" << endl;

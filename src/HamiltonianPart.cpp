@@ -170,19 +170,17 @@ void HamiltonianPart::add_nnTerm(int inner_state, nnTerm *T)
 void HamiltonianPart::add_spinflipTerm(int inner_state, spinflipTerm *T)
 {
 	QuantumState in = S.cst(hpart_id,inner_state); //real state	
+	if ( S.n_i(in,T->bit[0]) || S.n_i(in,T->bit[1]) || !S.n_i(in,T->bit[2]) || !S.n_i(in,T->bit[3])) { return; }
 	QuantumState diff1 = (1<<T->bit[0]) + (1<<T->bit[1]);
 	QuantumState diff2 = (1<<T->bit[2]) + (1<<T->bit[3]);
-	if ((diff2 > in + diff1) || ((diff2 <= in) && (S.N_st() - diff1 >= in - diff2))) return;
+	if ((diff2 > in + diff1) || ((diff2 <= in) && (S.N_st() - diff1 <= in - diff2))) return;
 	QuantumState out = in + diff1 - diff2;	
 	QuantumNumbers out_info = S.getStateInfo(out);
-	cout << in << "," << hpart_id <<  " -> " << out << "," << out_info << endl;
-	cout << "Term : " << (Term&) *T << endl;
 	if (out_info==(QuantumNumbers) hpart_id) 
 	{
-//	cout << (1<<T->bit[0]) << " " << (1<<T->bit[1]) << " " << (1<<T->bit[2]) << " " << (1<<T->bit[3]) << endl;
 		InnerQuantumState out_inner_state = S.getInnerState(out);
-		H(out,inner_state)=T->Value*measurefunc(out_inner_state,inner_state,T->bit[0],T->bit[1],T->bit[2],T->bit[3]);
-		DEBUG(inner_state << "->" << in << endl);
+		DEBUG(in << "->" << out << " | Term : " << (Term&) *T << " | " << T->Value*measurefunc(in,out,T->bit[0],T->bit[1],T->bit[2],T->bit[3]));
+		H(out_inner_state,inner_state)=T->Value*measurefunc(in,out,T->bit[0],T->bit[1],T->bit[2],T->bit[3]);
 	}
 	
 
@@ -323,14 +321,14 @@ void HamiltonianPart::add_nondiag(int st1, int st2, RealType F_2)				//nondiagon
 		{
 			if ( (i>=S.N_b()/2) && (j<S.N_b()/2) )
       			{
-        /*			H(st1,st2)+=(F_2/25)*W2[(i-S.N_b()/2)%(S.N_b_m()/2)][j%(S.N_b_m()/2)]*inhopfuncW_2(state1,state2,i,j);
+        			H(st1,st2)+=(F_2/25)*W2[(i-S.N_b()/2)%(S.N_b_m()/2)][j%(S.N_b_m()/2)]*inhopfuncW_2(state1,state2,i,j);
        				
 				if ( (i+j)==(S.N_b()/2+S.N_b_m()/2-1) )
 				
 					H(st1,st2)+=inhopfuncW_3(state1,state2,i,j,&hop)*(F_2/25)*W3[j%(S.N_b_m()/2)][(j+hop)%(S.N_b_m()/2)];
 				else
        			  		H(st1,st2)+=0;
-		*/
+		
 			}
 		}
 	}
@@ -343,14 +341,14 @@ void HamiltonianPart::add_nondiag(int st1, int st2, RealType F_2)				//nondiagon
 			{
 				if ( (i>=S.N_b()/2) && (j<S.N_b()/2) )
       		 		{
-        	/*			H(st1,st2)+=(F_2/25)*W2[(i-S.N_b()/2)%(S.N_b_m()/2)][j%(S.N_b_m()/2)]*inhopfuncW_2(state1,state2,i,j);
+        				H(st1,st2)+=(F_2/25)*W2[(i-S.N_b()/2)%(S.N_b_m()/2)][j%(S.N_b_m()/2)]*inhopfuncW_2(state1,state2,i,j);
        					
 					if ( (i+j)==(S.N_b()/2+S.N_b_m()/2-1) )
 				
 						H(st1,st2)+=inhopfuncW_3(state1,state2,i,j,&hop)*(F_2/25)*W3[j%(S.N_b_m()/2)][(j+hop)%(S.N_b_m()/2)];
 					else
        			  			H(st1,st2)+=0;
-		*/
+		
 				}
 			}
 		}
