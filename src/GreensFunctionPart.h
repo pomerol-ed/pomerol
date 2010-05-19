@@ -11,11 +11,14 @@
 
 class GreensFunctionPart
 {
-   HamiltonianPart& Hpart;
+   HamiltonianPart& HpartInner;
+   HamiltonianPart& HpartOuter;
+   DensityMatrixPart& DMpartInner;
+   DensityMatrixPart& DMpartOuter;
+   
    AnnihilationOperatorPart& C;
    CreationOperatorPart& CX;
-   DensityMatrixPart& DMpart;
-  
+   
    struct greenTerm{
         ComplexType Residue;
         ComplexType Pole;
@@ -28,7 +31,8 @@ class GreensFunctionPart
   
 public:
     GreensFunctionPart(AnnihilationOperatorPart& C, CreationOperatorPart& CX, 
-                       HamiltonianPart& Hpart, DensityMatrixPart& DMpart);
+                       HamiltonianPart& HpartInner, HamiltonianPart& HpartOuter,
+                       DensityMatrixPart& DMpartInner, DensityMatrixPart& DMpartOuter);
  
     void compute(void);
     ComplexType operator()(ComplexType Frequency);

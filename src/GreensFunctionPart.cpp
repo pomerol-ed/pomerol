@@ -4,8 +4,11 @@ GreensFunctionPart::greenTerm::greenTerm(ComplexType Residue, ComplexType Pole) 
 ComplexType GreensFunctionPart::greenTerm::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
 
 GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOperatorPart& CX, 
-                                        HamiltonianPart& Hpart, DensityMatrixPart& DMpart) :
-                                        Hpart(Hpart), C(C), CX(CX), DMpart(DMpart)
+                                        HamiltonianPart& HpartInner, HamiltonianPart& HpartOuter,
+                                        DensityMatrixPart& DMpartInner, DensityMatrixPart& DMpartOuter) :
+                                        HpartInner(HpartInner), HpartOuter(HpartOuter),
+                                        DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
+                                        C(C), CX(CX)
 {}
 
 void GreensFunctionPart::compute(void)
@@ -13,7 +16,7 @@ void GreensFunctionPart::compute(void)
     RowMajorMatrixType& Cmatrix = C.value();
     ColMajorMatrixType& CXmatrix = CX.value();
     QuantumState outerSize = Cmatrix.outerSize();
-      
+   
     for(QuantumState m=0; m<outerSize; ++m){
         RowMajorMatrixType::InnerIterator Cinner(Cmatrix,m);
         ColMajorMatrixType::InnerIterator CXinner(CXmatrix,m);
@@ -21,10 +24,11 @@ void GreensFunctionPart::compute(void)
         while(Cinner && CXinner){
             QuantumState C_n = Cinner.index();
             QuantumState CX_n = CXinner.index();
+
             if(C_n == CX_n){
                 ComplexType Residue = Cinner.value() * CXinner.value() * 
-                                      (DMpart.weight(m) + DMpart.weight(C_n));
-                ComplexType Pole = Hpart.reV(C_n) - Hpart.reV(m);
+                                      (DMpartOuter.weight(m) + DMpartInner.weight(C_n));
+                ComplexType Pole = HpartInner.reV(C_n) - HpartOuter.reV(m);
               
                 Terms.push_back(greenTerm(Residue,Pole));
               

@@ -39,7 +39,7 @@ void FieldOperatorPart<StorageType>::dump() //writing FieldOperatorPart C[M_sigm
     ofstream outCpart;
     outCpart.open(filename.str().c_str());
         
-    outCpart << std::setprecision(DUMP_FLOATING_POINT_NUMBERS) << elements << endl;
+    outCpart << std::setprecision(DUMP_FLOATING_POINT_NUMBERS) << elements.toDense() << endl;
 
     outCpart.close();
     cout << "The part of field operator " << h_from.id() << "->" << h_to.id() << " is dumped to " << filename.str() << "." << endl;
@@ -101,7 +101,7 @@ void FieldOperatorPart<ColMajorMatrixType>::compute()
     for (QuantumState m=0; m<S.clstates(from).size(); m++)
     for (QuantumState n=0; n<S.clstates(to).size(); n++){
         RealType matrixElement = computeElement(n,m,from,to);
-        if(abs(matrixElement)>MATRIX_ELEMENT_TOLERANCE) elements.fill(n,m) = matrixElement;
+        if(fabs(matrixElement)>MATRIX_ELEMENT_TOLERANCE) elements.fill(n,m) = matrixElement;
     }
     elements.endFill();
 }

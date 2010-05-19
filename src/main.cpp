@@ -65,7 +65,7 @@ int main()
 
 	H.enter(true,true);
 	//finishing of creation
- 	exit(0);	
+	
 	cout << endl;
 	cout << "All parts are created!" << endl;
 	cout << endl;
@@ -94,9 +94,11 @@ int main()
     // DEBUG
     RealType beta = (*pIni)["Green Function:beta"];
     DensityMatrix rho(S,H,beta);
+    rho.prepare();
     rho.compute();
     
     GreensFunction G(S,H,C,CX,rho,OUT);
+    G.prepare();
     G.compute();
     //StatesClassification& _S(S);
     //CreationOperator& _CX(CX);

@@ -4,29 +4,34 @@ extern IniConfig* pIni;
 
 GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H, 
                                AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM,
-                               output_handle &OUT) : S(S), H(H), C(C), CX(CX), DM(DM)
+                               output_handle &OUT) : parts(0), S(S), H(H), C(C), CX(CX), DM(DM)
 {
     green_path = output_handle(OUT.path() + "/Green_func");   
+}
+
+GreensFunction::~GreensFunction()
+{
+    if(parts)
+        for(BlockNumber n = 0; n < NumOfBlocks; n++) delete parts[n];
+    delete[] parts;
+}
+
+void GreensFunction::prepare(void)
+{
     NumOfBlocks = S.NumberOfBlocks();
 
     parts = new GreensFunctionPart* [NumOfBlocks];
     for (BlockNumber n = 0; n < NumOfBlocks; n++)
         parts[n] = new GreensFunctionPart(
-            (AnnihilationOperatorPart&)C.getPartFromLeftIndex(n),
-            (CreationOperatorPart&)CX.getPartFromRightIndex(n),
-            H.part(n), DM.part(n));
-}
-
-GreensFunction::~GreensFunction()
-{
-    for(BlockNumber n = 0; n < NumOfBlocks; n++) delete parts[n];
-    delete[] parts;
+            C.getPartFromLeftIndex(n),
+            CX.getPartFromRightIndex(n),
+            H.part(CX.where(n)), H.part(n), DM.part(CX.where(n)), DM.part(n));    
 }
 
 void GreensFunction::compute(void)
 {
-    for (BlockNumber n = 0; n < NumOfBlocks; n++)
-        parts[n]->compute();
+      for (BlockNumber n = 0; n < NumOfBlocks; n++)
+          parts[n]->compute();
 }
 
 ComplexType GreensFunction::operator()(ComplexType Frequency)

@@ -9,6 +9,8 @@
 class DensityMatrix
 {
     StatesClassification& S;
+    Hamiltonian &H;
+    RealType beta;
     
     BlockNumber NumOfBlocks;
     DensityMatrixPart** parts;
@@ -20,6 +22,7 @@ public:
     DensityMatrixPart& part(const QuantumNumbers &in);
     DensityMatrixPart& part(BlockNumber in);  
     
+    void prepare(void);
     void compute(void);
     RealType operator()(QuantumState &state);
 };

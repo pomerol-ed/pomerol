@@ -30,7 +30,9 @@ public:
                    output_handle &OUT);
     ~GreensFunction();
     
+    void prepare(void);
     void compute(void);
+    
     ComplexType operator()(ComplexType Frequency);
     
     //void dump(void);

@@ -1,16 +1,21 @@
 #include "DensityMatrix.h"
 
-DensityMatrix::DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType beta) : S(S)
+DensityMatrix::DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType beta) : 
+    parts(0), S(S), H(H), beta(beta)
+{}
+
+DensityMatrix::~DensityMatrix()
+{
+    if(parts)
+        for(BlockNumber n = 0; n < NumOfBlocks; n++) delete parts[n];
+    delete[] parts;
+}
+
+void DensityMatrix::prepare(void)
 {
     NumOfBlocks = S.NumberOfBlocks();
     parts = new DensityMatrixPart* [NumOfBlocks];
     for(BlockNumber n = 0; n < NumOfBlocks; n++) parts[n] = new DensityMatrixPart(H.part(n),beta);
-}
-
-DensityMatrix::~DensityMatrix()
-{
-    for(BlockNumber n = 0; n < NumOfBlocks; n++) delete parts[n];
-    delete[] parts;
 }
 
 void DensityMatrix::compute(void)
