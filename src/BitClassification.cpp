@@ -110,8 +110,8 @@ void BitClassification::defineTerms()
 	     	   case s:
 		 	{
 		  	 sBitInfo *current = (sBitInfo*) BitInfoList[bit];
-			 Term<4> *T1 = new nnTerm(bit,bit+N_bit/2,current->U);
-			 Terms.Terms2Order.push_back(T1);	
+			 Term *T1 = new nnTerm(bit,bit+N_bit/2,current->U);
+			 Terms.addTerm(T1);	
 			 break;
 		 	};
 		   case p:
@@ -245,23 +245,12 @@ const int& BitClassification::getBitSize() const
 	return N_bit;
 }
 
-std::ostream& operator<<(std::ostream& output, TermsList& out)
+
+
+TermsList& BitClassification::getTermsList()
 {
-std::vector<Term<2>*>::iterator it1;
-std::vector<Term<4>*>::iterator it2;
-std::vector<Term<6>*>::iterator it3;
-std::vector<Term<8>*>::iterator it4;
-std::vector<Term<10>*>::iterator it5;
-
-for ( it1=(out.Terms1Order).begin() ; it1 < out.Terms1Order.end(); it1++ ) output << **it1 << endl;
-for ( it2=out.Terms2Order.begin() ; it2 < out.Terms2Order.end(); it2++ ) output << **it2 << endl;
-for ( it3=out.Terms3Order.begin() ; it3 < out.Terms3Order.end(); it3++ ) output << **it3 << endl;
-for ( it4=out.Terms4Order.begin() ; it4 < out.Terms4Order.end(); it4++ ) output << **it4 << endl;
-for ( it5=out.Terms5Order.begin() ; it5 < out.Terms5Order.end(); it5++ ) output << **it5 << endl;
-
-return output;
+	return Terms;
 }
-
 
 void BitClassification::definePorbitalSphericalTerms(pBitInfo **list)
 {
@@ -281,21 +270,21 @@ void BitClassification::definePorbitalSphericalTerms(pBitInfo **list)
 		unsigned short bit_m_sigma = list[(sigma*3)+m]->bitNumber;
 		unsigned short bit_m1_sigma1 = list[(sigma1*3)+m1]->bitNumber;
 		
-		if (m!=m1 && sigma == sigma1) { Term<4> *T1 = new nnTerm(bit_m_sigma, bit_m1_sigma1, (F0-F2/5.)/2.); Terms.Terms2Order.push_back(T1); }
-		if (sigma != sigma1) { Term<4> *T2 = new nnTerm(bit_m_sigma, bit_m1_sigma1, (F0)/2.); Terms.Terms2Order.push_back(T2); }
-		if (sigma != sigma1) { Term<4> *T3 = new nnTerm(bit_m_sigma, bit_m1_sigma1, (F2)/2./25.*W1(m,m1)); if (W1(m,m1)!=0) Terms.Terms2Order.push_back(T3); }
+		if (m!=m1 && sigma == sigma1) { Term *T1 = new nnTerm(bit_m_sigma, bit_m1_sigma1, (F0-F2/5.)/2.); Terms.addTerm(T1); }
+		if (sigma != sigma1) { Term *T2 = new nnTerm(bit_m_sigma, bit_m1_sigma1, (F0)/2.); Terms.addTerm(T2); }
+		if (sigma != sigma1) { Term *T3 = new nnTerm(bit_m_sigma, bit_m1_sigma1, (F2)/2./25.*W1(m,m1)); if (W1(m,m1)!=0) Terms.addTerm(T3); }
 
 		if (sigma != sigma1)
 		{
 		unsigned short bit_m_sigma1 = list[(sigma1*3)+m]->bitNumber;
 		unsigned short bit_m1_sigma = list[(sigma*3)+m1]->bitNumber;
-		Term<4> *T4 = new spinflipTerm(bit_m_sigma,bit_m1_sigma1, bit_m_sigma1, bit_m1_sigma, F2/2./25.*W2(m,m1));
-		if (W2(m,m1)!=0) Terms.Terms2Order.push_back(T4);
+		Term *T4 = new spinflipTerm(bit_m_sigma,bit_m1_sigma1, bit_m_sigma1, bit_m1_sigma, F2/2./25.*W2(m,m1));
+		if (W2(m,m1)!=0) Terms.addTerm(T4);
 
 		unsigned short bit_minusm_sigma1=bit_m_sigma1 = list[(sigma1*3)+2-m]->bitNumber;
 		unsigned short bit_minusm1_sigma=bit_m_sigma1 = list[(sigma*3)+2-m1]->bitNumber;
-		Term<4> *T5 = new spinflipTerm(bit_m_sigma,bit_minusm_sigma1, bit_m1_sigma1, bit_minusm1_sigma, F2/2./25.*W3(m,m1));
-		if (W3(m,m1)!=0) Terms.Terms2Order.push_back(T5);
+		Term *T5 = new spinflipTerm(bit_m_sigma,bit_minusm_sigma1, bit_m1_sigma1, bit_minusm1_sigma, F2/2./25.*W3(m,m1));
+		if (W3(m,m1)!=0) Terms.addTerm(T5);
 		}
 	}
 };
@@ -311,26 +300,48 @@ void BitClassification::definePorbitalNativeTerms(pBitInfo **list)
 
 		unsigned short bit_p_sigma = list[(sigma*3)+p]->bitNumber;
 		unsigned short bit_p_sigma1 = list[(sigma1*3)+p]->bitNumber;
-		Term<4> *T = new nnTerm(bit_p_sigma,bit_p_sigma1,U/2.);
-		Terms.Terms2Order.push_back(T);
+		Term *T = new nnTerm(bit_p_sigma,bit_p_sigma1,U/2.);
+		Terms.addTerm(T);
 		
 		if (p!=p1)
 		{
 			unsigned short bit_p1_sigma1 = list[(sigma1*3)+p1]->bitNumber;
-			Term<4> *T2 = new nnTerm(bit_p_sigma,bit_p1_sigma1,(U-2.*J)/2.);
-			Terms.Terms2Order.push_back(T2);
+			Term *T2 = new nnTerm(bit_p_sigma,bit_p1_sigma1,(U-2.*J)/2.);
+			Terms.addTerm(T2);
 
 			unsigned short bit_p1_sigma = list[(sigma*3)+p1]->bitNumber;
-			Term<4> *T3 = new nnTerm(bit_p_sigma,bit_p1_sigma,(U-3.*J)/2.);
-			Terms.Terms2Order.push_back(T3);
+			Term *T3 = new nnTerm(bit_p_sigma,bit_p1_sigma,(U-3.*J)/2.);
+			Terms.addTerm(T3);
 
-			Term<4> *T4 = new spinflipTerm(bit_p_sigma,bit_p1_sigma1, bit_p1_sigma, bit_p_sigma1,(-1.*J)/2.);
-			Terms.Terms2Order.push_back(T4);
+			Term *T4 = new spinflipTerm(bit_p_sigma,bit_p1_sigma1, bit_p1_sigma, bit_p_sigma1,(-1.*J)/2.);
+			Terms.addTerm(T4);
 
-			Term<4> *T5 = new spinflipTerm(bit_p1_sigma,bit_p1_sigma1, bit_p_sigma, bit_p_sigma1,(-1.*J)/2.);
-			Terms.Terms2Order.push_back(T5);
+			Term *T5 = new spinflipTerm(bit_p1_sigma,bit_p1_sigma1, bit_p_sigma, bit_p_sigma1,(-1.*J)/2.);
+			Terms.addTerm(T5);
 		}
 	}
 };
 
 
+void TermsList::addTerm(Term* in)
+{
+	unsigned short order = in->N;
+	TermsMap[in->N].push_back(in);
+	maxOrder=(maxOrder>=order)?maxOrder:order;
+}
+
+std::list<Term*>& TermsList::getTerms(unsigned short order)
+{
+	return TermsMap[order];
+}
+
+std::ostream& operator<<(std::ostream& output, TermsList& out)
+{
+  for (unsigned short order=2;order<=out.maxOrder;order+=2)
+  {
+     std::list<Term*>::iterator it;
+     for ( it=(out.getTerms(order)).begin() ; it != out.getTerms(order).end(); it++ ) 
+	     output << **it << endl;
+  }
+return output;
+}

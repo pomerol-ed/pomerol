@@ -63,7 +63,7 @@ RealType FieldOperatorPart<StorageType>::computeElement(const QuantumState row, 
         {
             int K = retK(L);
             if(mFunc(L,K,i) != 0){
-                int l = S.inner_state(L), k = S.inner_state(K);             // l,k in part of Hamiltonian
+                InnerQuantumState l = S.getInnerState(L), k = S.getInnerState(K);             // l,k in part of Hamiltonian
                 if(h_to.reH(l,row) != 0){
                     value += h_to.reH(l,row)*mFunc(L,K,i)*h_from.reH(k,col);
                 }

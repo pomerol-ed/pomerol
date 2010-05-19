@@ -15,6 +15,7 @@
 #include <json/json.h>
 #include <map>
 #include <string>
+#include <list>
 
 
 //! BitInfo - a class to reproduce full information about the given bit
@@ -54,15 +55,16 @@ public:
 	void print_to_screen(){cout << *this << endl;};
 };
 
-struct TermsList // A list of terms of different orders
+class TermsList // A list of terms of different orders
 {
-   std::vector<Term<2>*> Terms1Order;
-   std::vector<Term<4>*> Terms2Order;
-   std::vector<Term<6>*> Terms3Order;
-   std::vector<Term<8>*> Terms4Order;
-   std::vector<Term<10>*> Terms5Order;
+   std::map <unsigned short, std::list<Term*> > TermsMap;
+   unsigned short maxOrder;
 
-   TermsList(){Terms1Order.resize(0); Terms2Order.resize(0);Terms3Order.resize(0);Terms4Order.resize(0);Terms5Order.resize(0);};
+   public:
+
+   void addTerm(Term* in);
+   TermsList(){maxOrder=0;};
+   std::list<Term*> &getTerms(unsigned short order);
    friend std::ostream& operator<<(std::ostream& output,TermsList& out);
 };
 
@@ -82,6 +84,7 @@ public:
 	RealMatrixType& getHoppingMatrix();
 	std::vector<BitInfo*> &getBitInfoList();
 	const int& getBitSize() const;
+	TermsList& getTermsList();
 private:
 	enum OrbitalValue {s=0, p=1, d=2, f=3};
 	std::map<std::string, OrbitalValue> mapOrbitalValue;

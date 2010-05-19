@@ -23,7 +23,7 @@ void DensityMatrix::compute(void)
 
 RealType DensityMatrix::operator()( QuantumState &state )
 {
-    int inner_state = S.inner_state(state);
+    int inner_state = S.getInnerState(state);
     BlockNumber block_num = S.getBlockNumber(S.getStateInfo(state));
     
     return parts[block_num]->weight(inner_state);

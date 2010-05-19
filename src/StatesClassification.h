@@ -33,6 +33,7 @@ struct QuantumNumbers {
 const QuantumNumbers ERROR_QUANTUM_NUMBERS = QuantumNumbers(0,-1,-1);
 
 typedef unsigned long int QuantumState;
+typedef unsigned long int InnerQuantumState;
 
 class StatesClassification {
 
@@ -63,12 +64,13 @@ public:
 
 	const vector<QuantumState>& clstates( QuantumNumbers in );				//return st[in.Lz][in.N_up][in.N_down]
 	const QuantumState cst( QuantumNumbers in, int m);					//return st[in.Lz][in.N_up][in.N_down][m]
-	const long int inner_state( QuantumState state);					//finds number of state @state in corresponding block 
+	const InnerQuantumState getInnerState( QuantumState state);					//finds number of state @state in corresponding block 
 
 	BlockNumber getBlockNumber(QuantumNumbers in);			//returns a number of Block which corresponds to given Quantum Numbers
 	QuantumNumbers getBlockInfo(BlockNumber in);		//return Lz,N_up,N_down of number num
 	BlockNumber NumberOfBlocks();						//return amount of non-trivial hamiltonian blocks
-	QuantumNumbers getStateInfo(int num);		//return Lz,N_up,N_down of number num
+	QuantumNumbers getStateInfo(QuantumState in);		//return Lz,N_up,N_down of number num
+	BlockNumber getBlockNumber(QuantumState in);			//returns a number of Block which corresponds to given Quantum Numbers
 
 	int n_i(long int state,int i);	 	//checks if electron sit on "i" in "state"
 	void getSiteInfo(int bit, int& lz, int& spin);

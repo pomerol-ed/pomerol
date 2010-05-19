@@ -38,7 +38,7 @@ private:
 	void add_nondiag(int st1, int st2, RealType F_2);					     //function creates nondiagonal elements of Hamilt
 	
 	
-	int measurefunc(long int state1, long int state2, int i, int j, int k, int l);	     // basic function for next two functions
+	int measurefunc(QuantumState state1, QuantumState state2, int i, int j, int k, int l);	     // basic function for next two functions
     int inhopfuncW_2(long int state1, long int state2,int i, int j);	             // function checks probability adding nondiagonal elements
 	int inhopfuncW_3(long int state1, long int state2, int i, int j, int *p);	     // similar previous function
 	

@@ -34,7 +34,7 @@ const QuantumState StatesClassification::cst( QuantumNumbers in, int m )			//ret
 	return st[in.Lz][in.N_up][in.N_down][m];
 }
 
-const long int StatesClassification::inner_state(QuantumState state)
+const InnerQuantumState StatesClassification::getInnerState(QuantumState state)
 {
   int ST=-1;				// "state" in part of Hamilt			
   for (unsigned int n=0; n<(*this).clstates((*this).getStateInfo(state)).size(); n++ )
@@ -178,9 +178,10 @@ void StatesClassification::iniStatesClassification()		 	//inicialization StatesC
 	}
 }
 
-QuantumNumbers StatesClassification::getStateInfo(int num)						//returns Lz,N_up,N_down for number num
+QuantumNumbers StatesClassification::getStateInfo(QuantumState in)						//returns Lz,N_up,N_down for number in
 {
 	
+	if (in >= N_state) return ERROR_QUANTUM_NUMBERS;
 	int Lz_max=0;								//begining of calculating Lz,N_up,N_down
 	
 	for(int L=((*this).N_b_m()/2-1)/2;L>0;L--)
@@ -193,17 +194,17 @@ QuantumNumbers StatesClassification::getStateInfo(int num)						//returns Lz,N_u
 		if ((*this).N_b_m()!=0)
 		{
 			if ( (p<(*this).N_b_m()/2) )
-				Lz_st+=(*this).n_i(num,p)*( p%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );
+				Lz_st+=(*this).n_i(in,p)*( p%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );
 			
 			if ( (p>=(*this).N_b()/2) && (p<(*this).N_b()/2+(*this).N_b_m()/2) )
-				Lz_st+=(*this).n_i(num,p)*( (p-(*this).N_b()/2)%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );	
+				Lz_st+=(*this).n_i(in,p)*( (p-(*this).N_b()/2)%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );	
 		}			
 		
 		if (p<(*this).N_b()/2)
-			N_up_st+=(*this).n_i(num,p);
+			N_up_st+=(*this).n_i(in,p);
 	
 		else
-			N_down_st+=(*this).n_i(num,p);
+			N_down_st+=(*this).n_i(in,p);
 	}
 	
 	Lz_st+= Lz_max;								//finish of calculating
@@ -212,6 +213,11 @@ QuantumNumbers StatesClassification::getStateInfo(int num)						//returns Lz,N_u
 
 	return N;
 
+}
+
+BlockNumber StatesClassification::getBlockNumber(QuantumState in)
+{
+	return (*this).getBlockNumber((*this).getStateInfo(in));
 }
 
 int StatesClassification::n_i(long int state, int i)

@@ -48,7 +48,7 @@ HamiltonianPart& Hamiltonian::part(BlockNumber in)
 
 RealType Hamiltonian::eigenval(QuantumState &state)
 {
- int inner_state = S.inner_state(state);
+ int inner_state = S.getInnerState(state);
  return part(S.getStateInfo(state)).reV(inner_state);
 }
 

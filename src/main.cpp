@@ -36,7 +36,6 @@ int main()
 	cout << "Terms check" << endl;
 	cout << "=======================" << endl;
 	Formula.printTerms();
-	exit(0);
 	//determination of system
 	
 	pIni = new IniConfig(input);

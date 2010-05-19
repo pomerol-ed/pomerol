@@ -128,12 +128,22 @@ void HamiltonianPart::putHamilt()
 		
 	for (int st=0; st<N_state_m; st++)
 	{
-		add_diag(st,F_0,F_2);				//interactions on multiorbital(diagonal elements)
-		add_U(st,Us);					//interactions on s-orbital
-		add_mu(st, U*(1.5+S.L())-(5*S.L())*J);		//half-filling
-		add_mu(st, mu);					//chem. potential on multiorbital
-		add_mus(st, mus);				//chem. potential on s-orbitals
-		add_mus(st, Us/2.);				//half-filling on s-orbitals
+//		add_diag(st,F_0,F_2);				//interactions on multiorbital(diagonal elements)
+//		add_U(st,Us);					//interactions on s-orbital
+//		add_mu(st, U*(1.5+S.L())-(5*S.L())*J);		//half-filling
+//		add_mu(st, mu);					//chem. potential on multiorbital
+//		add_mus(st, mus);				//chem. potential on s-orbitals
+//		add_mus(st, Us/2.);				//half-filling on s-orbitals
+		
+		// loop over terms
+		
+		std::list<Term*>::iterator it2;
+		for ( it2=Formula.getTermsList().getTerms(4).begin() ; it2 != Formula.getTermsList().getTerms(4).end(); it2++ )
+		{
+		//	if ( (*it2)->type == "nn") add_nnTerm(st,(nnTerm*) *it2);
+		//	else 
+			if ( (*it2)->type == "spinflip") add_spinflipTerm(st,(spinflipTerm*) *it2);
+		};
 	}
 
 	
@@ -153,13 +163,29 @@ void HamiltonianPart::putHamilt()
 
 void HamiltonianPart::add_nnTerm(int inner_state, nnTerm *T)
 {
-	int state = S.cst(hpart_id,inner_state);					//real state	
-      	H(inner_state,inner_state)+=F_0*S.n_i(state,T->bit[0])*S.n_i(state,T->bit[2]);	
+	QuantumState state = S.cst(hpart_id,inner_state);					//real state	
+      	H(inner_state,inner_state)+=T->Value*S.n_i(state,T->bit[0])*S.n_i(state,T->bit[2]);	
 };
 
 void HamiltonianPart::add_spinflipTerm(int inner_state, spinflipTerm *T)
 {
-	int state = S.cst(hpart_id,inner_state);					//real state	
+	QuantumState in = S.cst(hpart_id,inner_state); //real state	
+	QuantumState diff1 = (1<<T->bit[0]) + (1<<T->bit[1]);
+	QuantumState diff2 = (1<<T->bit[2]) + (1<<T->bit[3]);
+	if ((diff2 > in + diff1) || ((diff2 <= in) && (S.N_st() - diff1 >= in - diff2))) return;
+	QuantumState out = in + diff1 - diff2;	
+	QuantumNumbers out_info = S.getStateInfo(out);
+	if (out_info==(QuantumNumbers) hpart_id) 
+	{
+	cout << (1<<T->bit[0]) << " " << (1<<T->bit[1]) << " " << (1<<T->bit[2]) << " " << (1<<T->bit[3]) << endl;
+	cout << in << "," << hpart_id <<  " -> " << out << "," << out_info << endl;
+	cout << "Term : " << (Term&) *T << endl;
+		InnerQuantumState out_inner_state = S.getInnerState(out);
+		H(out,inner_state)=T->Value*measurefunc(out_inner_state,inner_state,T->bit[0],T->bit[1],T->bit[2],T->bit[3]);
+		DEBUG(inner_state << "->" << in << endl);
+	}
+	
+
 };
 // multiorbital functions:
 
@@ -239,7 +265,7 @@ void HamiltonianPart::add_diag(int st, RealType F_0, double F_2)				//diagonal e
 	}
 }
 
-int HamiltonianPart::measurefunc(long int state1, long int state2, int i, int j, int k, int l)		//auxiliary function
+int HamiltonianPart::measurefunc(QuantumState state1, QuantumState state2, int i, int j, int k, int l)		//auxiliary function
 {
 	int flag=1, p=0;
 	for (int m=0; m<S.N_b();m++)								//checking of "hopping" between state1 and state2
@@ -297,13 +323,14 @@ void HamiltonianPart::add_nondiag(int st1, int st2, RealType F_2)				//nondiagon
 		{
 			if ( (i>=S.N_b()/2) && (j<S.N_b()/2) )
       			{
-        			H(st1,st2)+=(F_2/25)*W2[(i-S.N_b()/2)%(S.N_b_m()/2)][j%(S.N_b_m()/2)]*inhopfuncW_2(state1,state2,i,j);
+        /*			H(st1,st2)+=(F_2/25)*W2[(i-S.N_b()/2)%(S.N_b_m()/2)][j%(S.N_b_m()/2)]*inhopfuncW_2(state1,state2,i,j);
        				
 				if ( (i+j)==(S.N_b()/2+S.N_b_m()/2-1) )
 				
 					H(st1,st2)+=inhopfuncW_3(state1,state2,i,j,&hop)*(F_2/25)*W3[j%(S.N_b_m()/2)][(j+hop)%(S.N_b_m()/2)];
 				else
        			  		H(st1,st2)+=0;
+		*/
 			}
 		}
 	}
@@ -316,13 +343,14 @@ void HamiltonianPart::add_nondiag(int st1, int st2, RealType F_2)				//nondiagon
 			{
 				if ( (i>=S.N_b()/2) && (j<S.N_b()/2) )
       		 		{
-        				H(st1,st2)+=(F_2/25)*W2[(i-S.N_b()/2)%(S.N_b_m()/2)][j%(S.N_b_m()/2)]*inhopfuncW_2(state1,state2,i,j);
+        	/*			H(st1,st2)+=(F_2/25)*W2[(i-S.N_b()/2)%(S.N_b_m()/2)][j%(S.N_b_m()/2)]*inhopfuncW_2(state1,state2,i,j);
        					
 					if ( (i+j)==(S.N_b()/2+S.N_b_m()/2-1) )
 				
 						H(st1,st2)+=inhopfuncW_3(state1,state2,i,j,&hop)*(F_2/25)*W3[j%(S.N_b_m()/2)][(j+hop)%(S.N_b_m()/2)];
 					else
        			  			H(st1,st2)+=0;
+		*/
 				}
 			}
 		}
@@ -448,7 +476,7 @@ void HamiltonianPart::add_hopping(int i, int j, RealType t)
 		QuantumState state2=(i>j)?state1+difference:state1-difference;
 		if (S.getStateInfo(state1) == S.getStateInfo(state2))
 	  	{
-	    		int st2 = S.inner_state(state2);
+	    		int st2 = S.getInnerState(state2);
 	    		if (st2>=0) H(st1,st2) = t*checkhop(state1,state2,i,j);
 	  	}
     	}
