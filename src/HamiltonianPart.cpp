@@ -175,11 +175,11 @@ void HamiltonianPart::add_spinflipTerm(int inner_state, spinflipTerm *T)
 	if ((diff2 > in + diff1) || ((diff2 <= in) && (S.N_st() - diff1 >= in - diff2))) return;
 	QuantumState out = in + diff1 - diff2;	
 	QuantumNumbers out_info = S.getStateInfo(out);
-	if (out_info==(QuantumNumbers) hpart_id) 
-	{
-	cout << (1<<T->bit[0]) << " " << (1<<T->bit[1]) << " " << (1<<T->bit[2]) << " " << (1<<T->bit[3]) << endl;
 	cout << in << "," << hpart_id <<  " -> " << out << "," << out_info << endl;
 	cout << "Term : " << (Term&) *T << endl;
+	if (out_info==(QuantumNumbers) hpart_id) 
+	{
+//	cout << (1<<T->bit[0]) << " " << (1<<T->bit[1]) << " " << (1<<T->bit[2]) << " " << (1<<T->bit[3]) << endl;
 		InnerQuantumState out_inner_state = S.getInnerState(out);
 		H(out,inner_state)=T->Value*measurefunc(out_inner_state,inner_state,T->bit[0],T->bit[1],T->bit[2],T->bit[3]);
 		DEBUG(inner_state << "->" << in << endl);
