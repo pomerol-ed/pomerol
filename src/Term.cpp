@@ -42,6 +42,21 @@ spinflipTerm::spinflipTerm(unsigned short bit1, unsigned short bit2, unsigned sh
   type="spinflip";
 }
 
+nTerm::nTerm(unsigned short bit1, RealType Val)
+{
+  diag = true;
+  Value = Val;
+  N=2;
+  bit = new unsigned short [2];
+  bit[0]=bit1; bit[1]=bit1;
+  
+  order = new bool [2];
+  order[0]=true;
+  order[1]=false;
+
+  type="n";
+};
+
  std::ostream& operator<<(std::ostream& output,const Term& out)
 {
 if (out.N == 4 && out.type == "nn") { output << (nnTerm&) out; return output; }; 

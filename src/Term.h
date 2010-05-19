@@ -34,7 +34,7 @@ public:
    virtual ~Term();
 };
 
-/** nnTerm - class, inherited from Term<4> class. Represents an nn type of term.
+/** nnTerm - class, inherited from Term class with N=4. Represents an nn type of term.
  * This type of term is diagonal and has two pairs of equal indices. The order is creation-annihilation-creation-annihilation operators.
  */
 class nnTerm : public Term {
@@ -43,13 +43,16 @@ public:
    friend std::ostream & (operator <<) (ostream &,const nnTerm&);
 };
 
-/** spinflipTerm - class, inherited from Term<4> class. Represents a spinflip type of term.
+/** spinflipTerm - class, inherited from Term class with N=4. Represents a spinflip type of term.
  * This type of term is non-diagonal and has the defined order of two creation operators followed by two annihilation operators.
  */
 class spinflipTerm : public Term {
 public:
    spinflipTerm(unsigned short bit1, unsigned short bit2, unsigned short bit3, unsigned short bit4, RealType Val);
-   friend std::ostream & (operator <<) (ostream &,const spinflipTerm&);
 };
 
+class nTerm : public Term {
+public:
+   nTerm(unsigned short bit,RealType Val);
+};
 #endif

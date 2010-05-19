@@ -112,6 +112,10 @@ void BitClassification::defineTerms()
 		  	 sBitInfo *current = (sBitInfo*) BitInfoList[bit];
 			 Term *T1 = new nnTerm(bit,bit+N_bit/2,current->U);
 			 Terms.addTerm(T1);	
+			 Term *N1 = new nTerm(bit,current->U/(-2.));
+			 Term *N2 = new nTerm(bit+N_bit/2,current->U/(-2.));
+			 Terms.addTerm(N1);
+			 Terms.addTerm(N2);
 			 break;
 		 	};
 		   case p:
@@ -126,8 +130,15 @@ void BitClassification::defineTerms()
 
 			 // The array of all bits for p-orbital is created. First 3 bits are one spin direction, second 3 bits correspond to opposite direction.
 			 if ((list[0]->basis == "spherical") || (list[0]->basis=="Spherical")) definePorbitalSphericalTerms(list); 
-			if ((list[0]->basis == "native") || (list[0]->basis=="Native")) definePorbitalNativeTerms(list);
+			 if ((list[0]->basis == "native") || (list[0]->basis=="Native")) definePorbitalNativeTerms(list);
 
+			 Term *N1 = new nTerm(bit          ,(list[0]->U)*(-2.5) + 5. * (list[0]->J) );
+			 Term *N2 = new nTerm(bit+1        ,(list[0]->U)*(-2.5) + 5. * (list[0]->J) );
+			 Term *N3 = new nTerm(bit+2        ,(list[0]->U)*(-2.5) + 5. * (list[0]->J) );
+			 Term *N4 = new nTerm(bit+N_bit/2  ,(list[0]->U)*(-2.5) + 5. * (list[0]->J) );
+			 Term *N5 = new nTerm(bit+N_bit/2+1,(list[0]->U)*(-2.5) + 5. * (list[0]->J) );
+			 Term *N6 = new nTerm(bit+N_bit/2+1,(list[0]->U)*(-2.5) + 5. * (list[0]->J) );
+			 Terms.addTerm(N1); Terms.addTerm(N2); Terms.addTerm(N3); Terms.addTerm(N4); Terms.addTerm(N5); Terms.addTerm(N6);
 			 bit+=2;
 			 break;
 		        };
