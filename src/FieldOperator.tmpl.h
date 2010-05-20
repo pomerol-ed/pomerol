@@ -69,9 +69,10 @@ void OperatorContainer<PartType>::compute()
 {
   for (unsigned int b_in=0;b_in<(*this).size;b_in++)
   {
-	  cout << b_in << endl;
+	cout << (int) ((1.0*b_in/(*this).size) * 100 ) << "  " << flush;
         Data[b_in]->compute();
   };
+  cout << endl;
 }
 
 template<class PartType>
