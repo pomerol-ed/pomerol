@@ -90,6 +90,14 @@ int main()
 	C.prepare();
 	C.compute();
 	C.dump();
+
+	std::list<std::pair<BlockNumber,BlockNumber> > RLind = CX.getNonTrivialIndices(true);
+	std::list<std::pair<BlockNumber,BlockNumber> > LRind = CX.getNonTrivialIndices(false);
+
+	std::list<std::pair<BlockNumber,BlockNumber> >::iterator it;
+	for (it=RLind.begin();it!=RLind.end();it++)
+	{ cout << (*it).first << "->" << (*it).second << endl;
+	}
     // DEBUG
     RealType beta = (*pIni)["Green Function:beta"];
     DensityMatrix rho(S,H,beta);

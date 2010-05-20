@@ -8,42 +8,51 @@ OperatorContainer<PartType>::OperatorContainer(StatesClassification &System, Ham
 template<class PartType>
 void OperatorContainer<PartType>::prepare()
 {
-  Data = new PartType* [System.NumberOfBlocks()];
-  for (BlockNumber b=0;b<System.NumberOfBlocks();b++)
+  for (BlockNumber RightIndex=0;RightIndex<System.NumberOfBlocks();RightIndex++)
     {
-      if (where(b).isCorrect()) 
+      BlockNumber LeftIndex = where(RightIndex);
+      if (LeftIndex.isCorrect()) 
       {
-     Data[b]=new PartType(bit,System,H.part(b),H.part(where(b)),OUT);
-         cout << "Entering " << operatorName << " Operator part " << System.getBlockInfo(b) << "->" << System.getBlockInfo(where(b)) << endl; 
-         mapNontrivialParts[size]=b;
-         mapLeftToRightPart[where(b)]=b;
+     	 PartType *Part = new PartType(bit,System,H.part(RightIndex),H.part(LeftIndex),OUT);
+	 Data.push_back(Part);
+         cout << "Entering " << operatorName << " Operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
+         mapPartsFromRight[RightIndex]=size;
+         mapPartsFromLeft[LeftIndex]=size;
+	 RightLeftIndices.push_back(std::pair<BlockNumber,BlockNumber>(RightIndex,LeftIndex));
+	 LeftRightIndices.push_back(std::pair<BlockNumber,BlockNumber>(LeftIndex,RightIndex));
          size++;
       }    
     }
 }
 
 template<class PartType>
+std::list<std::pair<BlockNumber,BlockNumber> >& OperatorContainer<PartType>::getNonTrivialIndices(bool OrderFromRight)
+{
+	return OrderFromRight?RightLeftIndices:LeftRightIndices;
+};
+
+template<class PartType>
 PartType& OperatorContainer<PartType>::getPartFromRightIndex(BlockNumber in)
 {
-  return *Data[in];
+  return Data[mapPartsFromRight[in]];
 }
 
 template<class PartType>
 PartType& OperatorContainer<PartType>::getPartFromRightIndex(QuantumNumbers in)
 {
-  return *Data[System.getBlockNumber(in)];
+  return Data[mapPartsFromRight[System.getBlockNumber(in)]];
 }
 
 template<class PartType>
 PartType& OperatorContainer<PartType>::getPartFromLeftIndex(BlockNumber in)
 {
-  return *Data[mapLeftToRightPart[in]];
+  return Data[mapPartsFromLeft[in]];
 }
 
 template<class PartType>
 PartType& OperatorContainer<PartType>::getPartFromLeftIndex(QuantumNumbers in)
 {
-  return *Data[mapLeftToRightPart[System.getBlockNumber(in)]];
+  return Data[mapPartsFromLeft[System.getBlockNumber(in)]];
 }
 
 template<class PartType>
@@ -51,7 +60,7 @@ void OperatorContainer<PartType>::print_to_screen()
 {
   for (unsigned int b_in=0;b_in<(*this).size;b_in++)
   {
-        Data[mapNontrivialParts[b_in]]->print_to_screen();
+        Data[b_in]->print_to_screen();
   };
 }
 
@@ -60,7 +69,8 @@ void OperatorContainer<PartType>::compute()
 {
   for (unsigned int b_in=0;b_in<(*this).size;b_in++)
   {
-        Data[mapNontrivialParts[b_in]]->compute();
+	  cout << b_in << endl;
+        Data[b_in]->compute();
   };
 }
 
@@ -69,6 +79,6 @@ void OperatorContainer<PartType>::dump()
 {
   for (unsigned int b_in=0;b_in<(*this).size;b_in++)
   {
-        Data[mapNontrivialParts[b_in]]->dump();
+        Data[b_in]->dump();
   };
 }

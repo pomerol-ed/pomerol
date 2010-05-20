@@ -18,9 +18,11 @@ protected:
 	output_handle OUT;
 
 	int bit;
-	PartType **Data;
-	std::map<unsigned int,BlockNumber> mapNontrivialParts;		// A map from non-zero parts to their BlockNumber indices
-	std::map<unsigned int,BlockNumber> mapLeftToRightPart;		// A map from output index to input index, hence there is a unique transform
+	std::vector<PartType*> Data;
+	std::map<unsigned int,BlockNumber> mapPartsFromRight;		// A map from non-zero parts to their BlockNumber indices
+	std::map<unsigned int,BlockNumber> mapPartsFromLeft;		// A map from output index to input index, hence there is a unique transform
+	std::list<std::pair<BlockNumber,BlockNumber> > RightLeftIndices;
+	std::list<std::pair<BlockNumber,BlockNumber> > LeftRightIndices;
 	unsigned int size;
 
 	virtual	BlockNumber where(BlockNumber in)=0;
@@ -33,6 +35,7 @@ public:
 	PartType& getPartFromLeftIndex(QuantumNumbers in);
 	PartType& getPartFromRightIndex(BlockNumber out);
 	PartType& getPartFromRightIndex(QuantumNumbers out);
+	std::list<std::pair<BlockNumber,BlockNumber> >& getNonTrivialIndices(bool OrderFromRight);
 
     void prepare();
     
