@@ -16,19 +16,22 @@ valC::valC(QuantumState line, QuantumState column, RealType C_nm)	//inicializati
 
 AnnihilationOperatorPart::AnnihilationOperatorPart(int i, StatesClassification &S, 
                                                    HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT) :
-FieldOperatorPart<RowMajorMatrixType>(i,S,h_from,h_to,output_handle(OUT.path()+"/matrixC"))
+FieldOperatorPart<Eigen::RowMajor>(i,S,h_from,h_to,output_handle(OUT.path()+"/matrixC"))
 {}
 
 CreationOperatorPart::CreationOperatorPart(int i, StatesClassification &S, 
                                                   HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT) :
-FieldOperatorPart<ColMajorMatrixType>(i,S,h_from,h_to,output_handle(OUT.path()+"/matrixCX"))
+FieldOperatorPart<Eigen::ColMajor>(i,S,h_from,h_to,output_handle(OUT.path()+"/matrixCX"))
 {}
 
-template void FieldOperatorPart<RowMajorMatrixType>::dump();
-template void FieldOperatorPart<ColMajorMatrixType>::dump();
+template void FieldOperatorPart<Eigen::RowMajor>::dump();
+template void FieldOperatorPart<Eigen::ColMajor>::dump();
 
-template RowMajorMatrixType& FieldOperatorPart<RowMajorMatrixType>::value();
-template ColMajorMatrixType& FieldOperatorPart<ColMajorMatrixType>::value();
+template void FieldOperatorPart<Eigen::RowMajor>::compute();
+template void FieldOperatorPart<Eigen::ColMajor>::compute();
+
+template RowMajorMatrixType& FieldOperatorPart<Eigen::RowMajor>::value();
+template ColMajorMatrixType& FieldOperatorPart<Eigen::ColMajor>::value();
 
 QuantumState AnnihilationOperatorPart::retK(QuantumState L)							//return K for C
 {	

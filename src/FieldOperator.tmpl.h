@@ -34,25 +34,25 @@ std::list<std::pair<BlockNumber,BlockNumber> >& OperatorContainer<PartType>::get
 template<class PartType>
 PartType& OperatorContainer<PartType>::getPartFromRightIndex(BlockNumber in)
 {
-  return Data[mapPartsFromRight[in]];
+  return *Data[mapPartsFromRight[in]];
 }
 
 template<class PartType>
 PartType& OperatorContainer<PartType>::getPartFromRightIndex(QuantumNumbers in)
 {
-  return Data[mapPartsFromRight[System.getBlockNumber(in)]];
+  return *Data[mapPartsFromRight[System.getBlockNumber(in)]];
 }
 
 template<class PartType>
 PartType& OperatorContainer<PartType>::getPartFromLeftIndex(BlockNumber in)
 {
-  return Data[mapPartsFromLeft[in]];
+  return *Data[mapPartsFromLeft[in]];
 }
 
 template<class PartType>
 PartType& OperatorContainer<PartType>::getPartFromLeftIndex(QuantumNumbers in)
 {
-  return Data[mapPartsFromLeft[System.getBlockNumber(in)]];
+  return *Data[mapPartsFromLeft[System.getBlockNumber(in)]];
 }
 
 template<class PartType>

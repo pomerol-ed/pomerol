@@ -91,22 +91,22 @@ int main()
 	C.compute();
 	C.dump();
 
-	std::list<std::pair<BlockNumber,BlockNumber> > RLind = CX.getNonTrivialIndices(true);
-	std::list<std::pair<BlockNumber,BlockNumber> > LRind = CX.getNonTrivialIndices(false);
+	//std::list<std::pair<BlockNumber,BlockNumber> > RLind = CX.getNonTrivialIndices(true);
+	//std::list<std::pair<BlockNumber,BlockNumber> > LRind = CX.getNonTrivialIndices(false);
 
-	std::list<std::pair<BlockNumber,BlockNumber> >::iterator it;
-	for (it=RLind.begin();it!=RLind.end();it++)
-	{ cout << (*it).first << "->" << (*it).second << endl;
-	}
+	//std::list<std::pair<BlockNumber,BlockNumber> >::iterator it;
+	//for (it=RLind.begin();it!=RLind.end();it++)
+	//{ cout << (*it).first << "->" << (*it).second << endl;
+	//}
     // DEBUG
-    RealType beta = (*pIni)["Green Function:beta"];
-    DensityMatrix rho(S,H,beta);
-    rho.prepare();
-    rho.compute();
+    //RealType beta = (*pIni)["Green Function:beta"];
+    //DensityMatrix rho(S,H,beta);
+    //rho.prepare();
+    //rho.compute();
     
-    GreensFunction G(S,H,C,CX,rho,OUT);
-    G.prepare();
-    G.compute();
+    //GreensFunction G(S,H,C,CX,rho,OUT);
+    //G.prepare();
+    //G.compute();
     //StatesClassification& _S(S);
     //CreationOperator& _CX(CX);
     //AnnihilationOperator& _C(C);

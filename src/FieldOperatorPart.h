@@ -15,10 +15,10 @@ struct valC {
 
 						//class rotates matrixes C and CX 
 
-template<class StorageType> class FieldOperatorPart {
+template<int StorageOrder> class FieldOperatorPart {
 protected:
 	int i;
-	StorageType elements;			//vector of notrivial elements of rotated matrix C
+	Eigen::SparseMatrix<RealType,StorageOrder> elements;	//vector of notrivial elements of rotated matrix C
 
 	StatesClassification &S;
 	HamiltonianPart &h_from;
@@ -29,9 +29,7 @@ protected:
     virtual QuantumState retK(QuantumState L)=0;  
     virtual int mFunc(QuantumState state1, QuantumState state2, int i)=0;   //checks matrix element of an operator between state1 and state2
     virtual bool checkL(QuantumState L)=0;  //checks state L to be appropriate as a result of a creation/destruction operator
-
-    RealType computeElement(const QuantumState row, const QuantumState col, const QuantumNumbers &from, const QuantumNumbers &to);
-    
+   
 public:
   
 	FieldOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from,	HamiltonianPart &h_to, output_handle OUT);
@@ -42,10 +40,10 @@ public:
 
 	const string& path();						//output paths
     
-    StorageType& value();
+    Eigen::SparseMatrix<RealType,StorageOrder>& value();
 };
 
-class AnnihilationOperatorPart : public FieldOperatorPart<RowMajorMatrixType>
+class AnnihilationOperatorPart : public FieldOperatorPart<Eigen::RowMajor>
 { 
     QuantumState retK(QuantumState L);	
     int mFunc(QuantumState state1, QuantumState state2, int i);
@@ -55,7 +53,7 @@ public :
     AnnihilationOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT);
 };
 
-class CreationOperatorPart : public FieldOperatorPart<ColMajorMatrixType>
+class CreationOperatorPart : public FieldOperatorPart<Eigen::ColMajor>
 {
     QuantumState retK(QuantumState L);	
     int mFunc(QuantumState state1, QuantumState state2, int i);	
