@@ -65,7 +65,6 @@ int main()
 
 	H.enter(true,true);
 	//finishing of creation
-	exit(0);	
 	cout << endl;
 	cout << "All parts are created!" << endl;
 	cout << endl;
