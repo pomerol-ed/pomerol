@@ -91,7 +91,5 @@ void FieldOperatorPart<StorageOrder>::compute()
         }       
     }
     tempElements.prune(MATRIX_ELEMENT_TOLERANCE);
-    cout << "before ..." << flush;
     elements = tempElements;
-    cout << "after. " << flush;
 }
