@@ -107,11 +107,8 @@ int main()
     GreensFunction G(S,H,C,CX,rho,OUT);
     G.prepare();
     G.compute();
-    //StatesClassification& _S(S);
-    //CreationOperator& _CX(CX);
-    //AnnihilationOperator& _C(C);
-    //Hamiltonian& _H(H);
-    //DensityMatrix& _rho(rho);
+
+    DEBUG(G(ComplexType(0,1)))
     
 //	CX.print_to_screen();
 

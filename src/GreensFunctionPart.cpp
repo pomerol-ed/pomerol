@@ -16,7 +16,7 @@ void GreensFunctionPart::compute(void)
     RowMajorMatrixType& Cmatrix = C.value();
     ColMajorMatrixType& CXmatrix = CX.value();
     QuantumState outerSize = Cmatrix.outerSize();
-   
+      
     for(QuantumState m=0; m<outerSize; ++m){
         RowMajorMatrixType::InnerIterator Cinner(Cmatrix,m);
         ColMajorMatrixType::InnerIterator CXinner(CXmatrix,m);
