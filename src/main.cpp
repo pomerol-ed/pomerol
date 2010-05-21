@@ -99,14 +99,14 @@ int main()
 	//{ cout << (*it).first << "->" << (*it).second << endl;
 	//}
     // DEBUG
-    //RealType beta = (*pIni)["Green Function:beta"];
-    //DensityMatrix rho(S,H,beta);
-    //rho.prepare();
-    //rho.compute();
+    RealType beta = (*pIni)["Green Function:beta"];
+    DensityMatrix rho(S,H,beta);
+    rho.prepare();
+    rho.compute();
     
-    //GreensFunction G(S,H,C,CX,rho,OUT);
-    //G.prepare();
-    //G.compute();
+    GreensFunction G(S,H,C,CX,rho,OUT);
+    G.prepare();
+    G.compute();
     //StatesClassification& _S(S);
     //CreationOperator& _CX(CX);
     //AnnihilationOperator& _C(C);

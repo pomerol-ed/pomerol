@@ -50,7 +50,7 @@ public:
 	
 	void enter( double mu_c, double mus_c);
 	
-    	InnerQuantumState size(void);
+	InnerQuantumState size(void);
 	RealType reH(int m, int n);		//return H(m,n)
 	RealType reV(int m);			//return V(m)
 

@@ -19,8 +19,7 @@ class GreensFunction {
     CreationOperator& CX;
     DensityMatrix& DM;
     
-    BlockNumber NumOfBlocks;
-    GreensFunctionPart** parts;
+    std::list<GreensFunctionPart*> parts;
     
     output_handle green_path;
     

@@ -18,17 +18,16 @@ void OperatorContainer<PartType>::prepare()
          cout << "Entering " << operatorName << " Operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
          mapPartsFromRight[RightIndex]=size;
          mapPartsFromLeft[LeftIndex]=size;
-	 RightLeftIndices.push_back(std::pair<BlockNumber,BlockNumber>(RightIndex,LeftIndex));
-	 LeftRightIndices.push_back(std::pair<BlockNumber,BlockNumber>(LeftIndex,RightIndex));
+         LeftRightIndices.push_back(BlockMapping(LeftIndex,RightIndex));
          size++;
       }    
     }
 }
 
 template<class PartType>
-std::list<std::pair<BlockNumber,BlockNumber> >& OperatorContainer<PartType>::getNonTrivialIndices(bool OrderFromRight)
+std::list<BlockMapping>& OperatorContainer<PartType>::getNonTrivialIndices()
 {
-	return OrderFromRight?RightLeftIndices:LeftRightIndices;
+	return LeftRightIndices;
 };
 
 template<class PartType>

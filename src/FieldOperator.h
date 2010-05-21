@@ -8,6 +8,8 @@
 #include "Hamiltonian.h" 
 #include "FieldOperatorPart.h"
 
+typedef std::pair<BlockNumber,BlockNumber> BlockMapping;
+
 template<class PartType> class OperatorContainer
 {
 protected:
@@ -21,8 +23,7 @@ protected:
 	std::vector<PartType*> Data;
 	std::map<unsigned int,BlockNumber> mapPartsFromRight;		// A map from non-zero parts to their BlockNumber indices
 	std::map<unsigned int,BlockNumber> mapPartsFromLeft;		// A map from output index to input index, hence there is a unique transform
-	std::list<std::pair<BlockNumber,BlockNumber> > RightLeftIndices;
-	std::list<std::pair<BlockNumber,BlockNumber> > LeftRightIndices;
+	std::list<BlockMapping> LeftRightIndices;
 	unsigned int size;
 
 	virtual	BlockNumber where(BlockNumber in)=0;
@@ -35,7 +36,7 @@ public:
 	PartType& getPartFromLeftIndex(QuantumNumbers in);
 	PartType& getPartFromRightIndex(BlockNumber out);
 	PartType& getPartFromRightIndex(QuantumNumbers out);
-	std::list<std::pair<BlockNumber,BlockNumber> >& getNonTrivialIndices(bool OrderFromRight);
+	std::list<BlockMapping>& getNonTrivialIndices();
 
     void prepare();
     

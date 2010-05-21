@@ -11,34 +11,50 @@ GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H,
 
 GreensFunction::~GreensFunction()
 {
-    if(parts)
-        for(BlockNumber n = 0; n < NumOfBlocks; n++) delete parts[n];
-    delete[] parts;
+      for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+          delete *iter;
 }
 
 void GreensFunction::prepare(void)
 {
-    NumOfBlocks = S.NumberOfBlocks();
-
-    parts = new GreensFunctionPart* [NumOfBlocks];
-    for (BlockNumber n = 0; n < NumOfBlocks; n++)
-        parts[n] = new GreensFunctionPart(
-            C.getPartFromLeftIndex(n),
-            CX.getPartFromRightIndex(n),
-            H.part(CX.where(n)), H.part(n), DM.part(CX.where(n)), DM.part(n));    
+    std::list<BlockMapping> CNontrivialBlocks = C.getNonTrivialIndices();
+    std::list<BlockMapping> CXNontrivialBlocks = CX.getNonTrivialIndices();
+    
+    std::list<BlockMapping>::const_iterator Citer = CNontrivialBlocks.begin();
+    std::list<BlockMapping>::const_iterator CXiter = CXNontrivialBlocks.begin();
+    
+    while(Citer != CNontrivialBlocks.end() && CXiter != CXNontrivialBlocks.end()){
+        BlockNumber Cleft = Citer->first;
+        BlockNumber Cright = Citer->second;
+        BlockNumber CXleft = CXiter->first;
+        BlockNumber CXright = CXiter->second;
+  
+        if(Cleft == CXright && Cright == CXleft){         
+              parts.push_back(new GreensFunctionPart(
+                              C.getPartFromLeftIndex(Cleft),
+                              CX.getPartFromRightIndex(Cright),
+                              H.part(Cright), H.part(Cleft), DM.part(Cright), DM.part(Cleft)));
+        }
+      
+        unsigned long CleftInt = Cleft;
+        unsigned long CXrightInt = CXright;
+      
+        if(CleftInt <= CXrightInt) Citer++;
+        if(CleftInt >= CXrightInt) CXiter++;
+    }
 }
 
 void GreensFunction::compute(void)
 {
-      for (BlockNumber n = 0; n < NumOfBlocks; n++)
-          parts[n]->compute();
+      for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+          (*iter)->compute();
 }
 
 ComplexType GreensFunction::operator()(ComplexType Frequency)
 {     
       ComplexType Value = 0;
-      for (BlockNumber n = 0; n < NumOfBlocks; n++)
-          Value += (*parts[n])(Frequency);
+      for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+          Value += (**iter)(Frequency);
       return Value;
 }
 
