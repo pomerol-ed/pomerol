@@ -8,12 +8,12 @@
 
 class DensityMatrix
 {
+    DensityMatrixPart** parts;
     StatesClassification& S;
     Hamiltonian &H;
     RealType beta;
     
     BlockNumber NumOfBlocks;
-    DensityMatrixPart** parts;
 
 public:
     DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType beta);

@@ -35,6 +35,8 @@ FieldOperatorPart.o: StatesClassification.h config.h HamiltonianPart.h FieldOper
 FieldOperator.o: StatesClassification.h config.h HamiltonianPart.h FieldOperatorPart.h FieldOperatorPart.cpp FieldOperator.h
 DensityMatrixPart.o: DensityMatrixPart.h DensityMatrixPart.cpp
 DensityMatrix.o: DensityMatrix.h DensityMatrix.cpp
+GreensFunctionPart.o: GreensFunctionPart.h GreensFunctionPart.cpp config.h
+GreensFunction.o: GreensFunction.h GreensFunction.cpp
 
 libmeat.so: $(objects)
 	$(CXX) -shared $(objects) -o libmeat.so

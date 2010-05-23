@@ -13,13 +13,13 @@
 
 class GreensFunction {
     
+    std::list<GreensFunctionPart*> parts;
     StatesClassification& S;
     Hamiltonian& H;
     AnnihilationOperator& C;
     CreationOperator& CX;
     DensityMatrix& DM;
     
-    std::list<GreensFunctionPart*> parts;
     
     output_handle green_path;
     

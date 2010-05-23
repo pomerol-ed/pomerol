@@ -63,7 +63,10 @@ int main()
 
 //	bool dump_ev_ef = Ini["output:dump_ev_ef"];
 
-	H.enter(true,true);
+	H.enter(false,false);
+	H.diagonalize();
+	H.dump();
+
 	//finishing of creation
 	cout << endl;
 	cout << "All parts are created!" << endl;

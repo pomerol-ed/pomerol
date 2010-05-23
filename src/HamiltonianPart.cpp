@@ -45,12 +45,12 @@ void HamiltonianPart::enter( double mu_c, double mus_c )		//initialization Hamil
 //		add_mus(st, Us/2.);				//half-filling on s-orbitals
 		
 		// loop over terms
-		std::list<Term*>::iterator it1;
+/*		std::list<Term*>::iterator it1;
 		for ( it1=Formula.getTermsList().getTerms(2).begin() ; it1 != Formula.getTermsList().getTerms(2).end(); it1++ )
 		{
 			if (( *it1)->type == "n") add_nTerm(st,(nTerm*) *it1);
 		};
-		
+*/		
 		std::list<Term*>::iterator it2;
 		for ( it2=Formula.getTermsList().getTerms(4).begin() ; it2 != Formula.getTermsList().getTerms(4).end(); it2++ )
 		{
@@ -63,7 +63,8 @@ void HamiltonianPart::enter( double mu_c, double mus_c )		//initialization Hamil
 	
 	(*this).add_hopping(Formula.getHoppingMatrix());
 	
-//	H.part<Eigen::UpperTriangular>() =  H.marked<Eigen::LowerTriangular>().transpose();  // Symmetric matrix
+	H.part<Eigen::UpperTriangular>() =  H.marked<Eigen::LowerTriangular>().transpose();  // Symmetric matrix
+//	H.part<Eigen::SelfAdjoint>() = H.eval();
 }
 
 void HamiltonianPart::add_nTerm(InnerQuantumState inner_state,nTerm *N)
@@ -85,8 +86,8 @@ void HamiltonianPart::add_spinflipTerm(InnerQuantumState inner_state, spinflipTe
 	QuantumState diff2 = (1<<T->bit[2]) + (1<<T->bit[3]);
 	if ((diff2 > in + diff1) || ((diff2 <= in) && (S.N_st() - diff1 <= in - diff2))) return;
 	QuantumState out = in + diff1 - diff2;	
-//	if (out<in ) return;
-	#warning The fact that hamiltonian is hermitian isn't taken into account. There may be slight perfomance issues.
+	if (out<in ) return;
+//	#warning The fact that hamiltonian is hermitian isn't taken into account. There may be slight perfomance issues.
 	QuantumNumbers out_info = S.getStateInfo(out);
 	if (out_info==(QuantumNumbers) hpart_id) 
 	{
@@ -217,9 +218,13 @@ void HamiltonianPart::diagonalization()					//method of diagonalization classifi
 	}
 	if (N_state_m > 1)
 	{
+/*		cout << hpart_id << endl;
+		cout << "___________" << endl;
+		cout << H << " " << endl;
+		cout << "___________" << endl;
+	*/
 		Eigen::SelfAdjointEigenSolver<RealMatrixType> Solver(H, true);
-
-		H = Solver.eigenvectors();				// eigenfunctions are ready
+		H = Solver.eigenvectors();
 		V = Solver.eigenvalues();				// eigenvectors are ready
 	}
 }

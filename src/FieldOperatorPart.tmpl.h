@@ -38,8 +38,16 @@ void FieldOperatorPart<StorageOrder>::dump() //writing FieldOperatorPart C[M_sig
     filename << (*this).OUT.fullpath() << "/" << "C" << i << "_" << h_from.id() << "->" << h_to.id() << ".dat";
     ofstream outCpart;
     outCpart.open(filename.str().c_str());
-        
-    outCpart << std::setprecision(DUMP_FLOATING_POINT_NUMBERS) << elements.toDense() << endl;
+	 for (int P=0; P<elements.outerSize(); ++P)
+        for (typename Eigen::SparseMatrix<RealType,StorageOrder>::InnerIterator it(elements,P); it; ++it)
+        {
+                QuantumState N = it.row();//S.clstates(to)[it.row()];
+                QuantumState M = it.col();//S.clstates(from)[it.col()];
+                outCpart << S.clstates(h_to.id())[N] <<" " << S.clstates(h_from.id())[M] << "  " << it.value() << endl;
+        };
+
+
+ //   outCpart << std::setprecision(DUMP_FLOATING_POINT_NUMBERS) << elements.toDense() << endl;
 
     outCpart.close();
     cout << "The part of field operator " << h_from.id() << "->" << h_to.id() << " is dumped to " << filename.str() << "." << endl;
