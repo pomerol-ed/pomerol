@@ -25,7 +25,7 @@ std::string encoding = root.get("encoding", "UHTF-8" ).asString();
 cout << encoding << endl;
 // Get the value of the member of root named 'encoding', return a 'null' value if
 // there is no such member.
-int Nbit = root["N_bit"].asInt()
+int Nbit = root["N_bit"].asInt();
 const Json::Value plugins = root["plug-ins"];
 for ( int index = 0; index < plugins.size(); ++index )  // Iterates over the sequence elements.
    std::cout<< plugins[index].asString();

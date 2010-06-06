@@ -87,7 +87,8 @@ class TermsList
  */
 class BitClassification
 {
-  	Json::Value root; 					 //!< The dictionary for the file Lattice.json
+	Json::Value *root; 					 //!< The dictionary for the file Lattice.json
+  	Json::Reader reader;
 	int N_bit;						 //!< The length of BitInfoList. Defines the number of states in system as 2^N_bit.
 	RealMatrixType HoppingMatrix;				 //!< The matrix to show all hoppings between different bits.
 	vector<BitInfo*> BitInfoList; 				 //!< A list of all Bits.

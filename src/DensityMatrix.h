@@ -25,6 +25,7 @@ public:
     void prepare(void);
     void compute(void);
     RealType operator()(QuantumState &state);
+    RealType getBeta();
 };
 
 #endif // endif :: #ifndef ____DEFINE_DENSITY_MATRIX____

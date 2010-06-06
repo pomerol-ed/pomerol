@@ -38,8 +38,8 @@ typedef Eigen::Matrix<RealType,Eigen::Dynamic,1,Eigen::AutoAlign> RealVectorType
 typedef Eigen::Matrix<int,Eigen::Dynamic,1,Eigen::AutoAlign> IntVectorType;
 
 /** Sparse complex matrix */
-typedef Eigen::SparseMatrix<RealType,Eigen::ColMajor> ColMajorMatrixType;
-typedef Eigen::SparseMatrix<RealType,Eigen::RowMajor> RowMajorMatrixType;
+typedef Eigen::SparseMatrix<RealType,Eigen::ColMajor> SparseMatrixType;
+typedef Eigen::DynamicSparseMatrix<RealType,Eigen::ColMajor> DynamicSparseMatrixType;
 
 /** Possible spin projections are \b down and \b up */
 enum spin {down, up};

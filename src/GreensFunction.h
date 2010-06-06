@@ -2,6 +2,9 @@
 #define ____DEFINE_GREEN____
 
 #include <sstream>
+#include <fstream>
+#include <iomanip>
+#include <cmath>
 
 #include "config.h"
 #include "iniconfig.h"
@@ -19,8 +22,7 @@ class GreensFunction {
     AnnihilationOperator& C;
     CreationOperator& CX;
     DensityMatrix& DM;
-    
-    
+       
     output_handle green_path;
     
 public:
@@ -36,6 +38,7 @@ public:
     
     //void dump(void);
     string getPath();
+    void dumpMatsubara(unsigned short points);
 };
 
 #endif // endif :: #ifndef ____DEFINE_GREEN____

@@ -23,6 +23,8 @@ void GreensFunction::prepare(void)
     std::list<BlockMapping>::const_iterator Citer = CNontrivialBlocks.begin();
     std::list<BlockMapping>::const_iterator CXiter = CXNontrivialBlocks.begin();
     
+    RealType GroundEnergy = H.getGroundEnergy();
+    
     while(Citer != CNontrivialBlocks.end() && CXiter != CXNontrivialBlocks.end()){
         BlockNumber Cleft = Citer->first;
         BlockNumber Cright = Citer->second;
@@ -31,9 +33,10 @@ void GreensFunction::prepare(void)
   
         if(Cleft == CXright && Cright == CXleft){         
               parts.push_back(new GreensFunctionPart(
-                              C.getPartFromLeftIndex(Cleft),
-                              CX.getPartFromRightIndex(CXright),
-                              H.part(Cright), H.part(Cleft), DM.part(Cright), DM.part(Cleft)));
+                              (AnnihilationOperatorPart&)C.getPartFromLeftIndex(Cleft),
+                              (CreationOperatorPart&)CX.getPartFromRightIndex(CXright),
+                              H.part(Cright), H.part(Cleft),
+                              DM.part(Cright), DM.part(Cleft)));
         }
       
         unsigned long CleftInt = Cleft;
@@ -65,37 +68,23 @@ string GreensFunction::getPath()
 
 
 //other functions
-/*
-void GreensFunction::dump()
+
+void GreensFunction::dumpMatsubara(unsigned short points)
 {
-	bool matsubara = (*pIni)["Green Function:matsubara"];		//w = iw or w = w' + iw"
-	int points = 0;
-
-    RealType step;
-    
-	if (matsubara)
-	{
-		 points = (*pIni)["Green Function:points"];			//number of points Green Function 
-	}
-	else
-	{
-		int w_min = (*pIni)["Green Function:w_min"];		//minimum value of w'
-		int w_max = (*pIni)["Green Function:w_max"];		//maximum value of w'
-		step = (*pIni)["Green Function:step"];      		//step delta w'
-
-		points = int((w_max-w_min)/step  + 1);		    	//number of points Green Function
-	}
-
-    int i = (*pIni)["Green Function:i"];
-    int j = (*pIni)["Green Function:j"];
-    
 	std::stringstream filename;
-	filename << green_path.path() << "/G(w)" << i << j << ".dat";
-    ofstream output(filename.str());
+	unsigned short i=C.getBit();
+	unsigned short j=CX.getBit();
+	filename << green_path.path() << "/Gw" << i << j << ".dat";
+	std::ofstream output;
+	output.open(filename.str().c_str());
 	
 	for (int k=0; k<points; k++)
-		outHpart << k << "\t" << std::setprecision(9) << real(G_ij[k]) << "\t" << imag(G_ij[k]) << endl;
+	{	
+		ComplexType iw = M_PI/DM.getBeta()*(2*k+1.)*I;
+        ComplexType G = (*this)(iw);
+		output << k << "\t" << std::setprecision(9) << real(G) << "\t" << imag(G) << endl;
+	}
 		
-	outHpart.close();
+	output.close();
 }
-*/
+

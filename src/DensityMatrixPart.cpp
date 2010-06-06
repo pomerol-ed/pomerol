@@ -1,7 +1,7 @@
 #include "DensityMatrixPart.h"
 
-DensityMatrixPart::DensityMatrixPart(HamiltonianPart& hpart, RealType beta) :
-    hpart(hpart), beta(beta)
+DensityMatrixPart::DensityMatrixPart(HamiltonianPart& hpart, RealType beta, RealType GroundEnergy) :
+    hpart(hpart), beta(beta), GroundEnergy(GroundEnergy)
 {
     partSize = hpart.size();
     weights.resize(partSize);
@@ -11,7 +11,7 @@ RealType DensityMatrixPart::compute(void)
 {
     Z_part = 0;
     for(QuantumState m = 0; m < partSize; ++m){
-        weights(m) = exp(-beta*hpart.reV(m));
+        weights(m) = exp(-beta*(hpart.reV(m)-GroundEnergy));
         Z_part += weights(m);
     }
   

@@ -61,24 +61,16 @@ int main()
 
 	//begining of creation all part of Hammiltonian
 
-//	bool dump_ev_ef = Ini["output:dump_ev_ef"];
-
-	H.enter(false,false);
+	H.enter();
 	H.diagonalize();
 	H.dump();
+	cout << endl << "The value of ground energy is " << H.getGroundEnergy() << endl;
 
 	//finishing of creation
 	cout << endl;
 	cout << "All parts are created!" << endl;
 	cout << endl;
 	
-/*	if (dump_ev_ef)
-	{
-		cout << "Eigenvectors are placed in " << OUT_EVec.fullpath() << endl;
-		cout << "Eigenvalues are placed in " << OUT_EVal.fullpath() << endl;
-	}
-	cout << endl;*/
-
 	//begining of creation matrixes C and CX
 	
 	cout << endl;
@@ -102,65 +94,17 @@ int main()
 	//{ cout << (*it).first << "->" << (*it).second << endl;
 	//}
     // DEBUG
-    RealType beta = (*pIni)["Green Function:beta"];
-    DensityMatrix rho(S,H,beta);
-    rho.prepare();
-    rho.compute();
+	RealType beta = (*pIni)["Green Function:beta"];
+    	DensityMatrix rho(S,H,beta);
+    	rho.prepare();
+    	rho.compute();
     
-    GreensFunction G(S,H,C,CX,rho,OUT);
-    G.prepare();
-    G.compute();
+  	GreensFunction G(S,H,C,CX,rho,OUT);
+    	G.prepare();
+    	G.compute();
 
-    DEBUG(G(ComplexType(0,1)))
+    	G.dumpMatsubara((int)(*pIni)["Green Function:points"]);
+    	cout << endl << "All done." << endl;
     
-//	CX.print_to_screen();
-
-
-//	test.enter();
-	//test.print_to_screen();
-	/*
-	operatorsCiCXj.inimatrixs(i,j);
-	
-	operatorsCiCXj.putMatrXCX();				//creation matrix UXCXU
-
-	if (i!=j)
-	
-{	
-	operatorsCiCXj.putMatrXC();				//creation matrix UXCU 
-	if ((bool) Ini["output:dump_c_cx"])
-	{
-		operatorsCiCXj.dump();
-	
-		cout << endl;
-		cout << "Notrivial elements of rotated matrices" << endl;
-		cout << "are placed in " << operatorsCiCXj.path() << endl;
-	}
-}	
-	cout << endl;
-
-	//finishing of creation
-
-	//begining of creation Green Function G_ij(w)
-
-	cout << endl;
-	cout << "====================================" << endl;
-	cout << "Start of Greens Function calculation" << endl;
-	cout << endl;
-
-	green GF_ij(i,j,S,H,operatorsCiCXj,OUT);
-	
-	if ((bool) (*pIni)["output:dump_green"])
-	{
-		GF_ij.dump();
-	
-  		cout << endl;
-		cout << "GF is placed in " << GF_ij.path() << endl;
-		cout << endl;
-	}
-
-	//finishing of creation
-	*/
-	cout << endl << "All done." << endl;
-
-	return 0;
+    	return 0;
 }

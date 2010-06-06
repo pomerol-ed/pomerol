@@ -217,7 +217,9 @@ QuantumNumbers StatesClassification::getStateInfo(QuantumState in)						//return
 
 BlockNumber StatesClassification::getBlockNumber(QuantumState in)
 {
+	if (1)
 	return (*this).getBlockNumber((*this).getStateInfo(in));
+	else return -1;
 }
 
 int StatesClassification::n_i(long int state, int i)

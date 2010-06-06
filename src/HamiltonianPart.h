@@ -9,8 +9,6 @@ class HamiltonianPart {
 	BitClassification &Formula;
 	StatesClassification &S;
 
-	RealType mu, mus;	
-
 	QuantumState N_state_m;				//number states of vector st
 	
 	QuantumNumbers hpart_id;
@@ -20,7 +18,6 @@ class HamiltonianPart {
 
 	string ev_path;					// EigenVectors output path handler
 	string ef_path;					// EigenFunctions output path handler
-
 
 private:
 
@@ -48,7 +45,7 @@ public:
 
 	HamiltonianPart(BitClassification &F, StatesClassification &S, QuantumNumbers id, const string &ev_path, const string &ef_path) : Formula(F),S(S),hpart_id(id),ev_path(ev_path),ef_path(ef_path){};
 	
-	void enter( double mu_c, double mus_c);
+	void enter();
 	
 	InnerQuantumState size(void);
 	RealType reH(int m, int n);		//return H(m,n)
@@ -56,6 +53,7 @@ public:
 
 	void diagonalization();			    //method of process diagonalization
 	QuantumNumbers id();				//return id of current hpart
+	RealType getMinimumEigenvalue();		//!<Return the lowest Eigenvalue of the current part;
 	
 	void dump();				//writing Eigen Values and Eigen Vectors in output file
 	void print_to_screen();			//print to screen part of hamiltonian

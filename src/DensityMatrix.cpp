@@ -14,8 +14,9 @@ DensityMatrix::~DensityMatrix()
 void DensityMatrix::prepare(void)
 {
     NumOfBlocks = S.NumberOfBlocks();
+    RealType GroundEnergy = H.getGroundEnergy();
     parts = new DensityMatrixPart* [NumOfBlocks];
-    for(BlockNumber n = 0; n < NumOfBlocks; n++) parts[n] = new DensityMatrixPart(H.part(n),beta);
+    for(BlockNumber n = 0; n < NumOfBlocks; n++) parts[n] = new DensityMatrixPart(H.part(n),beta,GroundEnergy);
 }
 
 void DensityMatrix::compute(void)
@@ -42,4 +43,9 @@ DensityMatrixPart& DensityMatrix::part(const QuantumNumbers &in)
 DensityMatrixPart& DensityMatrix::part(BlockNumber in)
 {
     return *parts[in];
+}
+
+RealType DensityMatrix::getBeta()
+{
+	return beta;
 }

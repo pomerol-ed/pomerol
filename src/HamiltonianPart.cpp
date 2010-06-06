@@ -28,11 +28,8 @@ QuantumNumbers HamiltonianPart::id()
 	return hpart_id;
 }
 
-void HamiltonianPart::enter( double mu_c, double mus_c )		//initialization HamiltonianPart
+void HamiltonianPart::enter()
 { 		
-	mu=mu_c;
-	mus=mus_c;
-
 	N_state_m = S.clstates(hpart_id).size();
 
 	H.resize(N_state_m,N_state_m);				//creation of H[i][j]=0 
@@ -40,17 +37,13 @@ void HamiltonianPart::enter( double mu_c, double mus_c )		//initialization Hamil
 		
 	for (InnerQuantumState st=0; st<N_state_m; st++)
 	{
-//		add_mu(st, U*(1.5+S.L())-(5*S.L())*J);		//half-filling
-//		add_mu(st, mu);					//chem. potential on multiorbital
-//		add_mus(st, Us/2.);				//half-filling on s-orbitals
-		
 		// loop over terms
-/*		std::list<Term*>::iterator it1;
+		std::list<Term*>::iterator it1;
 		for ( it1=Formula.getTermsList().getTerms(2).begin() ; it1 != Formula.getTermsList().getTerms(2).end(); it1++ )
 		{
 			if (( *it1)->type == "n") add_nTerm(st,(nTerm*) *it1);
 		};
-*/		
+		
 		std::list<Term*>::iterator it2;
 		for ( it2=Formula.getTermsList().getTerms(4).begin() ; it2 != Formula.getTermsList().getTerms(4).end(); it2++ )
 		{
@@ -64,7 +57,6 @@ void HamiltonianPart::enter( double mu_c, double mus_c )		//initialization Hamil
 	(*this).add_hopping(Formula.getHoppingMatrix());
 	
 	H.part<Eigen::UpperTriangular>() =  H.marked<Eigen::LowerTriangular>().transpose();  // Symmetric matrix
-//	H.part<Eigen::SelfAdjoint>() = H.eval();
 }
 
 void HamiltonianPart::add_nTerm(InnerQuantumState inner_state,nTerm *N)
@@ -93,7 +85,6 @@ void HamiltonianPart::add_spinflipTerm(InnerQuantumState inner_state, spinflipTe
 	{
 		InnerQuantumState out_inner_state = S.getInnerState(out);
 		H(out_inner_state,inner_state)+=T->Value*measurefunc(in,out,T->bit[0],T->bit[1],T->bit[2],T->bit[3]);
-//		DEBUG(in << "->" << out << " " << inner_state << "->" << out_inner_state << " | Term : " << (Term&) *T << " | " << T->Value*measurefunc(in,out,T->bit[0],T->bit[1],T->bit[2],T->bit[3]) << " = " << H(out_inner_state,inner_state));
 	}
 	
 
@@ -125,37 +116,6 @@ int HamiltonianPart::measurefunc(QuantumState state1, QuantumState state2, int i
 	}
 	return (flag*(1-2*(p%2)));
 }
-
-// s-orbital functions
-
-//void HamiltonianPart::add_U(int st, unsigned short bit_up, unsigned short bit_down, RealType Us)				//interactions on s-orbital
-// chem. potentials
-
-void HamiltonianPart::add_mu(int st, RealType mu)			//adds chem. potential on multiorbital
-{
-	int state = S.cst(hpart_id,st);			//real state
-	
-	for (int j=0; j<S.N_b_m()/2; j++)
-		H(st,st)-=mu*S.n_i(state,j);
-	
-	for (int j=S.N_b()/2; j<(S.N_b()/2+S.N_b_m()/2); j++)
-		H(st,st)-=mu*S.n_i(state,j);
-	
-}
-
-void HamiltonianPart::add_mus(int st, RealType mus)			//adds chem. potential on s-orbitals
-{
-	int state = S.cst(hpart_id,st);			//real state
-	
-	for (int j=S.N_b_m()/2; j<S.N_b()/2; j++)
-		H(st,st)-=mus*S.n_i(state,j);
-
-	for (int j=(S.N_b()/2+S.N_b_m()/2); j<S.N_b(); j++)
-		H(st,st)-=mus*S.n_i(state,j);
-
-}
-
-// hopping functions
 
 int HamiltonianPart::checkhop(long int state1, long int state2, int i, int j)			//analog measurefunc
 {
@@ -218,11 +178,6 @@ void HamiltonianPart::diagonalization()					//method of diagonalization classifi
 	}
 	if (N_state_m > 1)
 	{
-/*		cout << hpart_id << endl;
-		cout << "___________" << endl;
-		cout << H << " " << endl;
-		cout << "___________" << endl;
-	*/
 		Eigen::SelfAdjointEigenSolver<RealMatrixType> Solver(H, true);
 		H = Solver.eigenvectors();
 		V = Solver.eigenvalues();				// eigenvectors are ready
@@ -258,4 +213,9 @@ void HamiltonianPart::dump()							//writing Eigen Values in output file
   		outHpart.close();
 	}
 }
+
+RealType HamiltonianPart::getMinimumEigenvalue()
+{
+	return V.minCoeff();
+};
 

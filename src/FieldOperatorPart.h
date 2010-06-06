@@ -6,19 +6,10 @@
 #include "output.h"
 #include "HamiltonianPart.h"
 
-struct valC {
-	QuantumState n;					//number of line of matrix C or CX
-	QuantumState m;					//number of column of matrix C or CX
-	RealType C;				//value of rotated C or CX
-	valC(QuantumState line, QuantumState column, RealType C_nm);			//initialization valC
-};
-
-						//class rotates matrixes C and CX 
-
-template<int StorageOrder> class FieldOperatorPart {
+class FieldOperatorPart {
 protected:
-	int i;
-	Eigen::SparseMatrix<RealType,StorageOrder> elements;	//vector of notrivial elements of rotated matrix C
+	unsigned short i;
+	SparseMatrixType elements;	//vector of notrivial elements of rotated matrix C
 
 	StatesClassification &S;
 	HamiltonianPart &h_from;
@@ -40,10 +31,10 @@ public:
 
 	const string& path();						//output paths
     
-    Eigen::SparseMatrix<RealType,StorageOrder>& value();
+    SparseMatrixType& value();
 };
 
-class AnnihilationOperatorPart : public FieldOperatorPart<Eigen::RowMajor>
+class AnnihilationOperatorPart : public FieldOperatorPart
 { 
     QuantumState retK(QuantumState L);	
     int mFunc(QuantumState state1, QuantumState state2, int i);
@@ -53,7 +44,7 @@ public :
     AnnihilationOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT);
 };
 
-class CreationOperatorPart : public FieldOperatorPart<Eigen::ColMajor>
+class CreationOperatorPart : public FieldOperatorPart
 {
     QuantumState retK(QuantumState L);	
     int mFunc(QuantumState state1, QuantumState state2, int i);	

@@ -16,16 +16,23 @@ return output;
 int BitClassification::readin()
 {
 
-  Json::Reader reader;
   std::ifstream in("Lattice.json");
-  bool parsingSuccessful = reader.parse( in, root );
-  if ( !parsingSuccessful )
+  try
   {
-      // report to the user the failure and their locations in the document.
-	std::cout  << "Failed to parse configuration\n";
-	std::cout << reader.getFormatedErrorMessages();
-        return 1;
+    bool parsingSuccessful = reader.parse( in, *root );
+    if ( !parsingSuccessful )
+  	{
+      	// report to the user the failure and their locations in the document.
+		std::cout  << "Failed to parse configuration\n";
+		std::cout << reader.getFormatedErrorMessages();
+        	return 1;
+  	}
   }
+  catch (std::exception ErrorException)
+  	{
+		cout << ErrorException.what() << endl;
+		exit(1);
+  	}
 
   (*this).defineBits();
   (*this).defineHopping();
@@ -41,6 +48,7 @@ void BitInfo::setBitNumber(const unsigned short& in)
 
 BitClassification::BitClassification()
 {
+  root = new Json::Value;
   N_bit=0;
   mapOrbitalValue["s"] = s;
   mapOrbitalValue["p"] = p;
@@ -50,7 +58,7 @@ BitClassification::BitClassification()
 
 void BitClassification::defineBits()
 {
-  Json::Value sites = root["sites"];
+  Json::Value sites = (*root)["sites"];
   string type = "s";
   for (unsigned short site = 0; site < sites.size(); site++ )
     {
@@ -137,7 +145,7 @@ void BitClassification::defineTerms()
 			 Term *N3 = new nTerm(bit+2        ,(list[0]->U)*(-2.5) + 5. * (list[0]->J) );
 			 Term *N4 = new nTerm(bit+N_bit/2  ,(list[0]->U)*(-2.5) + 5. * (list[0]->J) );
 			 Term *N5 = new nTerm(bit+N_bit/2+1,(list[0]->U)*(-2.5) + 5. * (list[0]->J) );
-			 Term *N6 = new nTerm(bit+N_bit/2+1,(list[0]->U)*(-2.5) + 5. * (list[0]->J) );
+			 Term *N6 = new nTerm(bit+N_bit/2+2,(list[0]->U)*(-2.5) + 5. * (list[0]->J) );
 			 Terms.addTerm(N1); Terms.addTerm(N2); Terms.addTerm(N3); Terms.addTerm(N4); Terms.addTerm(N5); Terms.addTerm(N6);
 			 bit+=2;
 			 break;
@@ -200,7 +208,7 @@ void BitClassification::defineHopping()
  */
 {
 
-Json::Value sites = root["sites"];
+Json::Value sites = (*root)["sites"];
 HoppingMatrix.resize(N_bit, N_bit);
 HoppingMatrix.setZero();
 for (unsigned short from = 0; from < N_bit; from++ )

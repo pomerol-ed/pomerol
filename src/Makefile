@@ -15,12 +15,14 @@ ifneq ($(shell echo $(EIGEN_INCLUDE) | head -c2),"-I")
 endif
 endif
 
-CXXFLAGS= -O3 -g -Wall -fPIC $(INCLUDES)
+CXXFLAGS= -O3 -g -Wall -fPIC -pg $(INCLUDES)
 BINPATH=../bin
 
 objects=iniconfig.o output.o StatesClassification.o Term.o BitClassification.o \
 	HamiltonianPart.o Hamiltonian.o FieldOperatorPart.o FieldOperator.o \
-	DensityMatrixPart.o DensityMatrix.o GreensFunctionPart.o GreensFunction.o
+	DensityMatrixPart.o DensityMatrix.o \
+	GreensFunctionPart.o GreensFunction.o \
+	Vertex4.o Vertex4Part.o
 
 default :  main
 
@@ -31,12 +33,14 @@ BitClassification.o: BitClassification.h BitClassification.cpp Term.h
 StatesClassification.o: StatesClassification.h StatesClassification.cpp config.h
 HamiltonianPart.o: StatesClassification.h config.h HamiltonianPart.h HamiltonianPart.cpp
 Hamiltonian.o: StatesClassification.h config.h HamiltonianPart.h Hamiltonian.h Hamiltonian.cpp
-FieldOperatorPart.o: StatesClassification.h config.h HamiltonianPart.h FieldOperatorPart.h FieldOperatorPart.tmpl.h FieldOperatorPart.cpp
+FieldOperatorPart.o: StatesClassification.h config.h HamiltonianPart.h FieldOperatorPart.h FieldOperatorPart.cpp
 FieldOperator.o: StatesClassification.h config.h HamiltonianPart.h FieldOperatorPart.h FieldOperatorPart.cpp FieldOperator.h
 DensityMatrixPart.o: DensityMatrixPart.h DensityMatrixPart.cpp
 DensityMatrix.o: DensityMatrix.h DensityMatrix.cpp
 GreensFunctionPart.o: GreensFunctionPart.h GreensFunctionPart.cpp config.h
 GreensFunction.o: GreensFunction.h GreensFunction.cpp
+Vertex4Part.o: Vertex4Part.h Vertex4Part.cpp config.h
+Vertex4.o: Vertex4.h Vertex4.cpp 
 
 libmeat.so: $(objects)
 	$(CXX) -shared $(objects) -o libmeat.so

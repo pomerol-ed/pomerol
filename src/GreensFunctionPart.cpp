@@ -13,33 +13,33 @@ GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOpe
 
 void GreensFunctionPart::compute(void)
 {
-    RowMajorMatrixType& Cmatrix = C.value();
-    ColMajorMatrixType& CXmatrix = CX.value();
-    QuantumState outerSize = Cmatrix.outerSize();
-      
-    for(QuantumState m=0; m<outerSize; ++m){
-        RowMajorMatrixType::InnerIterator Cinner(Cmatrix,m);
-        ColMajorMatrixType::InnerIterator CXinner(CXmatrix,m);
-        
-        while(Cinner && CXinner){
-            QuantumState C_n = Cinner.index();
-            QuantumState CX_n = CXinner.index();
-
-            if(C_n == CX_n){
-                ComplexType Residue = Cinner.value() * CXinner.value() * 
-                                      (DMpartOuter.weight(m) + DMpartInner.weight(C_n));
-                ComplexType Pole = HpartInner.reV(C_n) - HpartOuter.reV(m);
+    SparseMatrixType& Cmatrix = C.value();
+    SparseMatrixType& CXmatrix = CX.value();
+       
+    QuantumState index1ket;
+    QuantumState index1ketMax = CXmatrix.outerSize();
+    
+    for(index1ket=0; index1ket<index1ketMax; ++index1ket){
+        SparseMatrixType::InnerIterator index2bra(CXmatrix,index1ket);       
+        while(index2bra){
+            QuantumState index2ket = index2bra.index();
+            SparseMatrixType::InnerIterator index1bra(Cmatrix,index2ket);
+            while(index1bra){
+                //DEBUG("<" << index1bra.index() << "|c|" << 
+                //      index2ket << "><" << index2bra.index() << "|c^+|" << index1ket << ">")
+                QuantumState index1 = index1bra.index();
+                if(index1 == index1ket){
+                    ComplexType Residue = index1bra.value() * index2bra.value() * 
+                                          (DMpartOuter.weight(index1) + DMpartInner.weight(index2ket));
+                    ComplexType Pole = HpartInner.reV(index2ket) - HpartOuter.reV(index1);
               
-                Terms.push_back(greenTerm(Residue,Pole));
-              
-                ++Cinner;
-                ++CXinner;
-            }else{
-                if(CX_n < C_n) for(;QuantumState(CXinner.index())<C_n; ++CXinner);
-                else for(;QuantumState(Cinner.index())<CX_n; ++Cinner);
+                    Terms.push_back(greenTerm(Residue,Pole));
+                }
+                ++index1bra;
             }
+            ++index2bra;
         }
-    }
+    }  
 }
 
 ComplexType GreensFunctionPart::operator()(ComplexType Frequency)

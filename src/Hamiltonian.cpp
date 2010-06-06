@@ -5,27 +5,20 @@ extern IniConfig* pIni;
 
 Hamiltonian::Hamiltonian(BitClassification &F_,StatesClassification &S_,output_handle &OUT_, string& config_path_):Formula(F_),S(S_),OUT(OUT_),config_path(config_path_){}
 
-void Hamiltonian::enter(bool diag, bool dump)
+void Hamiltonian::enter()
 {
 	IniConfig Ini(config_path);
 
 	output_handle OUT_EVec(OUT.path()+"/EigenVec");		// create output_folders
 	output_handle OUT_EVal(OUT.path()+"/EigenVal");		// create output_folders
 
-	RealType mu = (*pIni)["system:mu_c"];
-	RealType mus = (*pIni)["system:mus_c"];
-
 	Hpart = new HamiltonianPart * [S.NumberOfBlocks()];
 	for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
 	{
 	  Hpart[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block),OUT_EVal.path(), OUT_EVec.path());
-	  Hpart[current_block]->enter( mu, mus);
+	  Hpart[current_block]->enter();
 
-	  if (diag) Hpart[current_block]->diagonalization();
-	  if (dump) Hpart[current_block]->dump();
-	  cout << "Hpart" << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is entered";
-	  if (diag) cout << ", diagonalized" << flush;
-	  if (dump) cout << " and dumped";
+	  cout << "Hamiltonian block " << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is entered";
 	  cout << ". Size = " << S.clstates(S.getBlockInfo(current_block)).size() << endl; 
 
 	}
@@ -54,6 +47,7 @@ void Hamiltonian::diagonalize()
       Hpart[current_block]->diagonalization();
       cout << "Hpart" << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is diagonalized." << endl;
     }
+ computeGroundEnergy();
 }
 
 void Hamiltonian::dump()
@@ -64,3 +58,18 @@ void Hamiltonian::dump()
     }
   cout << "Hamiltonian has been dumped." << endl;
 }
+
+void Hamiltonian::computeGroundEnergy()
+{
+  RealVectorType LEV(S.NumberOfBlocks());
+  for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
+  {
+	  LEV(current_block)=Hpart[current_block]->getMinimumEigenvalue();
+  }
+  GroundEnergy=LEV.minCoeff();
+}
+
+RealType Hamiltonian::getGroundEnergy()
+{
+  return GroundEnergy;
+};

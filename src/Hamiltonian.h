@@ -17,17 +17,21 @@ class Hamiltonian
   output_handle &OUT;
   string config_path;
 
+  RealType GroundEnergy;
 public :
 
   Hamiltonian(BitClassification &F_, StatesClassification &S_,output_handle &OUT_, string &config_path_);
-  void enter(bool diag=false,bool dump=false);
+  void enter();
 
   HamiltonianPart& part(const QuantumNumbers &in);
   HamiltonianPart& part(BlockNumber in);
   RealType eigenval( QuantumState &state );
+  RealType getGroundEnergy();
 
   void diagonalize();
   void dump();
+private:
+  void computeGroundEnergy();
 };
 
 #endif // endif :: #ifndef ____DEFINE_HAMILTONIAN____

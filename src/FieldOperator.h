@@ -10,58 +10,58 @@
 
 typedef std::pair<BlockNumber,BlockNumber> BlockMapping;
 
-template<class PartType> class OperatorContainer
+class OperatorContainer
 {
 protected:
-    std::string operatorName;
-  
 	StatesClassification &System;
 	Hamiltonian &H;
 	output_handle OUT;
 
-	int bit;
-	std::vector<PartType*> Data;
+	unsigned short bit;
+	std::vector<FieldOperatorPart*> Data;
 	std::map<unsigned int,BlockNumber> mapPartsFromRight;		// A map from non-zero parts to their BlockNumber indices
 	std::map<unsigned int,BlockNumber> mapPartsFromLeft;		// A map from output index to input index, hence there is a unique transform
 	std::list<BlockMapping> LeftRightIndices;
 	unsigned int size;
 
-	virtual	BlockNumber where(BlockNumber in)=0;
-	virtual	QuantumNumbers where(QuantumNumbers in)=0;
+	virtual	BlockNumber mapsTo(BlockNumber in)=0;
+	virtual	QuantumNumbers mapsTo(QuantumNumbers in)=0;
 
 public:
 	OperatorContainer(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit);
 
-	PartType& getPartFromLeftIndex(BlockNumber in);
-	PartType& getPartFromLeftIndex(QuantumNumbers in);
-	PartType& getPartFromRightIndex(BlockNumber out);
-	PartType& getPartFromRightIndex(QuantumNumbers out);
+	FieldOperatorPart& getPartFromLeftIndex(BlockNumber in);
+	FieldOperatorPart& getPartFromLeftIndex(QuantumNumbers in);
+	FieldOperatorPart& getPartFromRightIndex(BlockNumber out);
+	FieldOperatorPart& getPartFromRightIndex(QuantumNumbers out);
 	std::list<BlockMapping>& getNonTrivialIndices();
 
-    void prepare();
+	virtual void prepare()=0;
     
 	void compute();
 	void dump();
 	void print_to_screen();
+	unsigned short getBit();
 };
 
-class CreationOperator : public OperatorContainer<CreationOperatorPart>
+class CreationOperator : public OperatorContainer
 {
 public:
-	BlockNumber where(BlockNumber in);
-	QuantumNumbers where(QuantumNumbers in);
-
+	BlockNumber mapsTo(BlockNumber in);
+	QuantumNumbers mapsTo(QuantumNumbers in);
+    void prepare();
+    
 	CreationOperator(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit);
 };
 
-class AnnihilationOperator : public OperatorContainer<AnnihilationOperatorPart>
+class AnnihilationOperator : public OperatorContainer
 {
 public:
-	BlockNumber where(BlockNumber in);
-	QuantumNumbers where(QuantumNumbers in);
+	BlockNumber mapsTo(BlockNumber in);
+	QuantumNumbers mapsTo(QuantumNumbers in);
+    void prepare();
+    
 	AnnihilationOperator(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit);
 };
-
-#include "FieldOperator.tmpl.h"
 
 #endif
