@@ -31,7 +31,7 @@ void GreensFunction::prepare(void)
   
         if(Cleft == CXright && Cright == CXleft){         
               parts.push_back(new GreensFunctionPart(
-                              (AnnihilationOperatorPart&)C.getPartFromRightIndex(Cleft),
+                              (AnnihilationOperatorPart&)C.getPartFromLeftIndex(Cleft),
                               (CreationOperatorPart&)CX.getPartFromRightIndex(CXright),
                               H.part(Cright), H.part(Cleft),
                               DM.part(Cright), DM.part(Cleft)));
@@ -47,14 +47,8 @@ void GreensFunction::prepare(void)
 
 void GreensFunction::compute(void)
 {
-       DEBUG("in compute()")
-       //int i = 0;
-      for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++){
-          //DEBUG("part number " << i)
+      for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
           (*iter)->compute();
-          //++i;
-      }
-      DEBUG("exiting compute()")
 }
 
 ComplexType GreensFunction::operator()(ComplexType Frequency)
