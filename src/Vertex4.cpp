@@ -73,6 +73,8 @@ void Vertex4::prepare(void)
                   blocks[1] = OperatorAtPositionMapsTo(p,2,blocks[2]);
                   blocks[0] = OperatorAtPositionMapsTo(p,1,blocks[1]);
                   if(OperatorAtPositionMapsTo(p,0,blocks[0]) == blocks[3]){
+                      // DEBUG
+                      DEBUG("new part: " << S.getBlockInfo(blocks[0]) << " " << S.getBlockInfo(blocks[1]) << " "<< S.getBlockInfo(blocks[2]) << " "<< S.getBlockInfo(blocks[3]) << " ")
                       parts.push_back(new Vertex4Part(
                             OperatorPartAtPosition(p,0,blocks[0]),
                             OperatorPartAtPosition(p,1,blocks[1]),

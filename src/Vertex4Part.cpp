@@ -54,6 +54,7 @@ void Vertex4Part::compute(void)
                         QuantumState index4 = index4bra.index();
                         if(index4 == index4ket){
                             // TODO
+                            //DEBUG("been there");
                         }
                         ++index4bra;
                     }

@@ -8,6 +8,7 @@
 #include "FieldOperatorPart.h"
 #include "FieldOperator.h"
 #include "GreensFunction.h"
+#include "Vertex4.h"
 
 #include "iniconfig.h"
 
@@ -103,12 +104,16 @@ int main()
     	G.prepare();
         G.compute();
         
-        std::list<GreensFunctionPart::GreensTerm> terms = G.getTerms();
-        for(std::list<GreensFunctionPart::GreensTerm>::iterator term = terms.begin(); term != terms.end(); term++)
-            DEBUG(*term)
+        //std::list<GreensFunctionPart::GreensTerm> terms = G.getTerms();
+        //for(std::list<GreensFunctionPart::GreensTerm>::iterator term = terms.begin(); term != terms.end(); term++)
+        //    DEBUG(*term)
         
     	G.dumpMatsubara((int)(*pIni)["Green Function:points"]);
     	cout << endl << "All done." << endl;
     
+        Vertex4 Gamma4(S,H,C,C,CX,CX,rho,OUT);
+        Gamma4.prepare();
+        Gamma4.compute();
+        
     	return 0;
 }
