@@ -38,7 +38,8 @@ typedef Eigen::Matrix<RealType,Eigen::Dynamic,1,Eigen::AutoAlign> RealVectorType
 typedef Eigen::Matrix<int,Eigen::Dynamic,1,Eigen::AutoAlign> IntVectorType;
 
 /** Sparse complex matrix */
-typedef Eigen::SparseMatrix<RealType,Eigen::ColMajor> SparseMatrixType;
+typedef Eigen::SparseMatrix<RealType,Eigen::ColMajor> ColMajorMatrixType;
+typedef Eigen::SparseMatrix<RealType,Eigen::RowMajor> RowMajorMatrixType;
 typedef Eigen::DynamicSparseMatrix<RealType,Eigen::ColMajor> DynamicSparseMatrixType;
 
 /** Possible spin projections are \b down and \b up */
@@ -63,7 +64,7 @@ struct Permutation4 {
 };
 
 /** In some functions matrix elements less then this value are treated as zero.*/
-#define MATRIX_ELEMENT_TOLERANCE	1e-10
+#define MATRIX_ELEMENT_TOLERANCE	1e-8
 #define DUMP_FLOATING_POINT_NUMBERS	10
 
 //@{

@@ -51,6 +51,9 @@ public:
                 Permutation3 Permutation);
  
     void compute(void);
+    void computeFromRight(void);
+    void compute13(void);
+    void compute22(void);
     ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3);
 
 };

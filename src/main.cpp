@@ -100,6 +100,10 @@ int main()
     	rho.prepare();
     	rho.compute();
     
+	cout << endl;
+	cout << "==========================================" << endl;
+	cout << "Calculating G_{" << i << j << "}" << endl;
+	cout << "==========================================" << endl;
   	GreensFunction G(S,H,C,CX,rho,OUT);
     	G.prepare();
         G.compute();
@@ -111,6 +115,10 @@ int main()
     	G.dumpMatsubara((int)(*pIni)["Green Function:points"]);
     	cout << endl << "All done." << endl;
     
+	cout << endl;
+	cout << "==========================================" << endl;
+	cout << "4th order Vertex calculation" << endl;
+	cout << "==========================================" << endl;
         Vertex4 Gamma4(S,H,C,C,CX,CX,rho,OUT);
         Gamma4.prepare();
         Gamma4.compute();

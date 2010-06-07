@@ -43,7 +43,7 @@ Vertex4::~Vertex4()
 BlockNumber Vertex4::OperatorAtPositionMapsTo(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
 {
     switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
-      case 0: return C1.mapsTo(in);
+      case 0: return C1.mapsTo(in); // bad - better use getLeftRightIndices method
       case 1: return C2.mapsTo(in);
       case 2: return CX3.mapsTo(in);
       default: return ERROR_BLOCK_NUMBER;
@@ -90,8 +90,13 @@ void Vertex4::prepare(void)
 
 void Vertex4::compute(void)
 {
+    int i=0;
     for(std::list<Vertex4Part*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+    {
+	    DEBUG( i << " / " << parts.size() );
         (*iter)->compute();
+	++i;
+    }
 }
 
 ComplexType Vertex4::operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3)

@@ -222,8 +222,4 @@ BlockNumber StatesClassification::getBlockNumber(QuantumState in)
 	else return -1;
 }
 
-int StatesClassification::n_i(long int state, int i)
-{
-	return ((state&(1<<i))>>i);
-}
 

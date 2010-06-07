@@ -44,22 +44,29 @@ public:
 	unsigned short getBit();
 };
 
+class CreationOperator;
+class AnnihilationOperator;
+
 class CreationOperator : public OperatorContainer
 {
+	friend class AnnihilationOperator;
 public:
 	BlockNumber mapsTo(BlockNumber in);
 	QuantumNumbers mapsTo(QuantumNumbers in);
-    void prepare();
+	AnnihilationOperator& transpose();
+    	void prepare();
     
 	CreationOperator(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit);
 };
 
 class AnnihilationOperator : public OperatorContainer
 {
+	friend class CreationOperator;
 public:
 	BlockNumber mapsTo(BlockNumber in);
 	QuantumNumbers mapsTo(QuantumNumbers in);
-    void prepare();
+	CreationOperator& transpose();
+    	void prepare();
     
 	AnnihilationOperator(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit);
 };

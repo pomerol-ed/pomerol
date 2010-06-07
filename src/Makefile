@@ -30,6 +30,7 @@ iniconfig.o: iniconfig.cpp iniconfig.h
 output.o: output.cpp output.h
 Term.o:	Term.cpp Term.h
 BitClassification.o: BitClassification.h BitClassification.cpp Term.h
+LatticeSymmetryAnalysis.o: LatticeSymmetryAnalysis.h LatticeSymmetryAnalysis.cpp BitClassification.h
 StatesClassification.o: StatesClassification.h StatesClassification.cpp config.h
 HamiltonianPart.o: StatesClassification.h config.h HamiltonianPart.h HamiltonianPart.cpp
 Hamiltonian.o: StatesClassification.h config.h HamiltonianPart.h Hamiltonian.h Hamiltonian.cpp

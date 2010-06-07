@@ -9,9 +9,15 @@ FieldOperatorPart::FieldOperatorPart(
         i(i), S(S), h_from(h_from), h_to(h_to), OUT(OUT)
 {};
 
-SparseMatrixType& FieldOperatorPart::value()
+
+ColMajorMatrixType& FieldOperatorPart::getColMajorValue()
 {
-    return elements;
+    return elementsColMajor;
+}
+
+RowMajorMatrixType& FieldOperatorPart::getRowMajorValue()
+{
+    return elementsRowMajor;
 }
 
 const string &FieldOperatorPart::path()
@@ -23,8 +29,8 @@ void FieldOperatorPart::print_to_screen()  //print to screen C and CX
 {
     QuantumNumbers to   = h_to.id();
     QuantumNumbers from = h_from.id();
-    for (int P=0; P<elements.outerSize(); ++P)
-        for (SparseMatrixType::InnerIterator it(elements,P); it; ++it)
+    for (int P=0; P<elementsColMajor.outerSize(); ++P)
+        for (ColMajorMatrixType::InnerIterator it(elementsColMajor,P); it; ++it)
         {
                 QuantumState N = S.clstates(to)[it.row()];
                 QuantumState M = S.clstates(from)[it.col()];
@@ -38,8 +44,8 @@ void FieldOperatorPart::dump() //writing FieldOperatorPart C[M_sigma] and CX[M_s
     filename << (*this).OUT.fullpath() << "/" << "part" << i << "_" << h_from.id() << "->" << h_to.id() << ".dat";
     ofstream outCpart;
     outCpart.open(filename.str().c_str());
-     for (int P=0; P<elements.outerSize(); ++P)
-        for (SparseMatrixType::InnerIterator it(elements,P); it; ++it)
+     for (int P=0; P<elementsColMajor.outerSize(); ++P)
+        for (ColMajorMatrixType::InnerIterator it(elementsColMajor,P); it; ++it)
         {
                 QuantumState N = it.row();//S.clstates(to)[it.row()];
                 QuantumState M = it.col();//S.clstates(from)[it.col()];
@@ -92,7 +98,8 @@ void FieldOperatorPart::compute()
         }       
     }
     tempElements.prune(MATRIX_ELEMENT_TOLERANCE);
-    elements = tempElements;
+    elementsRowMajor = tempElements;
+    elementsColMajor = tempElements;
 }
 
 // Functions of specialized classes
@@ -171,3 +178,19 @@ bool CreationOperatorPart::checkL(QuantumState L)
 {
 	return (S.n_i(L,i)==1);
 }
+
+CreationOperatorPart& AnnihilationOperatorPart::transpose()
+{
+	CreationOperatorPart *CX = new CreationOperatorPart(i, S, h_to, h_from, OUT); // swapped h_to and h_from
+	CX->elementsRowMajor = elementsRowMajor.transpose();
+	CX->elementsColMajor = elementsColMajor.transpose();
+	return *CX;
+};
+
+AnnihilationOperatorPart& CreationOperatorPart::transpose()
+{
+	AnnihilationOperatorPart *C = new AnnihilationOperatorPart(i, S, h_to, h_from, OUT); // swapped h_to and h_from
+	C->elementsRowMajor = elementsRowMajor.transpose();
+	C->elementsColMajor = elementsColMajor.transpose();
+	return *C;
+};

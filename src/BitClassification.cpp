@@ -60,7 +60,6 @@ BitClassification::BitClassification()
 void BitClassification::defineBits()
 {
   Json::Value sites = (*root)["sites"];
-  string type = "s";
   for (unsigned short site = 0; site < sites.size(); site++ )
     {
 	    std::stringstream current_site; current_site << site; 

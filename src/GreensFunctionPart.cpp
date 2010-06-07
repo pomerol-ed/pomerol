@@ -16,7 +16,7 @@ GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOpe
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
                                         C(C), CX(CX)
 {}
-
+/*
 void GreensFunctionPart::compute(void)
 {
     SparseMatrixType& Cmatrix = C.value();
@@ -46,6 +46,40 @@ void GreensFunctionPart::compute(void)
         }
     }
 }
+*/
+void GreensFunctionPart::compute(void)
+{
+    RowMajorMatrixType& Cmatrix = C.getRowMajorValue();
+    ColMajorMatrixType& CXmatrix = CX.getColMajorValue();
+    QuantumState outerSize = Cmatrix.outerSize();
+      
+    for(QuantumState index1=0; index1<outerSize; ++index1){
+        RowMajorMatrixType::InnerIterator Cinner(Cmatrix,index1);
+        ColMajorMatrixType::InnerIterator CXinner(CXmatrix,index1);
+        
+        while(Cinner && CXinner){
+            QuantumState C_index2 = Cinner.index();
+            QuantumState CX_index2 = CXinner.index();
+
+            if(C_index2 == CX_index2){
+                ComplexType Residue = Cinner.value() * CXinner.value() * 
+                                      (DMpartOuter.weight(index1) + DMpartInner.weight(C_index2));
+                if(abs(Residue) > MATRIX_ELEMENT_TOLERANCE)
+		{
+                	ComplexType Pole = HpartInner.reV(C_index2) - HpartOuter.reV(index1);
+                	Terms.push_back(GreensTerm(Residue,Pole));
+		};
+                ++Cinner;
+                ++CXinner;
+            }else{
+                if(CX_index2 < C_index2) for(;QuantumState(CXinner.index())<C_index2; ++CXinner);
+                else for(;QuantumState(Cinner.index())<CX_index2; ++Cinner);
+            }
+        }
+    }
+}
+
+
 
 ComplexType GreensFunctionPart::operator()(ComplexType Frequency) const
 {

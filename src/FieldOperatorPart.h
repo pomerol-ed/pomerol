@@ -9,7 +9,8 @@
 class FieldOperatorPart {
 protected:
 	unsigned short i;
-	SparseMatrixType elements;	//vector of notrivial elements of rotated matrix C
+	RowMajorMatrixType elementsRowMajor;	
+	ColMajorMatrixType elementsColMajor;	
 
 	StatesClassification &S;
 	HamiltonianPart &h_from;
@@ -31,17 +32,23 @@ public:
 
 	const string& path();						//output paths
     
-    SparseMatrixType& value();
+    RowMajorMatrixType& getRowMajorValue();
+    ColMajorMatrixType& getColMajorValue();
 };
+
+class AnnihilationOperatorPart;
+class CreationOperatorPart;
 
 class AnnihilationOperatorPart : public FieldOperatorPart
 { 
     QuantumState retK(QuantumState L);	
     int mFunc(QuantumState state1, QuantumState state2, int i);
     bool checkL(QuantumState L);
+    friend class CreationOperatorPart;
 
 public :
     AnnihilationOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT);
+    CreationOperatorPart& transpose();
 };
 
 class CreationOperatorPart : public FieldOperatorPart
@@ -49,9 +56,11 @@ class CreationOperatorPart : public FieldOperatorPart
     QuantumState retK(QuantumState L);	
     int mFunc(QuantumState state1, QuantumState state2, int i);	
     bool checkL(QuantumState L);
+    friend class AnnihilationOperatorPart;
   
 public :
     CreationOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT);
+    AnnihilationOperatorPart& transpose();
 };
 
 #endif // endif :: #ifdef ____DEFINE_CCXPAIR____

@@ -72,7 +72,7 @@ public:
 	QuantumNumbers getStateInfo(QuantumState in);		//return Lz,N_up,N_down of number num
 	BlockNumber getBlockNumber(QuantumState in);			//returns a number of Block which corresponds to given Quantum Numbers
 
-	int n_i(long int state,int i);	 	//checks if electron sit on "i" in "state"
+	inline int n_i(long int state, int i) { return ((state&(1<<i))>>i) ;};
 	void getSiteInfo(int bit, int& lz, int& spin);
 };
 

@@ -31,27 +31,33 @@ Permutation(Permutation)
 
 void Vertex4Part::compute(void)
 {
-    SparseMatrixType& O1matrix = O1.value();
-    SparseMatrixType& O2matrix = O2.value();    
-    SparseMatrixType& O3matrix = O3.value();
-    SparseMatrixType& CX4matrix = CX4.value();
+
+	compute13();
+};
+
+void Vertex4Part::computeFromRight(void)
+{
+    ColMajorMatrixType& O1matrix = O1.getColMajorValue();
+    ColMajorMatrixType& O2matrix = O2.getColMajorValue();    
+    ColMajorMatrixType& O3matrix = O3.getColMajorValue();
+    ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
     
-    QuantumState index4ket;
-    QuantumState index4ketMax = CX4matrix.outerSize();
+    InnerQuantumState index4ket;
+    InnerQuantumState index4ketMax = CX4matrix.outerSize();
     
     for(index4ket=0; index4ket<index4ketMax; ++index4ket){
-        SparseMatrixType::InnerIterator index3bra(CX4matrix,index4ket);       
+        ColMajorMatrixType::InnerIterator index3bra(CX4matrix,index4ket);       
         while(index3bra){
-            QuantumState index3ket = index3bra.index();
-            SparseMatrixType::InnerIterator index2bra(O3matrix,index3ket);
+            InnerQuantumState index3ket = index3bra.index();
+            ColMajorMatrixType::InnerIterator index2bra(O3matrix,index3ket);
             while(index2bra){
-                QuantumState index2ket = index2bra.index();
-                SparseMatrixType::InnerIterator index1bra(O2matrix,index2ket);
+                InnerQuantumState index2ket = index2bra.index();
+                ColMajorMatrixType::InnerIterator index1bra(O2matrix,index2ket);
                 while(index1bra){
-                    QuantumState index1ket = index1bra.index();
-                    SparseMatrixType::InnerIterator index4bra(O1matrix,index1ket);
+                    InnerQuantumState index1ket = index1bra.index();
+                    ColMajorMatrixType::InnerIterator index4bra(O1matrix,index1ket);
                     while(index4bra){
-                        QuantumState index4 = index4bra.index();
+                        InnerQuantumState index4 = index4bra.index();
                         if(index4 == index4ket){
                             // TODO
                             //DEBUG("been there");
@@ -66,6 +72,51 @@ void Vertex4Part::compute(void)
         }
     }
 }
+
+void Vertex4Part::compute13(void)
+	// I don't have any pen now, so I'm writing here:
+	// <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX3 |1>
+{
+    RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
+    RowMajorMatrixType& O2matrix = O2.getRowMajorValue();    
+    ColMajorMatrixType& O3matrix = O3.getColMajorValue();
+    ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
+    
+    InnerQuantumState index1;
+    InnerQuantumState index1Max = CX4matrix.outerSize();
+    
+    for(index1=0; index1<index1Max; ++index1){
+        ColMajorMatrixType::InnerIterator index4bra(CX4matrix,index1);       
+        while(index4bra){
+            InnerQuantumState index4ket = index4bra.index();
+            RowMajorMatrixType::InnerIterator index2ket(O1matrix,index1);       
+	    while (index2ket){
+	    	InnerQuantumState index2bra = index2ket.index();
+            	RowMajorMatrixType::InnerIterator index3ket(O2matrix,index2bra);
+            	ColMajorMatrixType::InnerIterator index3bra(O3matrix,index4ket);
+            	while(index3bra && index3ket){
+                	InnerQuantumState index3braFromLeft  = index3ket.index();
+                	InnerQuantumState index3ketFromRight = index3bra.index();
+
+			if(index3braFromLeft == index3ketFromRight){
+				//todo
+                	++index3ket;
+                	++index3bra;
+       			}
+            		else{
+                		if (index3braFromLeft < index3ketFromRight) 
+					for(;QuantumState(index3ket.index())<index3ketFromRight && index3ket; ++index3ket);
+                		else 
+					for(;QuantumState(index3bra.index())<index3braFromLeft && index3bra; ++index3bra);
+            		    };
+			};
+             	++index2ket;
+                };
+     	++index4bra;
+        };
+    };
+};
+
 
 ComplexType Vertex4Part::operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3)
 {
