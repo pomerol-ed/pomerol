@@ -16,6 +16,7 @@ return output;
 int BitClassification::readin()
 {
 
+  Json::Reader reader;
   std::ifstream in("Lattice.json");
   try
   {
