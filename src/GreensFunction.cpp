@@ -11,8 +11,8 @@ GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H,
 
 GreensFunction::~GreensFunction()
 {
-      for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
-          delete *iter;
+    for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+        delete *iter;
 }
 
 void GreensFunction::prepare(void)
@@ -22,9 +22,7 @@ void GreensFunction::prepare(void)
     
     std::list<BlockMapping>::const_iterator Citer = CNontrivialBlocks.begin();
     std::list<BlockMapping>::const_iterator CXiter = CXNontrivialBlocks.begin();
-    
-    RealType GroundEnergy = H.getGroundEnergy();
-    
+       
     while(Citer != CNontrivialBlocks.end() && CXiter != CXNontrivialBlocks.end()){
         BlockNumber Cleft = Citer->first;
         BlockNumber Cright = Citer->second;
@@ -33,7 +31,7 @@ void GreensFunction::prepare(void)
   
         if(Cleft == CXright && Cright == CXleft){         
               parts.push_back(new GreensFunctionPart(
-                              (AnnihilationOperatorPart&)C.getPartFromLeftIndex(Cleft),
+                              (AnnihilationOperatorPart&)C.getPartFromRightIndex(Cleft),
                               (CreationOperatorPart&)CX.getPartFromRightIndex(CXright),
                               H.part(Cright), H.part(Cleft),
                               DM.part(Cright), DM.part(Cleft)));
@@ -49,14 +47,20 @@ void GreensFunction::prepare(void)
 
 void GreensFunction::compute(void)
 {
-      for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+       DEBUG("in compute()")
+       //int i = 0;
+      for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++){
+          //DEBUG("part number " << i)
           (*iter)->compute();
+          //++i;
+      }
+      DEBUG("exiting compute()")
 }
 
 ComplexType GreensFunction::operator()(ComplexType Frequency)
 {     
       ComplexType Value = 0;
-      for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+      for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
           Value += (**iter)(Frequency);
       return Value;
 }
@@ -86,5 +90,16 @@ void GreensFunction::dumpMatsubara(unsigned short points)
 	}
 		
 	output.close();
+}
+
+std::list<GreensFunctionPart::GreensTerm> GreensFunction::getTerms(void) const
+{
+    std::list<GreensFunctionPart::GreensTerm> allTerms;
+    for(std::list<GreensFunctionPart*>::const_iterator part = parts.begin(); part != parts.end(); part++){
+        std::list<GreensFunctionPart::GreensTerm> partTerms = (*part)->getTerms();
+        for(std::list<GreensFunctionPart::GreensTerm>::const_iterator term = partTerms.begin(); term != partTerms.end(); term++)
+            allTerms.push_back(*term);
+    }
+    return allTerms;
 }
 

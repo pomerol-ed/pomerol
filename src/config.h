@@ -50,8 +50,20 @@ static const ComplexType I = ComplexType(0.0,1.0);	// 'static' to prevent linkin
 /** Generalized 'square' function. */
 template<typename T> inline T sqr(T x) { return x*x; }
 
+/** Permutation of 3 elements */
+struct Permutation3 {
+    const size_t perm[3];
+    const int sign;
+};
+
+/** Permutation of 4 elements */
+struct Permutation4 {
+    const size_t perm[4];
+    const int sign;
+};
+
 /** In some functions matrix elements less then this value are treated as zero.*/
-#define MATRIX_ELEMENT_TOLERANCE	1e-8
+#define MATRIX_ELEMENT_TOLERANCE	1e-10
 #define DUMP_FLOATING_POINT_NUMBERS	10
 
 //@{

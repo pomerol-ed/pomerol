@@ -39,6 +39,8 @@ public:
     //void dump(void);
     string getPath();
     void dumpMatsubara(unsigned short points);
+    
+    std::list<GreensFunctionPart::GreensTerm> getTerms(void) const;
 };
 
 #endif // endif :: #ifndef ____DEFINE_GREEN____

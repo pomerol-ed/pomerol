@@ -14,16 +14,6 @@
 #include "DensityMatrix.h"
 #include "Vertex4Part.h"
 
-struct Permutation3 {
-    const size_t perm[3];
-    const int sign;
-};
-
-struct Permutation4 {
-    const size_t perm[4];
-    const int sign;
-};
-
 Permutation3 getPermutation3(size_t p);
 Permutation4 getPermutation4(size_t p);
 
@@ -33,20 +23,21 @@ class Vertex4 {
     
     StatesClassification& S;
     Hamiltonian& H;
-    AnnihilationOperator& C0;
     AnnihilationOperator& C1;
-    CreationOperator& CX2;
+    AnnihilationOperator& C2;
     CreationOperator& CX3;
+    CreationOperator& CX4;
     DensityMatrix& DM;
     
     output_handle green_path;
     
+    FieldOperatorPart& OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in);
     BlockNumber OperatorAtPositionMapsTo(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in);
     
 public:
     Vertex4(StatesClassification& S, Hamiltonian& H,
-            AnnihilationOperator& C0, AnnihilationOperator& C1, 
-            CreationOperator& CX2, CreationOperator& CX3,
+            AnnihilationOperator& C1, AnnihilationOperator& C2,
+            CreationOperator& CX3, CreationOperator& CX4,
             DensityMatrix& DM,
             output_handle &OUT);
     ~Vertex4();
@@ -54,7 +45,7 @@ public:
     void prepare(void);
     void compute(void);
     
-    ComplexType operator()(ComplexType Frequency0, ComplexType Frequency1, ComplexType Frequency2);
+    ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3);
     
     string getPath();
     //void dumpMatsubara(unsigned short points);
