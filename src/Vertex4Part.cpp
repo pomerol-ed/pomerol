@@ -1,5 +1,21 @@
 #include "Vertex4Part.h"
 
+inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter, 
+                         ColMajorMatrixType::InnerIterator& index2_iter)
+{
+    InnerQuantumState index1 = index1_iter.index();
+    InnerQuantumState index2 = index2_iter.index();
+  
+    if(index1 == index2) return true;
+    
+    if(index1 < index2) 
+        for(;InnerQuantumState(index1_iter.index())<index2 && index1_iter; ++index1_iter);
+    else 
+        for(;InnerQuantumState(index2_iter.index())<index1 && index2_iter; ++index2_iter);
+        
+    return false;
+}
+
 Vertex4Part::Vertex4TermType1::Vertex4TermType1(RealType weight, 
                                                 RealType E1, RealType E2, RealType E3, RealType E4,
                                                 Permutation3& Permutation)
@@ -29,13 +45,19 @@ Permutation(Permutation)
     // TODO
 }
 
-void Vertex4Part::compute(void)
+void Vertex4Part::compute(Vertex4Part::ComputationMethod method)
 {
-
-	compute22();
+    switch(method){
+        case ChasingIndices0: computeChasing0(); break;
+        case ChasingIndices1: computeChasing1(); break;
+        case ChasingIndices2: computeChasing2(); break;
+        default: assert(0);
+    }
+    
+    computeReduciblePart();
 };
 
-void Vertex4Part::computeFromRight(void)
+void Vertex4Part::computeChasing0(void)
 {
     ColMajorMatrixType& O1matrix = O1.getColMajorValue();
     ColMajorMatrixType& O2matrix = O2.getColMajorValue();    
@@ -73,9 +95,9 @@ void Vertex4Part::computeFromRight(void)
     }
 }
 
-void Vertex4Part::compute13(void)
+void Vertex4Part::computeChasing1(void)
 	// I don't have any pen now, so I'm writing here:
-	// <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX3 |1>
+	// <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
 {
     RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
     RowMajorMatrixType& O2matrix = O2.getRowMajorValue();    
@@ -90,37 +112,29 @@ void Vertex4Part::compute13(void)
         while(index4bra){
             InnerQuantumState index4ket = index4bra.index();
             RowMajorMatrixType::InnerIterator index2ket(O1matrix,index1);       
-	    while (index2ket){
-	    	InnerQuantumState index2bra = index2ket.index();
-            	RowMajorMatrixType::InnerIterator index3ket(O2matrix,index2bra);
-            	ColMajorMatrixType::InnerIterator index3bra(O3matrix,index4ket);
-            	while(index3bra && index3ket){
-                	InnerQuantumState index3braFromLeft  = index3ket.index();
-                	InnerQuantumState index3ketFromRight = index3bra.index();
-
-			if(index3braFromLeft == index3ketFromRight){
-				//todo
-                	++index3ket;
-                	++index3bra;
-       			}
-            		else{
-                		if (index3braFromLeft < index3ketFromRight) 
-					for(;QuantumState(index3ket.index())<index3ketFromRight && index3ket; ++index3ket);
-                		else 
-					for(;QuantumState(index3bra.index())<index3braFromLeft && index3bra; ++index3bra);
-            		    };
-			};
-             	++index2ket;
+            while (index2ket){
+                InnerQuantumState index2bra = index2ket.index();
+                RowMajorMatrixType::InnerIterator index3ket_iter(O2matrix,index2bra);
+            	ColMajorMatrixType::InnerIterator index3bra_iter(O3matrix,index4ket);
+            	while(index3bra_iter && index3ket_iter){
+                    if(chaseIndices(index3ket_iter,index3bra_iter)){
+                        // TODO
+                
+                        ++index3ket_iter;
+                        ++index3bra_iter;
+                    }
                 };
-     	++index4bra;
+             	++index2ket;
+            };
+            ++index4bra;
         };
     };
 };
 
-void Vertex4Part::compute22(void)
+void Vertex4Part::computeChasing2(void)
 {
 	// I don't have any pen now, so I'm writing here:
-	// <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX3 |1>
+	// <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
     RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
     ColMajorMatrixType& O2matrix = O2.getColMajorValue();    
     RowMajorMatrixType& O3matrix = O3.getRowMajorValue();
@@ -133,51 +147,40 @@ void Vertex4Part::compute22(void)
     InnerQuantumState index3Max = O2matrix.outerSize();
 
     for(index1=0; index1<index1Max; ++index1){
-    	for(index3=0; index3<index3Max; ++index3){
-        	ColMajorMatrixType::InnerIterator index4bra_iter(CX4matrix,index1);       
-            	RowMajorMatrixType::InnerIterator index4ket_iter(O3matrix,index3);
+    for(index3=0; index3<index3Max; ++index3){
+        ColMajorMatrixType::InnerIterator index4bra_iter(CX4matrix,index1);       
+        RowMajorMatrixType::InnerIterator index4ket_iter(O3matrix,index3);
 		std::list<InnerQuantumState> Index4List;
 		while (index4bra_iter && index4ket_iter){
-			InnerQuantumState index4bra = index4bra_iter.index(); 
-			InnerQuantumState index4ket = index4ket_iter.index(); 
-
-	//		DEBUG(index1 << "->" << index4bra << "|" << index4ket << "<-" << index3);
-			if (index4bra == index4ket){
-				Index4List.push_back(index4bra);
+            if(chaseIndices(index4ket_iter,index4bra_iter)){
+				Index4List.push_back(index4bra_iter.index());
 				++index4bra_iter;
 				++index4ket_iter;
-				}
-			else 
-				if (index4bra < index4ket) 
-					for(;QuantumState(index4bra_iter.index())<index4ket && index4bra_iter; ++index4bra_iter);
-		     		else 
-					for(;QuantumState(index4ket_iter.index())<index4bra && index4ket_iter; ++index4ket_iter);
-	 		};
+			}
+ 		};
 
 		if (Index4List.size()!=0)
 		{
-            		ColMajorMatrixType::InnerIterator index2bra_iter(O2matrix,index3);
-        		RowMajorMatrixType::InnerIterator index2ket_iter(O1matrix,index1);       
-			while (index2bra_iter && index2ket_iter){
-				InnerQuantumState index2bra = index2bra_iter.index(); 
-				InnerQuantumState index2ket = index2ket_iter.index(); 
-				if (index2bra == index2ket){
+            ColMajorMatrixType::InnerIterator index2bra_iter(O2matrix,index3);
+            RowMajorMatrixType::InnerIterator index2ket_iter(O1matrix,index1);       
+            while (index2bra_iter && index2ket_iter){
+                if (chaseIndices(index2ket_iter,index2bra_iter)){
 					for (std::list<InnerQuantumState>::iterator index4 = Index4List.begin(); index4!=Index4List.end(); ++index4) 
 					{
-						//todo
+						// TODO
 					}
 					++index2bra_iter;
 					++index2ket_iter;
-					}
-				else if (index2bra < index2ket)
-					for(;QuantumState(index2bra_iter.index())<index2ket && index2bra_iter; ++index2bra_iter);
-		     	     	else 
-					for(;QuantumState(index2ket_iter.index())<index2bra && index2ket_iter; ++index2ket_iter);
+                }
 			};
-	  	};
-    	};
-    };
-};
+		};
+    }};
+}
+
+void Vertex4Part::computeReduciblePart(void)
+{
+    // TODO
+}
 
 ComplexType Vertex4Part::operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3)
 {

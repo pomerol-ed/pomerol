@@ -13,6 +13,8 @@ class Vertex4Part {
        
 public:
   
+    enum ComputationMethod {ChasingIndices0, ChasingIndices1, ChasingIndices2};
+  
     struct Vertex4TermType1{
         ComplexType Residue;
         ComplexType Poles[3];
@@ -43,6 +45,12 @@ private:
     Permutation3 Permutation;
     
     std::list<Vertex4TermType1> TermsType1;
+    
+    void computeChasing0(void);
+    void computeChasing1(void);
+    void computeChasing2(void);
+    
+    void computeReduciblePart(void);
   
 public:
     Vertex4Part(FieldOperatorPart& O1, FieldOperatorPart& O2, FieldOperatorPart& O3, CreationOperatorPart& CX4,
@@ -50,10 +58,7 @@ public:
                 DensityMatrixPart& DMpart1, DensityMatrixPart& DMpart2, DensityMatrixPart& DMpart3, DensityMatrixPart& DMpart4,
                 Permutation3 Permutation);
  
-    void compute(void);
-    void computeFromRight(void);
-    void compute13(void);
-    void compute22(void);
+    void compute(ComputationMethod method = ChasingIndices1);
     ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3);
 
 };
