@@ -26,7 +26,7 @@ Vertex4Part::Vertex4TermType1::Vertex4TermType1(RealType weight,
     Poles[Permutation.perm[2]] = E4 - E3;
 }
 
-ComplexType Vertex4Part::Vertex4TermType1::operator()
+inline ComplexType Vertex4Part::Vertex4TermType1::operator()
             (ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const
 {
     return Residue/((Frequency1 - Poles[0])*(Frequency2 - Poles[1])*(-Frequency3 - Poles[2]));
