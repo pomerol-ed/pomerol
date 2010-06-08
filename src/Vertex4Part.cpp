@@ -32,7 +32,7 @@ Permutation(Permutation)
 void Vertex4Part::compute(void)
 {
 
-	compute13();
+	compute22();
 };
 
 void Vertex4Part::computeFromRight(void)
@@ -117,6 +117,67 @@ void Vertex4Part::compute13(void)
     };
 };
 
+void Vertex4Part::compute22(void)
+{
+	// I don't have any pen now, so I'm writing here:
+	// <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX3 |1>
+    RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
+    ColMajorMatrixType& O2matrix = O2.getColMajorValue();    
+    RowMajorMatrixType& O3matrix = O3.getRowMajorValue();
+    ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
+    
+    InnerQuantumState index1;
+    InnerQuantumState index1Max = CX4matrix.outerSize();
+    
+    InnerQuantumState index3;
+    InnerQuantumState index3Max = O2matrix.outerSize();
+
+    for(index1=0; index1<index1Max; ++index1){
+    	for(index3=0; index3<index3Max; ++index3){
+        	ColMajorMatrixType::InnerIterator index4bra_iter(CX4matrix,index1);       
+            	RowMajorMatrixType::InnerIterator index4ket_iter(O3matrix,index3);
+		std::list<InnerQuantumState> Index4List;
+		while (index4bra_iter && index4ket_iter){
+			InnerQuantumState index4bra = index4bra_iter.index(); 
+			InnerQuantumState index4ket = index4ket_iter.index(); 
+
+	//		DEBUG(index1 << "->" << index4bra << "|" << index4ket << "<-" << index3);
+			if (index4bra == index4ket){
+				Index4List.push_back(index4bra);
+				++index4bra_iter;
+				++index4ket_iter;
+				}
+			else 
+				if (index4bra < index4ket) 
+					for(;QuantumState(index4bra_iter.index())<index4ket && index4bra_iter; ++index4bra_iter);
+		     		else 
+					for(;QuantumState(index4ket_iter.index())<index4bra && index4ket_iter; ++index4ket_iter);
+	 		};
+
+		if (Index4List.size()!=0)
+		{
+            		ColMajorMatrixType::InnerIterator index2bra_iter(O2matrix,index3);
+        		RowMajorMatrixType::InnerIterator index2ket_iter(O1matrix,index1);       
+			while (index2bra_iter && index2ket_iter){
+				InnerQuantumState index2bra = index2bra_iter.index(); 
+				InnerQuantumState index2ket = index2ket_iter.index(); 
+				if (index2bra == index2ket){
+					for (std::list<InnerQuantumState>::iterator index4 = Index4List.begin(); index4!=Index4List.end(); ++index4) 
+					{
+						//todo
+					}
+					++index2bra_iter;
+					++index2ket_iter;
+					}
+				else if (index2bra < index2ket)
+					for(;QuantumState(index2bra_iter.index())<index2ket && index2bra_iter; ++index2bra_iter);
+		     	     	else 
+					for(;QuantumState(index2ket_iter.index())<index2bra && index2ket_iter; ++index2ket_iter);
+			};
+	  	};
+    	};
+    };
+};
 
 ComplexType Vertex4Part::operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3)
 {
