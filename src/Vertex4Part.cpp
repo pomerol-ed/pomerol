@@ -21,9 +21,9 @@ Vertex4Part::Vertex4TermType1::Vertex4TermType1(RealType weight,
                                                 Permutation3& Permutation)
 {
     Residue = -weight*Permutation.sign;
-    Poles[Permutation.perm[0]] = E1 - E4;
-    Poles[Permutation.perm[1]] = E2 - E1;
-    Poles[Permutation.perm[2]] = E3 - E2;
+    Poles[Permutation.perm[0]] = E2 - E1;
+    Poles[Permutation.perm[1]] = E3 - E2;
+    Poles[Permutation.perm[2]] = E4 - E3;
 }
 
 ComplexType Vertex4Part::Vertex4TermType1::operator()
@@ -64,33 +64,33 @@ void Vertex4Part::computeChasing0(void)
     ColMajorMatrixType& O3matrix = O3.getColMajorValue();
     ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
     
-    InnerQuantumState index4ket;
-    InnerQuantumState index4ketMax = CX4matrix.outerSize();
+    InnerQuantumState index1ket;
+    InnerQuantumState index1ketMax = CX4matrix.outerSize();
     
-    for(index4ket=0; index4ket<index4ketMax; ++index4ket){
-        ColMajorMatrixType::InnerIterator index3bra(CX4matrix,index4ket);       
-        while(index3bra){
-            InnerQuantumState index3ket = index3bra.index();
-            ColMajorMatrixType::InnerIterator index2bra(O3matrix,index3ket);
-            while(index2bra){
-                InnerQuantumState index2ket = index2bra.index();
-                ColMajorMatrixType::InnerIterator index1bra(O2matrix,index2ket);
-                while(index1bra){
-                    InnerQuantumState index1ket = index1bra.index();
-                    ColMajorMatrixType::InnerIterator index4bra(O1matrix,index1ket);
-                    while(index4bra){
-                        InnerQuantumState index4 = index4bra.index();
-                        if(index4 == index4ket){
+    for(index1ket=0; index1ket<index1ketMax; ++index1ket){
+        ColMajorMatrixType::InnerIterator index4bra(CX4matrix,index1ket);       
+        while(index4bra){
+            InnerQuantumState index4ket = index4bra.index();
+            ColMajorMatrixType::InnerIterator index3bra(O3matrix,index4ket);
+            while(index3bra){
+                InnerQuantumState index3ket = index3bra.index();
+                ColMajorMatrixType::InnerIterator index2bra(O2matrix,index3ket);
+                while(index2bra){
+                    InnerQuantumState index2ket = index2bra.index();
+                    ColMajorMatrixType::InnerIterator index1bra(O1matrix,index2ket);
+                    while(index1bra){
+                        InnerQuantumState index1 = index1bra.index();
+                        if(index1 == index1ket){
                             // TODO
                             //DEBUG("been there");
                         }
-                        ++index4bra;
+                        ++index1bra;
                     }
-                    ++index1bra;
+                    ++index2bra;
                 }
-                ++index2bra;
+                ++index3bra;
             }
-            ++index3bra;
+            ++index4bra;
         }
     }
 }
