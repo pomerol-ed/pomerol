@@ -28,3 +28,8 @@ RealType DensityMatrixPart::weight(int m)
 {
     return weights(m);
 }
+
+RealType DensityMatrixPart::getBeta(void)
+{
+    return beta;
+}

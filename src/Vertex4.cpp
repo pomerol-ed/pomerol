@@ -53,9 +53,9 @@ BlockNumber Vertex4::OperatorAtPositionMapsTo(size_t PermutationNumber, size_t O
 FieldOperatorPart& Vertex4::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
 {
     switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
-      case 0: return C1.getPartFromRightIndex(in);
-      case 1: return C2.getPartFromRightIndex(in);
-      case 2: return CX3.getPartFromRightIndex(in);
+      case 0: return C1.getPartFromLeftIndex(in);
+      case 1: return C2.getPartFromLeftIndex(in);
+      case 2: return CX3.getPartFromLeftIndex(in);
       default: assert(0);
     }
 }
@@ -68,18 +68,18 @@ void Vertex4::prepare(void)
         outer_iter != CX4NontrivialBlocks.end(); outer_iter++){
             for(size_t p=0; p<6; ++p){ // Search for non-vanishing world lines
                   BlockNumber blocks[4];
-                  blocks[3] = outer_iter->second;
-                  blocks[2] = outer_iter->first;
+                  blocks[0] = outer_iter->second;
+                  blocks[3] = outer_iter->first;
+                  blocks[2] = OperatorAtPositionMapsTo(p,3,blocks[3]);
                   blocks[1] = OperatorAtPositionMapsTo(p,2,blocks[2]);
-                  blocks[0] = OperatorAtPositionMapsTo(p,1,blocks[1]);
-                  if(OperatorAtPositionMapsTo(p,0,blocks[0]) == blocks[3]){
+                  if(OperatorAtPositionMapsTo(p,1,blocks[1]) == blocks[0]){
                       // DEBUG
                       DEBUG("new part: " << S.getBlockInfo(blocks[0]) << " " << S.getBlockInfo(blocks[1]) << " "<< S.getBlockInfo(blocks[2]) << " "<< S.getBlockInfo(blocks[3]) << " ")
                       parts.push_back(new Vertex4Part(
                             OperatorPartAtPosition(p,0,blocks[0]),
                             OperatorPartAtPosition(p,1,blocks[1]),
                             OperatorPartAtPosition(p,2,blocks[2]),
-                            (CreationOperatorPart&)CX4.getPartFromRightIndex(blocks[3]),
+                            (CreationOperatorPart&)CX4.getPartFromLeftIndex(blocks[3]),
                             H.part(blocks[0]), H.part(blocks[1]), H.part(blocks[2]), H.part(blocks[3]),
                             DM.part(blocks[0]), DM.part(blocks[1]), DM.part(blocks[2]), DM.part(blocks[3]),
                       getPermutation3(p)));
@@ -99,11 +99,11 @@ void Vertex4::compute(void)
     }
 }
 
-ComplexType Vertex4::operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3)
+ComplexType Vertex4::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
     ComplexType Value = 0;
     for(std::list<Vertex4Part*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
-        Value += (**iter)(Frequency1,Frequency2,Frequency3);
+        Value += (**iter)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
     return Value;
 }
 

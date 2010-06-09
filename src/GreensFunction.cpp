@@ -51,11 +51,11 @@ void GreensFunction::compute(void)
           (*iter)->compute();
 }
 
-ComplexType GreensFunction::operator()(ComplexType Frequency)
+ComplexType GreensFunction::operator()(long MatsubaraNum)
 {     
       ComplexType Value = 0;
       for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
-          Value += (**iter)(Frequency);
+          Value += (**iter)(MatsubaraNum);
       return Value;
 }
 
@@ -77,9 +77,8 @@ void GreensFunction::dumpMatsubara(unsigned short points)
 	output.open(filename.str().c_str());
 	
 	for (int k=0; k<points; k++)
-	{	
-		ComplexType iw = M_PI/DM.getBeta()*(2*k+1.)*I;
-        ComplexType G = (*this)(iw);
+	{
+        ComplexType G = (*this)(k);
 		output << k << "\t" << std::setprecision(9) << real(G) << "\t" << imag(G) << endl;
 	}
 		

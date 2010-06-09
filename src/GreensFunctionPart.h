@@ -38,7 +38,7 @@ public:
                        DensityMatrixPart& DMpartInner, DensityMatrixPart& DMpartOuter);
  
     void compute(void);
-    ComplexType operator()(ComplexType Frequency) const;
+    ComplexType operator()(long MatsubaraNumber) const;
     
     const std::list<GreensTerm>& getTerms(void) const;
 };

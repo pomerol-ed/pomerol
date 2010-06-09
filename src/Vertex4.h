@@ -45,7 +45,7 @@ public:
     void prepare(void);
     void compute(void);
     
-    ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3);
+    ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
     
     string getPath();
     //void dumpMatsubara(unsigned short points);

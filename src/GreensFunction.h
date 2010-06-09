@@ -34,7 +34,7 @@ public:
     void prepare(void);
     void compute(void);
     
-    ComplexType operator()(ComplexType Frequency);
+    ComplexType operator()(long MatsubaraNum);
     
     //void dump(void);
     string getPath();

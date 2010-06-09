@@ -19,6 +19,7 @@ public:
     
     RealType compute(void);
     RealType weight(int m);
+    RealType getBeta();
 };
 
 #endif // endif :: #ifndef ____DEFINE_DENSITY_MATRIX_PART____

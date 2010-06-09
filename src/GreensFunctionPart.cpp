@@ -49,6 +49,8 @@ void GreensFunctionPart::compute(void)
 */
 void GreensFunctionPart::compute(void)
 {
+    Terms.clear();
+  
     RowMajorMatrixType& Cmatrix = C.getRowMajorValue();
     ColMajorMatrixType& CXmatrix = CX.getColMajorValue();
     QuantumState outerSize = Cmatrix.outerSize();
@@ -81,11 +83,13 @@ void GreensFunctionPart::compute(void)
 
 
 
-ComplexType GreensFunctionPart::operator()(ComplexType Frequency) const
+ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const
 {
+    ComplexType MatsubaraSpacing = I*M_PI/DMpartInner.getBeta();
+  
     ComplexType G = 0;
     for(std::list<GreensTerm>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm)
-        G += (*pTerm)(Frequency);
+        G += (*pTerm)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1));
         
     return G;
 }
