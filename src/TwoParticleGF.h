@@ -12,14 +12,14 @@
 #include "StatesClassification.h"
 #include "FieldOperator.h"
 #include "DensityMatrix.h"
-#include "Vertex4Part.h"
+#include "TwoParticleGFPart.h"
 
 Permutation3 getPermutation3(size_t p);
 Permutation4 getPermutation4(size_t p);
 
-class Vertex4 {
+class TwoParticleGF {
     
-    std::list<Vertex4Part*> parts;
+    std::list<TwoParticleGFPart*> parts;
     
     StatesClassification& S;
     Hamiltonian& H;
@@ -35,12 +35,12 @@ class Vertex4 {
     BlockNumber OperatorAtPositionMapsTo(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in);
     
 public:
-    Vertex4(StatesClassification& S, Hamiltonian& H,
+    TwoParticleGF(StatesClassification& S, Hamiltonian& H,
             AnnihilationOperator& C1, AnnihilationOperator& C2,
             CreationOperator& CX3, CreationOperator& CX4,
             DensityMatrix& DM,
             output_handle &OUT);
-    ~Vertex4();
+    ~TwoParticleGF();
     
     void prepare(void);
     void compute(void);

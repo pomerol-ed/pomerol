@@ -22,7 +22,7 @@ objects=iniconfig.o output.o StatesClassification.o Term.o BitClassification.o \
 	HamiltonianPart.o Hamiltonian.o FieldOperatorPart.o FieldOperator.o \
 	DensityMatrixPart.o DensityMatrix.o \
 	GreensFunctionPart.o GreensFunction.o \
-	Vertex4.o Vertex4Part.o
+	TwoParticleGF.o TwoParticleGFPart.o
 
 default :  main
 
@@ -40,8 +40,8 @@ DensityMatrixPart.o: DensityMatrixPart.h DensityMatrixPart.cpp
 DensityMatrix.o: DensityMatrix.h DensityMatrix.cpp
 GreensFunctionPart.o: GreensFunctionPart.h GreensFunctionPart.cpp config.h
 GreensFunction.o: GreensFunction.h GreensFunction.cpp
-Vertex4Part.o: Vertex4Part.h Vertex4Part.cpp config.h
-Vertex4.o: Vertex4.h Vertex4.cpp 
+TwoParticleGFPart.o: TwoParticleGFPart.h TwoParticleGFPart.cpp config.h
+TwoParticleGF.o: TwoParticleGF.h TwoParticleGF.cpp 
 
 libmeat.so: $(objects)
 	$(CXX) -shared $(objects) -o libmeat.so

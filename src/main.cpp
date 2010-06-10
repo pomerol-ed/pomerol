@@ -8,7 +8,7 @@
 #include "FieldOperatorPart.h"
 #include "FieldOperator.h"
 #include "GreensFunction.h"
-#include "Vertex4.h"
+#include "TwoParticleGF.h"
 
 #include "iniconfig.h"
 
@@ -116,13 +116,15 @@ int main()
     
 	cout << endl;
 	cout << "==========================================" << endl;
-	cout << "4th order Vertex calculation" << endl;
+	cout << "Two Particle Green's function calculation" << endl;
 	cout << "==========================================" << endl;
-        Vertex4 Gamma4(S,H,C,C,CX,CX,rho,OUT);
-        Gamma4.prepare();
-        Gamma4.compute();
+        TwoParticleGF Chi4(S,H,C,C,CX,CX,rho,OUT);
+        Chi4.prepare();
+        Chi4.compute();
         
-	cout << Gamma4(0,1,3) << endl;
+	cout << Chi4(0,1,3) << endl;
+	cout << Chi4(0,2,4) << endl;
+	cout << Chi4(0,1,5) << endl;
 
     	return 0;
 }

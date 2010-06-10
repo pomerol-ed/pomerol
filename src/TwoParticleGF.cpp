@@ -1,4 +1,4 @@
-#include "Vertex4.h"
+#include "TwoParticleGF.h"
 
 inline Permutation3 getPermutation3(size_t p)
 {
@@ -25,7 +25,7 @@ inline Permutation4 getPermutation4(size_t p)
 
 extern IniConfig* pIni;
 
-Vertex4::Vertex4(StatesClassification& S, Hamiltonian& H,
+TwoParticleGF::TwoParticleGF(StatesClassification& S, Hamiltonian& H,
                 AnnihilationOperator& C1, AnnihilationOperator& C2, 
                 CreationOperator& CX3, CreationOperator& CX4,
                 DensityMatrix& DM,
@@ -34,13 +34,13 @@ Vertex4::Vertex4(StatesClassification& S, Hamiltonian& H,
     green_path = output_handle(OUT.path() + "/Gamma4");
 }
 
-Vertex4::~Vertex4()
+TwoParticleGF::~TwoParticleGF()
 {
-      for(std::list<Vertex4Part*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+      for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
           delete *iter;
 }
 
-BlockNumber Vertex4::OperatorAtPositionMapsTo(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
+BlockNumber TwoParticleGF::OperatorAtPositionMapsTo(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
 {
     switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
       case 0: return C1.getLeftIndex(in); // bad - better use getLeftRightIndices method
@@ -50,7 +50,7 @@ BlockNumber Vertex4::OperatorAtPositionMapsTo(size_t PermutationNumber, size_t O
     }
 }
 
-FieldOperatorPart& Vertex4::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
+FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
 {
     switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
       case 0: return C1.getPartFromLeftIndex(in);
@@ -60,7 +60,7 @@ FieldOperatorPart& Vertex4::OperatorPartAtPosition(size_t PermutationNumber, siz
     }
 }
 
-void Vertex4::prepare(void)
+void TwoParticleGF::prepare(void)
 {
     std::list<BlockMapping> CX4NontrivialBlocks = CX4.getNonTrivialIndices();
   
@@ -78,7 +78,7 @@ void Vertex4::prepare(void)
                                           << S.getBlockInfo(blocks[1]) << " "
                                           << S.getBlockInfo(blocks[2]) << " "
                                           << S.getBlockInfo(blocks[3]) << " ")
-                      parts.push_back(new Vertex4Part(
+                      parts.push_back(new TwoParticleGFPart(
                             OperatorPartAtPosition(p,0,blocks[0]),
                             OperatorPartAtPosition(p,1,blocks[1]),
                             OperatorPartAtPosition(p,2,blocks[2]),
@@ -91,10 +91,10 @@ void Vertex4::prepare(void)
     }  
 }
 
-void Vertex4::compute(void)
+void TwoParticleGF::compute(void)
 {
     int i=0;
-    for(std::list<Vertex4Part*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+    for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
     {
 	    DEBUG( i << " / " << parts.size() );
         (*iter)->compute();
@@ -102,15 +102,15 @@ void Vertex4::compute(void)
     }
 }
 
-ComplexType Vertex4::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
+ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
     ComplexType Value = 0;
-    for(std::list<Vertex4Part*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+    for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
         Value += (**iter)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
     return Value;
 }
 
-string Vertex4::getPath()
+string TwoParticleGF::getPath()
 {
     return green_path.fullpath();
 }

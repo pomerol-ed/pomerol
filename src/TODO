@@ -1,8 +1,8 @@
 Shortlist:
-- Vertex4Part: Reducible part
-- Vertex4: Take into account equivalence of permutations of the same operators
+- TwoParticleGFPart: Reducible part
+- TwoParticleGF: Take into account equivalence of permutations of the same operators
 - FieldOperators - fix wrong mappings
-- Vertex4, Vertex4part : binary dump()
+- TwoParticleGF, TwoParticleGFpart : binary dump()
 - FieldOperators : binary dump
 - FieldOperators : readin() from binary format
 - Bitclassification : take readin to separate site classification class

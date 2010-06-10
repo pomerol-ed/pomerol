@@ -1,4 +1,4 @@
-#include "Vertex4Part.h"
+#include "TwoParticleGFPart.h"
 
 inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter, 
                          ColMajorMatrixType::InnerIterator& index2_iter)
@@ -17,10 +17,10 @@ inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter,
 }
 
 //
-// Vertex4Part::Vertex4TermType1
+// TwoParticleGFPart::TwoParticleGFTermType1
 //
 inline
-Vertex4Part::Vertex4TermType1::Vertex4TermType1(ComplexType Coeff, 
+TwoParticleGFPart::TwoParticleGFTermType1::TwoParticleGFTermType1(ComplexType Coeff, 
                                                 RealType E2MinusE1, RealType E3MinusE2, RealType E4MinusE3,
                                                 Permutation3& Permutation) : Coeff(Coeff)
 {
@@ -30,17 +30,17 @@ Vertex4Part::Vertex4TermType1::Vertex4TermType1(ComplexType Coeff,
 }
 
 inline 
-ComplexType Vertex4Part::Vertex4TermType1::operator()
+ComplexType TwoParticleGFPart::TwoParticleGFTermType1::operator()
             (ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const
 {
     return Coeff/((Frequency1 - Poles[0])*(Frequency2 - Poles[1])*(-Frequency3 - Poles[2]));
 }
 
 //
-// Vertex4Part::Vertex4TermType2
+// TwoParticleGFPart::TwoParticleGFTermType2
 //
 inline
-Vertex4Part::Vertex4TermType2::Vertex4TermType2(ComplexType CoeffA, ComplexType CoeffB, ComplexType CoeffC, 
+TwoParticleGFPart::TwoParticleGFTermType2::TwoParticleGFTermType2(ComplexType CoeffA, ComplexType CoeffB, ComplexType CoeffC, 
                                                 RealType E4MinusE1, RealType E4MinusE2, 
                                                 RealType E4MinusE3, RealType E2MinusE1,
                                                 Permutation3& Permutation) :
@@ -55,7 +55,7 @@ E4MinusE1(E4MinusE1), E4MinusE2(E4MinusE2), E4MinusE3(E4MinusE3), E2MinusE1(E2Mi
 }
 
 inline
-ComplexType Vertex4Part::Vertex4TermType2::operator()
+ComplexType TwoParticleGFPart::TwoParticleGFTermType2::operator()
             (long MatsubaraNumberOdd1, long MatsubaraNumberOdd2, long MatsubaraNumberOdd3,
              ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const
 {
@@ -74,10 +74,10 @@ ComplexType Vertex4Part::Vertex4TermType2::operator()
 }
 
 //
-// Vertex4Part:;Vertex4TermType3
+// TwoParticleGFPart:;TwoParticleGFTermType3
 //
 inline
-Vertex4Part::Vertex4TermType3::Vertex4TermType3(ComplexType CoeffResonant, ComplexType CoeffNonResonant,
+TwoParticleGFPart::TwoParticleGFTermType3::TwoParticleGFTermType3(ComplexType CoeffResonant, ComplexType CoeffNonResonant,
                                                 RealType E3MinusE1, RealType E3MinusE2, RealType E4MinusE3,
                                                 Permutation3& Permutation) :
 CoeffResonant(CoeffResonant), CoeffNonResonant(CoeffNonResonant),
@@ -91,7 +91,7 @@ E3MinusE1(E3MinusE1), E3MinusE2(E3MinusE2), E4MinusE3(E4MinusE3)
 }
 
 inline
-ComplexType Vertex4Part::Vertex4TermType3::operator()
+ComplexType TwoParticleGFPart::TwoParticleGFTermType3::operator()
             (long MatsubaraNumberOdd1, long MatsubaraNumberOdd2, long MatsubaraNumberOdd3,
              ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const
 {
@@ -110,9 +110,9 @@ ComplexType Vertex4Part::Vertex4TermType3::operator()
 }
 
 //
-// Vertex4Part
+// TwoParticleGFPart
 //
-Vertex4Part::Vertex4Part(
+TwoParticleGFPart::TwoParticleGFPart(
                 FieldOperatorPart& O1, FieldOperatorPart& O2, FieldOperatorPart& O3, CreationOperatorPart& CX4,
                 HamiltonianPart& Hpart1, HamiltonianPart& Hpart2, HamiltonianPart& Hpart3, HamiltonianPart& Hpart4,
                 DensityMatrixPart& DMpart1, DensityMatrixPart& DMpart2, DensityMatrixPart& DMpart3, DensityMatrixPart& DMpart4,
@@ -123,7 +123,7 @@ DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
 Permutation(Permutation)
 {}
 
-void Vertex4Part::compute(Vertex4Part::ComputationMethod method)
+void TwoParticleGFPart::compute(TwoParticleGFPart::ComputationMethod method)
 {
     TermsType1.clear();
     TermsType2.clear();
@@ -136,7 +136,7 @@ void Vertex4Part::compute(Vertex4Part::ComputationMethod method)
     }
 };
 
-void Vertex4Part::computeChasing1(void)
+void TwoParticleGFPart::computeChasing1(void)
 	// I don't have any pen now, so I'm writing here:
 	// <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
 {
@@ -172,7 +172,7 @@ void Vertex4Part::computeChasing1(void)
     };
 };
 
-void Vertex4Part::computeChasing2(void)
+void TwoParticleGFPart::computeChasing2(void)
 {
     RealType beta = DMpart1.getBeta();
        
@@ -246,12 +246,12 @@ void Vertex4Part::computeChasing2(void)
                         RealType E4MinusE2 = E4 - E2;
                         RealType E4MinusE3 = E4 - E3;
                         
-                        TermsType1.push_back(Vertex4TermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
-                        TermsType2.push_back(Vertex4TermType2(MatrixElement*(weight1 + weight2),
+                        TermsType1.push_back(TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
+                        TermsType2.push_back(TwoParticleGFTermType2(MatrixElement*(weight1 + weight2),
                                                               MatrixElement*(-beta*weight2),
                                                               -MatrixElement*(weight1 + weight4),
                                                               E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
-                        TermsType3.push_back(Vertex4TermType3(MatrixElement*(-beta*weight1),
+                        TermsType3.push_back(TwoParticleGFTermType3(MatrixElement*(-beta*weight1),
                                                               MatrixElement*(weight1 - weight3),
                                                               E3MinusE1,E3MinusE2,E4MinusE3,Permutation));                                       
                     }
@@ -263,7 +263,7 @@ void Vertex4Part::computeChasing2(void)
     }};
 }
 
-ComplexType Vertex4Part::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
+ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
     ComplexType MatsubaraSpacing = I*M_PI/DMpart1.getBeta();
     long MatsubaraNumberOdd1 = 2*MatsubaraNumber1 + 1;
@@ -274,11 +274,11 @@ ComplexType Vertex4Part::operator()(long MatsubaraNumber1, long MatsubaraNumber2
     ComplexType Frequency3 = MatsubaraSpacing * RealType(MatsubaraNumberOdd3);
     
     ComplexType Value = 0;
-    for(std::list<Vertex4TermType1>::const_iterator pTerm = TermsType1.begin(); pTerm != TermsType1.end(); ++pTerm)
+    for(std::list<TwoParticleGFTermType1>::const_iterator pTerm = TermsType1.begin(); pTerm != TermsType1.end(); ++pTerm)
         Value += (*pTerm)(Frequency1,Frequency2,Frequency3);
-    for(std::list<Vertex4TermType2>::const_iterator pTerm = TermsType2.begin(); pTerm != TermsType2.end(); ++pTerm)
+    for(std::list<TwoParticleGFTermType2>::const_iterator pTerm = TermsType2.begin(); pTerm != TermsType2.end(); ++pTerm)
         Value += (*pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
-    for(std::list<Vertex4TermType3>::const_iterator pTerm = TermsType3.begin(); pTerm != TermsType3.end(); ++pTerm)
+    for(std::list<TwoParticleGFTermType3>::const_iterator pTerm = TermsType3.begin(); pTerm != TermsType3.end(); ++pTerm)
         Value += (*pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
     
     return Value;
