@@ -87,13 +87,12 @@ int main()
 	C.compute();
 	C.dump();
 
-	//std::list<std::pair<BlockNumber,BlockNumber> > RLind = CX.getNonTrivialIndices(true);
-	//std::list<std::pair<BlockNumber,BlockNumber> > LRind = CX.getNonTrivialIndices(false);
+	std::list<BlockMapping> ind = CX.getNonTrivialIndices();
 
-	//std::list<std::pair<BlockNumber,BlockNumber> >::iterator it;
-	//for (it=RLind.begin();it!=RLind.end();it++)
-	//{ cout << (*it).first << "->" << (*it).second << endl;
-	//}
+	std::list<std::pair<BlockNumber,BlockNumber> >::iterator it;
+	for (it=ind.begin();it!=ind.end();it++)
+	{ cout << (*it).first << "->" << (*it).second << " = " << CX.getLeftIndex((*it).second) << "->" << CX.getRightIndex((*it).first) << endl;
+	}
     // DEBUG
 	RealType beta = (*pIni)["Green Function:beta"];
     	DensityMatrix rho(S,H,beta);
@@ -123,5 +122,7 @@ int main()
         Gamma4.prepare();
         Gamma4.compute();
         
+	cout << Gamma4(0,1,3) << endl;
+
     	return 0;
 }

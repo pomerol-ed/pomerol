@@ -275,29 +275,31 @@ void Vertex4Part::computeChasing2(void)
                                                     index2bra_iter.value()*
                                                     O3matrix.coeff(index3,index4)*
                                                     CX4matrix.coeff(index4,index1);
-                        MatrixElement *= Permutation.sign;
+			if (abs(MatrixElement) > MATRIX_ELEMENT_TOLERANCE){
+                            MatrixElement *= Permutation.sign;
                          
-                        RealType E2MinusE1 = E2 - E1;
-                        RealType E3MinusE1 = E3 - E1;
-                        RealType E3MinusE2 = E3 - E2;
-                        RealType E4MinusE1 = E4 - E1;
-                        RealType E4MinusE2 = E4 - E2;
-                        RealType E4MinusE3 = E4 - E3;
+                            RealType E2MinusE1 = E2 - E1;
+                            RealType E3MinusE1 = E3 - E1;
+                            RealType E3MinusE2 = E3 - E2;
+                            RealType E4MinusE1 = E4 - E1;
+                            RealType E4MinusE2 = E4 - E2;
+                            RealType E4MinusE3 = E4 - E3;
                         
-                        TermsType1.push_back(Vertex4TermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
-                        TermsType2.push_back(Vertex4TermType2(MatrixElement*(weight1 + weight2),
-                                                              MatrixElement*(-beta*weight2),
-                                                              -MatrixElement*(weight1 + weight4),
-                                                              E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
-                        TermsType3.push_back(Vertex4TermType3(MatrixElement*(-beta*weight1),
-                                                              MatrixElement*(weight1 - weight3),
-                                                              E3MinusE1,E3MinusE2,E4MinusE3,Permutation));
+                            TermsType1.push_back(Vertex4TermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
+                            TermsType2.push_back(Vertex4TermType2(MatrixElement*(weight1 + weight2),
+                                                                  MatrixElement*(-beta*weight2),
+                                                                  -MatrixElement*(weight1 + weight4),
+                                                                  E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
+                            TermsType3.push_back(Vertex4TermType3(MatrixElement*(-beta*weight1),
+                                                                  MatrixElement*(weight1 - weight3),
+                                                                  E3MinusE1,E3MinusE2,E4MinusE3,Permutation));
                                                                
-					}
-					++index2bra_iter;
-					++index2ket_iter;
-                }
+			}
+			++index2bra_iter;
+			++index2ket_iter;
 			};
+                }
+		};
 		};
     }};
 }
