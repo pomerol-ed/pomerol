@@ -83,6 +83,8 @@ void CreationOperator::prepare()
          mapPartsFromRight[RightIndex]=size;
          mapPartsFromLeft[LeftIndex]=size;
          LeftRightIndices.push_back(BlockMapping(LeftIndex,RightIndex));
+	 mapRightToLeftIndex[RightIndex]=LeftIndex;
+	 mapLeftToRightIndex[LeftIndex]=RightIndex;
          size++;
       }    
     }
@@ -100,11 +102,23 @@ void AnnihilationOperator::prepare()
          cout << "Entering annihilation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
          mapPartsFromRight[RightIndex]=size;
          mapPartsFromLeft[LeftIndex]=size;
+	 mapRightToLeftIndex[RightIndex]=LeftIndex;
+	 mapLeftToRightIndex[LeftIndex]=RightIndex;
          LeftRightIndices.push_back(BlockMapping(LeftIndex,RightIndex));
          size++;
       }    
     }
 }
+
+BlockNumber OperatorContainer::getRightIndex(BlockNumber LeftIndex)
+{
+	return mapLeftToRightIndex[LeftIndex];
+};
+
+BlockNumber OperatorContainer::getLeftIndex(BlockNumber RightIndex)
+{
+	return mapRightToLeftIndex[RightIndex];
+};
 
 QuantumNumbers CreationOperator::mapsTo(QuantumNumbers in) // Require explicit knowledge of QuantumNumbers structure - Not very good
 {

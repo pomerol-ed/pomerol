@@ -21,6 +21,8 @@ protected:
 	std::vector<FieldOperatorPart*> Data;
 	std::map<unsigned int,BlockNumber> mapPartsFromRight;		// A map from non-zero parts to their BlockNumber indices
 	std::map<unsigned int,BlockNumber> mapPartsFromLeft;		// A map from output index to input index, hence there is a unique transform
+	std::map<unsigned int,BlockNumber> mapRightToLeftIndex;		// A map from output index to input index, hence there is a unique transform
+	std::map<unsigned int,BlockNumber> mapLeftToRightIndex;		// A map from output index to input index, hence there is a unique transform
 	std::list<BlockMapping> LeftRightIndices;
 	unsigned int size;
 
@@ -52,9 +54,9 @@ class AnnihilationOperator;
 class CreationOperator : public OperatorContainer
 {
 	friend class AnnihilationOperator;
-public:
 	BlockNumber mapsTo(BlockNumber in);
 	QuantumNumbers mapsTo(QuantumNumbers in);
+public:
 	AnnihilationOperator& transpose();
     	void prepare();
     
@@ -64,9 +66,9 @@ public:
 class AnnihilationOperator : public OperatorContainer
 {
 	friend class CreationOperator;
-public:
 	BlockNumber mapsTo(BlockNumber in);
 	QuantumNumbers mapsTo(QuantumNumbers in);
+public:
 	CreationOperator& transpose();
     	void prepare();
     
