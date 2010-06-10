@@ -24,6 +24,9 @@ public:
         
         // Coeff/((Frequency1 - Poles[0])*(Frequency2 - Poles[1])*(-Frequency3 - Poles[2]))
         ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
+        
+        static const RealType Tolerance = 1e-10;
+        static bool IsRelevant(const ComplexType &MatrixElement);
     };
     
     struct TwoParticleGFTermType2{      
@@ -51,6 +54,9 @@ public:
         //    1/((z3-E4MinusE3)*(z2+z3-E4MinusE2))*(CoeffA/(z1-E2MinusE1) + CoeffC/(z1+z2+z3-E4MinusE1))
         ComplexType operator()(long MatsubaraNumberOdd1, long MatsubaraNumberOdd2, long MatsubaraNumberOdd3,
                                ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
+                               
+        static const RealType Tolerance = 1e-10;
+        static bool IsRelevant(const ComplexType &CoeffA, const ComplexType &CoeffB, const ComplexType &CoeffC);
     };
     
     struct TwoParticleGFTermType3{
@@ -75,6 +81,9 @@ public:
         //    CoeffNonResonant/((z3-E4MinusE3)*(z2-E3MinusE2)*(z1+z2-E3MinusE1))
         ComplexType operator()(long MatsubaraNumberOdd1, long MatsubaraNumberOdd2, long MatsubaraNumberOdd3,
                                ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
+                               
+        static const RealType Tolerance = 1e-10;
+        static bool IsRelevant(const ComplexType &CoeffResonant, const ComplexType &CoeffNonResonant);
     };
 
 private:
@@ -102,9 +111,7 @@ private:
     
     void computeChasing1(void);
     void computeChasing2(void);
-    
-    static const RealType MatrixElementTolerance = 1e-8;
-  
+      
 public:
     TwoParticleGFPart(FieldOperatorPart& O1, FieldOperatorPart& O2, FieldOperatorPart& O3, CreationOperatorPart& CX4,
                 HamiltonianPart& Hpart1, HamiltonianPart& Hpart2, HamiltonianPart& Hpart3, HamiltonianPart& Hpart4,

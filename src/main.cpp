@@ -126,5 +126,5 @@ int main()
 	cout << Chi4(0,2,4) << endl;
 	cout << Chi4(0,1,5) << endl;
 
-    	return 0;
+    return 0;
 }

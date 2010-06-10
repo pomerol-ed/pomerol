@@ -36,6 +36,12 @@ ComplexType TwoParticleGFPart::TwoParticleGFTermType1::operator()
     return Coeff/((Frequency1 - Poles[0])*(Frequency2 - Poles[1])*(-Frequency3 - Poles[2]));
 }
 
+inline
+bool TwoParticleGFPart::TwoParticleGFTermType1::IsRelevant(const ComplexType &MatrixElement)
+{
+    return abs(MatrixElement) > Tolerance;
+}
+
 //
 // TwoParticleGFPart::TwoParticleGFTermType2
 //
@@ -71,6 +77,13 @@ ComplexType TwoParticleGFPart::TwoParticleGFTermType2::operator()
                 CoeffC/(Frequencies[z1]+Frequencies[z2]+Frequencies[z3] - E4MinusE1))
                /((Frequencies[z3] - E4MinusE3)
                *(Frequencies[z2]+Frequencies[z3] - E4MinusE2));
+}
+
+inline
+bool TwoParticleGFPart::TwoParticleGFTermType2::IsRelevant(
+     const ComplexType &CoeffA, const ComplexType &CoeffB, const ComplexType &CoeffC)
+{
+    return abs(CoeffA) > Tolerance || abs(CoeffB) > Tolerance || abs(CoeffC) > Tolerance;
 }
 
 //
@@ -109,6 +122,13 @@ ComplexType TwoParticleGFPart::TwoParticleGFTermType3::operator()
               *(Frequencies[z1]+Frequencies[z2] - E3MinusE1));
 }
 
+inline
+bool TwoParticleGFPart::TwoParticleGFTermType3::IsRelevant(
+     const ComplexType &CoeffResonant, const ComplexType &CoeffNonResonant)
+{
+    return abs(CoeffResonant) > Tolerance || abs(CoeffNonResonant) > Tolerance;
+}
+
 //
 // TwoParticleGFPart
 //
@@ -140,6 +160,8 @@ void TwoParticleGFPart::computeChasing1(void)
 	// I don't have any pen now, so I'm writing here:
 	// <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
 {
+    RealType beta = DMpart1.getBeta();  
+  
     RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
     RowMajorMatrixType& O2matrix = O2.getRowMajorValue();    
     ColMajorMatrixType& O3matrix = O3.getColMajorValue();
@@ -149,18 +171,66 @@ void TwoParticleGFPart::computeChasing1(void)
     InnerQuantumState index1Max = CX4matrix.outerSize();
     
     for(index1=0; index1<index1Max; ++index1){
-        ColMajorMatrixType::InnerIterator index4bra(CX4matrix,index1);       
+        ColMajorMatrixType::InnerIterator index4bra(CX4matrix,index1);
+        
+        RealType E1 = Hpart1.reV(index1);
+        RealType weight1 = DMpart1.weight(index1); 
+        
         while(index4bra){
             InnerQuantumState index4ket = index4bra.index();
-            RowMajorMatrixType::InnerIterator index2ket(O1matrix,index1);       
+            RowMajorMatrixType::InnerIterator index2ket(O1matrix,index1);
+            
+            RealType E4 = Hpart4.reV(index4ket);
+            RealType weight4 = DMpart4.weight(index4ket);
+            
             while (index2ket){
                 InnerQuantumState index2bra = index2ket.index();
+                
+                RealType E2 = Hpart2.reV(index2bra);
+                RealType weight2 = DMpart2.weight(index2bra);
+                
                 RowMajorMatrixType::InnerIterator index3ket_iter(O2matrix,index2bra);
             	ColMajorMatrixType::InnerIterator index3bra_iter(O3matrix,index4ket);
             	while(index3bra_iter && index3ket_iter){
                     if(chaseIndices(index3ket_iter,index3bra_iter)){
-                        // TODO
-                
+                        
+                        InnerQuantumState index3 = index3ket_iter.index();
+                        
+                        RealType E3 = Hpart3.reV(index3);                       
+                        RealType weight3 = DMpart3.weight(index3);
+                         
+                        ComplexType MatrixElement = index2ket.value()*
+                                                    index3ket_iter.value()*
+                                                    index3bra_iter.value()*
+                                                    index4bra.value();
+                                                 
+                        MatrixElement *= Permutation.sign;
+                         
+                        RealType E2MinusE1 = E2 - E1;
+                        RealType E3MinusE1 = E3 - E1;
+                        RealType E3MinusE2 = E3 - E2;
+                        RealType E4MinusE1 = E4 - E1;
+                        RealType E4MinusE2 = E4 - E2;
+                        RealType E4MinusE3 = E4 - E3;
+                        
+                        if(TwoParticleGFTermType1::IsRelevant(MatrixElement))
+                            TermsType1.push_back(TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
+                        
+                        ComplexType CoeffA = MatrixElement*(weight1 + weight2);
+                        ComplexType CoeffB = MatrixElement*(-beta*weight2);
+                        ComplexType CoeffC = -MatrixElement*(weight1 + weight4);
+                        
+                        if(TwoParticleGFTermType2::IsRelevant(CoeffA,CoeffB,CoeffC))
+                            TermsType2.push_back(TwoParticleGFTermType2(
+                                                 CoeffA,CoeffB,CoeffC,E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
+                        
+                        ComplexType CoeffResonant = MatrixElement*(-beta*weight1);
+                        ComplexType CoeffNonResonant = MatrixElement*(weight1 - weight3);
+                                                              
+                        if(TwoParticleGFTermType3::IsRelevant(CoeffResonant,CoeffNonResonant))
+                            TermsType3.push_back(TwoParticleGFTermType3(
+                                                 CoeffResonant,CoeffNonResonant,E3MinusE1,E3MinusE2,E4MinusE3,Permutation));                
+                        
                         ++index3ket_iter;
                         ++index3bra_iter;
                     }
@@ -206,7 +276,6 @@ void TwoParticleGFPart::computeChasing2(void)
 
 		if (!Index4List.empty())
 		{
-            // !!! //
             RealType E1 = Hpart1.reV(index1);
             RealType E3 = Hpart3.reV(index3);
             RealType weight1 = DMpart1.weight(index1);
@@ -217,26 +286,21 @@ void TwoParticleGFPart::computeChasing2(void)
             while (index2bra_iter && index2ket_iter){
                 if (chaseIndices(index2ket_iter,index2bra_iter)){
                   
-                    // !!! //
                     InnerQuantumState index2 = index2ket_iter.index();
                     RealType E2 = Hpart2.reV(index2);
                     RealType weight2 = DMpart2.weight(index2);
                                         
                     for (std::list<InnerQuantumState>::iterator pIndex4 = Index4List.begin(); pIndex4!=Index4List.end(); ++pIndex4) 
-					{
-                        // !!! //
+                    {
                         InnerQuantumState index4 = *pIndex4;
                         RealType E4 = Hpart4.reV(index4);                       
                         RealType weight4 = DMpart4.weight(index4);
                          
-                        // !!!!! //
                         ComplexType MatrixElement = index2ket_iter.value()*
                                                     index2bra_iter.value()*
                                                     O3matrix.coeff(index3,index4)*
                                                     CX4matrix.coeff(index4,index1);
-                        
-                        if (abs(MatrixElement) <= MatrixElementTolerance) continue;
-                          
+                                                 
                         MatrixElement *= Permutation.sign;
                          
                         RealType E2MinusE1 = E2 - E1;
@@ -246,14 +310,23 @@ void TwoParticleGFPart::computeChasing2(void)
                         RealType E4MinusE2 = E4 - E2;
                         RealType E4MinusE3 = E4 - E3;
                         
-                        TermsType1.push_back(TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
-                        TermsType2.push_back(TwoParticleGFTermType2(MatrixElement*(weight1 + weight2),
-                                                              MatrixElement*(-beta*weight2),
-                                                              -MatrixElement*(weight1 + weight4),
-                                                              E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
-                        TermsType3.push_back(TwoParticleGFTermType3(MatrixElement*(-beta*weight1),
-                                                              MatrixElement*(weight1 - weight3),
-                                                              E3MinusE1,E3MinusE2,E4MinusE3,Permutation));                                       
+                        if(TwoParticleGFTermType1::IsRelevant(MatrixElement))
+                            TermsType1.push_back(TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
+                        
+                        ComplexType CoeffA = MatrixElement*(weight1 + weight2);
+                        ComplexType CoeffB = MatrixElement*(-beta*weight2);
+                        ComplexType CoeffC = -MatrixElement*(weight1 + weight4);
+                        
+                        if(TwoParticleGFTermType2::IsRelevant(CoeffA,CoeffB,CoeffC))
+                            TermsType2.push_back(TwoParticleGFTermType2(
+                                                 CoeffA,CoeffB,CoeffC,E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
+                        
+                        ComplexType CoeffResonant = MatrixElement*(-beta*weight1);
+                        ComplexType CoeffNonResonant = MatrixElement*(weight1 - weight3);
+                                                              
+                        if(TwoParticleGFTermType3::IsRelevant(CoeffResonant,CoeffNonResonant))
+                            TermsType3.push_back(TwoParticleGFTermType3(
+                                                 CoeffResonant,CoeffNonResonant,E3MinusE1,E3MinusE2,E4MinusE3,Permutation));
                     }
                     ++index2bra_iter;
                     ++index2ket_iter;
