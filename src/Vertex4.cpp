@@ -67,11 +67,6 @@ void Vertex4::prepare(void)
     for(std::list<BlockMapping>::const_iterator outer_iter = CX4NontrivialBlocks.begin();
         outer_iter != CX4NontrivialBlocks.end(); outer_iter++){
             for(size_t p=0; p<6; ++p){ // Search for non-vanishing world lines
-                  // DEBUG
-                  DEBUG("p = " << p)
-                  DEBUG("perm[0] = " << getPermutation3(p).perm[0])
-                  DEBUG("perm[0] = " << getPermutation3(p).perm[1])
-                  DEBUG("perm[0] = " << getPermutation3(p).perm[2])
                   BlockNumber blocks[4];
                   blocks[0] = outer_iter->second;
                   blocks[3] = outer_iter->first;
@@ -83,16 +78,6 @@ void Vertex4::prepare(void)
                                           << S.getBlockInfo(blocks[1]) << " "
                                           << S.getBlockInfo(blocks[2]) << " "
                                           << S.getBlockInfo(blocks[3]) << " ")
-                      DEBUG("blocks: "    << blocks[0] << " "
-                                          << blocks[1] << " "
-                                          << blocks[2] << " "
-                                          << blocks[3])
-                      
-                      DEBUG("O3:")
-                      DEBUG(CX3.getPartFromLeftIndex(blocks[2]).getColMajorValue().toDense())
-                      DEBUG("CX4:")
-                      DEBUG(((CreationOperatorPart&)CX4.getPartFromLeftIndex(blocks[3])).getColMajorValue().toDense()) 
-                      
                       parts.push_back(new Vertex4Part(
                             OperatorPartAtPosition(p,0,blocks[0]),
                             OperatorPartAtPosition(p,1,blocks[1]),

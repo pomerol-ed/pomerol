@@ -229,12 +229,14 @@ void Vertex4Part::computeChasing2(void)
     
     InnerQuantumState index3;
     InnerQuantumState index3Max = O2matrix.outerSize();
+    
+    std::list<InnerQuantumState> Index4List;
 
     for(index1=0; index1<index1Max; ++index1){
     for(index3=0; index3<index3Max; ++index3){
         ColMajorMatrixType::InnerIterator index4bra_iter(CX4matrix,index1);       
         RowMajorMatrixType::InnerIterator index4ket_iter(O3matrix,index3);
-		std::list<InnerQuantumState> Index4List;
+        Index4List.clear();
 		while (index4bra_iter && index4ket_iter){
             if(chaseIndices(index4ket_iter,index4bra_iter)){
 				Index4List.push_back(index4bra_iter.index());
@@ -243,7 +245,7 @@ void Vertex4Part::computeChasing2(void)
 			}
  		};
 
-		if (Index4List.size()!=0)
+		if (!Index4List.empty())
 		{
             // !!! //
             RealType E1 = Hpart1.reV(index1);
@@ -281,7 +283,7 @@ void Vertex4Part::computeChasing2(void)
                         RealType E4MinusE1 = E4 - E1;
                         RealType E4MinusE2 = E4 - E2;
                         RealType E4MinusE3 = E4 - E3;
-                         
+                        
                         TermsType1.push_back(Vertex4TermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
                         TermsType2.push_back(Vertex4TermType2(MatrixElement*(weight1 + weight2),
                                                               MatrixElement*(-beta*weight2),
@@ -290,6 +292,7 @@ void Vertex4Part::computeChasing2(void)
                         TermsType3.push_back(Vertex4TermType3(MatrixElement*(-beta*weight1),
                                                               MatrixElement*(weight1 - weight3),
                                                               E3MinusE1,E3MinusE2,E4MinusE3,Permutation));
+                                                               
 					}
 					++index2bra_iter;
 					++index2ket_iter;
