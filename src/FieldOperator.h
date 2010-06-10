@@ -34,6 +34,8 @@ public:
 	FieldOperatorPart& getPartFromLeftIndex(QuantumNumbers in);
 	FieldOperatorPart& getPartFromRightIndex(BlockNumber out);
 	FieldOperatorPart& getPartFromRightIndex(QuantumNumbers out);
+	BlockNumber getLeftIndex(BlockNumber RightIndex);
+	BlockNumber getRightIndex(BlockNumber LeftIndex);
 	std::list<BlockMapping>& getNonTrivialIndices();
 
 	virtual void prepare()=0;

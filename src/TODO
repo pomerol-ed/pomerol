@@ -1,3 +1,15 @@
-1) Vertex4Part: Terms classification 
-2) Vertex4Part: Reducible part
-3) Vertex4: Take into account equivalence of permutations of the same operators
+Shortlist:
+- Vertex4Part: Terms classification 
+- Vertex4Part: Reducible part
+- Vertex4: Take into account equivalence of permutations of the same operators
+- FieldOperators - implement getRightIndex and getLeftIndex methods as maps to avoid additional calculation
+- FieldOperators - fix wrong mappings
+- Vertex4, Vertex4part : binary dump()
+- FieldOperators : binary dump
+- FieldOperators : readin() from binary format
+- Bitclassification : take readin to separate site classification class
+- Find equivalent permutations of sites of the lattice
+---------------------------------------------------------------------------------------------------------------
+Long standing plans:
+- MPI implementation : create a tree structure of processes and implement sending big objects routines
+- Low temperature assumption methods : Lanczos decomposition and States reduction.
