@@ -216,14 +216,14 @@ void Vertex4Part::computeChasing1(void)
 void Vertex4Part::computeChasing2(void)
 {
     RealType beta = DMpart1.getBeta();
-      
+       
 	// I don't have any pen now, so I'm writing here:
 	// <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
     RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
     ColMajorMatrixType& O2matrix = O2.getColMajorValue();    
     RowMajorMatrixType& O3matrix = O3.getRowMajorValue();
     ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
-    
+      
     InnerQuantumState index1;
     InnerQuantumState index1Max = CX4matrix.outerSize();
     
@@ -247,10 +247,10 @@ void Vertex4Part::computeChasing2(void)
 		{
             // !!! //
             RealType E1 = Hpart1.reV(index1);
-            RealType E3 = Hpart3.reV(index1);
+            RealType E3 = Hpart3.reV(index3);
             RealType weight1 = DMpart1.weight(index1);
             RealType weight3 = DMpart3.weight(index3);
-            
+                        
             ColMajorMatrixType::InnerIterator index2bra_iter(O2matrix,index3);
             RowMajorMatrixType::InnerIterator index2ket_iter(O1matrix,index1);       
             while (index2bra_iter && index2ket_iter){
@@ -260,28 +260,28 @@ void Vertex4Part::computeChasing2(void)
                     InnerQuantumState index2 = index2ket_iter.index();
                     RealType E2 = Hpart2.reV(index2);
                     RealType weight2 = DMpart2.weight(index2);
-                    
+                                        
                     for (std::list<InnerQuantumState>::iterator pIndex4 = Index4List.begin(); pIndex4!=Index4List.end(); ++pIndex4) 
 					{
                         // !!! //
                         InnerQuantumState index4 = *pIndex4;
                         RealType E4 = Hpart4.reV(index4);                       
                         RealType weight4 = DMpart4.weight(index4);
-                        
+                         
                         // !!!!! //
                         ComplexType MatrixElement = index2ket_iter.value()*
                                                     index2bra_iter.value()*
                                                     O3matrix.coeff(index3,index4)*
                                                     CX4matrix.coeff(index4,index1);
                         MatrixElement *= Permutation.sign;
-                        
+                         
                         RealType E2MinusE1 = E2 - E1;
                         RealType E3MinusE1 = E3 - E1;
                         RealType E3MinusE2 = E3 - E2;
                         RealType E4MinusE1 = E4 - E1;
                         RealType E4MinusE2 = E4 - E2;
                         RealType E4MinusE3 = E4 - E3;
-                        
+                         
                         TermsType1.push_back(Vertex4TermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
                         TermsType2.push_back(Vertex4TermType2(MatrixElement*(weight1 + weight2),
                                                               MatrixElement*(-beta*weight2),

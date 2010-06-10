@@ -1,8 +1,6 @@
 Shortlist:
-- Vertex4Part: Terms classification 
 - Vertex4Part: Reducible part
 - Vertex4: Take into account equivalence of permutations of the same operators
-- FieldOperators - implement getRightIndex and getLeftIndex methods as maps to avoid additional calculation
 - FieldOperators - fix wrong mappings
 - Vertex4, Vertex4part : binary dump()
 - FieldOperators : binary dump

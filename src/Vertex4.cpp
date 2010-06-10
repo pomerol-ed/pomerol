@@ -43,9 +43,9 @@ Vertex4::~Vertex4()
 BlockNumber Vertex4::OperatorAtPositionMapsTo(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
 {
     switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
-      case 0: return C1.mapsTo(in); // bad - better use getLeftRightIndices method
-      case 1: return C2.mapsTo(in);
-      case 2: return CX3.mapsTo(in);
+      case 0: return C1.getLeftIndex(in); // bad - better use getLeftRightIndices method
+      case 1: return C2.getLeftIndex(in);
+      case 2: return CX3.getLeftIndex(in);
       default: return ERROR_BLOCK_NUMBER;
     }
 }
@@ -67,14 +67,32 @@ void Vertex4::prepare(void)
     for(std::list<BlockMapping>::const_iterator outer_iter = CX4NontrivialBlocks.begin();
         outer_iter != CX4NontrivialBlocks.end(); outer_iter++){
             for(size_t p=0; p<6; ++p){ // Search for non-vanishing world lines
+                  // DEBUG
+                  DEBUG("p = " << p)
+                  DEBUG("perm[0] = " << getPermutation3(p).perm[0])
+                  DEBUG("perm[0] = " << getPermutation3(p).perm[1])
+                  DEBUG("perm[0] = " << getPermutation3(p).perm[2])
                   BlockNumber blocks[4];
                   blocks[0] = outer_iter->second;
                   blocks[3] = outer_iter->first;
-                  blocks[2] = OperatorAtPositionMapsTo(p,3,blocks[3]);
-                  blocks[1] = OperatorAtPositionMapsTo(p,2,blocks[2]);
-                  if(OperatorAtPositionMapsTo(p,1,blocks[1]) == blocks[0]){
+                  blocks[2] = OperatorAtPositionMapsTo(p,2,blocks[3]);
+                  blocks[1] = OperatorAtPositionMapsTo(p,1,blocks[2]);
+                  if(OperatorAtPositionMapsTo(p,0,blocks[1]) == blocks[0]){
                       // DEBUG
-                      DEBUG("new part: " << S.getBlockInfo(blocks[0]) << " " << S.getBlockInfo(blocks[1]) << " "<< S.getBlockInfo(blocks[2]) << " "<< S.getBlockInfo(blocks[3]) << " ")
+                      DEBUG("new part: "  << S.getBlockInfo(blocks[0]) << " " 
+                                          << S.getBlockInfo(blocks[1]) << " "
+                                          << S.getBlockInfo(blocks[2]) << " "
+                                          << S.getBlockInfo(blocks[3]) << " ")
+                      DEBUG("blocks: "    << blocks[0] << " "
+                                          << blocks[1] << " "
+                                          << blocks[2] << " "
+                                          << blocks[3])
+                      
+                      DEBUG("O3:")
+                      DEBUG(CX3.getPartFromLeftIndex(blocks[2]).getColMajorValue().toDense())
+                      DEBUG("CX4:")
+                      DEBUG(((CreationOperatorPart&)CX4.getPartFromLeftIndex(blocks[3])).getColMajorValue().toDense()) 
+                      
                       parts.push_back(new Vertex4Part(
                             OperatorPartAtPosition(p,0,blocks[0]),
                             OperatorPartAtPosition(p,1,blocks[1]),
