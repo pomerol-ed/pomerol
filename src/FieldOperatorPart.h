@@ -21,6 +21,8 @@ protected:
     virtual QuantumState retK(QuantumState L)=0;  
     virtual int mFunc(QuantumState state1, QuantumState state2, int i)=0;   //checks matrix element of an operator between state1 and state2
     virtual bool checkL(QuantumState L)=0;  //checks state L to be appropriate as a result of a creation/destruction operator
+    
+    static const RealType MatrixElementTolerance = 1e-8;
    
 public:
   

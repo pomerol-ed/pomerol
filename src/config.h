@@ -63,8 +63,7 @@ struct Permutation4 {
     const int sign;
 };
 
-/** In some functions matrix elements less then this value are treated as zero.*/
-#define MATRIX_ELEMENT_TOLERANCE	1e-8
+/** */
 #define DUMP_FLOATING_POINT_NUMBERS	10
 
 //@{

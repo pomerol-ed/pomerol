@@ -121,9 +121,7 @@ O1(O1), O2(O2), O3(O3), CX4(CX4),
 Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
 DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
 Permutation(Permutation)
-{
-    // TODO
-}
+{}
 
 void Vertex4Part::compute(Vertex4Part::ComputationMethod method)
 {
@@ -132,50 +130,11 @@ void Vertex4Part::compute(Vertex4Part::ComputationMethod method)
     TermsType3.clear();
     
     switch(method){
-        case ChasingIndices0: computeChasing0(); break;
         case ChasingIndices1: computeChasing1(); break;
         case ChasingIndices2: computeChasing2(); break;
         default: assert(0);
     }
 };
-
-void Vertex4Part::computeChasing0(void)
-{
-    ColMajorMatrixType& O1matrix = O1.getColMajorValue();
-    ColMajorMatrixType& O2matrix = O2.getColMajorValue();    
-    ColMajorMatrixType& O3matrix = O3.getColMajorValue();
-    ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
-    
-    InnerQuantumState index1ket;
-    InnerQuantumState index1ketMax = CX4matrix.outerSize();
-    
-    for(index1ket=0; index1ket<index1ketMax; ++index1ket){
-        ColMajorMatrixType::InnerIterator index4bra(CX4matrix,index1ket);       
-        while(index4bra){
-            InnerQuantumState index4ket = index4bra.index();
-            ColMajorMatrixType::InnerIterator index3bra(O3matrix,index4ket);
-            while(index3bra){
-                InnerQuantumState index3ket = index3bra.index();
-                ColMajorMatrixType::InnerIterator index2bra(O2matrix,index3ket);
-                while(index2bra){
-                    InnerQuantumState index2ket = index2bra.index();
-                    ColMajorMatrixType::InnerIterator index1bra(O1matrix,index2ket);
-                    while(index1bra){
-                        InnerQuantumState index1 = index1bra.index();
-                        if(index1 == index1ket){
-                            // TODO
-                            //DEBUG("been there");
-                        }
-                        ++index1bra;
-                    }
-                    ++index2bra;
-                }
-                ++index3bra;
-            }
-            ++index4bra;
-        }
-    }
-}
 
 void Vertex4Part::computeChasing1(void)
 	// I don't have any pen now, so I'm writing here:
@@ -275,31 +234,31 @@ void Vertex4Part::computeChasing2(void)
                                                     index2bra_iter.value()*
                                                     O3matrix.coeff(index3,index4)*
                                                     CX4matrix.coeff(index4,index1);
-			if (abs(MatrixElement) > MATRIX_ELEMENT_TOLERANCE){
-                            MatrixElement *= Permutation.sign;
-                         
-                            RealType E2MinusE1 = E2 - E1;
-                            RealType E3MinusE1 = E3 - E1;
-                            RealType E3MinusE2 = E3 - E2;
-                            RealType E4MinusE1 = E4 - E1;
-                            RealType E4MinusE2 = E4 - E2;
-                            RealType E4MinusE3 = E4 - E3;
                         
-                            TermsType1.push_back(Vertex4TermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
-                            TermsType2.push_back(Vertex4TermType2(MatrixElement*(weight1 + weight2),
-                                                                  MatrixElement*(-beta*weight2),
-                                                                  -MatrixElement*(weight1 + weight4),
-                                                                  E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
-                            TermsType3.push_back(Vertex4TermType3(MatrixElement*(-beta*weight1),
-                                                                  MatrixElement*(weight1 - weight3),
-                                                                  E3MinusE1,E3MinusE2,E4MinusE3,Permutation));
-                                                               
-			}
-			++index2bra_iter;
-			++index2ket_iter;
-			};
-                }
-		};
+                        if (abs(MatrixElement) <= MatrixElementTolerance) continue;
+                          
+                        MatrixElement *= Permutation.sign;
+                         
+                        RealType E2MinusE1 = E2 - E1;
+                        RealType E3MinusE1 = E3 - E1;
+                        RealType E3MinusE2 = E3 - E2;
+                        RealType E4MinusE1 = E4 - E1;
+                        RealType E4MinusE2 = E4 - E2;
+                        RealType E4MinusE3 = E4 - E3;
+                        
+                        TermsType1.push_back(Vertex4TermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
+                        TermsType2.push_back(Vertex4TermType2(MatrixElement*(weight1 + weight2),
+                                                              MatrixElement*(-beta*weight2),
+                                                              -MatrixElement*(weight1 + weight4),
+                                                              E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
+                        TermsType3.push_back(Vertex4TermType3(MatrixElement*(-beta*weight1),
+                                                              MatrixElement*(weight1 - weight3),
+                                                              E3MinusE1,E3MinusE2,E4MinusE3,Permutation));                                       
+                    }
+                    ++index2bra_iter;
+                    ++index2ket_iter;
+                };
+            }
 		};
     }};
 }

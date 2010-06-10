@@ -16,37 +16,7 @@ GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOpe
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
                                         C(C), CX(CX)
 {}
-/*
-void GreensFunctionPart::compute(void)
-{
-    SparseMatrixType& Cmatrix = C.value();
-    SparseMatrixType& CXmatrix = CX.value();
-       
-    QuantumState index1ket;
-    QuantumState index1ketMax = CXmatrix.outerSize();
-    
-    for(index1ket=0; index1ket<index1ketMax; ++index1ket){
-        SparseMatrixType::InnerIterator index2bra(CXmatrix,index1ket);       
-        while(index2bra){
-            QuantumState index2ket = index2bra.index();
-            SparseMatrixType::InnerIterator index1bra(Cmatrix,index2ket);
-            while(index1bra){
-                QuantumState index1 = index1bra.index();
-                if(index1 == index1ket){
-                    ComplexType Residue = index1bra.value() * index2bra.value() * 
-                                          (DMpartOuter.weight(index1) + DMpartInner.weight(index2ket));
-                    ComplexType Pole = HpartInner.reV(index2ket) - HpartOuter.reV(index1);
-                    
-                    if(abs(Residue) > MATRIX_ELEMENT_TOLERANCE)
-                        Terms.push_back(GreensTerm(Residue,Pole));
-                }
-                ++index1bra;
-            }
-            ++index2bra;
-        }
-    }
-}
-*/
+
 void GreensFunctionPart::compute(void)
 {
     Terms.clear();
@@ -66,11 +36,11 @@ void GreensFunctionPart::compute(void)
             if(C_index2 == CX_index2){
                 ComplexType Residue = Cinner.value() * CXinner.value() * 
                                       (DMpartOuter.weight(index1) + DMpartInner.weight(C_index2));
-                if(abs(Residue) > MATRIX_ELEMENT_TOLERANCE)
-		{
+                if(abs(Residue) > MatrixElementTolerance)
+                {
                 	ComplexType Pole = HpartInner.reV(C_index2) - HpartOuter.reV(index1);
                 	Terms.push_back(GreensTerm(Residue,Pole));
-		};
+                };
                 ++Cinner;
                 ++CXinner;
             }else{

@@ -13,7 +13,7 @@ class Vertex4Part {
        
 public:
   
-    enum ComputationMethod {ChasingIndices0, ChasingIndices1, ChasingIndices2};
+    enum ComputationMethod {ChasingIndices1, ChasingIndices2};
     enum Var {Var1 = 0, Var2 = 1, Var3 = 2}; 
     
     struct Vertex4TermType1{
@@ -100,9 +100,10 @@ private:
     std::list<Vertex4TermType2> TermsType2;
     std::list<Vertex4TermType3> TermsType3;
     
-    void computeChasing0(void);
     void computeChasing1(void);
     void computeChasing2(void);
+    
+    static const RealType MatrixElementTolerance = 1e-8;
   
 public:
     Vertex4Part(FieldOperatorPart& O1, FieldOperatorPart& O2, FieldOperatorPart& O3, CreationOperatorPart& CX4,

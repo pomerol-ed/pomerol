@@ -30,6 +30,8 @@ public:
   
 private:
     std::list<GreensTerm> Terms;
+    
+    static const RealType MatrixElementTolerance = 1e-8; 
   
 public:
     

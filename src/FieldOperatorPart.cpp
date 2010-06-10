@@ -87,7 +87,7 @@ void FieldOperatorPart::compute()
                         for (unsigned int m=0; m<fromStates.size(); m++)
                         {
                             RealType C_nm = h_to.reH(l,n)*mFunc(L,K,i)*h_from.reH(k,m);
-                            if (fabs(C_nm)>MATRIX_ELEMENT_TOLERANCE)
+                            if (fabs(C_nm)>MatrixElementTolerance)
                             {       
                                 tempElements.coeffRef(n,m) += C_nm;
                             }
@@ -97,7 +97,7 @@ void FieldOperatorPart::compute()
             }
         }       
     }
-    tempElements.prune(MATRIX_ELEMENT_TOLERANCE);
+    tempElements.prune(MatrixElementTolerance);
     elementsRowMajor = tempElements;
     elementsColMajor = tempElements;
 }
