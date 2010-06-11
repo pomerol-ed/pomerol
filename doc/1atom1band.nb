@@ -1,0 +1,197 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 6.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[      5490,        188]
+NotebookOptionsPosition[      5244,        175]
+NotebookOutlinePosition[      5578,        190]
+CellTagsIndexPosition[      5535,        187]
+WindowFrame->Normal
+ContainsDynamic->False*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"\[Delta]", "[", "x_", "]"}], ":=", 
+   RowBox[{"KroneckerDelta", "[", "x", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"g", "[", "\[Omega]_", "]"}], ":=", 
+   RowBox[{
+    FractionBox["1", "2"], 
+    RowBox[{"(", 
+     RowBox[{
+      FractionBox["1", 
+       RowBox[{
+        RowBox[{"\[ImaginaryI]", "*", "\[Omega]"}], "-", 
+        RowBox[{"U", "/", "2"}]}]], "+", 
+      FractionBox["1", 
+       RowBox[{
+        RowBox[{"\[ImaginaryI]", "*", "\[Omega]"}], "+", 
+        RowBox[{"U", "/", "2"}]}]]}], ")"}]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"\[Gamma]uu", "[", 
+    RowBox[{
+    "\[Omega]1_", ",", "\[Omega]2_", ",", "\[Omega]3_", ",", "\[Omega]4_"}], 
+    "]"}], ":=", 
+   RowBox[{"\[Beta]", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      FractionBox["U", "2"], ")"}], "2"], 
+    FractionBox[
+     RowBox[{
+      RowBox[{"\[Delta]", "[", 
+       RowBox[{"\[Omega]1", "-", "\[Omega]2"}], "]"}], "-", 
+      RowBox[{"\[Delta]", "[", 
+       RowBox[{"\[Omega]2", "-", "\[Omega]3"}], "]"}]}], 
+     RowBox[{
+      SuperscriptBox["\[Omega]1", "2"], 
+      SuperscriptBox["\[Omega]3", "2"]}]], 
+    RowBox[{"(", 
+     RowBox[{
+      SuperscriptBox["\[Omega]1", "2"], "+", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        FractionBox["U", "2"], ")"}], "2"]}], ")"}], 
+    RowBox[{"(", 
+     RowBox[{
+      SuperscriptBox["\[Omega]3", "2"], "+", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        FractionBox["U", "2"], ")"}], "2"]}], ")"}]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"\[Gamma]ud", "[", 
+   RowBox[{
+   "\[Omega]1_", ",", "\[Omega]2_", ",", "\[Omega]3_", ",", "\[Omega]4_"}], 
+   "]"}], ":=", 
+  RowBox[{
+   RowBox[{"-", "U"}], "+", 
+   RowBox[{
+    SuperscriptBox[
+     RowBox[{"(", 
+      FractionBox["U", "2"], ")"}], "3"], 
+    FractionBox[
+     RowBox[{
+      SuperscriptBox["\[Omega]1", "2"], "+", 
+      SuperscriptBox["\[Omega]2", "2"], "+", 
+      SuperscriptBox["\[Omega]3", "2"], "+", 
+      SuperscriptBox["\[Omega]4", "2"]}], 
+     RowBox[{
+     "\[Omega]1", " ", "\[Omega]2", " ", "\[Omega]3", " ", "\[Omega]4"}]]}], 
+   "+", 
+   RowBox[{"6", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      FractionBox["U", "2"], ")"}], "5"], 
+    FractionBox["1", 
+     RowBox[{
+     "\[Omega]1", " ", "\[Omega]2", " ", "\[Omega]3", " ", 
+      "\[Omega]4"}]]}]}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"+", "\[Beta]"}], 
+  SuperscriptBox[
+   RowBox[{"(", 
+    FractionBox["U", "2"], ")"}], "2"], 
+  FractionBox["1", 
+   RowBox[{"1", "+", 
+    SuperscriptBox["\[ExponentialE]", 
+     RowBox[{"\[Beta]", "*", 
+      RowBox[{"U", "/", "2"}]}]]}]], 
+  FractionBox[
+   RowBox[{
+    RowBox[{"2", 
+     RowBox[{"\[Delta]", "[", 
+      RowBox[{"\[Omega]2", "+", "\[Omega]3"}], "]"}]}], "+", 
+    RowBox[{"\[Delta]", "[", 
+     RowBox[{"\[Omega]1", "-", "\[Omega]2"}], "]"}]}], 
+   RowBox[{
+    SuperscriptBox["\[Omega]2", "2"], 
+    SuperscriptBox["\[Omega]3", "2"]}]], 
+  RowBox[{"(", 
+   RowBox[{
+    SuperscriptBox["\[Omega]2", "2"], "+", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      FractionBox["U", "2"], ")"}], "2"]}], ")"}], 
+  RowBox[{"(", 
+   RowBox[{
+    SuperscriptBox["\[Omega]3", "2"], "+", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      FractionBox["U", "2"], ")"}], "2"]}], ")"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"-", "\[Beta]"}], 
+   SuperscriptBox[
+    RowBox[{"(", 
+     FractionBox["U", "2"], ")"}], "2"], 
+   FractionBox["1", 
+    RowBox[{"1", "+", 
+     SuperscriptBox["\[ExponentialE]", 
+      RowBox[{
+       RowBox[{"-", "\[Beta]"}], "*", 
+       RowBox[{"U", "/", "2"}]}]]}]], 
+   FractionBox[
+    RowBox[{
+     RowBox[{"2", 
+      RowBox[{"\[Delta]", "[", 
+       RowBox[{"\[Omega]2", "-", "\[Omega]3"}], "]"}]}], "+", 
+     RowBox[{"\[Delta]", "[", 
+      RowBox[{"\[Omega]1", "-", "\[Omega]2"}], "]"}]}], 
+    RowBox[{
+     SuperscriptBox["\[Omega]1", "2"], 
+     SuperscriptBox["\[Omega]3", "2"]}]], 
+   RowBox[{"(", 
+    RowBox[{
+     SuperscriptBox["\[Omega]1", "2"], "+", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       FractionBox["U", "2"], ")"}], "2"]}], ")"}], 
+   RowBox[{"(", 
+    RowBox[{
+     SuperscriptBox["\[Omega]3", "2"], "+", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       FractionBox["U", "2"], ")"}], "2"]}], ")"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.4852433338120832`*^9, 3.485243445752967*^9}, {
+  3.485243490160248*^9, 3.4852436545726748`*^9}, {3.485244189775875*^9, 
+  3.4852442973718557`*^9}, {3.485244513647048*^9, 3.4852447064364967`*^9}, {
+  3.485244742988701*^9, 3.485244744628286*^9}, {3.485244775678307*^9, 
+  3.485244777089445*^9}}]
+},
+WindowSize->{912, 389},
+WindowMargins->{{Automatic, 103}, {138, Automatic}},
+FrontEndVersion->"6.0 for Linux x86 (64-bit) (June 2, 2008)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[568, 21, 4672, 152, 252, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)
