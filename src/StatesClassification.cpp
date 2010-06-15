@@ -98,9 +98,9 @@ void StatesClassification::iniStatesClassification()		 	//inicialization StatesC
 	#warning : bad N_bit_m definition. Actually existence of N_bit_m is definetely bad.
   	for (vector<BitInfo*>::iterator it=Formula.getBitInfoList().begin(); it != Formula.getBitInfoList().end(); it++ ) 
 	{
-		if ((*it)->type == "p") { N_bit_m = 6; break;};
-		if ((*it)->type == "d") { N_bit_m = 10; break; };
-		if ((*it)->type == "f") { N_bit_m = 14; break; };
+		if ((*it)->type == p) { N_bit_m = 6; break;};
+		if ((*it)->type == d) { N_bit_m = 10; break; };
+		if ((*it)->type == f) { N_bit_m = 14; break; };
 	}
 	
 	vector<QuantumState> null;						//creation null vectors

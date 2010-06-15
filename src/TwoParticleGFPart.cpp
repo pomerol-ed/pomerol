@@ -1,5 +1,8 @@
 #include "TwoParticleGFPart.h"
 
+//DEBUG
+long term_counter=0;
+
 inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter, 
                          ColMajorMatrixType::InnerIterator& index2_iter)
 {
@@ -311,22 +314,27 @@ void TwoParticleGFPart::computeChasing2(void)
                         RealType E4MinusE3 = E4 - E3;
                         
                         if(TwoParticleGFTermType1::IsRelevant(MatrixElement))
+			{
+			    term_counter++;
                             TermsType1.push_back(TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
-                        
+			}
                         ComplexType CoeffA = MatrixElement*(weight1 + weight2);
                         ComplexType CoeffB = MatrixElement*(-beta*weight2);
                         ComplexType CoeffC = -MatrixElement*(weight1 + weight4);
                         
-                        if(TwoParticleGFTermType2::IsRelevant(CoeffA,CoeffB,CoeffC))
+                        if(TwoParticleGFTermType2::IsRelevant(CoeffA,CoeffB,CoeffC)){
+			    term_counter++;
                             TermsType2.push_back(TwoParticleGFTermType2(
                                                  CoeffA,CoeffB,CoeffC,E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
-                        
+			};
                         ComplexType CoeffResonant = MatrixElement*(-beta*weight1);
                         ComplexType CoeffNonResonant = MatrixElement*(weight1 - weight3);
                                                               
-                        if(TwoParticleGFTermType3::IsRelevant(CoeffResonant,CoeffNonResonant))
+                       if(TwoParticleGFTermType3::IsRelevant(CoeffResonant,CoeffNonResonant)){
+			    term_counter++;
                             TermsType3.push_back(TwoParticleGFTermType3(
                                                  CoeffResonant,CoeffNonResonant,E3MinusE1,E3MinusE2,E4MinusE3,Permutation));
+			};
                     }
                     ++index2bra_iter;
                     ++index2ket_iter;

@@ -51,6 +51,9 @@ static const ComplexType I = ComplexType(0.0,1.0);	// 'static' to prevent linkin
 /** Generalized 'square' function. */
 template<typename T> inline T sqr(T x) { return x*x; }
 
+/** Easy enumeration for orbital names */
+enum OrbitalValue {s=0, p=1, d=2, f=3};			 //!< The enum for s,p,d,f - orbitals
+
 /** Permutation of 3 elements */
 struct Permutation3 {
     const size_t perm[3];

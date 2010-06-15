@@ -219,3 +219,16 @@ RealType HamiltonianPart::getMinimumEigenvalue()
 	return V.minCoeff();
 };
 
+bool HamiltonianPart::reduce(RealType ActualCutoff)
+{
+		InnerQuantumState counter=0;
+		for (counter=0; (counter< (unsigned int)V.size() && V[counter]<=ActualCutoff); ++counter){};
+		cout << "Left " << counter << " eigenvalues : " << endl;
+		if (counter) 
+		{cout << V.start(counter) << endl << "_________" << endl;
+		  V=V.start(counter);
+		  H=H.corner(Eigen::TopLeft,counter,counter);
+		  return true;
+		}
+		else return false;
+}

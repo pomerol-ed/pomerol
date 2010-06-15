@@ -11,6 +11,7 @@
 #define __BIT_CLASSIFICATION__
 
 #include "config.h"
+#include "LatticeAnalysis.h"
 #include "Term.h"
 #include <json/json.h>
 #include <map>
@@ -28,7 +29,7 @@ class BitInfo
 public:
   	unsigned short site; 		//!< The number of site
 	unsigned short spin; 		//!< Spin up(1) or Spin down(0)
-	string type;	     		//!< The type of site which handles this spin. Can be s,p,d,f.
+	unsigned short type;	    //!< The type of site which handles this spin. Can be s,p,d,f (0,1,2,3).
 	unsigned short bitNumber;	//!< The number of bit
 	void setBitNumber(const unsigned short &in); 
 	virtual void print_to_screen()=0;
@@ -41,7 +42,7 @@ class sBitInfo : public BitInfo
 {
 public:
 	RealType U;
-	sBitInfo(unsigned short site_, string &type_, unsigned short spin_, RealType U_):U(U_){site=site_;type=type_;spin=spin_;};
+	sBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_, RealType U_):U(U_){site=site_;type=type_;spin=spin_;};
 	friend std::ostream& operator<<(std::ostream& output, const sBitInfo& out);
 	void print_to_screen(){cout << *this << endl;};
 };
@@ -55,8 +56,8 @@ public:
 	RealType U;
 	RealType J;
 	string basis;
-	short index; 
-	pBitInfo(unsigned short site_, string &type_, unsigned short spin_, short index_, const string &basis_, RealType U_, RealType J_):U(U_),J(J_){site=site_;type=type_;spin=spin_;index=index_;basis=basis_;};
+	unsigned short orbital; 
+	pBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_,unsigned short orbital_, const string &basis_, RealType U_, RealType J_):U(U_),J(J_){site=site_;type=type_;spin=spin_;orbital=orbital_;basis=basis_;};
 	friend std::ostream& operator<<(std::ostream& output, const pBitInfo& out);
 	void print_to_screen(){cout << *this << endl;};
 };
@@ -87,31 +88,29 @@ class TermsList
  */
 class BitClassification
 {
-	Json::Value *root; 					 //!< The dictionary for the file Lattice.json
-	int N_bit;						 //!< The length of BitInfoList. Defines the number of states in system as 2^N_bit.
-	RealMatrixType HoppingMatrix;				 //!< The matrix to show all hoppings between different bits.
-	vector<BitInfo*> BitInfoList; 				 //!< A list of all Bits.
-	TermsList Terms;					 //!< The list of all terms for the current Lattice
+	LatticeAnalysis &Lattice;
+	int N_bit;						 			 	//!< The length of BitInfoList. Defines the number of states in system as 2^N_bit.
+	RealMatrixType HoppingMatrix;					//!< The matrix to show all hoppings between different bits.
+	vector<BitInfo*> BitInfoList; 				 	//!< A list of all Bits.
+	TermsList Terms;					 		 	//!< The list of all terms for the current Lattice
 public:
-	BitClassification();
-	int readin();						 //!< Reads all info from file Lattice.json
-	void printBitInfoList();				 //!< Print BitInfoList to screen
-	void printHoppingMatrix();				 //!< Print HoppingMatrix to screen
-	void printTerms();					 //!< Print TermsList to screen
-	RealMatrixType& getHoppingMatrix();			 //!< Returns a Hopping Matrix
-	std::vector<BitInfo*> &getBitInfoList();		 //!< Returns a BitInfoList
-	const int& getBitSize() const;				 //!< Returns N_bit
-	TermsList& getTermsList();				 //!< Returns Terms
+	BitClassification(LatticeAnalysis &Lattice);
+	int prepare();									//!< Reads all info from Lattice (LatticeAnalysis class)
+	void printBitInfoList();				    	//!< Print BitInfoList to screen
+	void printHoppingMatrix();				    	//!< Print HoppingMatrix to screen
+	void printTerms();					 			//!< Print TermsList to screen
+	RealMatrixType& getHoppingMatrix();			 	//!< Returns a Hopping Matrix
+	std::vector<BitInfo*> &getBitInfoList();		//!< Returns a BitInfoList
+	const int& getBitSize() const;				 	//!< Returns N_bit
+	TermsList& getTermsList();				 		//!< Returns Terms
 private:
-	enum OrbitalValue {s=0, p=1, d=2, f=3};			 //!< The enum for s,p,d,f - orbitals
-	std::map<std::string, OrbitalValue> mapOrbitalValue;	 //!< The map between string and value in the previous enum
-	void defineBits();					 //!< Define the bit classification from the info from file
-	void defineHopping();					 //!< Define Hopping from classification
-	void defineTerms();					 //!< Define all terms
+	void defineBits();								//!< Define the bit classification from the info from file
+	void defineHopping();					 		//!< Define Hopping from classification
+	void defineTerms();					 			//!< Define all terms
 	void definePorbitalSphericalTerms(pBitInfo **Bits);	 //!< The bunch of methods to add Terms for p-orbital written in Spherical basis
 	void definePorbitalNativeTerms(pBitInfo **Bits);	 //!< The bunch of methods to add Terms for p-orbital written in Native basis
-	vector<unsigned short>& findBits(const unsigned short &site); //!< The method to find all bits for a corresponding site
-	unsigned short findBit(const unsigned short &site,const unsigned short &spin); // this is a bad method to find a Lz=0 bit of the p-orbital. Should be somehow changed
+	vector<unsigned short>& findBits(const unsigned short &site); //!< A method to find all bits for a corresponding site
+	unsigned short findBit(const unsigned short &site, const unsigned short &orbital, const unsigned short &spin); //!< A method to find bit, which corresponds to given site, orbital and spin
 };
 
 #endif

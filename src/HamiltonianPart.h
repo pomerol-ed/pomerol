@@ -55,6 +55,7 @@ public:
 	QuantumNumbers id();				//return id of current hpart
 	RealType getMinimumEigenvalue();		//!<Return the lowest Eigenvalue of the current part;
 	
+	bool reduce(RealType ActualCutoff);
 	void dump();				//writing Eigen Values and Eigen Vectors in output file
 	void print_to_screen();			//print to screen part of hamiltonian
 	

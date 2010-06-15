@@ -1,5 +1,6 @@
 #include "config.h"
 #include "output.h"
+#include "LatticeAnalysis.h"
 #include "Term.h"
 #include "BitClassification.h"
 #include "StatesClassification.h"
@@ -15,16 +16,24 @@
 
 string input = "system.ini";
 
-BitClassification Formula;
+LatticeAnalysis Lattice;
+BitClassification Formula(Lattice);
 StatesClassification S(Formula); 
 output_handle OUT;
 Hamiltonian H(Formula,S,OUT,input);
 
 IniConfig* pIni;
 
+extern long term_counter;
+
 int main()
 {	
-	Formula.readin();
+	cout << "=======================" << endl;
+	cout << "Lattice Info" << endl;
+	cout << "=======================" << endl;
+	Lattice.readin();
+	cout << Lattice.printSitesList().str() << flush;
+	Formula.prepare();
 	cout << "=======================" << endl;
 	cout << "System Info" << endl;
 	cout << "=======================" << endl;
@@ -64,9 +73,18 @@ int main()
 
 	H.enter();
 	H.diagonalize();
+	RealType beta = (*pIni)["Green Function:beta"];
+	RealType ProbabilityCutoff = RealType((*pIni)["system:ProbabilityCutoff"]);
+	if (ProbabilityCutoff>0 && ProbabilityCutoff < 1) H.reduce(-log(ProbabilityCutoff)/beta);
 	H.dump();
+
 	cout << endl << "The value of ground energy is " << H.getGroundEnergy() << endl;
 
+    DensityMatrix rho(S,H,beta);
+//	DensityMatrix.reduce();
+    	rho.prepare();
+    	rho.compute();
+	
 	//finishing of creation
 	cout << endl;
 	cout << "All parts are created!" << endl;
@@ -94,10 +112,6 @@ int main()
 	{ cout << (*it).first << "->" << (*it).second << " = " << CX.getLeftIndex((*it).second) << "->" << CX.getRightIndex((*it).first) << endl;
 	}
     // DEBUG
-	RealType beta = (*pIni)["Green Function:beta"];
-    	DensityMatrix rho(S,H,beta);
-    	rho.prepare();
-    	rho.compute();
     
 	cout << endl;
 	cout << "==========================================" << endl;
@@ -121,9 +135,9 @@ int main()
         TwoParticleGF Chi4(S,H,C,C,CX,CX,rho,OUT);
         Chi4.prepare();
         Chi4.compute();
-        
-	cout << Chi4(0,1,3) << endl;
-	cout << Chi4(0,2,4) << endl;
+
+	cout << term_counter << " terms" <<  endl;
+	cout << Chi4(0,2,0) << endl;
 	cout << Chi4(0,1,5) << endl;
 
     return 0;

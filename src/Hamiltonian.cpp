@@ -73,3 +73,15 @@ RealType Hamiltonian::getGroundEnergy()
 {
   return GroundEnergy;
 };
+
+void Hamiltonian::reduce(const RealType Cutoff)
+{
+	cout << "Performing EV cutoff at " << Cutoff << " level" << endl;
+	for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
+  	{
+			Hpart[current_block]->reduce(GroundEnergy+Cutoff);
+  	}
+
+};
+
+

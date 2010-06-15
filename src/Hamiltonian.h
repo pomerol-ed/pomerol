@@ -30,6 +30,7 @@ public :
 
   void diagonalize();
   void dump();
+  void reduce(const RealType Cutoff);
 private:
   void computeGroundEnergy();
 };
