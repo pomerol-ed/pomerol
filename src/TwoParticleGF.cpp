@@ -91,15 +91,18 @@ void TwoParticleGF::prepare(void)
     }  
 }
 
-void TwoParticleGF::compute(void)
+void TwoParticleGF::compute(long NumberOfMatsubaras)
 {
-    int i=0;
+	int i=0;
+	NumberOfMatsubaras=(abs(NumberOfMatsubaras)/2)*2;
     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
     {
-	    DEBUG( i << " / " << parts.size() );
+	    cout << (int) ((i*100.0)/parts.size()) << "  " <<flush;
+     //   (*iter)->prepareMatsubaraContainer(NumberOfMatsubaras);
         (*iter)->compute();
-	++i;
+		++i;
     }
+	cout << endl;
 }
 
 ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)

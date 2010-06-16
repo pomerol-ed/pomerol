@@ -1,5 +1,5 @@
-#ifndef ____DEFINE_VERTEX4_PART____
-#define ____DEFINE_VERTEX4_PART____
+#ifndef ____DEFINE_2PGF_PART____
+#define ____DEFINE_2PGF_PART____
 
 #include <list>
 
@@ -86,6 +86,18 @@ public:
         static bool IsRelevant(const ComplexType &CoeffResonant, const ComplexType &CoeffNonResonant);
     };
 
+	class MatsubaraContainer{
+
+		friend class TwoParticleGF;
+		std::vector<MatrixType> Data;
+		std::vector<long> FermionicFirstIndex;
+		int NumberOfMatsubaras;
+	public:
+		void prepare(long NumberOfMatsubaras);
+		ComplexType& operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+	//	void setValue(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+	};
+
 private:
   
     FieldOperatorPart& O1;
@@ -118,9 +130,10 @@ public:
                 DensityMatrixPart& DMpart1, DensityMatrixPart& DMpart2, DensityMatrixPart& DMpart3, DensityMatrixPart& DMpart4,
                 Permutation3 Permutation);
  
+	void prepareMatsubaraContainer(long NumberOfMatsubaras);
     void compute(ComputationMethod method = ChasingIndices2);
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
 
 };
 
-#endif // endif :: #ifndef ____DEFINE_VERTEX4_PART____
+#endif // endif :: #ifndef ____DEFINE_2PGF_PART____

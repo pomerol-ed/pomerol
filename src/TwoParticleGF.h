@@ -1,5 +1,5 @@
-#ifndef ____DEFINE_VERTEX4____
-#define ____DEFINE_VERTEX4____
+#ifndef ____DEFINE_2PGF____
+#define ____DEFINE_2PGF____
 
 #include <sstream>
 #include <fstream>
@@ -43,7 +43,7 @@ public:
     ~TwoParticleGF();
     
     void prepare(void);
-    void compute(void);
+    void compute(long NumberOfMatsubaras);
     
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
     
@@ -54,5 +54,5 @@ public:
     static const Permutation4 permutations4[24];
 };
 
-#endif // endif :: #ifndef ____DEFINE_VERTEX4____
+#endif // endif :: #ifndef ____DEFINE_2PGF____
 

@@ -133,6 +133,24 @@ bool TwoParticleGFPart::TwoParticleGFTermType3::IsRelevant(
 }
 
 //
+// Matsubara Container
+//
+void TwoParticleGFPart::MatsubaraContainer::prepare(long NumberOfMatsubaras)
+{
+	Data.resize(4*NumberOfMatsubaras);
+	FermionicFirstIndex.resize(4*NumberOfMatsubaras);
+	for (int BosonicIndex=-2*NumberOfMatsubaras;BosonicIndex<=2*NumberOfMatsubaras-2;BosonicIndex++)
+	{ 
+	  int Size=(BosonicIndex+1-NumberOfMatsubaras>-NumberOfMatsubaras)?BosonicIndex+1-NumberOfMatsubaras:-NumberOfMatsubaras;
+	  FermionicFirstIndex[BosonicIndex+2*NumberOfMatsubaras]=Size;
+	  Size=((BosonicIndex+NumberOfMatsubaras<NumberOfMatsubaras-1)?BosonicIndex+NumberOfMatsubaras:NumberOfMatsubaras-1) - Size + 1;
+	  Size=(Size<=0)?0:Size;
+	  Data[BosonicIndex+2*NumberOfMatsubaras].resize(Size,Size);
+	  //DEBUG(BosonicIndex << "  " << Size);
+	};
+};
+
+//
 // TwoParticleGFPart
 //
 TwoParticleGFPart::TwoParticleGFPart(
@@ -151,12 +169,13 @@ void TwoParticleGFPart::compute(TwoParticleGFPart::ComputationMethod method)
     TermsType1.clear();
     TermsType2.clear();
     TermsType3.clear();
-    
+
+   
     switch(method){
         case ChasingIndices1: computeChasing1(); break;
         case ChasingIndices2: computeChasing2(); break;
         default: assert(0);
-    }
+    };
 };
 
 void TwoParticleGFPart::computeChasing1(void)
