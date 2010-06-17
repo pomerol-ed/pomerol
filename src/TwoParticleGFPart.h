@@ -86,16 +86,22 @@ public:
         static bool IsRelevant(const ComplexType &CoeffResonant, const ComplexType &CoeffNonResonant);
     };
 
+	/**
+	 * A miniclass to store value of Chi over Matsubara frequencies. Stores data in a (OMEGA,nu,nu'), where OMEGA=w1+w2 - bosonic frequency
+	 * and nu=nu1, nu'=nu4
+	 */
 	class MatsubaraContainer{
 
+		ComplexType MatsubaraSpacing;
+		long NumberOfMatsubaras;
 		friend class TwoParticleGF;
 		std::vector<MatrixType> Data;
 		std::vector<long> FermionicFirstIndex;
-		int NumberOfMatsubaras;
 	public:
+		MatsubaraContainer(RealType beta);
 		void prepare(long NumberOfMatsubaras);
 		ComplexType& operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-	//	void setValue(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+		void fill(std::list<TwoParticleGFTermType1*> &TermsType1, std::list<TwoParticleGFTermType2*> &TermsType2, std::list<TwoParticleGFTermType3*> &TermsType3);
 	};
 
 private:
@@ -117,12 +123,14 @@ private:
 
     Permutation3 Permutation;
     
-    std::list<TwoParticleGFTermType1> TermsType1;
-    std::list<TwoParticleGFTermType2> TermsType2;
-    std::list<TwoParticleGFTermType3> TermsType3;
+    std::list<TwoParticleGFTermType1*> TermsType1;
+    std::list<TwoParticleGFTermType2*> TermsType2;
+    std::list<TwoParticleGFTermType3*> TermsType3;
     
-    void computeChasing1(void);
-    void computeChasing2(void);
+	MatsubaraContainer *Storage;
+
+    void computeChasing1(long NumberOfMatsubaras);
+    void computeChasing2(long NumberOfMatsubaras);
       
 public:
     TwoParticleGFPart(FieldOperatorPart& O1, FieldOperatorPart& O2, FieldOperatorPart& O3, CreationOperatorPart& CX4,
@@ -130,8 +138,7 @@ public:
                 DensityMatrixPart& DMpart1, DensityMatrixPart& DMpart2, DensityMatrixPart& DMpart3, DensityMatrixPart& DMpart4,
                 Permutation3 Permutation);
  
-	void prepareMatsubaraContainer(long NumberOfMatsubaras);
-    void compute(ComputationMethod method = ChasingIndices2);
+    void compute(long NumberOfMatsubaras, ComputationMethod method = ChasingIndices2);
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
 
 };

@@ -135,18 +135,60 @@ bool TwoParticleGFPart::TwoParticleGFTermType3::IsRelevant(
 //
 // Matsubara Container
 //
-void TwoParticleGFPart::MatsubaraContainer::prepare(long NumberOfMatsubaras)
+TwoParticleGFPart::MatsubaraContainer::MatsubaraContainer(RealType beta):MatsubaraSpacing(I*M_PI/beta){};
+
+void TwoParticleGFPart::MatsubaraContainer::prepare(long NumberOfMatsubaras_)
 {
+	NumberOfMatsubaras=NumberOfMatsubaras_;
 	Data.resize(4*NumberOfMatsubaras);
 	FermionicFirstIndex.resize(4*NumberOfMatsubaras);
-	for (int BosonicIndex=-2*NumberOfMatsubaras;BosonicIndex<=2*NumberOfMatsubaras-2;BosonicIndex++)
+	for (int BosonicIndex=-2*NumberOfMatsubaras;BosonicIndex<=(int)(2*NumberOfMatsubaras)-2;BosonicIndex++)
 	{ 
 	  int Size=(BosonicIndex+1-NumberOfMatsubaras>-NumberOfMatsubaras)?BosonicIndex+1-NumberOfMatsubaras:-NumberOfMatsubaras;
 	  FermionicFirstIndex[BosonicIndex+2*NumberOfMatsubaras]=Size;
 	  Size=((BosonicIndex+NumberOfMatsubaras<NumberOfMatsubaras-1)?BosonicIndex+NumberOfMatsubaras:NumberOfMatsubaras-1) - Size + 1;
 	  Size=(Size<=0)?0:Size;
 	  Data[BosonicIndex+2*NumberOfMatsubaras].resize(Size,Size);
-	  //DEBUG(BosonicIndex << "  " << Size);
+	  Data[BosonicIndex+2*NumberOfMatsubaras].setZero();
+	};
+};
+
+ComplexType& TwoParticleGFPart::MatsubaraContainer::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
+{
+	unsigned int RealBosonicIndex = MatsubaraNumber1 + MatsubaraNumber2 + 2*NumberOfMatsubaras;
+	return Data[RealBosonicIndex](MatsubaraNumber1+NumberOfMatsubaras-FermionicFirstIndex[RealBosonicIndex],RealBosonicIndex-MatsubaraNumber3-FermionicFirstIndex[RealBosonicIndex]);
+};
+
+
+void TwoParticleGFPart::MatsubaraContainer::fill(std::list<TwoParticleGFTermType1*> &TermsType1, std::list<TwoParticleGFTermType2*> &TermsType2, std::list<TwoParticleGFTermType3*> &TermsType3)
+{
+	for (long BosonicIndex=0;BosonicIndex<=(4*NumberOfMatsubaras)-2;BosonicIndex++){
+		for (long nuIndex=0;nuIndex<Data[BosonicIndex].cols();++nuIndex){
+			for (long nu1Index=0;nu1Index<Data[BosonicIndex].cols();++nu1Index){
+				
+				long FermionicIndexShift = FermionicFirstIndex[BosonicIndex];
+				long MatsubaraNumber2 = nuIndex +FermionicIndexShift;
+				long MatsubaraNumber1 = BosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber2;
+				long MatsubaraNumber3 = nu1Index+FermionicIndexShift;
+
+				long MatsubaraNumberOdd1 = 2*MatsubaraNumber1 + 1;
+    			long MatsubaraNumberOdd2 = 2*MatsubaraNumber2 + 1;
+    			long MatsubaraNumberOdd3 = 2*MatsubaraNumber3 + 1;
+    			ComplexType Frequency1 = MatsubaraSpacing * RealType(MatsubaraNumberOdd1);
+    			ComplexType Frequency2 = MatsubaraSpacing * RealType(MatsubaraNumberOdd2);
+    			ComplexType Frequency3 = MatsubaraSpacing * RealType(MatsubaraNumberOdd3);
+    
+   				ComplexType Value = 0;
+    			for(std::list<TwoParticleGFTermType1*>::const_iterator pTerm = TermsType1.begin(); pTerm != TermsType1.end(); ++pTerm)
+        			Value += (**pTerm)(Frequency1,Frequency2,Frequency3);
+		    	for(std::list<TwoParticleGFTermType2*>::const_iterator pTerm = TermsType2.begin(); pTerm != TermsType2.end(); ++pTerm)
+    		    	Value += (**pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
+ 		   		for(std::list<TwoParticleGFTermType3*>::const_iterator pTerm = TermsType3.begin(); pTerm != TermsType3.end(); ++pTerm)
+       		 		Value += (**pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
+
+				Data[BosonicIndex](nuIndex,nu1Index)+=Value;
+			};
+		};
 	};
 };
 
@@ -161,10 +203,9 @@ TwoParticleGFPart::TwoParticleGFPart(
 O1(O1), O2(O2), O3(O3), CX4(CX4), 
 Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
 DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
-Permutation(Permutation)
-{}
+Permutation(Permutation),Storage(new MatsubaraContainer(DMpart1.getBeta())){};
 
-void TwoParticleGFPart::compute(TwoParticleGFPart::ComputationMethod method)
+void TwoParticleGFPart::compute(long NumberOfMatsubaras, TwoParticleGFPart::ComputationMethod method)
 {
     TermsType1.clear();
     TermsType2.clear();
@@ -172,16 +213,17 @@ void TwoParticleGFPart::compute(TwoParticleGFPart::ComputationMethod method)
 
    
     switch(method){
-        case ChasingIndices1: computeChasing1(); break;
-        case ChasingIndices2: computeChasing2(); break;
+        case ChasingIndices1: computeChasing1(NumberOfMatsubaras); break;
+        case ChasingIndices2: computeChasing2(NumberOfMatsubaras); break;
         default: assert(0);
     };
 };
 
-void TwoParticleGFPart::computeChasing1(void)
+void TwoParticleGFPart::computeChasing1(long NumberOfMatsubaras)
 	// I don't have any pen now, so I'm writing here:
 	// <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
 {
+	Storage->prepare(NumberOfMatsubaras);
     RealType beta = DMpart1.getBeta();  
   
     RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
@@ -236,21 +278,21 @@ void TwoParticleGFPart::computeChasing1(void)
                         RealType E4MinusE3 = E4 - E3;
                         
                         if(TwoParticleGFTermType1::IsRelevant(MatrixElement))
-                            TermsType1.push_back(TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
+                            TermsType1.push_back(new TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
                         
                         ComplexType CoeffA = MatrixElement*(weight1 + weight2);
                         ComplexType CoeffB = MatrixElement*(-beta*weight2);
                         ComplexType CoeffC = -MatrixElement*(weight1 + weight4);
                         
                         if(TwoParticleGFTermType2::IsRelevant(CoeffA,CoeffB,CoeffC))
-                            TermsType2.push_back(TwoParticleGFTermType2(
+                            TermsType2.push_back(new TwoParticleGFTermType2(
                                                  CoeffA,CoeffB,CoeffC,E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
                         
                         ComplexType CoeffResonant = MatrixElement*(-beta*weight1);
                         ComplexType CoeffNonResonant = MatrixElement*(weight1 - weight3);
                                                               
                         if(TwoParticleGFTermType3::IsRelevant(CoeffResonant,CoeffNonResonant))
-                            TermsType3.push_back(TwoParticleGFTermType3(
+                            TermsType3.push_back(new TwoParticleGFTermType3(
                                                  CoeffResonant,CoeffNonResonant,E3MinusE1,E3MinusE2,E4MinusE3,Permutation));                
                         
                         ++index3ket_iter;
@@ -262,12 +304,13 @@ void TwoParticleGFPart::computeChasing1(void)
             ++index4bra;
         };
     };
+Storage->fill(TermsType1, TermsType2, TermsType3);
 };
 
-void TwoParticleGFPart::computeChasing2(void)
+void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
 {
     RealType beta = DMpart1.getBeta();
-       
+	Storage->prepare(NumberOfMatsubaras);
 	// I don't have any pen now, so I'm writing here:
 	// <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
     RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
@@ -335,7 +378,7 @@ void TwoParticleGFPart::computeChasing2(void)
                         if(TwoParticleGFTermType1::IsRelevant(MatrixElement))
 			{
 			    term_counter++;
-                            TermsType1.push_back(TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
+                            TermsType1.push_back(new TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
 			}
                         ComplexType CoeffA = MatrixElement*(weight1 + weight2);
                         ComplexType CoeffB = MatrixElement*(-beta*weight2);
@@ -343,7 +386,7 @@ void TwoParticleGFPart::computeChasing2(void)
                         
                         if(TwoParticleGFTermType2::IsRelevant(CoeffA,CoeffB,CoeffC)){
 			    term_counter++;
-                            TermsType2.push_back(TwoParticleGFTermType2(
+                            TermsType2.push_back(new TwoParticleGFTermType2(
                                                  CoeffA,CoeffB,CoeffC,E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
 			};
                         ComplexType CoeffResonant = MatrixElement*(-beta*weight1);
@@ -351,7 +394,7 @@ void TwoParticleGFPart::computeChasing2(void)
                                                               
                        if(TwoParticleGFTermType3::IsRelevant(CoeffResonant,CoeffNonResonant)){
 			    term_counter++;
-                            TermsType3.push_back(TwoParticleGFTermType3(
+                            TermsType3.push_back(new TwoParticleGFTermType3(
                                                  CoeffResonant,CoeffNonResonant,E3MinusE1,E3MinusE2,E4MinusE3,Permutation));
 			};
                     }
@@ -360,7 +403,20 @@ void TwoParticleGFPart::computeChasing2(void)
                 };
             }
 		};
-    }};
+    }
+	Storage->fill(TermsType1, TermsType2, TermsType3);
+//	int a;
+//	std::cin >> a;
+	std::list<TwoParticleGFTermType1*>().swap( TermsType1 );
+	TermsType1.clear();
+	std::list<TwoParticleGFTermType2*>().swap( TermsType2 );
+	TermsType2.clear();
+	std::list<TwoParticleGFTermType3*>().swap( TermsType3 );
+	TermsType3.clear();
+//	std::cin >> a;
+
+	
+	};
 }
 
 ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
@@ -374,12 +430,12 @@ ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraN
     ComplexType Frequency3 = MatsubaraSpacing * RealType(MatsubaraNumberOdd3);
     
     ComplexType Value = 0;
-    for(std::list<TwoParticleGFTermType1>::const_iterator pTerm = TermsType1.begin(); pTerm != TermsType1.end(); ++pTerm)
-        Value += (*pTerm)(Frequency1,Frequency2,Frequency3);
-    for(std::list<TwoParticleGFTermType2>::const_iterator pTerm = TermsType2.begin(); pTerm != TermsType2.end(); ++pTerm)
-        Value += (*pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
-    for(std::list<TwoParticleGFTermType3>::const_iterator pTerm = TermsType3.begin(); pTerm != TermsType3.end(); ++pTerm)
-        Value += (*pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
+    for(std::list<TwoParticleGFTermType1*>::const_iterator pTerm = TermsType1.begin(); pTerm != TermsType1.end(); ++pTerm)
+        Value += (**pTerm)(Frequency1,Frequency2,Frequency3);
+    for(std::list<TwoParticleGFTermType2*>::const_iterator pTerm = TermsType2.begin(); pTerm != TermsType2.end(); ++pTerm)
+        Value += (**pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
+    for(std::list<TwoParticleGFTermType3*>::const_iterator pTerm = TermsType3.begin(); pTerm != TermsType3.end(); ++pTerm)
+        Value += (**pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
     
     return Value;
 }

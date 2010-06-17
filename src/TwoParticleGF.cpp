@@ -98,8 +98,7 @@ void TwoParticleGF::compute(long NumberOfMatsubaras)
     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
     {
 	    cout << (int) ((i*100.0)/parts.size()) << "  " <<flush;
-     //   (*iter)->prepareMatsubaraContainer(NumberOfMatsubaras);
-        (*iter)->compute();
+        (*iter)->compute(NumberOfMatsubaras);
 		++i;
     }
 	cout << endl;

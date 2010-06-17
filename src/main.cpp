@@ -134,7 +134,7 @@ int main()
 	cout << "==========================================" << endl;
         TwoParticleGF Chi4(S,H,C,C,CX,CX,rho,OUT);
         Chi4.prepare();
-        Chi4.compute(40);
+        Chi4.compute(60);
 
 	cout << term_counter << " terms" <<  endl;
 	cout << Chi4(0,2,0) << endl;
