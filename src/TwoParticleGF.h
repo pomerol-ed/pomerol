@@ -47,6 +47,8 @@ public:
     void prepare(void);
     void compute(long NumberOfMatsubaras);
     
+    unsigned short getBit(size_t Position) const;
+    
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
     
     string getPath();

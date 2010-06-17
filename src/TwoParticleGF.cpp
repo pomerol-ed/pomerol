@@ -116,6 +116,17 @@ ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumbe
 
 }
 
+unsigned short TwoParticleGF::getBit(size_t Position) const
+{
+    switch(Position){
+        case 0: return C1.getBit();
+        case 1: return C2.getBit();
+        case 2: return CX3.getBit();
+        case 3: return CX4.getBit();
+        default: assert(0);
+    }
+}
+
 string TwoParticleGF::getPath()
 {
     return green_path.fullpath();

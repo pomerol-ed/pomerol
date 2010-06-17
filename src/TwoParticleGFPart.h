@@ -89,13 +89,12 @@ public:
 
 	/**
 	 * A miniclass to store value of Chi over Matsubara frequencies. Stores data in a (OMEGA,nu,nu'), where OMEGA=w1+w2 - bosonic frequency
-	 * and nu=nu1, nu'=nu4
+	 * and nu=w1, nu'=w4
 	 */
 	class MatsubaraContainer{
 
 		ComplexType MatsubaraSpacing;
 		long NumberOfMatsubaras;
-		friend class TwoParticleGF;
 		std::vector<MatrixType> Data;
 		std::vector<long> FermionicFirstIndex;
 	public:

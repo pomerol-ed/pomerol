@@ -45,7 +45,7 @@ public:
 	void compute();
 	void dump();
 	void print_to_screen();
-	unsigned short getBit();
+	unsigned short getBit() const;
 };
 
 class CreationOperator;
