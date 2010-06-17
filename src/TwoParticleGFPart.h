@@ -101,7 +101,7 @@ public:
 		MatsubaraContainer(RealType beta);
 		void prepare(long NumberOfMatsubaras);
 		ComplexType& operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-		void fill(std::list<TwoParticleGFTermType1*> &TermsType1, std::list<TwoParticleGFTermType2*> &TermsType2, std::list<TwoParticleGFTermType3*> &TermsType3);
+		void fill(std::list<TwoParticleGFTermType1> &TermsType1, std::list<TwoParticleGFTermType2> &TermsType2, std::list<TwoParticleGFTermType3> &TermsType3);
 	};
 
 private:
@@ -123,9 +123,9 @@ private:
 
     Permutation3 Permutation;
     
-    std::list<TwoParticleGFTermType1*> TermsType1;
-    std::list<TwoParticleGFTermType2*> TermsType2;
-    std::list<TwoParticleGFTermType3*> TermsType3;
+    std::list<TwoParticleGFTermType1> TermsType1;
+    std::list<TwoParticleGFTermType2> TermsType2;
+    std::list<TwoParticleGFTermType3> TermsType3;
     
 	MatsubaraContainer *Storage;
 

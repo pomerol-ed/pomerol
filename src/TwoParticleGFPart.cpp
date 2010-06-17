@@ -160,7 +160,7 @@ ComplexType& TwoParticleGFPart::MatsubaraContainer::operator()(long MatsubaraNum
 };
 
 
-void TwoParticleGFPart::MatsubaraContainer::fill(std::list<TwoParticleGFTermType1*> &TermsType1, std::list<TwoParticleGFTermType2*> &TermsType2, std::list<TwoParticleGFTermType3*> &TermsType3)
+void TwoParticleGFPart::MatsubaraContainer::fill(std::list<TwoParticleGFTermType1> &TermsType1, std::list<TwoParticleGFTermType2> &TermsType2, std::list<TwoParticleGFTermType3> &TermsType3)
 {
 	for (long BosonicIndex=0;BosonicIndex<=(4*NumberOfMatsubaras)-2;BosonicIndex++){
 		for (long nuIndex=0;nuIndex<Data[BosonicIndex].cols();++nuIndex){
@@ -179,12 +179,12 @@ void TwoParticleGFPart::MatsubaraContainer::fill(std::list<TwoParticleGFTermType
     			ComplexType Frequency3 = MatsubaraSpacing * RealType(MatsubaraNumberOdd3);
     
    				ComplexType Value = 0;
-    			for(std::list<TwoParticleGFTermType1*>::const_iterator pTerm = TermsType1.begin(); pTerm != TermsType1.end(); ++pTerm)
-        			Value += (**pTerm)(Frequency1,Frequency2,Frequency3);
-		    	for(std::list<TwoParticleGFTermType2*>::const_iterator pTerm = TermsType2.begin(); pTerm != TermsType2.end(); ++pTerm)
-    		    	Value += (**pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
- 		   		for(std::list<TwoParticleGFTermType3*>::const_iterator pTerm = TermsType3.begin(); pTerm != TermsType3.end(); ++pTerm)
-       		 		Value += (**pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
+    			for(std::list<TwoParticleGFTermType1>::const_iterator pTerm = TermsType1.begin(); pTerm != TermsType1.end(); ++pTerm)
+        			Value += (*pTerm)(Frequency1,Frequency2,Frequency3);
+		    	for(std::list<TwoParticleGFTermType2>::const_iterator pTerm = TermsType2.begin(); pTerm != TermsType2.end(); ++pTerm)
+    		    	Value += (*pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
+ 		   		for(std::list<TwoParticleGFTermType3>::const_iterator pTerm = TermsType3.begin(); pTerm != TermsType3.end(); ++pTerm)
+       		 		Value += (*pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
 
 				Data[BosonicIndex](nuIndex,nu1Index)+=Value;
 			};
@@ -278,21 +278,21 @@ void TwoParticleGFPart::computeChasing1(long NumberOfMatsubaras)
                         RealType E4MinusE3 = E4 - E3;
                         
                         if(TwoParticleGFTermType1::IsRelevant(MatrixElement))
-                            TermsType1.push_back(new TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
+                            TermsType1.push_back(TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
                         
                         ComplexType CoeffA = MatrixElement*(weight1 + weight2);
                         ComplexType CoeffB = MatrixElement*(-beta*weight2);
                         ComplexType CoeffC = -MatrixElement*(weight1 + weight4);
                         
                         if(TwoParticleGFTermType2::IsRelevant(CoeffA,CoeffB,CoeffC))
-                            TermsType2.push_back(new TwoParticleGFTermType2(
+                            TermsType2.push_back(TwoParticleGFTermType2(
                                                  CoeffA,CoeffB,CoeffC,E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
                         
                         ComplexType CoeffResonant = MatrixElement*(-beta*weight1);
                         ComplexType CoeffNonResonant = MatrixElement*(weight1 - weight3);
                                                               
                         if(TwoParticleGFTermType3::IsRelevant(CoeffResonant,CoeffNonResonant))
-                            TermsType3.push_back(new TwoParticleGFTermType3(
+                            TermsType3.push_back(TwoParticleGFTermType3(
                                                  CoeffResonant,CoeffNonResonant,E3MinusE1,E3MinusE2,E4MinusE3,Permutation));                
                         
                         ++index3ket_iter;
@@ -378,7 +378,7 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
                         if(TwoParticleGFTermType1::IsRelevant(MatrixElement))
 			{
 			    term_counter++;
-                            TermsType1.push_back(new TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
+                            TermsType1.push_back(TwoParticleGFTermType1(-MatrixElement,E2MinusE1,E3MinusE2,E4MinusE3,Permutation));
 			}
                         ComplexType CoeffA = MatrixElement*(weight1 + weight2);
                         ComplexType CoeffB = MatrixElement*(-beta*weight2);
@@ -386,7 +386,7 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
                         
                         if(TwoParticleGFTermType2::IsRelevant(CoeffA,CoeffB,CoeffC)){
 			    term_counter++;
-                            TermsType2.push_back(new TwoParticleGFTermType2(
+                            TermsType2.push_back(TwoParticleGFTermType2(
                                                  CoeffA,CoeffB,CoeffC,E4MinusE1,E4MinusE2,E4MinusE3,E2MinusE1,Permutation));
 			};
                         ComplexType CoeffResonant = MatrixElement*(-beta*weight1);
@@ -394,7 +394,7 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
                                                               
                        if(TwoParticleGFTermType3::IsRelevant(CoeffResonant,CoeffNonResonant)){
 			    term_counter++;
-                            TermsType3.push_back(new TwoParticleGFTermType3(
+                            TermsType3.push_back(TwoParticleGFTermType3(
                                                  CoeffResonant,CoeffNonResonant,E3MinusE1,E3MinusE2,E4MinusE3,Permutation));
 			};
                     }
@@ -407,11 +407,11 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
 	Storage->fill(TermsType1, TermsType2, TermsType3);
 //	int a;
 //	std::cin >> a;
-	std::list<TwoParticleGFTermType1*>().swap( TermsType1 );
+	//std::list<TwoParticleGFTermType1>().swap( TermsType1 );
 	TermsType1.clear();
-	std::list<TwoParticleGFTermType2*>().swap( TermsType2 );
+//	std::list<TwoParticleGFTermType2>().swap( TermsType2 );
 	TermsType2.clear();
-	std::list<TwoParticleGFTermType3*>().swap( TermsType3 );
+//	std::list<TwoParticleGFTermType3>().swap( TermsType3 );
 	TermsType3.clear();
 //	std::cin >> a;
 
@@ -430,12 +430,12 @@ ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraN
     ComplexType Frequency3 = MatsubaraSpacing * RealType(MatsubaraNumberOdd3);
     
     ComplexType Value = 0;
-    for(std::list<TwoParticleGFTermType1*>::const_iterator pTerm = TermsType1.begin(); pTerm != TermsType1.end(); ++pTerm)
-        Value += (**pTerm)(Frequency1,Frequency2,Frequency3);
-    for(std::list<TwoParticleGFTermType2*>::const_iterator pTerm = TermsType2.begin(); pTerm != TermsType2.end(); ++pTerm)
-        Value += (**pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
-    for(std::list<TwoParticleGFTermType3*>::const_iterator pTerm = TermsType3.begin(); pTerm != TermsType3.end(); ++pTerm)
-        Value += (**pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
+    for(std::list<TwoParticleGFTermType1>::const_iterator pTerm = TermsType1.begin(); pTerm != TermsType1.end(); ++pTerm)
+        Value += (*pTerm)(Frequency1,Frequency2,Frequency3);
+    for(std::list<TwoParticleGFTermType2>::const_iterator pTerm = TermsType2.begin(); pTerm != TermsType2.end(); ++pTerm)
+        Value += (*pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
+    for(std::list<TwoParticleGFTermType3>::const_iterator pTerm = TermsType3.begin(); pTerm != TermsType3.end(); ++pTerm)
+        Value += (*pTerm)(MatsubaraNumberOdd1,MatsubaraNumberOdd2,MatsubaraNumberOdd3,Frequency1,Frequency2,Frequency3);
     
     return Value;
 }
