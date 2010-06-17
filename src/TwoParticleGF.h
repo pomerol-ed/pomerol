@@ -33,6 +33,8 @@ class TwoParticleGF {
     
     FieldOperatorPart& OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in);
     BlockNumber OperatorAtPositionMapsTo(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in);
+
+	TwoParticleGFPart::MatsubaraContainer *Storage;
     
 public:
     TwoParticleGF(StatesClassification& S, Hamiltonian& H,

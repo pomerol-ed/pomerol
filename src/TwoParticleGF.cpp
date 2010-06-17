@@ -32,6 +32,7 @@ TwoParticleGF::TwoParticleGF(StatesClassification& S, Hamiltonian& H,
                 output_handle &OUT) : parts(0), S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM)
 {
     green_path = output_handle(OUT.path() + "/Gamma4");
+	Storage = new TwoParticleGFPart::MatsubaraContainer(DM.getBeta());
 }
 
 TwoParticleGF::~TwoParticleGF()
@@ -94,11 +95,13 @@ void TwoParticleGF::prepare(void)
 void TwoParticleGF::compute(long NumberOfMatsubaras)
 {
 	int i=0;
-	NumberOfMatsubaras=(abs(NumberOfMatsubaras)/2)*2;
+	Storage->prepare(NumberOfMatsubaras);
     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
     {
 	    cout << (int) ((i*100.0)/parts.size()) << "  " <<flush;
         (*iter)->compute(NumberOfMatsubaras);
+		*Storage+=(*iter)->getMatsubaraContainer();
+		(*iter)->clear();
 		++i;
     }
 	cout << endl;
@@ -107,9 +110,10 @@ void TwoParticleGF::compute(long NumberOfMatsubaras)
 ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
     ComplexType Value = 0;
-    for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
-        Value += (**iter)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
-    return Value;
+//    for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+//        Value += (**iter)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    return Storage->operator()(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+
 }
 
 string TwoParticleGF::getPath()

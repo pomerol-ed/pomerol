@@ -89,6 +89,7 @@ bool TwoParticleGFPart::TwoParticleGFTermType2::IsRelevant(
     return abs(CoeffA) > Tolerance || abs(CoeffB) > Tolerance || abs(CoeffC) > Tolerance;
 }
 
+//TwoParticleGFPart::TwoParticleGFTermType2::~TwoParticleGFTermType2(){cout << "I've been destructed. Yeah!" << endl;}
 //
 // TwoParticleGFPart:;TwoParticleGFTermType3
 //
@@ -159,6 +160,13 @@ ComplexType& TwoParticleGFPart::MatsubaraContainer::operator()(long MatsubaraNum
 	return Data[RealBosonicIndex](MatsubaraNumber1+NumberOfMatsubaras-FermionicFirstIndex[RealBosonicIndex],RealBosonicIndex-MatsubaraNumber3-FermionicFirstIndex[RealBosonicIndex]);
 };
 
+TwoParticleGFPart::MatsubaraContainer& TwoParticleGFPart::MatsubaraContainer::operator+= (const MatsubaraContainer& rhs)
+{
+	for (long BosonicIndex=0;BosonicIndex<=(4*NumberOfMatsubaras)-2;BosonicIndex++){
+		Data[BosonicIndex]+=rhs.Data[BosonicIndex];
+	}
+	return (*this);
+};
 
 void TwoParticleGFPart::MatsubaraContainer::fill(std::list<TwoParticleGFTermType1> &TermsType1, std::list<TwoParticleGFTermType2> &TermsType2, std::list<TwoParticleGFTermType3> &TermsType3)
 {
@@ -192,6 +200,13 @@ void TwoParticleGFPart::MatsubaraContainer::fill(std::list<TwoParticleGFTermType
 	};
 };
 
+
+void TwoParticleGFPart::MatsubaraContainer::clear()
+{
+	for (long BosonicIndex=0;BosonicIndex<=(4*NumberOfMatsubaras)-2;BosonicIndex++){
+		Data[BosonicIndex].resize(0,0);
+	}
+}
 //
 // TwoParticleGFPart
 //
@@ -217,6 +232,14 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras, TwoParticleGFPart::Comp
         case ChasingIndices2: computeChasing2(NumberOfMatsubaras); break;
         default: assert(0);
     };
+};
+
+void TwoParticleGFPart::clear()
+{
+    TermsType1.clear();
+    TermsType2.clear();
+    TermsType3.clear();
+	Storage->clear();
 };
 
 void TwoParticleGFPart::computeChasing1(long NumberOfMatsubaras)
@@ -311,6 +334,7 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
 {
     RealType beta = DMpart1.getBeta();
 	Storage->prepare(NumberOfMatsubaras);
+//	DEBUG((*Storage)(0,0,0));
 	// I don't have any pen now, so I'm writing here:
 	// <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
     RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
@@ -405,18 +429,16 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
 		};
     }
 	Storage->fill(TermsType1, TermsType2, TermsType3);
-//	int a;
-//	std::cin >> a;
-	//std::list<TwoParticleGFTermType1>().swap( TermsType1 );
 	TermsType1.clear();
-//	std::list<TwoParticleGFTermType2>().swap( TermsType2 );
 	TermsType2.clear();
-//	std::list<TwoParticleGFTermType3>().swap( TermsType3 );
 	TermsType3.clear();
-//	std::cin >> a;
-
-	
 	};
+// DEBUG((*Storage)(0,0,0));
+}
+
+
+const TwoParticleGFPart::MatsubaraContainer& TwoParticleGFPart::getMatsubaraContainer(){
+	return *Storage;
 }
 
 ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)

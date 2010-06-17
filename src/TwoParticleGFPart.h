@@ -57,6 +57,7 @@ public:
                                
         static const RealType Tolerance = 1e-10;
         static bool IsRelevant(const ComplexType &CoeffA, const ComplexType &CoeffB, const ComplexType &CoeffC);
+        //~TwoParticleGFTermType2();
     };
     
     struct TwoParticleGFTermType3{
@@ -102,6 +103,8 @@ public:
 		void prepare(long NumberOfMatsubaras);
 		ComplexType& operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
 		void fill(std::list<TwoParticleGFTermType1> &TermsType1, std::list<TwoParticleGFTermType2> &TermsType2, std::list<TwoParticleGFTermType3> &TermsType3);
+		MatsubaraContainer& operator+=(const MatsubaraContainer& rhs);
+		void clear();
 	};
 
 private:
@@ -139,7 +142,9 @@ public:
                 Permutation3 Permutation);
  
     void compute(long NumberOfMatsubaras, ComputationMethod method = ChasingIndices2);
+	void clear();
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+	const MatsubaraContainer& getMatsubaraContainer();
 
 };
 
