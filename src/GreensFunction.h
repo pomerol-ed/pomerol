@@ -34,6 +34,8 @@ public:
     void prepare(void);
     void compute(void);
     
+    unsigned short getBit(size_t Position) const;
+    
     ComplexType operator()(long MatsubaraNum);
     
     //void dump(void);

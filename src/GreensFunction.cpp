@@ -59,6 +59,15 @@ ComplexType GreensFunction::operator()(long MatsubaraNum)
       return Value;
 }
 
+unsigned short GreensFunction::getBit(size_t Position) const
+{
+    switch(Position){
+        case 0: return C.getBit();
+        case 1: return CX.getBit();
+        default: assert(0);
+    }
+}
+
 string GreensFunction::getPath()
 {
     return green_path.fullpath();

@@ -127,6 +127,11 @@ unsigned short TwoParticleGF::getBit(size_t Position) const
     }
 }
 
+RealType TwoParticleGF::getBeta() const
+{
+    return DM.getBeta();
+}
+
 string TwoParticleGF::getPath()
 {
     return green_path.fullpath();
