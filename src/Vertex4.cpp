@@ -44,9 +44,9 @@ ComplexType Vertex4::getAmputated(long MatsubaraNumber1, long MatsubaraNumber2, 
        (ChiBit2 == ChiBit3 && MatsubaraNumber2 == MatsubaraNumber3)){
         
         if(ChiBit1 == ChiBit3)
-            Value += Chi.getBeta() * g1Value*g2Value;
-        else
             Value -= Chi.getBeta() * g1Value*g2Value;
+        else
+            Value += Chi.getBeta() * g1Value*g2Value;
     }
 
     Value /= g1Value*g2Value*g3Value*g4Value;
