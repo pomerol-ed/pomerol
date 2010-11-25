@@ -88,7 +88,7 @@ void GreensFunction::dumpMatsubara(unsigned short points)
 	for (int k=0; k<points; k++)
 	{
         ComplexType G = (*this)(k);
-		output << k << "\t" << std::setprecision(9) << real(G) << "\t" << imag(G) << endl;
+		output << std::setprecision(9) << real(G) << "    " << imag(G) << "    " << endl;
 	}
 		
 	output.close();

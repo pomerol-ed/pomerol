@@ -10,6 +10,7 @@
 #include "FieldOperator.h"
 #include "GreensFunction.h"
 #include "TwoParticleGF.h"
+#include "Vertex4.h"
 
 #include "iniconfig.h"
 
@@ -78,12 +79,13 @@ int main()
 	if (ProbabilityCutoff>0 && ProbabilityCutoff < 1) H.reduce(-log(ProbabilityCutoff)/beta);
 	H.dump();
 
-	cout << endl << "The value of ground energy is " << H.getGroundEnergy() << endl;
+	num_cout << endl << "The value of ground energy is " << H.getGroundEnergy() << endl;
 
     DensityMatrix rho(S,H,beta);
 //	DensityMatrix.reduce();
-    	rho.prepare();
-    	rho.compute();
+    rho.prepare();
+    rho.compute();
+	num_cout << "<H> = " << rho.getAverageEnergy() << endl;
 	
 	//finishing of creation
 	cout << endl;
@@ -105,13 +107,13 @@ int main()
 	C.compute();
 	C.dump();
 
-	std::list<BlockMapping> ind = CX.getNonTrivialIndices();
+    // DEBUG
+/*	std::list<BlockMapping> ind = CX.getNonTrivialIndices();
 
 	std::list<std::pair<BlockNumber,BlockNumber> >::iterator it;
 	for (it=ind.begin();it!=ind.end();it++)
 	{ cout << (*it).first << "->" << (*it).second << " = " << CX.getLeftIndex((*it).second) << "->" << CX.getRightIndex((*it).first) << endl;
-	}
-    // DEBUG
+	}*/
     
 	cout << endl;
 	cout << "==========================================" << endl;
@@ -128,17 +130,23 @@ int main()
     	G.dumpMatsubara((int)(*pIni)["Green Function:points"]);
     	cout << endl << "All done." << endl;
     
-	cout << endl;
-	cout << "==========================================" << endl;
-	cout << "Two Particle Green's function calculation" << endl;
-	cout << "==========================================" << endl;
+	if ((*pIni)["System:calculate_2PGF"]){
+		cout << endl;
+		cout << "==========================================" << endl;
+		cout << "Two Particle Green's function calculation" << endl;
+		cout << "==========================================" << endl;
         TwoParticleGF Chi4(S,H,C,C,CX,CX,rho,OUT);
         Chi4.prepare();
         Chi4.compute(30);
 
-	cout << term_counter << " terms" <<  endl;
-	cout << Chi4(0,2,0) << endl;
-	cout << Chi4(0,1,5) << endl;
+		cout << term_counter << " terms" <<  endl;
+		cout << Chi4(0,2,0) << endl;
+		cout << Chi4(0,1,5) << endl;
+		cout << Chi4(0,0,0) << endl;
+		cout << Chi4(30,30,0) << endl;
 
+		Vertex4 Gamma4(Chi4,G,G,G,G);
+		cout << Gamma4(0,2,0) << endl;
+		}
     return 0;
 }

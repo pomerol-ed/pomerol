@@ -24,6 +24,15 @@ void DensityMatrixPart::normalize(RealType Z)
     Z_part /= Z;
 }
 
+RealType DensityMatrixPart::getAverageEnergy()
+{
+	RealType E=0.;
+	for(QuantumState m = 0; m < partSize; ++m){
+		E+= weights(m)*(hpart.reV(m)-GroundEnergy);
+        }
+	return E;
+};
+
 RealType DensityMatrixPart::weight(int m)
 {
     return weights(m);

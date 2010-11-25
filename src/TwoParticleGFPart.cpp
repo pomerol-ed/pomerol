@@ -149,15 +149,27 @@ void TwoParticleGFPart::MatsubaraContainer::prepare(long NumberOfMatsubaras_)
 	  FermionicFirstIndex[BosonicIndex+2*NumberOfMatsubaras]=Size;
 	  Size=((BosonicIndex+NumberOfMatsubaras<NumberOfMatsubaras-1)?BosonicIndex+NumberOfMatsubaras:NumberOfMatsubaras-1) - Size + 1;
 	  Size=(Size<=0)?0:Size;
+//	  cout << "Freq = " << BosonicIndex << ", Size = " << Size << ", First Index = " << FermionicFirstIndex[BosonicIndex+2*NumberOfMatsubaras] << endl;
 	  Data[BosonicIndex+2*NumberOfMatsubaras].resize(Size,Size);
 	  Data[BosonicIndex+2*NumberOfMatsubaras].setZero();
 	};
+//	exit(0);
 };
 
 ComplexType& TwoParticleGFPart::MatsubaraContainer::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
+// {OMEGA,nu,nu' : OMEGA=w1+w2, nu=w1, nu'=w4=OMEGA-w3
 {
 	unsigned int RealBosonicIndex = MatsubaraNumber1 + MatsubaraNumber2 + 2*NumberOfMatsubaras;
-	return Data[RealBosonicIndex](MatsubaraNumber1+NumberOfMatsubaras-FermionicFirstIndex[RealBosonicIndex],RealBosonicIndex-MatsubaraNumber3-FermionicFirstIndex[RealBosonicIndex]);
+	int nuIndex = MatsubaraNumber1-FermionicFirstIndex[RealBosonicIndex];
+	int nu1Index= RealBosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber3-FermionicFirstIndex[RealBosonicIndex];
+	//cout << "Bosonic index : " << RealBosonicIndex - 2*NumberOfMatsubaras<< " shift : " << FermionicFirstIndex[RealBosonicIndex] << endl;
+	if (nuIndex >= 0 && nuIndex < Data[RealBosonicIndex].rows() && nu1Index >= 0 && nu1Index < Data[RealBosonicIndex].rows() )
+		return Data[RealBosonicIndex](nuIndex,nu1Index);
+	else { 
+		static ComplexType temp(0.0,0.0); 
+		cout << "Warning! Index (" << MatsubaraNumber1 << "," << MatsubaraNumber2 << "," << MatsubaraNumber3 << "," << MatsubaraNumber1+ MatsubaraNumber2 - MatsubaraNumber3 << ") of TwoParticleGFPart is out of range, returning 0" << endl; 
+		return temp; 
+		 };
 };
 
 TwoParticleGFPart::MatsubaraContainer& TwoParticleGFPart::MatsubaraContainer::operator+= (const MatsubaraContainer& rhs)

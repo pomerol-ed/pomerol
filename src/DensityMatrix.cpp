@@ -49,3 +49,10 @@ RealType DensityMatrix::getBeta()
 {
 	return beta;
 }
+
+RealType DensityMatrix::getAverageEnergy()
+{
+    RealType E = 0;
+    for(BlockNumber n = 0; n < NumOfBlocks; n++) E += parts[n]->getAverageEnergy();
+	return E+H.getGroundEnergy();
+};

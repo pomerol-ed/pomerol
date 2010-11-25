@@ -102,4 +102,6 @@ using std::string;
   #define DEBUG(x)  INFO(x)
 #endif
 
+#define num_cout std::cout << std::setprecision(8) << std::setw(9) << std::left
+
 #endif /* #ifndef _CONFIG_H */

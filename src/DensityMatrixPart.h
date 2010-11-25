@@ -17,6 +17,7 @@ public:
     DensityMatrixPart(HamiltonianPart& hpart, RealType beta, RealType GroundEnergy);
     void normalize(RealType Z);
     
+	RealType getAverageEnergy();
     RealType compute(void);
     RealType weight(int m);
     RealType getBeta();
