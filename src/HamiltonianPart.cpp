@@ -39,13 +39,13 @@ void HamiltonianPart::enter()
 	{
 		// loop over terms
 		std::list<Term*>::iterator it1;
-		for ( it1=Formula.getTermsList().getTerms(2).begin() ; it1 != Formula.getTermsList().getTerms(2).end(); it1++ )
+		for ( it1=Formula.getTermsList().getTerms(2).begin() ; it1 != Formula.getTermsList().getTerms(2).end(); ++it1 )
 		{
 			if (( *it1)->type == "n") add_nTerm(st,(nTerm*) *it1);
 		};
 		
 		std::list<Term*>::iterator it2;
-		for ( it2=Formula.getTermsList().getTerms(4).begin() ; it2 != Formula.getTermsList().getTerms(4).end(); it2++ )
+		for ( it2=Formula.getTermsList().getTerms(4).begin() ; it2 != Formula.getTermsList().getTerms(4).end(); ++it2 )
 		{
 			if ( (*it2)->type == "nn") add_nnTerm(st,(nnTerm*) *it2);
 			else 
@@ -56,7 +56,7 @@ void HamiltonianPart::enter()
 	
 	(*this).add_hopping(Formula.getHoppingMatrix());
 	
-	H.part<Eigen::UpperTriangular>() =  H.marked<Eigen::LowerTriangular>().transpose();  // Symmetric matrix
+	H.part<Eigen::LowerTriangular>() =  H.marked<Eigen::UpperTriangular>().transpose();  // Symmetric matrix
 }
 
 void HamiltonianPart::add_nTerm(InnerQuantumState inner_state,nTerm *N)
@@ -78,7 +78,7 @@ void HamiltonianPart::add_spinflipTerm(InnerQuantumState inner_state, spinflipTe
 	QuantumState diff2 = (1<<T->bit[2]) + (1<<T->bit[3]);
 	if ((diff2 > in + diff1) || ((diff2 <= in) && (S.N_st() - diff1 <= in - diff2))) return;
 	QuantumState out = in + diff1 - diff2;	
-	if (out<in ) return;
+	if (out>in ) return;
 //	#warning The fact that hamiltonian is hermitian isn't taken into account. There may be slight perfomance issues.
 	QuantumNumbers out_info = S.getStateInfo(out);
 	if (out_info==(QuantumNumbers) hpart_id) 

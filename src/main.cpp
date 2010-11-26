@@ -14,6 +14,7 @@
 
 #include "iniconfig.h"
 
+#include <fstream>
 
 string input = "system.ini";
 
@@ -86,6 +87,10 @@ int main()
     rho.prepare();
     rho.compute();
 	num_cout << "<H> = " << rho.getAverageEnergy() << endl;
+	std::ofstream out;
+	out.open("output/Stat.En.dat");
+	out << iomanip_prefs << rho.getAverageEnergy() << endl;
+	out.close();
 	
 	//finishing of creation
 	cout << endl;

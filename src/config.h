@@ -103,5 +103,6 @@ using std::string;
 #endif
 
 #define num_cout std::cout << std::setprecision(8) << std::setw(9) << std::left
+#define iomanip_prefs std::setprecision(8) << std::setw(9) << std::left
 
 #endif /* #ifndef _CONFIG_H */

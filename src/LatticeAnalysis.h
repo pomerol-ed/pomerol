@@ -23,7 +23,7 @@ class LatticeSite
 public:
  	unsigned short type;
  	unsigned short number;
-	RealType filling;
+	RealType LocalMu;
 	std::list<SiteHoppingElement*> HoppingList;
 	bool operator == (const LatticeSite& right);
 	bool is_equivalent (const LatticeSite& right);
@@ -33,7 +33,7 @@ class sLatticeSite : public LatticeSite
 {
 public:
 	RealType U;
-	sLatticeSite(unsigned short type_, RealType filling_, unsigned short number_, RealType U);
+	sLatticeSite(unsigned short type_, RealType LocalMu_, unsigned short number_, RealType U);
 	friend std::ostream& operator<<(std::ostream& output, const sLatticeSite& out);
 };
 
@@ -43,7 +43,7 @@ public:
 	RealType U;
 	RealType J;
 	string basis;
-	pLatticeSite(unsigned short type_, RealType filling_, unsigned short number_, RealType U, RealType J, string &basis);
+	pLatticeSite(unsigned short type_, RealType LocalMu_, unsigned short number_, RealType U, RealType J, string &basis);
 	friend std::ostream& operator<<(std::ostream& output, const pLatticeSite& out);
 };
 

@@ -6,23 +6,23 @@ std::ostream& operator<<(std::ostream& output, const SiteHoppingElement& out)
 	output << out.From << "_{" << out.OrbitalFrom << "} -> " << out.To << "_{" << out.OrbitalTo << "} : " << out.Value;
 	return output;
 }
-sLatticeSite::sLatticeSite (unsigned short type_, RealType filling_, unsigned short number_, RealType U):U(U)
+sLatticeSite::sLatticeSite (unsigned short type_, RealType LocalMu_, unsigned short number_, RealType U):U(U)
 {
 	type = type_;
 	number=number_;
-	filling=filling_;
+	LocalMu=LocalMu_;
 };
 
-pLatticeSite::pLatticeSite(unsigned short type_, RealType filling_, unsigned short number_, RealType U, RealType J, string &basis):U(U),J(J),basis(basis)
+pLatticeSite::pLatticeSite(unsigned short type_, RealType LocalMu_, unsigned short number_, RealType U, RealType J, string &basis):U(U),J(J),basis(basis)
 {
 	type = type_;
 	number=number_;
-	filling=filling_;
+	LocalMu=LocalMu_;
 };
 
 std::ostream& operator<<(std::ostream& output,const sLatticeSite& out)
 {
-	output << "Site N " << out.number << " is an s-orbital, filled by " << out.filling << " electrons, U = " << out.U << endl << "Hopping: " << endl;
+	output << "Site N " << out.number << " is an s-orbital, filled by " << out.LocalMu << " electrons, U = " << out.U << endl << "Hopping: " << endl;
 	std::list<SiteHoppingElement*>::const_iterator it;
 	for (it=out.HoppingList.begin();it!=out.HoppingList.end();++it){
 		output << (**it) << endl;	
@@ -32,7 +32,7 @@ return output;
 
 std::ostream& operator<<(std::ostream& output,const pLatticeSite& out)
 {
-	output << "Site N " << out.number << " is a  p-orbital, filled by " << out.filling << " electrons, U = " << out.U << ", J = " << out.J << " in a " << out.basis << " basis"; 
+	output << "Site N " << out.number << " is a  p-orbital, filled by " << out.LocalMu << " electrons, U = " << out.U << ", J = " << out.J << " in a " << out.basis << " basis"; 
 	output << endl << "Hopping: " << endl;
 	std::list<SiteHoppingElement*>::const_iterator it;
 	for (it=out.HoppingList.begin();it!=out.HoppingList.end();++it){
@@ -100,8 +100,8 @@ void LatticeAnalysis::classifySites()
 		    case s: 
 			    {
 				    RealType U=sites[current_site.str()]["U"].asDouble();
-					RealType filling = sites[current_site.str()]["filling"].asDouble();
-					LatticeSite *S = new sLatticeSite(s,filling,site,U); 
+					RealType LocalMu = sites[current_site.str()]["LocalMu"].asDouble();
+					LatticeSite *S = new sLatticeSite(s,LocalMu,site,U); 
   					Json::Value hopping = sites[current_site.str()]["hopping"];
 					enterHoppingListForCurrentSite(site,hopping,S->HoppingList);
 					SitesList.push_back(S);
@@ -112,9 +112,9 @@ void LatticeAnalysis::classifySites()
 			    {
 				    RealType U=sites[current_site.str()]["U"].asDouble();
 				    RealType J=sites[current_site.str()]["J"].asDouble();
-					RealType filling = sites[current_site.str()]["filling"].asDouble();
+					RealType LocalMu = sites[current_site.str()]["LocalMu"].asDouble();
 				    string basis = sites[current_site.str()]["basis"].asString();
-					LatticeSite *P = new pLatticeSite(p,filling,site,U,J,basis); 
+					LatticeSite *P = new pLatticeSite(p,LocalMu,site,U,J,basis); 
   					Json::Value hopping = sites[current_site.str()]["hopping"];
 					enterHoppingListForCurrentSite(site,hopping,P->HoppingList);
 					SitesList.push_back(P);

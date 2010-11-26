@@ -43,8 +43,8 @@ void BitClassification::defineBits()
 		    case s: 
 			    {
 					sLatticeSite S = (sLatticeSite&)(**SiteIterator);
-				    sBitInfo *S1 = new sBitInfo(S.number,s,0,S.U);
-				    sBitInfo *S2 = new sBitInfo(S.number,s,1,S.U);
+				    sBitInfo *S1 = new sBitInfo(S.number,s,0,S.U,S.LocalMu);
+				    sBitInfo *S2 = new sBitInfo(S.number,s,1,S.U,S.LocalMu);
 				    BitInfoList.insert(BitInfoList.begin()+N_bit/2,S1);
 				    BitInfoList.push_back(S2);
 
@@ -90,8 +90,8 @@ void BitClassification::defineTerms()
 		  	 sBitInfo *current = (sBitInfo*) BitInfoList[bit];
 			 Term *T1 = new nnTerm(bit,bit+N_bit/2,current->U);
 			 Terms.addTerm(T1);	
-			 Term *N1 = new nTerm(bit,current->U/(-2.));
-			 Term *N2 = new nTerm(bit+N_bit/2,current->U/(-2.));
+			 Term *N1 = new nTerm(bit,current->U/(-2.)-current->LocalMu);
+			 Term *N2 = new nTerm(bit+N_bit/2,current->U/(-2.)-current->LocalMu);
 			 Terms.addTerm(N1);
 			 Terms.addTerm(N2);
 			 break;

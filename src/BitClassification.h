@@ -31,6 +31,7 @@ public:
 	unsigned short spin; 		//!< Spin up(1) or Spin down(0)
 	unsigned short type;	    //!< The type of site which handles this spin. Can be s,p,d,f (0,1,2,3).
 	unsigned short bitNumber;	//!< The number of bit
+	RealType LocalMu;			//!< The energy in the -mu*N term for the site ( Useful for adjusting a filling in the orbital )
 	void setBitNumber(const unsigned short &in); 
 	virtual void print_to_screen()=0;
 };
@@ -42,7 +43,7 @@ class sBitInfo : public BitInfo
 {
 public:
 	RealType U;
-	sBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_, RealType U_):U(U_){site=site_;type=type_;spin=spin_;};
+	sBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_, RealType U_, RealType LocalMu_):U(U_){site=site_;type=type_;spin=spin_;LocalMu=LocalMu_;};
 	friend std::ostream& operator<<(std::ostream& output, const sBitInfo& out);
 	void print_to_screen(){cout << *this << endl;};
 };
