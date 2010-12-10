@@ -1,0 +1,17 @@
+// Lattice configuration
+{
+ "sites"  : 
+    	 {
+      	     "0" : {
+	     		 "type"	   : "p",
+			 "U"	   : 2.0,
+			 "J"	   : 0.1,
+			 "basis"   : "Spherical",
+	     		 "hopping" : [
+				     ]
+		   }
+    
+	}
+}
+    
+

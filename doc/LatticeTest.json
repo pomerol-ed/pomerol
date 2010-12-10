@@ -1,24 +1,24 @@
+
 // Lattice configuration
 {
  "sites"  : 
     	 {
       	     "0" : 	{
 	     	 			"type"	   : "s",
-			 			"U"	       : 0.8,
+			 			"U"	       : 2.8,
 						"LocalMu"  : 0.0,
 	     				"hopping"  : [
-										{"orbital_from":0, "to":"0", "orbital_to":0, "value":1.0}
+										{"orbital_from":0, "to":"0", "orbital_to":0, "value":0.25}
 									 ]
 					},
 	     	"1" : {      
 	     			    "type"	   : "s",
-						"U"        : 0.8,
+						"U"        : 2.8,
 						"LocalMu"  : 0.0,
 	     				"hopping"  : [
-										{"orbital_from":0, "to":"0", "orbital_to":0, "value":1.0}
+										{"orbital_from":0, "to":"0", "orbital_to":0, "value":0.25}
 									 ]
 		   }        
 	}
 }
-    
 

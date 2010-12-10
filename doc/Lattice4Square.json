@@ -1,0 +1,48 @@
+// Lattice configuration
+{
+ "sites"  : 
+    	 {
+      	     "0" : 	{
+	     	 			"type"	   : "s",
+			 			"U"	       : 1.0,
+			 			"J"	       : 0.5,
+			 			"basis"    : "Spherical",
+						"filling"  : 1,
+	     				"hopping"  : [
+										{"orbital_from":0, "to":"1", "orbital_to":0, "value":0.25},
+										{"orbital_from":0, "to":"3", "orbital_to":0, "value":0.25}
+									 ]
+					},
+	     	"1" : {      
+	     			    "type"	   : "s",
+						"U"        : 1.0,
+						"J"	   	   : 0,
+			 			"basis"    : "Spherical",
+						"filling"  : 1,
+	     				"hopping"  : [
+										{"orbital_from":0, "to":"0", "orbital_to":0, "value":0.25}
+									 ]
+					},
+		   	"2" : {      
+	     			    "type"	   : "s",
+						"U"        : 1.0,
+						"J"	   	   : 0,
+			 			"basis"    : "Spherical",
+						"filling"  : 1,
+	     				"hopping"  : [
+									 ]
+				  },
+		   	"3" : {      
+	     			    "type"	   : "s",
+						"U"        : 1.0,
+						"J"	   	   : 0,
+			 			"basis"    : "Spherical",
+						"filling"  : 1,
+	     				"hopping"  : [
+										{"orbital_from":0, "to":"0", "orbital_to":0, "value":0.25}
+									 ]
+		   		 }        
+	}
+}
+    
+

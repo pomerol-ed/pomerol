@@ -1,0 +1,24 @@
+// Lattice configuration
+{
+ "sites"  : 
+    	 {
+      	     "0" : {
+	     		 "type"	   : "p",
+			 "U"	   : 1,
+			 "J"	   : 0.1,
+	     		 "hopping" : [
+			 	 	"1" : 0.25
+				     ]
+		   },
+	     "1" : {      
+	     		 "type"	   : "s",
+			 "U"       : 1,
+	     		 "hopping": [
+			 		"0" : 0.25
+				    ]
+		   }
+
+         }
+}
+    
+
