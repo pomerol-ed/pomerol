@@ -5,10 +5,11 @@ inline Permutation3 getPermutation3(size_t p)
     static Permutation3 perms[6] = {
         {{0,1,2},1}, {{0,2,1},-1}, {{1,0,2},-1}, {{1,2,0},1}, {{2,0,1},1}, {{2,1,0},-1}
     };
-    
+
     return perms[p];
 }
 
+/*
 inline Permutation4 getPermutation4(size_t p)
 {
     static Permutation4 perms[24] = {
@@ -22,6 +23,7 @@ inline Permutation4 getPermutation4(size_t p)
   
     return perms[p];
 }
+*/
 
 extern IniConfig* pIni;
 
@@ -112,7 +114,7 @@ ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumbe
     ComplexType Value = 0;
 //    for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
 //        Value += (**iter)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
-    return Storage->operator()(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    return (*Storage)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
 
 }
 

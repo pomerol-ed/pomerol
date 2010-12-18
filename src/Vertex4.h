@@ -5,7 +5,7 @@
 #include "TwoParticleGF.h"
 
 class Vertex4 {
-    
+
     TwoParticleGF &Chi;
     GreensFunction &g1;
     GreensFunction &g2;

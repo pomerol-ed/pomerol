@@ -1,6 +1,7 @@
-JSONCPP_PATH=../jsoncpp/include
+INICONFIG_INCLUDE=-I../iniconfig
+JSONCPP_INCLUDE=-I../jsoncpp/include
 EIGEN_INCLUDE=$(shell pkg-config --cflags-only-I eigen2)
-INCLUDES=-I$(JSONCPP_PATH) $(EIGEN_INCLUDE)
+INCLUDES=$(INICONFIG_INCLUDE) $(JSONCPP_INCLUDE) $(EIGEN_INCLUDE)
 
 LINKS=-L../lib
 # FIXME
@@ -18,7 +19,7 @@ endif
 CXXFLAGS= -O3 -g -Wall -fPIC -pg $(INCLUDES)
 BINPATH=../bin
 
-objects=iniconfig.o output.o LatticeAnalysis.o \
+objects=output.o LatticeAnalysis.o \
 	StatesClassification.o Term.o BitClassification.o \
 	HamiltonianPart.o Hamiltonian.o FieldOperatorPart.o FieldOperator.o \
 	DensityMatrixPart.o DensityMatrix.o \
@@ -26,9 +27,10 @@ objects=iniconfig.o output.o LatticeAnalysis.o \
 	TwoParticleGF.o TwoParticleGFPart.o \
 	Vertex4.o
 
-default :  main
+libs=../lib/libiniconfig.a ../lib/lib_json.a -liniparser
 
-iniconfig.o: iniconfig.cpp iniconfig.h
+default: main
+
 output.o: output.cpp output.h
 LatticeAnalysis.o: LatticeAnalysis.h LatticeAnalysis.cpp
 Term.o:	Term.cpp Term.h
@@ -47,13 +49,13 @@ TwoParticleGF.o: TwoParticleGF.h TwoParticleGF.cpp
 Vertex4.o: Vertex4.h Vertex4.cpp
 
 libmeat.so: $(objects)
-	$(CXX) -shared $(objects) -o libmeat.so
+	$(CXX) -shared $(objects) $(libs) -o libmeat.so
 
 libmeat.a: $(objects)
 	ar -cvr libmeat.a $(objects)
 
 main : main.cpp libmeat.a
-	$(CXX) $(CXXFLAGS) main.cpp libmeat.a ../lib/lib_json.a -o $(BINPATH)/pomerolDiag $(LINKS)
+	$(CXX) $(CXXFLAGS) main.cpp libmeat.a $(libs) -o $(BINPATH)/pomerolDiag $(LINKS)
 
 clean:
-	rm -f *.o *.a
+	$(RM) *.o *.a

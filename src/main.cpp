@@ -12,9 +12,8 @@
 #include "TwoParticleGF.h"
 #include "Vertex4.h"
 
+#include<fstream>
 #include "iniconfig.h"
-
-#include <fstream>
 
 string input = "system.ini";
 
@@ -132,26 +131,41 @@ int main()
         //for(std::list<GreensFunctionPart::GreensTerm>::iterator term = terms.begin(); term != terms.end(); term++)
         //    DEBUG(*term)
         
-    	G.dumpMatsubara((int)(*pIni)["Green Function:points"]);
-    	cout << endl << "All done." << endl;
-    
+	G.dumpMatsubara((int)(*pIni)["Green Function:points"]);
+	cout << endl << "All done." << endl;
+
 	if ((*pIni)["System:calculate_2PGF"]){
 		cout << endl;
 		cout << "==========================================" << endl;
 		cout << "Two Particle Green's function calculation" << endl;
 		cout << "==========================================" << endl;
-        TwoParticleGF Chi4(S,H,C,C,CX,CX,rho,OUT);
+
+        AnnihilationOperator C1(S,H,OUT,i);
+        C1.prepare();
+        C1.compute();
+        AnnihilationOperator C2(S,H,OUT,j);
+        C2.prepare();
+        C2.compute();
+        CreationOperator CX3(S,H,OUT,i);
+        CX3.prepare();
+        CX3.compute();
+        CreationOperator CX4(S,H,OUT,j);
+        CX4.prepare();
+        CX4.compute();
+
+        TwoParticleGF Chi4(S,H,C1,C2,CX3,CX4,rho,OUT);
         Chi4.prepare();
         Chi4.compute(30);
 
 		cout << term_counter << " terms" <<  endl;
-		cout << Chi4(0,2,0) << endl;
-		cout << Chi4(0,1,5) << endl;
-		cout << Chi4(0,0,0) << endl;
-		cout << Chi4(30,30,0) << endl;
+		cout << Chi4(3,2,0) << endl;
+		cout << Chi4(2,5,2) << endl;
+		cout << Chi4(5,2,2) << endl;
+        cout << Chi4(1,7,1) << endl;
+        cout << Chi4(2,-2,4) << endl;
 
-		Vertex4 Gamma4(Chi4,G,G,G,G);
-		cout << Gamma4(0,2,0) << endl;
+		//Vertex4 Gamma4(Chi4,G,G,G,G);
+		//cout << Gamma4(0,2,0) << endl;
 		}
     return 0;
 }

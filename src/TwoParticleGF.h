@@ -18,9 +18,9 @@ Permutation3 getPermutation3(size_t p);
 Permutation4 getPermutation4(size_t p);
 
 class TwoParticleGF {
-    
+
     std::list<TwoParticleGFPart*> parts;
-    
+
     StatesClassification& S;
     Hamiltonian& H;
     AnnihilationOperator& C1;
@@ -28,14 +28,14 @@ class TwoParticleGF {
     CreationOperator& CX3;
     CreationOperator& CX4;
     DensityMatrix& DM;
-    
+
     output_handle green_path;
-    
+
     FieldOperatorPart& OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in);
     BlockNumber OperatorAtPositionMapsTo(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in);
 
 	TwoParticleGFPart::MatsubaraContainer *Storage;
-    
+
 public:
     TwoParticleGF(StatesClassification& S, Hamiltonian& H,
             AnnihilationOperator& C1, AnnihilationOperator& C2,
@@ -43,18 +43,18 @@ public:
             DensityMatrix& DM,
             output_handle &OUT);
     ~TwoParticleGF();
-    
+
     void prepare(void);
     void compute(long NumberOfMatsubaras);
-    
+
     unsigned short getBit(size_t Position) const;
     RealType getBeta() const;
-    
+
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-    
+
     string getPath();
     //void dumpMatsubara(unsigned short points);
-    
+
     static const Permutation3 permutations3[2];
     static const Permutation4 permutations4[24];
 };

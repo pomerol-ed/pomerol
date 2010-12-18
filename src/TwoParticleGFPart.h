@@ -10,81 +10,39 @@
 #include "DensityMatrixPart.h"
 
 class TwoParticleGFPart {
-       
-public:
-  
-    enum ComputationMethod {ChasingIndices1, ChasingIndices2};
-    enum Var {Var1 = 0, Var2 = 1, Var3 = 2}; 
-    
-    struct TwoParticleGFTermType1{
-        ComplexType Coeff;
-        ComplexType Poles[3];
-        
-        TwoParticleGFTermType1(ComplexType Coeff, RealType E2MinusE1, RealType E3MinusE2, RealType E4MinusE3, Permutation3& Permutation);
-        
-        // Coeff/((Frequency1 - Poles[0])*(Frequency2 - Poles[1])*(-Frequency3 - Poles[2]))
-        ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
-        
-        static const RealType Tolerance = 1e-10;
-        static bool IsRelevant(const ComplexType &MatrixElement);
-    };
-    
-    struct TwoParticleGFTermType2{      
-        Var z1, z2, z3;
-        
-        ComplexType CoeffA;
-        ComplexType CoeffB;
-        ComplexType CoeffC;
 
-        RealType E4MinusE1;
-        RealType E4MinusE2;
-        RealType E4MinusE3;
-        RealType E2MinusE1;
-        
-        bool IsE4MinusE2Vanishes;
-        
-        TwoParticleGFTermType2(ComplexType CoeffA, ComplexType CoeffB, ComplexType CoeffC, 
-                         RealType E4MinusE1, RealType E4MinusE2, 
-                         RealType E4MinusE3, RealType E2MinusE1,
+public:
+
+    enum ComputationMethod {ChasingIndices1, ChasingIndices2};
+
+    struct TwoParticleGFTerm{
+        size_t z1, z2, z3;
+
+        ComplexType CoeffZ2;
+        ComplexType CoeffZ4;
+        ComplexType CoeffZ1Z2Res;
+        ComplexType CoeffZ1Z2NonRes;
+        ComplexType CoeffZ2Z3Res;
+        ComplexType CoeffZ2Z3NonRes;
+
+        ComplexType Poles[3];
+
+        TwoParticleGFTerm(ComplexType Coeff, RealType beta,
+                         RealType Ei, RealType Ej, RealType Ek, RealType El,
+                         RealType Wi, RealType Wj, RealType Wk, RealType Wl,
                          Permutation3& Permutation);
-                         
-        // 1) z2+z3 == 0 && E2 == E4
-        //    1/((z3-E4MinusE3)*(z1-E2MinusE1))*(CoeffA/(z1-E2MinusE1) + CoeffB)
-        // 2) otherwise:
-        //    1/((z3-E4MinusE3)*(z2+z3-E4MinusE2))*(CoeffA/(z1-E2MinusE1) + CoeffC/(z1+z2+z3-E4MinusE1))
-        ComplexType operator()(long MatsubaraNumberOdd1, long MatsubaraNumberOdd2, long MatsubaraNumberOdd3,
-                               ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
-                               
-        static const RealType Tolerance = 1e-10;
-        static bool IsRelevant(const ComplexType &CoeffA, const ComplexType &CoeffB, const ComplexType &CoeffC);
-        //~TwoParticleGFTermType2();
-    };
-    
-    struct TwoParticleGFTermType3{
-        Var z1, z2, z3;
-      
-        ComplexType CoeffResonant;
-        ComplexType CoeffNonResonant;
-        
-        RealType E3MinusE1;
-        RealType E3MinusE2;
-        RealType E4MinusE3;
-        
-        bool IsE3MinusE1Vanishes;
-        
-        TwoParticleGFTermType3(ComplexType CoeffResonant, ComplexType CoeffNonResonant,
-                         RealType E3MinusE1, RealType E3MinusE2, RealType E4MinusE3,
-                         Permutation3& Permutation);
-        
-        // 1) z1+z2 == 0 && E2 == E3
-        //    CoeffResonant/((z3-E4MinusE3)*(z2-E3MinusE2))
-        // 2) otherwise:
-        //    CoeffNonResonant/((z3-E4MinusE3)*(z2-E3MinusE2)*(z1+z2-E3MinusE1))
-        ComplexType operator()(long MatsubaraNumberOdd1, long MatsubaraNumberOdd2, long MatsubaraNumberOdd3,
-                               ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
-                               
-        static const RealType Tolerance = 1e-10;
-        static bool IsRelevant(const ComplexType &CoeffResonant, const ComplexType &CoeffNonResonant);
+
+        // \frac{1}{(z1-Poles[1])(z3-Poles[3])}*
+        //      (\frac{CoeffZ4}{z1+z2+z3-Poles[1]-Poles[2]-Poles[3]} - \frac{CoeffZ2}{z2-Poles[2]}
+        //      + CoeffZ1Z2Res*IsZ1Z2Resonant*\delta(z1+z2)
+        //      + CoeffZ1Z2NonRes*\frac{1 - IsZ1Z2Resonant*\delta(z1+z2)}{z1+z2-Poles[1]-Poles[2]}
+        //      + CoeffZ2Z3Res*IsZ2Z3Resonant*\delta(z2+z3)
+        //      + CoeffZ2Z3NonRes*\frac{1 - IsZ2Z3Resonant*\delta(z2+z3)}{z2+z3-Poles[2]-Poles[3]})
+        ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
+
+        static const RealType MatrixElementTolerance = 1e-10;
+        static const RealType ResonanceTolerance = 1e-16;
+        static bool IsRelevant(const ComplexType &MatrixElement);
     };
 
 	/**
@@ -101,50 +59,47 @@ public:
 		MatsubaraContainer(RealType beta);
 		void prepare(long NumberOfMatsubaras);
 		ComplexType& operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-		void fill(std::list<TwoParticleGFTermType1> &TermsType1, std::list<TwoParticleGFTermType2> &TermsType2, std::list<TwoParticleGFTermType3> &TermsType3);
+		void fill(std::list<TwoParticleGFTerm> &Terms);
 		MatsubaraContainer& operator+=(const MatsubaraContainer& rhs);
 		void clear();
 	};
 
 private:
-  
+
     FieldOperatorPart& O1;
     FieldOperatorPart& O2;
     FieldOperatorPart& O3;
     CreationOperatorPart& CX4;
-    
+
     HamiltonianPart& Hpart1;
     HamiltonianPart& Hpart2;
     HamiltonianPart& Hpart3;
     HamiltonianPart& Hpart4;
-    
+
     DensityMatrixPart& DMpart1; 
     DensityMatrixPart& DMpart2;
     DensityMatrixPart& DMpart3;
     DensityMatrixPart& DMpart4;
 
     Permutation3 Permutation;
-    
-    std::list<TwoParticleGFTermType1> TermsType1;
-    std::list<TwoParticleGFTermType2> TermsType2;
-    std::list<TwoParticleGFTermType3> TermsType3;
-    
+
+    std::list<TwoParticleGFTerm> Terms;
+
 	MatsubaraContainer *Storage;
 
     void computeChasing1(long NumberOfMatsubaras);
     void computeChasing2(long NumberOfMatsubaras);
-      
+
 public:
     TwoParticleGFPart(FieldOperatorPart& O1, FieldOperatorPart& O2, FieldOperatorPart& O3, CreationOperatorPart& CX4,
                 HamiltonianPart& Hpart1, HamiltonianPart& Hpart2, HamiltonianPart& Hpart3, HamiltonianPart& Hpart4,
                 DensityMatrixPart& DMpart1, DensityMatrixPart& DMpart2, DensityMatrixPart& DMpart3, DensityMatrixPart& DMpart4,
                 Permutation3 Permutation);
- 
+
     void compute(long NumberOfMatsubaras, ComputationMethod method = ChasingIndices2);
 	void clear();
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
 	const MatsubaraContainer& getMatsubaraContainer();
-
 };
 
 #endif // endif :: #ifndef ____DEFINE_2PGF_PART____

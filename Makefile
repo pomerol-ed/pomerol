@@ -1,4 +1,12 @@
-all : jsoncpp meat
+all : iniconfig jsoncpp meat
+
+.PHONY: iniconfig
+iniconfig:
+	@echo "Creating iniconfig"
+	@mkdir -p lib
+	cd iniconfig && $(MAKE)
+	@mv iniconfig/libiniconfig.a ./lib
+	@echo
 
 .PHONY: jsoncpp
 jsoncpp:
@@ -18,5 +26,6 @@ meat:
 
 clean:
 	cd src && $(MAKE) clean
+	cd iniconfig && $(MAKE) clean
 	cd jsoncpp && $(MAKE) clean
 
