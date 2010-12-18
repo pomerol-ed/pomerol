@@ -112,12 +112,12 @@ void AnnihilationOperator::prepare()
 
 BlockNumber OperatorContainer::getRightIndex(BlockNumber LeftIndex)
 {
-	return mapLeftToRightIndex[LeftIndex];
+	return mapLeftToRightIndex.count(LeftIndex)?mapLeftToRightIndex[LeftIndex]:ERROR_BLOCK_NUMBER;
 };
 
 BlockNumber OperatorContainer::getLeftIndex(BlockNumber RightIndex)
 {
-	return mapRightToLeftIndex[RightIndex];
+	return mapRightToLeftIndex.count(RightIndex)?mapRightToLeftIndex[RightIndex]:ERROR_BLOCK_NUMBER;
 };
 
 QuantumNumbers CreationOperator::mapsTo(QuantumNumbers in) // Require explicit knowledge of QuantumNumbers structure - Not very good

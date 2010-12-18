@@ -43,7 +43,7 @@ TwoParticleGF::~TwoParticleGF()
           delete *iter;
 }
 
-BlockNumber TwoParticleGF::OperatorAtPositionMapsTo(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
+BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
 {
     switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
       case 0: return C1.getLeftIndex(in); // bad - better use getLeftRightIndices method
@@ -51,6 +51,16 @@ BlockNumber TwoParticleGF::OperatorAtPositionMapsTo(size_t PermutationNumber, si
       case 2: return CX3.getLeftIndex(in);
       default: return ERROR_BLOCK_NUMBER;
     }
+}
+
+BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
+{
+	switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
+  		case 0: return C1.getRightIndex(in); // bad - better use getLeftRightIndices method
+  		case 1: return C2.getRightIndex(in);
+		case 2: return CX3.getRightIndex(in);
+  		default: return ERROR_BLOCK_NUMBER;
+	}
 }
 
 FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
@@ -73,14 +83,15 @@ void TwoParticleGF::prepare(void)
                   BlockNumber blocks[4];
                   blocks[0] = outer_iter->second;
                   blocks[3] = outer_iter->first;
-                  blocks[2] = OperatorAtPositionMapsTo(p,2,blocks[3]);
-                  blocks[1] = OperatorAtPositionMapsTo(p,1,blocks[2]);
-                  if(OperatorAtPositionMapsTo(p,0,blocks[1]) == blocks[0]){
+                  blocks[2] = getLeftIndex(p,2,blocks[3]);
+                  blocks[1] = getRightIndex(p,1,blocks[0]);
+                  if(getLeftIndex(p,1,blocks[1]) == blocks[2] && blocks[3].isCorrect() && blocks[2].isCorrect()){
                       // DEBUG
                       DEBUG("new part: "  << S.getBlockInfo(blocks[0]) << " " 
                                           << S.getBlockInfo(blocks[1]) << " "
                                           << S.getBlockInfo(blocks[2]) << " "
-                                          << S.getBlockInfo(blocks[3]) << " ")
+                                          << S.getBlockInfo(blocks[3]) << " "
+                      <<"BlockNumbers part: "  << blocks[0] << " " << blocks[1] << " " << blocks[2] << " " << blocks[3]);
                       parts.push_back(new TwoParticleGFPart(
                             OperatorPartAtPosition(p,0,blocks[0]),
                             OperatorPartAtPosition(p,1,blocks[1]),
