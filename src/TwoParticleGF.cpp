@@ -43,32 +43,32 @@ TwoParticleGF::~TwoParticleGF()
           delete *iter;
 }
 
-BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
+BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber RightIndex)
 {
     switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
-      case 0: return C1.getLeftIndex(in); // bad - better use getLeftRightIndices method
-      case 1: return C2.getLeftIndex(in);
-      case 2: return CX3.getLeftIndex(in);
+      case 0: return C1.getLeftIndex(RightIndex);
+      case 1: return C2.getLeftIndex(RightIndex);
+      case 2: return CX3.getLeftIndex(RightIndex);
       default: return ERROR_BLOCK_NUMBER;
     }
 }
 
-BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
+BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex)
 {
 	switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
-  		case 0: return C1.getRightIndex(in); // bad - better use getLeftRightIndices method
-  		case 1: return C2.getRightIndex(in);
-		case 2: return CX3.getRightIndex(in);
+  		case 0: return C1.getRightIndex(LeftIndex); 
+  		case 1: return C2.getRightIndex(LeftIndex);
+		case 2: return CX3.getRightIndex(LeftIndex);
   		default: return ERROR_BLOCK_NUMBER;
 	}
 }
 
-FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in)
+FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex)
 {
     switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
-      case 0: return C1.getPartFromLeftIndex(in);
-      case 1: return C2.getPartFromLeftIndex(in);
-      case 2: return CX3.getPartFromLeftIndex(in);
+      case 0: return C1.getPartFromLeftIndex(LeftIndex);
+      case 1: return C2.getPartFromLeftIndex(LeftIndex);
+      case 2: return CX3.getPartFromLeftIndex(LeftIndex);
       default: assert(0);
     }
 }
@@ -80,25 +80,26 @@ void TwoParticleGF::prepare(void)
     for(std::list<BlockMapping>::const_iterator outer_iter = CX4NontrivialBlocks.begin();
         outer_iter != CX4NontrivialBlocks.end(); outer_iter++){
             for(size_t p=0; p<6; ++p){ // Search for non-vanishing world lines
-                  BlockNumber blocks[4];
-                  blocks[0] = outer_iter->second;
-                  blocks[3] = outer_iter->first;
-                  blocks[2] = getLeftIndex(p,2,blocks[3]);
-                  blocks[1] = getRightIndex(p,1,blocks[0]);
-                  if(getLeftIndex(p,1,blocks[1]) == blocks[2] && blocks[3].isCorrect() && blocks[2].isCorrect()){
+                  BlockNumber LeftIndices[4];
+                  LeftIndices[0] = outer_iter->second;
+                  LeftIndices[3] = outer_iter->first;
+                  LeftIndices[2] = getLeftIndex(p,2,LeftIndices[3]);
+                  LeftIndices[1] = getRightIndex(p,0,LeftIndices[0]);
+                  if(getRightIndex(p,1,LeftIndices[1]) == LeftIndices[2] && LeftIndices[1].isCorrect() && LeftIndices[2].isCorrect()){
                       // DEBUG
-                      DEBUG("new part: "  << S.getBlockInfo(blocks[0]) << " " 
-                                          << S.getBlockInfo(blocks[1]) << " "
-                                          << S.getBlockInfo(blocks[2]) << " "
-                                          << S.getBlockInfo(blocks[3]) << " "
-                      <<"BlockNumbers part: "  << blocks[0] << " " << blocks[1] << " " << blocks[2] << " " << blocks[3]);
+                      DEBUG("new part: "  << S.getBlockInfo(LeftIndices[0]) << " " 
+                                          << S.getBlockInfo(LeftIndices[1]) << " "
+                                          << S.getBlockInfo(LeftIndices[2]) << " "
+                                          << S.getBlockInfo(LeftIndices[3]) << " "
+                      <<"BlockNumbers part: "  << LeftIndices[0] << " " << LeftIndices[1] << " " << LeftIndices[2] << " " << LeftIndices[3]);
+					  //DEBUG(OperatorPartAtPosition(p,1,LeftIndices[1]).getRowMajorValue());
                       parts.push_back(new TwoParticleGFPart(
-                            OperatorPartAtPosition(p,0,blocks[0]),
-                            OperatorPartAtPosition(p,1,blocks[1]),
-                            OperatorPartAtPosition(p,2,blocks[2]),
-                            (CreationOperatorPart&)CX4.getPartFromLeftIndex(blocks[3]),
-                            H.part(blocks[0]), H.part(blocks[1]), H.part(blocks[2]), H.part(blocks[3]),
-                            DM.part(blocks[0]), DM.part(blocks[1]), DM.part(blocks[2]), DM.part(blocks[3]),
+                            OperatorPartAtPosition(p,0,LeftIndices[0]),
+                            OperatorPartAtPosition(p,1,LeftIndices[1]),
+                            OperatorPartAtPosition(p,2,LeftIndices[2]),
+                            (CreationOperatorPart&)CX4.getPartFromLeftIndex(LeftIndices[3]),
+                            H.part(LeftIndices[0]), H.part(LeftIndices[1]), H.part(LeftIndices[2]), H.part(LeftIndices[3]),
+                            DM.part(LeftIndices[0]), DM.part(LeftIndices[1]), DM.part(LeftIndices[2]), DM.part(LeftIndices[3]),
                       getPermutation3(p)));
                   }
             }

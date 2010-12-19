@@ -36,6 +36,8 @@ public:
     
     RowMajorMatrixType& getRowMajorValue();
     ColMajorMatrixType& getColMajorValue();
+	BlockNumber getLeftIndex();
+	BlockNumber getRightIndex();
 };
 
 class AnnihilationOperatorPart;

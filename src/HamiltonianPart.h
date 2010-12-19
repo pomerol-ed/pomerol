@@ -53,6 +53,7 @@ public:
 
 	void diagonalization();			    //method of process diagonalization
 	QuantumNumbers id();				//return id of current hpart
+	BlockNumber getId();
 	RealType getMinimumEigenvalue();		//!<Return the lowest Eigenvalue of the current part;
 	
 	bool reduce(RealType ActualCutoff);

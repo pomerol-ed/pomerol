@@ -32,8 +32,8 @@ class TwoParticleGF {
     output_handle green_path;
 
     FieldOperatorPart& OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in);
-    BlockNumber getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in);
-    BlockNumber getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber in); //!< return right index of an operator at current position for a current permutation
+    BlockNumber getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber RightIndex);
+    BlockNumber getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex); //!< return right index of an operator at current position for a current permutation
 
 	TwoParticleGFPart::MatsubaraContainer *Storage;
 

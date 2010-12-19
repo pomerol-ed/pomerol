@@ -179,6 +179,16 @@ bool CreationOperatorPart::checkL(QuantumState L)
 	return (S.n_i(L,i)==1);
 }
 
+BlockNumber FieldOperatorPart::getLeftIndex()
+{
+	return h_to.getId();
+};
+
+BlockNumber FieldOperatorPart::getRightIndex()
+{
+	return h_from.getId();
+};
+
 CreationOperatorPart& AnnihilationOperatorPart::transpose()
 {
 	CreationOperatorPart *CX = new CreationOperatorPart(i, S, h_to, h_from, OUT); // swapped h_to and h_from

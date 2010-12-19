@@ -28,6 +28,11 @@ QuantumNumbers HamiltonianPart::id()
 	return hpart_id;
 }
 
+BlockNumber HamiltonianPart::getId()
+{
+	return S.getBlockNumber(hpart_id);
+};
+
 void HamiltonianPart::enter()
 { 		
 	N_state_m = S.clstates(hpart_id).size();
