@@ -92,7 +92,6 @@ void TwoParticleGF::prepare(void)
                                           << S.getBlockInfo(LeftIndices[2]) << " "
                                           << S.getBlockInfo(LeftIndices[3]) << " "
                       <<"BlockNumbers part: "  << LeftIndices[0] << " " << LeftIndices[1] << " " << LeftIndices[2] << " " << LeftIndices[3]);
-					  //DEBUG(OperatorPartAtPosition(p,1,LeftIndices[1]).getRowMajorValue());
                       parts.push_back(new TwoParticleGFPart(
                             OperatorPartAtPosition(p,0,LeftIndices[0]),
                             OperatorPartAtPosition(p,1,LeftIndices[1]),

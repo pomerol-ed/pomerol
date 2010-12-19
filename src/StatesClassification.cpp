@@ -44,23 +44,28 @@ const InnerQuantumState StatesClassification::getInnerState(QuantumState state)
  return ST;
 }
 
+bool StatesClassification::checkQuantumNumbers(QuantumNumbers in)
+{
+	return (QuantumToBlock.count(in)>0);
+};
+
+
 BlockNumber StatesClassification::getBlockNumber(QuantumNumbers in)
 {
-  if ((in.Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + in.N_up*(N_bit/2 + 1) + in.N_down) <= ((int) BLOCKNUMBERLIMIT) 
+ /* if ((in.Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + in.N_up*(N_bit/2 + 1) + in.N_down) <= ((int) BLOCKNUMBERLIMIT) 
 	&& 
       (in.Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + in.N_up*(N_bit/2 + 1) + in.N_down) >= 0) 
   {  
      return num_bl[in.Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + in.N_up*(N_bit/2 + 1) + in.N_down];	//number from formula
   }
-  else return -1;
+  else return ERROR_BLOCK_NUMBER;
+  */
+	return (QuantumToBlock.count(in))?QuantumToBlock[in]:ERROR_BLOCK_NUMBER;
 }
 
 QuantumNumbers StatesClassification::getBlockInfo(BlockNumber in)
 {
-  if (in <= maximumBlockNumber_) 
-	  return blockInfo[in];
-  else 
-	  return ERROR_QUANTUM_NUMBERS;
+	  return (BlockToQuantum.count(in))?BlockToQuantum[in]:ERROR_QUANTUM_NUMBERS;
 }
 
 void StatesClassification::getSiteInfo(int bit, int& lz, int& spin)
@@ -148,7 +153,7 @@ void StatesClassification::iniStatesClassification()		 	//inicialization StatesC
 	
 //	num_bl = new BlockNumber [maximumBlockNumber_+1];
 	num_bl.resize(maximumBlockNumber_+1);
-	blockInfo.resize(maximumBlockNumber_+1);
+//	BlockToQuantum.resize(maximumBlockNumber_+1);
 	for (int j=0; j<(maximumBlockNumber_+1); j++)
 		num_bl[j] = -1;
 	
@@ -171,7 +176,9 @@ void StatesClassification::iniStatesClassification()		 	//inicialization StatesC
 				{
 					int num_f = Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + N_up*(N_bit/2 + 1) + N_down;	//number from formula
 					num_bl[num_f] = num_f - iter;							//number of notrivial block
-					blockInfo[num_f - iter] = QuantumNumbers(Lz,N_up,N_down);
+					QuantumNumbers tmp=QuantumNumbers(Lz,N_up,N_down);
+					BlockToQuantum[num_f - iter] = tmp;
+					QuantumToBlock[tmp] = (num_f - iter);
 				}
 			}
 		}
@@ -217,9 +224,7 @@ QuantumNumbers StatesClassification::getStateInfo(QuantumState in)						//return
 
 BlockNumber StatesClassification::getBlockNumber(QuantumState in)
 {
-	if (1)
 	return (*this).getBlockNumber((*this).getStateInfo(in));
-	else return -1;
 }
 
 

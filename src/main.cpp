@@ -116,8 +116,10 @@ int main()
 
 	std::list<std::pair<BlockNumber,BlockNumber> >::iterator it;
 	for (it=ind.begin();it!=ind.end();it++)
-	{ cout << (*it).first << "->" << (*it).second << " = " << CX.getLeftIndex((*it).second) << "->" << CX.getRightIndex((*it).first) << endl;
-	}*/
+	{ cout << (*it).first << "," << (*it).second << " = " << CX.getLeftIndex((*it).second) << "," << CX.getRightIndex((*it).first) << endl;
+	}
+*/
+
     
 	cout << endl;
 	cout << "==========================================" << endl;

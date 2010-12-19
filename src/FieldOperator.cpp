@@ -129,14 +129,14 @@ QuantumNumbers CreationOperator::mapsTo(QuantumNumbers in) // Require explicit k
     q_out = QuantumNumbers(in.Lz + lz,in.N_up+1,in.N_down);
   else 
     q_out = QuantumNumbers(in.Lz + lz,in.N_up,in.N_down+1);
-  return q_out;
+  return System.checkQuantumNumbers(q_out)?q_out:ERROR_QUANTUM_NUMBERS;
 }
 
-BlockNumber CreationOperator::mapsTo(BlockNumber in)
+BlockNumber CreationOperator::mapsTo(BlockNumber RightIndex)
 {
-  QuantumNumbers q_in = System.getBlockInfo(in);	
-  QuantumNumbers q_out = (*this).mapsTo(q_in);
-  BlockNumber out = System.getBlockNumber(q_out);
+  QuantumNumbers q_right = System.getBlockInfo(RightIndex);	
+  QuantumNumbers q_left = (*this).mapsTo(q_right);
+  BlockNumber out = System.getBlockNumber(q_left);
   return out;
 }
 
@@ -149,7 +149,7 @@ QuantumNumbers AnnihilationOperator::mapsTo(QuantumNumbers in) // Require explic
     q_out = QuantumNumbers(in.Lz - lz,in.N_up-1,in.N_down);
   else 
     q_out = QuantumNumbers(in.Lz - lz,in.N_up,in.N_down-1);
-  return q_out;
+  return System.checkQuantumNumbers(q_out)?q_out:ERROR_QUANTUM_NUMBERS;
 }
 
 BlockNumber AnnihilationOperator::mapsTo(BlockNumber in)

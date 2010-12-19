@@ -26,7 +26,7 @@ protected:
 	std::list<BlockMapping> LeftRightIndices;
 	unsigned int size;
 
-	virtual	BlockNumber mapsTo(BlockNumber in)=0;
+	virtual	BlockNumber mapsTo(BlockNumber RightIndex)=0;
 	virtual	QuantumNumbers mapsTo(QuantumNumbers in)=0;
 
 public:
@@ -54,7 +54,7 @@ class AnnihilationOperator;
 class CreationOperator : public OperatorContainer
 {
 	friend class AnnihilationOperator;
-	BlockNumber mapsTo(BlockNumber in);
+	BlockNumber mapsTo(BlockNumber RightIndex);
 	QuantumNumbers mapsTo(QuantumNumbers in);
 public:
 	AnnihilationOperator& transpose();

@@ -13,6 +13,7 @@ struct BlockNumber {
 	BlockNumber& operator ++(int unused){number++; return *this;}
 
 	bool isCorrect(){return number >= 0;}
+	bool operator<(const BlockNumber& rhs) const {return number<rhs.number;}
 };
 
 const BlockNumber ERROR_BLOCK_NUMBER = -1;
@@ -26,8 +27,9 @@ struct QuantumNumbers {
 	QuantumNumbers(int LZ, int N_UP, int N_DOWN);
 	QuantumNumbers();
 	friend std::ostream& operator<<(std::ostream& output, const QuantumNumbers& out);
-	bool operator==(QuantumNumbers &rhs){return (rhs.Lz == (*this).Lz && rhs.N_up == (*this).N_up && (*this).N_down == rhs.N_down );}
+	bool operator==(const QuantumNumbers &rhs)const {return (rhs.Lz == (*this).Lz && rhs.N_up == (*this).N_up && (*this).N_down == rhs.N_down );}
 	bool operator==(QuantumNumbers rhs){return (rhs.Lz == (*this).Lz && rhs.N_up == (*this).N_up && (*this).N_down == rhs.N_down );}
+	bool operator<(const QuantumNumbers &rhs) const {return (Lz < rhs.Lz)?true:(N_up<rhs.N_up)?true:(N_down<rhs.N_down)?true:false;}
 };
 
 const QuantumNumbers ERROR_QUANTUM_NUMBERS = QuantumNumbers(0,-1,-1);
@@ -45,7 +47,9 @@ class StatesClassification {
 	vector<QuantumState> *** st;		//massive of vectors of states with Lz = "Lz", N_up = "N_up", N_down = "N_down" 
 	int size;				//number of classificated vectors
 	vector<BlockNumber> num_bl;			//index of notrivial block,that appropriate defined Lz,N_up,N_down
-	vector<QuantumNumbers> blockInfo;
+	//vector<QuantumNumbers> BlockToQuantum;
+	std::map<BlockNumber,QuantumNumbers> BlockToQuantum;
+	std::map<QuantumNumbers,BlockNumber> QuantumToBlock;
 
 	BlockNumber maximumBlockNumber_; 
 	unsigned int BLOCKNUMBERLIMIT;
@@ -74,6 +78,8 @@ public:
 
 	inline int n_i(long int state, int i) { return ((state&(1<<i))>>i) ;};
 	void getSiteInfo(int bit, int& lz, int& spin);
+
+	bool checkQuantumNumbers(QuantumNumbers in);
 };
 
 #endif // endif :: #ifndef ____DEFINE_GETSTATES____
