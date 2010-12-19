@@ -1,22 +1,6 @@
-INICONFIG_INCLUDE=-I../iniconfig
-JSONCPP_INCLUDE=-I../jsoncpp/include
-EIGEN_INCLUDE=$(shell pkg-config --cflags-only-I eigen2)
-INCLUDES=$(INICONFIG_INCLUDE) $(JSONCPP_INCLUDE) $(EIGEN_INCLUDE)
-
 LINKS=-L../lib
-# FIXME
-ifeq ($(shell uname),Darwin)
-LINKS += -L/opt/local/lib ../lib/libiniparser.a
-INCLUDES += -I/opt/local/include
-else
-LINKS += -liniparser
-ifneq ($(shell echo $(EIGEN_INCLUDE) | head -c2),"-I")
-	INCLUDES += -I/usr/include/eigen2
-	EIGEN_INCLUDE=
-endif
-endif
 
-CXXFLAGS= -O3 -g -Wall -fPIC -pg $(INCLUDES)
+CXXFLAGS+= -O3 -g -Wall -fPIC -pg $(INCLUDES)
 BINPATH=../bin
 
 objects=output.o LatticeAnalysis.o \
