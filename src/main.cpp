@@ -61,11 +61,6 @@ int main()
 
 	S.iniStatesClassification();
 
-	QuantumNumbers Q1(0,2,1);
-	QuantumNumbers Q2(0,1,2);
-	bool test=(Q1<Q2);
-	DEBUG(test);
-	exit(0);
 	//end of determination	
 	
 	cout << "=======================" << endl;

@@ -1,6 +1,8 @@
 #include "StatesClassification.h"
 
-//struct QuantumNumbers
+
+bool BlockNumber::operator<(const BlockNumber& rhs) const {return number<rhs.number;}
+bool BlockNumber::operator==(const BlockNumber& rhs) const {return number==rhs.number;}
 
 QuantumNumbers::QuantumNumbers(int LZ, int N_UP, int N_DOWN)					//inicialization QuantumNumbers
 {
@@ -14,6 +16,17 @@ QuantumNumbers::QuantumNumbers()					//inicialization QuantumNumbers
 {
 }
 
+bool QuantumNumbers::operator<(const QuantumNumbers &rhs) const
+{
+	if(Lz != rhs.Lz) return Lz < rhs.Lz;
+	if(N_up != rhs.N_up) return N_up < rhs.N_up;
+	return N_down < rhs.N_down;
+}
+
+bool QuantumNumbers::operator==(const QuantumNumbers &rhs) const 
+{
+	return (rhs.Lz == (*this).Lz && rhs.N_up == (*this).N_up && (*this).N_down == rhs.N_down );
+}
 
 std::ostream& operator<<(std::ostream& output,const QuantumNumbers& out)
 {
@@ -169,27 +182,15 @@ void StatesClassification::iniStatesClassification()		 	//initalize StatesClassi
 				else
 				{
 					int num_f = Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + N_up*(N_bit/2 + 1) + N_down;	//Assign a unique number for a given QuantumNumbers combination
-//					num_bl[num_f] = num_f - iter;												//Substract amount of empty blocks to get rid of trivial blocks
 					QuantumNumbers tmp=QuantumNumbers(Lz,N_up,N_down);
 					BlockNumber tmpBlockNumber = num_f - iter;
 
 					BlockToQuantum[tmpBlockNumber] = tmp;
 					QuantumToBlock[tmp] = tmpBlockNumber;
-					DEBUG("Added" << tmp << " <->" << num_f - iter << " = " << BlockToQuantum[num_f - iter] << " <-> " << QuantumToBlock[tmp]);
 				}
 			}
 		}
 	}
-  DEBUG("------");
-  for (std::map<QuantumNumbers,BlockNumber>::iterator it1=QuantumToBlock.begin();it1!=QuantumToBlock.end();++it1)
-  {
-  	DEBUG(it1->first << " --> " << it1->second);
-  }
-  DEBUG("------");
-  for (std::map<BlockNumber,QuantumNumbers>::iterator it1=BlockToQuantum.begin();it1!=BlockToQuantum.end();++it1)
-  {
-  	DEBUG(it1->first << " --> " << it1->second);
-  }
 }
 
 QuantumNumbers StatesClassification::getStateInfo(QuantumState in)						//returns Lz,N_up,N_down for number in
