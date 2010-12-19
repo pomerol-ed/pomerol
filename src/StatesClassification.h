@@ -9,11 +9,13 @@ struct BlockNumber {
 
 	BlockNumber(){};
 	BlockNumber(int number_):number(number_){};
-	operator int(){return number;}
+	operator int() const {return number;}
 	BlockNumber& operator ++(int unused){number++; return *this;}
 
 	bool isCorrect(){return number >= 0;}
 	bool operator<(const BlockNumber& rhs) const {return number<rhs.number;}
+	bool operator==(const BlockNumber& rhs) const {return number==rhs.number;}
+	//bool operator>(const BlockNumber& rhs) const {return number>rhs.number;}
 };
 
 const BlockNumber ERROR_BLOCK_NUMBER = -1;
@@ -28,8 +30,9 @@ struct QuantumNumbers {
 	QuantumNumbers();
 	friend std::ostream& operator<<(std::ostream& output, const QuantumNumbers& out);
 	bool operator==(const QuantumNumbers &rhs)const {return (rhs.Lz == (*this).Lz && rhs.N_up == (*this).N_up && (*this).N_down == rhs.N_down );}
-	bool operator==(QuantumNumbers rhs){return (rhs.Lz == (*this).Lz && rhs.N_up == (*this).N_up && (*this).N_down == rhs.N_down );}
+	//bool operator==(QuantumNumbers rhs){return (rhs.Lz == (*this).Lz && rhs.N_up == (*this).N_up && (*this).N_down == rhs.N_down );}
 	bool operator<(const QuantumNumbers &rhs) const {return (Lz < rhs.Lz)?true:(N_up<rhs.N_up)?true:(N_down<rhs.N_down)?true:false;}
+//	bool operator>(const QuantumNumbers &rhs) const {return (Lz > rhs.Lz)?true:(N_up>rhs.N_up)?true:(N_down>rhs.N_down)?true:false;}
 };
 
 const QuantumNumbers ERROR_QUANTUM_NUMBERS = QuantumNumbers(0,-1,-1);

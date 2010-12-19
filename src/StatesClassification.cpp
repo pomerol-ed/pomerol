@@ -95,7 +95,7 @@ const int StatesClassification::L()
 	return (N_bit_m/2-1)/2;
 }
 
-void StatesClassification::iniStatesClassification()		 	//inicialization StatesClassification 
+void StatesClassification::iniStatesClassification()		 	//initalize StatesClassification class by sorting all quantum states in system
 {
 	N_bit = Formula.getBitSize(); 
 	N_state = ( 1 << N_bit ); 
@@ -151,12 +151,6 @@ void StatesClassification::iniStatesClassification()		 	//inicialization StatesC
 	BLOCKNUMBERLIMIT = 2*Lz_max*(N_bit/2 + 1)*(N_bit/2 + 1) + (N_bit/2)*(N_bit/2 + 1) + (N_bit/2);
 	maximumBlockNumber_ = BLOCKNUMBERLIMIT;
 	
-//	num_bl = new BlockNumber [maximumBlockNumber_+1];
-	num_bl.resize(maximumBlockNumber_+1);
-//	BlockToQuantum.resize(maximumBlockNumber_+1);
-	for (int j=0; j<(maximumBlockNumber_+1); j++)
-		num_bl[j] = -1;
-	
 	int iter = 0;
 
 	for (int Lz=0; Lz<(2*Lz_max + 1); Lz++)
@@ -174,15 +168,28 @@ void StatesClassification::iniStatesClassification()		 	//inicialization StatesC
 				}
 				else
 				{
-					int num_f = Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + N_up*(N_bit/2 + 1) + N_down;	//number from formula
-					num_bl[num_f] = num_f - iter;							//number of notrivial block
+					int num_f = Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + N_up*(N_bit/2 + 1) + N_down;	//Assign a unique number for a given QuantumNumbers combination
+//					num_bl[num_f] = num_f - iter;												//Substract amount of empty blocks to get rid of trivial blocks
 					QuantumNumbers tmp=QuantumNumbers(Lz,N_up,N_down);
-					BlockToQuantum[num_f - iter] = tmp;
-					QuantumToBlock[tmp] = (num_f - iter);
+					BlockNumber tmpBlockNumber = num_f - iter;
+
+					BlockToQuantum[tmpBlockNumber] = tmp;
+					QuantumToBlock[tmp] = tmpBlockNumber;
+					DEBUG("Added" << tmp << " <->" << num_f - iter << " = " << BlockToQuantum[num_f - iter] << " <-> " << QuantumToBlock[tmp]);
 				}
 			}
 		}
 	}
+  DEBUG("------");
+  for (std::map<QuantumNumbers,BlockNumber>::iterator it1=QuantumToBlock.begin();it1!=QuantumToBlock.end();++it1)
+  {
+  	DEBUG(it1->first << " --> " << it1->second);
+  }
+  DEBUG("------");
+  for (std::map<BlockNumber,QuantumNumbers>::iterator it1=BlockToQuantum.begin();it1!=BlockToQuantum.end();++it1)
+  {
+  	DEBUG(it1->first << " --> " << it1->second);
+  }
 }
 
 QuantumNumbers StatesClassification::getStateInfo(QuantumState in)						//returns Lz,N_up,N_down for number in

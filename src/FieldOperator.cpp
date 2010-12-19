@@ -74,7 +74,7 @@ void CreationOperator::prepare()
 {
   for (BlockNumber RightIndex=0;RightIndex<System.NumberOfBlocks();RightIndex++)
     {
-      BlockNumber LeftIndex = mapsTo(RightIndex);
+      BlockNumber LeftIndex = this->mapsTo(RightIndex);
       if (LeftIndex.isCorrect()) 
       {
          FieldOperatorPart *Part = new CreationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex),OUT);
@@ -129,6 +129,7 @@ QuantumNumbers CreationOperator::mapsTo(QuantumNumbers in) // Require explicit k
     q_out = QuantumNumbers(in.Lz + lz,in.N_up+1,in.N_down);
   else 
     q_out = QuantumNumbers(in.Lz + lz,in.N_up,in.N_down+1);
+  DEBUG(q_out << "," << in);
   return System.checkQuantumNumbers(q_out)?q_out:ERROR_QUANTUM_NUMBERS;
 }
 
