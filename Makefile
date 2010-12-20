@@ -14,7 +14,7 @@ lib:
 .PHONY: iniparser
 iniparser: lib
 	@echo "Building iniparser"
-	cd iniparser && $(MAKE)
+	cd iniparser && $(MAKE) libiniparser.a
 	@mv iniparser/libiniparser.a ./lib
 	@echo
 
