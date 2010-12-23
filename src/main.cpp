@@ -159,6 +159,7 @@ int main()
         TwoParticleGF Chi4(S,H,C1,C2,CX3,CX4,rho,OUT);
         Chi4.prepare();
         Chi4.compute(30);
+		//Chi4.dump();
 
 		cout << term_counter << " terms" <<  endl;
 		cout << Chi4(3,2,0) << endl;
@@ -166,6 +167,7 @@ int main()
 		cout << Chi4(5,2,2) << endl;
         cout << Chi4(1,7,1) << endl;
         cout << Chi4(2,-2,4) << endl;
+        cout << Chi4(29,-29,29) << endl;
 
 		//Vertex4 Gamma4(Chi4,G,G,G,G);
 		//cout << Gamma4(0,2,0) << endl;
