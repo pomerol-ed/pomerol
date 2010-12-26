@@ -2,6 +2,7 @@
 ** \brief Density matrix of the grand canonical ensemble.
 ** 
 ** \author Igor Krivenko (igor@shg.ru)
+** \author Andrey Antipov (antipov@ct-qmc.org)
 */
 
 #ifndef ____DEFINE_DENSITY_MATRIX____
@@ -20,34 +21,34 @@
  */
 class DensityMatrix
 {
-    /** Reference to a states classification object. */
+    /** A reference to a states classification object. */
     StatesClassification& S;
-    /** Reference to a Hamiltonian defining the grand canonical ensemble. */
+    /** A reference to a Hamiltonian defining the grand canonical ensemble. */
     Hamiltonian &H;
-    /** Array of pointers to parts (every part corresponds to a part of the Hamiltonian). */
+    /** An array of pointers to parts (every part corresponds to a part of the Hamiltonian). */
     DensityMatrixPart** parts;
-    /** Inverse temperature. */
+    /** The inverse temperature. */
     RealType beta;
 
-    /** Number of parts. */
+    /** The number of parts. */
     BlockNumber NumOfBlocks;
 
 public:
     /** Constructor.
-     * \param[in] S Reference to a states classification object.
-     * \param[in] H Reference to a Hamiltonian.
-     * \param[in] beta Inverse temperature.
+     * \param[in] S A reference to a states classification object.
+     * \param[in] H A reference to a Hamiltonian.
+     * \param[in] beta The inverse temperature.
      */
     DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType beta);
     /** Destructor. */
     ~DensityMatrix();
 
     /** Returns a part of the density matrix.
-    * \param[in] in Set of the quantum numbers to be resolved into a part number.
+    * \param[in] in A set of the quantum numbers to be resolved into a part number.
     */
     DensityMatrixPart& part(const QuantumNumbers &in);
     /** Returns a part of the density matrix.
-     * \param[in] in Part number.
+     * \param[in] in A part number.
      */
     DensityMatrixPart& part(BlockNumber in);
 
@@ -56,7 +57,7 @@ public:
     /** Actually computes the parts. */
     void compute(void);
     /** Returns the value of the density matrix corresponding to a specified quantum state.
-     * \param[in] state Quantum state.
+     * \param[in] state A quantum state.
      */
     RealType operator()(QuantumState &state);
     /** Returns the inverse temperature. */

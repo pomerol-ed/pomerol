@@ -2,6 +2,7 @@
 ** \brief Density matrix of the grand canonical ensemble.
 **
 ** \author Igor Krivenko (igor@shg.ru)
+** \author Andrey Antipov (antipov@ct-qmc.org)
 */
 #include "DensityMatrix.h"
 
