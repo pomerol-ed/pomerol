@@ -62,7 +62,7 @@ public:
     /** Returns the inverse temperature. */
     RealType getBeta();
     /** Returns an averaged value of the energy. */
-	RealType getAverageEnergy();
+    RealType getAverageEnergy();
 };
 
 #endif // endif :: #ifndef ____DEFINE_DENSITY_MATRIX____

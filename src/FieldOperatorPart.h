@@ -8,14 +8,14 @@
 
 class FieldOperatorPart {
 protected:
-	unsigned short i;
-	RowMajorMatrixType elementsRowMajor;	
-	ColMajorMatrixType elementsColMajor;	
+    unsigned short i;
+    RowMajorMatrixType elementsRowMajor;    
+    ColMajorMatrixType elementsColMajor;    
 
-	StatesClassification &S;
-	HamiltonianPart &h_from;
-	HamiltonianPart &h_to;
-	output_handle OUT;			//output path handler
+    StatesClassification &S;
+    HamiltonianPart &h_from;
+    HamiltonianPart &h_to;
+    output_handle OUT;            //output path handler
 
     // basic functions
     virtual QuantumState retK(QuantumState L)=0;  
@@ -26,18 +26,18 @@ protected:
    
 public:
   
-	FieldOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from,	HamiltonianPart &h_to, output_handle OUT);
+    FieldOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from,    HamiltonianPart &h_to, output_handle OUT);
 
-	void compute();
-	void dump();
-	void print_to_screen();						//print to screen matrices UXCU UXCXU
+    void compute();
+    void dump();
+    void print_to_screen();                        //print to screen matrices UXCU UXCXU
 
-	const string& path();						//output paths
+    const string& path();                        //output paths
     
     RowMajorMatrixType& getRowMajorValue();
     ColMajorMatrixType& getColMajorValue();
-	BlockNumber getLeftIndex();
-	BlockNumber getRightIndex();
+    BlockNumber getLeftIndex();
+    BlockNumber getRightIndex();
 };
 
 class AnnihilationOperatorPart;
@@ -45,7 +45,7 @@ class CreationOperatorPart;
 
 class AnnihilationOperatorPart : public FieldOperatorPart
 { 
-    QuantumState retK(QuantumState L);	
+    QuantumState retK(QuantumState L);    
     int mFunc(QuantumState state1, QuantumState state2, int i);
     bool checkL(QuantumState L);
     friend class CreationOperatorPart;
@@ -57,8 +57,8 @@ public :
 
 class CreationOperatorPart : public FieldOperatorPart
 {
-    QuantumState retK(QuantumState L);	
-    int mFunc(QuantumState state1, QuantumState state2, int i);	
+    QuantumState retK(QuantumState L);    
+    int mFunc(QuantumState state1, QuantumState state2, int i);    
     bool checkL(QuantumState L);
     friend class AnnihilationOperatorPart;
   

@@ -4,28 +4,28 @@
 bool BlockNumber::operator<(const BlockNumber& rhs) const {return number<rhs.number;}
 bool BlockNumber::operator==(const BlockNumber& rhs) const {return number==rhs.number;}
 
-QuantumNumbers::QuantumNumbers(int LZ, int N_UP, int N_DOWN)					//inicialization QuantumNumbers
+QuantumNumbers::QuantumNumbers(int LZ, int N_UP, int N_DOWN)                    //inicialization QuantumNumbers
 {
-	Lz=LZ;
-	N_up=N_UP;
-	N_down=N_DOWN;
+    Lz=LZ;
+    N_up=N_UP;
+    N_down=N_DOWN;
 
 }
 
-QuantumNumbers::QuantumNumbers()					//inicialization QuantumNumbers
+QuantumNumbers::QuantumNumbers()                    //inicialization QuantumNumbers
 {
 }
 
 bool QuantumNumbers::operator<(const QuantumNumbers &rhs) const
 {
-	if(Lz != rhs.Lz) return Lz < rhs.Lz;
-	if(N_up != rhs.N_up) return N_up < rhs.N_up;
-	return N_down < rhs.N_down;
+    if(Lz != rhs.Lz) return Lz < rhs.Lz;
+    if(N_up != rhs.N_up) return N_up < rhs.N_up;
+    return N_down < rhs.N_down;
 }
 
 bool QuantumNumbers::operator==(const QuantumNumbers &rhs) const 
 {
-	return (rhs.Lz == (*this).Lz && rhs.N_up == (*this).N_up && (*this).N_down == rhs.N_down );
+    return (rhs.Lz == (*this).Lz && rhs.N_up == (*this).N_up && (*this).N_down == rhs.N_down );
 }
 
 std::ostream& operator<<(std::ostream& output,const QuantumNumbers& out)
@@ -36,49 +36,49 @@ std::ostream& operator<<(std::ostream& output,const QuantumNumbers& out)
 
 //class StatesClassification
 
-const vector<QuantumState>& StatesClassification::clstates( QuantumNumbers in )			//return st[in.Lz][in.N_up][in.N_down]
+const vector<QuantumState>& StatesClassification::clstates( QuantumNumbers in )            //return st[in.Lz][in.N_up][in.N_down]
 {
-	return st[in.Lz][in.N_up][in.N_down];
+    return st[in.Lz][in.N_up][in.N_down];
 }
 
 
-const QuantumState StatesClassification::cst( QuantumNumbers in, int m )			//return st[in.Lz][in.N_up][in.N_down][m]
+const QuantumState StatesClassification::cst( QuantumNumbers in, int m )            //return st[in.Lz][in.N_up][in.N_down][m]
 {
-	return st[in.Lz][in.N_up][in.N_down][m];
+    return st[in.Lz][in.N_up][in.N_down][m];
 }
 
 const InnerQuantumState StatesClassification::getInnerState(QuantumState state)
 {
-  int ST=-1;				// "state" in part of Hamilt			
+  int ST=-1;                // "state" in part of Hamilt            
   for (unsigned int n=0; n<(*this).clstates((*this).getStateInfo(state)).size(); n++ )
-	{	
-		if ( (*this).cst((*this).getStateInfo(state),n)== state) ST=n;	//get ST
-	}
+    {    
+        if ( (*this).cst((*this).getStateInfo(state),n)== state) ST=n;    //get ST
+    }
  return ST;
 }
 
 bool StatesClassification::checkQuantumNumbers(QuantumNumbers in)
 {
-	return (QuantumToBlock.count(in)>0);
+    return (QuantumToBlock.count(in)>0);
 };
 
 
 BlockNumber StatesClassification::getBlockNumber(QuantumNumbers in)
 {
  /* if ((in.Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + in.N_up*(N_bit/2 + 1) + in.N_down) <= ((int) BLOCKNUMBERLIMIT) 
-	&& 
+    && 
       (in.Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + in.N_up*(N_bit/2 + 1) + in.N_down) >= 0) 
   {  
-     return num_bl[in.Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + in.N_up*(N_bit/2 + 1) + in.N_down];	//number from formula
+     return num_bl[in.Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + in.N_up*(N_bit/2 + 1) + in.N_down];    //number from formula
   }
   else return ERROR_BLOCK_NUMBER;
   */
-	return (QuantumToBlock.count(in))?QuantumToBlock[in]:ERROR_BLOCK_NUMBER;
+    return (QuantumToBlock.count(in))?QuantumToBlock[in]:ERROR_BLOCK_NUMBER;
 }
 
 QuantumNumbers StatesClassification::getBlockInfo(BlockNumber in)
 {
-	  return (BlockToQuantum.count(in))?BlockToQuantum[in]:ERROR_QUANTUM_NUMBERS;
+      return (BlockToQuantum.count(in))?BlockToQuantum[in]:ERROR_QUANTUM_NUMBERS;
 }
 
 void StatesClassification::getSiteInfo(int bit, int& lz, int& spin)
@@ -89,150 +89,150 @@ void StatesClassification::getSiteInfo(int bit, int& lz, int& spin)
 }
 BlockNumber StatesClassification::NumberOfBlocks()
 {
-	return maximumBlockNumber_+1; 
+    return maximumBlockNumber_+1; 
 }
-const int StatesClassification::N_b()						//return N_bit
+const int StatesClassification::N_b()                        //return N_bit
 {
-	return N_bit;
+    return N_bit;
 }
-const int StatesClassification::N_b_m()						//return N_bit_m
+const int StatesClassification::N_b_m()                        //return N_bit_m
 {
-	return N_bit_m;
+    return N_bit_m;
 }
 const QuantumState StatesClassification::N_st()
 {
-	return N_state;
+    return N_state;
 }
 const int StatesClassification::L()
 {
-	return (N_bit_m/2-1)/2;
+    return (N_bit_m/2-1)/2;
 }
 
-void StatesClassification::iniStatesClassification()		 	//initalize StatesClassification class by sorting all quantum states in system
+void StatesClassification::iniStatesClassification()             //initalize StatesClassification class by sorting all quantum states in system
 {
-	N_bit = Formula.getBitSize(); 
-	N_state = ( 1 << N_bit ); 
-	N_bit_m=0;
-	#warning : bad N_bit_m definition. Actually existence of N_bit_m is definetely bad.
-  	for (vector<BitInfo*>::iterator it=Formula.getBitInfoList().begin(); it != Formula.getBitInfoList().end(); it++ ) 
-	{
-		if ((*it)->type == p) { N_bit_m = 6; break;};
-		if ((*it)->type == d) { N_bit_m = 10; break; };
-		if ((*it)->type == f) { N_bit_m = 14; break; };
-	}
-	
-	vector<QuantumState> null;						//creation null vectors
-	int Lz_max=0;
-	for(int L=(N_bit_m/2-1)/2;L>0;L--)
-		Lz_max+=2*L;
-	st = new vector<QuantumState> ** [2*Lz_max+1];
-	for (int i=0; i<(2*Lz_max+1); i++)
-	{
-		st[i] = new vector<QuantumState> * [N_bit/2+1];
-		for (int j=0; j<(N_bit/2 + 1); j++)
-		{
-			st[i][j] = new vector<QuantumState> [N_bit/2+1];
-			for (int k=0; k<(N_bit/2 +1); k++)
-			{
-				st[i][j][k] = null;
-			}
-		}
-	}
-	for(QuantumState state=0;state<N_state;state++)			//get "classificated" vectors
-	{
-		int Lz_get=0, N_up_get=0, N_down_get=0;
-		for (int k=0;k<N_bit;k++)
-		{
-			if (N_bit_m!=0)
-			{
-				if ( (k<N_bit_m/2) )
-					Lz_get+=n_i(state,k)*( k%(N_bit_m/2) - (N_bit_m/2-1)/2 );
-				if ( (k>=N_bit/2) && (k<N_bit/2+N_bit_m/2) )
-					Lz_get+=n_i(state,k)*( (k-N_bit/2)%(N_bit_m/2) - (N_bit_m/2-1)/2 );				
-			}	
-			if (k<N_bit/2)
-				N_up_get+=n_i(state,k);
-			else
-				N_down_get+=n_i(state,k);
-		}
-		Lz_get+= Lz_max;
-		st[Lz_get][N_up_get][N_down_get].push_back(state);
-		
-	}
+    N_bit = Formula.getBitSize(); 
+    N_state = ( 1 << N_bit ); 
+    N_bit_m=0;
+    #warning : bad N_bit_m definition. Actually existence of N_bit_m is definetely bad.
+      for (vector<BitInfo*>::iterator it=Formula.getBitInfoList().begin(); it != Formula.getBitInfoList().end(); it++ ) 
+    {
+        if ((*it)->type == p) { N_bit_m = 6; break;};
+        if ((*it)->type == d) { N_bit_m = 10; break; };
+        if ((*it)->type == f) { N_bit_m = 14; break; };
+    }
+    
+    vector<QuantumState> null;                        //creation null vectors
+    int Lz_max=0;
+    for(int L=(N_bit_m/2-1)/2;L>0;L--)
+        Lz_max+=2*L;
+    st = new vector<QuantumState> ** [2*Lz_max+1];
+    for (int i=0; i<(2*Lz_max+1); i++)
+    {
+        st[i] = new vector<QuantumState> * [N_bit/2+1];
+        for (int j=0; j<(N_bit/2 + 1); j++)
+        {
+            st[i][j] = new vector<QuantumState> [N_bit/2+1];
+            for (int k=0; k<(N_bit/2 +1); k++)
+            {
+                st[i][j][k] = null;
+            }
+        }
+    }
+    for(QuantumState state=0;state<N_state;state++)            //get "classificated" vectors
+    {
+        int Lz_get=0, N_up_get=0, N_down_get=0;
+        for (int k=0;k<N_bit;k++)
+        {
+            if (N_bit_m!=0)
+            {
+                if ( (k<N_bit_m/2) )
+                    Lz_get+=n_i(state,k)*( k%(N_bit_m/2) - (N_bit_m/2-1)/2 );
+                if ( (k>=N_bit/2) && (k<N_bit/2+N_bit_m/2) )
+                    Lz_get+=n_i(state,k)*( (k-N_bit/2)%(N_bit_m/2) - (N_bit_m/2-1)/2 );                
+            }    
+            if (k<N_bit/2)
+                N_up_get+=n_i(state,k);
+            else
+                N_down_get+=n_i(state,k);
+        }
+        Lz_get+= Lz_max;
+        st[Lz_get][N_up_get][N_down_get].push_back(state);
+        
+    }
 
 
-	BLOCKNUMBERLIMIT = 2*Lz_max*(N_bit/2 + 1)*(N_bit/2 + 1) + (N_bit/2)*(N_bit/2 + 1) + (N_bit/2);
-	maximumBlockNumber_ = BLOCKNUMBERLIMIT;
-	
-	int iter = 0;
+    BLOCKNUMBERLIMIT = 2*Lz_max*(N_bit/2 + 1)*(N_bit/2 + 1) + (N_bit/2)*(N_bit/2 + 1) + (N_bit/2);
+    maximumBlockNumber_ = BLOCKNUMBERLIMIT;
+    
+    int iter = 0;
 
-	for (int Lz=0; Lz<(2*Lz_max + 1); Lz++)
-	{
-		for (int N_up=0; N_up<(N_bit/2 + 1); N_up++)
-		{
-			for (int N_down=0; N_down<(N_bit/2 + 1); N_down++)
-			{
-				
+    for (int Lz=0; Lz<(2*Lz_max + 1); Lz++)
+    {
+        for (int N_up=0; N_up<(N_bit/2 + 1); N_up++)
+        {
+            for (int N_down=0; N_down<(N_bit/2 + 1); N_down++)
+            {
+                
 
-				if(st[Lz][N_up][N_down].size()==0)
-				{
-					iter++;
-					maximumBlockNumber_=maximumBlockNumber_-1;
-				}
-				else
-				{
-					int num_f = Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + N_up*(N_bit/2 + 1) + N_down;	//Assign a unique number for a given QuantumNumbers combination
-					QuantumNumbers tmp=QuantumNumbers(Lz,N_up,N_down);
-					BlockNumber tmpBlockNumber = num_f - iter;
+                if(st[Lz][N_up][N_down].size()==0)
+                {
+                    iter++;
+                    maximumBlockNumber_=maximumBlockNumber_-1;
+                }
+                else
+                {
+                    int num_f = Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + N_up*(N_bit/2 + 1) + N_down;    //Assign a unique number for a given QuantumNumbers combination
+                    QuantumNumbers tmp=QuantumNumbers(Lz,N_up,N_down);
+                    BlockNumber tmpBlockNumber = num_f - iter;
 
-					BlockToQuantum[tmpBlockNumber] = tmp;
-					QuantumToBlock[tmp] = tmpBlockNumber;
-				}
-			}
-		}
-	}
+                    BlockToQuantum[tmpBlockNumber] = tmp;
+                    QuantumToBlock[tmp] = tmpBlockNumber;
+                }
+            }
+        }
+    }
 }
 
-QuantumNumbers StatesClassification::getStateInfo(QuantumState in)						//returns Lz,N_up,N_down for number in
+QuantumNumbers StatesClassification::getStateInfo(QuantumState in)                        //returns Lz,N_up,N_down for number in
 {
-	
-	if (in >= N_state) return ERROR_QUANTUM_NUMBERS;
-	int Lz_max=0;								//begining of calculating Lz,N_up,N_down
-	
-	for(int L=((*this).N_b_m()/2-1)/2;L>0;L--)
-		Lz_max+=2*L;
+    
+    if (in >= N_state) return ERROR_QUANTUM_NUMBERS;
+    int Lz_max=0;                                //begining of calculating Lz,N_up,N_down
+    
+    for(int L=((*this).N_b_m()/2-1)/2;L>0;L--)
+        Lz_max+=2*L;
 
-	int Lz_st=0, N_up_st=0, N_down_st=0;
+    int Lz_st=0, N_up_st=0, N_down_st=0;
 
-	for (int p=0;p<(*this).N_b();p++)
-	{	
-		if ((*this).N_b_m()!=0)
-		{
-			if ( (p<(*this).N_b_m()/2) )
-				Lz_st+=(*this).n_i(in,p)*( p%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );
-			
-			if ( (p>=(*this).N_b()/2) && (p<(*this).N_b()/2+(*this).N_b_m()/2) )
-				Lz_st+=(*this).n_i(in,p)*( (p-(*this).N_b()/2)%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );	
-		}			
-		
-		if (p<(*this).N_b()/2)
-			N_up_st+=(*this).n_i(in,p);
-	
-		else
-			N_down_st+=(*this).n_i(in,p);
-	}
-	
-	Lz_st+= Lz_max;								//finish of calculating
-	
-	QuantumNumbers N(Lz_st,N_up_st,N_down_st);
+    for (int p=0;p<(*this).N_b();p++)
+    {    
+        if ((*this).N_b_m()!=0)
+        {
+            if ( (p<(*this).N_b_m()/2) )
+                Lz_st+=(*this).n_i(in,p)*( p%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );
+            
+            if ( (p>=(*this).N_b()/2) && (p<(*this).N_b()/2+(*this).N_b_m()/2) )
+                Lz_st+=(*this).n_i(in,p)*( (p-(*this).N_b()/2)%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );    
+        }            
+        
+        if (p<(*this).N_b()/2)
+            N_up_st+=(*this).n_i(in,p);
+    
+        else
+            N_down_st+=(*this).n_i(in,p);
+    }
+    
+    Lz_st+= Lz_max;                                //finish of calculating
+    
+    QuantumNumbers N(Lz_st,N_up_st,N_down_st);
 
-	return N;
+    return N;
 
 }
 
 BlockNumber StatesClassification::getBlockNumber(QuantumState in)
 {
-	return (*this).getBlockNumber((*this).getStateInfo(in));
+    return (*this).getBlockNumber((*this).getStateInfo(in));
 }
 
 

@@ -34,7 +34,7 @@ TwoParticleGF::TwoParticleGF(StatesClassification& S, Hamiltonian& H,
                 output_handle &OUT) : parts(0), S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM)
 {
     green_path = output_handle(OUT.path() + "/Gamma4");
-	Storage = new TwoParticleGFPart::MatsubaraContainer(DM.getBeta());
+    Storage = new TwoParticleGFPart::MatsubaraContainer(DM.getBeta());
 }
 
 TwoParticleGF::~TwoParticleGF()
@@ -55,12 +55,12 @@ BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t Operato
 
 BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex)
 {
-	switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
-  		case 0: return C1.getRightIndex(LeftIndex); 
-  		case 1: return C2.getRightIndex(LeftIndex);
-		case 2: return CX3.getRightIndex(LeftIndex);
-  		default: return ERROR_BLOCK_NUMBER;
-	}
+    switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
+          case 0: return C1.getRightIndex(LeftIndex); 
+          case 1: return C2.getRightIndex(LeftIndex);
+        case 2: return CX3.getRightIndex(LeftIndex);
+          default: return ERROR_BLOCK_NUMBER;
+    }
 }
 
 FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex)
@@ -107,17 +107,17 @@ void TwoParticleGF::prepare(void)
 
 void TwoParticleGF::compute(long NumberOfMatsubaras)
 {
-	int i=0;
-	Storage->prepare(NumberOfMatsubaras);
+    int i=0;
+    Storage->prepare(NumberOfMatsubaras);
     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
     {
-	    cout << (int) ((i*100.0)/parts.size()) << "  " <<flush;
+        cout << (int) ((i*100.0)/parts.size()) << "  " <<flush;
         (*iter)->compute(NumberOfMatsubaras);
-		*Storage+=(*iter)->getMatsubaraContainer();
-		(*iter)->clear();
-		++i;
+        *Storage+=(*iter)->getMatsubaraContainer();
+        (*iter)->clear();
+        ++i;
     }
-	cout << endl;
+    cout << endl;
 }
 
 ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)

@@ -35,7 +35,7 @@ class TwoParticleGF {
     BlockNumber getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber RightIndex);
     BlockNumber getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex); //!< return right index of an operator at current position for a current permutation
 
-	TwoParticleGFPart::MatsubaraContainer *Storage;
+    TwoParticleGFPart::MatsubaraContainer *Storage;
 
 public:
     TwoParticleGF(StatesClassification& S, Hamiltonian& H,

@@ -1,11 +1,11 @@
-//	werner-ng/src/config.h
-//	This file is a part of 'Werner NG' project.
+//    werner-ng/src/config.h
+//    This file is a part of 'Werner NG' project.
 /** \file config.h
-**	\brief Declares very common type names and macros.
+**    \brief Declares very common type names and macros.
 ** 
-** \author	Igor Krivenko (igor@shg.ru)
-** \author	Alexey Rubtsov (alex@shg.ru)
-** \author	Andrey Antipov (antipov@shg.ru)
+** \author    Igor Krivenko (igor@shg.ru)
+** \author    Alexey Rubtsov (alex@shg.ru)
+** \author    Andrey Antipov (antipov@shg.ru)
 */
 
 #ifndef _CONFIG_H
@@ -46,13 +46,13 @@ typedef Eigen::DynamicSparseMatrix<RealType,Eigen::ColMajor> DynamicSparseMatrix
 enum spin {down, up};
 
 /** A short name for imaginary unit. */
-static const ComplexType I = ComplexType(0.0,1.0);	// 'static' to prevent linking problems
+static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
 
 /** Generalized 'square' function. */
 template<typename T> inline T sqr(T x) { return x*x; }
 
 /** Easy enumeration for orbital names */
-enum OrbitalValue {s=0, p=1, d=2, f=3};			 //!< The enum for s,p,d,f - orbitals
+enum OrbitalValue {s=0, p=1, d=2, f=3};             //!< The enum for s,p,d,f - orbitals
 
 /** Permutation of 3 elements */
 struct Permutation3 {
@@ -67,7 +67,7 @@ struct Permutation4 {
 };
 
 /** */
-#define DUMP_FLOATING_POINT_NUMBERS	10
+#define DUMP_FLOATING_POINT_NUMBERS    10
 
 //@{
 /** Do-It-Once environment from A. Rubtsov
@@ -75,7 +75,7 @@ struct Permutation4 {
 ** When you want a piece of code to run exactly once, just write:
 ** \verbatim
 do_once
-	... your code goes here...
+    ... your code goes here...
 end_do_once
 \endverbatim
 **/

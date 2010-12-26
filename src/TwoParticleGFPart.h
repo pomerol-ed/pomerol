@@ -45,24 +45,24 @@ public:
         static bool IsRelevant(const ComplexType &MatrixElement);
     };
 
-	/**
-	 * A miniclass to store value of Chi over Matsubara frequencies. Stores data in a (OMEGA,nu,nu'), where OMEGA=w1+w2 - bosonic frequency
-	 * and nu=w1, nu'=w4
-	 */
-	class MatsubaraContainer{
+    /**
+     * A miniclass to store value of Chi over Matsubara frequencies. Stores data in a (OMEGA,nu,nu'), where OMEGA=w1+w2 - bosonic frequency
+     * and nu=w1, nu'=w4
+     */
+    class MatsubaraContainer{
 
-		ComplexType MatsubaraSpacing;
-		long NumberOfMatsubaras;
-		std::vector<MatrixType> Data;
-		std::vector<long> FermionicFirstIndex;
-	public:
-		MatsubaraContainer(RealType beta);
-		void prepare(long NumberOfMatsubaras);
-		ComplexType& operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-		void fill(std::list<TwoParticleGFTerm> &Terms);
-		MatsubaraContainer& operator+=(const MatsubaraContainer& rhs);
-		void clear();
-	};
+        ComplexType MatsubaraSpacing;
+        long NumberOfMatsubaras;
+        std::vector<MatrixType> Data;
+        std::vector<long> FermionicFirstIndex;
+    public:
+        MatsubaraContainer(RealType beta);
+        void prepare(long NumberOfMatsubaras);
+        ComplexType& operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+        void fill(std::list<TwoParticleGFTerm> &Terms);
+        MatsubaraContainer& operator+=(const MatsubaraContainer& rhs);
+        void clear();
+    };
 
 private:
 
@@ -85,7 +85,7 @@ private:
 
     std::list<TwoParticleGFTerm> Terms;
 
-	MatsubaraContainer *Storage;
+    MatsubaraContainer *Storage;
 
     void computeChasing1(long NumberOfMatsubaras);
     void computeChasing2(long NumberOfMatsubaras);
@@ -97,9 +97,9 @@ public:
                 Permutation3 Permutation);
 
     void compute(long NumberOfMatsubaras, ComputationMethod method = ChasingIndices2);
-	void clear();
+    void clear();
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-	const MatsubaraContainer& getMatsubaraContainer();
+    const MatsubaraContainer& getMatsubaraContainer();
 };
 
 #endif // endif :: #ifndef ____DEFINE_2PGF_PART____

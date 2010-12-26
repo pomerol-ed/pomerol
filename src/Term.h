@@ -5,7 +5,7 @@
 **  \brief Declaration of Term<>, nnTerm, spinflipTerm and other term classes.
 ** The manifold of terms describes a formula which defines Hamiltonian on a given lattice
 ** 
-**  \author	Andrey Antipov (antipov@ct-qmc.org)
+**  \author    Andrey Antipov (antipov@ct-qmc.org)
 */
 
 
@@ -24,12 +24,12 @@
 class Term 
 {
 public:
-   int N;			//!< Amount of field operators in term
+   int N;            //!< Amount of field operators in term
    string type;
-   bool diag; 			//!< Determine, whether the term will produce diagonal or non-diagonal matrix element.
-   bool *order; 		//!< Order is a sequence of true/false values. True means creation operator, false - annihilation operator.
-   unsigned short *bit; 	//!< The bits which are used by field operators.
-   RealType Value;		//!< Define which value should be added to Hamiltonian by this term. Actually, this is the matrix element.
+   bool diag;             //!< Determine, whether the term will produce diagonal or non-diagonal matrix element.
+   bool *order;         //!< Order is a sequence of true/false values. True means creation operator, false - annihilation operator.
+   unsigned short *bit;     //!< The bits which are used by field operators.
+   RealType Value;        //!< Define which value should be added to Hamiltonian by this term. Actually, this is the matrix element.
    friend std::ostream & (operator <<) (ostream &, const Term &); //!< Output of the class 
    virtual ~Term();
 };

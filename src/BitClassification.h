@@ -4,7 +4,7 @@
 /** \file BitClassification.h
 **  \brief Declaration of BitInfo, TermsList, BitClassification classes.
 ** 
-**  \author	Andrey Antipov (antipov@ct-qmc.org)
+**  \author    Andrey Antipov (antipov@ct-qmc.org)
 */
 
 #ifndef __BIT_CLASSIFICATION__
@@ -27,13 +27,13 @@
 class BitInfo
 {
 public:
-  	unsigned short site; 		//!< The number of site
-	unsigned short spin; 		//!< Spin up(1) or Spin down(0)
-	unsigned short type;	    //!< The type of site which handles this spin. Can be s,p,d,f (0,1,2,3).
-	unsigned short bitNumber;	//!< The number of bit
-	RealType LocalMu;			//!< The energy in the -mu*N term for the site ( Useful for adjusting a filling in the orbital )
-	void setBitNumber(const unsigned short &in); 
-	virtual void print_to_screen()=0;
+      unsigned short site;         //!< The number of site
+    unsigned short spin;         //!< Spin up(1) or Spin down(0)
+    unsigned short type;        //!< The type of site which handles this spin. Can be s,p,d,f (0,1,2,3).
+    unsigned short bitNumber;    //!< The number of bit
+    RealType LocalMu;            //!< The energy in the -mu*N term for the site ( Useful for adjusting a filling in the orbital )
+    void setBitNumber(const unsigned short &in); 
+    virtual void print_to_screen()=0;
 };
 
 /**
@@ -42,10 +42,10 @@ public:
 class sBitInfo : public BitInfo
 {
 public:
-	RealType U;
-	sBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_, RealType U_, RealType LocalMu_):U(U_){site=site_;type=type_;spin=spin_;LocalMu=LocalMu_;};
-	friend std::ostream& operator<<(std::ostream& output, const sBitInfo& out);
-	void print_to_screen(){cout << *this << endl;};
+    RealType U;
+    sBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_, RealType U_, RealType LocalMu_):U(U_){site=site_;type=type_;spin=spin_;LocalMu=LocalMu_;};
+    friend std::ostream& operator<<(std::ostream& output, const sBitInfo& out);
+    void print_to_screen(){cout << *this << endl;};
 };
 
 /**
@@ -54,13 +54,13 @@ public:
 class pBitInfo : public BitInfo
 {
 public:
-	RealType U;
-	RealType J;
-	string basis;
-	unsigned short orbital; 
-	pBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_,unsigned short orbital_, const string &basis_, RealType U_, RealType J_):U(U_),J(J_){site=site_;type=type_;spin=spin_;orbital=orbital_;basis=basis_;};
-	friend std::ostream& operator<<(std::ostream& output, const pBitInfo& out);
-	void print_to_screen(){cout << *this << endl;};
+    RealType U;
+    RealType J;
+    string basis;
+    unsigned short orbital; 
+    pBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_,unsigned short orbital_, const string &basis_, RealType U_, RealType J_):U(U_),J(J_){site=site_;type=type_;spin=spin_;orbital=orbital_;basis=basis_;};
+    friend std::ostream& operator<<(std::ostream& output, const pBitInfo& out);
+    void print_to_screen(){cout << *this << endl;};
 };
 
 /** 
@@ -69,13 +69,13 @@ public:
  */
 class TermsList 
 {
-   std::map <unsigned short, std::list<Term*> > TermsMap;			//!< The map between the order of the terms and corresponding list
+   std::map <unsigned short, std::list<Term*> > TermsMap;            //!< The map between the order of the terms and corresponding list
    unsigned short maxOrder;
 
    public:
-   void addTerm(Term* in);							//!< Add a new term to the List
+   void addTerm(Term* in);                            //!< Add a new term to the List
    TermsList(){maxOrder=0;};
-   std::list<Term*> &getTerms(unsigned short order); 				//!< Get a list of terms of a given order
+   std::list<Term*> &getTerms(unsigned short order);                 //!< Get a list of terms of a given order
    friend std::ostream& operator<<(std::ostream& output,TermsList& out);
 };
 
@@ -89,29 +89,29 @@ class TermsList
  */
 class BitClassification
 {
-	LatticeAnalysis &Lattice;
-	int N_bit;						 			 	//!< The length of BitInfoList. Defines the number of states in system as 2^N_bit.
-	RealMatrixType HoppingMatrix;					//!< The matrix to show all hoppings between different bits.
-	vector<BitInfo*> BitInfoList; 				 	//!< A list of all Bits.
-	TermsList Terms;					 		 	//!< The list of all terms for the current Lattice
+    LatticeAnalysis &Lattice;
+    int N_bit;                                          //!< The length of BitInfoList. Defines the number of states in system as 2^N_bit.
+    RealMatrixType HoppingMatrix;                    //!< The matrix to show all hoppings between different bits.
+    vector<BitInfo*> BitInfoList;                      //!< A list of all Bits.
+    TermsList Terms;                                  //!< The list of all terms for the current Lattice
 public:
-	BitClassification(LatticeAnalysis &Lattice);
-	int prepare();									//!< Reads all info from Lattice (LatticeAnalysis class)
-	void printBitInfoList();				    	//!< Print BitInfoList to screen
-	void printHoppingMatrix();				    	//!< Print HoppingMatrix to screen
-	void printTerms();					 			//!< Print TermsList to screen
-	RealMatrixType& getHoppingMatrix();			 	//!< Returns a Hopping Matrix
-	std::vector<BitInfo*> &getBitInfoList();		//!< Returns a BitInfoList
-	const int& getBitSize() const;				 	//!< Returns N_bit
-	TermsList& getTermsList();				 		//!< Returns Terms
+    BitClassification(LatticeAnalysis &Lattice);
+    int prepare();                                    //!< Reads all info from Lattice (LatticeAnalysis class)
+    void printBitInfoList();                        //!< Print BitInfoList to screen
+    void printHoppingMatrix();                        //!< Print HoppingMatrix to screen
+    void printTerms();                                 //!< Print TermsList to screen
+    RealMatrixType& getHoppingMatrix();                 //!< Returns a Hopping Matrix
+    std::vector<BitInfo*> &getBitInfoList();        //!< Returns a BitInfoList
+    const int& getBitSize() const;                     //!< Returns N_bit
+    TermsList& getTermsList();                         //!< Returns Terms
 private:
-	void defineBits();								//!< Define the bit classification from the info from file
-	void defineHopping();					 		//!< Define Hopping from classification
-	void defineTerms();					 			//!< Define all terms
-	void definePorbitalSphericalTerms(pBitInfo **Bits);	 //!< The bunch of methods to add Terms for p-orbital written in Spherical basis
-	void definePorbitalNativeTerms(pBitInfo **Bits);	 //!< The bunch of methods to add Terms for p-orbital written in Native basis
-	vector<unsigned short>& findBits(const unsigned short &site); //!< A method to find all bits for a corresponding site
-	unsigned short findBit(const unsigned short &site, const unsigned short &orbital, const unsigned short &spin); //!< A method to find bit, which corresponds to given site, orbital and spin
+    void defineBits();                                //!< Define the bit classification from the info from file
+    void defineHopping();                             //!< Define Hopping from classification
+    void defineTerms();                                 //!< Define all terms
+    void definePorbitalSphericalTerms(pBitInfo **Bits);     //!< The bunch of methods to add Terms for p-orbital written in Spherical basis
+    void definePorbitalNativeTerms(pBitInfo **Bits);     //!< The bunch of methods to add Terms for p-orbital written in Native basis
+    vector<unsigned short>& findBits(const unsigned short &site); //!< A method to find all bits for a corresponding site
+    unsigned short findBit(const unsigned short &site, const unsigned short &orbital, const unsigned short &spin); //!< A method to find bit, which corresponds to given site, orbital and spin
 };
 
 #endif
