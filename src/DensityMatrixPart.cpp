@@ -28,7 +28,7 @@ RealType DensityMatrixPart::getAverageEnergy()
 {
 	RealType E=0.;
 	for(QuantumState m = 0; m < partSize; ++m){
-		E+= weights(m)*(hpart.reV(m)-GroundEnergy);
+		E+= weights(m)*hpart.reV(m);
         }
 	return E;
 };

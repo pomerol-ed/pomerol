@@ -8,16 +8,16 @@ class DensityMatrixPart
     HamiltonianPart& hpart;
     RealType beta;
     RealType GroundEnergy;
-  
+
     QuantumState partSize;
     RealVectorType weights;
     RealType Z_part;
-  
+
 public:
     DensityMatrixPart(HamiltonianPart& hpart, RealType beta, RealType GroundEnergy);
     void normalize(RealType Z);
-    
-	RealType getAverageEnergy();
+
+    RealType getAverageEnergy();
     RealType compute(void);
     RealType weight(int m);
     RealType getBeta();

@@ -20,15 +20,15 @@ GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOpe
 void GreensFunctionPart::compute(void)
 {
     Terms.clear();
-  
+
     RowMajorMatrixType& Cmatrix = C.getRowMajorValue();
     ColMajorMatrixType& CXmatrix = CX.getColMajorValue();
     QuantumState outerSize = Cmatrix.outerSize();
-      
+
     for(QuantumState index1=0; index1<outerSize; ++index1){
         RowMajorMatrixType::InnerIterator Cinner(Cmatrix,index1);
         ColMajorMatrixType::InnerIterator CXinner(CXmatrix,index1);
-        
+
         while(Cinner && CXinner){
             QuantumState C_index2 = Cinner.index();
             QuantumState CX_index2 = CXinner.index();
@@ -56,11 +56,11 @@ void GreensFunctionPart::compute(void)
 ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const
 {
     ComplexType MatsubaraSpacing = I*M_PI/DMpartInner.getBeta();
-  
+
     ComplexType G = 0;
     for(std::list<GreensTerm>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm)
         G += (*pTerm)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1));
-        
+
     return G;
 }
 
