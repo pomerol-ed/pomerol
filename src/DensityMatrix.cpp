@@ -7,21 +7,19 @@
 #include "DensityMatrix.h"
 
 DensityMatrix::DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType beta) : 
-    S(S), H(H), parts(NULL), beta(beta)
+    S(S), H(H), parts(S.NumberOfBlocks()), beta(beta)
 {}
 
 DensityMatrix::~DensityMatrix()
 {
-    if(parts)
-        for(BlockNumber n = 0; n < NumOfBlocks; n++) delete parts[n];
-    delete[] parts;
+    BlockNumber NumOfBlocks = parts.size();
+    for(BlockNumber n = 0; n < NumOfBlocks; n++) delete parts[n];
 }
 
 void DensityMatrix::prepare(void)
 {
-    NumOfBlocks = S.NumberOfBlocks();
+    BlockNumber NumOfBlocks = parts.size();
     RealType GroundEnergy = H.getGroundEnergy();
-    parts = new DensityMatrixPart* [NumOfBlocks];
     // There is one-to-one correspondence between parts of the Hamiltonian
     // and parts of the density matrix itself. 
     for(BlockNumber n = 0; n < NumOfBlocks; n++)
@@ -30,6 +28,7 @@ void DensityMatrix::prepare(void)
 
 void DensityMatrix::compute(void)
 {
+    BlockNumber NumOfBlocks = parts.size();
     RealType Z = 0;
     // A total partition function is a sum over partition functions of
     // all non-normalized parts.
@@ -64,6 +63,7 @@ RealType DensityMatrix::getBeta()
 
 RealType DensityMatrix::getAverageEnergy()
 {
+    BlockNumber NumOfBlocks = parts.size();
     RealType E = 0;
     for(BlockNumber n = 0; n < NumOfBlocks; n++) E += parts[n]->getAverageEnergy();
     return E;

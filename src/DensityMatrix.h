@@ -8,6 +8,8 @@
 #ifndef ____DEFINE_DENSITY_MATRIX____
 #define ____DEFINE_DENSITY_MATRIX____
 
+#include <vector>
+
 #include "StatesClassification.h"
 #include "BitClassification.h"
 #include "Hamiltonian.h"
@@ -25,13 +27,10 @@ class DensityMatrix
     StatesClassification& S;
     /** A reference to a Hamiltonian defining the grand canonical ensemble. */
     Hamiltonian &H;
-    /** An array of pointers to parts (every part corresponds to a part of the Hamiltonian). */
-    DensityMatrixPart** parts;
+    /** A vector of pointers to parts (every part corresponds to a part of the Hamiltonian). */
+    std::vector<DensityMatrixPart*> parts;
     /** The inverse temperature. */
     RealType beta;
-
-    /** The number of parts. */
-    BlockNumber NumOfBlocks;
 
 public:
     /** Constructor.
