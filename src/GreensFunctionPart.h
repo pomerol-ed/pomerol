@@ -15,33 +15,33 @@ class GreensFunctionPart
     HamiltonianPart& HpartOuter;
     DensityMatrixPart& DMpartInner;
     DensityMatrixPart& DMpartOuter;
-   
+
     AnnihilationOperatorPart& C;
     CreationOperatorPart& CX;
-            
+
 public:
     struct GreensTerm{
     ComplexType Residue;
         ComplexType Pole;
-        
+
         GreensTerm(ComplexType Residue, ComplexType Pole);
         ComplexType operator()(ComplexType Frequency) const;
     };  
-  
+
 private:
     std::list<GreensTerm> Terms;
-    
+
     static const RealType MatrixElementTolerance = 1e-8; 
-  
+
 public:
-    
+
     GreensFunctionPart(AnnihilationOperatorPart& C, CreationOperatorPart& CX, 
                        HamiltonianPart& HpartInner, HamiltonianPart& HpartOuter,
                        DensityMatrixPart& DMpartInner, DensityMatrixPart& DMpartOuter);
- 
+
     void compute(void);
     ComplexType operator()(long MatsubaraNumber) const;
-    
+
     const std::list<GreensTerm>& getTerms(void) const;
 };
 

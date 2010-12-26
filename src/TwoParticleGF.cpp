@@ -20,7 +20,7 @@ inline Permutation4 getPermutation4(size_t p)
         {{2,3,0,1},1}, {{2,3,1,0},-1}, {{3,0,1,2},-1}, {{3,0,2,1},1},
         {{3,1,0,2},1}, {{3,1,2,0},-1}, {{3,2,0,1},-1}, {{3,2,1,0},1}
     };
-  
+
     return perms[p];
 }
 */
@@ -76,7 +76,7 @@ FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumbe
 void TwoParticleGF::prepare(void)
 {
     std::list<BlockMapping> CX4NontrivialBlocks = CX4.getNonTrivialIndices();
-  
+
     for(std::list<BlockMapping>::const_iterator outer_iter = CX4NontrivialBlocks.begin();
         outer_iter != CX4NontrivialBlocks.end(); outer_iter++){
             for(size_t p=0; p<6; ++p){ // Search for non-vanishing world lines

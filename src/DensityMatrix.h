@@ -15,7 +15,7 @@
 #include "Hamiltonian.h"
 #include "DensityMatrixPart.h"
 
-/** This class represents a density matrix /f$\rho = \exp(-\beta \hat H)/Z$/f.
+/** This class represents a density matrix \f$ \rho = \exp(-\beta \hat H)/Z \f$.
  * It is actually a container class for a collection of parts (all real calculations
  * take place inside the parts). There is one-to-one correspondence between parts of
  * the Hamiltonian and the parts of the density matrix itself, since the density matrix

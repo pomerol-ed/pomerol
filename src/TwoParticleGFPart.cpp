@@ -124,7 +124,7 @@ void TwoParticleGFPart::MatsubaraContainer::fill(std::list<TwoParticleGFTerm> &T
     for (long BosonicIndex=0;BosonicIndex<=(4*NumberOfMatsubaras)-2;BosonicIndex++){
         for (long nuIndex=0;nuIndex<Data[BosonicIndex].cols();++nuIndex){
             for (long nu1Index=0;nu1Index<Data[BosonicIndex].cols();++nu1Index){
-    
+
                 long FermionicIndexShift = FermionicFirstIndex[BosonicIndex];
                 long MatsubaraNumber2 = nuIndex +FermionicIndexShift;
                 long MatsubaraNumber1 = BosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber2;
