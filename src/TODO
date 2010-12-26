@@ -8,5 +8,6 @@ Shortlist:
 - Find equivalent permutations of sites of the lattice
 ---------------------------------------------------------------------------------------------------------------
 Long standing plans:
+- Move all output-related code (including ASCII and binary dump) to a single output_handler class.
 - MPI implementation : create a tree structure of processes and implement sending big objects routines
 - Low temperature assumption methods : Lanczos decomposition and States reduction.
