@@ -1,7 +1,6 @@
 Shortlist:
 - TwoParticleGFPart: Reducible part
 - TwoParticleGF: Take into account equivalence of permutations of the same operators
-- FieldOperators - fix wrong mappings
 - TwoParticleGF, TwoParticleGFpart : binary dump()
 - FieldOperators : binary dump
 - FieldOperators : readin() from binary format
