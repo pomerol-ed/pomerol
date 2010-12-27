@@ -1,3 +1,9 @@
+/** \file src/GreensFunctionPart.cpp
+** \brief Part of a Green's function.
+**
+** \author Igor Krivenko (igor@shg.ru)
+** \author Andrey Antipov (antipov@ct-qmc.org)
+*/
 #include "GreensFunctionPart.h"
 
 GreensFunctionPart::GreensTerm::GreensTerm(ComplexType Residue, ComplexType Pole) : Residue(Residue), Pole(Pole) {};
@@ -21,29 +27,37 @@ void GreensFunctionPart::compute(void)
 {
     Terms.clear();
 
+    // Blocks (submatrices) of C and CX
     RowMajorMatrixType& Cmatrix = C.getRowMajorValue();
     ColMajorMatrixType& CXmatrix = CX.getColMajorValue();
     QuantumState outerSize = Cmatrix.outerSize();
 
+    // Iterate over all values of the outer index.
+    // TODO: should be optimized - skip empty rows of Cmatrix and empty columns of CXmatrix.
     for(QuantumState index1=0; index1<outerSize; ++index1){
+        // <index1|C|Cinner><CXinner|CX|index1>
         RowMajorMatrixType::InnerIterator Cinner(Cmatrix,index1);
         ColMajorMatrixType::InnerIterator CXinner(CXmatrix,index1);
 
+        // While we are not at the last column of Cmatrix or at the last row of CXmatrix.
         while(Cinner && CXinner){
             QuantumState C_index2 = Cinner.index();
             QuantumState CX_index2 = CXinner.index();
 
+            // A meaningful matrix element
             if(C_index2 == CX_index2){
                 ComplexType Residue = Cinner.value() * CXinner.value() * 
                                       (DMpartOuter.weight(index1) + DMpartInner.weight(C_index2));
-                if(abs(Residue) > MatrixElementTolerance)
+                if(abs(Residue) > MatrixElementTolerance) // Is the residue relevant?
                 {
-                	ComplexType Pole = HpartInner.reV(C_index2) - HpartOuter.reV(index1);
-                	Terms.push_back(GreensTerm(Residue,Pole));
+                    // Create a new term and append it to the list.
+                    ComplexType Pole = HpartInner.reV(C_index2) - HpartOuter.reV(index1);
+                    Terms.push_back(GreensTerm(Residue,Pole));
                 };
-                ++Cinner;
-                ++CXinner;
+                ++Cinner;   // The next non-zero element
+                ++CXinner;  // The next non-zero element
             }else{
+                // Chasing: one index runs down the other index
                 if(CX_index2 < C_index2) for(;QuantumState(CXinner.index())<C_index2; ++CXinner);
                 else for(;QuantumState(Cinner.index())<CX_index2; ++Cinner);
             }
@@ -51,10 +65,9 @@ void GreensFunctionPart::compute(void)
     }
 }
 
-
-
 ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const
 {
+    // TODO: Place this variable to a wider scope?
     ComplexType MatsubaraSpacing = I*M_PI/DMpartInner.getBeta();
 
     ComplexType G = 0;
@@ -62,9 +75,4 @@ ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const
         G += (*pTerm)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1));
 
     return G;
-}
-
-const std::list<GreensFunctionPart::GreensTerm>& GreensFunctionPart::getTerms(void) const
-{
-    return Terms;
 }

@@ -50,7 +50,7 @@ public:
 
     /** Returns an averaged value of the energy. */
     RealType getAverageEnergy(void);
-     /** Performs computations of the weights and a contribution to the partition function. */
+    /** Performs computations of the weights and a contribution to the partition function. */
     RealType compute(void);
     /** Returns the weight corresponding to a specified number of state.
      * \param[in] m A number of a state inside this part.

@@ -74,7 +74,7 @@ public:
 Should it be replaced with a standard physical notion of indices?"
 
      /** Returns the value of the Green's function calculated at a given frequency.
-     * \param[in] MatsubaraNum Number of the Matsubara frequency \f$ \omega_n = \pi*(2*n+1)/\beta \f$.
+     * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi*(2*n+1)/\beta) \f$.
      */
     ComplexType operator()(long MatsubaraNum);
 
