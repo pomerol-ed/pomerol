@@ -45,3 +45,6 @@ clean:
 	cd iniconfig && $(MAKE) clean
 	cd jsoncpp && $(MAKE) clean
 
+.PHONY: doc-html
+doc-html:
+	doxygen doc/Doxyfile
