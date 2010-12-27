@@ -1,29 +1,13 @@
 #include "TwoParticleGF.h"
 
-inline Permutation3 getPermutation3(size_t p)
-{
-    static Permutation3 perms[6] = {
-        {{0,1,2},1}, {{0,2,1},-1}, {{1,0,2},-1}, {{1,2,0},1}, {{2,0,1},1}, {{2,1,0},-1}
-    };
-
-    return perms[p];
-}
-
-/*
-inline Permutation4 getPermutation4(size_t p)
-{
-    static Permutation4 perms[24] = {
-        {{0,1,2,3},1}, {{0,1,3,2},-1}, {{0,2,1,3},-1}, {{0,2,3,1},1},
-        {{0,3,1,2},1}, {{0,3,2,1},-1}, {{1,0,2,3},-1}, {{1,0,3,2},1},
-        {{1,2,0,3},1}, {{1,2,3,0},-1}, {{1,3,0,2},-1}, {{1,3,2,0},1},
-        {{2,0,1,3},1}, {{2,0,3,1},-1}, {{2,1,0,3},-1}, {{2,1,3,0},1},
-        {{2,3,0,1},1}, {{2,3,1,0},-1}, {{3,0,1,2},-1}, {{3,0,2,1},1},
-        {{3,1,0,2},1}, {{3,1,2,0},-1}, {{3,2,0,1},-1}, {{3,2,1,0},1}
-    };
-
-    return perms[p];
-}
-*/
+static const Permutation3 permutations3[6] = {
+    {{0,1,2},1},
+    {{0,2,1},-1},
+    {{1,0,2},-1},
+    {{1,2,0},1},
+    {{2,0,1},1},
+    {{2,1,0},-1}
+};
 
 extern IniConfig* pIni;
 
@@ -45,31 +29,31 @@ TwoParticleGF::~TwoParticleGF()
 
 BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber RightIndex)
 {
-    switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
-      case 0: return C1.getLeftIndex(RightIndex);
-      case 1: return C2.getLeftIndex(RightIndex);
-      case 2: return CX3.getLeftIndex(RightIndex);
-      default: return ERROR_BLOCK_NUMBER;
+    switch(permutations3[PermutationNumber].perm[OperatorPosition]){
+        case 0: return C1.getLeftIndex(RightIndex);
+        case 1: return C2.getLeftIndex(RightIndex);
+        case 2: return CX3.getLeftIndex(RightIndex);
+        default: return ERROR_BLOCK_NUMBER;
     }
 }
 
 BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex)
 {
-    switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
-          case 0: return C1.getRightIndex(LeftIndex); 
-          case 1: return C2.getRightIndex(LeftIndex);
+    switch(permutations3[PermutationNumber].perm[OperatorPosition]){
+        case 0: return C1.getRightIndex(LeftIndex);
+        case 1: return C2.getRightIndex(LeftIndex);
         case 2: return CX3.getRightIndex(LeftIndex);
-          default: return ERROR_BLOCK_NUMBER;
+        default: return ERROR_BLOCK_NUMBER;
     }
 }
 
 FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex)
 {
-    switch(getPermutation3(PermutationNumber).perm[OperatorPosition]){
-      case 0: return C1.getPartFromLeftIndex(LeftIndex);
-      case 1: return C2.getPartFromLeftIndex(LeftIndex);
-      case 2: return CX3.getPartFromLeftIndex(LeftIndex);
-      default: assert(0);
+    switch(permutations3[PermutationNumber].perm[OperatorPosition]){
+        case 0: return C1.getPartFromLeftIndex(LeftIndex);
+        case 1: return C2.getPartFromLeftIndex(LeftIndex);
+        case 2: return CX3.getPartFromLeftIndex(LeftIndex);
+        default: assert(0);
     }
 }
 
@@ -79,7 +63,7 @@ void TwoParticleGF::prepare(void)
 
     for(std::list<BlockMapping>::const_iterator outer_iter = CX4NontrivialBlocks.begin();
         outer_iter != CX4NontrivialBlocks.end(); outer_iter++){
-            for(size_t p=0; p<6; ++p){ // Search for non-vanishing world lines
+            for(size_t p=0; p<6; ++p){ // Search for non-vanishing world-stripes
                   BlockNumber LeftIndices[4];
                   LeftIndices[0] = outer_iter->second;
                   LeftIndices[3] = outer_iter->first;
@@ -99,7 +83,7 @@ void TwoParticleGF::prepare(void)
                             (CreationOperatorPart&)CX4.getPartFromLeftIndex(LeftIndices[3]),
                             H.part(LeftIndices[0]), H.part(LeftIndices[1]), H.part(LeftIndices[2]), H.part(LeftIndices[3]),
                             DM.part(LeftIndices[0]), DM.part(LeftIndices[1]), DM.part(LeftIndices[2]), DM.part(LeftIndices[3]),
-                      getPermutation3(p)));
+                      permutations3[p]));
                   }
             }
     }  

@@ -14,9 +14,6 @@
 #include "DensityMatrix.h"
 #include "TwoParticleGFPart.h"
 
-Permutation3 getPermutation3(size_t p);
-Permutation4 getPermutation4(size_t p);
-
 class TwoParticleGF {
 
     std::list<TwoParticleGFPart*> parts;
@@ -55,9 +52,6 @@ public:
 
     string getPath();
     //void dumpMatsubara(unsigned short points);
-
-    static const Permutation3 permutations3[2];
-    static const Permutation4 permutations4[24];
 };
 
 #endif // endif :: #ifndef ____DEFINE_2PGF____
