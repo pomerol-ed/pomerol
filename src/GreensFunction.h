@@ -20,8 +20,14 @@
 #include "DensityMatrix.h"
 #include "GreensFunctionPart.h"
 
-/** This class represents a thermal Green's function in the Matsubara representation,
- * the Fourier transform of \f$-\langle\mathcal{T}c_i(\tau)c^+_j(0)\rangle \f$.
+/** This class represents a thermal Green's function in the Matsubara representation.
+ *
+ * Exact definition:
+ * 
+ * \f[
+ *      G(\omega_n) = -\int_0^\beta \langle\mathbf{T}c_i(\tau)c^+_j(0)\rangle e^{i\omega_n\tau} d\tau
+ * \f]
+ * 
  * It is actually a container class for a collection of parts (most of real calculations
  * take place inside the parts). A pair of parts, one part of an annihilation operator and
  * another from a creation operator, corresponds to a part of the Green's function.
@@ -74,7 +80,7 @@ public:
 Should it be replaced with a standard physical notion of indices?"
 
      /** Returns the value of the Green's function calculated at a given frequency.
-     * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi*(2*n+1)/\beta) \f$.
+     * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
      */
     ComplexType operator()(long MatsubaraNum);
 

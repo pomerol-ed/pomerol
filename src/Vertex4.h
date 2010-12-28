@@ -11,13 +11,13 @@ class Vertex4 {
     GreensFunction &g2;
     GreensFunction &g3;
     GreensFunction &g4;
-    
+
     unsigned short ChiBit1, ChiBit2, ChiBit3, ChiBit4;
-  
+
 public:
-    
+
     Vertex4(TwoParticleGF &Chi, GreensFunction &g1, GreensFunction &g2, GreensFunction &g3, GreensFunction &g4);
-    
+
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
     ComplexType getAmputated(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
 

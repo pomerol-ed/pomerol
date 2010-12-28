@@ -1,3 +1,9 @@
+/** \file src/TwoParticleGF.cpp
+** \brief Two-particle Green's function in the Matsubara representation.
+**
+** \author Igor Krivenko (igor@shg.ru)
+** \author Andrey Antipov (antipov@ct-qmc.org)
+*/
 #include "TwoParticleGF.h"
 
 static const Permutation3 permutations3[6] = {
@@ -8,8 +14,6 @@ static const Permutation3 permutations3[6] = {
     {{2,0,1},1},
     {{2,1,0},-1}
 };
-
-extern IniConfig* pIni;
 
 TwoParticleGF::TwoParticleGF(StatesClassification& S, Hamiltonian& H,
                 AnnihilationOperator& C1, AnnihilationOperator& C2, 
@@ -59,16 +63,22 @@ FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumbe
 
 void TwoParticleGF::prepare(void)
 {
+    // Find out non-trivial blocks of CX4.
     std::list<BlockMapping> CX4NontrivialBlocks = CX4.getNonTrivialIndices();
 
     for(std::list<BlockMapping>::const_iterator outer_iter = CX4NontrivialBlocks.begin();
-        outer_iter != CX4NontrivialBlocks.end(); outer_iter++){
-            for(size_t p=0; p<6; ++p){ // Search for non-vanishing world-stripes
+        outer_iter != CX4NontrivialBlocks.end(); outer_iter++){ // Iterate over the outermost index.
+            for(size_t p=0; p<6; ++p){ // Choose a permutation
                   BlockNumber LeftIndices[4];
                   LeftIndices[0] = outer_iter->second;
                   LeftIndices[3] = outer_iter->first;
                   LeftIndices[2] = getLeftIndex(p,2,LeftIndices[3]);
                   LeftIndices[1] = getRightIndex(p,0,LeftIndices[0]);
+                  // < LeftIndices[0] | O_1 | LeftIndices[1] >
+                  // < LeftIndices[1] | O_2 | getRightIndex(p,1,LeftIndices[1]) >
+                  // < LeftIndices[2]| O_3 | LeftIndices[3] >
+                  // < LeftIndices[3] | CX4 | LeftIndices[0] >
+                  // Select a relevant 'world stripe' (sequence of blocks).
                   if(getRightIndex(p,1,LeftIndices[1]) == LeftIndices[2] && LeftIndices[1].isCorrect() && LeftIndices[2].isCorrect()){
                       // DEBUG
                       DEBUG("new part: "  << S.getBlockInfo(LeftIndices[0]) << " " 
@@ -91,15 +101,14 @@ void TwoParticleGF::prepare(void)
 
 void TwoParticleGF::compute(long NumberOfMatsubaras)
 {
-    int i=0;
     Storage->prepare(NumberOfMatsubaras);
     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
     {
-        cout << (int) ((i*100.0)/parts.size()) << "  " <<flush;
+        // TODO: More elegant output.
+        cout << static_cast<int>((distance(parts.begin(),iter)*100.0)/parts.size()) << "  " <<flush;
         (*iter)->compute(NumberOfMatsubaras);
         *Storage+=(*iter)->getMatsubaraContainer();
         (*iter)->clear();
-        ++i;
     }
     cout << endl;
 }
@@ -107,8 +116,6 @@ void TwoParticleGF::compute(long NumberOfMatsubaras)
 ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
     ComplexType Value = 0;
-//    for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
-//        Value += (**iter)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
     return (*Storage)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
 
 }
