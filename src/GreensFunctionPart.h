@@ -35,7 +35,7 @@ class GreensFunctionPart
     /** A reference to a part of a creation operator. */
     CreationOperatorPart& CX;
 
-    /** Every term is a fraction \f$ R/(z - P) \f$. */
+    /** Every term is a fraction \f$ \frac{R}{z - P} \f$. */
     struct GreensTerm{
         /** Position of the pole (\f$ P \f$). */
         ComplexType Pole;
@@ -47,7 +47,7 @@ class GreensFunctionPart
          * \param[in] Pole Position of the pole.
          */
         GreensTerm(ComplexType Residue, ComplexType Pole);
-        /** Returns a contribution to the Green's function made by this part.
+        /** Returns a contribution to the Green's function made by this term.
         * \param[in] Frequency Complex frequency \f$ z \f$ to substitute into this term.
         */
         ComplexType operator()(ComplexType Frequency) const;

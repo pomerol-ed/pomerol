@@ -3,6 +3,7 @@
 //DEBUG
 long term_counter=0;
 
+// Make the lagging index catch up or outrun the leading index.
 inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter, 
                          ColMajorMatrixType::InnerIterator& index2_iter)
 {
@@ -59,6 +60,7 @@ ComplexType TwoParticleGFPart::TwoParticleGFTerm::operator()(
 
     ComplexType Z1Z2P1P2 = Z1MinusP1 + Z2MinusP2;
     ComplexType Z2Z3P2P3 = Z2MinusP2 + Z3MinusP3;
+    // 2 cases for each of '12' and '23' pairs: resonant and non-resonant.
     Value += (abs(Z1Z2P1P2) < ResonanceTolerance) ? CoeffZ1Z2Res : CoeffZ1Z2NonRes/Z1Z2P1P2;
     Value += (abs(Z2Z3P2P3) < ResonanceTolerance) ? CoeffZ2Z3Res : CoeffZ2Z3NonRes/Z2Z3P2P3;
 
@@ -67,7 +69,7 @@ ComplexType TwoParticleGFPart::TwoParticleGFTerm::operator()(
 }
 
 inline
-bool TwoParticleGFPart::TwoParticleGFTerm::IsRelevant(const ComplexType &MatrixElement)
+bool TwoParticleGFPart::TwoParticleGFTerm::IsRelevant(const ComplexType &MatrixElementProd)
 {
     return abs(MatrixElement) > MatrixElementTolerance;
 }
@@ -187,6 +189,8 @@ void TwoParticleGFPart::clear()
 void TwoParticleGFPart::computeChasing1(long NumberOfMatsubaras)
     // I don't have any pen now, so I'm writing here:
     // <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
+    // Iterate over all values of |1><1|
+    // Chase indices |3> and <3|
 {
     Storage->prepare(NumberOfMatsubaras);
     RealType beta = DMpart1.getBeta();  
@@ -258,9 +262,10 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
 {
     RealType beta = DMpart1.getBeta();
     Storage->prepare(NumberOfMatsubaras);
-//    DEBUG((*Storage)(0,0,0));
     // I don't have any pen now, so I'm writing here:
     // <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
+    // Iterate over all values of |1><1| and |3><3|
+    // Chase indices |2> and <2|, |4> and <4|.
     RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
     ColMajorMatrixType& O2matrix = O2.getColMajorValue();    
     RowMajorMatrixType& O3matrix = O3.getRowMajorValue();
@@ -341,6 +346,7 @@ const TwoParticleGFPart::MatsubaraContainer& TwoParticleGFPart::getMatsubaraCont
 
 ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
+    // TODO: Place this variable to a wider scope?
     ComplexType MatsubaraSpacing = I*M_PI/DMpart1.getBeta();
     long MatsubaraNumberOdd1 = 2*MatsubaraNumber1 + 1;
     long MatsubaraNumberOdd2 = 2*MatsubaraNumber2 + 1;
