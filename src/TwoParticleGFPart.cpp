@@ -71,7 +71,7 @@ ComplexType TwoParticleGFPart::TwoParticleGFTerm::operator()(
 inline
 bool TwoParticleGFPart::TwoParticleGFTerm::IsRelevant(const ComplexType &MatrixElementProd)
 {
-    return abs(MatrixElement) > MatrixElementTolerance;
+    return abs(MatrixElementProd) > MatrixElementTolerance;
 }
 
 //
