@@ -74,6 +74,7 @@ int main()
     //begining of creation all part of Hammiltonian
 
     H.enter();
+    H.dump();
     H.diagonalize();
     RealType beta = (*pIni)["Green Function:beta"];
     RealType ProbabilityCutoff = RealType((*pIni)["system:ProbabilityCutoff"]);
