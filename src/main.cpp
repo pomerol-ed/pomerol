@@ -10,6 +10,7 @@
 #include "FieldOperator.h"
 #include "GreensFunction.h"
 #include "TwoParticleGF.h"
+#include "ContainerTwoParticleGF.h"
 #include "Vertex4.h"
 
 #include<fstream>
@@ -23,12 +24,16 @@ StatesClassification S(Formula);
 output_handle OUT;
 Hamiltonian H(Formula,S,OUT,input);
 
+ostream &OUTPUT_STREAM=std::cout;
+
 IniConfig* pIni;
 
 extern long term_counter;
 
+
 int main()
-{    
+{   
+        
     cout << "=======================" << endl;
     cout << "Lattice Info" << endl;
     cout << "=======================" << endl;
@@ -82,6 +87,19 @@ int main()
     H.dump();
 
     num_cout << endl << "The value of ground energy is " << H.getGroundEnergy() << endl;
+
+    TwoParticleGFContainer::IndexCombination *comb1;
+    comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
+    std::vector<TwoParticleGFContainer::IndexCombination*> v1;
+    v1.push_back(comb1);
+    comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,1);
+    v1.push_back(comb1);
+    TwoParticleGFContainer GG(S,H);
+    GG.readNonTrivialIndices(v1);
+    GG.defineOperatorMaps();
+    exit(0);
+
+
 
     DensityMatrix rho(S,H,beta);
 //    DensityMatrix.reduce();
@@ -169,6 +187,8 @@ int main()
         cout << Chi4(1,7,1) << endl;
         cout << Chi4(2,-2,4) << endl;
         cout << Chi4(29,-29,29) << endl;
+        
+        
 
         //Vertex4 Gamma4(Chi4,G,G,G,G);
         //cout << Gamma4(0,2,0) << endl;

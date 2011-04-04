@@ -42,6 +42,9 @@ typedef Eigen::SparseMatrix<RealType,Eigen::ColMajor> ColMajorMatrixType;
 typedef Eigen::SparseMatrix<RealType,Eigen::RowMajor> RowMajorMatrixType;
 typedef Eigen::DynamicSparseMatrix<RealType,Eigen::ColMajor> DynamicSparseMatrixType;
 
+/** Index represents a combination of spin, orbital, and lattice indices **/
+typedef unsigned short ParticleIndex;
+
 /** Possible spin projections are \b down and \b up */
 enum spin {down, up};
 
