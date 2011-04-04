@@ -1,4 +1,6 @@
 Shortlist:
+- Eigen3 compatibility
+- Container classes for everything (GF, 2-particle GF, Vertex)
 - TwoParticleGFPart: Reducible part
 - TwoParticleGF: Take into account equivalence of permutations of the same operators
 - TwoParticleGF, TwoParticleGFpart : binary dump()

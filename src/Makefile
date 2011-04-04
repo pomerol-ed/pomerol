@@ -9,11 +9,14 @@ objects=output.o LatticeAnalysis.o \
 	DensityMatrixPart.o DensityMatrix.o \
 	GreensFunctionPart.o GreensFunction.o \
 	TwoParticleGF.o TwoParticleGFPart.o \
-	Vertex4.o
+	Vertex4.o ContainerTwoParticleGF.o
+
+devel_objects= ContainerTwoParticleGF.o
 
 libs=../lib/libiniconfig.a ../lib/lib_json.a -liniparser
 
 default: main
+devel: $(devel_objects)
 
 output.o: output.cpp output.h
 LatticeAnalysis.o: LatticeAnalysis.h LatticeAnalysis.cpp
@@ -30,6 +33,7 @@ GreensFunctionPart.o: GreensFunctionPart.h GreensFunctionPart.cpp config.h
 GreensFunction.o: GreensFunction.h GreensFunction.cpp
 TwoParticleGFPart.o: TwoParticleGFPart.h TwoParticleGFPart.cpp config.h
 TwoParticleGF.o: TwoParticleGF.h TwoParticleGF.cpp
+ContainerTwoParticleGF.o : ContainerTwoParticleGF.h ContainerTwoParticleGF.cpp
 Vertex4.o: Vertex4.h Vertex4.cpp
 
 libmeat.so: $(objects)
