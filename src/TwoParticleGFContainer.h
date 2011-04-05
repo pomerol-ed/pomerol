@@ -19,6 +19,7 @@ public:
     void computeFieldOperators();
     void prepareTwoParticleGFs();
     void computeTwoParticleGFs(long NumberOfMatsubaras);
+    bool vanishes(IndexCombination&);
 
     ComplexType operator()(IndexCombination&, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3); 
 

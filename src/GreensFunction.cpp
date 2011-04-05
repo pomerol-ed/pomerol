@@ -11,6 +11,7 @@ GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H,
                                output_handle &OUT) : S(S), H(H), C(C), CX(CX), DM(DM), parts(0)
 {
     green_path = output_handle(OUT.path() + "/GreensFunction");   
+    vanish = true;
 }
 
 GreensFunction::~GreensFunction()
@@ -50,6 +51,7 @@ void GreensFunction::prepare(void)
         if(CleftInt <= CXrightInt) Citer++;
         if(CleftInt >= CXrightInt) CXiter++;
     }
+if (parts.size() > 0) vanish = false;
 }
 
 void GreensFunction::compute(void)
@@ -78,6 +80,11 @@ unsigned short GreensFunction::getBit(size_t Position) const
 string GreensFunction::getPath()
 {
     return green_path.fullpath();
+}
+
+bool GreensFunction::vanishes()
+{
+    return vanish;
 }
 
 //other functions

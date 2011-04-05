@@ -111,7 +111,9 @@ int main()
         comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
         std::vector<TwoParticleGFContainer::IndexCombination*> v1;
         v1.push_back(comb1);
-        comb1 = new TwoParticleGFContainer::IndexCombination(0,1,0,1);
+        comb1 = new TwoParticleGFContainer::IndexCombination(1,0,0,1);
+        v1.push_back(comb1);
+        comb1 = new TwoParticleGFContainer::IndexCombination(1,1,0,1);
         v1.push_back(comb1);
 
         TwoParticleGFContainer Chi4(S,H,rho);
@@ -133,47 +135,44 @@ int main()
         cout << Chi4(*v1[1],5,2,2) << endl;
         cout << Chi4(*v1[1],1,7,1) << endl;
         cout << Chi4(*v1[1],2,-2,4) << endl;
-        cout << Chi4(*v1[1],29,-29,29) << endl;
+        cout << Chi4(*v1[1],29,-29,29) << endl << endl;
+
+        cout << (bool) Chi4.vanishes(*v1[0]) << endl;
+        cout << Chi4.vanishes(*v1[1]) << endl;
+        comb1 = new TwoParticleGFContainer::IndexCombination(0,2,0,1);
+        cout << Chi4.vanishes(*comb1) << endl;
         };
 
-    return 0;
-};
-/*
-    //begining of creation matrixes C and CX
-    
-    // parameters of Green Function
-    
-    int i = (*pIni)["Green Function:i"];
-    int j = (*pIni)["Green Function:j"];
+    int i = 1; //(*pIni)["Green Function:i"];
+    int j = 1; //(*pIni)["Green Function:j"];
     cout << endl;
     cout << "==========================================" << endl;
     cout << "Beginning of rotation of matrices C and CX" << endl;
     CreationOperator CX(S,H,OUT,i);
     CX.prepare();
     CX.compute();
-    CX.dump();
+    //CX.dump();
     
     AnnihilationOperator C(S,H,OUT,j);
     C.prepare();
     C.compute();
-    C.dump();
+    //C.dump();
 
     // DEBUG
-    std::list<BlockMapping> ind = CX.getNonTrivialIndices();
+    /*std::list<BlockMapping> ind = CX.getNonTrivialIndices();
 
     std::list<std::pair<BlockNumber,BlockNumber> >::iterator it;
     for (it=ind.begin();it!=ind.end();it++)
     { cout << (*it).first << "," << (*it).second << " = " << CX.getLeftIndex((*it).second) << "," << CX.getRightIndex((*it).first) << endl;
     }
-
-
-    
+*/
     cout << endl;
     cout << "==========================================" << endl;
     cout << "Calculating G_{" << i << j << "}" << endl;
     cout << "==========================================" << endl;
       GreensFunction G(S,H,C,CX,rho,OUT);
         G.prepare();
+        cout << G.vanishes() << endl;
         G.compute();
         
         //std::list<GreensFunctionPart::GreensTerm> terms = G.getTerms();
@@ -183,6 +182,16 @@ int main()
     G.dumpMatsubara((int)(*pIni)["Green Function:points"]);
     cout << endl << "All done." << endl;
 
+    cout << i << j << ": G.vanishes() = " << G.vanishes() << endl;
+
+    return 0;
+};
+/*
+    //begining of creation matrixes C and CX
+    
+    // parameters of Green Function
+    
+    
     if ((*pIni)["System:calculate_2PGF"]){
         cout << endl;
         cout << "==========================================" << endl;

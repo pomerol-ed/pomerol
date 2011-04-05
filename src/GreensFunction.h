@@ -43,6 +43,8 @@ class GreensFunction {
     CreationOperator& CX;
     /** A reference to a density matrix. */
     DensityMatrix& DM;
+    /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
+    bool vanish;
 
     /** A list of pointers to parts (every part corresponds to a part of the annihilation operator
      * and a part of the creation operator).
@@ -91,6 +93,8 @@ Should it be replaced with a standard physical notion of indices?"
      * \param[in] point The number of points in the range.
      */
     void dumpMatsubara(unsigned short points);
+    /** Returns true if current Greens function is identical to zero */
+    bool vanishes();
 };
 
 #endif // endif :: #ifndef ____DEFINE_GREEN____

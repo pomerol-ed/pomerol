@@ -55,6 +55,9 @@ class TwoParticleGF {
     /** A list of pointers to parts. */
     std::list<TwoParticleGFPart*> parts;
 
+    /** A flag to determine whether this GF is identical to zero */
+    bool vanish;
+
     /** Algorithms use this object to output various data. */
     output_handle green_path;
 
@@ -126,6 +129,10 @@ Should it be replaced with a standard physical notion of indices?"
 
     /** Returns the path of the output directory associated with this two-particle Green's function. */
     string getPath();
+
+    /** Returns true, if GF is identical to zero */
+    bool vanishes();
+
     //void dumpMatsubara(unsigned short points);
 };
 

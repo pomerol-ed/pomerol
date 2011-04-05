@@ -83,8 +83,9 @@ for (std::vector<IndexCombination*>::const_iterator it1=NonTrivialCombinations.b
     AnnihilationOperator *C2 = mapAnnihilationOperators[(*it1)->Indices[1]];
     CreationOperator     *CX3 = mapCreationOperators   [(*it1)->Indices[2]];
     CreationOperator     *CX4 = mapCreationOperators   [(*it1)->Indices[3]];
-    mapNonTrivialCombinations[**it1]=new TwoParticleGF(S,H,*C1,*C2,*CX3,*CX4,DM);
-    mapNonTrivialCombinations[**it1]->prepare();
+    TwoParticleGF * temp2PGF = new TwoParticleGF(S,H,*C1,*C2,*CX3,*CX4,DM);
+    temp2PGF->prepare();
+    if (!temp2PGF->vanishes()) mapNonTrivialCombinations[**it1] = temp2PGF;
     };
 };
 
@@ -99,5 +100,11 @@ for (std::map<IndexCombination,TwoParticleGF*>::iterator it1=mapNonTrivialCombin
 
 ComplexType TwoParticleGFContainer::operator()(IndexCombination& in, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
-  return (*mapNonTrivialCombinations[in])(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+if (!this->vanishes(in)) return (*mapNonTrivialCombinations[in])(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+else return 0;
+}
+
+bool TwoParticleGFContainer::vanishes(IndexCombination& in)
+{
+return ( mapNonTrivialCombinations.count(in) == 0 );
 }

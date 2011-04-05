@@ -24,6 +24,7 @@ TwoParticleGF::TwoParticleGF(StatesClassification& S, Hamiltonian& H,
 {
     green_path = output_handle(OUT.path() + "/Gamma4");
     Storage = new TwoParticleGFPart::MatsubaraContainer(DM.getBeta());
+    vanish = true;
 }
 
 TwoParticleGF::~TwoParticleGF()
@@ -66,7 +67,6 @@ void TwoParticleGF::prepare(void)
 {
     // Find out non-trivial blocks of CX4.
     std::list<BlockMapping> CX4NontrivialBlocks = CX4.getNonTrivialIndices();
-
     for(std::list<BlockMapping>::const_iterator outer_iter = CX4NontrivialBlocks.begin();
         outer_iter != CX4NontrivialBlocks.end(); outer_iter++){ // Iterate over the outermost index.
             for(size_t p=0; p<6; ++p){ // Choose a permutation
@@ -95,9 +95,15 @@ void TwoParticleGF::prepare(void)
                             H.part(LeftIndices[0]), H.part(LeftIndices[1]), H.part(LeftIndices[2]), H.part(LeftIndices[3]),
                             DM.part(LeftIndices[0]), DM.part(LeftIndices[1]), DM.part(LeftIndices[2]), DM.part(LeftIndices[3]),
                       permutations3[p]));
-                  }
+                      }
             }
     }  
+    if ( parts.size() > 0 ) vanish = false;
+}
+
+bool TwoParticleGF::vanishes()
+{
+return vanish;
 }
 
 void TwoParticleGF::compute(long NumberOfMatsubaras)
