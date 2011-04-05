@@ -90,10 +90,10 @@ void BitClassification::defineTerms()
                sBitInfo *current = (sBitInfo*) BitInfoList[bit];
              Term *T1 = new nnTerm(bit,bit+N_bit/2,current->U);
              Terms.addTerm(T1);    
-    //         Term *N1 = new nTerm(bit,current->U/(-2.)-current->LocalMu);
-    //         Term *N2 = new nTerm(bit+N_bit/2,current->U/(-2.)-current->LocalMu);
-    //         Terms.addTerm(N1);
-    //         Terms.addTerm(N2);
+             Term *N1 = new nTerm(bit,-current->LocalMu);
+             Term *N2 = new nTerm(bit+N_bit/2,-current->LocalMu);
+             Terms.addTerm(N1);
+             Terms.addTerm(N2);
              break;
              };
            case p:

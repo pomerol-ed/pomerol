@@ -93,13 +93,11 @@ public:
      * \param[in] CX3 A reference to the first creation operator.
      * \param[in] CX4 A reference to the second creation operator.
      * \param[in] DM A reference to a density matrix.
-     * \param[in] OUT A reference to an output handle.
      */
     TwoParticleGF(StatesClassification& S, Hamiltonian& H,
             AnnihilationOperator& C1, AnnihilationOperator& C2,
             CreationOperator& CX3, CreationOperator& CX4,
-            DensityMatrix& DM,
-            output_handle &OUT);
+            DensityMatrix& DM);
     /** Destructor. */
     ~TwoParticleGF();
 

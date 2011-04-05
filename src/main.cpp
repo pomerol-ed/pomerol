@@ -10,7 +10,7 @@
 #include "FieldOperator.h"
 #include "GreensFunction.h"
 #include "TwoParticleGF.h"
-#include "ContainerTwoParticleGF.h"
+#include "TwoParticleGFContainer.h"
 #include "Vertex4.h"
 
 #include<fstream>
@@ -58,10 +58,6 @@ int main()
     
     OUT = output_handle((*pIni)["output:path"]);
 
-    // parameters of Green Function
-    
-    int i = (*pIni)["Green Function:i"];
-    int j = (*pIni)["Green Function:j"];
 
 
     S.iniStatesClassification();
@@ -88,19 +84,7 @@ int main()
 
     num_cout << endl << "The value of ground energy is " << H.getGroundEnergy() << endl;
 
-    TwoParticleGFContainer::IndexCombination *comb1;
-    comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
-    std::vector<TwoParticleGFContainer::IndexCombination*> v1;
-    v1.push_back(comb1);
-    comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,1);
-    v1.push_back(comb1);
-    TwoParticleGFContainer GG(S,H);
-    GG.readNonTrivialIndices(v1);
-    GG.defineOperatorMaps();
-    exit(0);
-
-
-
+   
     DensityMatrix rho(S,H,beta);
 //    DensityMatrix.reduce();
     rho.prepare();
@@ -115,9 +99,52 @@ int main()
     cout << endl;
     cout << "All parts are created!" << endl;
     cout << endl;
-    
+
+    if ((*pIni)["System:calculate_2PGF"]){
+        cout << endl;
+        cout << "==========================================" << endl;
+        cout << "Two Particle Green's function calculation" << endl;
+        cout << "==========================================" << endl;
+
+
+        TwoParticleGFContainer::IndexCombination *comb1;
+        comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
+        std::vector<TwoParticleGFContainer::IndexCombination*> v1;
+        v1.push_back(comb1);
+        comb1 = new TwoParticleGFContainer::IndexCombination(0,1,0,1);
+        v1.push_back(comb1);
+
+        TwoParticleGFContainer Chi4(S,H,rho);
+        Chi4.readNonTrivialIndices(v1);
+        Chi4.defineFieldOperatorMaps();
+        Chi4.computeFieldOperators();
+        Chi4.prepareTwoParticleGFs();
+        Chi4.computeTwoParticleGFs(30);
+
+        cout << Chi4(*v1[0],3,2,0) << endl;
+        cout << Chi4(*v1[0],2,5,2) << endl;
+        cout << Chi4(*v1[0],5,2,2) << endl;
+        cout << Chi4(*v1[0],1,7,1) << endl;
+        cout << Chi4(*v1[0],2,-2,4) << endl;
+        cout << Chi4(*v1[0],29,-29,29) << endl << endl;
+        
+        cout << Chi4(*v1[1],3,2,0) << endl;
+        cout << Chi4(*v1[1],2,5,2) << endl;
+        cout << Chi4(*v1[1],5,2,2) << endl;
+        cout << Chi4(*v1[1],1,7,1) << endl;
+        cout << Chi4(*v1[1],2,-2,4) << endl;
+        cout << Chi4(*v1[1],29,-29,29) << endl;
+        };
+
+    return 0;
+};
+/*
     //begining of creation matrixes C and CX
     
+    // parameters of Green Function
+    
+    int i = (*pIni)["Green Function:i"];
+    int j = (*pIni)["Green Function:j"];
     cout << endl;
     cout << "==========================================" << endl;
     cout << "Beginning of rotation of matrices C and CX" << endl;
@@ -132,13 +159,13 @@ int main()
     C.dump();
 
     // DEBUG
-/*    std::list<BlockMapping> ind = CX.getNonTrivialIndices();
+    std::list<BlockMapping> ind = CX.getNonTrivialIndices();
 
     std::list<std::pair<BlockNumber,BlockNumber> >::iterator it;
     for (it=ind.begin();it!=ind.end();it++)
     { cout << (*it).first << "," << (*it).second << " = " << CX.getLeftIndex((*it).second) << "," << CX.getRightIndex((*it).first) << endl;
     }
-*/
+
 
     
     cout << endl;
@@ -175,18 +202,18 @@ int main()
         CX4.prepare();
         CX4.compute();
 
-        TwoParticleGF Chi4(S,H,C1,C2,CX3,CX4,rho,OUT);
-        Chi4.prepare();
-        Chi4.compute(30);
+        TwoParticleGF CurrentChi4(S,H,C1,C2,CX3,CX4,rho);
+        CurrentChi4.prepare();
+        CurrentChi4.compute(30);
         //Chi4.dump();
 
         cout << term_counter << " terms" <<  endl;
-        cout << Chi4(3,2,0) << endl;
-        cout << Chi4(2,5,2) << endl;
-        cout << Chi4(5,2,2) << endl;
-        cout << Chi4(1,7,1) << endl;
-        cout << Chi4(2,-2,4) << endl;
-        cout << Chi4(29,-29,29) << endl;
+        cout << CurrentChi4(3,2,0) << endl;
+        cout << CurrentChi4(2,5,2) << endl;
+        cout << CurrentChi4(5,2,2) << endl;
+        cout << CurrentChi4(1,7,1) << endl;
+        cout << CurrentChi4(2,-2,4) << endl;
+        cout << CurrentChi4(29,-29,29) << endl;
         
         
 
@@ -195,3 +222,4 @@ int main()
         }
     return 0;
 }
+*/

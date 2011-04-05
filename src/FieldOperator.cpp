@@ -1,4 +1,5 @@
 #include "FieldOperator.h"
+extern ostream& OUTPUT_STREAM;
 
 OperatorContainer::OperatorContainer(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit) : 
     System(System), H(H), OUT(OUT), bit(bit)
@@ -51,10 +52,10 @@ void OperatorContainer::compute()
 {
   for (unsigned int b_in=0;b_in<(*this).size;b_in++)
   {
-    cout << (int) ((1.0*b_in/(*this).size) * 100 ) << "  " << flush;
+    OUTPUT_STREAM << (int) ((1.0*b_in/(*this).size) * 100 ) << "  " << flush;
         Data[b_in]->compute();
   };
-  cout << endl;
+  OUTPUT_STREAM << endl;
 }
 
 void OperatorContainer::dump()
@@ -79,12 +80,12 @@ void CreationOperator::prepare()
       {
          FieldOperatorPart *Part = new CreationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex),OUT);
          Data.push_back(Part);
-         cout << "Entering creation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
+         OUTPUT_STREAM << "Entering creation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
          mapPartsFromRight[RightIndex]=size;
          mapPartsFromLeft[LeftIndex]=size;
          LeftRightIndices.push_back(BlockMapping(LeftIndex,RightIndex));
-	 mapRightToLeftIndex[RightIndex]=LeftIndex;
-	 mapLeftToRightIndex[LeftIndex]=RightIndex;
+	     mapRightToLeftIndex[RightIndex]=LeftIndex;
+	     mapLeftToRightIndex[LeftIndex]=RightIndex;
          size++;
       }    
     }
@@ -99,11 +100,11 @@ void AnnihilationOperator::prepare()
       {
          FieldOperatorPart *Part = new AnnihilationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex),OUT);
          Data.push_back(Part);
-         cout << "Entering annihilation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
+         OUTPUT_STREAM << "Entering annihilation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
          mapPartsFromRight[RightIndex]=size;
          mapPartsFromLeft[LeftIndex]=size;
-	 mapRightToLeftIndex[RightIndex]=LeftIndex;
-	 mapLeftToRightIndex[LeftIndex]=RightIndex;
+	     mapRightToLeftIndex[RightIndex]=LeftIndex;
+	     mapLeftToRightIndex[LeftIndex]=RightIndex;
          LeftRightIndices.push_back(BlockMapping(LeftIndex,RightIndex));
          size++;
       }    

@@ -5,6 +5,8 @@
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
 #include "TwoParticleGF.h"
+extern output_handle OUT;
+extern ostream& OUTPUT_STREAM;
 
 static const Permutation3 permutations3[6] = {
     {{0,1,2},1},
@@ -18,8 +20,7 @@ static const Permutation3 permutations3[6] = {
 TwoParticleGF::TwoParticleGF(StatesClassification& S, Hamiltonian& H,
                 AnnihilationOperator& C1, AnnihilationOperator& C2, 
                 CreationOperator& CX3, CreationOperator& CX4,
-                DensityMatrix& DM,
-                output_handle &OUT) : parts(0), S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM)
+                DensityMatrix& DM) : S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM), parts(0)
 {
     green_path = output_handle(OUT.path() + "/Gamma4");
     Storage = new TwoParticleGFPart::MatsubaraContainer(DM.getBeta());
