@@ -27,7 +27,7 @@
 class BitInfo
 {
 public:
-      unsigned short site;         //!< The number of site
+    unsigned short site;         //!< The number of site
     unsigned short spin;         //!< Spin up(1) or Spin down(0)
     unsigned short type;        //!< The type of site which handles this spin. Can be s,p,d,f (0,1,2,3).
     unsigned short bitNumber;    //!< The number of bit
@@ -91,25 +91,26 @@ class BitClassification
 {
     LatticeAnalysis &Lattice;
     int N_bit;                                          //!< The length of BitInfoList. Defines the number of states in system as 2^N_bit.
-    RealMatrixType HoppingMatrix;                    //!< The matrix to show all hoppings between different bits.
-    vector<BitInfo*> BitInfoList;                      //!< A list of all Bits.
-    TermsList Terms;                                  //!< The list of all terms for the current Lattice
+    RealMatrixType HoppingMatrix;                       //!< The matrix to show all hoppings between different bits.
+    vector<BitInfo*> BitInfoList;                       //!< A list of all Bits.
+    TermsList Terms;                                    //!< The list of all terms for the current Lattice
 public:
     BitClassification(LatticeAnalysis &Lattice);
-    int prepare();                                    //!< Reads all info from Lattice (LatticeAnalysis class)
-    void printBitInfoList();                        //!< Print BitInfoList to screen
-    void printHoppingMatrix();                        //!< Print HoppingMatrix to screen
-    void printTerms();                                 //!< Print TermsList to screen
+    int prepare();                                      //!< Reads all info from Lattice (LatticeAnalysis class)
+    void printBitInfoList();                            //!< Print BitInfoList to screen
+    void printHoppingMatrix();                          //!< Print HoppingMatrix to screen
+    void printTerms();                                  //!< Print TermsList to screen
     RealMatrixType& getHoppingMatrix();                 //!< Returns a Hopping Matrix
-    std::vector<BitInfo*> &getBitInfoList();        //!< Returns a BitInfoList
-    const int& getBitSize() const;                     //!< Returns N_bit
-    TermsList& getTermsList();                         //!< Returns Terms
+    std::vector<BitInfo*> &getBitInfoList();            //!< Returns a BitInfoList
+    const int& getBitSize() const;                      //!< Returns N_bit
+    bool checkIndex(ParticleIndex in);                  //!< Returns true if current Index may exist, i.e. if it is between 0 and N_bit-1
+    TermsList& getTermsList();                          //!< Returns Terms
 private:
-    void defineBits();                                //!< Define the bit classification from the info from file
-    void defineHopping();                             //!< Define Hopping from classification
+    void defineBits();                                  //!< Define the bit classification from the info from file
+    void defineHopping();                               //!< Define Hopping from classification
     void defineTerms();                                 //!< Define all terms
-    void definePorbitalSphericalTerms(pBitInfo **Bits);     //!< The bunch of methods to add Terms for p-orbital written in Spherical basis
-    void definePorbitalNativeTerms(pBitInfo **Bits);     //!< The bunch of methods to add Terms for p-orbital written in Native basis
+    void definePorbitalSphericalTerms(pBitInfo **Bits); //!< The bunch of methods to add Terms for p-orbital written in Spherical basis
+    void definePorbitalNativeTerms(pBitInfo **Bits);    //!< The bunch of methods to add Terms for p-orbital written in Native basis
     vector<unsigned short>& findBits(const unsigned short &site); //!< A method to find all bits for a corresponding site
     unsigned short findBit(const unsigned short &site, const unsigned short &orbital, const unsigned short &spin); //!< A method to find bit, which corresponds to given site, orbital and spin
 };

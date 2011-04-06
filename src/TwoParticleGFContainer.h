@@ -3,6 +3,7 @@
 
 #include "config.h"
 #include "TwoParticleGF.h"
+#include "FieldOperatorContainer.h"
 #include <map>
 
 class TwoParticleGFContainer;
@@ -12,7 +13,7 @@ class TwoParticleGFContainer
 {
 public:
     struct IndexCombination;
-    TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM);
+    TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, BitClassification& IndexInfo, FieldOperatorContainer& Operators);
 
     void readNonTrivialIndices(std::vector<IndexCombination*>&);
     void defineFieldOperatorMaps();
@@ -30,11 +31,10 @@ private:
     StatesClassification &S;
     Hamiltonian &H;
     DensityMatrix &DM; 
+    BitClassification &IndexInfo;
+    FieldOperatorContainer &Operators;
     std::vector<IndexCombination*> NonTrivialCombinations;
     std::map<IndexCombination,TwoParticleGF*> mapNonTrivialCombinations;
-    std::map<ParticleIndex,AnnihilationOperator*> mapAnnihilationOperators;
-    std::map<ParticleIndex,CreationOperator*> mapCreationOperators;
-
 };
 
 struct TwoParticleGFContainer::IndexCombination

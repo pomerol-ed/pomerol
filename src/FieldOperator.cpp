@@ -1,18 +1,18 @@
 #include "FieldOperator.h"
 extern ostream& OUTPUT_STREAM;
 
-OperatorContainer::OperatorContainer(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit) : 
-    System(System), H(H), OUT(OUT), bit(bit)
+OperatorContainer::OperatorContainer(StatesClassification &System, Hamiltonian &H, int bit) : 
+    System(System), H(H), bit(bit)
 {
     size=0;
 }
 
-CreationOperator::CreationOperator(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit) : 
-    OperatorContainer(System,H,OUT,bit)
+CreationOperator::CreationOperator(StatesClassification &System, Hamiltonian &H, int bit) : 
+    OperatorContainer(System,H,bit)
 {}
 
-AnnihilationOperator::AnnihilationOperator(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit) : 
-    OperatorContainer(System,H,OUT,bit)
+AnnihilationOperator::AnnihilationOperator(StatesClassification &System, Hamiltonian &H, int bit) : 
+    OperatorContainer(System,H,bit)
 {}
 
 std::list<BlockMapping>& OperatorContainer::getNonTrivialIndices()
@@ -78,7 +78,7 @@ void CreationOperator::prepare()
       BlockNumber LeftIndex = this->mapsTo(RightIndex);
       if (LeftIndex.isCorrect()) 
       {
-         FieldOperatorPart *Part = new CreationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex),OUT);
+         FieldOperatorPart *Part = new CreationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex));
          Data.push_back(Part);
          OUTPUT_STREAM << "Entering creation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
          mapPartsFromRight[RightIndex]=size;
@@ -98,7 +98,7 @@ void AnnihilationOperator::prepare()
       BlockNumber LeftIndex = mapsTo(RightIndex);
       if (LeftIndex.isCorrect()) 
       {
-         FieldOperatorPart *Part = new AnnihilationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex),OUT);
+         FieldOperatorPart *Part = new AnnihilationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex));
          Data.push_back(Part);
          OUTPUT_STREAM << "Entering annihilation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
          mapPartsFromRight[RightIndex]=size;

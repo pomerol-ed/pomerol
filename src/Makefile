@@ -9,7 +9,8 @@ objects=output.o LatticeAnalysis.o \
 	DensityMatrixPart.o DensityMatrix.o \
 	GreensFunctionPart.o GreensFunction.o \
 	TwoParticleGF.o TwoParticleGFPart.o \
-	Vertex4.o TwoParticleGFContainer.o
+	Vertex4.o FieldOperatorContainer.o \
+	TwoParticleGFContainer.o GFContainer.o 
 
 devel_objects= TwoParticleGFContainer.o
 
@@ -27,13 +28,15 @@ HamiltonianPart.o: StatesClassification.h config.h HamiltonianPart.h Hamiltonian
 Hamiltonian.o: StatesClassification.h config.h HamiltonianPart.h Hamiltonian.h Hamiltonian.cpp
 FieldOperatorPart.o: StatesClassification.h config.h HamiltonianPart.h FieldOperatorPart.h FieldOperatorPart.cpp
 FieldOperator.o: StatesClassification.h config.h HamiltonianPart.h FieldOperatorPart.h FieldOperatorPart.cpp FieldOperator.h
+FieldOperatorContainer.o : StatesClassification.o Hamiltonian.o FieldOperatorContainer.h FieldOperatorContainer.cpp 
 DensityMatrixPart.o: DensityMatrixPart.h DensityMatrixPart.cpp
 DensityMatrix.o: DensityMatrix.h DensityMatrix.cpp
 GreensFunctionPart.o: GreensFunctionPart.h GreensFunctionPart.cpp config.h
 GreensFunction.o: GreensFunction.h GreensFunction.cpp
 TwoParticleGFPart.o: TwoParticleGFPart.h TwoParticleGFPart.cpp config.h
 TwoParticleGF.o: TwoParticleGF.h TwoParticleGF.cpp
-TwoParticleGFContainer.o : TwoParticleGFContainer.h TwoParticleGFContainer.cpp
+TwoParticleGFContainer.o : TwoParticleGFContainer.h TwoParticleGFContainer.cpp TwoParticleGFPart.o TwoParticleGF.o FieldOperatorContainer.o
+GFContainer.o : GFContainer.h GFContainer.cpp GreensFunction.o GreensFunctionPart.o
 Vertex4.o: Vertex4.h Vertex4.cpp
 
 libmeat.so: $(objects)

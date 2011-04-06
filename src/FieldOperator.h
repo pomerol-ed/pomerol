@@ -15,7 +15,6 @@ class OperatorContainer
 protected:
     StatesClassification &System;
     Hamiltonian &H;
-    output_handle OUT;
 
     unsigned short bit;
     std::vector<FieldOperatorPart*> Data;
@@ -30,7 +29,7 @@ protected:
     virtual    QuantumNumbers mapsTo(QuantumNumbers in)=0;
 
 public:
-    OperatorContainer(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit);
+    OperatorContainer(StatesClassification &System, Hamiltonian &H, int bit);
 
     FieldOperatorPart& getPartFromLeftIndex(BlockNumber in);
     FieldOperatorPart& getPartFromLeftIndex(QuantumNumbers in);
@@ -60,7 +59,7 @@ public:
     AnnihilationOperator& transpose();
         void prepare();
     
-    CreationOperator(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit);
+    CreationOperator(StatesClassification &System, Hamiltonian &H, int bit);
 };
 
 class AnnihilationOperator : public OperatorContainer
@@ -72,7 +71,7 @@ public:
     CreationOperator& transpose();
         void prepare();
     
-    AnnihilationOperator(StatesClassification &System, Hamiltonian &H, output_handle &OUT, int bit);
+    AnnihilationOperator(StatesClassification &System, Hamiltonian &H, int bit);
 };
 
 #endif

@@ -1,6 +1,5 @@
 #include "TwoParticleGFContainer.h"
 
-extern output_handle OUT;
 extern ostream& OUTPUT_STREAM;
 
 TwoParticleGFContainer::IndexCombination::IndexCombination(ParticleIndex cindex1, ParticleIndex cindex2, ParticleIndex cdagindex3, ParticleIndex cdagindex4)
@@ -25,7 +24,7 @@ return output;
 
 /*=========================================================================*/
 
-TwoParticleGFContainer::TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM):S(S),H(H),DM(DM)
+TwoParticleGFContainer::TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM,BitClassification& IndexInfo, FieldOperatorContainer& Operators):S(S),H(H),DM(DM),IndexInfo(IndexInfo),Operators(Operators)
 {
 };
 
@@ -39,51 +38,14 @@ for (std::vector<IndexCombination*>::const_iterator it1=in.begin(); it1!=in.end(
 }
 };
 
-void TwoParticleGFContainer::defineFieldOperatorMaps()
-{
-for (std::vector<IndexCombination*>::const_iterator it1=NonTrivialCombinations.begin(); it1!=NonTrivialCombinations.end(); ++it1){
-    for (unsigned short i=0;i<2;i++){
-            ParticleIndex currentIndex=(*it1)->Indices[i];
-            if (!mapAnnihilationOperators.count(currentIndex)){
-                mapAnnihilationOperators[currentIndex]=new AnnihilationOperator(S,H,OUT,currentIndex);
-                OUTPUT_STREAM << "Created c_" << currentIndex << endl; 
-                }
-            else OUTPUT_STREAM << "c_" << currentIndex << " exists." << endl;
-
-        };
-    for (unsigned short i=2;i<4;i++){
-            ParticleIndex currentIndex=(*it1)->Indices[i];
-            if (!mapCreationOperators.count(currentIndex)){
-                OUTPUT_STREAM << "Created c^+_" << currentIndex << endl; 
-                mapCreationOperators[currentIndex]=new CreationOperator(S,H,OUT,currentIndex);
-                }
-            else OUTPUT_STREAM << "c^+_" << currentIndex << " exists." << endl;
-
-        };
- 
-    };
-};
-
-void TwoParticleGFContainer::computeFieldOperators()
-{
-for(std::map<ParticleIndex,AnnihilationOperator*>::iterator it1=mapAnnihilationOperators.begin();it1!=mapAnnihilationOperators.end();++it1){
-    it1->second->prepare();
-    it1->second->compute();
-    };
-for(std::map<ParticleIndex,CreationOperator*>::iterator it1=mapCreationOperators.begin();it1!=mapCreationOperators.end();++it1){
-    it1->second->prepare();
-    it1->second->compute();
-    };
-}
-
 void TwoParticleGFContainer::prepareTwoParticleGFs()
 {
 for (std::vector<IndexCombination*>::const_iterator it1=NonTrivialCombinations.begin(); it1!=NonTrivialCombinations.end(); ++it1){
-    AnnihilationOperator *C1 = mapAnnihilationOperators[(*it1)->Indices[0]];
-    AnnihilationOperator *C2 = mapAnnihilationOperators[(*it1)->Indices[1]];
-    CreationOperator     *CX3 = mapCreationOperators   [(*it1)->Indices[2]];
-    CreationOperator     *CX4 = mapCreationOperators   [(*it1)->Indices[3]];
-    TwoParticleGF * temp2PGF = new TwoParticleGF(S,H,*C1,*C2,*CX3,*CX4,DM);
+    AnnihilationOperator &C1 = Operators.getAnnihilationOperator((*it1)->Indices[0]);
+    AnnihilationOperator &C2 = Operators.getAnnihilationOperator((*it1)->Indices[1]);
+    CreationOperator     &CX3 = Operators.getCreationOperator   ((*it1)->Indices[2]);
+    CreationOperator     &CX4 = Operators.getCreationOperator   ((*it1)->Indices[3]);
+    TwoParticleGF * temp2PGF = new TwoParticleGF(S,H,C1,C2,CX3,CX4,DM);
     temp2PGF->prepare();
     if (!temp2PGF->vanishes()) mapNonTrivialCombinations[**it1] = temp2PGF;
     };

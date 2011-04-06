@@ -5,8 +5,8 @@
 using std::stringstream;
 
 FieldOperatorPart::FieldOperatorPart(
-        int i, StatesClassification &S, HamiltonianPart &h_from,  HamiltonianPart &h_to, output_handle OUT) : 
-        i(i), S(S), h_from(h_from), h_to(h_to), OUT(OUT)
+        int i, StatesClassification &S, HamiltonianPart &h_from,  HamiltonianPart &h_to) : 
+        i(i), S(S), h_from(h_from), h_to(h_to)
 {};
 
 
@@ -18,11 +18,6 @@ ColMajorMatrixType& FieldOperatorPart::getColMajorValue()
 RowMajorMatrixType& FieldOperatorPart::getRowMajorValue()
 {
     return elementsRowMajor;
-}
-
-const string &FieldOperatorPart::path()
-{
-    static string str=(*this).OUT.fullpath(); return str;
 }
 
 void FieldOperatorPart::print_to_screen()  //print to screen C and CX
@@ -40,7 +35,9 @@ void FieldOperatorPart::print_to_screen()  //print to screen C and CX
 
 void FieldOperatorPart::dump() //writing FieldOperatorPart C[M_sigma] and CX[M_sigma] in output file
 {
-    std::stringstream filename;
+DEBUG("No dump method is implemented for field operators");
+assert(0);
+/*    std::stringstream filename;
     filename << (*this).OUT.fullpath() << "/" << "part" << i << "_" << h_from.id() << "->" << h_to.id() << ".dat";
     ofstream outCpart;
     outCpart.open(filename.str().c_str());
@@ -57,6 +54,7 @@ void FieldOperatorPart::dump() //writing FieldOperatorPart C[M_sigma] and CX[M_s
 
     outCpart.close();
     cout << "The part of field operator " << h_from.id() << "->" << h_to.id() << " is dumped to " << filename.str() << "." << endl;
+*/
 }
 
 void FieldOperatorPart::compute()
@@ -105,13 +103,13 @@ void FieldOperatorPart::compute()
 // Functions of specialized classes
 
 AnnihilationOperatorPart::AnnihilationOperatorPart(int i, StatesClassification &S, 
-                                                   HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT) :
-FieldOperatorPart(i,S,h_from,h_to,output_handle(OUT.path()+"/matrixC"))
+                                                   HamiltonianPart &h_from, HamiltonianPart &h_to) :
+FieldOperatorPart(i,S,h_from,h_to)
 {}
 
 CreationOperatorPart::CreationOperatorPart(int i, StatesClassification &S, 
-                                                  HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT) :
-FieldOperatorPart(i,S,h_from,h_to,output_handle(OUT.path()+"/matrixCX"))
+                                                  HamiltonianPart &h_from, HamiltonianPart &h_to) :
+FieldOperatorPart(i,S,h_from,h_to)
 {}
 
 QuantumState AnnihilationOperatorPart::retK(QuantumState L)							//return K for C
@@ -191,7 +189,7 @@ BlockNumber FieldOperatorPart::getRightIndex()
 
 CreationOperatorPart& AnnihilationOperatorPart::transpose()
 {
-	CreationOperatorPart *CX = new CreationOperatorPart(i, S, h_to, h_from, OUT); // swapped h_to and h_from
+	CreationOperatorPart *CX = new CreationOperatorPart(i, S, h_to, h_from); // swapped h_to and h_from
 	CX->elementsRowMajor = elementsRowMajor.transpose();
 	CX->elementsColMajor = elementsColMajor.transpose();
 	return *CX;
@@ -199,7 +197,7 @@ CreationOperatorPart& AnnihilationOperatorPart::transpose()
 
 AnnihilationOperatorPart& CreationOperatorPart::transpose()
 {
-	AnnihilationOperatorPart *C = new AnnihilationOperatorPart(i, S, h_to, h_from, OUT); // swapped h_to and h_from
+	AnnihilationOperatorPart *C = new AnnihilationOperatorPart(i, S, h_to, h_from); // swapped h_to and h_from
 	C->elementsRowMajor = elementsRowMajor.transpose();
 	C->elementsColMajor = elementsColMajor.transpose();
 	return *C;

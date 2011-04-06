@@ -19,10 +19,10 @@
 string input = "system.ini";
 
 LatticeAnalysis Lattice;
-BitClassification Formula(Lattice);
-StatesClassification S(Formula); 
+BitClassification IndexInfo(Lattice);
+StatesClassification S(IndexInfo); 
 output_handle OUT;
-Hamiltonian H(Formula,S,OUT,input);
+Hamiltonian H(IndexInfo,S,OUT,input);
 
 ostream &OUTPUT_STREAM=std::cout;
 
@@ -39,19 +39,19 @@ int main()
     cout << "=======================" << endl;
     Lattice.readin();
     cout << Lattice.printSitesList().str() << flush;
-    Formula.prepare();
+    IndexInfo.prepare();
     cout << "=======================" << endl;
     cout << "System Info" << endl;
     cout << "=======================" << endl;
-    Formula.printBitInfoList();
+    IndexInfo.printBitInfoList();
     cout << "=======================" << endl;
     cout << "Hopping Matrix" << endl;
     cout << "=======================" << endl;
-    Formula.printHoppingMatrix();
+    IndexInfo.printHoppingMatrix();
     cout << "=======================" << endl;
     cout << "Terms check" << endl;
     cout << "=======================" << endl;
-    Formula.printTerms();
+    IndexInfo.printTerms();
     //determination of system
     
     pIni = new IniConfig(input);
@@ -111,15 +111,14 @@ int main()
         comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
         std::vector<TwoParticleGFContainer::IndexCombination*> v1;
         v1.push_back(comb1);
-        comb1 = new TwoParticleGFContainer::IndexCombination(1,0,0,1);
+        comb1 = new TwoParticleGFContainer::IndexCombination(1,0,1,0);
         v1.push_back(comb1);
-        comb1 = new TwoParticleGFContainer::IndexCombination(1,1,0,1);
-        v1.push_back(comb1);
-
-        TwoParticleGFContainer Chi4(S,H,rho);
+//        comb1 = new TwoParticleGFContainer::IndexCombination(1,3,2,3);
+//        v1.push_back(comb1);
+//
+        FieldOperatorContainer Operators(S,H,IndexInfo);
+        TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
         Chi4.readNonTrivialIndices(v1);
-        Chi4.defineFieldOperatorMaps();
-        Chi4.computeFieldOperators();
         Chi4.prepareTwoParticleGFs();
         Chi4.computeTwoParticleGFs(30);
 
@@ -137,23 +136,24 @@ int main()
         cout << Chi4(*v1[1],2,-2,4) << endl;
         cout << Chi4(*v1[1],29,-29,29) << endl << endl;
 
-        cout << (bool) Chi4.vanishes(*v1[0]) << endl;
-        cout << Chi4.vanishes(*v1[1]) << endl;
-        comb1 = new TwoParticleGFContainer::IndexCombination(0,2,0,1);
-        cout << Chi4.vanishes(*comb1) << endl;
+        cout << *v1[0] << " : " << (bool) Chi4.vanishes(*v1[0]) << endl;
+        cout << *v1[1] << " : " << (bool) Chi4.vanishes(*v1[1]) << endl;
+     //   comb1 = new TwoParticleGFContainer::IndexCombination(0,2,0,1);
+     //   cout << Chi4.vanishes(*comb1) << endl;
         };
 
+    exit(0);
     int i = 1; //(*pIni)["Green Function:i"];
     int j = 1; //(*pIni)["Green Function:j"];
     cout << endl;
     cout << "==========================================" << endl;
     cout << "Beginning of rotation of matrices C and CX" << endl;
-    CreationOperator CX(S,H,OUT,i);
+    CreationOperator CX(S,H,i);
     CX.prepare();
     CX.compute();
     //CX.dump();
     
-    AnnihilationOperator C(S,H,OUT,j);
+    AnnihilationOperator C(S,H,j);
     C.prepare();
     C.compute();
     //C.dump();

@@ -201,7 +201,10 @@ const int& BitClassification::getBitSize() const
     return N_bit;
 }
 
-
+bool BitClassification::checkIndex(ParticleIndex in)
+{
+    return (in <= N_bit-1);
+}
 
 TermsList& BitClassification::getTermsList()
 {

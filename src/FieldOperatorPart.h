@@ -15,7 +15,6 @@ protected:
     StatesClassification &S;
     HamiltonianPart &h_from;
     HamiltonianPart &h_to;
-    output_handle OUT;            //output path handler
 
     // basic functions
     virtual QuantumState retK(QuantumState L)=0;  
@@ -26,14 +25,12 @@ protected:
    
 public:
   
-    FieldOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from,    HamiltonianPart &h_to, output_handle OUT);
+    FieldOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from,    HamiltonianPart &h_to);
 
     void compute();
     void dump();
     void print_to_screen();                        //print to screen matrices UXCU UXCXU
 
-    const string& path();                        //output paths
-    
     RowMajorMatrixType& getRowMajorValue();
     ColMajorMatrixType& getColMajorValue();
     BlockNumber getLeftIndex();
@@ -51,7 +48,7 @@ class AnnihilationOperatorPart : public FieldOperatorPart
     friend class CreationOperatorPart;
 
 public :
-    AnnihilationOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT);
+    AnnihilationOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to);
     CreationOperatorPart& transpose();
 };
 
@@ -63,7 +60,7 @@ class CreationOperatorPart : public FieldOperatorPart
     friend class AnnihilationOperatorPart;
   
 public :
-    CreationOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, output_handle OUT);
+    CreationOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to);
     AnnihilationOperatorPart& transpose();
 };
 
