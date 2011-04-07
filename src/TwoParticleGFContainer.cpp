@@ -12,7 +12,10 @@ TwoParticleGFContainer::IndexCombination::IndexCombination(ParticleIndex cindex1
 
 bool TwoParticleGFContainer::IndexCombination::operator<(const TwoParticleGFContainer::IndexCombination& rhs) const
 {
-  return (Indices[0]*64+Indices[1]*16+Indices[2]*4+Indices[3] < rhs.Indices[0]*64+rhs.Indices[1]*16+rhs.Indices[2]*4+rhs.Indices[3]);
+  return (Indices[0] < rhs.Indices[0]) || 
+         (Indices[0] == rhs.Indices[0] && Indices[1] < rhs.Indices[1] ) ||
+         (Indices[0] == rhs.Indices[0] && Indices[1] == rhs.Indices[1] && Indices[2] < rhs.Indices[2]) ||
+         (Indices[0] == rhs.Indices[0] && Indices[1] == rhs.Indices[1] && Indices[2] == rhs.Indices[2] && Indices[3] < rhs.Indices[3]); 
 }
 
 
@@ -38,7 +41,7 @@ for (std::vector<IndexCombination*>::const_iterator it1=in.begin(); it1!=in.end(
 }
 };
 
-void TwoParticleGFContainer::prepareTwoParticleGFs()
+void TwoParticleGFContainer::prepare()
 {
 for (std::vector<IndexCombination*>::const_iterator it1=NonTrivialCombinations.begin(); it1!=NonTrivialCombinations.end(); ++it1){
     AnnihilationOperator &C1 = Operators.getAnnihilationOperator((*it1)->Indices[0]);
@@ -52,7 +55,7 @@ for (std::vector<IndexCombination*>::const_iterator it1=NonTrivialCombinations.b
 };
 
 
-void TwoParticleGFContainer::computeTwoParticleGFs(long NumberOfMatsubaras)
+void TwoParticleGFContainer::compute(long NumberOfMatsubaras)
 {
 for (std::map<IndexCombination,TwoParticleGF*>::iterator it1=mapNonTrivialCombinations.begin();it1!=mapNonTrivialCombinations.end();++it1){
     it1->second->compute(NumberOfMatsubaras);

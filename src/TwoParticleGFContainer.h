@@ -16,10 +16,8 @@ public:
     TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, BitClassification& IndexInfo, FieldOperatorContainer& Operators);
 
     void readNonTrivialIndices(std::vector<IndexCombination*>&);
-    void defineFieldOperatorMaps();
-    void computeFieldOperators();
-    void prepareTwoParticleGFs();
-    void computeTwoParticleGFs(long NumberOfMatsubaras);
+    void prepare();
+    void compute(long NumberOfMatsubaras);
     bool vanishes(IndexCombination&);
 
     ComplexType operator()(IndexCombination&, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3); 

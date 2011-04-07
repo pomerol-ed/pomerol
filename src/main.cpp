@@ -9,6 +9,7 @@
 #include "FieldOperatorPart.h"
 #include "FieldOperator.h"
 #include "GreensFunction.h"
+#include "GFContainer.h"
 #include "TwoParticleGF.h"
 #include "TwoParticleGFContainer.h"
 #include "Vertex4.h"
@@ -100,6 +101,7 @@ int main()
     cout << "All parts are created!" << endl;
     cout << endl;
 
+
     if ((*pIni)["System:calculate_2PGF"]){
         cout << endl;
         cout << "==========================================" << endl;
@@ -111,16 +113,19 @@ int main()
         comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
         std::vector<TwoParticleGFContainer::IndexCombination*> v1;
         v1.push_back(comb1);
-        comb1 = new TwoParticleGFContainer::IndexCombination(1,0,1,0);
+        comb1 = new TwoParticleGFContainer::IndexCombination(1,1,1,1);
         v1.push_back(comb1);
 //        comb1 = new TwoParticleGFContainer::IndexCombination(1,3,2,3);
 //        v1.push_back(comb1);
 //
         FieldOperatorContainer Operators(S,H,IndexInfo);
+        GFContainer G(S,H,rho,IndexInfo,Operators);
+        cout << G(15) << endl;
+        exit(0);
         TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
         Chi4.readNonTrivialIndices(v1);
-        Chi4.prepareTwoParticleGFs();
-        Chi4.computeTwoParticleGFs(30);
+        Chi4.prepare();
+        Chi4.compute(30);
 
         cout << Chi4(*v1[0],3,2,0) << endl;
         cout << Chi4(*v1[0],2,5,2) << endl;
