@@ -19,6 +19,7 @@ public:
     void prepare();
     void compute(long NumberOfMatsubaras);
     bool vanishes(IndexCombination&);
+    long getNumberOfMatsubaras() const;
 
     ComplexType operator()(IndexCombination&, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3); 
 
@@ -33,6 +34,7 @@ private:
     FieldOperatorContainer &Operators;
     std::vector<IndexCombination*> NonTrivialCombinations;
     std::map<IndexCombination,TwoParticleGF*> mapNonTrivialCombinations;
+    long NumberOfMatsubaras;
 };
 
 struct TwoParticleGFContainer::IndexCombination

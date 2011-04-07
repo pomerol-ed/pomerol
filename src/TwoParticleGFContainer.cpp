@@ -27,7 +27,8 @@ return output;
 
 /*=========================================================================*/
 
-TwoParticleGFContainer::TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM,BitClassification& IndexInfo, FieldOperatorContainer& Operators):S(S),H(H),DM(DM),IndexInfo(IndexInfo),Operators(Operators)
+TwoParticleGFContainer::TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM,BitClassification& IndexInfo, FieldOperatorContainer& Operators):
+    S(S),H(H),DM(DM),IndexInfo(IndexInfo),Operators(Operators),NumberOfMatsubaras(0)
 {
 };
 
@@ -57,6 +58,7 @@ for (std::vector<IndexCombination*>::const_iterator it1=NonTrivialCombinations.b
 
 void TwoParticleGFContainer::compute(long NumberOfMatsubaras)
 {
+this->NumberOfMatsubaras = NumberOfMatsubaras;
 for (std::map<IndexCombination,TwoParticleGF*>::iterator it1=mapNonTrivialCombinations.begin();it1!=mapNonTrivialCombinations.end();++it1){
     it1->second->compute(NumberOfMatsubaras);
     };
@@ -72,4 +74,9 @@ else return 0;
 bool TwoParticleGFContainer::vanishes(IndexCombination& in)
 {
 return ( mapNonTrivialCombinations.count(in) == 0 );
+}
+
+long TwoParticleGFContainer::getNumberOfMatsubaras() const
+{
+    return NumberOfMatsubaras;
 }
