@@ -37,10 +37,10 @@ class GreensFunctionPart
 
     /** Every term is a fraction \f$ \frac{R}{z - P} \f$. */
     struct GreensTerm{
-        /** Position of the pole (\f$ P \f$). */
-        ComplexType Pole;
         /** Residue at the pole (\f$ R \f$). */
         ComplexType Residue;
+        /** Position of the pole (\f$ P \f$). */
+        ComplexType Pole;
 
         /** Constructor.
          * \param[in] Residue Value of the residue.

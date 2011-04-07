@@ -57,6 +57,8 @@ class TwoParticleGF {
 
     /** A flag to determine whether this GF is identical to zero */
     bool vanish;
+    /** Represents current status of calculation done with the 2PGF - look for enum ObjectStatus in the config.h */
+    unsigned short Status;
 
     /** Algorithms use this object to output various data. */
     output_handle green_path;

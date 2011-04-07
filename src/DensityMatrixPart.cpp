@@ -40,6 +40,15 @@ RealType DensityMatrixPart::getAverageEnergy()
     return E;
 };
 
+#ifdef DMTruncate
+InnerQuantumState DensityMatrixPart::getMaximumTruncationState()
+{
+    InnerQuantumState m=0;
+    for (m=0; m<partSize && weights(m)>TruncationTolerance; ++m);
+    return m;
+}
+#endif
+
 RealType DensityMatrixPart::weight(int m)
 {
     return weights(m);

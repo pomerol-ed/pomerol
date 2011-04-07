@@ -20,7 +20,8 @@ if (IndexInfo.checkIndex(in)){
         CX->prepare();
         CX->compute();
         mapCreationOperators[in] = CX;
-        };
+        }
+    else DEBUG("using Creation Operator_"<<in << std::endl);
     return *mapCreationOperators[in];
     }
 else assert(0);
@@ -36,7 +37,7 @@ if (IndexInfo.checkIndex(in)){
         C->compute();
         mapAnnihilationOperators[in] = C;
         }
-    else DEBUG("using Creation Operator_"<<in << std::endl);
+    else DEBUG("using Annihilation Operator_"<<in << std::endl);
     return *mapAnnihilationOperators[in];
     }
 else assert(0);

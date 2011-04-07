@@ -48,8 +48,12 @@ typedef unsigned short ParticleIndex;
 /** Possible spin projections are \b down and \b up */
 enum spin {down, up};
 
+/** This represent the progress of calculation of any complex object in the code */
+enum ObjectStatus {Constructed, Prepared, Computed};
+
 /** A short name for imaginary unit. */
 static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
+
 
 /** Generalized 'square' function. */
 template<typename T> inline T sqr(T x) { return x*x; }

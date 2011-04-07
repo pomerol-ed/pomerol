@@ -272,7 +272,13 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
     ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
 
     InnerQuantumState index1;
+    #ifndef DMTruncate
     InnerQuantumState index1Max = CX4matrix.outerSize();
+    #else
+    InnerQuantumState index1Max = DMpart1.getMaximumTruncationState();
+    cout << "Index1Max : " << index1Max << " " << CX4matrix.outerSize() << endl;
+    #endif
+
 
     InnerQuantumState index3;
     InnerQuantumState index3Max = O2matrix.outerSize();

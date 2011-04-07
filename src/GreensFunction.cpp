@@ -7,11 +7,11 @@
 #include "GreensFunction.h"
 
 GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H, 
-                               AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM,
-                               output_handle &OUT) : S(S), H(H), C(C), CX(CX), DM(DM), parts(0)
+                               AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM
+                               ) : S(S), H(H), C(C), CX(CX), DM(DM), parts(0)
 {
-    green_path = output_handle(OUT.path() + "/GreensFunction");   
     vanish = true;
+    Status = Constructed;
 }
 
 GreensFunction::~GreensFunction()
@@ -22,6 +22,7 @@ GreensFunction::~GreensFunction()
 
 void GreensFunction::prepare(void)
 {
+if (Status < Prepared){
     // Find out non-trivial blocks of C and CX.
     std::list<BlockMapping> CNontrivialBlocks = C.getNonTrivialIndices();
     std::list<BlockMapping> CXNontrivialBlocks = CX.getNonTrivialIndices();
@@ -52,12 +53,17 @@ void GreensFunction::prepare(void)
         if(CleftInt >= CXrightInt) CXiter++;
     }
 if (parts.size() > 0) vanish = false;
+Status = Prepared;
+}
 }
 
 void GreensFunction::compute(void)
 {
-      for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+if (Status < Computed){
+    for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
           (*iter)->compute();
+    Status = Computed;
+    }
 }
 
 ComplexType GreensFunction::operator()(long MatsubaraNum)
@@ -77,11 +83,6 @@ unsigned short GreensFunction::getBit(size_t Position) const
     }
 }
 
-string GreensFunction::getPath()
-{
-    return green_path.fullpath();
-}
-
 bool GreensFunction::vanishes()
 {
     return vanish;
@@ -91,6 +92,8 @@ bool GreensFunction::vanishes()
 
 void GreensFunction::dumpMatsubara(unsigned short points)
 {
+#warning: dump for GF is not done
+/*
     std::stringstream filename;
     unsigned short i=C.getBit();
     unsigned short j=CX.getBit();
@@ -106,6 +109,7 @@ void GreensFunction::dumpMatsubara(unsigned short points)
     }
 
     output.close();
+*/
 }
 
 #warning"Dead code. Subject to remove."

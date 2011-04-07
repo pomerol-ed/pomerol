@@ -1,3 +1,9 @@
+#define EIGEN2_SUPPORT
+
+#ifdef DMTruncate
+#define DENSITY_MATRIX_TRUNCATION_TOLERANCE 1e-8
+#endif
+
 #include "config.h"
 #include "output.h"
 #include "LatticeAnalysis.h"
@@ -101,7 +107,6 @@ int main()
     cout << "All parts are created!" << endl;
     cout << endl;
 
-
     if ((*pIni)["System:calculate_2PGF"]){
         cout << endl;
         cout << "==========================================" << endl;
@@ -113,7 +118,7 @@ int main()
         comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
         std::vector<TwoParticleGFContainer::IndexCombination*> v1;
         v1.push_back(comb1);
-        comb1 = new TwoParticleGFContainer::IndexCombination(1,1,1,1);
+        comb1 = new TwoParticleGFContainer::IndexCombination(0,1,0,1);
         v1.push_back(comb1);
 //        comb1 = new TwoParticleGFContainer::IndexCombination(1,3,2,3);
 //        v1.push_back(comb1);
@@ -121,13 +126,12 @@ int main()
         FieldOperatorContainer Operators(S,H,IndexInfo);
         GFContainer G(S,H,rho,IndexInfo,Operators);
         cout << G(15) << endl;
-        exit(0);
         TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
         Chi4.readNonTrivialIndices(v1);
         Chi4.prepare();
-        Chi4.compute(30);
+        Chi4.compute(16);
 
-        cout << Chi4(*v1[0],3,2,0) << endl;
+        cout << std::setprecision(9) << Chi4(*v1[0],3,2,0) << endl;
         cout << Chi4(*v1[0],2,5,2) << endl;
         cout << Chi4(*v1[0],5,2,2) << endl;
         cout << Chi4(*v1[0],1,7,1) << endl;
@@ -171,11 +175,12 @@ int main()
     { cout << (*it).first << "," << (*it).second << " = " << CX.getLeftIndex((*it).second) << "," << CX.getRightIndex((*it).first) << endl;
     }
 */
+
     cout << endl;
     cout << "==========================================" << endl;
     cout << "Calculating G_{" << i << j << "}" << endl;
     cout << "==========================================" << endl;
-      GreensFunction G(S,H,C,CX,rho,OUT);
+      GreensFunction G(S,H,C,CX,rho);
         G.prepare();
         cout << G.vanishes() << endl;
         G.compute();

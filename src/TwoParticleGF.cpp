@@ -25,6 +25,7 @@ TwoParticleGF::TwoParticleGF(StatesClassification& S, Hamiltonian& H,
     green_path = output_handle(OUT.path() + "/Gamma4");
     Storage = new TwoParticleGFPart::MatsubaraContainer(DM.getBeta());
     vanish = true;
+    Status = Constructed;
 }
 
 TwoParticleGF::~TwoParticleGF()
@@ -65,6 +66,8 @@ FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumbe
 
 void TwoParticleGF::prepare(void)
 {
+if (Status < Prepared)
+{
     // Find out non-trivial blocks of CX4.
     std::list<BlockMapping> CX4NontrivialBlocks = CX4.getNonTrivialIndices();
     for(std::list<BlockMapping>::const_iterator outer_iter = CX4NontrivialBlocks.begin();
@@ -99,6 +102,8 @@ void TwoParticleGF::prepare(void)
             }
     }  
     if ( parts.size() > 0 ) vanish = false;
+    Status = Prepared;
+};
 }
 
 bool TwoParticleGF::vanishes()
@@ -108,6 +113,7 @@ return vanish;
 
 void TwoParticleGF::compute(long NumberOfMatsubaras)
 {
+if (Status < Computed){
     Storage->prepare(NumberOfMatsubaras);
     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
     {
@@ -118,6 +124,8 @@ void TwoParticleGF::compute(long NumberOfMatsubaras)
         (*iter)->clear();
     }
     cout << endl;
+    Status =Computed;
+    }
 }
 
 ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)

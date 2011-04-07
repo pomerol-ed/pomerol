@@ -35,3 +35,19 @@ MatrixType& GFContainer::operator()(long MatsubaraNumber)
         };
     return *Output; 
 };
+
+ComplexType GFContainer::operator()(ParticleIndex i, ParticleIndex j, long MatsubaraNumber)
+{
+    return (mapGreensFunctions.count(IndexCombination(i,j))>0)?(*mapGreensFunctions[IndexCombination(i,j)])(MatsubaraNumber):0;
+};
+
+void GFContainer::prepare()
+{
+    for (ParticleIndex i=0; i<IndexInfo.getBitSize(); ++i)
+        for (ParticleIndex j=0; j<IndexInfo.getBitSize(); ++j){
+                GreensFunction *GF = new GreensFunction (S,H,Operators.getAnnihilationOperator(i),Operators.getCreationOperator(j),DM);
+                GF->prepare();
+                if (!GF->vanishes()) mapGreensFunctions[IndexCombination(i,j)]=GF;
+            }
+};
+

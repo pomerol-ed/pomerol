@@ -24,6 +24,7 @@ protected:
     std::map<unsigned int,BlockNumber> mapLeftToRightIndex;        // A map from output index to input index, hence there is a unique transform
     std::list<BlockMapping> LeftRightIndices;
     unsigned int size;
+    unsigned short Status;
 
     virtual BlockNumber mapsTo(BlockNumber RightIndex)=0;
     virtual    QuantumNumbers mapsTo(QuantumNumbers in)=0;

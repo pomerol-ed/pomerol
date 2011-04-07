@@ -45,14 +45,13 @@ class GreensFunction {
     DensityMatrix& DM;
     /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
     bool vanish;
+    /** Represents current status of calculation done with the GF - look for enum ObjectStatus in the config.h */
+    unsigned short Status;
 
     /** A list of pointers to parts (every part corresponds to a part of the annihilation operator
      * and a part of the creation operator).
      */
     std::list<GreensFunctionPart*> parts;
-
-    /** Algorithms use this object to output various data. */
-    output_handle green_path;
 
 public:
      /** Constructor.
@@ -61,11 +60,9 @@ public:
      * \param[in] C A reference to an annihilation operator.
      * \param[in] CX A reference to a creation operator.
      * \param[in] DM A reference to a density matrix.
-     * \param[in] OUT A reference to an output handle.
      */
     GreensFunction(StatesClassification& S, Hamiltonian& H,
-                   AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM,
-                   output_handle &OUT);
+                   AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM);
     /** Destructor. */
     ~GreensFunction();
 

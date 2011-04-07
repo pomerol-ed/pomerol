@@ -5,6 +5,7 @@ OperatorContainer::OperatorContainer(StatesClassification &System, Hamiltonian &
     System(System), H(H), bit(bit)
 {
     size=0;
+    Status = Constructed;
 }
 
 CreationOperator::CreationOperator(StatesClassification &System, Hamiltonian &H, int bit) : 
@@ -50,12 +51,14 @@ void OperatorContainer::print_to_screen()
 
 void OperatorContainer::compute()
 {
-  for (unsigned int b_in=0;b_in<(*this).size;b_in++)
-  {
-    OUTPUT_STREAM << (int) ((1.0*b_in/(*this).size) * 100 ) << "  " << flush;
+if (Status < Computed ){
+    for (unsigned int b_in=0;b_in<(*this).size;b_in++){
+        OUTPUT_STREAM << (int) ((1.0*b_in/(*this).size) * 100 ) << "  " << flush;
         Data[b_in]->compute();
-  };
-  OUTPUT_STREAM << endl;
+        };
+    OUTPUT_STREAM << endl;
+    Status=Computed;
+    };
 }
 
 void OperatorContainer::dump()
@@ -73,42 +76,44 @@ unsigned short OperatorContainer::getBit() const
 
 void CreationOperator::prepare()
 {
-  for (BlockNumber RightIndex=0;RightIndex<System.NumberOfBlocks();RightIndex++)
-    {
-      BlockNumber LeftIndex = this->mapsTo(RightIndex);
-      if (LeftIndex.isCorrect()) 
-      {
-         FieldOperatorPart *Part = new CreationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex));
-         Data.push_back(Part);
-         OUTPUT_STREAM << "Entering creation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
-         mapPartsFromRight[RightIndex]=size;
-         mapPartsFromLeft[LeftIndex]=size;
-         LeftRightIndices.push_back(BlockMapping(LeftIndex,RightIndex));
-	     mapRightToLeftIndex[RightIndex]=LeftIndex;
-	     mapLeftToRightIndex[LeftIndex]=RightIndex;
-         size++;
-      }    
-    }
+if (Status < Prepared){
+    for (BlockNumber RightIndex=0;RightIndex<System.NumberOfBlocks();RightIndex++){
+            BlockNumber LeftIndex = this->mapsTo(RightIndex);
+            if (LeftIndex.isCorrect()){
+                FieldOperatorPart *Part = new CreationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex));
+                Data.push_back(Part);
+                OUTPUT_STREAM << "Entering creation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
+                mapPartsFromRight[RightIndex]=size;
+                mapPartsFromLeft[LeftIndex]=size;
+                LeftRightIndices.push_back(BlockMapping(LeftIndex,RightIndex));
+	            mapRightToLeftIndex[RightIndex]=LeftIndex;
+	            mapLeftToRightIndex[LeftIndex]=RightIndex;
+                size++;
+                }    
+            }
+    Status=Prepared;
+    };
 }
 
 void AnnihilationOperator::prepare()
 {
-  for (BlockNumber RightIndex=0;RightIndex<System.NumberOfBlocks();RightIndex++)
-    {
-      BlockNumber LeftIndex = mapsTo(RightIndex);
-      if (LeftIndex.isCorrect()) 
-      {
-         FieldOperatorPart *Part = new AnnihilationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex));
-         Data.push_back(Part);
-         OUTPUT_STREAM << "Entering annihilation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
-         mapPartsFromRight[RightIndex]=size;
-         mapPartsFromLeft[LeftIndex]=size;
-	     mapRightToLeftIndex[RightIndex]=LeftIndex;
-	     mapLeftToRightIndex[LeftIndex]=RightIndex;
-         LeftRightIndices.push_back(BlockMapping(LeftIndex,RightIndex));
-         size++;
-      }    
-    }
+if (Status < Prepared){
+    for (BlockNumber RightIndex=0;RightIndex<System.NumberOfBlocks();RightIndex++){
+        BlockNumber LeftIndex = mapsTo(RightIndex);
+        if (LeftIndex.isCorrect()){
+            FieldOperatorPart *Part = new AnnihilationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex));
+            Data.push_back(Part);
+            OUTPUT_STREAM << "Entering annihilation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << endl; 
+            mapPartsFromRight[RightIndex]=size;
+            mapPartsFromLeft[LeftIndex]=size;
+	        mapRightToLeftIndex[RightIndex]=LeftIndex;
+	        mapLeftToRightIndex[LeftIndex]=RightIndex;
+            LeftRightIndices.push_back(BlockMapping(LeftIndex,RightIndex));
+            size++;
+            }    
+        };
+    Status=Prepared;
+    };
 }
 
 BlockNumber OperatorContainer::getRightIndex(BlockNumber LeftIndex)
