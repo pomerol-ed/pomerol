@@ -24,6 +24,7 @@ public:
     ComplexType operator()(const IndexCombination&, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3); 
 
     void dump();
+    RealType getBeta() const;
   
     //void defineNonTrivialIndices();
 private:

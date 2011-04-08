@@ -272,11 +272,11 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
     ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
 
     InnerQuantumState index1;
-    #ifndef DMTruncate
+//    #ifndef DMTruncate
     InnerQuantumState index1Max = CX4matrix.outerSize();
-    #else
-    InnerQuantumState index1Max = DMpart1.getMaximumTruncationState();
-    #endif
+//    #else
+//    InnerQuantumState index1Max = DMpart1.getMaximumTruncationState();
+//    #endif
 
 
     InnerQuantumState index3;
@@ -341,8 +341,8 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
     }
     };
     DEBUG("filling " << Terms.size() << " elements");
-    Storage->fill(Terms);
-    Terms.clear();
+    //Storage->fill(Terms);
+    //Terms.clear();
 // DEBUG((*Storage)(0,0,0));
 }
 
@@ -365,5 +365,5 @@ ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraN
     for(std::list<TwoParticleGFTerm>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm)
         Value += (*pTerm)(Frequency1,Frequency2,Frequency3);
 
-    return Value+Terms(Frequency1,Frequency2,Frequency3);
+    return Value+(*Storage)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
 }

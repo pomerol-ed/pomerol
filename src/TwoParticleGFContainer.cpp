@@ -80,3 +80,8 @@ long TwoParticleGFContainer::getNumberOfMatsubaras() const
 {
     return NumberOfMatsubaras;
 }
+
+RealType TwoParticleGFContainer::getBeta() const
+{
+    return DM.getBeta();
+}

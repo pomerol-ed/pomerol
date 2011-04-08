@@ -99,11 +99,19 @@ int main()
     rho.prepare();
     rho.compute();
     num_cout << "<H> = " << rho.getAverageEnergy() << endl;
+
+    
+ /*   for (QuantumState i=0; i < S.N_st(); ++i) 
+        cout << std::setw(20) << "E:" << H.eigenval(i) << "\t E-E0 " << H.eigenval(i) - rho.getAverageEnergy() << "\t weight: " << rho(i) << "  " << exp(-beta*(H.eigenval(i) - H.getGroundEnergy()))/1.000 << endl; 
+        */
     std::ofstream out;
     out.open("output/Stat.En.dat");
     out << iomanip_prefs << rho.getAverageEnergy() << endl;
     out.close();
     
+      
+
+
     //finishing of creation
     cout << endl;
     cout << "All parts are created!" << endl;

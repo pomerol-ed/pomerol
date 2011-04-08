@@ -107,7 +107,7 @@ public:
         ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
 
         /** A matrix element with magnitude less than this value is treated as zero. */
-        static const RealType MatrixElementTolerance = 1e-8;//TERM_MATRIX_ELEMENT_TOLERANCE;
+        static const RealType MatrixElementTolerance = 1e-8;//1e-8;//TERM_MATRIX_ELEMENT_TOLERANCE;
         /** A difference in energies with magnitude less than this value is treated as zero. */
         static const RealType ResonanceTolerance = 1e-16;//TERM_RESONANCE_TOLERANCE ;
         /** Should we take a product of matrix elements into account?

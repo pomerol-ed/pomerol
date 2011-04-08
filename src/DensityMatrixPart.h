@@ -34,11 +34,6 @@ class DensityMatrixPart
     /** A contribution to the partition function. */
     RealType Z_part;
 
-    #ifdef DMTruncate
-    /** A tolerance factor for the DensityMatrix - used only when truncation optimization is required */
-    static const RealType TruncationTolerance = 1e-8;//DENSITY_MATRIX_TRUNCATION_TOLERANCE;
-    #endif
-
 public:
     /** Constructor.
      * \param[in] hpart A reference to a part of the Hamiltonian.
@@ -64,8 +59,10 @@ public:
     /** Returns the inverse temperature. */
     RealType getBeta();
 
-    /** Returns the number of the state, which has the lowest statistical weight before exceeding TruncationTolerance */
-    InnerQuantumState getMaximumTruncationState();
+    /** Returns the number of the state, which has the lowest statistical weight before exceeding TruncationTolerance 
+     * \param[in] TruncationTolerance - the level at which the statistical weight should be cutted
+     */
+    InnerQuantumState getMaximumTruncationState( RealType TruncationTolerance);
 };
 
 #endif // endif :: #ifndef ____DEFINE_DENSITY_MATRIX_PART____
