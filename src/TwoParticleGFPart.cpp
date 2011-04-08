@@ -68,8 +68,13 @@ ComplexType TwoParticleGFPart::TwoParticleGFTerm::operator()(
     return Value;
 }
 
+inline bool TwoParticleGFPart::TwoParticleGFTerm::hasRelevantNumerator(RealType Tolerance)
+{
+  return (abs(CoeffZ2)+abs(CoeffZ4) + abs(CoeffZ1Z2Res) + abs(CoeffZ1Z2NonRes) + abs(CoeffZ2Z3Res) + abs(CoeffZ2Z3NonRes)) >= Tolerance;
+}
+
 inline
-bool TwoParticleGFPart::TwoParticleGFTerm::IsRelevant(const ComplexType &MatrixElementProd)
+bool TwoParticleGFPart::TwoParticleGFTerm::IsRelevantMatrixElement(const ComplexType &MatrixElementProd)
 {
     return abs(MatrixElementProd) > MatrixElementTolerance;
 }
@@ -239,7 +244,7 @@ void TwoParticleGFPart::computeChasing1(long NumberOfMatsubaras)
 
                         MatrixElement *= Permutation.sign;
 
-                        if(TwoParticleGFTerm::IsRelevant(MatrixElement)){
+                        if(TwoParticleGFTerm::IsRelevantMatrixElement(MatrixElement)){
                             term_counter++;
                             Terms.push_back(TwoParticleGFTerm(MatrixElement,beta,
                                                               E1,E2,E3,E4,
@@ -272,12 +277,7 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
     ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
 
     InnerQuantumState index1;
-//    #ifndef DMTruncate
     InnerQuantumState index1Max = CX4matrix.outerSize();
-//    #else
-//    InnerQuantumState index1Max = DMpart1.getMaximumTruncationState();
-//    #endif
-
 
     InnerQuantumState index3;
     InnerQuantumState index3Max = O2matrix.outerSize();
@@ -326,7 +326,7 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
 
                         MatrixElement *= Permutation.sign;
 
-                        if(TwoParticleGFTerm::IsRelevant(MatrixElement)){
+                        if(TwoParticleGFTerm::IsRelevantMatrixElement(MatrixElement)){
                             term_counter++;
                             Terms.push_back(TwoParticleGFTerm(MatrixElement,beta,
                                                               E1,E2,E3,E4,
@@ -340,10 +340,21 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
         };
     }
     };
-    DEBUG("filling " << Terms.size() << " elements");
-    //Storage->fill(Terms);
-    //Terms.clear();
+
+    reduceTerms();
+
+    Storage->fill(Terms);
+    Terms.clear();
 // DEBUG((*Storage)(0,0,0));
+}
+
+
+void TwoParticleGFPart::reduceTerms()
+{
+    unsigned long size = Terms.size();
+    DEBUG("Reducing " << Terms.size() << " elements");
+    //for (std::list<TwoParticleGFTerm>::iterator it=Terms.begin(); it!=Terms.end(); ) {if (!it->hasRelevantNumerator(1e-3/size)) it=Terms.erase(it); else ++it;}
+    DEBUG("Reduced " << Terms.size() << " elements");
 }
 
 const TwoParticleGFPart::MatsubaraContainer& TwoParticleGFPart::getMatsubaraContainer(){
