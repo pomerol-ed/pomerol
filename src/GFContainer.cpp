@@ -51,3 +51,9 @@ void GFContainer::prepare()
             }
 };
 
+void GFContainer::compute()
+{
+    for (std::map<IndexCombination,GreensFunction*>::iterator it1=mapGreensFunctions.begin();it1!=mapGreensFunctions.end();++it1){
+           it1->second->compute(); 
+        };
+};

@@ -121,7 +121,7 @@ TwoParticleGFPart::MatsubaraContainer& TwoParticleGFPart::MatsubaraContainer::op
     return (*this);
 };
 
-void TwoParticleGFPart::MatsubaraContainer::fill(std::list<TwoParticleGFTerm> &Terms)
+inline void TwoParticleGFPart::MatsubaraContainer::fill(std::list<TwoParticleGFTerm> &Terms)
 {
     for (long BosonicIndex=0;BosonicIndex<=(4*NumberOfMatsubaras)-2;BosonicIndex++){
         for (long nuIndex=0;nuIndex<Data[BosonicIndex].cols();++nuIndex){
@@ -276,7 +276,6 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
     InnerQuantumState index1Max = CX4matrix.outerSize();
     #else
     InnerQuantumState index1Max = DMpart1.getMaximumTruncationState();
-    cout << "Index1Max : " << index1Max << " " << CX4matrix.outerSize() << endl;
     #endif
 
 
@@ -340,9 +339,10 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
             }
         };
     }
+    };
+    DEBUG("filling " << Terms.size() << " elements");
     Storage->fill(Terms);
     Terms.clear();
-    };
 // DEBUG((*Storage)(0,0,0));
 }
 
@@ -365,5 +365,5 @@ ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraN
     for(std::list<TwoParticleGFTerm>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm)
         Value += (*pTerm)(Frequency1,Frequency2,Frequency3);
 
-    return Value;
+    return Value+Terms(Frequency1,Frequency2,Frequency3);
 }

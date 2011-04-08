@@ -107,9 +107,9 @@ public:
         ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
 
         /** A matrix element with magnitude less than this value is treated as zero. */
-        static const RealType MatrixElementTolerance = 1e-10;
+        static const RealType MatrixElementTolerance = 1e-8;//TERM_MATRIX_ELEMENT_TOLERANCE;
         /** A difference in energies with magnitude less than this value is treated as zero. */
-        static const RealType ResonanceTolerance = 1e-16;
+        static const RealType ResonanceTolerance = 1e-16;//TERM_RESONANCE_TOLERANCE ;
         /** Should we take a product of matrix elements into account?
          * \param[in] MatrixElementProd A product of four matrix elements.
          */
@@ -132,7 +132,7 @@ public:
         MatsubaraContainer(RealType beta);
         void prepare(long NumberOfMatsubaras);
         ComplexType& operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-        void fill(std::list<TwoParticleGFTerm> &Terms);
+        inline void fill(std::list<TwoParticleGFTerm> &Terms);
         MatsubaraContainer& operator+=(const MatsubaraContainer& rhs);
         void clear();
     };

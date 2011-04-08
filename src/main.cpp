@@ -1,7 +1,9 @@
 #define EIGEN2_SUPPORT
 
 #ifdef DMTruncate
-#define DENSITY_MATRIX_TRUNCATION_TOLERANCE 1e-8
+#define DENSITY_MATRIX_TRUNCATION_TOLERANCE 1e-3
+#define TERM_MATRIX_ELEMENT_TOLERANCE 1e-3
+#define TERM_RESONANCE_TOLERANCE 1e-16
 #endif
 
 #include "config.h"
@@ -107,6 +109,13 @@ int main()
     cout << "All parts are created!" << endl;
     cout << endl;
 
+    FieldOperatorContainer Operators(S,H,IndexInfo);
+    GFContainer G(S,H,rho,IndexInfo,Operators);
+    G.prepare();
+    G.compute();
+    cout << std::setprecision(9) << G(0) << endl;
+    cout << std::setprecision(9) << G(1) << endl;
+
     if ((*pIni)["System:calculate_2PGF"]){
         cout << endl;
         cout << "==========================================" << endl;
@@ -115,42 +124,31 @@ int main()
 
 
         TwoParticleGFContainer::IndexCombination *comb1;
-        comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
         std::vector<TwoParticleGFContainer::IndexCombination*> v1;
+
+        comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
         v1.push_back(comb1);
-        comb1 = new TwoParticleGFContainer::IndexCombination(0,1,0,1);
-        v1.push_back(comb1);
-//        comb1 = new TwoParticleGFContainer::IndexCombination(1,3,2,3);
-//        v1.push_back(comb1);
 //
-        FieldOperatorContainer Operators(S,H,IndexInfo);
-        GFContainer G(S,H,rho,IndexInfo,Operators);
-        cout << G(15) << endl;
         TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
         Chi4.readNonTrivialIndices(v1);
         Chi4.prepare();
-        Chi4.compute(16);
+        Chi4.compute(30);
 
-        cout << std::setprecision(9) << Chi4(*v1[0],3,2,0) << endl;
-        cout << Chi4(*v1[0],2,5,2) << endl;
-        cout << Chi4(*v1[0],5,2,2) << endl;
-        cout << Chi4(*v1[0],1,7,1) << endl;
-        cout << Chi4(*v1[0],2,-2,4) << endl;
-        cout << Chi4(*v1[0],29,-29,29) << endl << endl;
+        for (unsigned short i=0;i<v1.size();i++){
+            cout << std::setprecision(9) << Chi4(*v1[i],3,2,0) << endl;
+            cout << Chi4(*v1[i],2,5,2) << endl;
+            cout << Chi4(*v1[i],5,2,2) << endl;
+            cout << Chi4(*v1[i],1,7,1) << endl;
+            cout << Chi4(*v1[i],2,-2,4) << endl;
+            cout << Chi4(*v1[i],29,-29,29) << endl << endl;
+        cout << *v1[i] << " : " << (bool) Chi4.vanishes(*v1[i]) << endl;
+        };
         
-        cout << Chi4(*v1[1],3,2,0) << endl;
-        cout << Chi4(*v1[1],2,5,2) << endl;
-        cout << Chi4(*v1[1],5,2,2) << endl;
-        cout << Chi4(*v1[1],1,7,1) << endl;
-        cout << Chi4(*v1[1],2,-2,4) << endl;
-        cout << Chi4(*v1[1],29,-29,29) << endl << endl;
-
-        cout << *v1[0] << " : " << (bool) Chi4.vanishes(*v1[0]) << endl;
-        cout << *v1[1] << " : " << (bool) Chi4.vanishes(*v1[1]) << endl;
      //   comb1 = new TwoParticleGFContainer::IndexCombination(0,2,0,1);
      //   cout << Chi4.vanishes(*comb1) << endl;
-        };
+               };
 
+    cout << term_counter << " terms" <<  endl;
     exit(0);
     int i = 1; //(*pIni)["Green Function:i"];
     int j = 1; //(*pIni)["Green Function:j"];
@@ -176,7 +174,7 @@ int main()
     }
 */
 
-    cout << endl;
+/*    cout << endl;
     cout << "==========================================" << endl;
     cout << "Calculating G_{" << i << j << "}" << endl;
     cout << "==========================================" << endl;
@@ -194,7 +192,8 @@ int main()
 
     cout << i << j << ": G.vanishes() = " << G.vanishes() << endl;
 
-    return 0;
+  */
+return 0;
 };
 /*
     //begining of creation matrixes C and CX
@@ -226,7 +225,6 @@ int main()
         CurrentChi4.compute(30);
         //Chi4.dump();
 
-        cout << term_counter << " terms" <<  endl;
         cout << CurrentChi4(3,2,0) << endl;
         cout << CurrentChi4(2,5,2) << endl;
         cout << CurrentChi4(5,2,2) << endl;

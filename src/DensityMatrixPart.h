@@ -36,7 +36,7 @@ class DensityMatrixPart
 
     #ifdef DMTruncate
     /** A tolerance factor for the DensityMatrix - used only when truncation optimization is required */
-    static const RealType TruncationTolerance = 1e-3;//DENSITY_MATRIX_TRUNCATION_TOLERANCE;
+    static const RealType TruncationTolerance = 1e-8;//DENSITY_MATRIX_TRUNCATION_TOLERANCE;
     #endif
 
 public:
