@@ -65,13 +65,13 @@ for (std::map<IndexCombination,TwoParticleGF*>::iterator it1=mapNonTrivialCombin
 };
 
 
-ComplexType TwoParticleGFContainer::operator()(IndexCombination& in, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
+ComplexType TwoParticleGFContainer::operator()(const IndexCombination& in, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
 if (!this->vanishes(in)) return (*mapNonTrivialCombinations[in])(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
 else return 0;
 }
 
-bool TwoParticleGFContainer::vanishes(IndexCombination& in)
+bool TwoParticleGFContainer::vanishes(const IndexCombination& in)
 {
 return ( mapNonTrivialCombinations.count(in) == 0 );
 }

@@ -1,59 +1,62 @@
 #include "Vertex4.h"
+#include <Eigen/LU> 
 
-Vertex4::Vertex4(TwoParticleGF &Chi, GreensFunction &g1, GreensFunction &g2, GreensFunction &g3, GreensFunction &g4) :
-Chi(Chi), g1(g1), g2(g2), g3(g3), g4(g4)
+Vertex4::Vertex4(const BitClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g) :
+Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(Chi.getNumberOfMatsubaras())
 {
-    ChiBit1 = Chi.getBit(0);
-    ChiBit2 = Chi.getBit(1);
-    ChiBit3 = Chi.getBit(2);
-    ChiBit4 = Chi.getBit(3);
-
-    // The Green's functions provided do not match Chi.
-    if((ChiBit1 != g1.getBit(0) || ChiBit1 != g1.getBit(1)) ||
-       (ChiBit2 != g2.getBit(0) || ChiBit1 != g2.getBit(1)) ||
-       (ChiBit3 != g3.getBit(0) || ChiBit1 != g3.getBit(1)) ||
-       (ChiBit4 != g4.getBit(0) || ChiBit1 != g4.getBit(1))
-      ) assert(0);
+    ParticleIndex N_bit = IndexInfo.getBitSize();
+    
+    for(long MatsubaraNumber=0; MatsubaraNumber<InvertedGFs.size(); ++MatsubaraNumber){
+        MatrixType GMatrix(N_bit,N_bit);
+        for(ParticleIndex index1=0; index1 < N_bit; ++index1)
+        for(ParticleIndex index2=0; index2 < N_bit; ++index2){
+            GMatrix(index1,index2) = g(index1,index2,MatsubaraNumber);
+        }
+        InvertedGFs[MatsubaraNumber] = GMatrix.inverse();
+    }
 }
 
-ComplexType Vertex4::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
+ComplexType Vertex4::operator()(const TwoParticleGFContainer::IndexCombination& in,
+                                long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
-    ComplexType Value = Chi(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    if(MatsubaraNumber1 >= Chi.getNumberOfMatsubaras() ||
+       MatsubaraNumber2 >= Chi.getNumberOfMatsubaras() ||
+       MatsubaraNumber3 >= Chi.getNumberOfMatsubaras()) return 0;
+    
+    ComplexType Value = Chi(in, MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    RealType beta = Chi.getBeta();
 
-    // Subtract the reducible (Wick) part.
-    if((ChiBit1 == ChiBit3 && MatsubaraNumber1 == MatsubaraNumber3) != 
-       (ChiBit2 == ChiBit3 && MatsubaraNumber2 == MatsubaraNumber3)){
-        ComplexType gg = g1(MatsubaraNumber1)*g2(MatsubaraNumber2);
-
-        if(ChiBit1 == ChiBit3)
-            Value -= Chi.getBeta() * gg;
-        else
-            Value += Chi.getBeta() * gg;
-    }
+    if(MatsubaraNumber1 == MatsubaraNumber3)
+        Value += beta*  g(in.Indices[0],in.Indices[2],MatsubaraNumber1)*
+                        g(in.Indices[1],in.Indices[3],MatsubaraNumber2);
+    if(MatsubaraNumber1 == MatsubaraNumber2)
+        Value -= beta*  g(in.Indices[0],in.Indices[3],MatsubaraNumber1)*
+                        g(in.Indices[1],in.Indices[2],MatsubaraNumber2);
 
     return Value;
 }
 
-ComplexType Vertex4::getAmputated(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
+ComplexType Vertex4::getAmputated(const TwoParticleGFContainer::IndexCombination& in,
+                                  long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
-    ComplexType Value = Chi(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
-    ComplexType g1Value = g1(MatsubaraNumber1);
-    ComplexType g2Value = g2(MatsubaraNumber2);
-    ComplexType g3Value = g3(MatsubaraNumber3);
-    ComplexType g4Value = g4(MatsubaraNumber1+MatsubaraNumber2-MatsubaraNumber3);
-
-    // Subtract the reducible (Wick) part.
-    if((ChiBit1 == ChiBit3 && MatsubaraNumber1 == MatsubaraNumber3) != 
-       (ChiBit2 == ChiBit3 && MatsubaraNumber2 == MatsubaraNumber3)){
-
-        if(ChiBit1 == ChiBit3)
-            Value -= Chi.getBeta() * g1Value*g2Value;
-        else
-            Value += Chi.getBeta() * g1Value*g2Value;
+    if(MatsubaraNumber1 >= Chi.getNumberOfMatsubaras() ||
+       MatsubaraNumber2 >= Chi.getNumberOfMatsubaras() ||
+       MatsubaraNumber3 >= Chi.getNumberOfMatsubaras()) return 0;
+   
+    ParticleIndex N_bit = IndexInfo.getBitSize();
+    ComplexType Value = 0;
+    
+    for(ParticleIndex InnerIndex1=0; InnerIndex1 < N_bit; ++InnerIndex1)
+    for(ParticleIndex InnerIndex2=0; InnerIndex2 < N_bit; ++InnerIndex2)
+    for(ParticleIndex InnerIndex3=0; InnerIndex3 < N_bit; ++InnerIndex3)
+    for(ParticleIndex InnerIndex4=0; InnerIndex4 < N_bit; ++InnerIndex4){
+        TwoParticleGFContainer::IndexCombination iin(InnerIndex1,InnerIndex2,InnerIndex3,InnerIndex4);
+        Value += (*this)(iin,MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3) *
+                 InvertedGFs[MatsubaraNumber1](in.Indices[0],iin.Indices[0])*
+                 InvertedGFs[MatsubaraNumber2](in.Indices[1],iin.Indices[1])*
+                 InvertedGFs[MatsubaraNumber3](iin.Indices[2],in.Indices[2])*
+                 InvertedGFs[MatsubaraNumber1+MatsubaraNumber2-MatsubaraNumber3](iin.Indices[3],in.Indices[3]);
     }
-
-    // 'Amputate' the Green's functions.
-    Value /= g1Value*g2Value*g3Value*g4Value;
 
     return Value;  
 }

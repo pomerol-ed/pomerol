@@ -6,8 +6,8 @@
 #ifndef ____VERTEX4____
 #define ____VERTEX4____
 
-#include "GreensFunction.h"
-#include "TwoParticleGF.h"
+#include "GFContainer.h"
+#include "TwoParticleGFContainer.h"
 
 /** Objects of this class just transforms a two-particle Green's function into
  * an irreducible vertex part or into an amputated irreducible vertex.
@@ -15,41 +15,39 @@
 class Vertex4 {
 
     /** A reference to a two-particle Green's function. */
-    TwoParticleGF &Chi;
-    /** A reference to a Green's function corresponding to the first index of Chi. */
-    GreensFunction &g1;
-    /** A reference to a Green's function corresponding to the second index of Chi. */
-    GreensFunction &g2;
-    /** A reference to a Green's function corresponding to the third index of Chi. */
-    GreensFunction &g3;
-    /** A reference to a Green's function corresponding to the fourth index of Chi. */
-    GreensFunction &g4;
-
-    /** 'Bits' (indices) of the two-particle Green's functions. */
-    unsigned short ChiBit1, ChiBit2, ChiBit3, ChiBit4;
+    TwoParticleGFContainer &Chi;
+    /** A reference to a Green's function container */
+    GFContainer &g;
+    /** A reference to a bit classification object */
+    const BitClassification &IndexInfo;
+    
+    /** Precomputed inverted Green's function matrices calculated at different Matsubara frequencies. */
+    std::vector<MatrixType> InvertedGFs;
 
 public:
     /** Constructor.
+     * \param[in] IndexInfo A reference to a bit classification object.
      * \param[in] Chi A reference to a two-particle Green's function.
-     * \param[in] g1 A reference to a Green's function corresponding to the first index of Chi.
-     * \param[in] g2 A reference to a Green's function corresponding to the second index of Chi.
-     * \param[in] g3 A reference to a Green's function corresponding to the third index of Chi.
-     * \param[in] g4 A reference to a Green's function corresponding to the fourth index of Chi.
+     * \param[in] g1 A reference to a Green's function container.
      */
-    Vertex4(TwoParticleGF &Chi, GreensFunction &g1, GreensFunction &g2, GreensFunction &g3, GreensFunction &g4);
+    Vertex4(const BitClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g);
 
     /** Returns the value of the irreducible vertex calculated at given frequencies.
+     * \param[in] in Requested indices.
      * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
      * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
      * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
      */
-    ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+    ComplexType operator()(const TwoParticleGFContainer::IndexCombination& in, 
+                           long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
     /** Returns the value of the amputated irreducible vertex calculated at given frequencies.
+     * \param[in] Requested indices.
      * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
      * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
      * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
      */
-    ComplexType getAmputated(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+    ComplexType getAmputated(const TwoParticleGFContainer::IndexCombination& in,
+                             long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
 
     //void dumpMatsubara(unsigned short points);
     //void dumpAmputatedMatsubara(unsigned short points);

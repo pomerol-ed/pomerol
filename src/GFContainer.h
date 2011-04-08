@@ -1,7 +1,6 @@
-/** \file src/FieldOperatorContainer.h
+/** \file src/GFContainer.h
 ** \brief A container for either creation or annihilation operators in eigenvector basis
 **
-** \author Igor Krivenko (igor@shg.ru)
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
 

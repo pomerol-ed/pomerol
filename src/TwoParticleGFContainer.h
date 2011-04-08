@@ -18,10 +18,10 @@ public:
     void readNonTrivialIndices(std::vector<IndexCombination*>&);
     void prepare();
     void compute(long NumberOfMatsubaras);
-    bool vanishes(IndexCombination&);
+    bool vanishes(const IndexCombination&);
     long getNumberOfMatsubaras() const;
 
-    ComplexType operator()(IndexCombination&, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3); 
+    ComplexType operator()(const IndexCombination&, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3); 
 
     void dump();
   
