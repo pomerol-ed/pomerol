@@ -135,6 +135,11 @@ Should it be replaced with a standard physical notion of indices?"
     /** Returns true, if GF is identical to zero */
     bool vanishes();
 
+    /** Returns the total number of resonant terms for all parts. */
+    size_t getNumResonantTerms() const;
+    /** Returns the totla number of non-resonant terms for all parts. */
+    size_t getNumNonResonantTerms() const;
+   
     //void dumpMatsubara(unsigned short points);
 };
 

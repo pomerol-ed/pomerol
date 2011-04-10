@@ -128,6 +128,22 @@ if (Status < Computed){
     }
 }
 
+size_t TwoParticleGF::getNumResonantTerms() const
+{
+    size_t num = 0;
+    for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+        num += (*iter)->getNumResonantTerms();
+    return num;
+}
+
+size_t TwoParticleGF::getNumNonResonantTerms() const
+{
+    size_t num = 0;
+    for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+        num += (*iter)->getNumNonResonantTerms();
+    return num;
+}
+
 ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
     ComplexType Value = 0;

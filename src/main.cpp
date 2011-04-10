@@ -37,9 +37,6 @@ ostream &OUTPUT_STREAM=std::cout;
 
 IniConfig* pIni;
 
-extern long term_counter;
-
-
 int main()
 {   
         
@@ -154,9 +151,10 @@ int main()
         
      //   comb1 = new TwoParticleGFContainer::IndexCombination(0,2,0,1);
      //   cout << Chi4.vanishes(*comb1) << endl;
-               };
+        //DEBUG(Chi4.getNumNonResonantTerms() << " non-resonant terms");
+        //DEBUG(Chi4.getNumResonantTerms() << " resonant terms");    
+    };
 
-    cout << term_counter << " terms" <<  endl;
     exit(0);
     int i = 1; //(*pIni)["Green Function:i"];
     int j = 1; //(*pIni)["Green Function:j"];

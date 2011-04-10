@@ -27,77 +27,38 @@ public:
      */
     enum ComputationMethod {ChasingIndices1, ChasingIndices2};
 
-    /** Every term is a sum of fractions:
+    /** A non-resonant term has the following form:
      * \f[
-     * \frac{1}{(z_1-P_1)(z_3-P_3)}
-     *         \left(\frac{C_4}{z_1+z_2+z_3-P_1-P_2-P_3} - \frac{C_2}{z_2-P_2} \right. +
+     * \frac{C}{(i\omega_1-P_1)(z_2-P_2)(z_3-P_3)}
      * \f]
-     * \f[     \left.
-     *         + R_{12}\delta(z_1+z_2-P_1-P_2)
-     *         + N_{12}\frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2}
-     *         + R_{23}\delta(z_2+z_3-P_2-P_3)
-     *         + N_{23}\frac{1 - \delta(z_2+z_3-P_2-P_3)}{z_2+z_3-P_2-P_3}
-     *         \right)
-     * \f]
-     *
-     * In fact this is a slightly rewritten form of an equation for \f$ \phi \f$ from
-     * <em>H. Hafermann et al 2009 EPL 85 27007</em>.
      */
-    struct TwoParticleGFTerm{
-        /** The index of the frequency which will substitute \f$ z_1 \f$. */
-        size_t z1;
-        /** The index of the frequency which will substitute \f$ z_2 \f$. */
-        size_t z2;
-        /** The index of the frequency which will substitute \f$ z_3 \f$. */
-        size_t z3;
+    struct NonResonantTerm{
+        /** Indices of the frequencies which will substitute \f$ z_1 \f$, \f$ z_2 \f$, \f$ z_3 \f$. */
+        struct {
+            unsigned int z1 : 2;
+            unsigned int z2 : 2;
+            unsigned int z3 : 2;
+            unsigned int : 2;
+        } Vars;
 
-        /** Coefficient \f$ C_2.\f$ */
-        ComplexType CoeffZ2;
-        /** Coefficient \f$ C_4.\f$ */
-        ComplexType CoeffZ4;
-        /** Coefficient \f$ R_{12}.\f$ */
-        ComplexType CoeffZ1Z2Res;
-        /** Coefficient \f$ N_{12}.\f$ */
-        ComplexType CoeffZ1Z2NonRes;
-        /** Coefficient \f$ R_{23}.\f$ */
-        ComplexType CoeffZ2Z3Res;
-        /** Coefficient \f$ N_{23}.\f$ */
-        ComplexType CoeffZ2Z3NonRes;
+        /** Coefficient \f$ C \f$. */
+        ComplexType Coeff;
 
-        /** Array of poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
-        ComplexType Poles[3];
+        /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
+        RealType Poles[3];
 
         /** Constructor.
-         *  It calculates all the member coefficients and poles as follows:
-         * \f{eqnarray*}{
-         *      P_1 = E_j - E_i \\
-         *      P_2 = E_k - E_j \\
-         *      P_3 = E_l - E_k \\
-         *      C_2 = -C(w_j + w_k) \\
-         *      C_4 = C(w_i + w_l) \\
-         *      R_{12} = C\beta w_i \\
-         *      N_{12} = C(w_k - w_i) \\
-         *      R_{23} = -C\beta w_j \\
-         *      N_{23} = C(w_j - w_l)
-         * \f}
-         * 
-         * \param[in] Coeff Common prefactor \f$ C \f$ for coefficients \f$ C_2 \f$, \f$ C_4 \f$,
-         *              \f$ R_{12} \f$, \f$ N_{12} \f$, \f$ R_{23} \f$, \f$ N_{23} \f$.
-         * \param[in] beta The inverse temperature.
-         * \param[in] Ei The first energy level \f$ E_i \f$.
-         * \param[in] Ej The second energy level \f$ E_j \f$.
-         * \param[in] Ek The third energy level \f$ E_k \f$.
-         * \param[in] El The fourth energy level \f$ E_l \f$.
-         * \param[in] Wi The first weight \f$ w_i \f$.
-         * \param[in] Wj The second weight \f$ w_j \f$.
-         * \param[in] Wk The third weight \f$ w_k \f$.
-         * \param[in] Wl The fourth weight \f$ w_l \f$.
-         * \param[in] Permutation A reference to a permutation of operators for this part.
+         * \param[in] Coeff Numerator of the term.
+         * \param[in] z1 Number of the first frequency.
+         * \param[in] z2 Number of the second frequency.
+         * \param[in] z3 Number of the third frequency.
+         * \param[in] P1 Pole P1.
+         * \param[in] P2 Pole P2.
+         * \param[in] P3 Pole P3.
          */
-        TwoParticleGFTerm(ComplexType Coeff, RealType beta,
-                         RealType Ei, RealType Ej, RealType Ek, RealType El,
-                         RealType Wi, RealType Wj, RealType Wk, RealType Wl,
-                         Permutation3& Permutation);
+        NonResonantTerm(ComplexType Coeff,
+                        unsigned short z1, unsigned short z2, unsigned short z3,
+                        RealType P1, RealType P2, RealType P3);
 
         /** Returns a contribution to the two-particle Green's function made by this term.
         * \param[in] Frequency1 Complex frequency \f$ i\omega_1 \f$ to substitute into this term.
@@ -106,15 +67,59 @@ public:
         */
         ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
 
-        /** A matrix element with magnitude less than this value is treated as zero. */
-        static const RealType MatrixElementTolerance = 1e-3;//1e-8;//TERM_MATRIX_ELEMENT_TOLERANCE;
-        /** A difference in energies with magnitude less than this value is treated as zero. */
-        static const RealType ResonanceTolerance = 1e-16;//TERM_RESONANCE_TOLERANCE ;
-        /** Should we take a product of matrix elements into account?
-         * \param[in] MatrixElementProd A product of four matrix elements.
+        /** This operator add a non-resonant term to this one.
+         * It does not check the similarity of the terms! 
+         * \param[in] AnotherTerm Another term to add to this.
          */
-        static bool IsRelevantMatrixElement(const ComplexType &MatrixElementProd);
-        bool hasRelevantNumerator(const RealType Tolerance);
+        NonResonantTerm& operator+=(const NonResonantTerm& AnotherTerm);
+        
+        /** Returns true if another term is similar to this
+         * (sum of the terms is again a correct non-resonant term).
+        */
+        bool isSimilarTo(const NonResonantTerm& AnotherTerm) const;
+    };
+    
+    /** A resonant term has the following form:
+    * \f[
+    * \frac{1}{(z_1-P_1)(z_3-P_3)}
+    *   \left( R \delta(z_1+z_2-P_1-P_2) + N \frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2} \right)
+    * \f]
+    */
+    struct ResonantTerm {
+        /** Indices of the frequencies which will substitute \f$ z_1 \f$, \f$ z_2 \f$, \f$ z_3 \f$. */
+        unsigned char z[3];
+
+        /** Coefficient \f$ R \f$. */
+        ComplexType ResCoeff;
+        /** Coefficient \f$ N \f$. */
+        ComplexType NonResCoeff;
+
+        /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
+        RealType Poles[3];
+
+        /** Constructor.
+         * \param[in] ResCoeff Numerator of the term for a resonant case.
+         * \param[in] NonResCoeff Numerator of the term for a non-resonant case.
+         * \param[in] z1 Number of the first frequency.
+         * \param[in] z2 Number of the second frequency.
+         * \param[in] z3 Number of the third frequency.
+         * \param[in] P1 Pole P1.
+         * \param[in] P2 Pole P2.
+         * \param[in] P3 Pole P3.
+         */
+        ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff,
+                     unsigned short z1, unsigned short z2, unsigned short z3,
+                     RealType P1, RealType P2, RealType P3);
+
+        /** Returns a contribution to the two-particle Green's function made by this term.
+        * \param[in] Frequency1 Complex frequency \f$ i\omega_1 \f$ to substitute into this term.
+        * \param[in] Frequency2 Complex frequency \f$ i\omega_2 \f$ to substitute into this term.
+        * \param[in] Frequency3 Complex frequency \f$ i\omega_3 \f$ to substitute into this term.
+        */
+        ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
+        
+        /** A difference in energies with magnitude less than this value is treated as zero. */
+        static const RealType ResonanceTolerance = 1e-16;
     };
 
     /**
@@ -133,7 +138,8 @@ public:
         MatsubaraContainer(RealType beta);
         void prepare(long NumberOfMatsubaras);
         ComplexType& operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-        inline void fill(std::list<TwoParticleGFTerm> &Terms);
+        inline void fill(const std::list<NonResonantTerm> &NonResonantTerms,
+                         const std::list<ResonantTerm> &ResonantTerms);
         MatsubaraContainer& operator+=(const MatsubaraContainer& rhs);
         void clear();
     };
@@ -170,9 +176,11 @@ private:
     /** A permutation of the operators for this part. */
     Permutation3 Permutation;
 
-    /** A list of pointers to parts. */
-    std::list<TwoParticleGFTerm> Terms;
-
+    /** A list of non-resonant terms. */
+    std::list<NonResonantTerm> NonResonantTerms;
+    /** A list of resonant terms. */
+    std::list<ResonantTerm> ResonantTerms;
+    
     /** TODO: document this */
     MatsubaraContainer *Storage;
 
@@ -187,7 +195,57 @@ private:
 
     /** Reduces the number of calculated terms */
     void reduceTerms();
+    
+    /** Adds a multi-term that has the following form:
+    * \f[
+    * \frac{1}{(z_1-P_1)(z_3-P_3)}
+    *         \left(\frac{C_4}{z_1+z_2+z_3-P_1-P_2-P_3} + \frac{C_2}{z_2-P_2} \right. +
+    * \f]
+    * \f[     \left.
+    *         + R_{12}\delta(z_1+z_2-P_1-P_2)
+    *         + N_{12}\frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2}
+    *         + R_{23}\delta(z_2+z_3-P_2-P_3)
+    *         + N_{23}\frac{1 - \delta(z_2+z_3-P_2-P_3)}{z_2+z_3-P_2-P_3}
+    *         \right)
+    * \f]
+    *
+    * Where
+    * \f{eqnarray*}{
+    *      P_1 = E_j - E_i \\
+    *      P_2 = E_k - E_j \\
+    *      P_3 = E_l - E_k \\
+    *      C_2 = -C(w_j + w_k) \\
+    *      C_4 = C(w_i + w_l) \\
+    *      R_{12} = C\beta w_i \\
+    *      N_{12} = C(w_k - w_i) \\
+    *      R_{23} = -C\beta w_j \\
+    *      N_{23} = C(w_j - w_l)
+    * \f}
+    *
+    * In fact this is a slightly rewritten form of an equation for \f$ \phi \f$ from
+    * <em>H. Hafermann et al 2009 EPL 85 27007</em>.
+    * 
+    * \param[in] Coeff Common prefactor \f$ C \f$ for coefficients \f$ C_2 \f$, \f$ C_4 \f$,
+    *              \f$ R_{12} \f$, \f$ N_{12} \f$, \f$ R_{23} \f$, \f$ N_{23} \f$.
+    * \param[in] beta The inverse temperature.
+    * \param[in] Ei The first energy level \f$ E_i \f$.
+    * \param[in] Ej The second energy level \f$ E_j \f$.
+    * \param[in] Ek The third energy level \f$ E_k \f$.
+    * \param[in] El The fourth energy level \f$ E_l \f$.
+    * \param[in] Wi The first weight \f$ w_i \f$.
+    * \param[in] Wj The second weight \f$ w_j \f$.
+    * \param[in] Wk The third weight \f$ w_k \f$.
+    * \param[in] Wl The fourth weight \f$ w_l \f$.
+    * \param[in] Permutation A reference to a permutation of operators for this part.
+    */
+    void addMultiterm(ComplexType Coeff, RealType beta,
+                      RealType Ei, RealType Ej, RealType Ek, RealType El,
+                      RealType Wi, RealType Wj, RealType Wk, RealType Wl,
+                      Permutation3& Permutation);
 
+    /** Minimal magnitude of the coefficient of a term to take it into account. */
+    static const RealType CoefficientTolerance = 1e-16;
+    
 public:
     /** Constructor.
      * \param[in] O1 A reference to a part of the first operator.
@@ -223,6 +281,11 @@ public:
      */
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
 
+    /** Returns the number of resonant terms in the cache. */
+    size_t getNumResonantTerms() const;
+    /** Returns the number of non-resonant terms in the cache. */
+    size_t getNumNonResonantTerms() const;
+    
     /** TODO: describe this method. */
     const MatsubaraContainer& getMatsubaraContainer();
 };
