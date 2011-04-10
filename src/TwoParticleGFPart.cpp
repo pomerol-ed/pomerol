@@ -33,7 +33,7 @@ Coeff(Coeff)
 inline ComplexType TwoParticleGFPart::NonResonantTerm::operator()(
                                 ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const
 {
-    ComplexType w[4] = {Frequency1,Frequency2,-Frequency3,Frequency1+Frequency2-Frequency3};
+    ComplexType w[4] = {Frequency1,Frequency2,-Frequency3,-Frequency1-Frequency2+Frequency3};
     return Coeff / ((w[Vars.z1]-Poles[0])*(w[Vars.z2]-Poles[1])*(w[Vars.z3]-Poles[2]));
 }
 
@@ -68,7 +68,7 @@ ResCoeff(ResCoeff), NonResCoeff(NonResCoeff)
 inline ComplexType TwoParticleGFPart::ResonantTerm::operator()(
                                 ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const
 {
-    ComplexType w[4] = {Frequency1,Frequency2,-Frequency3,Frequency1+Frequency2-Frequency3};
+    ComplexType w[4] = {Frequency1,Frequency2,-Frequency3,-Frequency1-Frequency2+Frequency3};
     
     ComplexType Diff = w[z[0]] + w[z[1]] - Poles[0] - Poles[1];
     return (abs(Diff) < ResonanceTolerance ? ResCoeff : (NonResCoeff/Diff) )

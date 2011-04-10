@@ -78,7 +78,7 @@ public:
         */
         bool isSimilarTo(const NonResonantTerm& AnotherTerm) const;
     };
-    
+  
     /** A resonant term has the following form:
     * \f[
     * \frac{1}{(z_1-P_1)(z_3-P_3)}
