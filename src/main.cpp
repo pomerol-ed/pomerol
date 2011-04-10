@@ -133,6 +133,8 @@ int main()
 
         comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
         v1.push_back(comb1);
+        comb1 = new TwoParticleGFContainer::IndexCombination(0,1,0,1);
+        v1.push_back(comb1);
 //
         TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
         Chi4.readNonTrivialIndices(v1);
