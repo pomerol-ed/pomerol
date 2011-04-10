@@ -39,14 +39,14 @@ TwoParticleGFContainer.o : TwoParticleGFContainer.h TwoParticleGFContainer.cpp T
 GFContainer.o : GFContainer.h GFContainer.cpp GreensFunction.o GreensFunctionPart.o
 Vertex4.o: Vertex4.h Vertex4.cpp
 
-libmeat.so: $(objects)
-	$(CXX) -shared $(objects) $(libs) -o libmeat.so
+libpomerol.so: $(objects)
+	$(CXX) -shared $(objects) $(libs) -o libpomerol.so
 
-libmeat.a: $(objects)
-	ar -cvr libmeat.a $(objects)
+libpomerol.a: $(objects)
+	ar -cvr libpomerol.a $(objects)
 
-main : main.cpp libmeat.a
-	$(CXX) $(CXXFLAGS) main.cpp libmeat.a $(libs) -o $(BINPATH)/pomerolDiag $(LINKS)
+main : main.cpp libpomerol.a
+	$(CXX) $(CXXFLAGS) main.cpp libpomerol.a $(libs) -o $(BINPATH)/pomerolDiag $(LINKS)
 
 clean:
 	$(RM) *.o *.a
