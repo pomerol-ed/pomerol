@@ -260,7 +260,8 @@ private:
     static const RealType ResonanceTolerance = 1e-16;
     /** Minimal magnitude of the coefficient of a term to take it into account. */
     static const RealType CoefficientTolerance = 1e-16;
-    
+    /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
+    static const RealType MultiTermCoefficientTolerance = 1e-5;
 public:
     /** Constructor.
      * \param[in] O1 A reference to a part of the first operator.

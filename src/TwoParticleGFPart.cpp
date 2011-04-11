@@ -378,6 +378,7 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
 
 void TwoParticleGFPart::reduceTerms()
 {
+    DEBUG("Before: " << NonResonantTerms.size() << " non resonant terms + " << ResonantTerms.size() << " resonant terms = " << ResonantTerms.size()+NonResonantTerms.size());
     // Sieve reduction of the non-resonant terms
     for(std::list<NonResonantTerm>::iterator it1 = NonResonantTerms.begin(); it1 != NonResonantTerms.end();){
         std::list<NonResonantTerm>::iterator it2 = it1;
@@ -389,7 +390,8 @@ void TwoParticleGFPart::reduceTerms()
                 it2++;
         }
         
-        if(abs(it1->Coeff) < CoefficientTolerance)
+        RealType Tolerance1 = MultiTermCoefficientTolerance/NonResonantTerms.size();
+        if(abs(it1->Coeff) < Tolerance1)
             it1 = NonResonantTerms.erase(it1);
         else
             it1++;
@@ -406,11 +408,13 @@ void TwoParticleGFPart::reduceTerms()
                 it2++;
         }
         
-        if(abs(it1->ResCoeff) < CoefficientTolerance && abs(it1->NonResCoeff) < CoefficientTolerance)
+        RealType Tolerance1 = MultiTermCoefficientTolerance/ResonantTerms.size();
+        if(abs(it1->ResCoeff) + abs(it1->NonResCoeff) < Tolerance1)
             it1 = ResonantTerms.erase(it1);
         else
             it1++;
     }
+    DEBUG("After: " << NonResonantTerms.size() << " non resonant terms + " << ResonantTerms.size() << " resonant terms = " << ResonantTerms.size()+NonResonantTerms.size());
 }
 
 inline
