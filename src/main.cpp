@@ -22,7 +22,9 @@
 #include "TwoParticleGFContainer.h"
 #include "Vertex4.h"
 
-#include<fstream>
+#include <iostream>
+#include <fstream>
+
 #include "iniconfig.h"
 
 string input = "system.ini";
@@ -36,6 +38,54 @@ Hamiltonian H(IndexInfo,S,OUT,input);
 ostream &OUTPUT_STREAM=std::cout;
 
 IniConfig* pIni;
+
+/* ======================================================================== */
+// To be removed
+
+RealType chop(RealType &i){ return (std::fabs(i)<1e-5)?0.0:i; }
+
+void saveChi(const char *fname, TwoParticleGFContainer &Chi, int size_wg) 
+{
+  std::cout << "Dumping Chi4..." << std::flush;
+  std::ofstream chi_str(fname,std::ios::out);
+  chi_str.setf(std::ios::fixed, std::ios::floatfield);
+  chi_str.setf(std::ios::showpoint);
+  chi_str.precision(8);
+  chi_str<<"Re         Im               z1 z2          w1' w1 w2' w2        n1' n1 n2' n2\n";
+  int n_zone=2;
+  int n_part=S.N_b()/2.;
+  RealType acc=1e-8;
+  for (int z1=0; z1<n_zone; z1++)
+    for (int z2=n_zone-1; z2>=0; z2--)
+      for(int n1=0; n1<n_part; n1++)
+        for(int n1_=0; n1_<n_part; n1_++)
+          for(int n2=0; n2<n_part; n2++)
+            for(int n2_=0; n2_<n_part; n2_++)
+              for(int w1=-size_wg; w1<size_wg; w1++)
+                for(int w1_=-size_wg; w1_<size_wg; w1_++)
+                  for(int w2=-size_wg; w2<size_wg; w2++){
+
+                    int w2_=w1+w2-w1_;
+                    if (w2_>=-size_wg && w2_<size_wg){
+                        TwoParticleGFContainer::IndexCombination *comb1;
+                        comb1 = new TwoParticleGFContainer::IndexCombination(n1+n_part*z1,n2+n_part*z2,n1_+z1*n_part,n2_+z2*n_part);
+                        //std::cout<<z1<<" "<<z2<<" "<<n1<<" "<<n1_<<" "<<n2<<" "<<n2_<<" "<<w1<<" "<<w1_<<" "<<w2<<" "<<w2_<<" bb "<<std::endl;
+                        std::complex<double> z=Chi(*comb1,w1,w2,w1_);
+                        //std::cout<<z1<<" "<<z2<<" "<<n1<<" "<<n1_<<" "<<n2<<" "<<n2_<<" "<<w1<<" "<<w1_<<" "<<w2<<" "<<w2_<<" "<<z<<std::endl;
+                        if(abs(z)>acc){
+                            //int w1_=w1+W, w2=w2_+W;
+                            chi_str << chop(real(z)) <<"  "<< chop(imag(z)) << "           "
+                            << z1 <<" "<< z2 << "           " << w1 << "  " << w1_ << " " << w2 << "  " << w2_ 
+                            << "            "<<n1<<"  "<<n1_<<" "<<n2<<"  "<<n2_<< "            "
+                            << endl << flush;
+                        }
+                    }
+                  }
+  chi_str<<"0 0"<<std::endl;
+  std::cout << "Finished." << std::endl;
+  return;
+}			    
+/* ======================================================================== */
 
 int main()
 {   
@@ -136,10 +186,13 @@ int main()
         comb1 = new TwoParticleGFContainer::IndexCombination(0,1,0,1);
         v1.push_back(comb1);
 //
+        int wn=30;
         TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
         Chi4.readNonTrivialIndices(v1);
         Chi4.prepare();
-        Chi4.compute(30);
+        Chi4.compute(wn);
+
+        saveChi("Chi4.dat",Chi4,wn);
 
         for (unsigned short i=0;i<v1.size();i++){
             cout << std::setprecision(9) << Chi4(*v1[i],3,2,0) << endl;
@@ -156,95 +209,6 @@ int main()
         //DEBUG(Chi4.getNumNonResonantTerms() << " non-resonant terms");
         //DEBUG(Chi4.getNumResonantTerms() << " resonant terms");    
     };
-
-    exit(0);
-    int i = 1; //(*pIni)["Green Function:i"];
-    int j = 1; //(*pIni)["Green Function:j"];
-    cout << endl;
-    cout << "==========================================" << endl;
-    cout << "Beginning of rotation of matrices C and CX" << endl;
-    CreationOperator CX(S,H,i);
-    CX.prepare();
-    CX.compute();
-    //CX.dump();
-    
-    AnnihilationOperator C(S,H,j);
-    C.prepare();
-    C.compute();
-    //C.dump();
-
-    // DEBUG
-    /*std::list<BlockMapping> ind = CX.getNonTrivialIndices();
-
-    std::list<std::pair<BlockNumber,BlockNumber> >::iterator it;
-    for (it=ind.begin();it!=ind.end();it++)
-    { cout << (*it).first << "," << (*it).second << " = " << CX.getLeftIndex((*it).second) << "," << CX.getRightIndex((*it).first) << endl;
-    }
-*/
-
-/*    cout << endl;
-    cout << "==========================================" << endl;
-    cout << "Calculating G_{" << i << j << "}" << endl;
-    cout << "==========================================" << endl;
-      GreensFunction G(S,H,C,CX,rho);
-        G.prepare();
-        cout << G.vanishes() << endl;
-        G.compute();
-        
-        //std::list<GreensFunctionPart::GreensTerm> terms = G.getTerms();
-        //for(std::list<GreensFunctionPart::GreensTerm>::iterator term = terms.begin(); term != terms.end(); term++)
-        //    DEBUG(*term)
-        
-    G.dumpMatsubara((int)(*pIni)["Green Function:points"]);
-    cout << endl << "All done." << endl;
-
-    cout << i << j << ": G.vanishes() = " << G.vanishes() << endl;
-
-  */
-return 0;
 };
-/*
-    //begining of creation matrixes C and CX
-    
-    // parameters of Green Function
-    
-    
-    if ((*pIni)["System:calculate_2PGF"]){
-        cout << endl;
-        cout << "==========================================" << endl;
-        cout << "Two Particle Green's function calculation" << endl;
-        cout << "==========================================" << endl;
 
-        AnnihilationOperator C1(S,H,OUT,i);
-        C1.prepare();
-        C1.compute();
-        AnnihilationOperator C2(S,H,OUT,j);
-        C2.prepare();
-        C2.compute();
-        CreationOperator CX3(S,H,OUT,i);
-        CX3.prepare();
-        CX3.compute();
-        CreationOperator CX4(S,H,OUT,j);
-        CX4.prepare();
-        CX4.compute();
 
-        TwoParticleGF CurrentChi4(S,H,C1,C2,CX3,CX4,rho);
-        CurrentChi4.prepare();
-        CurrentChi4.compute(30);
-        //Chi4.dump();
-
-        cout << CurrentChi4(3,2,0) << endl;
-        cout << CurrentChi4(2,5,2) << endl;
-        cout << CurrentChi4(5,2,2) << endl;
-        cout << CurrentChi4(1,7,1) << endl;
-        cout << CurrentChi4(2,-2,4) << endl;
-        cout << CurrentChi4(29,-29,29) << endl;
-        
-        
-
-        //Vertex4 Gamma4(Chi4,G,G,G,G);
-        //cout << Gamma4(0,2,0) << endl;
-        }
-    return 0;
-}
-*/
