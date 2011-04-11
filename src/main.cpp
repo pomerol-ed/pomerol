@@ -114,8 +114,6 @@ int main()
     
     OUT = output_handle((*pIni)["output:path"]);
 
-
-
     S.iniStatesClassification();
 
     //end of determination    
@@ -186,7 +184,7 @@ int main()
         comb1 = new TwoParticleGFContainer::IndexCombination(0,1,0,1);
         v1.push_back(comb1);
 //
-        int wn=30;
+        int wn = (int) (*pIni)["Green Function:points"];
         TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
         Chi4.readNonTrivialIndices(v1);
         Chi4.prepare();
