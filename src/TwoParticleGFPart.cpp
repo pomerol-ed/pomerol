@@ -26,7 +26,7 @@ TwoParticleGFPart::NonResonantTerm::NonResonantTerm(ComplexType Coeff,
                     RealType P1, RealType P2, RealType P3) :
 Coeff(Coeff)
 {
-    Vars.z1 = z1; Vars.z2 = z2; Vars.z3 = z3;
+    Vars.z1 = z1; Vars.z2 = z2; Vars.z3 = z3; Vars._pad = 0;
     Poles[0] = P1; Poles[1] = P2; Poles[2] = P3;
 }
 
@@ -47,9 +47,14 @@ TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator
 
 inline
 bool TwoParticleGFPart::NonResonantTerm::isSimilarTo(const NonResonantTerm& AnotherTerm) const
-{
-    // FIXME!!!
-    return false;
+{   
+    static const char Primes[4] = {2,3,5,7};
+    if(Primes[Vars.z1]*Primes[Vars.z2]*Primes[Vars.z3] == 
+       Primes[AnotherTerm.Vars.z1]*Primes[AnotherTerm.Vars.z2]*Primes[AnotherTerm.Vars.z3]){
+        // AnotherTerm.Vars is a permutation of Vars
+        if(Vars.z1 == AnotherTerm.Vars.z1 ) 
+        return false;
+    } else return false;
 }
 
 //

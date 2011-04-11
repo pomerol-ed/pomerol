@@ -38,7 +38,7 @@ public:
             unsigned int z1 : 2;
             unsigned int z2 : 2;
             unsigned int z3 : 2;
-            unsigned int : 2;
+            unsigned int _pad : 2;
         } Vars;
 
         /** Coefficient \f$ C \f$. */
@@ -116,10 +116,7 @@ public:
         * \param[in] Frequency2 Complex frequency \f$ i\omega_2 \f$ to substitute into this term.
         * \param[in] Frequency3 Complex frequency \f$ i\omega_3 \f$ to substitute into this term.
         */
-        ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
-        
-        /** A difference in energies with magnitude less than this value is treated as zero. */
-        static const RealType ResonanceTolerance = 1e-16;
+        ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;       
     };
 
     /**
@@ -243,6 +240,8 @@ private:
                       RealType Wi, RealType Wj, RealType Wk, RealType Wl,
                       Permutation3& Permutation);
 
+    /** A difference in energies with magnitude less than this value is treated as zero. */
+    static const RealType ResonanceTolerance = 1e-16;
     /** Minimal magnitude of the coefficient of a term to take it into account. */
     static const RealType CoefficientTolerance = 1e-16;
     
