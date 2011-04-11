@@ -38,7 +38,7 @@ public:
             unsigned int z1 : 2;
             unsigned int z2 : 2;
             unsigned int z3 : 2;
-            unsigned int _pad : 2;
+            unsigned int : 2;
         } Vars;
 
         /** Coefficient \f$ C \f$. */
@@ -87,7 +87,12 @@ public:
     */
     struct ResonantTerm {
         /** Indices of the frequencies which will substitute \f$ z_1 \f$, \f$ z_2 \f$, \f$ z_3 \f$. */
-        unsigned char z[3];
+        struct {
+            unsigned int z1 : 2;
+            unsigned int z2 : 2;
+            unsigned int z3 : 2;
+            unsigned int : 2;
+        } Vars;
 
         /** Coefficient \f$ R \f$. */
         ComplexType ResCoeff;
@@ -116,7 +121,18 @@ public:
         * \param[in] Frequency2 Complex frequency \f$ i\omega_2 \f$ to substitute into this term.
         * \param[in] Frequency3 Complex frequency \f$ i\omega_3 \f$ to substitute into this term.
         */
-        ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;       
+        ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
+        
+        /** This operator add a non-resonant term to this one.
+        * It does not check the similarity of the terms! 
+        * \param[in] AnotherTerm Another term to add to this.
+        */
+        ResonantTerm& operator+=(const ResonantTerm& AnotherTerm);
+        
+        /** Returns true if another term is similar to this
+         * (sum of the terms is again a correct non-resonant term).
+        */
+        bool isSimilarTo(const ResonantTerm& AnotherTerm) const;
     };
 
     /**

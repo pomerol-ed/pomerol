@@ -26,7 +26,7 @@ TwoParticleGFPart::NonResonantTerm::NonResonantTerm(ComplexType Coeff,
                     RealType P1, RealType P2, RealType P3) :
 Coeff(Coeff)
 {
-    Vars.z1 = z1; Vars.z2 = z2; Vars.z3 = z3; Vars._pad = 0;
+    Vars.z1 = z1; Vars.z2 = z2; Vars.z3 = z3;
     Poles[0] = P1; Poles[1] = P2; Poles[2] = P3;
 }
 
@@ -52,7 +52,7 @@ bool TwoParticleGFPart::NonResonantTerm::isSimilarTo(const NonResonantTerm& Anot
     if(Primes[Vars.z1]*Primes[Vars.z2]*Primes[Vars.z3] == 
        Primes[AnotherTerm.Vars.z1]*Primes[AnotherTerm.Vars.z2]*Primes[AnotherTerm.Vars.z3]){
         // AnotherTerm.Vars is a permutation of Vars
-        if(Vars.z1 == AnotherTerm.Vars.z1 ) 
+        // FIXME: still need to something about the poles
         return false;
     } else return false;
 }
@@ -66,18 +66,37 @@ TwoParticleGFPart::ResonantTerm::ResonantTerm(ComplexType ResCoeff, ComplexType 
                         RealType P1, RealType P2, RealType P3) : 
 ResCoeff(ResCoeff), NonResCoeff(NonResCoeff)
 {
-    z[0] = z1; z[1] = z2; z[2] = z3;
+    Vars.z1 = z1; Vars.z2 = z2; Vars.z3 = z3;
     Poles[0] = P1; Poles[1] = P2; Poles[2] = P3;
 }
 
-inline ComplexType TwoParticleGFPart::ResonantTerm::operator()(
+inline
+ComplexType TwoParticleGFPart::ResonantTerm::operator()(
                                 ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const
 {
-    ComplexType w[4] = {Frequency1,Frequency2,-Frequency3,Frequency1+Frequency2-Frequency3};
+    ComplexType w[4] = {Frequency1,Frequency2,-Frequency3};
     
-    ComplexType Diff = w[z[0]] + w[z[1]] - Poles[0] - Poles[1];
+    ComplexType Diff = w[Vars.z1] + w[Vars.z2] - Poles[0] - Poles[1];
     return (abs(Diff) < ResonanceTolerance ? ResCoeff : (NonResCoeff/Diff) )
-            /((w[z[0]]-Poles[0])*(w[z[2]]-Poles[2]));   
+            /((w[Vars.z1]-Poles[0])*(w[Vars.z3]-Poles[2]));   
+}
+
+inline
+TwoParticleGFPart::ResonantTerm& TwoParticleGFPart::ResonantTerm::operator+=(
+                const ResonantTerm& AnotherTerm)
+{
+    ResCoeff += AnotherTerm.ResCoeff;
+    NonResCoeff += AnotherTerm.NonResCoeff;
+    return *this;
+}
+
+inline
+bool TwoParticleGFPart::ResonantTerm::isSimilarTo(const ResonantTerm& AnotherTerm) const
+{   
+    return (Vars.z1==AnotherTerm.Vars.z1 && Vars.z2==AnotherTerm.Vars.z2 && Vars.z3==AnotherTerm.Vars.z3) &&
+           (abs(Poles[0] - AnotherTerm.Poles[0]) < ResonanceTolerance) &&
+           (abs(Poles[1] - AnotherTerm.Poles[1]) < ResonanceTolerance) &&
+           (abs(Poles[2] - AnotherTerm.Poles[2]) < ResonanceTolerance);
 }
 
 //
@@ -354,7 +373,6 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
     Storage->fill(NonResonantTerms,ResonantTerms);
     NonResonantTerms.clear();
     ResonantTerms.clear();
-// DEBUG((*Storage)(0,0,0));
 }
 
 
@@ -373,6 +391,23 @@ void TwoParticleGFPart::reduceTerms()
         
         if(abs(it1->Coeff) < CoefficientTolerance)
             it1 = NonResonantTerms.erase(it1);
+        else
+            it1++;
+    }
+    
+    // Sieve reduction of the resonant terms
+    for(std::list<ResonantTerm>::iterator it1 = ResonantTerms.begin(); it1 != ResonantTerms.end();){
+        std::list<ResonantTerm>::iterator it2 = it1;
+        for(it2++; it2 != ResonantTerms.end();){
+            if(it1->isSimilarTo(*it2)){
+                *it1 += *it2;
+                it2 = ResonantTerms.erase(it2);
+            }else
+                it2++;
+        }
+        
+        if(abs(it1->ResCoeff) < CoefficientTolerance && abs(it1->NonResCoeff) < CoefficientTolerance)
+            it1 = ResonantTerms.erase(it1);
         else
             it1++;
     }
