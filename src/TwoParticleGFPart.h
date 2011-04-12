@@ -22,50 +22,42 @@ class TwoParticleGFPart {
 
 public:
 
-    /** A summation over all matrix elements may be performed (currently) in two different orders.
-     * So there are two implemented methods of computation.
-     */
-    enum ComputationMethod {ChasingIndices1, ChasingIndices2};
-
     /** A non-resonant term has the following form:
      * \f[
-     * \frac{C}{(i\omega_1-P_1)(z_2-P_2)(z_3-P_3)}
+     * \frac{C}{(z_1-P_1)(z_2-P_2)(z_3-P_3)}
      * \f]
+     * if isz4 == false, and
+     * \f[
+     * \frac{C}{(z_1-P_1)(z_1+z_2+z_3-P_1-P_2-P_3)(z_3-P_3)}
+     * \f]
+     * otherwise.
      */
     struct NonResonantTerm{
-        /** Indices of the frequencies which will substitute \f$ z_1 \f$, \f$ z_2 \f$, \f$ z_3 \f$. */
-        struct {
-            unsigned int z1 : 2;
-            unsigned int z2 : 2;
-            unsigned int z3 : 2;
-            unsigned int : 2;
-        } Vars;
-
+        
         /** Coefficient \f$ C \f$. */
         ComplexType Coeff;
 
         /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
         RealType Poles[3];
+        
+        /** Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term? */
+        bool isz4;
 
         /** Constructor.
          * \param[in] Coeff Numerator of the term.
-         * \param[in] z1 Number of the first frequency.
-         * \param[in] z2 Number of the second frequency.
-         * \param[in] z3 Number of the third frequency.
          * \param[in] P1 Pole P1.
          * \param[in] P2 Pole P2.
          * \param[in] P3 Pole P3.
+         * \param[in] isz4 Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term?
          */
-        NonResonantTerm(ComplexType Coeff,
-                        unsigned short z1, unsigned short z2, unsigned short z3,
-                        RealType P1, RealType P2, RealType P3);
+        NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4);
 
         /** Returns a contribution to the two-particle Green's function made by this term.
-        * \param[in] Frequency1 Complex frequency \f$ i\omega_1 \f$ to substitute into this term.
-        * \param[in] Frequency2 Complex frequency \f$ i\omega_2 \f$ to substitute into this term.
-        * \param[in] Frequency3 Complex frequency \f$ i\omega_3 \f$ to substitute into this term.
+        * \param[in] z1 Complex frequency \f$ z_1 \f$.
+        * \param[in] z2 Complex frequency \f$ z_2 \f$.
+        * \param[in] z3 Complex frequency \f$ z_3 \f$.
         */
-        ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
+        ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3) const;
 
         /** This operator add a non-resonant term to this one.
          * It does not check the similarity of the terms! 
@@ -86,13 +78,6 @@ public:
     * \f]
     */
     struct ResonantTerm {
-        /** Indices of the frequencies which will substitute \f$ z_1 \f$, \f$ z_2 \f$, \f$ z_3 \f$. */
-        struct {
-            unsigned int z1 : 2;
-            unsigned int z2 : 2;
-            unsigned int z3 : 2;
-            unsigned int : 2;
-        } Vars;
 
         /** Coefficient \f$ R \f$. */
         ComplexType ResCoeff;
@@ -101,27 +86,27 @@ public:
 
         /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
         RealType Poles[3];
+        
+        /** Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
+         Otherwise we are using \f$ \delta(z_2+z_3-P_2-P_3) \f$. */
+        bool isz1z2;
 
         /** Constructor.
          * \param[in] ResCoeff Numerator of the term for a resonant case.
          * \param[in] NonResCoeff Numerator of the term for a non-resonant case.
-         * \param[in] z1 Number of the first frequency.
-         * \param[in] z2 Number of the second frequency.
-         * \param[in] z3 Number of the third frequency.
          * \param[in] P1 Pole P1.
          * \param[in] P2 Pole P2.
          * \param[in] P3 Pole P3.
+         * \param[in] isz1z2 Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
          */
-        ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff,
-                     unsigned short z1, unsigned short z2, unsigned short z3,
-                     RealType P1, RealType P2, RealType P3);
+        ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff, RealType P1, RealType P2, RealType P3, bool isz1z2);
 
         /** Returns a contribution to the two-particle Green's function made by this term.
-        * \param[in] Frequency1 Complex frequency \f$ i\omega_1 \f$ to substitute into this term.
-        * \param[in] Frequency2 Complex frequency \f$ i\omega_2 \f$ to substitute into this term.
-        * \param[in] Frequency3 Complex frequency \f$ i\omega_3 \f$ to substitute into this term.
+        * \param[in] z1 Complex frequency \f$ z_1 \f$.
+        * \param[in] z2 Complex frequency \f$ z_2 \f$.
+        * \param[in] z3 Complex frequency \f$ z_3 \f$.
         */
-        ComplexType operator()(ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const;
+        ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3) const;
         
         /** This operator add a non-resonant term to this one.
         * It does not check the similarity of the terms! 
@@ -151,8 +136,7 @@ public:
         MatsubaraContainer(RealType beta);
         void prepare(long NumberOfMatsubaras);
         ComplexType& operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-        inline void fill(const std::list<NonResonantTerm> &NonResonantTerms,
-                         const std::list<ResonantTerm> &ResonantTerms);
+        inline void fill(const TwoParticleGFPart& Part);
         MatsubaraContainer& operator+=(const MatsubaraContainer& rhs);
         void clear();
     };
@@ -196,15 +180,6 @@ private:
     
     /** TODO: document this */
     MatsubaraContainer *Storage;
-
-    /** Computes the part using the ChasingIndices1 method.
-     * \param[in] NumberOfMatsubaras: TODO: describe this parameter.
-     */
-    void computeChasing1(long NumberOfMatsubaras);
-    /** Computes the part using the ChasingIndices2 method.
-     * \param[in] NumberOfMatsubaras: TODO: describe this parameter.
-     */
-    void computeChasing2(long NumberOfMatsubaras);
 
     /** Reduces the number of calculated terms */
     void reduceTerms();
@@ -253,8 +228,7 @@ private:
     */
     void addMultiterm(ComplexType Coeff, RealType beta,
                       RealType Ei, RealType Ej, RealType Ek, RealType El,
-                      RealType Wi, RealType Wj, RealType Wk, RealType Wl,
-                      Permutation3& Permutation);
+                      RealType Wi, RealType Wj, RealType Wk, RealType Wl);
 
     /** A difference in energies with magnitude less than this value is treated as zero. */
     static const RealType ResonanceTolerance = 1e-16;
@@ -285,9 +259,8 @@ public:
 
     /** Actually computes the part.
      * \param[in] NumberOfMatsubaras: TODO: describes this parameter.
-     * \param[in] method Method of computation to use.
      */
-    void compute(long NumberOfMatsubaras, ComputationMethod method = ChasingIndices2);
+    void compute(long NumberOfMatsubaras);
     /** Purges all terms. */
     void clear();
      /** Returns a contribution to the two-particle Green's function made by this part.
@@ -295,7 +268,7 @@ public:
      * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
      * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
      */
-    ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+    ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
     /** Returns the number of resonant terms in the cache. */
     size_t getNumResonantTerms() const;

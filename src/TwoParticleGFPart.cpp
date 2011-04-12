@@ -21,20 +21,16 @@ inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter,
 // TwoParticleGFPart::NonResonantTerm
 //
 inline
-TwoParticleGFPart::NonResonantTerm::NonResonantTerm(ComplexType Coeff,
-                    unsigned short z1, unsigned short z2, unsigned short z3,
-                    RealType P1, RealType P2, RealType P3) :
-Coeff(Coeff)
+TwoParticleGFPart::NonResonantTerm::NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4) :
+Coeff(Coeff), isz4(isz4)
 {
-    Vars.z1 = z1; Vars.z2 = z2; Vars.z3 = z3;
     Poles[0] = P1; Poles[1] = P2; Poles[2] = P3;
 }
 
-inline ComplexType TwoParticleGFPart::NonResonantTerm::operator()(
-                                ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const
+inline ComplexType TwoParticleGFPart::NonResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
 {
-    ComplexType w[4] = {Frequency1,Frequency2,-Frequency3,Frequency1+Frequency2-Frequency3};
-    return Coeff / ((w[Vars.z1]-Poles[0])*(w[Vars.z2]-Poles[1])*(w[Vars.z3]-Poles[2]));
+    return isz4 ?   Coeff / ((z1-Poles[0])*(z1+z2+z3-Poles[0]-Poles[1]-Poles[2])*(z3-Poles[2])) :
+                    Coeff / ((z1-Poles[0])*(z2-Poles[1])*(z3-Poles[2]));
 }
 
 inline
@@ -48,10 +44,10 @@ TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator
 inline
 bool TwoParticleGFPart::NonResonantTerm::isSimilarTo(const NonResonantTerm& AnotherTerm) const
 {   
-    return (Vars.z1==AnotherTerm.Vars.z1 && Vars.z2==AnotherTerm.Vars.z2 && Vars.z3==AnotherTerm.Vars.z3) &&
-           (abs(Poles[0] - AnotherTerm.Poles[0]) < ResonanceTolerance) &&
-           (abs(Poles[1] - AnotherTerm.Poles[1]) < ResonanceTolerance) &&
-           (abs(Poles[2] - AnotherTerm.Poles[2]) < ResonanceTolerance);
+    return isz4 == AnotherTerm.isz4 && 
+           (fabs(Poles[0] - AnotherTerm.Poles[0]) < ResonanceTolerance) &&
+           (fabs(Poles[1] - AnotherTerm.Poles[1]) < ResonanceTolerance) &&
+           (fabs(Poles[2] - AnotherTerm.Poles[2]) < ResonanceTolerance);
 }
 
 //
@@ -59,23 +55,25 @@ bool TwoParticleGFPart::NonResonantTerm::isSimilarTo(const NonResonantTerm& Anot
 //
 inline
 TwoParticleGFPart::ResonantTerm::ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff,
-                        unsigned short z1, unsigned short z2, unsigned short z3,
-                        RealType P1, RealType P2, RealType P3) : 
-ResCoeff(ResCoeff), NonResCoeff(NonResCoeff)
+                                              RealType P1, RealType P2, RealType P3, bool isz1z2) : 
+ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), isz1z2(isz1z2)
 {
-    Vars.z1 = z1; Vars.z2 = z2; Vars.z3 = z3;
     Poles[0] = P1; Poles[1] = P2; Poles[2] = P3;
 }
 
 inline
-ComplexType TwoParticleGFPart::ResonantTerm::operator()(
-                                ComplexType Frequency1, ComplexType Frequency2, ComplexType Frequency3) const
+ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
 {
-    ComplexType w[4] = {Frequency1,Frequency2,-Frequency3};
-    
-    ComplexType Diff = w[Vars.z1] + w[Vars.z2] - Poles[0] - Poles[1];
-    return (abs(Diff) < ResonanceTolerance ? ResCoeff : (NonResCoeff/Diff) )
-            /((w[Vars.z1]-Poles[0])*(w[Vars.z3]-Poles[2]));   
+    ComplexType Diff;
+    if(isz1z2){
+        Diff = z1 + z2 - Poles[0] - Poles[1];
+        return (abs(Diff) < ResonanceTolerance ? ResCoeff : (NonResCoeff/Diff) )
+                /((z1-Poles[0])*(z3-Poles[2]));
+    } else {
+        Diff = z2 + z3 - Poles[1] - Poles[2];
+        return (abs(Diff) < ResonanceTolerance ? ResCoeff : (NonResCoeff/Diff) )
+                /((z1-Poles[0])*(z3-Poles[2]));
+    }
 }
 
 inline
@@ -90,10 +88,10 @@ TwoParticleGFPart::ResonantTerm& TwoParticleGFPart::ResonantTerm::operator+=(
 inline
 bool TwoParticleGFPart::ResonantTerm::isSimilarTo(const ResonantTerm& AnotherTerm) const
 {   
-    return (Vars.z1==AnotherTerm.Vars.z1 && Vars.z2==AnotherTerm.Vars.z2 && Vars.z3==AnotherTerm.Vars.z3) &&
-           (abs(Poles[0] - AnotherTerm.Poles[0]) < ResonanceTolerance) &&
-           (abs(Poles[1] - AnotherTerm.Poles[1]) < ResonanceTolerance) &&
-           (abs(Poles[2] - AnotherTerm.Poles[2]) < ResonanceTolerance);
+    return isz1z2 == AnotherTerm.isz1z2 &&
+           (fabs(Poles[0] - AnotherTerm.Poles[0]) < ResonanceTolerance) &&
+           (fabs(Poles[1] - AnotherTerm.Poles[1]) < ResonanceTolerance) &&
+           (fabs(Poles[2] - AnotherTerm.Poles[2]) < ResonanceTolerance);
 }
 
 //
@@ -143,8 +141,7 @@ TwoParticleGFPart::MatsubaraContainer& TwoParticleGFPart::MatsubaraContainer::op
     return (*this);
 };
 
-inline void TwoParticleGFPart::MatsubaraContainer::fill(const std::list<NonResonantTerm> &NonResonantTerms,
-                                                        const std::list<ResonantTerm> &ResonantTerms)
+inline void TwoParticleGFPart::MatsubaraContainer::fill(const TwoParticleGFPart& Part)
 {
     for (long BosonicIndex=0;BosonicIndex<=(4*NumberOfMatsubaras)-2;BosonicIndex++){
         for (long nuIndex=0;nuIndex<Data[BosonicIndex].cols();++nuIndex){
@@ -154,23 +151,9 @@ inline void TwoParticleGFPart::MatsubaraContainer::fill(const std::list<NonReson
                 long MatsubaraNumber2 = nuIndex +FermionicIndexShift;
                 long MatsubaraNumber1 = BosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber2;
                 long MatsubaraNumber3 = nu1Index+FermionicIndexShift;
-
-                long MatsubaraNumberOdd1 = 2*MatsubaraNumber1 + 1;
-                long MatsubaraNumberOdd2 = 2*MatsubaraNumber2 + 1;
-                long MatsubaraNumberOdd3 = 2*MatsubaraNumber3 + 1;
-                ComplexType Frequency1 = MatsubaraSpacing * RealType(MatsubaraNumberOdd1);
-                ComplexType Frequency2 = MatsubaraSpacing * RealType(MatsubaraNumberOdd2);
-                ComplexType Frequency3 = MatsubaraSpacing * RealType(MatsubaraNumberOdd3);
-
-                ComplexType Value = 0;
-                for(std::list<NonResonantTerm>::const_iterator pTerm = NonResonantTerms.begin(); 
-                                                               pTerm != NonResonantTerms.end(); ++pTerm)
-                    Value += (*pTerm)(Frequency1,Frequency2,Frequency3);
-                for(std::list<ResonantTerm>::const_iterator pTerm = ResonantTerms.begin(); 
-                                                            pTerm != ResonantTerms.end(); ++pTerm)
-                    Value += (*pTerm)(Frequency1,Frequency2,Frequency3);
-                
-                Data[BosonicIndex](nuIndex,nu1Index)+=Value;
+               
+                Data[BosonicIndex](nuIndex,nu1Index) += 
+                    Part(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
             };
         };
     };
@@ -196,18 +179,6 @@ Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
 DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
 Permutation(Permutation),Storage(new MatsubaraContainer(DMpart1.getBeta())){};
 
-void TwoParticleGFPart::compute(long NumberOfMatsubaras, TwoParticleGFPart::ComputationMethod method)
-{
-    NonResonantTerms.clear();
-    ResonantTerms.clear();
-    
-    switch(method){
-        case ChasingIndices1: computeChasing1(NumberOfMatsubaras); break;
-        case ChasingIndices2: computeChasing2(NumberOfMatsubaras); break;
-        default: assert(0);
-    };
-};
-
 void TwoParticleGFPart::clear()
 {
     NonResonantTerms.clear();
@@ -225,75 +196,11 @@ size_t TwoParticleGFPart::getNumResonantTerms() const
     return ResonantTerms.size();
 }
 
-void TwoParticleGFPart::computeChasing1(long NumberOfMatsubaras)
-    // I don't have any pen now, so I'm writing here:
-    // <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
-    // Iterate over all values of |1><1|
-    // Chase indices |3> and <3|
+void TwoParticleGFPart::compute(long NumberOfMatsubaras)
 {
-    Storage->prepare(NumberOfMatsubaras);
-    RealType beta = DMpart1.getBeta();  
-
-    RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
-    RowMajorMatrixType& O2matrix = O2.getRowMajorValue();    
-    ColMajorMatrixType& O3matrix = O3.getColMajorValue();
-    ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
-
-    InnerQuantumState index1;
-    InnerQuantumState index1Max = CX4matrix.outerSize();
-
-    for(index1=0; index1<index1Max; ++index1){
-        ColMajorMatrixType::InnerIterator index4bra(CX4matrix,index1);
-
-        RealType E1 = Hpart1.reV(index1);
-        RealType weight1 = DMpart1.weight(index1); 
-
-        while(index4bra){
-            InnerQuantumState index4ket = index4bra.index();
-            RowMajorMatrixType::InnerIterator index2ket(O1matrix,index1);
-
-            RealType E4 = Hpart4.reV(index4ket);
-            RealType weight4 = DMpart4.weight(index4ket);
-
-            while (index2ket){
-                InnerQuantumState index2bra = index2ket.index();
-
-                RealType E2 = Hpart2.reV(index2bra);
-                RealType weight2 = DMpart2.weight(index2bra);
-
-                RowMajorMatrixType::InnerIterator index3ket_iter(O2matrix,index2bra);
-                ColMajorMatrixType::InnerIterator index3bra_iter(O3matrix,index4ket);
-                while(index3bra_iter && index3ket_iter){
-                    if(chaseIndices(index3ket_iter,index3bra_iter)){
-
-                        InnerQuantumState index3 = index3ket_iter.index();
-
-                        RealType E3 = Hpart3.reV(index3);                       
-                        RealType weight3 = DMpart3.weight(index3);
-
-                        ComplexType MatrixElement = index2ket.value()*
-                                                    index3ket_iter.value()*
-                                                    index3bra_iter.value()*
-                                                    index4bra.value();
-
-                        MatrixElement *= Permutation.sign;
-
-                        addMultiterm(MatrixElement,beta,E1,E2,E3,E4,weight1,weight2,weight3,weight4,Permutation);
-
-                        ++index3ket_iter;
-                        ++index3bra_iter;
-                    }
-                };
-                 ++index2ket;
-            };
-            ++index4bra;
-        };
-    };
-    Storage->fill(NonResonantTerms,ResonantTerms);
-};
-
-void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
-{
+    NonResonantTerms.clear();
+    ResonantTerms.clear();
+    
     RealType beta = DMpart1.getBeta();
     Storage->prepare(NumberOfMatsubaras);
     // I don't have any pen now, so I'm writing here:
@@ -355,7 +262,7 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
 
                         MatrixElement *= Permutation.sign;
 
-                        addMultiterm(MatrixElement,beta,E1,E2,E3,E4,weight1,weight2,weight3,weight4,Permutation);
+                        addMultiterm(MatrixElement,beta,E1,E2,E3,E4,weight1,weight2,weight3,weight4);
                     }
                     ++index2bra_iter;
                     ++index2ket_iter;
@@ -367,7 +274,7 @@ void TwoParticleGFPart::computeChasing2(long NumberOfMatsubaras)
 
     reduceTerms();
 
-    Storage->fill(NonResonantTerms,ResonantTerms);
+    Storage->fill(*this);
     NonResonantTerms.clear();
     ResonantTerms.clear();
 }
@@ -417,8 +324,7 @@ void TwoParticleGFPart::reduceTerms()
 inline
 void TwoParticleGFPart::addMultiterm(ComplexType Coeff, RealType beta,
                       RealType Ei, RealType Ej, RealType Ek, RealType El,
-                      RealType Wi, RealType Wj, RealType Wk, RealType Wl,
-                      Permutation3& Permutation)
+                      RealType Wi, RealType Wj, RealType Wk, RealType Wl)
 {
     RealType P1 = Ej - Ei;
     RealType P2 = Ek - Ej;
@@ -428,45 +334,49 @@ void TwoParticleGFPart::addMultiterm(ComplexType Coeff, RealType beta,
     ComplexType CoeffZ2 = -Coeff*(Wj + Wk);
     if(abs(CoeffZ2) > CoefficientTolerance)
         NonResonantTerms.push_back(
-            NonResonantTerm(CoeffZ2,Permutation.perm[0],Permutation.perm[1],Permutation.perm[2],P1,P2,P3));
+            NonResonantTerm(CoeffZ2,P1,P2,P3,false));
     ComplexType CoeffZ4 = Coeff*(Wi + Wl);
     if(abs(CoeffZ4) > CoefficientTolerance)
         NonResonantTerms.push_back(
-            NonResonantTerm(CoeffZ4,Permutation.perm[0],3,Permutation.perm[2],P1,P1+P2+P3,P3));
+            NonResonantTerm(CoeffZ4,P1,P2,P3,true));
 
     // Resonant part of the multiterm
     ComplexType CoeffZ1Z2Res = Coeff*beta*Wi;
     ComplexType CoeffZ1Z2NonRes = Coeff*(Wk - Wi);
     if(abs(CoeffZ1Z2Res) > CoefficientTolerance || abs(CoeffZ1Z2NonRes) > CoefficientTolerance)
         ResonantTerms.push_back(
-            ResonantTerm(CoeffZ1Z2Res,CoeffZ1Z2NonRes,Permutation.perm[0],Permutation.perm[1],Permutation.perm[2],P1,P2,P3));   
+            ResonantTerm(CoeffZ1Z2Res,CoeffZ1Z2NonRes,P1,P2,P3,true));   
     ComplexType CoeffZ2Z3Res = -Coeff*beta*Wj;
     ComplexType CoeffZ2Z3NonRes = Coeff*(Wj - Wl);
     if(abs(CoeffZ2Z3Res) > CoefficientTolerance || abs(CoeffZ2Z3NonRes) > CoefficientTolerance)
         ResonantTerms.push_back(
-            ResonantTerm(CoeffZ2Z3Res,CoeffZ2Z3NonRes,Permutation.perm[2],Permutation.perm[1],Permutation.perm[0],P3,P2,P1));   
+            ResonantTerm(CoeffZ2Z3Res,CoeffZ2Z3NonRes,P1,P2,P3,false));   
 }
 
 const TwoParticleGFPart::MatsubaraContainer& TwoParticleGFPart::getMatsubaraContainer(){
     return *Storage;
 }
 
-ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
+ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
     // TODO: Place this variable to a wider scope?
     ComplexType MatsubaraSpacing = I*M_PI/DMpart1.getBeta();
     long MatsubaraNumberOdd1 = 2*MatsubaraNumber1 + 1;
     long MatsubaraNumberOdd2 = 2*MatsubaraNumber2 + 1;
     long MatsubaraNumberOdd3 = 2*MatsubaraNumber3 + 1;
-    ComplexType Frequency1 = MatsubaraSpacing * RealType(MatsubaraNumberOdd1);
-    ComplexType Frequency2 = MatsubaraSpacing * RealType(MatsubaraNumberOdd2);
-    ComplexType Frequency3 = MatsubaraSpacing * RealType(MatsubaraNumberOdd3);
-
+    ComplexType Frequencies[3] = {  MatsubaraSpacing * RealType(MatsubaraNumberOdd1),
+                                    MatsubaraSpacing * RealType(MatsubaraNumberOdd2),
+                                   -MatsubaraSpacing * RealType(MatsubaraNumberOdd3)};
+                                    
+    ComplexType z1 = Frequencies[Permutation.perm[0]];                                    
+    ComplexType z2 = Frequencies[Permutation.perm[1]];
+    ComplexType z3 = Frequencies[Permutation.perm[2]];
+    
     ComplexType Value = 0;
     for(std::list<NonResonantTerm>::const_iterator pTerm = NonResonantTerms.begin(); pTerm != NonResonantTerms.end(); ++pTerm)
-        Value += (*pTerm)(Frequency1,Frequency2,Frequency3);
+        Value += (*pTerm)(z1,z2,z3);
     for(std::list<ResonantTerm>::const_iterator pTerm = ResonantTerms.begin(); pTerm != ResonantTerms.end(); ++pTerm)
-        Value += (*pTerm)(Frequency1,Frequency2,Frequency3);
+        Value += (*pTerm)(z1,z2,z3);
 
-    return Value+(*Storage)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    return Value;//+(*Storage)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
 }
