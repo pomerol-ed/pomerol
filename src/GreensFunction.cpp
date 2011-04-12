@@ -90,15 +90,13 @@ bool GreensFunction::vanishes()
 
 //other functions
 
-void GreensFunction::dumpMatsubara(unsigned short points)
+void GreensFunction::dumpToPlainText(long points)
 {
-#warning: dump for GF is not done
-/*
     std::stringstream filename;
     unsigned short i=C.getBit();
     unsigned short j=CX.getBit();
     // TODO: Factor out this fragment to output_handle class.
-    filename << green_path.path() << "/Gw" << i << j << ".dat";
+    filename << "output/Gw" << i << j << ".dat";
     std::ofstream output;
     output.open(filename.str().c_str());
 
@@ -107,9 +105,7 @@ void GreensFunction::dumpMatsubara(unsigned short points)
         ComplexType G = (*this)(k);
         output << std::setprecision(9) << real(G) << "    " << imag(G) << "    " << endl;
     }
-
     output.close();
-*/
 }
 
 #warning"Dead code. Subject to remove."

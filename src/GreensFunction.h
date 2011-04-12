@@ -83,7 +83,7 @@ Should it be replaced with a standard physical notion of indices?"
      */
     ComplexType operator()(long MatsubaraNum);
 
-    //void dump(void);
+    void dumpToPlainText(long wn);
     /** Returns the path of the output directory associated with this Green's function. */
     string getPath();
     /** Dumps the Green's function for a range of the Matsubara frequencies.

@@ -24,6 +24,7 @@ public:
     void compute();
     MatrixType& operator()(long MatsubaraNumber);
     ComplexType operator()(ParticleIndex i, ParticleIndex j, long MatsubaraNumber);
+    void dumpToPlainText(long wn);
 private:
     StatesClassification &S;
     Hamiltonian &H;

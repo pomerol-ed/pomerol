@@ -190,6 +190,8 @@ int main()
   GFContainer G(S,H,rho,IndexInfo,Operators);
   G.prepare();
   G.compute();
+  int wn = (int) (*pIni)["Green Function:points"];
+  G.dumpToPlainText(wn);
   cout << std::setprecision(9) << G(0) << endl;
   cout << std::setprecision(9) << G(1) << endl;
 
@@ -208,7 +210,6 @@ int main()
     comb1 = new TwoParticleGFContainer::IndexCombination(0,S.N_b()/2,0,S.N_b()/2);
     v1.push_back(comb1);
     //
-    int wn = (int) (*pIni)["Green Function:points"];
     TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
     Chi4.readNonTrivialIndices(v1);
     Chi4.prepare();
