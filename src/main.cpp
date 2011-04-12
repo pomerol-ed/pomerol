@@ -157,7 +157,6 @@ int main()
 
   num_cout << endl << "The value of ground energy is " << H.getGroundEnergy() << endl;
 
-    FieldOperatorContainer Operators(S,H,IndexInfo);
  //   GFContainer G(S,H,rho,IndexInfo,Operators);
  //   G.prepare();
  //   G.compute();
@@ -206,7 +205,7 @@ int main()
 
     comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
     v1.push_back(comb1);
-    comb1 = new TwoParticleGFContainer::IndexCombination(0,1,0,1);
+    comb1 = new TwoParticleGFContainer::IndexCombination(0,S.N_b()/2,0,S.N_b()/2);
     v1.push_back(comb1);
     //
     int wn = (int) (*pIni)["Green Function:points"];
