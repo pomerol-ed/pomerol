@@ -157,6 +157,12 @@ int main()
 
   num_cout << endl << "The value of ground energy is " << H.getGroundEnergy() << endl;
 
+    FieldOperatorContainer Operators(S,H,IndexInfo);
+ //   GFContainer G(S,H,rho,IndexInfo,Operators);
+ //   G.prepare();
+ //   G.compute();
+ //   cout << std::setprecision(9) << G(0) << endl;
+ //   cout << std::setprecision(9) << G(1) << endl;
 
   DensityMatrix rho(S,H,beta);
   //    DensityMatrix.reduce();

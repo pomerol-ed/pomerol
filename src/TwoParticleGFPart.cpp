@@ -48,13 +48,10 @@ TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator
 inline
 bool TwoParticleGFPart::NonResonantTerm::isSimilarTo(const NonResonantTerm& AnotherTerm) const
 {   
-    static const char Primes[4] = {2,3,5,7};
-    if(Primes[Vars.z1]*Primes[Vars.z2]*Primes[Vars.z3] == 
-       Primes[AnotherTerm.Vars.z1]*Primes[AnotherTerm.Vars.z2]*Primes[AnotherTerm.Vars.z3]){
-        // AnotherTerm.Vars is a permutation of Vars
-        // FIXME: still need to something about the poles
-        return false;
-    } else return false;
+    return (Vars.z1==AnotherTerm.Vars.z1 && Vars.z2==AnotherTerm.Vars.z2 && Vars.z3==AnotherTerm.Vars.z3) &&
+           (abs(Poles[0] - AnotherTerm.Poles[0]) < ResonanceTolerance) &&
+           (abs(Poles[1] - AnotherTerm.Poles[1]) < ResonanceTolerance) &&
+           (abs(Poles[2] - AnotherTerm.Poles[2]) < ResonanceTolerance);
 }
 
 //
