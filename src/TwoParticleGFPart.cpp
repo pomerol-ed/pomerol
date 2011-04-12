@@ -45,9 +45,9 @@ inline
 bool TwoParticleGFPart::NonResonantTerm::isSimilarTo(const NonResonantTerm& AnotherTerm) const
 {   
     return isz4 == AnotherTerm.isz4 && 
-           (fabs(Poles[0] - AnotherTerm.Poles[0]) < ResonanceTolerance) &&
-           (fabs(Poles[1] - AnotherTerm.Poles[1]) < ResonanceTolerance) &&
-           (fabs(Poles[2] - AnotherTerm.Poles[2]) < ResonanceTolerance);
+           (fabs(Poles[0] - AnotherTerm.Poles[0]) < ReduceResonanceTolerance) &&
+           (fabs(Poles[1] - AnotherTerm.Poles[1]) < ReduceResonanceTolerance) &&
+           (fabs(Poles[2] - AnotherTerm.Poles[2]) < ReduceResonanceTolerance);
 }
 
 //
@@ -89,9 +89,9 @@ inline
 bool TwoParticleGFPart::ResonantTerm::isSimilarTo(const ResonantTerm& AnotherTerm) const
 {   
     return isz1z2 == AnotherTerm.isz1z2 &&
-           (fabs(Poles[0] - AnotherTerm.Poles[0]) < ResonanceTolerance) &&
-           (fabs(Poles[1] - AnotherTerm.Poles[1]) < ResonanceTolerance) &&
-           (fabs(Poles[2] - AnotherTerm.Poles[2]) < ResonanceTolerance);
+           (fabs(Poles[0] - AnotherTerm.Poles[0]) < ReduceResonanceTolerance) &&
+           (fabs(Poles[1] - AnotherTerm.Poles[1]) < ReduceResonanceTolerance) &&
+           (fabs(Poles[2] - AnotherTerm.Poles[2]) < ReduceResonanceTolerance);
 }
 
 //

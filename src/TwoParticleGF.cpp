@@ -121,7 +121,7 @@ if (Status < Computed){
         cout << static_cast<int>((distance(parts.begin(),iter)*100.0)/parts.size()) << "  " <<flush;
         (*iter)->compute(NumberOfMatsubaras);
         *Storage+=(*iter)->getMatsubaraContainer();
-       (*iter)->clear();
+        (*iter)->clear();
     }
     cout << endl;
     Status = Computed;
@@ -147,9 +147,9 @@ size_t TwoParticleGF::getNumNonResonantTerms() const
 ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
     ComplexType Value = 0;
-    /*for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++){
+    for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++){
         Value+=(**iter)(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3 );
-        };*/
+        };
     return (*Storage)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3)+Value;
 
 }
