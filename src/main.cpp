@@ -134,7 +134,7 @@ void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg)
                     if (w2_>=-size_wg && w2_<size_wg){
                       TwoParticleGFContainer::IndexCombination *comb1;
                       comb1 = new TwoParticleGFContainer::IndexCombination(n1+n_part*z1,n2+n_part*z2,n1_+z1*n_part,n2_+z2*n_part);
-                      std::complex<double> z=Vertex(*comb1,w1,w2,w1_);
+                      std::complex<double> z=Vertex.getAmputated(*comb1,w1,w2,w1_);
                       if(abs(z)>acc){
 #if defined(HRD)
                         gamma_str << chop(real(z)) <<"  "<< chop(imag(z)) << "           "
@@ -282,7 +282,7 @@ int main()
     Vertex4 Gamma4(IndexInfo,Chi4,G);
     saveGamma("Gamma4.dat",Gamma4,wn);
 
-    for (unsigned short i=0;i<v1.size();i++){
+/*    for (unsigned short i=0;i<v1.size();i++){
       cout << std::setprecision(9) << Chi4(*v1[i],3,2,0) << endl;
       cout << Chi4(*v1[i],2,5,2) << endl;
       cout << Chi4(*v1[i],5,2,2) << endl;
@@ -291,12 +291,13 @@ int main()
       cout << Chi4(*v1[i],29,-29,29) << endl << endl;
       cout << *v1[i] << " : " << (bool) Chi4.vanishes(*v1[i]) << endl;
     };
-
+*/
     //   comb1 = new TwoParticleGFContainer::IndexCombination(0,2,0,1);
     //   cout << Chi4.vanishes(*comb1) << endl;
     //DEBUG(Chi4.getNumNonResonantTerms() << " non-resonant terms");
     //DEBUG(Chi4.getNumResonantTerms() << " resonant terms");    
   };
+  return 0;
 };
 
 
