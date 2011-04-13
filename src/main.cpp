@@ -104,6 +104,68 @@ void saveChi(const char *fname, TwoParticleGFContainer &Chi, int size_wg)
   std::cout << "Finished." << std::endl;
   return;
 }			    
+
+void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg) 
+{
+  std::cout << "Dumping Gamma4..." << std::flush;
+#if defined(HRD)
+  std::ofstream gamma_str(fname,std::ios::out);
+  gamma_str.setf(std::ios::scientific, std::ios::floatfield);
+  gamma_str.setf(std::ios::showpoint);
+  gamma_str.precision(8);
+  gamma_str<<"Re         Im               z1 z2          w1' w1 w2' w2        n1' n1 n2' n2\n";
+#else
+  std::ofstream gamma_str(fname,std::ios::out | std::ios::binary);
+#endif
+  int n_zone=2;
+  int n_part=S.N_b()/2.;
+  RealType acc=1e-8;
+  for (int z1=0; z1<n_zone; z1++)
+    for (int z2=n_zone-1; z2>=0; z2--)
+      for(int n1=0; n1<n_part; n1++)
+        for(int n1_=0; n1_<n_part; n1_++)
+          for(int n2=0; n2<n_part; n2++)
+            for(int n2_=0; n2_<n_part; n2_++)
+              for(int w1=-size_wg; w1<size_wg; w1++)
+                for(int w1_=-size_wg; w1_<size_wg; w1_++)
+                  for(int w2=-size_wg; w2<size_wg; w2++){
+
+                    int w2_=w1+w2-w1_;
+                    if (w2_>=-size_wg && w2_<size_wg){
+                      TwoParticleGFContainer::IndexCombination *comb1;
+                      comb1 = new TwoParticleGFContainer::IndexCombination(n1+n_part*z1,n2+n_part*z2,n1_+z1*n_part,n2_+z2*n_part);
+                      std::complex<double> z=Vertex(*comb1,w1,w2,w1_);
+                      if(abs(z)>acc){
+#if defined(HRD)
+                        gamma_str << chop(real(z)) <<"  "<< chop(imag(z)) << "           "
+                          << z1 <<" "<< z2 << "           " << w1 << "  " << w1_ << " " << w2 << "  " << w2_ 
+                          << "            "<<n1<<"  "<<n1_<<" "<<n2<<"  "<<n2_<< "            "
+                          << endl << flush;
+#else
+                        gamma_str.write(reinterpret_cast<char *>(&z),sizeof(std::complex<double>));
+
+                        gamma_str.write(reinterpret_cast<char *>(&z1),sizeof(int));
+                        gamma_str.write(reinterpret_cast<char *>(&z2),sizeof(int));
+
+                        gamma_str.write(reinterpret_cast<char *>(&w1),sizeof(int));
+                        gamma_str.write(reinterpret_cast<char *>(&w1_),sizeof(int));
+                        gamma_str.write(reinterpret_cast<char *>(&w2),sizeof(int));
+                        gamma_str.write(reinterpret_cast<char *>(&w2_),sizeof(int));
+
+                        gamma_str.write(reinterpret_cast<char *>(&n1),sizeof(int));
+                        gamma_str.write(reinterpret_cast<char *>(&n1_),sizeof(int));
+                        gamma_str.write(reinterpret_cast<char *>(&n2),sizeof(int));
+                        gamma_str.write(reinterpret_cast<char *>(&n2_),sizeof(int));
+
+#endif
+                      }
+                    }
+                  }
+  gamma_str<<"0 0"<<std::endl;
+  std::cout << "Finished." << std::endl;
+  return;
+}			    
+
 /* ======================================================================== */
 
 int main()
@@ -216,6 +278,9 @@ int main()
     Chi4.compute(wn);
 
     saveChi("Chi4.dat",Chi4,wn);
+
+    Vertex4 Gamma4(IndexInfo,Chi4,G);
+    saveGamma("Gamma4.dat",Gamma4,wn);
 
     for (unsigned short i=0;i<v1.size();i++){
       cout << std::setprecision(9) << Chi4(*v1[i],3,2,0) << endl;

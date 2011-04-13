@@ -1,6 +1,5 @@
-#EIGEN_INCLUDE=$(shell pkg-config --cflags-only-I eigen2)
-#INCLUDES= -I../iniparser/src -I../iniconfig -I../jsoncpp/include $(EIGEN_INCLUDE)
-INCLUDES= -I../iniparser/src -I../iniconfig -I../jsoncpp/include -I/opt/local/include/eigen2
+EIGEN_INCLUDE=-I/opt/local/include/eigen2 $(shell pkg-config --cflags-only-I eigen2) -I$(shell pwd)/eigen
+INCLUDES= -I../iniparser/src -I../iniconfig -I../jsoncpp/include $(EIGEN_INCLUDE)
 CFLAGS=$(INCLUDES) -DDMTruncate -DHRD
 CXXFLAGS=$(CFLAGS)
 
