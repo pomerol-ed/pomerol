@@ -231,7 +231,7 @@ private:
                       RealType Wi, RealType Wj, RealType Wk, RealType Wl);
 
     /** A difference in energies with magnitude less than this value is treated as zero. */
-    static const RealType ResonanceTolerance = 1e-16;//1e-16;
+    static const RealType KroneckerSymbolTolerance = 1e-16;//1e-16;
     /** A difference in energies with magnitude less than this value is treated as zero. */
     static const RealType ReduceResonanceTolerance = 1e-8;//1e-16;
     /** Minimal magnitude of the coefficient of a term to take it into account. */

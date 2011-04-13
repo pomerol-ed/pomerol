@@ -67,11 +67,11 @@ ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexT
     ComplexType Diff;
     if(isz1z2){
         Diff = z1 + z2 - Poles[0] - Poles[1];
-        return (abs(Diff) < ResonanceTolerance ? ResCoeff : (NonResCoeff/Diff) )
+        return (abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff/Diff) )
                 /((z1-Poles[0])*(z3-Poles[2]));
     } else {
         Diff = z2 + z3 - Poles[1] - Poles[2];
-        return (abs(Diff) < ResonanceTolerance ? ResCoeff : (NonResCoeff/Diff) )
+        return (abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff/Diff) )
                 /((z1-Poles[0])*(z3-Poles[2]));
     }
 }
