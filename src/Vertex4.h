@@ -22,7 +22,10 @@ class Vertex4 {
     const BitClassification &IndexInfo;
     
     /** Precomputed inverted Green's function matrices calculated at different Matsubara frequencies. */
-    std::map<long, MatrixType> InvertedGFs;
+    std::vector<MatrixType> InvertedGFs;
+
+    /** Amount of computed matsubaras in TwoParticleGF */
+    long NumberOfMatsubaras;
 
 public:
     /** Constructor.
