@@ -3,7 +3,7 @@ LINKS=-L../lib
 CXXFLAGS+= -O3 -g -Wall -fPIC -pg $(INCLUDES)
 BINPATH=../bin
 
-objects=output.o LatticeAnalysis.o \
+objects=output.o Dumper.o LatticeAnalysis.o \
 	StatesClassification.o Term.o BitClassification.o \
 	HamiltonianPart.o Hamiltonian.o FieldOperatorPart.o FieldOperator.o \
 	DensityMatrixPart.o DensityMatrix.o \
@@ -14,12 +14,13 @@ objects=output.o LatticeAnalysis.o \
 
 devel_objects= TwoParticleGFContainer.o
 
-libs=../lib/libiniconfig.a ../lib/lib_json.a -liniparser
+libs=../lib/libiniconfig.a ../lib/lib_json.a -liniparser -lhdf5 -lhdf5_cpp
 
 default: main
 devel: $(devel_objects)
 
 output.o: output.cpp output.h
+Dumper.o: Dumper.cpp Dumper.h config.h
 LatticeAnalysis.o: LatticeAnalysis.h LatticeAnalysis.cpp
 Term.o:	Term.cpp Term.h
 BitClassification.o: BitClassification.h BitClassification.cpp Term.h

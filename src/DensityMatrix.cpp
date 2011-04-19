@@ -56,7 +56,7 @@ DensityMatrixPart& DensityMatrix::part(BlockNumber in)
     return *parts[in];
 }
 
-RealType DensityMatrix::getBeta()
+RealType DensityMatrix::getBeta() const
 {
     return beta;
 }
@@ -68,3 +68,21 @@ RealType DensityMatrix::getAverageEnergy()
     for(BlockNumber n = 0; n < NumOfBlocks; n++) E += parts[n]->getAverageEnergy();
     return E;
 };
+
+void DensityMatrix::dumpIt(H5::CommonFG* FG) const
+{
+    H5::Group RootGroup(FG->createGroup("DensityMatrix"));
+    
+    // Dump inverse temperature
+    Dumper::dumpComplex(RootGroup,"beta",beta);
+    
+    // Dump parts
+    BlockNumber NumOfBlocks = parts.size();
+    H5::Group PartsGroup = RootGroup.createGroup("parts");
+    for(BlockNumber n = 0; n < NumOfBlocks; n++){
+	std::stringstream nStr;
+	nStr << n;
+	H5::Group PartGroup = PartsGroup.createGroup(nStr.str().c_str());
+	parts[n]->dumpIt(&PartGroup);
+    }
+}

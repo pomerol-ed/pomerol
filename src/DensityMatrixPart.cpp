@@ -60,3 +60,11 @@ RealType DensityMatrixPart::getBeta(void)
 {
     return beta;
 }
+
+void DensityMatrixPart::dumpIt(H5::CommonFG* FG) const
+{
+    Dumper::dumpReal(*FG,"beta",beta);
+    Dumper::dumpReal(*FG,"GroundEnergy",GroundEnergy);
+    Dumper::dumpReal(*FG,"Z_part",Z_part);
+    Dumper::dumpRealVector(*FG,"weights",weights);
+}

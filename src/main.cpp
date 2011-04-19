@@ -8,6 +8,7 @@
 
 #include "config.h"
 #include "output.h"
+#include "Dumper.h"
 #include "LatticeAnalysis.h"
 #include "Term.h"
 #include "BitClassification.h"
@@ -169,7 +170,8 @@ void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg)
 /* ======================================================================== */
 
 int main()
-{   
+{
+  Dumper dmp("test.h5");
 
   cout << "=======================" << endl;
   cout << "Lattice Info" << endl;
@@ -230,6 +232,8 @@ int main()
   rho.prepare();
   rho.compute();
   num_cout << "<H> = " << rho.getAverageEnergy() << endl;
+  
+  dmp.dump(rho);
 
 
   /*   for (QuantumState i=0; i < S.N_st(); ++i) 

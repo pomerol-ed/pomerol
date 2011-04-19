@@ -10,6 +10,7 @@
 
 #include <vector>
 
+#include "Dumper.h"
 #include "StatesClassification.h"
 #include "BitClassification.h"
 #include "Hamiltonian.h"
@@ -21,7 +22,7 @@
  * the Hamiltonian and the parts of the density matrix itself, since the density matrix
  * is a function of \f$ \hat H \f$.
  */
-class DensityMatrix
+class DensityMatrix : public Dumpable
 {
     /** A reference to a states classification object. */
     StatesClassification& S;
@@ -60,9 +61,11 @@ public:
      */
     RealType operator()(QuantumState &state);
     /** Returns the inverse temperature. */
-    RealType getBeta();
+    RealType getBeta() const;
     /** Returns an averaged value of the energy. */
     RealType getAverageEnergy();
+    
+    void dumpIt(H5::CommonFG* FG) const;
 };
 
 #endif // endif :: #ifndef ____DEFINE_DENSITY_MATRIX____
