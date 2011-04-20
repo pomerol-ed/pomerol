@@ -24,6 +24,9 @@ class Vertex4 {
     /** Precomputed inverted Green's function matrices calculated at different Matsubara frequencies. */
     std::vector<MatrixType> InvertedGFs;
 
+    /** A storage for amputated values */
+    std::map<TwoParticleGFContainer::IndexCombination,TwoParticleGFPart::MatsubaraContainer *> mapNonTrivialAmputatedValues;
+
     /** Amount of computed matsubaras in TwoParticleGF */
     long NumberOfMatsubaras;
 
@@ -43,6 +46,12 @@ public:
      */
     ComplexType operator()(const TwoParticleGFContainer::IndexCombination& in, 
                            long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
+
+    /** Compute unamputated values
+     * \param[in] Requested indices.
+     */
+    void compute(const TwoParticleGFContainer::IndexCombination& in);
+
     /** Returns the value of the amputated irreducible vertex calculated at given frequencies.
      * \param[in] Requested indices.
      * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
@@ -54,6 +63,8 @@ public:
 
     //void dumpMatsubara(unsigned short points);
     //void dumpAmputatedMatsubara(unsigned short points);
+private:
+    bool vanishes(const TwoParticleGFContainer::IndexCombination& in); 
 };
 
 #endif // endif :: #ifndef ____VERTEX4____

@@ -2,10 +2,11 @@
 #include <Eigen/LU> 
 
 Vertex4::Vertex4(const BitClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g) :
-Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+1)
+Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+1), Storage(new TwoParticleGFPart::MatsubaraContainer(Chi.getBeta()))
 {
     ParticleIndex N_bit = IndexInfo.getBitSize();
     NumberOfMatsubaras = Chi.getNumberOfMatsubaras();
+    Storage->prepare(NumberOfMatsubaras);
     
     for(long MatsubaraNumber=-NumberOfMatsubaras; MatsubaraNumber<=NumberOfMatsubaras; ++MatsubaraNumber){
         MatrixType GMatrix(N_bit,N_bit);
@@ -19,6 +20,28 @@ Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+
 
 }
 
+
+void Vertex4::compute(const TwoParticleGFContainer::IndexCombination& in)
+{
+    for (long MatsubaraNumber1=-NumberOfMatsubaras; MatsubaraNumber1 <= NumberOfMatsubaras; ++MatsubaraNumber1)
+        for (long MatsubaraNumber2=-NumberOfMatsubaras; MatsubaraNumber1 <= NumberOfMatsubaras; ++MatsubaraNumber1)
+            for (long MatsubaraNumber3=-NumberOfMatsubaras; MatsubaraNumber1 <= NumberOfMatsubaras; ++MatsubaraNumber1){
+    
+                ComplexType Value = Chi(in, MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+                RealType beta = Chi.getBeta();
+
+                if(MatsubaraNumber1 == MatsubaraNumber3)
+                    Value += beta*  g(in.Indices[0],in.Indices[2],MatsubaraNumber1)*
+                                    g(in.Indices[1],in.Indices[3],MatsubaraNumber2);
+                if(MatsubaraNumber1 == MatsubaraNumber2)
+                    Value -= beta*  g(in.Indices[0],in.Indices[3],MatsubaraNumber1)*
+                                    g(in.Indices[1],in.Indices[2],MatsubaraNumber2);
+
+                (*Storage)(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3) = Value;
+            }
+}
+
+
 ComplexType Vertex4::operator()(const TwoParticleGFContainer::IndexCombination& in,
                                 long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
@@ -26,7 +49,8 @@ ComplexType Vertex4::operator()(const TwoParticleGFContainer::IndexCombination& 
        MatsubaraNumber2 > NumberOfMatsubaras || MatsubaraNumber2 < -NumberOfMatsubaras ||
        MatsubaraNumber3 > NumberOfMatsubaras || MatsubaraNumber3 < -NumberOfMatsubaras
        ) return 0;
-    
+    return (*Storage)(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3); 
+
     ComplexType Value = Chi(in, MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
     RealType beta = Chi.getBeta();
 
