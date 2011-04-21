@@ -4,6 +4,8 @@
 ** \author Igor Krivenko (igor@shg.ru)
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
+
+#ifdef pomerolHDF5
 #include "Dumper.h"
 #include <complex>
 
@@ -70,3 +72,5 @@ void Dumper::dumpRealVector(H5::CommonFG& FG, const std::string& Name, RealVecto
     H5::DataSet DataSet = FG.createDataSet(Name.c_str(),H5::PredType::NATIVE_DOUBLE,DataSpace);
     DataSet.write(V.data(),H5::PredType::NATIVE_DOUBLE);
 }
+
+#endif // endif :: #ifdef pomerolHDF5

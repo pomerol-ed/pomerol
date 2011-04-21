@@ -69,6 +69,7 @@ RealType DensityMatrix::getAverageEnergy()
     return E;
 };
 
+#ifdef pomerolHDF5
 void DensityMatrix::dumpIt(H5::CommonFG* FG) const
 {
     H5::Group RootGroup(FG->createGroup("DensityMatrix"));
@@ -86,3 +87,4 @@ void DensityMatrix::dumpIt(H5::CommonFG* FG) const
 	parts[n]->dumpIt(&PartGroup);
     }
 }
+#endif // endif :: #ifdef pomerolHDF5

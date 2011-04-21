@@ -22,7 +22,11 @@
  * the Hamiltonian and the parts of the density matrix itself, since the density matrix
  * is a function of \f$ \hat H \f$.
  */
+#ifdef pomerolHDF5
 class DensityMatrix : public Dumpable
+#else
+class DensityMatrix
+#endif
 {
     /** A reference to a states classification object. */
     StatesClassification& S;
@@ -65,7 +69,9 @@ public:
     /** Returns an averaged value of the energy. */
     RealType getAverageEnergy();
     
+#ifdef pomerolHDF5
     void dumpIt(H5::CommonFG* FG) const;
+#endif
 };
 
 #endif // endif :: #ifndef ____DEFINE_DENSITY_MATRIX____

@@ -61,6 +61,7 @@ RealType DensityMatrixPart::getBeta(void)
     return beta;
 }
 
+#ifdef pomerolHDF5
 void DensityMatrixPart::dumpIt(H5::CommonFG* FG) const
 {
     Dumper::dumpReal(*FG,"beta",beta);
@@ -68,3 +69,5 @@ void DensityMatrixPart::dumpIt(H5::CommonFG* FG) const
     Dumper::dumpReal(*FG,"Z_part",Z_part);
     Dumper::dumpRealVector(*FG,"weights",weights);
 }
+
+#endif // endif :: #ifdef pomerolHDF5

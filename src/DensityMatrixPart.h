@@ -15,7 +15,11 @@
  * and a contribution to the partition function made by the corresponding
  * block of the Hamiltonian.
  */
+#ifdef pomerolHDF5
 class DensityMatrixPart : public Dumpable
+#else
+class DensityMatrixPart
+#endif
 {
     /** A reference to a part of a Hamiltonian. */
     HamiltonianPart& hpart;
@@ -64,8 +68,9 @@ public:
      * \param[in] TruncationTolerance - the level at which the statistical weight should be cutted
      */
     InnerQuantumState getMaximumTruncationState( RealType TruncationTolerance);
-    
+#ifdef pomerolHDF5 
     void dumpIt(H5::CommonFG* FG) const;
+#endif
 };
 
 #endif // endif :: #ifndef ____DEFINE_DENSITY_MATRIX_PART____

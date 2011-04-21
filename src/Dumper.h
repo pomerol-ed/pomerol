@@ -3,6 +3,7 @@
 **
 ** \author Igor Krivenko (igor@shg.ru)
 */
+#ifdef pomerolHDF5
 #ifndef ____DUMPER____
 #define ____DUMPER____
 
@@ -32,3 +33,4 @@ public:
 };
 
 #endif // endif :: #ifndef ____DUMPER____
+#endif // endif :: #ifndef pomerolHDF5
