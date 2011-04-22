@@ -17,6 +17,8 @@
 #include "TwoParticleGFContainer.h"
 #include "Vertex4.h"
 
+#include "OptionParser.h"
+
 #include <iostream>
 #include <fstream>
 
@@ -170,8 +172,25 @@ void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg, unsigned short s
 
 /* ======================================================================== */
 
-int main()
+int main(int argc, char *argv[])
 {
+   try {
+		pomerolOptionParser opt;
+		int argused = opt.parse(&argv[1], argc-1); // Skip argv[0].
+
+		std::cout << "Lattice File         : " << opt.LatticeFile << std::endl;
+		std::cout << "Number Of Matsubaras : " << opt.NumberOfMatsubaras << std::endl;
+		std::cout << "beta:                : " << opt.beta << std::endl;
+        std::cout << "input arguments: " << argused << std::endl;
+	} catch (const optparse::unrecognized_option& e) {
+		std::cout << "unrecognized option: " << e.what() << std::endl;
+		return 1;
+	} catch (const optparse::invalid_value& e) {
+		std::cout << "invalid value: " << e.what() << std::endl;
+		return 1;
+	}
+return 0;
+
 #ifdef pomerolHDF5
   Dumper dmp("test.h5");
 #endif
