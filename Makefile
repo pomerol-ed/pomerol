@@ -27,8 +27,6 @@ libpomerol:	lib
 
 clean:
 	cd src && $(MAKE) clean
-	cd iniparser && $(MAKE) clean
-	cd iniconfig && $(MAKE) clean
 	cd jsoncpp && $(MAKE) clean
 
 devel:
