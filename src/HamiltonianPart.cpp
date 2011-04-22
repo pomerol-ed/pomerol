@@ -180,7 +180,7 @@ void HamiltonianPart::diagonalization()					//method of diagonalization classifi
 	}
 	if (N_state_m > 1)
 	{
-		Eigen::SelfAdjointEigenSolver<RealMatrixType> Solver(H, true);
+		Eigen::SelfAdjointEigenSolver<RealMatrixType> Solver(H,Eigen::ComputeEigenvectors);
 		H = Solver.eigenvectors();
 		V = Solver.eigenvalues();				// eigenvectors are ready
 	}
