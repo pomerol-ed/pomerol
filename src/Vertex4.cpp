@@ -2,12 +2,72 @@
 #include <Eigen/LU> 
 
 Vertex4::Vertex4(const BitClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g) :
-Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+1), Storage(new TwoParticleGFPart::MatsubaraContainer(Chi.getBeta()))
+Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+1)
 {
-    ParticleIndex N_bit = IndexInfo.getBitSize();
     NumberOfMatsubaras = Chi.getNumberOfMatsubaras();
-    Storage->prepare(NumberOfMatsubaras);
-    
+}
+
+//============================= UnAmputated methods ==============================//
+
+void Vertex4::prepareUnAmputated()
+{
+    cout << "Preparing unamputated value container map ..." << flush;
+
+    for (std::vector<TwoParticleGFContainer::IndexCombination*>::const_iterator it1=Chi.getNonTrivialCombinations().begin(); it1!=Chi.getNonTrivialCombinations().end(); ++it1){
+        mapUnAmputatedValues[**it1]= new TwoParticleGFPart::MatsubaraContainer(Chi.getBeta());
+        mapUnAmputatedValues[**it1]->prepare(NumberOfMatsubaras);
+    };
+    cout << "Done" << endl;
+};
+
+void Vertex4::computeUnAmputated(const TwoParticleGFContainer::IndexCombination& in)
+{
+    cout << "Computing unamputated values for " << in << " combination" << endl;
+    for (long MatsubaraNumber1=-NumberOfMatsubaras; MatsubaraNumber1 < NumberOfMatsubaras; ++MatsubaraNumber1)
+        for (long MatsubaraNumber2=-NumberOfMatsubaras; MatsubaraNumber2 < NumberOfMatsubaras; ++MatsubaraNumber2)
+            for (long MatsubaraNumber3=-NumberOfMatsubaras; MatsubaraNumber3 < NumberOfMatsubaras; ++MatsubaraNumber3)
+                if ( MatsubaraNumber1 + MatsubaraNumber2 - MatsubaraNumber3 < NumberOfMatsubaras && MatsubaraNumber1 + MatsubaraNumber2 - MatsubaraNumber3 >= -NumberOfMatsubaras){ 
+                    ComplexType Value = Chi(in, MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+                    RealType beta = Chi.getBeta();
+
+                    if(MatsubaraNumber1 == MatsubaraNumber3)
+                        Value += beta*  g(in.Indices[0],in.Indices[2],MatsubaraNumber1)*
+                                        g(in.Indices[1],in.Indices[3],MatsubaraNumber2);
+                    if(MatsubaraNumber1 == MatsubaraNumber2)
+                        Value -= beta*  g(in.Indices[0],in.Indices[3],MatsubaraNumber1)*
+                                        g(in.Indices[1],in.Indices[2],MatsubaraNumber2);
+
+                    (*mapUnAmputatedValues[in])(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3) = Value;
+            }
+}
+
+void Vertex4::computeUnAmputated()
+{
+    for (std::map<TwoParticleGFContainer::IndexCombination,TwoParticleGFPart::MatsubaraContainer*>::iterator it=mapUnAmputatedValues.begin();
+            it!=mapUnAmputatedValues.end(); ++it){
+                computeUnAmputated(it->first);
+                }
+};
+
+
+ComplexType Vertex4::getUnAmputatedValue(const TwoParticleGFContainer::IndexCombination& in,
+                                long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
+{
+    if(MatsubaraNumber1 > NumberOfMatsubaras || MatsubaraNumber1 < -NumberOfMatsubaras ||
+       MatsubaraNumber2 > NumberOfMatsubaras || MatsubaraNumber2 < -NumberOfMatsubaras ||
+       MatsubaraNumber3 > NumberOfMatsubaras || MatsubaraNumber3 < -NumberOfMatsubaras ||
+       mapUnAmputatedValues.count(in) == 0
+       ) return 0;
+    return (*mapUnAmputatedValues[in])(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3);
+}
+
+//============================= Amputated methods ==============================//
+
+void Vertex4::prepareAmputated(std::vector<TwoParticleGFContainer::IndexCombination*>& in)
+{
+    NonTrivialAmputatedCombinations=in;
+    cout << "Inverting Greens Function..." << flush;
+    ParticleIndex N_bit = IndexInfo.getBitSize();
     for(long MatsubaraNumber=-NumberOfMatsubaras; MatsubaraNumber<=NumberOfMatsubaras; ++MatsubaraNumber){
         MatrixType GMatrix(N_bit,N_bit);
         for(ParticleIndex index1=0; index1 < N_bit; ++index1)
@@ -17,76 +77,60 @@ Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+
         //DEBUG("InvertedGFs[" << MatsubaraNumber << "] = " << GMatrix.inverse() );
         InvertedGFs[MatsubaraNumber+NumberOfMatsubaras] = GMatrix.inverse();
     }
+    cout << "Done" << endl;
 
-}
+    cout << "Preparing amputated value container map ..." << flush;
+    for (std::vector<TwoParticleGFContainer::IndexCombination*>::const_iterator it1=NonTrivialAmputatedCombinations.begin(); 
+            it1!=NonTrivialAmputatedCombinations.end(); ++it1){
+                mapAmputatedValues[**it1]= new TwoParticleGFPart::MatsubaraContainer(Chi.getBeta());
+                mapAmputatedValues[**it1]->prepare(NumberOfMatsubaras);
+    }       ;
+    cout << "Done" << endl;
 
+};
 
-void Vertex4::compute(const TwoParticleGFContainer::IndexCombination& in)
+void Vertex4::computeAmputated()
 {
-    for (long MatsubaraNumber1=-NumberOfMatsubaras; MatsubaraNumber1 <= NumberOfMatsubaras; ++MatsubaraNumber1)
-        for (long MatsubaraNumber2=-NumberOfMatsubaras; MatsubaraNumber1 <= NumberOfMatsubaras; ++MatsubaraNumber1)
-            for (long MatsubaraNumber3=-NumberOfMatsubaras; MatsubaraNumber1 <= NumberOfMatsubaras; ++MatsubaraNumber1){
-    
-                ComplexType Value = Chi(in, MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
-                RealType beta = Chi.getBeta();
-
-                if(MatsubaraNumber1 == MatsubaraNumber3)
-                    Value += beta*  g(in.Indices[0],in.Indices[2],MatsubaraNumber1)*
-                                    g(in.Indices[1],in.Indices[3],MatsubaraNumber2);
-                if(MatsubaraNumber1 == MatsubaraNumber2)
-                    Value -= beta*  g(in.Indices[0],in.Indices[3],MatsubaraNumber1)*
-                                    g(in.Indices[1],in.Indices[2],MatsubaraNumber2);
-
-                (*Storage)(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3) = Value;
-            }
+    for (std::map<TwoParticleGFContainer::IndexCombination,TwoParticleGFPart::MatsubaraContainer*>::iterator it=mapAmputatedValues.begin();
+            it!=mapAmputatedValues.end(); ++it){
+                    computeAmputated(it->first);
+                    };
 }
 
-
-ComplexType Vertex4::operator()(const TwoParticleGFContainer::IndexCombination& in,
-                                long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
+void Vertex4::computeAmputated(const TwoParticleGFContainer::IndexCombination& in)
 {
-    if(MatsubaraNumber1 > NumberOfMatsubaras || MatsubaraNumber1 < -NumberOfMatsubaras ||
-       MatsubaraNumber2 > NumberOfMatsubaras || MatsubaraNumber2 < -NumberOfMatsubaras ||
-       MatsubaraNumber3 > NumberOfMatsubaras || MatsubaraNumber3 < -NumberOfMatsubaras
-       ) return 0;
-    return (*Storage)(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3); 
+    cout << "Computing amputated values for " << in << " combination" << endl;
+    for (long MatsubaraNumber1=-NumberOfMatsubaras; MatsubaraNumber1 < NumberOfMatsubaras; ++MatsubaraNumber1)
+        for (long MatsubaraNumber2=-NumberOfMatsubaras; MatsubaraNumber2 < NumberOfMatsubaras; ++MatsubaraNumber2)
+            for (long MatsubaraNumber3=-NumberOfMatsubaras; MatsubaraNumber3 < NumberOfMatsubaras; ++MatsubaraNumber3)
+                if ( MatsubaraNumber1 + MatsubaraNumber2 - MatsubaraNumber3 < NumberOfMatsubaras && MatsubaraNumber1 + MatsubaraNumber2 - MatsubaraNumber3 >= -NumberOfMatsubaras){ 
+                    ComplexType Value=0;
+                    for (std::map<TwoParticleGFContainer::IndexCombination,TwoParticleGFPart::MatsubaraContainer*>::iterator it=mapUnAmputatedValues.begin();
+                        it!=mapUnAmputatedValues.end(); ++it){
+                            TwoParticleGFContainer::IndexCombination iin = it->first;
 
-    ComplexType Value = Chi(in, MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
-    RealType beta = Chi.getBeta();
-
-    if(MatsubaraNumber1 == MatsubaraNumber3)
-        Value += beta*  g(in.Indices[0],in.Indices[2],MatsubaraNumber1)*
-                        g(in.Indices[1],in.Indices[3],MatsubaraNumber2);
-    if(MatsubaraNumber1 == MatsubaraNumber2)
-        Value -= beta*  g(in.Indices[0],in.Indices[3],MatsubaraNumber1)*
-                        g(in.Indices[1],in.Indices[2],MatsubaraNumber2);
-
-    return Value;
+                            Value += this->getUnAmputatedValue(iin,MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3) *
+                                    InvertedGFs[MatsubaraNumber1+NumberOfMatsubaras](in.Indices[0],iin.Indices[0])*
+                                    InvertedGFs[MatsubaraNumber2+NumberOfMatsubaras](in.Indices[1],iin.Indices[1])*
+                                    InvertedGFs[MatsubaraNumber3+NumberOfMatsubaras](iin.Indices[2],in.Indices[2])*
+                                    InvertedGFs[MatsubaraNumber1+MatsubaraNumber2-MatsubaraNumber3+NumberOfMatsubaras](iin.Indices[3],in.Indices[3]);
+                            };
+                    (*mapAmputatedValues[in])(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3) = Value;
+                    }
 }
 
-ComplexType Vertex4::getAmputated(const TwoParticleGFContainer::IndexCombination& in,
+
+ComplexType Vertex4::getAmputatedValue(const TwoParticleGFContainer::IndexCombination& in,
                                   long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
    
     if(MatsubaraNumber1 > NumberOfMatsubaras || MatsubaraNumber1 < -NumberOfMatsubaras ||
        MatsubaraNumber2 > NumberOfMatsubaras || MatsubaraNumber2 < -NumberOfMatsubaras ||
-       MatsubaraNumber3 > NumberOfMatsubaras || MatsubaraNumber3 < -NumberOfMatsubaras 
+       MatsubaraNumber3 > NumberOfMatsubaras || MatsubaraNumber3 < -NumberOfMatsubaras || 
+       mapAmputatedValues.count(in) == 0
        ) return 0;
 
-    ParticleIndex N_bit = IndexInfo.getBitSize();
-    ComplexType Value = 0;
-    
-    for(ParticleIndex InnerIndex1=0; InnerIndex1 < N_bit; ++InnerIndex1)
-    for(ParticleIndex InnerIndex2=0; InnerIndex2 < N_bit; ++InnerIndex2)
-    for(ParticleIndex InnerIndex3=0; InnerIndex3 < N_bit; ++InnerIndex3)
-    for(ParticleIndex InnerIndex4=0; InnerIndex4 < N_bit; ++InnerIndex4){
-        TwoParticleGFContainer::IndexCombination iin(InnerIndex1,InnerIndex2,InnerIndex3,InnerIndex4);
-        Value += (*this)(iin,MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3) *
-                 InvertedGFs[MatsubaraNumber1+NumberOfMatsubaras](in.Indices[0],iin.Indices[0])*
-                 InvertedGFs[MatsubaraNumber2+NumberOfMatsubaras](in.Indices[1],iin.Indices[1])*
-                 InvertedGFs[MatsubaraNumber3+NumberOfMatsubaras](iin.Indices[2],in.Indices[2])*
-                 InvertedGFs[MatsubaraNumber1+MatsubaraNumber2-MatsubaraNumber3+NumberOfMatsubaras](iin.Indices[3],in.Indices[3]);
-    }
+    return (*mapAmputatedValues[in])(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3);
+};
 
-    return Value;  
-}
+

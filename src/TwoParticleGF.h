@@ -13,7 +13,6 @@
 #include <cmath>
 
 #include "config.h"
-#include "iniconfig.h"
 #include "output.h"
 #include "StatesClassification.h"
 #include "FieldOperator.h"

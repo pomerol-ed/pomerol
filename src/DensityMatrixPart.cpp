@@ -40,7 +40,7 @@ RealType DensityMatrixPart::getAverageEnergy()
     return E;
 };
 
-#ifdef DMTruncate
+/*
 InnerQuantumState DensityMatrixPart::getMaximumTruncationState(RealType TruncationTolerance)
 {
     InnerQuantumState m=0;
@@ -49,7 +49,7 @@ InnerQuantumState DensityMatrixPart::getMaximumTruncationState(RealType Truncati
     DEBUG("m = " << m << " size = " << partSize << endl << endl);
     return m; // m>partSize-1?partSize-1:m;
 }
-#endif
+*/
 
 RealType DensityMatrixPart::weight(int m)
 {

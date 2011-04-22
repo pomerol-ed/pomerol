@@ -71,6 +71,11 @@ if (!this->vanishes(in)) return (*mapNonTrivialCombinations[in])(MatsubaraNumber
 else return 0;
 }
 
+const std::vector<TwoParticleGFContainer::IndexCombination*>& TwoParticleGFContainer::getNonTrivialCombinations()
+{
+    return NonTrivialCombinations;
+};
+
 bool TwoParticleGFContainer::vanishes(const IndexCombination& in)
 {
 return ( mapNonTrivialCombinations.count(in) == 0 );

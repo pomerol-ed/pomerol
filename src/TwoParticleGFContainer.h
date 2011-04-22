@@ -11,6 +11,8 @@ class TwoParticleGFContainer;
 
 class TwoParticleGFContainer
 {
+friend class Vertex4;
+
 public:
     struct IndexCombination;
     TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, BitClassification& IndexInfo, FieldOperatorContainer& Operators);
@@ -25,6 +27,7 @@ public:
 
     void dump();
     RealType getBeta() const;
+    const std::vector<TwoParticleGFContainer::IndexCombination*>& getNonTrivialCombinations();
   
     //void defineNonTrivialIndices();
 private:

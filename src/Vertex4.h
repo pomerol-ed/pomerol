@@ -2,6 +2,7 @@
 ** \brief Irreducible two-particle vertex in the Matsubara representation.
 **
 ** \author Igor Krivenko (igor@shg.ru)
+** \author Andrey Antipov (antipov@ct-qmc.org)
 */
 #ifndef ____VERTEX4____
 #define ____VERTEX4____
@@ -24,11 +25,17 @@ class Vertex4 {
     /** Precomputed inverted Green's function matrices calculated at different Matsubara frequencies. */
     std::vector<MatrixType> InvertedGFs;
 
-    /** A storage for amputated values */
-    std::map<TwoParticleGFContainer::IndexCombination,TwoParticleGFPart::MatsubaraContainer *> mapNonTrivialAmputatedValues;
-
     /** Amount of computed matsubaras in TwoParticleGF */
     long NumberOfMatsubaras;
+
+    /** A storage for unamputated values */
+    std::map<TwoParticleGFContainer::IndexCombination,TwoParticleGFPart::MatsubaraContainer*> mapUnAmputatedValues;
+
+    /** A vector of all nontrivial combinations to compute */
+    std::vector<TwoParticleGFContainer::IndexCombination*> NonTrivialAmputatedCombinations;
+
+    /** A storage for amputated values */
+    std::map<TwoParticleGFContainer::IndexCombination,TwoParticleGFPart::MatsubaraContainer*> mapAmputatedValues;
 
 public:
     /** Constructor.
@@ -38,6 +45,41 @@ public:
      */
     Vertex4(const BitClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g);
 
+    //============================= UnAmputated methods ==============================//
+
+    /** Do some preparation procedures : prepare storage */
+    void prepareUnAmputated();
+
+    /** Compute unamputated values
+     */
+    void computeUnAmputated();
+
+     /** Returns the value of the unamputated irreducible vertex calculated at given frequencies.
+     * \param[in] Requested indices.
+     * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
+     * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
+     * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
+     */
+    ComplexType getUnAmputatedValue(const TwoParticleGFContainer::IndexCombination& in,
+                             long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+
+
+    //============================= Amputated methods ==============================//
+     /** Do some preparation procedures : calculate inverted GF's, prepare storage */
+    void prepareAmputated(std::vector<TwoParticleGFContainer::IndexCombination*>&);
+
+     /** Returns the value of the amputated irreducible vertex calculated at given frequencies.
+     * \param[in] Requested indices.
+     * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
+     * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
+     * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
+     */
+    ComplexType getAmputatedValue(const TwoParticleGFContainer::IndexCombination& in,
+                             long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+
+    void computeAmputated();
+
+    //==============================================================================//
     /** Returns the value of the irreducible vertex calculated at given frequencies.
      * \param[in] in Requested indices.
      * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
@@ -45,26 +87,21 @@ public:
      * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
      */
     ComplexType operator()(const TwoParticleGFContainer::IndexCombination& in, 
-                           long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
+                           long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+
+
+private:
+    bool vanishes(const TwoParticleGFContainer::IndexCombination& in); 
 
     /** Compute unamputated values
      * \param[in] Requested indices.
      */
-    void compute(const TwoParticleGFContainer::IndexCombination& in);
+    void computeUnAmputated(const TwoParticleGFContainer::IndexCombination& in);
 
-    /** Returns the value of the amputated irreducible vertex calculated at given frequencies.
+    /** Compute amputated values
      * \param[in] Requested indices.
-     * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
-     * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
-     * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
      */
-    ComplexType getAmputated(const TwoParticleGFContainer::IndexCombination& in,
-                             long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-
-    //void dumpMatsubara(unsigned short points);
-    //void dumpAmputatedMatsubara(unsigned short points);
-private:
-    bool vanishes(const TwoParticleGFContainer::IndexCombination& in); 
+    void computeAmputated(const TwoParticleGFContainer::IndexCombination& in);
 };
 
 #endif // endif :: #ifndef ____VERTEX4____

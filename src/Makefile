@@ -14,7 +14,7 @@ objects=output.o Dumper.o LatticeAnalysis.o \
 
 devel_objects= TwoParticleGFContainer.o
 
-libs=../lib/libiniconfig.a ../lib/lib_json.a -liniparser -lhdf5 -lhdf5_cpp
+libs=../lib/libiniconfig.a ../lib/lib_json.a -liniparser # -lhdf5 -lhdf5_cpp
 
 default: main
 devel: $(devel_objects)
@@ -38,7 +38,7 @@ TwoParticleGFPart.o: TwoParticleGFPart.h TwoParticleGFPart.cpp config.h
 TwoParticleGF.o: TwoParticleGF.h TwoParticleGF.cpp
 TwoParticleGFContainer.o : TwoParticleGFContainer.h TwoParticleGFContainer.cpp TwoParticleGFPart.o TwoParticleGF.o FieldOperatorContainer.o
 GFContainer.o : GFContainer.h GFContainer.cpp GreensFunction.o GreensFunctionPart.o
-Vertex4.o: Vertex4.h Vertex4.cpp
+Vertex4.o: Vertex4.h Vertex4.cpp TwoParticleGFContainer.o GFContainer.o
 
 libpomerol.so: $(objects)
 	$(CXX) -shared $(objects) $(libs) -o libpomerol.so

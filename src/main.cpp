@@ -1,11 +1,5 @@
 #define EIGEN2_SUPPORT
 
-#ifdef DMTruncate
-#define DENSITY_MATRIX_TRUNCATION_TOLERANCE 1e-3
-#define TERM_MATRIX_ELEMENT_TOLERANCE 1e-3
-#define TERM_RESONANCE_TOLERANCE 1e-16
-#endif
-
 #include "config.h"
 #include "output.h"
 #include "Dumper.h"
@@ -40,8 +34,11 @@ ostream &OUTPUT_STREAM=std::cout;
 
 IniConfig* pIni;
 
+
 /* ======================================================================== */
 // To be removed
+
+enum AmpStyle{UnAmputated, Amputated};
 
 RealType chop(RealType &i){ return (std::fabs(i)<1e-5)?0.0:i; }
 
@@ -106,7 +103,7 @@ void saveChi(const char *fname, TwoParticleGFContainer &Chi, int size_wg)
   return;
 }			    
 
-void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg) 
+void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg, unsigned short style = UnAmputated) 
 {
   std::cout << "Dumping Gamma4..." << std::flush;
 #if defined(HRD)
@@ -135,7 +132,11 @@ void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg)
                     if (w2_>=-size_wg && w2_<size_wg){
                       TwoParticleGFContainer::IndexCombination *comb1;
                       comb1 = new TwoParticleGFContainer::IndexCombination(n1+n_part*z1,n2+n_part*z2,n1_+z1*n_part,n2_+z2*n_part);
-                      std::complex<double> z=Vertex.getAmputated(*comb1,w1,w2,w1_);
+                       ComplexType z=0.;
+                      if ( style == UnAmputated) 
+                          z=Vertex.getUnAmputatedValue(*comb1,w1,w2,w1_);
+                      else if ( style == Amputated)
+                          z=Vertex.getAmputatedValue(*comb1,w1,w2,w1_);
                       if(abs(z)>acc){
 #if defined(HRD)
                         gamma_str << chop(real(z)) <<"  "<< chop(imag(z)) << "           "
@@ -171,7 +172,9 @@ void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg)
 
 int main()
 {
+#ifdef pomerolHDF5
   Dumper dmp("test.h5");
+#endif
 
   cout << "=======================" << endl;
   cout << "Lattice Info" << endl;
@@ -232,8 +235,9 @@ int main()
   rho.prepare();
   rho.compute();
   num_cout << "<H> = " << rho.getAverageEnergy() << endl;
-  
+#ifdef pomerolHDF5  
   dmp.dump(rho);
+#endif
 
 
   /*   for (QuantumState i=0; i < S.N_st(); ++i) 
@@ -284,7 +288,11 @@ int main()
     saveChi("Chi4.dat",Chi4,wn);
 
     Vertex4 Gamma4(IndexInfo,Chi4,G);
-    saveGamma("Gamma4.dat",Gamma4,wn);
+    Gamma4.prepareUnAmputated();
+    Gamma4.computeUnAmputated();
+    Gamma4.prepareAmputated(v1);
+    Gamma4.computeAmputated();
+    saveGamma("Gamma4.dat",Gamma4,wn,Amputated);
 
 /*    for (unsigned short i=0;i<v1.size();i++){
       cout << std::setprecision(9) << Chi4(*v1[i],3,2,0) << endl;

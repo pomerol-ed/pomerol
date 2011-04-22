@@ -1,14 +1,9 @@
 #include "Hamiltonian.h"
-#include "iniconfig.h"
-
-extern IniConfig* pIni;
 
 Hamiltonian::Hamiltonian(BitClassification &F_,StatesClassification &S_,output_handle &OUT_, string& config_path_):Formula(F_),S(S_),OUT(OUT_),config_path(config_path_){}
 
 void Hamiltonian::enter()
 {
-	IniConfig Ini(config_path);
-
 	output_handle OUT_EVec(OUT.path()+"/EigenVec");		// create output_folders
 	output_handle OUT_EVal(OUT.path()+"/EigenVal");		// create output_folders
 
