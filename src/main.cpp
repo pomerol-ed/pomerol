@@ -22,8 +22,6 @@
 #include <iostream>
 #include <fstream>
 
-#include "iniconfig.h"
-
 string input = "system.ini";
 
 LatticeAnalysis Lattice;
@@ -33,8 +31,6 @@ output_handle OUT;
 Hamiltonian H(IndexInfo,S,OUT,input);
 
 ostream &OUTPUT_STREAM=std::cout;
-
-IniConfig* pIni;
 
 
 /* ======================================================================== */
@@ -174,8 +170,8 @@ void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg, unsigned short s
 
 int main(int argc, char *argv[])
 {
+   pomerolOptionParser opt;
    try {
-		pomerolOptionParser opt;
 		opt.parse(&argv[1], argc-1); // Skip argv[0].
 
         std::cout << "pomerolDiag. Parameters " << std::endl;
@@ -197,7 +193,7 @@ int main(int argc, char *argv[])
   cout << "=======================" << endl;
   cout << "Lattice Info" << endl;
   cout << "=======================" << endl;
-  Lattice.readin();
+  Lattice.readin(opt.LatticeFile);
   cout << Lattice.printSitesList().str() << flush;
   IndexInfo.prepare();
   cout << "=======================" << endl;
@@ -214,9 +210,7 @@ int main(int argc, char *argv[])
   IndexInfo.printTerms();
   //determination of system
 
-  pIni = new IniConfig(input);
-
-  OUT = output_handle((*pIni)["output:path"]);
+  OUT = output_handle("output");
 
   S.iniStatesClassification();
 
@@ -235,9 +229,7 @@ int main(int argc, char *argv[])
   H.enter();
   H.dump();
   H.diagonalize();
-  RealType beta = (*pIni)["Green Function:beta"];
-  RealType ProbabilityCutoff = RealType((*pIni)["system:ProbabilityCutoff"]);
-  if (ProbabilityCutoff>0 && ProbabilityCutoff < 1) H.reduce(-log(ProbabilityCutoff)/beta);
+  RealType beta = opt.beta;
   H.dump();
 
   num_cout << endl << "The value of ground energy is " << H.getGroundEnergy() << endl;
@@ -278,12 +270,12 @@ int main(int argc, char *argv[])
   GFContainer G(S,H,rho,IndexInfo,Operators);
   G.prepare();
   G.compute();
-  int wn = (int) (*pIni)["Green Function:points"];
+  long wn = opt.NumberOfMatsubaras;
   G.dumpToPlainText(wn);
   cout << std::setprecision(9) << G(0) << endl;
   cout << std::setprecision(9) << G(1) << endl;
 
-  if ((*pIni)["System:calculate_2PGF"]){
+  if (1==1){
     cout << endl;
     cout << "==========================================" << endl;
     cout << "Two Particle Green's function calculation" << endl;

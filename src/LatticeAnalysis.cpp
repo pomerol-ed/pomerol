@@ -51,10 +51,10 @@ LatticeAnalysis::LatticeAnalysis ()
   	mapOrbitalValue["f"] = f;
 };
 
-int LatticeAnalysis::readin()
+int LatticeAnalysis::readin(string &LatticeFile)
 {
   Json::Reader reader;
-  std::ifstream in("Lattice.json");
+  std::ifstream in(LatticeFile.c_str());
   try
   {
     bool parsingSuccessful = reader.parse( in, *root );

@@ -14,7 +14,7 @@ objects=output.o Dumper.o LatticeAnalysis.o \
 
 devel_objects= TwoParticleGFContainer.o
 
-libs=../lib/libiniconfig.a ../lib/lib_json.a -liniparser # -lhdf5 -lhdf5_cpp
+libs=../lib/lib_json.a # -lhdf5 -lhdf5_cpp
 
 default: main
 devel: $(devel_objects)

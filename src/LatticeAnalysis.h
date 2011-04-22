@@ -2,6 +2,7 @@
 #define __LATTICE_SYMMETRY_ANALYSIS__
 
 #include "config.h"
+#include "string.h"
 #include <json/json.h>
 #include <string>
 #include <map>
@@ -61,7 +62,7 @@ class LatticeAnalysis
 
 public:
     LatticeAnalysis ();
-    int readin();
+    int readin(std::string &LatticeFile);
     const std::vector<LatticeSite*>& getSitesList();
     std::stringstream& printSitesList();
 };
