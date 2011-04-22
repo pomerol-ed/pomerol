@@ -6,24 +6,10 @@ CXXFLAGS=$(CFLAGS)
 export CFLAGS
 export CXXFLAGS
 
-all : iniparser iniconfig jsoncpp libpomerol
+all : jsoncpp libpomerol
 
 lib:
 	@mkdir -p lib
-
-.PHONY: iniparser
-iniparser: lib
-	@echo "Building iniparser"
-	cd iniparser && $(MAKE) libiniparser.a
-	@mv iniparser/libiniparser.a ./lib
-	@echo
-
-.PHONY: iniconfig
-iniconfig: lib
-	@echo "Building iniconfig"
-	cd iniconfig && $(MAKE)
-	@mv iniconfig/libiniconfig.a ./lib
-	@echo
 
 .PHONY: jsoncpp
 jsoncpp: lib
