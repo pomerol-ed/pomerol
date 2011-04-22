@@ -1,13 +1,9 @@
-#ifndef __CONTAINER2PGF__
-#define __CONTAINER2PGF__
+#ifndef __INCLUDE_TWOPARTICLEGFCONTAINER_H
+#define __INCLUDE_TWOPARTICLEGFCONTAINER_H
 
-#include "config.h"
-#include "TwoParticleGF.h"
-#include "FieldOperatorContainer.h"
-#include <map>
-
-class TwoParticleGFContainer;
-
+#include"Misc.h"
+#include"TwoParticleGF.h"
+#include"FieldOperatorContainer.h"
 
 class TwoParticleGFContainer
 {
@@ -48,4 +44,4 @@ struct TwoParticleGFContainer::IndexCombination
     bool operator<(const TwoParticleGFContainer::IndexCombination& rhs) const ;
     IndexCombination(ParticleIndex cindex1, ParticleIndex cindex2, ParticleIndex cdagindex3, ParticleIndex cdagindex4);
 };
-#endif // endif :: #ifndef __CONTAINER2PGF__
+#endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGFCONTAINER_H

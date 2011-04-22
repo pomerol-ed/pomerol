@@ -4,20 +4,20 @@
 ** \author Igor Krivenko (igor@shg.ru)
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
-#ifndef ____DEFINE_GREEN____
-#define ____DEFINE_GREEN____
+#ifndef __INCLUDE_GREENSFUNCTION_H
+#define __INCLUDE_GREENSFUNCTION_H
 
 #include <sstream>
 #include <fstream>
-#include <iomanip>
-#include <cmath>
+//#include <iomanip>
+//#include <cmath>
 
-#include "config.h"
-#include "output.h"
-#include "StatesClassification.h"
-#include "FieldOperator.h"
-#include "DensityMatrix.h"
-#include "GreensFunctionPart.h"
+#include"Misc.h"
+#include"output.h"
+#include"StatesClassification.h"
+#include"FieldOperator.h"
+#include"DensityMatrix.h"
+#include"GreensFunctionPart.h"
 
 /** This class represents a thermal Green's function in the Matsubara representation.
  *
@@ -84,7 +84,7 @@ Should it be replaced with a standard physical notion of indices?"
 
     void dumpToPlainText(long wn);
     /** Returns the path of the output directory associated with this Green's function. */
-    string getPath();
+    std::string getPath();
     /** Dumps the Green's function for a range of the Matsubara frequencies.
      * \param[in] point The number of points in the range.
      */
@@ -93,5 +93,5 @@ Should it be replaced with a standard physical notion of indices?"
     bool vanishes();
 };
 
-#endif // endif :: #ifndef ____DEFINE_GREEN____
+#endif // endif :: #ifndef __INCLUDE_GREENSFUNCTION_H
 

@@ -1,7 +1,8 @@
-#ifndef ____DEFINE_GETSTATES____
-#define ____DEFINE_GETSTATES____
-#include "config.h"
-#include "IndexClassification.h"
+#ifndef __INCLUDE_STATESCLASSIFICATION_H
+#define __INCLUDE_STATESCLASSIFICATION_H
+
+#include"Misc.h"
+#include"IndexClassification.h"
 
 struct BlockNumber {
 
@@ -44,7 +45,7 @@ class StatesClassification {
     int N_bit;                //number bit of states
     int N_bit_m;                //2*(2*L(orbital) +1)
 
-    vector<QuantumState> *** st;        //massive of vectors of states with Lz = "Lz", N_up = "N_up", N_down = "N_down" 
+    std::vector<QuantumState> *** st;        //massive of vectors of states with Lz = "Lz", N_up = "N_up", N_down = "N_down" 
     int size;                //number of classificated vectors
     std::map<BlockNumber,QuantumNumbers> BlockToQuantum;
     std::map<QuantumNumbers,BlockNumber> QuantumToBlock;
@@ -64,7 +65,7 @@ public:
     const int L();                                //return value of orbital moment
     const QuantumState N_st();                            //return N_state
 
-    const vector<QuantumState>& clstates( QuantumNumbers in );                //return st[in.Lz][in.N_up][in.N_down]
+    const std::vector<QuantumState>& clstates( QuantumNumbers in );                //return st[in.Lz][in.N_up][in.N_down]
     const QuantumState cst( QuantumNumbers in, int m);                    //return st[in.Lz][in.N_up][in.N_down][m]
     const InnerQuantumState getInnerState( QuantumState state);                    //finds number of state @state in corresponding block 
 
@@ -80,4 +81,4 @@ public:
     bool checkQuantumNumbers(QuantumNumbers in);
 };
 
-#endif // endif :: #ifndef ____DEFINE_GETSTATES____
+#endif // endif :: #ifndef __INCLUDE_STATESCLASSIFICATION_H

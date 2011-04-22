@@ -5,14 +5,12 @@
 */
 
 
-#ifndef ___GF_CONTAINER___
-#define ___GF_CONTAINER___
+#ifndef __INCLUDE_GFCONTAINER_H
+#define __INCLUDE_GFCONTAINER_H
 
-#include "config.h"
-#include "GreensFunction.h"
-#include "FieldOperatorContainer.h"
-#include <map>
-
+#include"Misc.h"
+#include"GreensFunction.h"
+#include"FieldOperatorContainer.h"
 
 class GFContainer
 {
@@ -43,4 +41,4 @@ struct GFContainer::IndexCombination
     IndexCombination(ParticleIndex cindex1, ParticleIndex cdagindex2);
 };
 
-#endif // endif :: #ifndef ___GF_CONTAINER___
+#endif // endif :: #ifndef __INCLUDE_GFCONTAINER_H

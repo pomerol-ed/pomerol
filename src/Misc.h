@@ -1,6 +1,4 @@
-//    werner-ng/src/config.h
-//    This file is a part of 'Werner NG' project.
-/** \file config.h
+/** \file Misc.h
 **    \brief Declares very common type names and macros.
 ** 
 ** \author    Igor Krivenko (igor@shg.ru)
@@ -8,16 +6,24 @@
 ** \author    Andrey Antipov (antipov@shg.ru)
 */
 
-#ifndef _CONFIG_H
-#define _CONFIG_H
+#ifndef __INCLUDE_MISC_H
+#define __INCLUDE_MISC_H
 
 /** \cond */
 //#define NDEBUG
 /** \endcond */
 
+#include<iostream>
+#include<complex>
+#include<string>
+#include<vector>
+#include<list>
+#include<map>
+
+#define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 #include<Eigen/Core>
 #include<Eigen/Sparse>
-#include<Eigen/QR>
+
 /** Real floating point type. */
 typedef double RealType;
 /** Complex type. */
@@ -90,16 +96,6 @@ end_do_once
 #define end_do_once }; };
 //@}
 
-// Maybe temporary
-using std::cout;
-using std::endl;
-using std::flush;
-using std::complex;
-using std::ostream;
-using std::ofstream;
-using std::vector;
-using std::string;
-
 #define INFO(MSG)       std::cout << MSG << std::endl;
 #define ERROR(MSG)      std::cerr << MSG << std::endl;
 
@@ -112,4 +108,4 @@ using std::string;
 #define num_cout std::cout << std::setprecision(8) << std::setw(9) << std::left
 #define iomanip_prefs std::setprecision(8) << std::setw(9) << std::left
 
-#endif /* #ifndef _CONFIG_H */
+#endif // #ifndef __INCLUDE_MISC_H

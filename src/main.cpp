@@ -1,28 +1,21 @@
-#define EIGEN2_SUPPORT
-
-#include "config.h"
+#include "Misc.h"
 #include "output.h"
 #include "Dumper.h"
 #include "LatticeAnalysis.h"
 #include "Term.h"
 #include "IndexClassification.h"
 #include "StatesClassification.h"
-#include "HamiltonianPart.h"
 #include "Hamiltonian.h"
-#include "FieldOperatorPart.h"
 #include "FieldOperator.h"
-#include "GreensFunction.h"
 #include "GFContainer.h"
-#include "TwoParticleGF.h"
 #include "TwoParticleGFContainer.h"
 #include "Vertex4.h"
 
 #include "OptionParser.h"
 
-#include <iostream>
 #include <fstream>
 
-string input = "system.ini";
+std::string input = "system.ini";
 
 LatticeAnalysis Lattice;
 IndexClassification IndexInfo(Lattice);
@@ -30,11 +23,18 @@ StatesClassification S(IndexInfo);
 output_handle OUT;
 Hamiltonian H(IndexInfo,S,OUT,input);
 
-ostream &OUTPUT_STREAM=std::cout;
+std::ostream &OUTPUT_STREAM=std::cout;
 
 
 /* ======================================================================== */
 // To be removed
+
+void printFramed (const std::string& str)
+{
+  std::cout << std::string(str.size(),'=') << std::endl;
+  std::cout << str << std::endl;
+  std::cout << std::string(str.size(),'=') << std::endl;
+}
 
 enum AmpStyle{UnAmputated, Amputated};
 
@@ -75,7 +75,7 @@ void saveChi(const char *fname, TwoParticleGFContainer &Chi, int size_wg)
                         chi_str << chop(real(z)) <<"  "<< chop(imag(z)) << "           "
                           << z1 <<" "<< z2 << "           " << w1 << "  " << w1_ << " " << w2 << "  " << w2_ 
                           << "            "<<n1<<"  "<<n1_<<" "<<n2<<"  "<<n2_<< "            "
-                          << endl << flush;
+                          << std::endl << std::flush;
 #else
                         chi_str.write(reinterpret_cast<char *>(&z),sizeof(std::complex<double>));
 
@@ -140,7 +140,7 @@ void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg, unsigned short s
                         gamma_str << chop(real(z)) <<"  "<< chop(imag(z)) << "           "
                           << z1 <<" "<< z2 << "           " << w1 << "  " << w1_ << " " << w2 << "  " << w2_ 
                           << "            "<<n1<<"  "<<n1_<<" "<<n2<<"  "<<n2_<< "            "
-                          << endl << flush;
+                          << std::endl << std::flush;
 #else
                         gamma_str.write(reinterpret_cast<char *>(&z),sizeof(std::complex<double>));
 
@@ -190,23 +190,15 @@ int main(int argc, char *argv[])
   Dumper dmp("test.h5");
 #endif
 
-  cout << "=======================" << endl;
-  cout << "Lattice Info" << endl;
-  cout << "=======================" << endl;
+  printFramed("Lattice Info");
   Lattice.readin(opt.LatticeFile);
-  cout << Lattice.printSitesList().str() << flush;
+  std::cout << Lattice.printSitesList().str() << std::flush;
   IndexInfo.prepare();
-  cout << "=======================" << endl;
-  cout << "System Info" << endl;
-  cout << "=======================" << endl;
+  printFramed("System Info");
   IndexInfo.printBitInfoList();
-  cout << "=======================" << endl;
-  cout << "Hopping Matrix" << endl;
-  cout << "=======================" << endl;
+  printFramed("Hopping Matrix");
   IndexInfo.printHoppingMatrix();
-  cout << "=======================" << endl;
-  cout << "Terms check" << endl;
-  cout << "=======================" << endl;
+  printFramed("Terms check");
   IndexInfo.printTerms();
   //determination of system
 
@@ -216,14 +208,9 @@ int main(int argc, char *argv[])
 
   //end of determination    
 
-  cout << "=======================" << endl;
-  cout << "System is determined" << endl;
-  cout << "=======================" << endl;
-  cout << "=======================================" << endl;
-  cout << "Process of creation and diagonalization" << endl;
-  cout << "all parts of  Hamiltonian  has  started" << endl;
-  cout << endl;
-
+  printFramed("System is determined");
+  printFramed("Process of creation and diagonalization all parts of Hamiltonian has started");
+  
   //begining of creation all part of Hammiltonian
 
   H.enter();
@@ -232,7 +219,7 @@ int main(int argc, char *argv[])
   RealType beta = opt.beta;
   H.dump();
 
-  num_cout << endl << "The value of ground energy is " << H.getGroundEnergy() << endl;
+  num_cout << std::endl << "The value of ground energy is " << H.getGroundEnergy() << std::endl;
 
  //   GFContainer G(S,H,rho,IndexInfo,Operators);
  //   G.prepare();
@@ -244,7 +231,7 @@ int main(int argc, char *argv[])
   //    DensityMatrix.reduce();
   rho.prepare();
   rho.compute();
-  num_cout << "<H> = " << rho.getAverageEnergy() << endl;
+  num_cout << "<H> = " << rho.getAverageEnergy() << std::endl;
 #ifdef pomerolHDF5  
   dmp.dump(rho);
 #endif
@@ -255,16 +242,16 @@ int main(int argc, char *argv[])
        */
   std::ofstream out;
   out.open("output/Stat.En.dat");
-  out << iomanip_prefs << rho.getAverageEnergy() << endl;
+  out << iomanip_prefs << rho.getAverageEnergy() << std::endl;
   out.close();
 
 
 
 
   //finishing of creation
-  cout << endl;
-  cout << "All parts are created!" << endl;
-  cout << endl;
+  std::cout << std::endl;
+  std::cout << "All parts are created!" << std::endl;
+  std::cout << std::endl;
 
   FieldOperatorContainer Operators(S,H,IndexInfo);
   GFContainer G(S,H,rho,IndexInfo,Operators);
@@ -272,15 +259,11 @@ int main(int argc, char *argv[])
   G.compute();
   long wn = opt.NumberOfMatsubaras;
   G.dumpToPlainText(wn);
-  cout << std::setprecision(9) << G(0) << endl;
-  cout << std::setprecision(9) << G(1) << endl;
+  std::cout << std::setprecision(9) << G(0) << std::endl;
+  std::cout << std::setprecision(9) << G(1) << std::endl;
 
   if (1==1){
-    cout << endl;
-    cout << "==========================================" << endl;
-    cout << "Two Particle Green's function calculation" << endl;
-    cout << "==========================================" << endl;
-
+    printFramed("Two Particle Green's function calculation");
 
     TwoParticleGFContainer::IndexCombination *comb1;
     std::vector<TwoParticleGFContainer::IndexCombination*> v1;

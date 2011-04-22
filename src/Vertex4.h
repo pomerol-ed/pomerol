@@ -4,11 +4,12 @@
 ** \author Igor Krivenko (igor@shg.ru)
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
-#ifndef ____VERTEX4____
-#define ____VERTEX4____
+#ifndef __INCLUDE_VERTEX4_H
+#define __INCLUDE_VERTEX4_H
 
-#include "GFContainer.h"
-#include "TwoParticleGFContainer.h"
+#include"Misc.h"
+#include"GFContainer.h"
+#include"TwoParticleGFContainer.h"
 
 /** Objects of this class just transforms a two-particle Green's function into
  * an irreducible vertex part or into an amputated irreducible vertex.
@@ -104,4 +105,4 @@ private:
     void computeAmputated(const TwoParticleGFContainer::IndexCombination& in);
 };
 
-#endif // endif :: #ifndef ____VERTEX4____
+#endif // endif :: #ifndef __INCLUDE_VERTEX4_H

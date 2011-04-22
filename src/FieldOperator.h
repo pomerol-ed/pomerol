@@ -1,12 +1,11 @@
-#ifndef __OPERATOR_CONTAINERS__
-#define __OPERATOR_CONTAINERS__
+#ifndef __INCLUDE_FIELDOPERATOR_H
+#define __INCLUDE_FIELDOPERATOR_H
 
-#include "config.h"
-#include "output.h"
-#include "StatesClassification.h"
-#include "HamiltonianPart.h"
-#include "Hamiltonian.h" 
-#include "FieldOperatorPart.h"
+#include"Misc.h"
+#include"output.h"
+#include"StatesClassification.h"
+#include"Hamiltonian.h" 
+#include"FieldOperatorPart.h"
 
 typedef std::pair<BlockNumber,BlockNumber> BlockMapping;
 
@@ -75,4 +74,4 @@ public:
     AnnihilationOperator(StatesClassification &System, Hamiltonian &H, int bit);
 };
 
-#endif
+#endif // endif :: #ifdef __INCLUDE_FIELDOPERATOR_H

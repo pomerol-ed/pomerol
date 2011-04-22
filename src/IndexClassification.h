@@ -7,17 +7,13 @@
 **  \author    Andrey Antipov (antipov@ct-qmc.org)
 */
 
-#ifndef __BIT_CLASSIFICATION__
-#define __BIT_CLASSIFICATION__
+#ifndef __INCLUDE_INDEXCLASSIFICATION_H
+#define __INCLUDE_INDEXCLASSIFICATION_H
 
-#include "config.h"
-#include "LatticeAnalysis.h"
-#include "Term.h"
-#include <json/json.h>
-#include <map>
-#include <string>
-#include <list>
-
+#include"Misc.h"
+#include"LatticeAnalysis.h"
+#include"Term.h"
+#include<json/json.h>
 
 /**
  * BitInfo class is an abstract class to handle all info about current bit. 
@@ -45,7 +41,7 @@ public:
     RealType U;
     sBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_, RealType U_, RealType LocalMu_):U(U_){site=site_;type=type_;spin=spin_;LocalMu=LocalMu_;};
     friend std::ostream& operator<<(std::ostream& output, const sBitInfo& out);
-    void print_to_screen(){cout << *this << endl;};
+    void print_to_screen(){std::cout << *this << std::endl;};
 };
 
 /**
@@ -56,11 +52,11 @@ class pBitInfo : public BitInfo
 public:
     RealType U;
     RealType J;
-    string basis;
+    std::string basis;
     unsigned short orbital; 
-    pBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_,unsigned short orbital_, const string &basis_, RealType U_, RealType J_):U(U_),J(J_){site=site_;type=type_;spin=spin_;orbital=orbital_;basis=basis_;};
+    pBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_,unsigned short orbital_, const std::string &basis_, RealType U_, RealType J_):U(U_),J(J_){site=site_;type=type_;spin=spin_;orbital=orbital_;basis=basis_;};
     friend std::ostream& operator<<(std::ostream& output, const pBitInfo& out);
-    void print_to_screen(){cout << *this << endl;};
+    void print_to_screen(){std::cout << *this << std::endl;};
 };
 
 /** 
@@ -92,7 +88,7 @@ class IndexClassification
     LatticeAnalysis &Lattice;
     int N_bit;                                          //!< The length of BitInfoList. Defines the number of states in system as 2^N_bit.
     RealMatrixType HoppingMatrix;                       //!< The matrix to show all hoppings between different bits.
-    vector<BitInfo*> BitInfoList;                       //!< A list of all Bits.
+    std::vector<BitInfo*> BitInfoList;                       //!< A list of all Bits.
     TermsList Terms;                                    //!< The list of all terms for the current Lattice
 public:
     IndexClassification(LatticeAnalysis &Lattice);
@@ -111,9 +107,9 @@ private:
     void defineTerms();                                 //!< Define all terms
     void definePorbitalSphericalTerms(pBitInfo **Bits); //!< The bunch of methods to add Terms for p-orbital written in Spherical basis
     void definePorbitalNativeTerms(pBitInfo **Bits);    //!< The bunch of methods to add Terms for p-orbital written in Native basis
-    vector<unsigned short>& findBits(const unsigned short &site); //!< A method to find all bits for a corresponding site
+    std::vector<unsigned short>& findBits(const unsigned short &site); //!< A method to find all bits for a corresponding site
     unsigned short findBit(const unsigned short &site, const unsigned short &orbital, const unsigned short &spin); //!< A method to find bit, which corresponds to given site, orbital and spin
 };
 
-#endif
+#endif // endif :: #ifndef #__INCLUDE_INDEXCLASSIFICATION_H
 

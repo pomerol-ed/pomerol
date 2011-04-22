@@ -1,12 +1,8 @@
-#ifndef __LATTICE_SYMMETRY_ANALYSIS__
-#define __LATTICE_SYMMETRY_ANALYSIS__
+#ifndef __INCLUDE_LATTICEANALYSIS_H
+#define __INCLUDE_LATTICEANALYSIS_H
 
-#include "config.h"
-#include "string.h"
-#include <json/json.h>
-#include <string>
-#include <map>
-#include <list>
+#include"Misc.h"
+#include<json/json.h>
 
 struct SiteHoppingElement
  {
@@ -43,15 +39,15 @@ class pLatticeSite : public LatticeSite
 public:
     RealType U;
     RealType J;
-    string basis;
-    pLatticeSite(unsigned short type_, RealType LocalMu_, unsigned short number_, RealType U, RealType J, string &basis);
+    std::string basis;
+    pLatticeSite(unsigned short type_, RealType LocalMu_, unsigned short number_, RealType U, RealType J, std::string &basis);
     friend std::ostream& operator<<(std::ostream& output, const pLatticeSite& out);
 };
 
 class LatticeAnalysis
 {
     Json::Value *root;
-    std::map<string, std::list<std::list<unsigned short> > > SitesPermutations;
+    std::map<std::string, std::list<std::list<unsigned short> > > SitesPermutations;
     std::vector<LatticeSite*> SitesList;
 
     std::map<std::string, OrbitalValue> mapOrbitalValue;     //!< The map between string and value in the previous enum
@@ -67,4 +63,4 @@ public:
     std::stringstream& printSitesList();
 };
 
-#endif // endif :: #ifndef __LATTICE_SYMMETRY_ANALYSIS__
+#endif // endif :: #ifndef __INCLUDE_LATTICEANALYSIS_H

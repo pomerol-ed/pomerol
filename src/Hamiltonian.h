@@ -5,14 +5,13 @@
 ** \author Igor Krivenko (igor@shg.ru)
 */
 
-#ifndef ____DEFINE_HAMILTONIAN____
-#define ____DEFINE_HAMILTONIAN____
-#include "config.h"
-#include "IndexClassification.h"
-#include "StatesClassification.h"
-#include "HamiltonianPart.h"
-#include "output.h"
-#include <vector>
+#ifndef __INCLUDE_HAMILTONIAN_H
+#define __INCLUDE_HAMILTONIAN_H
+#include"Misc.h"
+#include"IndexClassification.h"
+#include"StatesClassification.h"
+#include"HamiltonianPart.h"
+#include"output.h"
 
 /** This class represents a Hamiltonian, written as a matrix of matrix elements in a Fock basis.
  * It is a container for several hamiltonian parts, each for single defined QuantumNumbers and a corresponding BlockNumber. 
@@ -30,12 +29,12 @@ class Hamiltonian
     /** Reference to an output handling object */
     output_handle &OUT;
     /** A path to a local config */
-    string config_path;
+    std::string config_path;
 	/** A value of the ground energy - needed for further renormalization */
     RealType GroundEnergy;
 public :
 
-    Hamiltonian(IndexClassification &F_, StatesClassification &S_,output_handle &OUT_, string &config_path_);
+    Hamiltonian(IndexClassification &F_, StatesClassification &S_,output_handle &OUT_, std::string &config_path_);
     void enter();
 
     HamiltonianPart& part(const QuantumNumbers &in);
@@ -50,5 +49,5 @@ private:
     void computeGroundEnergy();
 };
 
-#endif // endif :: #ifndef ____DEFINE_HAMILTONIAN____
+#endif // endif :: #ifndef __INCLUDE_HAMILTONIAN_H
 

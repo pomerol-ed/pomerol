@@ -1,6 +1,6 @@
 #include "TwoParticleGFContainer.h"
 
-extern ostream& OUTPUT_STREAM;
+extern std::ostream& OUTPUT_STREAM;
 
 TwoParticleGFContainer::IndexCombination::IndexCombination(ParticleIndex cindex1, ParticleIndex cindex2, ParticleIndex cdagindex3, ParticleIndex cdagindex4)
 {

@@ -37,14 +37,13 @@
  *	$ g++ -D_BUILD_NCL_SAMPLE -xc++ optparse.h
  */
 
-#ifndef	__NCL_OPTPRASE_H__
-#define	__NCL_OPTPRASE_H__
+#ifndef	__INCLUDE_OPTIONPARSER_H
+#define	__INCLUDE_OPTIONPARSER_H
 
 #include <cstring>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-
 
 #ifdef	USE_NCL_NAMESPACE
 namespace ncl {
@@ -223,14 +222,7 @@ protected:
 };
 #endif/*USE_NCL_NAMESPACE*/
 
-
-
-
-
-
-#include <cstdio>
-#include <iostream>
-#include "config.h"
+#include"Misc.h"
 
 /**
  * A class to store parameters specified by command-line arguments
@@ -239,8 +231,8 @@ class pomerolOptionParser : public optparse {
 public:
 	RealType beta ;
 	unsigned long NumberOfMatsubaras;
-	string LatticeFile;
-    string help;
+	std::string LatticeFile;
+	std::string help;
 
 	pomerolOptionParser() : beta(10), NumberOfMatsubaras(30), LatticeFile("Lattice.json"), help("") {}
 
@@ -258,18 +250,16 @@ public:
 			LatticeFile = arg;
 
         ON_OPTION(SHORTOPT('h') || LONGOPT("help"))
-            cout << "pomerolDiag - an ED code, which provides one- and two- particle Greens functions and irreducible vertex part in Matsubara domain" << endl;
-            cout << "Usage: pomerolDiag [options]" << endl;
-            cout << "Options: " << endl;
-            cout << "-b     --beta        : The value of inverse temperature. Default: " << beta << endl;
-            cout << "-m     --matsubaras  : Amount of Matsubara frequencies for Two Particle GF calculation. Default: " << NumberOfMatsubaras<< endl;
-            cout << "-l     --lattice     : A file with the lattice. Default : " << LatticeFile << endl;
-            cout << "-h     --help        : Show this help message" << endl;
+            std::cout << "pomerolDiag - an ED code, which provides one- and two- particle Greens functions and irreducible vertex part in Matsubara domain" << std::endl;
+            std::cout << "Usage: pomerolDiag [options]" << std::endl;
+            std::cout << "Options: " << std::endl;
+            std::cout << "-b     --beta        : The value of inverse temperature. Default: " << beta << std::endl;
+            std::cout << "-m     --matsubaras  : Amount of Matsubara frequencies for Two Particle GF calculation. Default: " << NumberOfMatsubaras<< std::endl;
+            std::cout << "-l     --lattice     : A file with the lattice. Default : " << LatticeFile << std::endl;
+            std::cout << "-h     --help        : Show this help message" << std::endl;
             exit(0);
 
 	END_OPTION_MAP()
 };
 
-
-
-#endif/*__NCL_OPTPRASE_H__*/
+#endif // endif :: #ifndef __INCLUDE_OPTIONPARSER_H

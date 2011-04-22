@@ -1,6 +1,6 @@
 #include "Hamiltonian.h"
 
-Hamiltonian::Hamiltonian(IndexClassification &F_,StatesClassification &S_,output_handle &OUT_, string& config_path_):Formula(F_),S(S_),OUT(OUT_),config_path(config_path_){}
+Hamiltonian::Hamiltonian(IndexClassification &F_,StatesClassification &S_,output_handle &OUT_, std::string& config_path_):Formula(F_),S(S_),OUT(OUT_),config_path(config_path_){}
 
 void Hamiltonian::enter()
 {
@@ -13,8 +13,8 @@ void Hamiltonian::enter()
 	  Hpart[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block),OUT_EVal.path(), OUT_EVec.path());
 	  Hpart[current_block]->enter();
 
-	  cout << "Hamiltonian block " << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is entered";
-	  cout << ". Size = " << S.clstates(S.getBlockInfo(current_block)).size() << endl; 
+	  std::cout << "Hamiltonian block " << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is entered";
+	  std::cout << ". Size = " << S.clstates(S.getBlockInfo(current_block)).size() << std::endl; 
 
 	}
 }
@@ -40,7 +40,7 @@ void Hamiltonian::diagonalize()
   for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
     {
       Hpart[current_block]->diagonalization();
-      cout << "Hpart" << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is diagonalized." << endl;
+      std::cout << "Hpart" << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is diagonalized." << std::endl;
     }
  computeGroundEnergy();
 }
@@ -51,7 +51,7 @@ void Hamiltonian::dump()
     {
       Hpart[current_block]->dump();
     }
-  cout << "Hamiltonian has been dumped." << endl;
+  std::cout << "Hamiltonian has been dumped." << std::endl;
 }
 
 void Hamiltonian::computeGroundEnergy()
@@ -71,7 +71,7 @@ RealType Hamiltonian::getGroundEnergy()
 
 void Hamiltonian::reduce(const RealType Cutoff)
 {
-	cout << "Performing EV cutoff at " << Cutoff << " level" << endl;
+	std::cout << "Performing EV cutoff at " << Cutoff << " level" << std::endl;
 	for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
   	{
 			Hpart[current_block]->reduce(GroundEnergy+Cutoff);

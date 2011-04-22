@@ -4,16 +4,14 @@
 ** \author Igor Krivenko (igor@shg.ru)
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
-#ifndef ____DEFINE_2PGF_PART____
-#define ____DEFINE_2PGF_PART____
+#ifndef __INCLUDE_TWOPARTICLEGFPART_H
+#define __INCLUDE_TWOPARTICLEGFPART_H
 
-#include <list>
-
-#include "config.h"
-#include "StatesClassification.h"
-#include "HamiltonianPart.h"
-#include "FieldOperator.h"
-#include "DensityMatrixPart.h"
+#include"Misc.h"
+#include"StatesClassification.h"
+#include"HamiltonianPart.h"
+#include"FieldOperatorPart.h"
+#include"DensityMatrixPart.h"
 
 /** This class represents a part of a two-particle Green's function.
  * Every part describes one 'world stripe' of four operators.
@@ -281,4 +279,4 @@ public:
     const MatsubaraContainer& getMatsubaraContainer();
 };
 
-#endif // endif :: #ifndef ____DEFINE_2PGF_PART____
+#endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGFPART_H

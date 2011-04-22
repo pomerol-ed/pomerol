@@ -4,11 +4,11 @@
 ** \author Igor Krivenko (igor@shg.ru)
 */
 #ifdef pomerolHDF5
-#ifndef ____DUMPER____
-#define ____DUMPER____
+#ifndef __INCLUDE_DUMPER_H
+#define __INCLUDE_DUMPER_H
 
 #include<H5Cpp.h>
-#include"config.h"
+#include"Misc.h"
 
 class Dumper;
 class Dumpable {
@@ -32,5 +32,5 @@ public:
     static void dumpRealVector(H5::CommonFG& FG, const std::string& Name, RealVectorType V);
 };
 
-#endif // endif :: #ifndef ____DUMPER____
+#endif // endif :: #ifndef __INCLUDE_DUMPER_H
 #endif // endif :: #ifndef pomerolHDF5

@@ -1,4 +1,4 @@
-EIGEN_INCLUDE=-I/opt/local/include/eigen2 $(shell pkg-config --cflags-only-I eigen2) -I$(shell pwd)/eigen
+EIGEN_INCLUDE=-I/opt/local/include/eigen3 $(shell pkg-config --cflags-only-I eigen3) -I$(shell pwd)/eigen
 INCLUDES= -I../iniparser/src -I../iniconfig -I../jsoncpp/include $(EIGEN_INCLUDE)
 CFLAGS=$(INCLUDES) -DHRD # -DpomerolHDF5
 CXXFLAGS=$(CFLAGS)

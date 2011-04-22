@@ -1,10 +1,9 @@
-#ifndef ____DEFINE_CCXPART____
-#define ____DEFINE_CCXPART____
-#include "config.h"
-#include "StatesClassification.h"
-#include "Hamiltonian.h"
-#include "output.h"
-#include "HamiltonianPart.h"
+#ifndef __INCLUDE_FIELDOPERATORPART_H
+#define __INCLUDE_FIELDOPERATORPART_H
+#include"Misc.h"
+#include"StatesClassification.h"
+#include"Hamiltonian.h"
+#include"output.h"
 
 class FieldOperatorPart {
 protected:
@@ -64,4 +63,4 @@ public :
     AnnihilationOperatorPart& transpose();
 };
 
-#endif // endif :: #ifdef ____DEFINE_CCXPAIR____
+#endif // endif :: #ifdef __INCLUDE_FIELDOPERATORPART_H

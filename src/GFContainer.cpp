@@ -1,5 +1,5 @@
 #include "GFContainer.h"
-extern ostream& OUTPUT_STREAM;
+extern std::ostream& OUTPUT_STREAM;
 
 GFContainer::IndexCombination::IndexCombination(ParticleIndex cindex1, ParticleIndex cdagindex2)
 {

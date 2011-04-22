@@ -1,11 +1,8 @@
-#include "HamiltonianPart.h"
-#include "StatesClassification.h"
-#include <fstream>
-#include <sstream>
-
-#include <json/json.h>
-
-using std::stringstream;
+#include"HamiltonianPart.h"
+#include"StatesClassification.h"
+#include<sstream>
+#include<fstream>
+#include<Eigen/Eigenvalues>
 
 // class HamiltonianPart
 
@@ -61,7 +58,7 @@ void HamiltonianPart::enter()
 	
 	(*this).add_hopping(Formula.getHoppingMatrix());
 	
-	H.part<Eigen::LowerTriangular>() =  H.marked<Eigen::UpperTriangular>().transpose();  // Symmetric matrix
+	H.triangularView<Eigen::Lower>() = H.triangularView<Eigen::Upper>().transpose();
 }
 
 void HamiltonianPart::add_nTerm(InnerQuantumState inner_state,nTerm *N)
@@ -191,30 +188,30 @@ void HamiltonianPart::diagonalization()					//method of diagonalization classifi
 
 void HamiltonianPart::print_to_screen()					//ptint part of Hamiltonian to screen
 {
-	cout << H << endl;
-	cout << endl;
+	std::cout << H << std::endl;
+	std::cout << std::endl;
 }
 
 void HamiltonianPart::dump()							//writing Eigen Values in output file
 {
 	if(N_state_m!=0)
 	{
-		stringstream filename;
+		std::stringstream filename;
 		filename << (*this).ef_path << "//ef" << hpart_id << ".dat";
-  		ofstream outHpart;
+  		std::ofstream outHpart;
 		outHpart.open(filename.str().c_str());
-		outHpart << H << endl;
-		outHpart << endl;
+		outHpart << H << std::endl;
+		outHpart << std::endl;
   		outHpart.close();
 	}
 
 	if(N_state_m!=0)
 	{
-		stringstream filename;
+		std::stringstream filename;
 		filename << (*this).ev_path <<"//ev" << hpart_id << ".dat";
-		ofstream outHpart;
+		std::ofstream outHpart;
   		outHpart.open(filename.str().c_str());
-		outHpart << V << endl;
+		outHpart << V << std::endl;
   		outHpart.close();
 	}
 }
@@ -228,11 +225,11 @@ bool HamiltonianPart::reduce(RealType ActualCutoff)
 {
 		InnerQuantumState counter=0;
 		for (counter=0; (counter< (unsigned int)V.size() && V[counter]<=ActualCutoff); ++counter){};
-		cout << "Left " << counter << " eigenvalues : " << endl;
+		std::cout << "Left " << counter << " eigenvalues : " << std::endl;
 		if (counter) 
-		{cout << V.start(counter) << endl << "_________" << endl;
-		  V=V.start(counter);
-		  H=H.corner(Eigen::TopLeft,counter,counter);
+		{std::cout << V.head(counter) << std::endl << "_________" << std::endl;
+		  V=V.head(counter);
+		  H=H.topLeftCorner(counter,counter);
 		  return true;
 		}
 		else return false;

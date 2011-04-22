@@ -18,7 +18,7 @@ nnTerm::nnTerm(unsigned short bit1, unsigned short bit2, RealType Val)
   type="nn";
 }
 
-std::ostream& operator<<(std::ostream& output,const nnTerm& out)
+std::ostream& operator<<(std::ostream& output, const nnTerm& out)
 {
    output << "Diagonal " << out.type << " term, " << out.Value << "*(n_{" <<out.bit[0] <<"}n_{"<< out.bit[2] << "})"; 
    return output;
@@ -57,7 +57,7 @@ nTerm::nTerm(unsigned short bit1, RealType Val)
   type="n";
 };
 
- std::ostream& operator<<(std::ostream& output,const Term& out)
+std::ostream& operator<<(std::ostream& output,const Term& out)
 {
 if (out.N == 4 && out.type == "nn") { output << (nnTerm&) out; return output; }; 
 

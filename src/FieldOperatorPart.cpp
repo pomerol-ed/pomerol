@@ -29,7 +29,7 @@ void FieldOperatorPart::print_to_screen()  //print to screen C and CX
         {
                 QuantumState N = S.clstates(to)[it.row()];
                 QuantumState M = S.clstates(from)[it.col()];
-                cout << N <<" " << M << " : " << it.value() << endl;
+                std::cout << N <<" " << M << " : " << it.value() << std::endl;
         };
 }
 
@@ -62,8 +62,8 @@ void FieldOperatorPart::compute()
     QuantumNumbers to = h_to.id();
     QuantumNumbers from = h_from.id();
 
-    const vector<QuantumState>& toStates = S.clstates(to);
-    const vector<QuantumState>& fromStates = S.clstates(from);
+    const std::vector<QuantumState>& toStates = S.clstates(to);
+    const std::vector<QuantumState>& fromStates = S.clstates(from);
     
     DynamicSparseMatrixType tempElements(toStates.size(),fromStates.size());
     

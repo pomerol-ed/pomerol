@@ -1,6 +1,5 @@
 #include "IndexClassification.h"
-#include <fstream>
-#include <iomanip>
+
 std::ostream& operator<<(std::ostream& output,const sBitInfo& out)
 {
 output << "Bit " << out.bitNumber << " of s-orbital, site N " << out.site << ", spin " << ((out.spin==1)?"up  ":"down") << ", U= " << out.U; 
@@ -127,7 +126,7 @@ void IndexClassification::defineTerms()
 
 void IndexClassification::printBitInfoList()
 {
-  for (vector<BitInfo*>::iterator it=BitInfoList.begin(); it != BitInfoList.end(); it++ ) (*it)->print_to_screen();
+  for (std::vector<BitInfo*>::iterator it=BitInfoList.begin(); it != BitInfoList.end(); it++ ) (*it)->print_to_screen();
 }
 
 unsigned short IndexClassification::findBit(const unsigned short &site, const unsigned short &orbital, const unsigned short &spin)
@@ -157,12 +156,12 @@ unsigned short IndexClassification::findBit(const unsigned short &site, const un
 
 void IndexClassification::printHoppingMatrix()
 {
-    cout << HoppingMatrix << endl;
+    std::cout << HoppingMatrix << std::endl;
 }
 
 void IndexClassification::printTerms()
 {
-    cout << Terms << endl;
+    std::cout << Terms << std::endl;
 }
 void IndexClassification::defineHopping()
 /*
@@ -300,7 +299,7 @@ std::ostream& operator<<(std::ostream& output, TermsList& out)
   {
      std::list<Term*>::iterator it;
      for ( it=(out.getTerms(order)).begin() ; it != out.getTerms(order).end(); it++ ) 
-         output << **it << endl;
+         output << **it << std::endl;
   }
 return output;
 }

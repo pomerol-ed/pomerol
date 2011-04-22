@@ -5,10 +5,8 @@
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
 
-#ifndef ____DEFINE_DENSITY_MATRIX____
-#define ____DEFINE_DENSITY_MATRIX____
-
-#include <vector>
+#ifndef __INCLUDE_DENSITYMATRIX_H
+#define __INCLUDE_DENSITYMATRIX_H
 
 #include "Dumper.h"
 #include "StatesClassification.h"
@@ -74,4 +72,4 @@ public:
 #endif
 };
 
-#endif // endif :: #ifndef ____DEFINE_DENSITY_MATRIX____
+#endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H

@@ -13,7 +13,7 @@ sLatticeSite::sLatticeSite (unsigned short type_, RealType LocalMu_, unsigned sh
 	LocalMu=LocalMu_;
 };
 
-pLatticeSite::pLatticeSite(unsigned short type_, RealType LocalMu_, unsigned short number_, RealType U, RealType J, string &basis):U(U),J(J),basis(basis)
+pLatticeSite::pLatticeSite(unsigned short type_, RealType LocalMu_, unsigned short number_, RealType U, RealType J, std::string &basis):U(U),J(J),basis(basis)
 {
 	type = type_;
 	number=number_;
@@ -22,10 +22,10 @@ pLatticeSite::pLatticeSite(unsigned short type_, RealType LocalMu_, unsigned sho
 
 std::ostream& operator<<(std::ostream& output,const sLatticeSite& out)
 {
-	output << "Site N " << out.number << " is an s-orbital, filled by " << out.LocalMu << " electrons, U = " << out.U << endl << "Hopping: " << endl;
+	output << "Site N " << out.number << " is an s-orbital, filled by " << out.LocalMu << " electrons, U = " << out.U << std::endl << "Hopping: " << std::endl;
 	std::list<SiteHoppingElement*>::const_iterator it;
 	for (it=out.HoppingList.begin();it!=out.HoppingList.end();++it){
-		output << (**it) << endl;	
+		output << (**it) << std::endl;	
 	}
 return output;
 }
@@ -33,10 +33,10 @@ return output;
 std::ostream& operator<<(std::ostream& output,const pLatticeSite& out)
 {
 	output << "Site N " << out.number << " is a  p-orbital, filled by " << out.LocalMu << " electrons, U = " << out.U << ", J = " << out.J << " in a " << out.basis << " basis"; 
-	output << endl << "Hopping: " << endl;
+	output << std::endl << "Hopping: " << std::endl;
 	std::list<SiteHoppingElement*>::const_iterator it;
 	for (it=out.HoppingList.begin();it!=out.HoppingList.end();++it){
-		output << (**it) << endl;	
+		output << (**it) << std::endl;	
 	}
 return output;
 }
@@ -51,7 +51,7 @@ LatticeAnalysis::LatticeAnalysis ()
   	mapOrbitalValue["f"] = f;
 };
 
-int LatticeAnalysis::readin(string &LatticeFile)
+int LatticeAnalysis::readin(std::string &LatticeFile)
 {
   Json::Reader reader;
   std::ifstream in(LatticeFile.c_str());
@@ -67,7 +67,7 @@ int LatticeAnalysis::readin(string &LatticeFile)
   }
   catch (std::exception ErrorException)
   	{
-		cout << ErrorException.what() << endl;
+		std::cout << ErrorException.what() << std::endl;
 		exit(1);
   	}
   (*this).classifySites();
@@ -113,7 +113,7 @@ void LatticeAnalysis::classifySites()
 				    RealType U=sites[current_site.str()]["U"].asDouble();
 				    RealType J=sites[current_site.str()]["J"].asDouble();
 					RealType LocalMu = sites[current_site.str()]["LocalMu"].asDouble();
-				    string basis = sites[current_site.str()]["basis"].asString();
+				    std::string basis = sites[current_site.str()]["basis"].asString();
 					LatticeSite *P = new pLatticeSite(p,LocalMu,site,U,J,basis); 
   					Json::Value hopping = sites[current_site.str()]["hopping"];
 					enterHoppingListForCurrentSite(site,hopping,P->HoppingList);
@@ -141,8 +141,8 @@ std::stringstream& LatticeAnalysis::printSitesList()
 	{
 			switch ((*it)->type)
 			{
-				case s: { current << (sLatticeSite&)(**it) << endl; break; };
-				case p: { current << (pLatticeSite&)(**it) << endl; break; };
+			  case s: { current << (sLatticeSite&)(**it) << std::endl; break; };
+			  case p: { current << (pLatticeSite&)(**it) << std::endl; break; };
 				default: { current << "ERROR"; break; };
 			}
 	}

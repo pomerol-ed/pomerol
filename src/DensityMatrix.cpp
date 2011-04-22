@@ -35,7 +35,7 @@ void DensityMatrix::compute(void)
     for(BlockNumber n = 0; n < NumOfBlocks; n++) Z += parts[n]->compute();
     // Divide the density matrix by Z.
     for(BlockNumber n = 0; n < NumOfBlocks; n++) parts[n]->normalize(Z);
-    cout << "Partition Function = " << Z << endl;
+    std::cout << "Partition Function = " << Z << std::endl;
 }
 
 RealType DensityMatrix::operator()( QuantumState &state )

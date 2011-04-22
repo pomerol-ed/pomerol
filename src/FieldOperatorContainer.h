@@ -5,13 +5,13 @@
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
 
-#ifndef __FIELD_OPERATOR_CONTAINER__
-#define __FIELD_OPERATOR_CONTAINER__
+#ifndef __INCLUDE_FIELDOPERATORCONTAINER_H
+#define __INCLUDE_FIELDOPERATORCONTAINER_H
 
-#include "config.h"
-#include "FieldOperator.h"
-#include "Hamiltonian.h"
-#include "StatesClassification.h"
+#include"Misc.h"
+#include"FieldOperator.h"
+#include"Hamiltonian.h"
+#include"StatesClassification.h"
 
 /** This class represents a container to store and retrieve FieldOperators ( CreationOperator or AnnihilationOperator 
  * rotated to eigenvector basis of Hamiltonian H ) for a given Index.
@@ -45,4 +45,4 @@ public:
     AnnihilationOperator& getAnnihilationOperator(ParticleIndex in);
 };
 
-#endif // endif :: #ifndef __FIELD_OPERATOR_CONTAINER__
+#endif // endif :: #ifndef __INCLUDE_FIELDOPERATORCONTAINER_H

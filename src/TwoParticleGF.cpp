@@ -6,7 +6,7 @@
 */
 #include "TwoParticleGF.h"
 extern output_handle OUT;
-extern ostream& OUTPUT_STREAM;
+extern std::ostream& OUTPUT_STREAM;
 
 static const Permutation3 permutations3[6] = {
     {{0,1,2},1},
@@ -118,12 +118,12 @@ if (Status < Computed){
     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
     {
         // TODO: More elegant output.
-        cout << static_cast<int>((distance(parts.begin(),iter)*100.0)/parts.size()) << "  " <<flush;
+        std::cout << static_cast<int>((distance(parts.begin(),iter)*100.0)/parts.size()) << "  " << std::flush;
         (*iter)->compute(NumberOfMatsubaras);
         *Storage+=(*iter)->getMatsubaraContainer();
         (*iter)->clear();
     }
-    cout << endl;
+    std::cout << std::endl;
     Status = Computed;
     }
 }
@@ -170,7 +170,7 @@ RealType TwoParticleGF::getBeta() const
     return DM.getBeta();
 }
 
-string TwoParticleGF::getPath()
+std::string TwoParticleGF::getPath()
 {
     return green_path.fullpath();
 }

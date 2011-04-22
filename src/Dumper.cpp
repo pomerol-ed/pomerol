@@ -6,8 +6,7 @@
 */
 
 #ifdef pomerolHDF5
-#include "Dumper.h"
-#include <complex>
+#include"Dumper.h"
 
 const unsigned int* Dumper::HDF5Version = Dumper::initHDF5();
 

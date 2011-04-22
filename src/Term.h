@@ -9,13 +9,10 @@
 */
 
 
-#ifndef __TERM_H__
-#define __TERM_H__
+#ifndef __INCLUDE_TERM_H
+#define __INCLUDE_TERM_H
 
-#include "config.h"
-#include <map>
-#include <string>
-#include <ostream>
+#include"Misc.h"
 
 /** Term - a class to represent a term in a formula. 
  * The term is meant to be a finite number (defined by template parameter len) of creation and annihilation operators. 
@@ -25,12 +22,12 @@ class Term
 {
 public:
    int N;            //!< Amount of field operators in term
-   string type;
+   std::string type;
    bool diag;             //!< Determine, whether the term will produce diagonal or non-diagonal matrix element.
    bool *order;         //!< Order is a sequence of true/false values. True means creation operator, false - annihilation operator.
    unsigned short *bit;     //!< The bits which are used by field operators.
    RealType Value;        //!< Define which value should be added to Hamiltonian by this term. Actually, this is the matrix element.
-   friend std::ostream & (operator <<) (ostream &, const Term &); //!< Output of the class 
+   friend std::ostream & (operator <<) (std::ostream &, const Term &); //!< Output of the class 
    virtual ~Term();
 };
 
@@ -40,7 +37,7 @@ public:
 class nnTerm : public Term {
 public:
    nnTerm(unsigned short bit1, unsigned short bit2, RealType Val);
-   friend std::ostream & (operator <<) (ostream &,const nnTerm&);
+   friend std::ostream & (operator <<) (std::ostream &,const nnTerm&);
 };
 
 /** spinflipTerm - class, inherited from Term class with N=4. Represents a spinflip type of term.
@@ -55,4 +52,4 @@ class nTerm : public Term {
 public:
    nTerm(unsigned short bit,RealType Val);
 };
-#endif
+#endif // #define __INCLUDE_TERM_H

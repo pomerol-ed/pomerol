@@ -1,8 +1,8 @@
-#ifndef ____DEFINE_HAMILTONIAN_PART____
-#define ____DEFINE_HAMILTONIAN_PART____
-#include "config.h"
-#include "IndexClassification.h"
-#include "StatesClassification.h"
+#ifndef __INCLUDE_HAMILTONIANPART_H
+#define __INCLUDE_HAMILTONIANPART_H
+#include"Misc.h"
+#include"IndexClassification.h"
+#include"StatesClassification.h"
 
 class HamiltonianPart {
 
@@ -13,11 +13,11 @@ class HamiltonianPart {
     
     QuantumNumbers hpart_id;
 
-    RealMatrixType H;                //part of Hamilt
+    RealMatrixType H;                //part of Hamiltonian
     RealVectorType V;                //vector of Eigen Values
 
-    string ev_path;                    // EigenVectors output path handler
-    string ef_path;                    // EigenFunctions output path handler
+    std::string ev_path;                    // EigenVectors output path handler
+    std::string ef_path;                    // EigenFunctions output path handler
 
 private:
 
@@ -43,7 +43,7 @@ private:
 
 public:
 
-    HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id, const string &ev_path, const string &ef_path) : Formula(F),S(S),hpart_id(id),ev_path(ev_path),ef_path(ef_path){};
+    HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id, const std::string &ev_path, const std::string &ef_path) : Formula(F),S(S),hpart_id(id),ev_path(ev_path),ef_path(ef_path){};
     
     void enter();
     
@@ -63,4 +63,4 @@ public:
 };
 
                         //structure of values rotated C or CX
-#endif // endif :: #ifndef ____DEFINE_HAMILTONIAN_PART____
+#endif // endif :: #ifndef __INCLUDE_HAMILTONIANPART_H

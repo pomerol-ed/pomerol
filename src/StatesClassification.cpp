@@ -1,6 +1,5 @@
 #include "StatesClassification.h"
 
-
 bool BlockNumber::operator<(const BlockNumber& rhs) const {return number<rhs.number;}
 bool BlockNumber::operator==(const BlockNumber& rhs) const {return number==rhs.number;}
 
@@ -36,7 +35,7 @@ std::ostream& operator<<(std::ostream& output,const QuantumNumbers& out)
 
 //class StatesClassification
 
-const vector<QuantumState>& StatesClassification::clstates( QuantumNumbers in )            //return st[in.Lz][in.N_up][in.N_down]
+const std::vector<QuantumState>& StatesClassification::clstates( QuantumNumbers in )            //return st[in.Lz][in.N_up][in.N_down]
 {
     return st[in.Lz][in.N_up][in.N_down];
 }
@@ -114,24 +113,24 @@ void StatesClassification::iniStatesClassification()             //initalize Sta
     N_state = ( 1 << N_bit ); 
     N_bit_m=0;
     #warning : bad N_bit_m definition. Actually existence of N_bit_m is definetely bad.
-      for (vector<BitInfo*>::iterator it=Formula.getBitInfoList().begin(); it != Formula.getBitInfoList().end(); it++ ) 
+      for (std::vector<BitInfo*>::iterator it=Formula.getBitInfoList().begin(); it != Formula.getBitInfoList().end(); it++ ) 
     {
         if ((*it)->type == p) { N_bit_m = 6; break;};
         if ((*it)->type == d) { N_bit_m = 10; break; };
         if ((*it)->type == f) { N_bit_m = 14; break; };
     }
     
-    vector<QuantumState> null;                        //creation null vectors
+    std::vector<QuantumState> null;                        //creation null vectors
     int Lz_max=0;
     for(int L=(N_bit_m/2-1)/2;L>0;L--)
         Lz_max+=2*L;
-    st = new vector<QuantumState> ** [2*Lz_max+1];
+    st = new std::vector<QuantumState> ** [2*Lz_max+1];
     for (int i=0; i<(2*Lz_max+1); i++)
     {
-        st[i] = new vector<QuantumState> * [N_bit/2+1];
+        st[i] = new std::vector<QuantumState> * [N_bit/2+1];
         for (int j=0; j<(N_bit/2 + 1); j++)
         {
-            st[i][j] = new vector<QuantumState> [N_bit/2+1];
+            st[i][j] = new std::vector<QuantumState> [N_bit/2+1];
             for (int k=0; k<(N_bit/2 +1); k++)
             {
                 st[i][j][k] = null;

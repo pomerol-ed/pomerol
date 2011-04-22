@@ -103,7 +103,7 @@ void GreensFunction::dumpToPlainText(long points)
     for (int k=0; k<points; k++)
     {
         ComplexType G = (*this)(k);
-        output << std::setprecision(9) << real(G) << "    " << imag(G) << "    " << endl;
+        output << std::setprecision(9) << real(G) << "    " << imag(G) << "    " << std::endl;
     }
     output.close();
 }

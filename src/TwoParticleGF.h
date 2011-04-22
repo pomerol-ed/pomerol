@@ -4,20 +4,19 @@
 ** \author Igor Krivenko (igor@shg.ru)
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
-#ifndef ____DEFINE_2PGF____
-#define ____DEFINE_2PGF____
+#ifndef __INCLUDE_TWOPARTICLEGF_H
+#define __INCLUDE_TWOPARTICLEGF_H
 
 #include <sstream>
 #include <fstream>
 #include <iomanip>
-#include <cmath>
 
-#include "config.h"
-#include "output.h"
-#include "StatesClassification.h"
-#include "FieldOperator.h"
-#include "DensityMatrix.h"
-#include "TwoParticleGFPart.h"
+#include"Misc.h"
+#include"output.h"
+#include"StatesClassification.h"
+#include"FieldOperator.h"
+#include"DensityMatrix.h"
+#include"TwoParticleGFPart.h"
 
 /** This class represents a thermal Green's function in the Matsubara representation.
  *
@@ -129,7 +128,7 @@ Should it be replaced with a standard physical notion of indices?"
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
 
     /** Returns the path of the output directory associated with this two-particle Green's function. */
-    string getPath();
+    std::string getPath();
 
     /** Returns true, if GF is identical to zero */
     bool vanishes();
@@ -142,4 +141,4 @@ Should it be replaced with a standard physical notion of indices?"
     //void dumpMatsubara(unsigned short points);
 };
 
-#endif // endif :: #ifndef ____DEFINE_2PGF____
+#endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGF_H

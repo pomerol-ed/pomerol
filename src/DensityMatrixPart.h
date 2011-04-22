@@ -4,8 +4,8 @@
 ** \author Igor Krivenko (igor@shg.ru)
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
-#ifndef ____DEFINE_DENSITY_MATRIX_PART____
-#define ____DEFINE_DENSITY_MATRIX_PART____
+#ifndef __INCLUDE_DENSITYMATRIXPART_H
+#define __INCLUDE_DENSITYMATRIXPART_H
 
 #include "Dumper.h"
 #include "HamiltonianPart.h"
@@ -73,4 +73,4 @@ public:
 #endif
 };
 
-#endif // endif :: #ifndef ____DEFINE_DENSITY_MATRIX_PART____
+#endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H
