@@ -176,12 +176,12 @@ int main(int argc, char *argv[])
 {
    try {
 		pomerolOptionParser opt;
-		int argused = opt.parse(&argv[1], argc-1); // Skip argv[0].
+		opt.parse(&argv[1], argc-1); // Skip argv[0].
 
+        std::cout << "pomerolDiag. Parameters " << std::endl;
 		std::cout << "Lattice File         : " << opt.LatticeFile << std::endl;
 		std::cout << "Number Of Matsubaras : " << opt.NumberOfMatsubaras << std::endl;
 		std::cout << "beta:                : " << opt.beta << std::endl;
-        std::cout << "input arguments: " << argused << std::endl;
 	} catch (const optparse::unrecognized_option& e) {
 		std::cout << "unrecognized option: " << e.what() << std::endl;
 		return 1;
@@ -189,7 +189,6 @@ int main(int argc, char *argv[])
 		std::cout << "invalid value: " << e.what() << std::endl;
 		return 1;
 	}
-return 0;
 
 #ifdef pomerolHDF5
   Dumper dmp("test.h5");
