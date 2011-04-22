@@ -1,8 +1,8 @@
-// pomerol/trunk/src/BitClassification.h
+// pomerol/trunk/src/IndexClassification.h
 // This file is a part of pomerol diagonalization code
 
-/** \file BitClassification.h
-**  \brief Declaration of BitInfo, TermsList, BitClassification classes.
+/** \file IndexClassification.h
+**  \brief Declaration of BitInfo, TermsList, IndexClassification classes.
 ** 
 **  \author    Andrey Antipov (antipov@ct-qmc.org)
 */
@@ -80,14 +80,14 @@ class TermsList
 };
 
 /**
- * The BitClassification class handles all Terms and Bits for a given Lattice.
+ * The IndexClassification class handles all Terms and Bits for a given Lattice.
  * It reads the structure of the lattice from file "Lattice.json".
  * The input file should be written in JSON format and contain all the info about the sites of the system.
- * BitClassification parses this file and creates a bit classification instead of site in order to associate a unique index "bit" to a site + spin configuration.
+ * IndexClassification parses this file and creates a bit classification instead of site in order to associate a unique index "bit" to a site + spin configuration.
  * Then the HoppingMatrix to reproduce all the hoppings of the first order between different bits is created.
  * Finally, the list of formula for the model is written on a current lattice through a list of Terms to instruct the entering of the matrix elements of the hamiltonian.
  */
-class BitClassification
+class IndexClassification
 {
     LatticeAnalysis &Lattice;
     int N_bit;                                          //!< The length of BitInfoList. Defines the number of states in system as 2^N_bit.
@@ -95,7 +95,7 @@ class BitClassification
     vector<BitInfo*> BitInfoList;                       //!< A list of all Bits.
     TermsList Terms;                                    //!< The list of all terms for the current Lattice
 public:
-    BitClassification(LatticeAnalysis &Lattice);
+    IndexClassification(LatticeAnalysis &Lattice);
     int prepare();                                      //!< Reads all info from Lattice (LatticeAnalysis class)
     void printBitInfoList();                            //!< Print BitInfoList to screen
     void printHoppingMatrix();                          //!< Print HoppingMatrix to screen

@@ -24,8 +24,8 @@ private:
     StatesClassification &S;
     /** A reference to a Hamiltonian. */
     Hamiltonian &H;
-    /** A reference to a BitClassification object in order to check the input indices. */
-    BitClassification &IndexInfo;
+    /** A reference to a IndexClassification object in order to check the input indices. */
+    IndexClassification &IndexInfo;
     /** A map which gives a link to the CreationOperator for a given index */
     std::map <ParticleIndex, CreationOperator*>     mapCreationOperators;
     /** A map which gives a link to the AnnihilationOperator for a given index */
@@ -34,10 +34,10 @@ public:
     /** Constructor.
      * \param[in] S A reference to a states classification object.
      * \param[in] H A reference to a Hamiltonian.
-     * \param[in] IndexInfo A reference to a BitClassification
+     * \param[in] IndexInfo A reference to a IndexClassification
      */
     FieldOperatorContainer(StatesClassification &S, 
-        Hamiltonian &H, BitClassification &IndexInfo);
+        Hamiltonian &H, IndexClassification &IndexInfo);
 
     /** Returns the CreationOperator for a given Index */
     CreationOperator& getCreationOperator(ParticleIndex in);

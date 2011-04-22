@@ -19,7 +19,7 @@ class GFContainer
 
 public:
     struct IndexCombination; 
-    GFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, BitClassification& IndexInfo, FieldOperatorContainer& Operators);
+    GFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, IndexClassification& IndexInfo, FieldOperatorContainer& Operators);
     void prepare();
     void compute();
     MatrixType& operator()(long MatsubaraNumber);
@@ -29,7 +29,7 @@ private:
     StatesClassification &S;
     Hamiltonian &H;
     DensityMatrix &DM;
-    BitClassification &IndexInfo;
+    IndexClassification &IndexInfo;
     FieldOperatorContainer &Operators;
 
     std::map<IndexCombination, GreensFunction*> mapGreensFunctions;

@@ -1,12 +1,12 @@
 #ifndef ____DEFINE_HAMILTONIAN_PART____
 #define ____DEFINE_HAMILTONIAN_PART____
 #include "config.h"
-#include "BitClassification.h"
+#include "IndexClassification.h"
 #include "StatesClassification.h"
 
 class HamiltonianPart {
 
-    BitClassification &Formula;
+    IndexClassification &Formula;
     StatesClassification &S;
 
     QuantumState N_state_m;                //number states of vector st
@@ -43,7 +43,7 @@ private:
 
 public:
 
-    HamiltonianPart(BitClassification &F, StatesClassification &S, QuantumNumbers id, const string &ev_path, const string &ef_path) : Formula(F),S(S),hpart_id(id),ev_path(ev_path),ef_path(ef_path){};
+    HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id, const string &ev_path, const string &ef_path) : Formula(F),S(S),hpart_id(id),ev_path(ev_path),ef_path(ef_path){};
     
     void enter();
     

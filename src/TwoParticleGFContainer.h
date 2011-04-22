@@ -15,7 +15,7 @@ friend class Vertex4;
 
 public:
     struct IndexCombination;
-    TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, BitClassification& IndexInfo, FieldOperatorContainer& Operators);
+    TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, IndexClassification& IndexInfo, FieldOperatorContainer& Operators);
 
     void readNonTrivialIndices(std::vector<IndexCombination*>&);
     void prepare();
@@ -34,7 +34,7 @@ private:
     StatesClassification &S;
     Hamiltonian &H;
     DensityMatrix &DM; 
-    BitClassification &IndexInfo;
+    IndexClassification &IndexInfo;
     FieldOperatorContainer &Operators;
     std::vector<IndexCombination*> NonTrivialCombinations;
     std::map<IndexCombination,TwoParticleGF*> mapNonTrivialCombinations;

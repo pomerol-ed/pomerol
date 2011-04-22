@@ -20,7 +20,7 @@ class Vertex4 {
     /** A reference to a Green's function container */
     GFContainer &g;
     /** A reference to a bit classification object */
-    const BitClassification &IndexInfo;
+    const IndexClassification &IndexInfo;
     
     /** Precomputed inverted Green's function matrices calculated at different Matsubara frequencies. */
     std::vector<MatrixType> InvertedGFs;
@@ -43,7 +43,7 @@ public:
      * \param[in] Chi A reference to a two-particle Green's function.
      * \param[in] g1 A reference to a Green's function container.
      */
-    Vertex4(const BitClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g);
+    Vertex4(const IndexClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g);
 
     //============================= UnAmputated methods ==============================//
 

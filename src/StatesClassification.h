@@ -1,7 +1,7 @@
 #ifndef ____DEFINE_GETSTATES____
 #define ____DEFINE_GETSTATES____
 #include "config.h"
-#include "BitClassification.h"
+#include "IndexClassification.h"
 
 struct BlockNumber {
 
@@ -51,11 +51,11 @@ class StatesClassification {
 
     BlockNumber maximumBlockNumber_; 
     unsigned int BLOCKNUMBERLIMIT;
-    BitClassification &Formula;
+    IndexClassification &Formula;
 
     void putstates();            //function gets all clasificated states with Lz = "Lz", N_up = "N_up", N_down = "N_down"
 public:        
-    StatesClassification(BitClassification& Formula):Formula(Formula) {};
+    StatesClassification(IndexClassification& Formula):Formula(Formula) {};
 
     void iniStatesClassification();                     //inicialization StatesClassification
 

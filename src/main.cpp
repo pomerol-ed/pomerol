@@ -5,7 +5,7 @@
 #include "Dumper.h"
 #include "LatticeAnalysis.h"
 #include "Term.h"
-#include "BitClassification.h"
+#include "IndexClassification.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
 #include "Hamiltonian.h"
@@ -25,7 +25,7 @@
 string input = "system.ini";
 
 LatticeAnalysis Lattice;
-BitClassification IndexInfo(Lattice);
+IndexClassification IndexInfo(Lattice);
 StatesClassification S(IndexInfo); 
 output_handle OUT;
 Hamiltonian H(IndexInfo,S,OUT,input);

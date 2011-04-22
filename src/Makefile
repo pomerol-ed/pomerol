@@ -4,7 +4,7 @@ CXXFLAGS+= -O3 -g -Wall -fPIC -pg $(INCLUDES)
 BINPATH=../bin
 
 objects=output.o Dumper.o LatticeAnalysis.o \
-	StatesClassification.o Term.o BitClassification.o \
+	StatesClassification.o Term.o IndexClassification.o \
 	HamiltonianPart.o Hamiltonian.o FieldOperatorPart.o FieldOperator.o \
 	DensityMatrixPart.o DensityMatrix.o \
 	GreensFunctionPart.o GreensFunction.o \
@@ -23,7 +23,7 @@ output.o: output.cpp output.h
 Dumper.o: Dumper.cpp Dumper.h config.h
 LatticeAnalysis.o: LatticeAnalysis.h LatticeAnalysis.cpp
 Term.o:	Term.cpp Term.h
-BitClassification.o: BitClassification.h BitClassification.cpp Term.h
+IndexClassification.o: IndexClassification.h IndexClassification.cpp Term.h
 StatesClassification.o: StatesClassification.h StatesClassification.cpp config.h
 HamiltonianPart.o: StatesClassification.h config.h HamiltonianPart.h HamiltonianPart.cpp
 Hamiltonian.o: StatesClassification.h config.h HamiltonianPart.h Hamiltonian.h Hamiltonian.cpp

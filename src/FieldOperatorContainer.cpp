@@ -7,7 +7,7 @@
 
 #include "FieldOperatorContainer.h"
 
-FieldOperatorContainer::FieldOperatorContainer(StatesClassification &S, Hamiltonian &H, BitClassification &IndexInfo):S(S),H(H),IndexInfo(IndexInfo)
+FieldOperatorContainer::FieldOperatorContainer(StatesClassification &S, Hamiltonian &H, IndexClassification &IndexInfo):S(S),H(H),IndexInfo(IndexInfo)
 {
 };
 

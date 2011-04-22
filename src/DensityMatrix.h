@@ -12,7 +12,7 @@
 
 #include "Dumper.h"
 #include "StatesClassification.h"
-#include "BitClassification.h"
+#include "IndexClassification.h"
 #include "Hamiltonian.h"
 #include "DensityMatrixPart.h"
 

@@ -8,7 +8,7 @@
 #ifndef ____DEFINE_HAMILTONIAN____
 #define ____DEFINE_HAMILTONIAN____
 #include "config.h"
-#include "BitClassification.h"
+#include "IndexClassification.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
 #include "output.h"
@@ -24,7 +24,7 @@ class Hamiltonian
     /** Array of pointers to the Hamiltonian Parts */
     HamiltonianPart **Hpart;
     /** A reference to the object, which contains all info about how sites and spins of the lattice are defined as bits */
-    BitClassification &Formula;
+    IndexClassification &Formula;
     /** Reference to a states classification object. */
     StatesClassification& S;
     /** Reference to an output handling object */
@@ -35,7 +35,7 @@ class Hamiltonian
     RealType GroundEnergy;
 public :
 
-    Hamiltonian(BitClassification &F_, StatesClassification &S_,output_handle &OUT_, string &config_path_);
+    Hamiltonian(IndexClassification &F_, StatesClassification &S_,output_handle &OUT_, string &config_path_);
     void enter();
 
     HamiltonianPart& part(const QuantumNumbers &in);

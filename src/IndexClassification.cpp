@@ -1,4 +1,4 @@
-#include "BitClassification.h"
+#include "IndexClassification.h"
 #include <fstream>
 #include <iomanip>
 std::ostream& operator<<(std::ostream& output,const sBitInfo& out)
@@ -13,7 +13,7 @@ output << "Bit " << out.bitNumber << " of p-orbital, site N " << out.site << ", 
 return output;
 }
 
-int BitClassification::prepare()
+int IndexClassification::prepare()
 {
   (*this).defineBits();
   (*this).defineHopping();
@@ -27,12 +27,12 @@ void BitInfo::setBitNumber(const unsigned short& in)
   bitNumber = in;
 }
 
-BitClassification::BitClassification(LatticeAnalysis &Lattice):Lattice(Lattice)
+IndexClassification::IndexClassification(LatticeAnalysis &Lattice):Lattice(Lattice)
 {
   N_bit=0;
 }
 
-void BitClassification::defineBits()
+void IndexClassification::defineBits()
 {
   std::vector<LatticeSite*> SitesList=Lattice.getSitesList();
   std::vector<LatticeSite*>::const_iterator SiteIterator;
@@ -79,7 +79,7 @@ void BitClassification::defineBits()
   for (unsigned short bit = 0; bit < BitInfoList.size(); bit++ ) BitInfoList[bit]->setBitNumber(bit);
 }
 
-void BitClassification::defineTerms()
+void IndexClassification::defineTerms()
 {
    for (unsigned short bit = 0; bit < BitInfoList.size()/2; bit++ ) 
       {
@@ -125,12 +125,12 @@ void BitClassification::defineTerms()
       };
 }
 
-void BitClassification::printBitInfoList()
+void IndexClassification::printBitInfoList()
 {
   for (vector<BitInfo*>::iterator it=BitInfoList.begin(); it != BitInfoList.end(); it++ ) (*it)->print_to_screen();
 }
 
-unsigned short BitClassification::findBit(const unsigned short &site, const unsigned short &orbital, const unsigned short &spin)
+unsigned short IndexClassification::findBit(const unsigned short &site, const unsigned short &orbital, const unsigned short &spin)
 {
   for (unsigned short bit = 0; bit < BitInfoList.size(); bit++ ) 
       if (BitInfoList[bit]->site == site && BitInfoList[bit]->spin == spin) 
@@ -155,16 +155,16 @@ unsigned short BitClassification::findBit(const unsigned short &site, const unsi
   return -1;
 }
 
-void BitClassification::printHoppingMatrix()
+void IndexClassification::printHoppingMatrix()
 {
     cout << HoppingMatrix << endl;
 }
 
-void BitClassification::printTerms()
+void IndexClassification::printTerms()
 {
     cout << Terms << endl;
 }
-void BitClassification::defineHopping()
+void IndexClassification::defineHopping()
 /*
  * This procedure defines a Hopping Matrix from a Lattice input file
  */
@@ -187,31 +187,31 @@ void BitClassification::defineHopping()
     }
 }
 
-RealMatrixType& BitClassification::getHoppingMatrix()
+RealMatrixType& IndexClassification::getHoppingMatrix()
 {
   return HoppingMatrix;
 }
 
-std::vector<BitInfo*>& BitClassification::getBitInfoList()
+std::vector<BitInfo*>& IndexClassification::getBitInfoList()
 {
   return BitInfoList;
 }
-const int& BitClassification::getBitSize() const
+const int& IndexClassification::getBitSize() const
 {
     return N_bit;
 }
 
-bool BitClassification::checkIndex(ParticleIndex in)
+bool IndexClassification::checkIndex(ParticleIndex in)
 {
     return (in <= N_bit-1);
 }
 
-TermsList& BitClassification::getTermsList()
+TermsList& IndexClassification::getTermsList()
 {
     return Terms;
 }
 
-void BitClassification::definePorbitalSphericalTerms(pBitInfo **list)
+void IndexClassification::definePorbitalSphericalTerms(pBitInfo **list)
 {
     RealType F0 = list[0]->U - 4./3.* list[1]->J; 
     RealType F2 = list[0]->J*25/3.;
@@ -247,7 +247,7 @@ void BitClassification::definePorbitalSphericalTerms(pBitInfo **list)
         }
     }
 };
-void BitClassification::definePorbitalNativeTerms(pBitInfo **list)
+void IndexClassification::definePorbitalNativeTerms(pBitInfo **list)
 {
     RealType U = list[0]->U;
     RealType J = list[0]->J;
