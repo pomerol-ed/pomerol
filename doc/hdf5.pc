@@ -1,0 +1,9 @@
+
+prefix=/opt/local
+
+Name: hdf5
+Description: hdf5 library
+Requires:
+Version: 1.8.6 
+Libs: -L${PREFIX}/lib -lhdf5
+Cflags: -I${PREFIX}/include/

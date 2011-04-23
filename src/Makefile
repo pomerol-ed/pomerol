@@ -14,7 +14,7 @@ objects=output.o Dumper.o LatticeAnalysis.o \
 
 devel_objects= TwoParticleGFContainer.o
 
-libs=../lib/lib_json.a # -lhdf5 -lhdf5_cpp
+libs=../lib/lib_json.a ${POMEROL_LIBS} -lhdf5_cpp
 
 default: main
 devel: $(devel_objects)

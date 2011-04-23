@@ -11,18 +11,17 @@ Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+
 
 void Vertex4::prepareUnAmputated()
 {
-    std::cout << "Preparing unamputated value container map ..." << std::flush;
+    INFO("Preparing unamputated value container map ...");
 
     for (std::vector<TwoParticleGFContainer::IndexCombination*>::const_iterator it1=Chi.getNonTrivialCombinations().begin(); it1!=Chi.getNonTrivialCombinations().end(); ++it1){
         mapUnAmputatedValues[**it1]= new TwoParticleGFPart::MatsubaraContainer(Chi.getBeta());
         mapUnAmputatedValues[**it1]->prepare(NumberOfMatsubaras);
     };
-    std::cout << "Done" << std::endl;
 };
 
 void Vertex4::computeUnAmputated(const TwoParticleGFContainer::IndexCombination& in)
 {
-    std::cout << "Computing unamputated values for " << in << " combination" << std::endl;
+    INFO("Computing unamputated values for " << in << " combination");
     for (long MatsubaraNumber1=-NumberOfMatsubaras; MatsubaraNumber1 < NumberOfMatsubaras; ++MatsubaraNumber1)
         for (long MatsubaraNumber2=-NumberOfMatsubaras; MatsubaraNumber2 < NumberOfMatsubaras; ++MatsubaraNumber2)
             for (long MatsubaraNumber3=-NumberOfMatsubaras; MatsubaraNumber3 < NumberOfMatsubaras; ++MatsubaraNumber3)
@@ -66,7 +65,7 @@ ComplexType Vertex4::getUnAmputatedValue(const TwoParticleGFContainer::IndexComb
 void Vertex4::prepareAmputated(std::vector<TwoParticleGFContainer::IndexCombination*>& in)
 {
     NonTrivialAmputatedCombinations=in;
-    std::cout << "Inverting Greens Function..." << std::flush;
+    INFO("Inverting Greens Function...");
     ParticleIndex N_bit = IndexInfo.getBitSize();
     for(long MatsubaraNumber=-NumberOfMatsubaras; MatsubaraNumber<=NumberOfMatsubaras; ++MatsubaraNumber){
         MatrixType GMatrix(N_bit,N_bit);
@@ -77,16 +76,12 @@ void Vertex4::prepareAmputated(std::vector<TwoParticleGFContainer::IndexCombinat
         //DEBUG("InvertedGFs[" << MatsubaraNumber << "] = " << GMatrix.inverse() );
         InvertedGFs[MatsubaraNumber+NumberOfMatsubaras] = GMatrix.inverse();
     }
-    std::cout << "Done" << std::endl;
-
-    std::cout << "Preparing amputated value container map ..." << std::flush;
+    INFO("Preparing amputated value container map ...");
     for (std::vector<TwoParticleGFContainer::IndexCombination*>::const_iterator it1=NonTrivialAmputatedCombinations.begin(); 
             it1!=NonTrivialAmputatedCombinations.end(); ++it1){
                 mapAmputatedValues[**it1]= new TwoParticleGFPart::MatsubaraContainer(Chi.getBeta());
                 mapAmputatedValues[**it1]->prepare(NumberOfMatsubaras);
     }       ;
-    std::cout << "Done" << std::endl;
-
 };
 
 void Vertex4::computeAmputated()
@@ -99,7 +94,7 @@ void Vertex4::computeAmputated()
 
 void Vertex4::computeAmputated(const TwoParticleGFContainer::IndexCombination& in)
 {
-    std::cout << "Computing amputated values for " << in << " combination" << std::endl;
+    INFO("Computing amputated values for " << in << " combination");
     for (long MatsubaraNumber1=-NumberOfMatsubaras; MatsubaraNumber1 < NumberOfMatsubaras; ++MatsubaraNumber1)
         for (long MatsubaraNumber2=-NumberOfMatsubaras; MatsubaraNumber2 < NumberOfMatsubaras; ++MatsubaraNumber2)
             for (long MatsubaraNumber3=-NumberOfMatsubaras; MatsubaraNumber3 < NumberOfMatsubaras; ++MatsubaraNumber3)

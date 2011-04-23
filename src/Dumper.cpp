@@ -21,7 +21,7 @@ const unsigned int* Dumper::initHDF5()
     return V;
 }
 
-Dumper::Dumper(std::string FileName) : H5File(FileName.c_str(),H5F_ACC_EXCL)
+Dumper::Dumper(std::string FileName) : H5File(FileName.c_str(),H5F_ACC_TRUNC)
 {  
     INFO("Opened HDF5 file " << FileName)
 }

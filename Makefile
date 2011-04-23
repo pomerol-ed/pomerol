@@ -1,10 +1,12 @@
-EIGEN_INCLUDE=-I/opt/local/include/eigen3 $(shell pkg-config --cflags-only-I eigen3) -I$(shell pwd)/eigen
-INCLUDES= -I../jsoncpp/include $(EIGEN_INCLUDE)
-CFLAGS=$(INCLUDES) -DHRD # -DpomerolHDF5
+EIGEN_INCLUDE=$(shell pkg-config --cflags-only-I eigen3) -I$(shell pwd)/eigen
+INCLUDES= -I../jsoncpp/include $(EIGEN_INCLUDE) $(shell pkg-config --cflags-only-I hdf5)
+POMEROL_LIBS = $(shell pkg-config --libs hdf5)
+CFLAGS=$(INCLUDES) -DHRD -DpomerolHDF5
 CXXFLAGS=$(CFLAGS)
 
 export CFLAGS
 export CXXFLAGS
+export POMEROL_LIBS
 
 all : jsoncpp libpomerol
 
