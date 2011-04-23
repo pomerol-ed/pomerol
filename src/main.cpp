@@ -287,16 +287,28 @@ int main(int argc, char *argv[])
     Gamma4.computeAmputated();
     saveGamma("Gamma4.dat",Gamma4,wn,Amputated);
 
-/*    for (unsigned short i=0;i<v1.size();i++){
-      cout << std::setprecision(9) << Chi4(*v1[i],3,2,0) << endl;
-      cout << Chi4(*v1[i],2,5,2) << endl;
-      cout << Chi4(*v1[i],5,2,2) << endl;
-      cout << Chi4(*v1[i],1,7,1) << endl;
-      cout << Chi4(*v1[i],2,-2,4) << endl;
-      cout << Chi4(*v1[i],29,-29,29) << endl << endl;
-      cout << *v1[i] << " : " << (bool) Chi4.vanishes(*v1[i]) << endl;
+    for (unsigned short i=0;i<v1.size();i++){
+      std::cout << Chi4(*v1[i],3,2,0) << std::endl;
+      std::cout << Chi4(*v1[i],2,5,2) << std::endl;
+      std::cout << Chi4(*v1[i],5,2,2) << std::endl;
+      std::cout << Chi4(*v1[i],1,7,1) << std::endl;
+      std::cout << Chi4(*v1[i],2,-2,4) << std::endl;
+      std::cout << Chi4(*v1[i],29,-29,29) << std::endl << std::endl;
+      //cout << *v1[i] << " : " << (bool) Chi4.vanishes(*v1[i]) << endl;
     };
-*/
+
+    for (unsigned short i=0;i<v1.size();i++){
+      std::cout << Gamma4(*v1[i],3,2,0) << std::endl;
+      std::cout << Gamma4(*v1[i],2,5,2) << std::endl;
+      std::cout << Gamma4(*v1[i],5,2,2) << std::endl;
+      std::cout << Gamma4(*v1[i],1,7,1) << std::endl;
+      std::cout << Gamma4(*v1[i],2,-2,4) << std::endl;
+      std::cout << Gamma4(*v1[i],29,-29,29) << std::endl << std::endl;
+      //cout << *v1[i] << " : " << (bool) Chi4.vanishes(*v1[i]) << endl;
+    };
+
+
+
     //   comb1 = new TwoParticleGFContainer::IndexCombination(0,2,0,1);
     //   cout << Chi4.vanishes(*comb1) << endl;
     //DEBUG(Chi4.getNumNonResonantTerms() << " non-resonant terms");

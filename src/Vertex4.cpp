@@ -7,6 +7,11 @@ Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+
     NumberOfMatsubaras = Chi.getNumberOfMatsubaras();
 }
 
+ComplexType Vertex4::operator()(const TwoParticleGFContainer::IndexCombination& in,
+                    long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
+{
+    return this->getUnAmputatedValue(in,MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+}
 //============================= UnAmputated methods ==============================//
 
 void Vertex4::prepareUnAmputated()
