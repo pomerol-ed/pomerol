@@ -37,7 +37,7 @@ void Vertex4::computeUnAmputated(const TwoParticleGFContainer::IndexCombination&
                     if(MatsubaraNumber1 == MatsubaraNumber3)
                         Value += beta*  g(in.Indices[0],in.Indices[2],MatsubaraNumber1)*
                                         g(in.Indices[1],in.Indices[3],MatsubaraNumber2);
-                    if(MatsubaraNumber1 == MatsubaraNumber2)
+                    if(MatsubaraNumber2 == MatsubaraNumber3)
                         Value -= beta*  g(in.Indices[0],in.Indices[3],MatsubaraNumber1)*
                                         g(in.Indices[1],in.Indices[2],MatsubaraNumber2);
 
