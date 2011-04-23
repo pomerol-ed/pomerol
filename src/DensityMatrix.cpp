@@ -23,7 +23,7 @@ void DensityMatrix::prepare(void)
     // There is one-to-one correspondence between parts of the Hamiltonian
     // and parts of the density matrix itself. 
     for(BlockNumber n = 0; n < NumOfBlocks; n++)
-        parts[n] = new DensityMatrixPart(H.part(n),beta,GroundEnergy);
+        parts[n] = new DensityMatrixPart(S, H.part(n),beta,GroundEnergy);
 }
 
 void DensityMatrix::compute(void)
@@ -68,6 +68,15 @@ RealType DensityMatrix::getAverageEnergy()
     for(BlockNumber n = 0; n < NumOfBlocks; n++) E += parts[n]->getAverageEnergy();
     return E;
 };
+
+RealType DensityMatrix::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j)
+{
+    BlockNumber NumOfBlocks = parts.size();
+    RealType NN = 0;
+    for(BlockNumber n = 0; n < NumOfBlocks; n++) NN += parts[n]->getAverageDoubleOccupancy(i,j);
+    return NN;
+};
+
 
 #ifdef pomerolHDF5
 void DensityMatrix::dumpIt(H5::CommonFG* FG) const

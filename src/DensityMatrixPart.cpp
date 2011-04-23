@@ -6,8 +6,8 @@
 */
 #include "DensityMatrixPart.h"
 
-DensityMatrixPart::DensityMatrixPart(HamiltonianPart& hpart, RealType beta, RealType GroundEnergy) :
-    hpart(hpart), beta(beta), GroundEnergy(GroundEnergy)
+DensityMatrixPart::DensityMatrixPart(StatesClassification &S, HamiltonianPart& hpart, RealType beta, RealType GroundEnergy) :
+    S(S), hpart(hpart), beta(beta), GroundEnergy(GroundEnergy)
 {
     partSize = hpart.size();
     weights.resize(partSize);
@@ -38,6 +38,15 @@ RealType DensityMatrixPart::getAverageEnergy()
         E += weights(m)*hpart.reV(m);
     }
     return E;
+};
+
+RealType DensityMatrixPart::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j)
+{
+    RealType NN=0.;
+    for(InnerQuantumState m = 0; m < partSize; ++m){
+        NN += weights(m)*S.n_i(S.cst(hpart.id(),m),i)*S.n_i(S.cst(hpart.id(),m),j);
+    }
+    return NN;
 };
 
 /*

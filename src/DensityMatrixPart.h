@@ -21,6 +21,8 @@ class DensityMatrixPart : public Dumpable
 class DensityMatrixPart
 #endif
 {
+    /** A reference to a states classification object. */
+    StatesClassification& S;
     /** A reference to a part of a Hamiltonian. */
     HamiltonianPart& hpart;
     /** The inverse temperature. */
@@ -45,7 +47,7 @@ public:
      * \param[in] beta The inverse temperature.
      * \param[in] GroundEnergy The ground state energy of the Hamiltonian.
      */
-    DensityMatrixPart(HamiltonianPart& hpart, RealType beta, RealType GroundEnergy);
+    DensityMatrixPart(StatesClassification &S, HamiltonianPart& hpart, RealType beta, RealType GroundEnergy);
     /** Divide all the weights by the partition function.
      * 
      * Warning! Must be called once and only once!
@@ -55,6 +57,8 @@ public:
 
     /** Returns an averaged value of the energy. */
     RealType getAverageEnergy(void);
+    /** Returns an averaged value of the double occupancy. */
+    RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j);
     /** Performs computations of the weights and a contribution to the partition function. */
     RealType compute(void);
     /** Returns the weight corresponding to a specified number of state.

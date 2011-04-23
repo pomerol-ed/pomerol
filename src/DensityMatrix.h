@@ -67,6 +67,8 @@ public:
     RealType getBeta() const;
     /** Returns an averaged value of the energy. */
     RealType getAverageEnergy();
+    /** Returns an averaged value of the double occupancy. */
+    RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j);
     
 #ifdef pomerolHDF5
     void dumpIt(H5::CommonFG* FG) const;

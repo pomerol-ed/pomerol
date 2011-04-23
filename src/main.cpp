@@ -245,7 +245,9 @@ int main(int argc, char *argv[])
   out << iomanip_prefs << rho.getAverageEnergy() << std::endl;
   out.close();
 
-
+  out.open("output/Stat.NN.dat");
+  out << iomanip_prefs << rho.getAverageDoubleOccupancy(0,IndexInfo.getBitSize()/2.) << std::endl;
+  out.close();
 
 
   //finishing of creation
