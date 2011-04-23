@@ -8,6 +8,7 @@
 #define __INCLUDE_TWOPARTICLEGFPART_H
 
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"StatesClassification.h"
 #include"HamiltonianPart.h"
 #include"FieldOperatorPart.h"
@@ -16,7 +17,7 @@
 /** This class represents a part of a two-particle Green's function.
  * Every part describes one 'world stripe' of four operators.
  */
-class TwoParticleGFPart {
+class TwoParticleGFPart : public ComputableObject {
 
 public:
 

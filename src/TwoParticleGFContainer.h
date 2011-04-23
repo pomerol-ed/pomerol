@@ -2,10 +2,11 @@
 #define __INCLUDE_TWOPARTICLEGFCONTAINER_H
 
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"TwoParticleGF.h"
 #include"FieldOperatorContainer.h"
 
-class TwoParticleGFContainer
+class TwoParticleGFContainer : public ComputableObject
 {
 friend class Vertex4;
 

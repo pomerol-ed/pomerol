@@ -2,6 +2,7 @@
 #define __INCLUDE_FIELDOPERATOR_H
 
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"output.h"
 #include"StatesClassification.h"
 #include"Hamiltonian.h" 
@@ -9,7 +10,7 @@
 
 typedef std::pair<BlockNumber,BlockNumber> BlockMapping;
 
-class OperatorContainer
+class OperatorContainer : public ComputableObject
 {
 protected:
     StatesClassification &System;
@@ -23,7 +24,6 @@ protected:
     std::map<unsigned int,BlockNumber> mapLeftToRightIndex;        // A map from output index to input index, hence there is a unique transform
     std::list<BlockMapping> LeftRightIndices;
     unsigned int size;
-    unsigned short Status;
 
     virtual BlockNumber mapsTo(BlockNumber RightIndex)=0;
     virtual    QuantumNumbers mapsTo(QuantumNumbers in)=0;

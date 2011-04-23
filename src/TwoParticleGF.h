@@ -12,6 +12,7 @@
 #include <iomanip>
 
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"output.h"
 #include"StatesClassification.h"
 #include"FieldOperator.h"
@@ -33,7 +34,7 @@
  * take place inside the parts). Every part corresponds to a 'world-stripe', a sequence of 4
  * matrix blocks.
  */
-class TwoParticleGF {
+class TwoParticleGF : public ComputableObject {
 
     /** A reference to a states classification object. */
     StatesClassification& S;

@@ -8,13 +8,14 @@
 #define __INCLUDE_VERTEX4_H
 
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"GFContainer.h"
 #include"TwoParticleGFContainer.h"
 
 /** Objects of this class just transforms a two-particle Green's function into
  * an irreducible vertex part or into an amputated irreducible vertex.
  */
-class Vertex4 {
+class Vertex4 : public ComputableObject {
 
     /** A reference to a two-particle Green's function. */
     TwoParticleGFContainer &Chi;

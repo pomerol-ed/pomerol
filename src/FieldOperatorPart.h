@@ -1,11 +1,12 @@
 #ifndef __INCLUDE_FIELDOPERATORPART_H
 #define __INCLUDE_FIELDOPERATORPART_H
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"StatesClassification.h"
 #include"Hamiltonian.h"
 #include"output.h"
 
-class FieldOperatorPart {
+class FieldOperatorPart : public ComputableObject {
 protected:
     unsigned short i;
     RowMajorMatrixType elementsRowMajor;    

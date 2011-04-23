@@ -9,6 +9,7 @@
 #define __INCLUDE_DENSITYMATRIX_H
 
 #include "Dumper.h"
+#include "ComputableObject.h"
 #include "StatesClassification.h"
 #include "IndexClassification.h"
 #include "Hamiltonian.h"
@@ -21,9 +22,9 @@
  * is a function of \f$ \hat H \f$.
  */
 #ifdef pomerolHDF5
-class DensityMatrix : public Dumpable
+class DensityMatrix : public Dumpable, public ComputableObject
 #else
-class DensityMatrix
+class DensityMatrix : public ComputableObject
 #endif
 {
     /** A reference to a states classification object. */

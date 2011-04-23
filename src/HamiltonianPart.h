@@ -1,10 +1,11 @@
 #ifndef __INCLUDE_HAMILTONIANPART_H
 #define __INCLUDE_HAMILTONIANPART_H
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"IndexClassification.h"
 #include"StatesClassification.h"
 
-class HamiltonianPart {
+class HamiltonianPart : public ComputableObject {
 
     IndexClassification &Formula;
     StatesClassification &S;

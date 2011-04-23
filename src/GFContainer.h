@@ -9,10 +9,11 @@
 #define __INCLUDE_GFCONTAINER_H
 
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"GreensFunction.h"
 #include"FieldOperatorContainer.h"
 
-class GFContainer
+class GFContainer : public ComputableObject
 {
 
 public:

@@ -9,6 +9,7 @@
 #define __INCLUDE_FIELDOPERATORCONTAINER_H
 
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"FieldOperator.h"
 #include"Hamiltonian.h"
 #include"StatesClassification.h"
@@ -17,7 +18,7 @@
  * rotated to eigenvector basis of Hamiltonian H ) for a given Index.
  * If no field operator is yet initialized then calculation of the field operator is done.
  */
-class FieldOperatorContainer
+class FieldOperatorContainer : public ComputableObject
 {
 private:
     /** A reference to a states classification object. */

@@ -8,6 +8,7 @@
 #ifndef __INCLUDE_HAMILTONIAN_H
 #define __INCLUDE_HAMILTONIAN_H
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"IndexClassification.h"
 #include"StatesClassification.h"
 #include"HamiltonianPart.h"
@@ -18,7 +19,7 @@
  * It provides eigenvalues and eigenfunctions of any of its parts once they are obtained within its parts. 
  * The diagonalization and entering routines are done inside Hamiltonian Parts
  */
-class Hamiltonian
+class Hamiltonian : public ComputableObject
 {
     /** Array of pointers to the Hamiltonian Parts */
     HamiltonianPart **Hpart;

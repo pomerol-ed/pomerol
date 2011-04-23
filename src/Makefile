@@ -12,12 +12,9 @@ objects=output.o Dumper.o LatticeAnalysis.o \
 	Vertex4.o FieldOperatorContainer.o \
 	TwoParticleGFContainer.o GFContainer.o 
 
-devel_objects= TwoParticleGFContainer.o
-
 libs=../lib/lib_json.a ${POMEROL_LIBS} -lhdf5_cpp
 
 default: main
-devel: $(devel_objects)
 
 output.o: output.cpp output.h
 Dumper.o: Dumper.cpp Dumper.h Misc.h
@@ -25,20 +22,20 @@ LatticeAnalysis.o: LatticeAnalysis.h LatticeAnalysis.cpp
 Term.o:	Term.cpp Term.h
 IndexClassification.o: IndexClassification.h IndexClassification.cpp Term.h
 StatesClassification.o: StatesClassification.h StatesClassification.cpp Misc.h
-HamiltonianPart.o: StatesClassification.h Misc.h HamiltonianPart.h HamiltonianPart.cpp
-Hamiltonian.o: StatesClassification.h Misc.h HamiltonianPart.h Hamiltonian.h Hamiltonian.cpp
-FieldOperatorPart.o: StatesClassification.h Misc.h HamiltonianPart.h FieldOperatorPart.h FieldOperatorPart.cpp
-FieldOperator.o: StatesClassification.h Misc.h HamiltonianPart.h FieldOperatorPart.h FieldOperatorPart.cpp FieldOperator.h
-FieldOperatorContainer.o : StatesClassification.o Hamiltonian.o FieldOperatorContainer.h FieldOperatorContainer.cpp 
-DensityMatrixPart.o: DensityMatrixPart.h DensityMatrixPart.cpp
-DensityMatrix.o: DensityMatrix.h DensityMatrix.cpp
-GreensFunctionPart.o: GreensFunctionPart.h GreensFunctionPart.cpp Misc.h
-GreensFunction.o: GreensFunction.h GreensFunction.cpp
+HamiltonianPart.o: StatesClassification.o Misc.h HamiltonianPart.h HamiltonianPart.cpp ComputableObject.h
+Hamiltonian.o: StatesClassification.o Misc.h HamiltonianPart.h Hamiltonian.h Hamiltonian.cpp ComputableObject.h
+FieldOperatorPart.o: StatesClassification.o Misc.h HamiltonianPart.o FieldOperatorPart.h FieldOperatorPart.cpp ComputableObject.h
+FieldOperator.o: StatesClassification.o Misc.h HamiltonianPart.h FieldOperatorPart.o FieldOperator.h FieldOperator.cpp ComputableObject.h
+FieldOperatorContainer.o : StatesClassification.o Hamiltonian.o FieldOperatorContainer.h FieldOperatorContainer.cpp ComputableObject.h
+DensityMatrixPart.o: DensityMatrixPart.h DensityMatrixPart.cpp ComputableObject.h
+DensityMatrix.o: DensityMatrix.h DensityMatrix.cpp ComputableObject.h
+GreensFunctionPart.o: GreensFunctionPart.h GreensFunctionPart.cpp Misc.h ComputableObject.h
+GreensFunction.o: GreensFunction.h GreensFunction.cpp ComputableObject.h
 TwoParticleGFPart.o: TwoParticleGFPart.h TwoParticleGFPart.cpp Misc.h
-TwoParticleGF.o: TwoParticleGF.h TwoParticleGF.cpp
-TwoParticleGFContainer.o : TwoParticleGFContainer.h TwoParticleGFContainer.cpp TwoParticleGFPart.o TwoParticleGF.o FieldOperatorContainer.o
-GFContainer.o : GFContainer.h GFContainer.cpp GreensFunction.o GreensFunctionPart.o
-Vertex4.o: Vertex4.h Vertex4.cpp TwoParticleGFContainer.o GFContainer.o
+TwoParticleGF.o: TwoParticleGF.h TwoParticleGF.cpp ComputableObject.h
+TwoParticleGFContainer.o : TwoParticleGFContainer.h TwoParticleGFContainer.cpp TwoParticleGFPart.o TwoParticleGF.o FieldOperatorContainer.o ComputableObject.h
+GFContainer.o : GFContainer.h GFContainer.cpp GreensFunction.o GreensFunctionPart.o ComputableObject.h
+Vertex4.o: Vertex4.h Vertex4.cpp TwoParticleGFContainer.o GFContainer.o ComputableObject.h
 
 libpomerol.so: $(objects)
 	$(CXX) -shared $(objects) $(libs) -o libpomerol.so

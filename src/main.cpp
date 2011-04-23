@@ -48,7 +48,7 @@ void saveChi(const char *fname, TwoParticleGFContainer &Chi, int size_wg)
   chi_str.setf(std::ios::scientific, std::ios::floatfield);
   chi_str.setf(std::ios::showpoint);
   chi_str.precision(8);
-  chi_str<<"Re         Im               z1 z2          w1' w1 w2' w2        n1' n1 n2' n2\n";
+  chi_str<<"Re              Im                       z1 z2          w1' w1 w2' w2           n1' n1 n2' n2\n";
 #else
   std::ofstream chi_str(fname,std::ios::out | std::ios::binary);
 #endif
@@ -109,7 +109,7 @@ void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg, unsigned short s
   gamma_str.setf(std::ios::scientific, std::ios::floatfield);
   gamma_str.setf(std::ios::showpoint);
   gamma_str.precision(8);
-  gamma_str<<"Re         Im               z1 z2          w1' w1 w2' w2        n1' n1 n2' n2\n";
+  gamma_str<<"Re              Im                       z1 z2          w1' w1 w2' w2           n1' n1 n2' n2\n";
 #else
   std::ofstream gamma_str(fname,std::ios::out | std::ios::binary);
 #endif

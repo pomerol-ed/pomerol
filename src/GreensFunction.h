@@ -13,6 +13,7 @@
 //#include <cmath>
 
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"output.h"
 #include"StatesClassification.h"
 #include"FieldOperator.h"
@@ -31,7 +32,7 @@
  * take place inside the parts). A pair of parts, one part of an annihilation operator and
  * another from a creation operator, corresponds to a part of the Green's function.
  */
-class GreensFunction {
+class GreensFunction : public ComputableObject {
     /** A reference to a states classification object. */
     StatesClassification& S;
     /** A reference to a Hamiltonian. */

@@ -31,9 +31,6 @@ clean:
 	cd src && $(MAKE) clean
 	cd jsoncpp && $(MAKE) clean
 
-devel:
-	cd src && $(MAKE) devel
-
 .PHONY: doc-html
 doc-html:
 	doxygen doc/Doxyfile

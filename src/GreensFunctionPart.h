@@ -10,6 +10,7 @@
 #include<iomanip>
 
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"StatesClassification.h"
 #include"HamiltonianPart.h"
 #include"FieldOperator.h"
@@ -19,7 +20,7 @@
  * Every part describes all transitions allowed by selection rules
  * between a given pair of Hamiltonian blocks.
  */
-class GreensFunctionPart
+class GreensFunctionPart : public ComputableObject
 {
     /** A reference to a part of a Hamiltonian (inner index iterates through it). */
     HamiltonianPart& HpartInner;
