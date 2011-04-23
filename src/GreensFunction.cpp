@@ -95,15 +95,17 @@ void GreensFunction::dumpToPlainText(long points)
     std::stringstream filename;
     unsigned short i=C.getBit();
     unsigned short j=CX.getBit();
-    // TODO: Factor out this fragment to output_handle class.
     filename << "output/Gw" << i << j << ".dat";
     std::ofstream output;
+    output.setf(std::ios::scientific, std::ios::floatfield);
+    output.setf(std::ios::showpoint);
+    output.precision(8);
     output.open(filename.str().c_str());
 
     for (int k=0; k<points; k++)
     {
         ComplexType G = (*this)(k);
-        output << std::setprecision(9) << real(G) << "    " << imag(G) << "    " << std::endl;
+        output << real(G) << "    " << imag(G) << "    " << std::endl;
     }
     output.close();
 }

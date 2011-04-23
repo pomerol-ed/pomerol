@@ -266,6 +266,8 @@ int main(int argc, char *argv[])
 
     comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
     v1.push_back(comb1);
+    comb1 = new TwoParticleGFContainer::IndexCombination(0,1,0,1);
+    v1.push_back(comb1);
     comb1 = new TwoParticleGFContainer::IndexCombination(0,S.N_b()/2,0,S.N_b()/2);
     v1.push_back(comb1);
     //

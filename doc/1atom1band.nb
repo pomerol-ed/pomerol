@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       145,          7]
-NotebookDataLength[     24930,        665]
-NotebookOptionsPosition[     23485,        621]
-NotebookOutlinePosition[     23827,        636]
-CellTagsIndexPosition[     23784,        633]
+NotebookDataLength[     24136,        645]
+NotebookOptionsPosition[     22691,        601]
+NotebookOutlinePosition[     23033,        616]
+CellTagsIndexPosition[     22990,        613]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -341,25 +341,15 @@ Cell[BoxData[
    RowBox[{
     RowBox[{"fuu", "[", 
      RowBox[{"n1_", ",", "n2_", ",", "n3_"}], "]"}], ":=", 
-    RowBox[{
-     RowBox[{"\[Chi]uu", "[", 
+    RowBox[{"\[Gamma]uu", "[", 
+     RowBox[{
+      RowBox[{"\[Omega]", "[", "n1", "]"}], ",", 
+      RowBox[{"\[Omega]", "[", "n2", "]"}], ",", 
+      RowBox[{"\[Omega]", "[", "n3", "]"}], ",", 
       RowBox[{
-       RowBox[{"\[Omega]", "[", "n1", "]"}], ",", 
-       RowBox[{"\[Omega]", "[", "n2", "]"}], ",", 
-       RowBox[{"\[Omega]", "[", "n3", "]"}], ",", 
-       RowBox[{
-        RowBox[{"\[Omega]", "[", "n1", "]"}], "+", 
-        RowBox[{"\[Omega]", "[", "n2", "]"}], "-", 
-        RowBox[{"\[Omega]", "[", "n3", "]"}]}]}], "]"}], "-", 
-     RowBox[{"\[Chi]0uu", "[", 
-      RowBox[{
-       RowBox[{"\[Omega]", "[", "n1", "]"}], ",", 
-       RowBox[{"\[Omega]", "[", "n2", "]"}], ",", 
-       RowBox[{"\[Omega]", "[", "n3", "]"}], ",", 
-       RowBox[{
-        RowBox[{"\[Omega]", "[", "n1", "]"}], "+", 
-        RowBox[{"\[Omega]", "[", "n2", "]"}], "-", 
-        RowBox[{"\[Omega]", "[", "n3", "]"}]}]}], "]"}]}]}], 
+       RowBox[{"\[Omega]", "[", "n1", "]"}], "+", 
+       RowBox[{"\[Omega]", "[", "n2", "]"}], "-", 
+       RowBox[{"\[Omega]", "[", "n3", "]"}]}]}], "]"}]}], 
    "\[IndentingNewLine]", 
    RowBox[{"N", "[", 
     RowBox[{
@@ -386,25 +376,15 @@ Cell[BoxData[
    RowBox[{
     RowBox[{"fud", "[", 
      RowBox[{"n1_", ",", "n2_", ",", "n3_"}], "]"}], ":=", 
-    RowBox[{
-     RowBox[{"\[Chi]ud", "[", 
+    RowBox[{"\[Gamma]ud", "[", 
+     RowBox[{
+      RowBox[{"\[Omega]", "[", "n1", "]"}], ",", 
+      RowBox[{"\[Omega]", "[", "n2", "]"}], ",", 
+      RowBox[{"\[Omega]", "[", "n3", "]"}], ",", 
       RowBox[{
-       RowBox[{"\[Omega]", "[", "n1", "]"}], ",", 
-       RowBox[{"\[Omega]", "[", "n2", "]"}], ",", 
-       RowBox[{"\[Omega]", "[", "n3", "]"}], ",", 
-       RowBox[{
-        RowBox[{"\[Omega]", "[", "n1", "]"}], "+", 
-        RowBox[{"\[Omega]", "[", "n2", "]"}], "-", 
-        RowBox[{"\[Omega]", "[", "n3", "]"}]}]}], "]"}], "-", 
-     RowBox[{"\[Chi]0ud", "[", 
-      RowBox[{
-       RowBox[{"\[Omega]", "[", "n1", "]"}], ",", 
-       RowBox[{"\[Omega]", "[", "n2", "]"}], ",", 
-       RowBox[{"\[Omega]", "[", "n3", "]"}], ",", 
-       RowBox[{
-        RowBox[{"\[Omega]", "[", "n1", "]"}], "+", 
-        RowBox[{"\[Omega]", "[", "n2", "]"}], "-", 
-        RowBox[{"\[Omega]", "[", "n3", "]"}]}]}], "]"}]}]}], 
+       RowBox[{"\[Omega]", "[", "n1", "]"}], "+", 
+       RowBox[{"\[Omega]", "[", "n2", "]"}], "-", 
+       RowBox[{"\[Omega]", "[", "n3", "]"}]}]}], "]"}]}], 
    "\[IndentingNewLine]", 
    RowBox[{"fud", "[", 
     RowBox[{"3", ",", "2", ",", "0"}], "]"}], "\[IndentingNewLine]", 
@@ -422,14 +402,14 @@ Cell[BoxData[
      RowBox[{"-", "29"}], ",", "29"}], "]"}], "\[IndentingNewLine]", 
    RowBox[{"Print", "[", "\"\<\>\"", "]"}]}]}]], "Input",
  CellChangeTimes->CompressedData["
-1:eJxTTMoPSmViYGCQBGIQ3afkxOT+46WjWOlEVhDdI6QvCKKjeJeA6ZrepeIg
+1:eJxTTMoPSmViYGCQAmIQ3afkxOT+46WjWOlEVhDdI6QvCKKjeJeA6ZrepeIg
 OmbqK1kQ3XT9qjKIznIWVgHRWybOEn7096Xjrg1lEiDaTXrp40v/XjrW8Zd/
 AdEHfrR2XwbS22c19IPoqob2ySBa5o3RDBCtcW16/RUgrVhyAUzL/L/2kuX/
 S0eH920fQPTyyMwvIPrc1t1gevNd338g+s+bBDDtY5XLxgqkGaedBNOPf0/n
 uyz2yvHJ/iB+EB2VJKL2Hkh/2hSvBaLf9ucZgmgvbTM3EM23XyHpC5C+zWGV
 DKKjVuXLz9R45fgg9D2YznR/NxFEM2htnwyi37UobgbRkwt4t4DoCO61HY+B
 9PsU3T4QnTTvdfgNzVeOrx+tTwHRTnGz2VZpv3KUOu3KBaIlYpbEguieq93x
-IJqpX2saiN690mAhiAYA9TzU6w==
+IJqpX2saiN690mAhiBYyePxhNZC2u/n2M4gGAI+o3fo=
   "]],
 
 Cell[BoxData["0"], "Output",
@@ -637,35 +617,35 @@ CellTagsIndex->{}
 Notebook[{
 Cell[545, 20, 8951, 249, 319, "Input"],
 Cell[CellGroupData[{
-Cell[9521, 273, 6385, 159, 553, "Input"],
-Cell[15909, 434, 210, 3, 27, "Output"],
-Cell[16122, 439, 307, 5, 27, "Output"],
-Cell[16432, 446, 304, 6, 27, "Output"],
-Cell[16739, 454, 310, 5, 27, "Output"],
-Cell[17052, 461, 212, 3, 27, "Output"],
-Cell[17267, 466, 307, 6, 27, "Output"],
-Cell[17577, 474, 124, 2, 20, "Print"],
-Cell[17704, 478, 303, 6, 27, "Output"],
-Cell[18010, 486, 307, 5, 27, "Output"],
-Cell[18320, 493, 307, 5, 27, "Output"],
-Cell[18630, 500, 308, 5, 27, "Output"],
-Cell[18941, 507, 304, 6, 27, "Output"],
-Cell[19248, 515, 305, 6, 27, "Output"],
-Cell[19556, 523, 126, 2, 20, "Print"],
-Cell[19685, 527, 212, 3, 27, "Output"],
-Cell[19900, 532, 305, 6, 27, "Output"],
-Cell[20208, 540, 310, 5, 27, "Output"],
-Cell[20521, 547, 305, 6, 27, "Output"],
-Cell[20829, 555, 212, 3, 27, "Output"],
-Cell[21044, 560, 307, 6, 27, "Output"],
-Cell[21354, 568, 124, 2, 20, "Print"],
-Cell[21481, 572, 304, 6, 27, "Output"],
-Cell[21788, 580, 310, 5, 27, "Output"],
-Cell[22101, 587, 307, 5, 27, "Output"],
-Cell[22411, 594, 310, 5, 27, "Output"],
-Cell[22724, 601, 304, 6, 27, "Output"],
-Cell[23031, 609, 312, 5, 27, "Output"],
-Cell[23346, 616, 123, 2, 20, "Print"]
+Cell[9521, 273, 5591, 139, 553, "Input"],
+Cell[15115, 414, 210, 3, 27, "Output"],
+Cell[15328, 419, 307, 5, 27, "Output"],
+Cell[15638, 426, 304, 6, 27, "Output"],
+Cell[15945, 434, 310, 5, 27, "Output"],
+Cell[16258, 441, 212, 3, 27, "Output"],
+Cell[16473, 446, 307, 6, 27, "Output"],
+Cell[16783, 454, 124, 2, 20, "Print"],
+Cell[16910, 458, 303, 6, 27, "Output"],
+Cell[17216, 466, 307, 5, 27, "Output"],
+Cell[17526, 473, 307, 5, 27, "Output"],
+Cell[17836, 480, 308, 5, 27, "Output"],
+Cell[18147, 487, 304, 6, 27, "Output"],
+Cell[18454, 495, 305, 6, 27, "Output"],
+Cell[18762, 503, 126, 2, 20, "Print"],
+Cell[18891, 507, 212, 3, 27, "Output"],
+Cell[19106, 512, 305, 6, 27, "Output"],
+Cell[19414, 520, 310, 5, 27, "Output"],
+Cell[19727, 527, 305, 6, 27, "Output"],
+Cell[20035, 535, 212, 3, 27, "Output"],
+Cell[20250, 540, 307, 6, 27, "Output"],
+Cell[20560, 548, 124, 2, 20, "Print"],
+Cell[20687, 552, 304, 6, 27, "Output"],
+Cell[20994, 560, 310, 5, 27, "Output"],
+Cell[21307, 567, 307, 5, 27, "Output"],
+Cell[21617, 574, 310, 5, 27, "Output"],
+Cell[21930, 581, 304, 6, 27, "Output"],
+Cell[22237, 589, 312, 5, 27, "Output"],
+Cell[22552, 596, 123, 2, 20, "Print"]
 }, Open  ]]
 }
 ]
