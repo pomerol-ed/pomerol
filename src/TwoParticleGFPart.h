@@ -180,8 +180,11 @@ private:
     /** TODO: document this */
     MatsubaraContainer *Storage;
 
-    /** Reduces the number of calculated terms */
-    void reduceTerms();
+    /** Reduces the number of calculated terms 
+    * \param[in] NonResonantTolerance The tolerance for the nonresonant rems cutoff.
+    * \param[in] ResonantTolerance    The tolerance for the resonant terms cutoff$.
+    */
+    void reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance);
     
     /** Adds a multi-term that has the following form:
     * \f[

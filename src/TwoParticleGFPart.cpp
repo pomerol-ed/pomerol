@@ -220,6 +220,11 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
 
     std::list<InnerQuantumState> Index4List;
 
+    unsigned long ResonantTermsUnreducedSize=0;
+    unsigned long NonResonantTermsUnreducedSize=0;
+    unsigned long ResonantTermsPreviousSize=0;
+    unsigned long NonResonantTermsPreviousSize=0;
+
     for(index1=0; index1<index1Max; ++index1){
     for(index3=0; index3<index3Max; ++index3){
         ColMajorMatrixType::InnerIterator index4bra_iter(CX4matrix,index1);       
@@ -270,9 +275,33 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
             }
         };
     }
+    if (ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize > 3e5){ 
+        INFO_NONEWLINE(NonResonantTerms.size()-NonResonantTermsPreviousSize << " nonresonant + " << ResonantTerms.size() - ResonantTermsPreviousSize << " resonant = ");
+        INFO_NONEWLINE(ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize);
+        INFO_NONEWLINE(" terms reduced to ");
+
+        NonResonantTermsUnreducedSize+=NonResonantTerms.size();
+        ResonantTermsUnreducedSize+= ResonantTerms.size();
+
+        RealType NonResonantTolerance = MultiTermCoefficientTolerance*(index1+1)/NonResonantTermsUnreducedSize/(index1Max+1);
+        RealType ResonantTolerance = MultiTermCoefficientTolerance*(index1+1)/ResonantTermsUnreducedSize/(index1Max+1);
+
+        reduceTerms(NonResonantTolerance, ResonantTolerance); 
+        NonResonantTermsPreviousSize = NonResonantTerms.size();
+        ResonantTermsPreviousSize = ResonantTerms.size(); 
+
+        INFO_NONEWLINE(NonResonantTermsPreviousSize << "+" << ResonantTermsPreviousSize << " = ");
+        INFO(NonResonantTermsPreviousSize + ResonantTermsPreviousSize << " with tolerances: " << NonResonantTolerance << ", " << ResonantTolerance);
+        };
     };
 
-    reduceTerms();
+    NonResonantTermsUnreducedSize=(NonResonantTermsUnreducedSize>0)?NonResonantTermsUnreducedSize:NonResonantTerms.size();
+    ResonantTermsUnreducedSize=(ResonantTermsUnreducedSize>0)?ResonantTermsUnreducedSize:ResonantTerms.size();
+    INFO_NONEWLINE("Total " << NonResonantTermsUnreducedSize << " nonresonant + " << ResonantTermsUnreducedSize << " resonant = ");
+    INFO_NONEWLINE(NonResonantTermsUnreducedSize+ResonantTermsUnreducedSize << " terms reduced to ");
+    reduceTerms(MultiTermCoefficientTolerance/NonResonantTermsUnreducedSize, MultiTermCoefficientTolerance/ResonantTermsUnreducedSize);
+    INFO_NONEWLINE(NonResonantTerms.size() << "+" << ResonantTerms.size() << " = ");
+    INFO(NonResonantTerms.size() + ResonantTerms.size()  << " with tolerances: " << MultiTermCoefficientTolerance/NonResonantTermsUnreducedSize << ", " << MultiTermCoefficientTolerance/ResonantTermsUnreducedSize);
 
     Storage->fill(*this);
     NonResonantTerms.clear();
@@ -280,9 +309,8 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
 }
 
 
-void TwoParticleGFPart::reduceTerms()
+void TwoParticleGFPart::reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance)
 {
-    DEBUG("Before: " << NonResonantTerms.size() << " non resonant terms + " << ResonantTerms.size() << " resonant terms = " << ResonantTerms.size()+NonResonantTerms.size());
     // Sieve reduction of the non-resonant terms
     for(std::list<NonResonantTerm>::iterator it1 = NonResonantTerms.begin(); it1 != NonResonantTerms.end();){
         std::list<NonResonantTerm>::iterator it2 = it1;
@@ -294,8 +322,7 @@ void TwoParticleGFPart::reduceTerms()
                 it2++;
         }
         
-        RealType Tolerance1 = MultiTermCoefficientTolerance/NonResonantTerms.size();
-        if(abs(it1->Coeff) < Tolerance1)
+        if(abs(it1->Coeff) < NonResonantTolerance)
             it1 = NonResonantTerms.erase(it1);
         else
             it1++;
@@ -312,13 +339,12 @@ void TwoParticleGFPart::reduceTerms()
                 it2++;
         }
         
-        RealType Tolerance1 = MultiTermCoefficientTolerance/ResonantTerms.size();
-        if(abs(it1->ResCoeff) + abs(it1->NonResCoeff) < Tolerance1)
+        if(abs(it1->ResCoeff) + abs(it1->NonResCoeff) < ResonantTolerance)
             it1 = ResonantTerms.erase(it1);
         else
             it1++;
     }
-    DEBUG("After: " << NonResonantTerms.size() << " non resonant terms + " << ResonantTerms.size() << " resonant terms = " << ResonantTerms.size()+NonResonantTerms.size());
+    //DEBUG("After: " << NonResonantTerms.size() << " non resonant terms + " << ResonantTerms.size() << " resonant terms = " << ResonantTerms.size()+NonResonantTerms.size());
 }
 
 inline

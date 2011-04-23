@@ -12,7 +12,7 @@ objects=output.o Dumper.o LatticeAnalysis.o \
 	Vertex4.o FieldOperatorContainer.o \
 	TwoParticleGFContainer.o GFContainer.o 
 
-libs=../lib/lib_json.a ${POMEROL_LIBS} -lhdf5_cpp
+libs=../lib/lib_json.a ${POMEROL_LIBS}
 
 default: main
 

@@ -14,7 +14,6 @@
 #include "OptionParser.h"
 
 #include <fstream>
-
 std::string input = "system.ini";
 
 LatticeAnalysis Lattice;
@@ -257,12 +256,7 @@ int main(int argc, char *argv[])
 
   FieldOperatorContainer Operators(S,H,IndexInfo);
   GFContainer G(S,H,rho,IndexInfo,Operators);
-  G.prepare();
-  G.compute();
   long wn = opt.NumberOfMatsubaras;
-  G.dumpToPlainText(wn);
-  std::cout << std::setprecision(9) << G(0) << std::endl;
-  std::cout << std::setprecision(9) << G(1) << std::endl;
 
   if (1==1){
     printFramed("Two Particle Green's function calculation");
@@ -281,6 +275,10 @@ int main(int argc, char *argv[])
     Chi4.compute(wn);
 
     saveChi("Chi4.dat",Chi4,wn);
+
+    G.prepare();
+    G.compute();
+    G.dumpToPlainText(wn);
 
     Vertex4 Gamma4(IndexInfo,Chi4,G);
     Gamma4.prepareUnAmputated();

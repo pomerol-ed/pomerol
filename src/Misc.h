@@ -96,8 +96,9 @@ end_do_once
 #define end_do_once }; };
 //@}
 
-#define INFO(MSG)       std::cout << MSG << std::endl;
-#define ERROR(MSG)      std::cerr << MSG << std::endl;
+#define INFO(MSG)                 std::cout << MSG << std::endl;
+#define INFO_NONEWLINE(MSG)       std::cout << MSG << std::flush;
+#define ERROR(MSG)                std::cerr << MSG << std::endl;
 
 #ifdef NDEBUG
   #define DEBUG(x)
