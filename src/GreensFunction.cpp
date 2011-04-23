@@ -74,11 +74,11 @@ ComplexType GreensFunction::operator()(long MatsubaraNum)
       return Value;
 }
 
-unsigned short GreensFunction::getBit(size_t Position) const
+unsigned short GreensFunction::getIndex(size_t Position) const
 {
     switch(Position){
-        case 0: return C.getBit();
-        case 1: return CX.getBit();
+        case 0: return C.getIndex();
+        case 1: return CX.getIndex();
         default: assert(0);
     }
 }
@@ -93,8 +93,8 @@ bool GreensFunction::vanishes()
 void GreensFunction::dumpToPlainText(long points)
 {
     std::stringstream filename;
-    unsigned short i=C.getBit();
-    unsigned short j=CX.getBit();
+    unsigned short i=C.getIndex();
+    unsigned short j=CX.getIndex();
     filename << "output/Gw" << i << j << ".dat";
     std::ofstream output;
     output.setf(std::ios::scientific, std::ios::floatfield);

@@ -28,7 +28,7 @@ GFContainer::GFContainer ( StatesClassification &S, Hamiltonian &H, DensityMatri
 
 MatrixType& GFContainer::operator()(long MatsubaraNumber)
 {
-    MatrixType* Output = new MatrixType(IndexInfo.getBitSize(), IndexInfo.getBitSize());
+    MatrixType* Output = new MatrixType(IndexInfo.getIndexSize(), IndexInfo.getIndexSize());
     Output->setZero();
     for (std::map<IndexCombination, GreensFunction*>::iterator it1=mapGreensFunctions.begin(); it1!=mapGreensFunctions.end(); it1++){
         (*Output)(it1->first.Indices[0],it1->first.Indices[1]) = (*it1->second)(MatsubaraNumber);
@@ -43,8 +43,8 @@ ComplexType GFContainer::operator()(ParticleIndex i, ParticleIndex j, long Matsu
 
 void GFContainer::prepare()
 {
-    for (ParticleIndex i=0; i<IndexInfo.getBitSize(); ++i)
-        for (ParticleIndex j=0; j<IndexInfo.getBitSize(); ++j){
+    for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); ++i)
+        for (ParticleIndex j=0; j<IndexInfo.getIndexSize(); ++j){
                 GreensFunction *GF = new GreensFunction (S,H,Operators.getAnnihilationOperator(i),Operators.getCreationOperator(j),DM);
                 GF->prepare();
                 if (!GF->vanishes()) mapGreensFunctions[IndexCombination(i,j)]=GF;

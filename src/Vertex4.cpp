@@ -71,7 +71,7 @@ void Vertex4::prepareAmputated(std::vector<TwoParticleGFContainer::IndexCombinat
 {
     NonTrivialAmputatedCombinations=in;
     INFO("Inverting Greens Function...");
-    ParticleIndex N_bit = IndexInfo.getBitSize();
+    ParticleIndex N_bit = IndexInfo.getIndexSize();
     for(long MatsubaraNumber=-NumberOfMatsubaras; MatsubaraNumber<=NumberOfMatsubaras; ++MatsubaraNumber){
         MatrixType GMatrix(N_bit,N_bit);
         for(ParticleIndex index1=0; index1 < N_bit; ++index1)

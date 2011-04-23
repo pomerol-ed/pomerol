@@ -115,9 +115,8 @@ public:
     /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
      * \param[in] Position Zero-based number of the operator to use.
      */
-    unsigned short getBit(size_t Position) const;
-#warning "The conception of 'bits' exposes an internal representation of operators. \
-Should it be replaced with a standard physical notion of indices?"
+    unsigned short getIndex(size_t Position) const;
+
     /** Returns the inverse temperature. */
     RealType getBeta() const;
 

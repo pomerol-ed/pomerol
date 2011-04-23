@@ -74,9 +74,7 @@ public:
     /** Returns the 'bit' (index) of the operator C or CX.
      * \param[in] Position Use C for Position==0 and CX for Position==1.
      */
-    unsigned short getBit(size_t Position) const;
-#warning "The conception of 'bits' exposes an internal representation of operators. \
-Should it be replaced with a standard physical notion of indices?"
+    unsigned short getIndex(size_t Position) const;
 
      /** Returns the value of the Green's function calculated at a given frequency.
      * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).

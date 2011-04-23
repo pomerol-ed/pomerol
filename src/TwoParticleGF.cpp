@@ -154,13 +154,13 @@ ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumbe
 
 }
 
-unsigned short TwoParticleGF::getBit(size_t Position) const
+unsigned short TwoParticleGF::getIndex(size_t Position) const
 {
     switch(Position){
-        case 0: return C1.getBit();
-        case 1: return C2.getBit();
-        case 2: return CX3.getBit();
-        case 3: return CX4.getBit();
+        case 0: return C1.getIndex();
+        case 1: return C2.getIndex();
+        case 2: return CX3.getIndex();
+        case 3: return CX4.getIndex();
         default: assert(0);
     }
 }

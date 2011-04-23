@@ -194,13 +194,13 @@ int main(int argc, char *argv[])
   std::cout << Lattice.printSitesList().str() << std::flush;
   IndexInfo.prepare();
   printFramed("System Info");
-  IndexInfo.printBitInfoList();
+  IndexInfo.printIndexInfoList();
   printFramed("Hopping Matrix");
   IndexInfo.printHoppingMatrix();
   printFramed("Terms check");
   IndexInfo.printTerms();
-  //determination of system
-
+  printFramed("Equivalent Permutations");
+  exit(0);
   OUT = output_handle("output");
 
   S.iniStatesClassification();
@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
   out.close();
 
   out.open("output/Stat.NN.dat");
-  out << iomanip_prefs << rho.getAverageDoubleOccupancy(0,IndexInfo.getBitSize()/2.) << std::endl;
+  out << iomanip_prefs << rho.getAverageDoubleOccupancy(0,IndexInfo.getIndexSize()/2.) << std::endl;
   out.close();
 
 

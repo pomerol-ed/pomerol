@@ -69,7 +69,7 @@ void OperatorContainer::dump()
   };
 }
 
-unsigned short OperatorContainer::getBit() const
+unsigned short OperatorContainer::getIndex() const
 { 
     return bit;
 }

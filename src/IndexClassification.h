@@ -2,7 +2,7 @@
 // This file is a part of pomerol diagonalization code
 
 /** \file IndexClassification.h
-**  \brief Declaration of BitInfo, TermsList, IndexClassification classes.
+**  \brief Declaration of IndexInfo, TermsList, IndexClassification classes.
 ** 
 **  \author    Andrey Antipov (antipov@ct-qmc.org)
 */
@@ -16,11 +16,11 @@
 #include<json/json.h>
 
 /**
- * BitInfo class is an abstract class to handle all info about current bit. 
+ * IndexInfo class is an abstract class to handle all info about current bit. 
  * The bit is a site+spin index. The class also handles the number of the bit and the type of the site which it belongs to
  */ 
 
-class BitInfo
+class IndexInfo
 {
 public:
     unsigned short site;         //!< The number of site
@@ -28,34 +28,34 @@ public:
     unsigned short type;        //!< The type of site which handles this spin. Can be s,p,d,f (0,1,2,3).
     unsigned short bitNumber;    //!< The number of bit
     RealType LocalMu;            //!< The energy in the -mu*N term for the site ( Useful for adjusting a filling in the orbital )
-    void setBitNumber(const unsigned short &in); 
+    void setIndexNumber(const unsigned short &in); 
     virtual void print_to_screen()=0;
 };
 
 /**
- * sBitInfo is a class, inherited from BitInfo. It provides full info about the bit in s-orbital
+ * sIndexInfo is a class, inherited from IndexInfo. It provides full info about the bit in s-orbital
  */
-class sBitInfo : public BitInfo
+class sIndexInfo : public IndexInfo
 {
 public:
     RealType U;
-    sBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_, RealType U_, RealType LocalMu_):U(U_){site=site_;type=type_;spin=spin_;LocalMu=LocalMu_;};
-    friend std::ostream& operator<<(std::ostream& output, const sBitInfo& out);
+    sIndexInfo(unsigned short site_, unsigned short type_, unsigned short spin_, RealType U_, RealType LocalMu_):U(U_){site=site_;type=type_;spin=spin_;LocalMu=LocalMu_;};
+    friend std::ostream& operator<<(std::ostream& output, const sIndexInfo& out);
     void print_to_screen(){std::cout << *this << std::endl;};
 };
 
 /**
- * pBitInfo is a class, inherited from BitInfo. It provides full info about the bit in p-orbital
+ * pIndexInfo is a class, inherited from IndexInfo. It provides full info about the bit in p-orbital
  */
-class pBitInfo : public BitInfo
+class pIndexInfo : public IndexInfo
 {
 public:
     RealType U;
     RealType J;
     std::string basis;
     unsigned short orbital; 
-    pBitInfo(unsigned short site_, unsigned short type_, unsigned short spin_,unsigned short orbital_, const std::string &basis_, RealType U_, RealType J_):U(U_),J(J_){site=site_;type=type_;spin=spin_;orbital=orbital_;basis=basis_;};
-    friend std::ostream& operator<<(std::ostream& output, const pBitInfo& out);
+    pIndexInfo(unsigned short site_, unsigned short type_, unsigned short spin_,unsigned short orbital_, const std::string &basis_, RealType U_, RealType J_):U(U_),J(J_){site=site_;type=type_;spin=spin_;orbital=orbital_;basis=basis_;};
+    friend std::ostream& operator<<(std::ostream& output, const pIndexInfo& out);
     void print_to_screen(){std::cout << *this << std::endl;};
 };
 
@@ -76,40 +76,54 @@ class TermsList
 };
 
 /**
- * The IndexClassification class handles all Terms and Bits for a given Lattice.
- * It reads the structure of the lattice from file "Lattice.json".
- * The input file should be written in JSON format and contain all the info about the sites of the system.
- * IndexClassification parses this file and creates a bit classification instead of site in order to associate a unique index "bit" to a site + spin configuration.
+ * The IndexClassification class handles all Terms and Indexs for a given Lattice.
+ * It reads the structure of the lattice from external lattice json file 
+ * The lattice file should be written in JSON format and contain all the info about the sites of the system.
+ * IndexClassification parses this file and creates an index classification instead of site in order to associate a unique index "bit" to a site + spin configuration.
  * Then the HoppingMatrix to reproduce all the hoppings of the first order between different bits is created.
  * Finally, the list of formula for the model is written on a current lattice through a list of Terms to instruct the entering of the matrix elements of the hamiltonian.
  */
 class IndexClassification
 {
     LatticeAnalysis &Lattice;
-    int N_bit;                                          //!< The length of BitInfoList. Defines the number of states in system as 2^N_bit.
+    int N_bit;                                          //!< The length of IndexInfoList. Defines the number of states in system as 2^N_bit.
     RealMatrixType HoppingMatrix;                       //!< The matrix to show all hoppings between different bits.
-    std::vector<BitInfo*> BitInfoList;                       //!< A list of all Bits.
+    std::vector<IndexInfo*> IndexInfoList;                  //!< A list of all Indexs.
     TermsList Terms;                                    //!< The list of all terms for the current Lattice
 public:
     IndexClassification(LatticeAnalysis &Lattice);
     int prepare();                                      //!< Reads all info from Lattice (LatticeAnalysis class)
-    void printBitInfoList();                            //!< Print BitInfoList to screen
+    void printIndexInfoList();                            //!< Print IndexInfoList to screen
     void printHoppingMatrix();                          //!< Print HoppingMatrix to screen
     void printTerms();                                  //!< Print TermsList to screen
     RealMatrixType& getHoppingMatrix();                 //!< Returns a Hopping Matrix
-    std::vector<BitInfo*> &getBitInfoList();            //!< Returns a BitInfoList
-    const int& getBitSize() const;                      //!< Returns N_bit
+    std::vector<IndexInfo*> &getIndexInfoList();            //!< Returns a IndexInfoList
+    const int& getIndexSize() const;                      //!< Returns N_bit
     bool checkIndex(ParticleIndex in);                  //!< Returns true if current Index may exist, i.e. if it is between 0 and N_bit-1
     TermsList& getTermsList();                          //!< Returns Terms
+    struct IndexPermutation;
 private:
-    void defineBits();                                  //!< Define the bit classification from the info from file
+    void defineIndices();                                  //!< Define the bit classification from the info from file
     void defineHopping();                               //!< Define Hopping from classification
     void defineTerms();                                 //!< Define all terms
-    void definePorbitalSphericalTerms(pBitInfo **Bits); //!< The bunch of methods to add Terms for p-orbital written in Spherical basis
-    void definePorbitalNativeTerms(pBitInfo **Bits);    //!< The bunch of methods to add Terms for p-orbital written in Native basis
-    std::vector<unsigned short>& findBits(const unsigned short &site); //!< A method to find all bits for a corresponding site
-    unsigned short findBit(const unsigned short &site, const unsigned short &orbital, const unsigned short &spin); //!< A method to find bit, which corresponds to given site, orbital and spin
+    void definePorbitalSphericalTerms(pIndexInfo **Indexs); //!< The bunch of methods to add Terms for p-orbital written in Spherical basis
+    void definePorbitalNativeTerms(pIndexInfo **Indexs);    //!< The bunch of methods to add Terms for p-orbital written in Native basis
+    std::vector<unsigned short>& findIndexs(const unsigned short &site); //!< A method to find all bits for a corresponding site
+    unsigned short findIndex(const unsigned short &site, const unsigned short &orbital, const unsigned short &spin); //!< A method to find bit, which corresponds to given site, orbital and spin
 };
+
+struct IndexClassification::IndexPermutation
+{
+friend class IndexClassication;
+protected:
+    IndexPermutation(std::vector<ParticleIndex>& in);
+public:
+    std::vector<ParticleIndex> Permutation;
+    bool isCorrect();
+    ~IndexPermutation();
+    friend std::ostream& operator<<(std::ostream& output, const IndexPermutation& out);
+};
+
 
 #endif // endif :: #ifndef #__INCLUDE_INDEXCLASSIFICATION_H
 

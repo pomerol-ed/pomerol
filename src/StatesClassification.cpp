@@ -109,11 +109,11 @@ const int StatesClassification::L()
 
 void StatesClassification::iniStatesClassification()             //initalize StatesClassification class by sorting all quantum states in system
 {
-    N_bit = Formula.getBitSize(); 
+    N_bit = Formula.getIndexSize(); 
     N_state = ( 1 << N_bit ); 
     N_bit_m=0;
     #warning : bad N_bit_m definition. Actually existence of N_bit_m is definetely bad.
-      for (std::vector<BitInfo*>::iterator it=Formula.getBitInfoList().begin(); it != Formula.getBitInfoList().end(); it++ ) 
+      for (std::vector<IndexInfo*>::iterator it=Formula.getIndexInfoList().begin(); it != Formula.getIndexInfoList().end(); it++ ) 
     {
         if ((*it)->type == p) { N_bit_m = 6; break;};
         if ((*it)->type == d) { N_bit_m = 10; break; };
