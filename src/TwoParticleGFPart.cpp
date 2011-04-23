@@ -297,15 +297,17 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
 
     NonResonantTermsUnreducedSize=(NonResonantTermsUnreducedSize>0)?NonResonantTermsUnreducedSize:NonResonantTerms.size();
     ResonantTermsUnreducedSize=(ResonantTermsUnreducedSize>0)?ResonantTermsUnreducedSize:ResonantTerms.size();
-    INFO_NONEWLINE("Total " << NonResonantTermsUnreducedSize << " nonresonant + " << ResonantTermsUnreducedSize << " resonant = ");
-    INFO_NONEWLINE(NonResonantTermsUnreducedSize+ResonantTermsUnreducedSize << " terms reduced to ");
-    reduceTerms(MultiTermCoefficientTolerance/NonResonantTermsUnreducedSize, MultiTermCoefficientTolerance/ResonantTermsUnreducedSize);
-    INFO_NONEWLINE(NonResonantTerms.size() << "+" << ResonantTerms.size() << " = ");
-    INFO(NonResonantTerms.size() + ResonantTerms.size()  << " with tolerances: " << MultiTermCoefficientTolerance/NonResonantTermsUnreducedSize << ", " << MultiTermCoefficientTolerance/ResonantTermsUnreducedSize);
+    if (ResonantTermsUnreducedSize + NonResonantTermsUnreducedSize > 0){
+        INFO_NONEWLINE("Total " << NonResonantTermsUnreducedSize << " nonresonant + " << ResonantTermsUnreducedSize << " resonant = ");
+        INFO_NONEWLINE(NonResonantTermsUnreducedSize+ResonantTermsUnreducedSize << " terms reduced to ");
+        reduceTerms(MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1), MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1));
+        INFO_NONEWLINE(NonResonantTerms.size() << "+" << ResonantTerms.size() << " = ");
+        INFO(NonResonantTerms.size() + ResonantTerms.size()  << " with tolerances: " << MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1) << ", " << MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1));
 
-    Storage->fill(*this);
-    NonResonantTerms.clear();
-    ResonantTerms.clear();
+        Storage->fill(*this);
+        NonResonantTerms.clear();
+        ResonantTerms.clear();
+    };
 }
 
 
