@@ -25,7 +25,7 @@ class IndexInfo
 public:
     unsigned short site;         //!< The number of site
     unsigned short spin;         //!< Spin up(1) or Spin down(0)
-    unsigned short type;        //!< The type of site which handles this spin. Can be s,p,d,f (0,1,2,3).
+    unsigned short type;         //!< The type of site which handles this spin. Can be s,p,d,f (0,1,2,3).
     unsigned short bitNumber;    //!< The number of bit
     RealType LocalMu;            //!< The energy in the -mu*N term for the site ( Useful for adjusting a filling in the orbital )
     void setIndexNumber(const unsigned short &in); 
@@ -69,7 +69,7 @@ class TermsList
    unsigned short maxOrder;
 
    public:
-   void addTerm(Term* in);                            //!< Add a new term to the List
+   void addTerm(Term* in);                                           //!< Add a new term to the List
    TermsList(){maxOrder=0;};
    std::list<Term*> &getTerms(unsigned short order);                 //!< Get a list of terms of a given order
    friend std::ostream& operator<<(std::ostream& output,TermsList& out);
@@ -85,36 +85,44 @@ class TermsList
  */
 class IndexClassification
 {
+public:
+    struct IndexPermutation;
+private:
     LatticeAnalysis &Lattice;
     int N_bit;                                          //!< The length of IndexInfoList. Defines the number of states in system as 2^N_bit.
     RealMatrixType HoppingMatrix;                       //!< The matrix to show all hoppings between different bits.
-    std::vector<IndexInfo*> IndexInfoList;                  //!< A list of all Indexs.
+    std::vector<IndexInfo*> IndexInfoList;              //!< A list of all IndexInfo pointers -> contains all information on each index
     TermsList Terms;                                    //!< The list of all terms for the current Lattice
+    std::list<IndexPermutation> EquivalentPermutations; //!< A list of all equivalent IndexPermutations
 public:
     IndexClassification(LatticeAnalysis &Lattice);
     int prepare();                                      //!< Reads all info from Lattice (LatticeAnalysis class)
-    void printIndexInfoList();                            //!< Print IndexInfoList to screen
+    void printIndexInfoList();                          //!< Print IndexInfoList to screen
     void printHoppingMatrix();                          //!< Print HoppingMatrix to screen
     void printTerms();                                  //!< Print TermsList to screen
+    void printEquivalentPermutations();                 //!< Print all equivalent ParticleIndex permutations
     RealMatrixType& getHoppingMatrix();                 //!< Returns a Hopping Matrix
-    std::vector<IndexInfo*> &getIndexInfoList();            //!< Returns a IndexInfoList
-    const int& getIndexSize() const;                      //!< Returns N_bit
+    std::vector<IndexInfo*> &getIndexInfoList();        //!< Returns a IndexInfoList
+    const int& getIndexSize() const;                    //!< Returns N_bit
     bool checkIndex(ParticleIndex in);                  //!< Returns true if current Index may exist, i.e. if it is between 0 and N_bit-1
-    TermsList& getTermsList();                          //!< Returns Terms
-    struct IndexPermutation;
+    const TermsList& getTermsList();                    //!< Returns Terms
+    const std::list<IndexClassification::IndexPermutation> &getEquivalentIndexPermutations();  //!< Returns a vector of equivalent index permutation
 private:
-    void defineIndices();                                  //!< Define the bit classification from the info from file
+    void defineIndices();                               //!< Define the bit classification from the info from file
     void defineHopping();                               //!< Define Hopping from classification
     void defineTerms();                                 //!< Define all terms
+    void defineEquivalentIndexPermutations();           //!< Define all equivalent index permutations
     void definePorbitalSphericalTerms(pIndexInfo **Indexs); //!< The bunch of methods to add Terms for p-orbital written in Spherical basis
     void definePorbitalNativeTerms(pIndexInfo **Indexs);    //!< The bunch of methods to add Terms for p-orbital written in Native basis
     std::vector<unsigned short>& findIndexs(const unsigned short &site); //!< A method to find all bits for a corresponding site
     unsigned short findIndex(const unsigned short &site, const unsigned short &orbital, const unsigned short &spin); //!< A method to find bit, which corresponds to given site, orbital and spin
 };
 
-struct IndexClassification::IndexPermutation
+/** IndexClassification::IndexPermutation - a container of permutation of indices of the system
+ */
+class IndexClassification::IndexPermutation
 {
-friend class IndexClassication;
+friend void IndexClassification::defineEquivalentIndexPermutations();
 protected:
     IndexPermutation(std::vector<ParticleIndex>& in);
 public:

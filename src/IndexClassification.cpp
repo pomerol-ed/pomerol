@@ -17,6 +17,8 @@ int IndexClassification::prepare()
   (*this).defineIndices();
   (*this).defineHopping();
   (*this).defineTerms();
+  (*this).defineEquivalentIndexPermutations();
+
   return 0;
 }
 
@@ -33,6 +35,7 @@ IndexClassification::IndexClassification(LatticeAnalysis &Lattice):Lattice(Latti
 
 void IndexClassification::defineIndices()
 {
+  INFO("IndexClassification: Defining Particle Indices according to the Lattice");
   std::vector<LatticeSite*> SitesList=Lattice.getSitesList();
   std::vector<LatticeSite*>::const_iterator SiteIterator;
   for (SiteIterator = SitesList.begin(); SiteIterator < SitesList.end(); SiteIterator++ )
@@ -80,6 +83,7 @@ void IndexClassification::defineIndices()
 
 void IndexClassification::defineTerms()
 {
+    INFO("IndexClassification: Defining all local terms");
    for (unsigned short bit = 0; bit < IndexInfoList.size()/2; bit++ ) 
       {
      switch (IndexInfoList[bit]->type)
@@ -124,6 +128,17 @@ void IndexClassification::defineTerms()
       };
 }
 
+void IndexClassification::defineEquivalentIndexPermutations()
+{
+    INFO("IndexClassification: Defining equivalent ParticleIndex permutations");
+    #warning Assuming explicitly spin symmetry - must be an input flag here 
+    std::vector<ParticleIndex> CurrentAcceptedPermutation(N_bit); 
+    // Spin symmetry
+    for (int i=0;i<N_bit/2;i++) CurrentAcceptedPermutation[i]=i+N_bit/2;
+    for (int i=N_bit/2;i<N_bit;i++) CurrentAcceptedPermutation[i]=i-N_bit/2;
+    EquivalentPermutations.push_back(IndexPermutation(CurrentAcceptedPermutation));
+}
+
 void IndexClassification::printIndexInfoList()
 {
   for (std::vector<IndexInfo*>::iterator it=IndexInfoList.begin(); it != IndexInfoList.end(); it++ ) (*it)->print_to_screen();
@@ -163,12 +178,23 @@ void IndexClassification::printTerms()
 {
     std::cout << Terms << std::endl;
 }
+
+void IndexClassification::printEquivalentPermutations()
+{
+    INFO_NONEWLINE("(");
+    for (ParticleIndex i=0; i<N_bit; ++i) INFO_NONEWLINE(i);
+    INFO_NONEWLINE(")");
+    INFO("");
+    for (ParticleIndex i=0; i<N_bit+2; ++i) INFO_NONEWLINE("-");
+    INFO("");
+    for (std::list<IndexClassification::IndexPermutation>::const_iterator it=EquivalentPermutations.begin(); it!=EquivalentPermutations.end(); ++it) INFO(*it);
+}
 void IndexClassification::defineHopping()
 /*
  * This procedure defines a Hopping Matrix from a Lattice input file
  */
 {
-
+    INFO("IndexClassification: Defining hopping terms");
     HoppingMatrix.resize(N_bit, N_bit);
     HoppingMatrix.setZero();
     std::vector<LatticeSite*> SitesList=Lattice.getSitesList();
@@ -205,9 +231,14 @@ bool IndexClassification::checkIndex(ParticleIndex in)
     return (in <= N_bit-1);
 }
 
-TermsList& IndexClassification::getTermsList()
+const TermsList& IndexClassification::getTermsList()
 {
     return Terms;
+}
+
+const std::list<IndexClassification::IndexPermutation>&  IndexClassification::getEquivalentIndexPermutations()
+{
+    return EquivalentPermutations;
 }
 
 void IndexClassification::definePorbitalSphericalTerms(pIndexInfo **list)

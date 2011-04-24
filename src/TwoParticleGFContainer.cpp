@@ -51,7 +51,20 @@ for (std::vector<IndexCombination*>::const_iterator it1=NonTrivialCombinations.b
     CreationOperator     &CX4 = Operators.getCreationOperator   ((*it1)->Indices[3]);
     TwoParticleGF * temp2PGF = new TwoParticleGF(S,H,C1,C2,CX3,CX4,DM);
     temp2PGF->prepare();
-    if (!temp2PGF->vanishes()) mapNonTrivialCombinations[**it1] = temp2PGF;
+    if (!temp2PGF->vanishes()){
+        INFO("TwoParticleGFContainer: assigning " << **it1 << " TwoParticleGF for calculation");
+        mapNonTrivialCombinations[**it1] = temp2PGF;
+        for (std::list<IndexClassification::IndexPermutation>::const_iterator index_perm = IndexInfo.getEquivalentIndexPermutations().begin();
+                index_perm!=IndexInfo.getEquivalentIndexPermutations().end(); ++index_perm){
+                    IndexCombination permuted(index_perm->Permutation[(*it1)->Indices[0]],
+                                              index_perm->Permutation[(*it1)->Indices[1]],
+                                              index_perm->Permutation[(*it1)->Indices[2]],
+                                              index_perm->Permutation[(*it1)->Indices[3]]
+                                             );
+                    INFO("TwoParticleGFContainer: assigning " << permuted << " TwoParticleGF as equivalent to " << **it1);
+                    mapNonTrivialCombinations[permuted]=temp2PGF;
+                };
+        };
     };
 };
 
