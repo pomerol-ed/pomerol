@@ -18,7 +18,7 @@
  * rotated to eigenvector basis of Hamiltonian H ) for a given Index.
  * If no field operator is yet initialized then calculation of the field operator is done.
  */
-class FieldOperatorContainer : public ComputableObject
+class FieldOperatorContainer
 {
 private:
     /** A reference to a states classification object. */
