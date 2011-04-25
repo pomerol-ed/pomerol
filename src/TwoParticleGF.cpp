@@ -22,7 +22,6 @@ TwoParticleGF::TwoParticleGF(StatesClassification& S, Hamiltonian& H,
                 CreationOperator& CX3, CreationOperator& CX4,
                 DensityMatrix& DM) : S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM), parts(0)
 {
-    green_path = output_handle(OUT.path() + "/Gamma4");
     Storage = new TwoParticleGFPart::MatsubaraContainer(DM.getBeta());
     vanish = true;
     Status = Constructed;
@@ -85,11 +84,12 @@ if (Status < Prepared)
                   // Select a relevant 'world stripe' (sequence of blocks).
                   if(getRightIndex(p,1,LeftIndices[1]) == LeftIndices[2] && LeftIndices[1].isCorrect() && LeftIndices[2].isCorrect()){
                       // DEBUG
-                      DEBUG("new part: "  << S.getBlockInfo(LeftIndices[0]) << " " 
+                      /*DEBUG("new part: "  << S.getBlockInfo(LeftIndices[0]) << " " 
                                           << S.getBlockInfo(LeftIndices[1]) << " "
                                           << S.getBlockInfo(LeftIndices[2]) << " "
                                           << S.getBlockInfo(LeftIndices[3]) << " "
                       <<"BlockNumbers part: "  << LeftIndices[0] << " " << LeftIndices[1] << " " << LeftIndices[2] << " " << LeftIndices[3]);
+                      */
                       parts.push_back(new TwoParticleGFPart(
                             OperatorPartAtPosition(p,0,LeftIndices[0]),
                             OperatorPartAtPosition(p,1,LeftIndices[1]),
@@ -102,6 +102,7 @@ if (Status < Prepared)
             }
     }  
     if ( parts.size() > 0 ) vanish = false;
+    INFO("TwoParticleGF(" << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << "): " << parts.size() << " parts will be calculated");
     Status = Prepared;
 };
 }
@@ -154,7 +155,7 @@ ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumbe
 
 }
 
-unsigned short TwoParticleGF::getIndex(size_t Position) const
+ParticleIndex TwoParticleGF::getIndex(size_t Position) const
 {
     switch(Position){
         case 0: return C1.getIndex();
@@ -170,7 +171,3 @@ RealType TwoParticleGF::getBeta() const
     return DM.getBeta();
 }
 
-std::string TwoParticleGF::getPath()
-{
-    return green_path.fullpath();
-}

@@ -22,10 +22,6 @@ void Vertex4::prepareUnAmputated()
         mapUnAmputatedValues[**it1]= new TwoParticleGFPart::MatsubaraContainer(Chi.getBeta());
         mapUnAmputatedValues[**it1]->prepare(NumberOfMatsubaras);
     };
-    for (std::vector<IndexCombination*>::const_iterator it1=Chi.getTrivialCombinations().begin(); it1!=Chi.getTrivialCombinations().end(); ++it1){
-        mapUnAmputatedValues[**it1]= new TwoParticleGFPart::MatsubaraContainer(Chi.getBeta());
-        mapUnAmputatedValues[**it1]->prepare(NumberOfMatsubaras);
-    };
 };
 
 void Vertex4::computeUnAmputated(const IndexCombination& in)

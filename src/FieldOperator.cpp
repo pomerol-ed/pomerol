@@ -52,11 +52,12 @@ void OperatorContainer::print_to_screen()
 void OperatorContainer::compute()
 {
 if (Status < Computed ){
+    INFO_NONEWLINE("FieldOperator_" << bit << ", computing: ")
     for (unsigned int b_in=0;b_in<(*this).size;b_in++){
-        OUTPUT_STREAM << (int) ((1.0*b_in/(*this).size) * 100 ) << "  " << std::flush;
+        INFO_NONEWLINE( (int) ((1.0*b_in/(*this).size) * 100 ) << "  " << std::flush);
         Data[b_in]->compute();
         };
-    OUTPUT_STREAM << std::endl;
+    INFO("");
     Status=Computed;
     };
 }
@@ -82,7 +83,7 @@ if (Status < Prepared){
             if (LeftIndex.isCorrect()){
                 FieldOperatorPart *Part = new CreationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex));
                 Data.push_back(Part);
-                OUTPUT_STREAM << "Entering creation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) <<std::endl; 
+                //OUTPUT_STREAM << "Entering creation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) <<std::endl; 
                 mapPartsFromRight[RightIndex]=size;
                 mapPartsFromLeft[LeftIndex]=size;
                 LeftRightIndices.push_back(BlockMapping(LeftIndex,RightIndex));
@@ -92,6 +93,7 @@ if (Status < Prepared){
                 }    
             }
     Status=Prepared;
+    INFO("CreationOperator_" << bit <<": " << size << " parts will be computed");
     };
 }
 
@@ -103,7 +105,7 @@ if (Status < Prepared){
         if (LeftIndex.isCorrect()){
             FieldOperatorPart *Part = new AnnihilationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex));
             Data.push_back(Part);
-            OUTPUT_STREAM << "Entering annihilation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << std::endl; 
+            //OUTPUT_STREAM << "Entering annihilation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << std::endl; 
             mapPartsFromRight[RightIndex]=size;
             mapPartsFromLeft[LeftIndex]=size;
 	        mapRightToLeftIndex[RightIndex]=LeftIndex;
@@ -113,6 +115,7 @@ if (Status < Prepared){
             }    
         };
     Status=Prepared;
+    INFO("AnnihilationOperator_" << bit <<": " << size << " parts will be computed");
     };
 }
 

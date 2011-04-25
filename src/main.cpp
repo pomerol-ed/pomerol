@@ -268,16 +268,16 @@ int main(int argc, char *argv[])
     v1.push_back(comb1);
     comb1 = new TwoParticleGFContainer::IndexCombination(0,S.N_b()/2,0,S.N_b()/2);
     v1.push_back(comb1);
-    comb1 = new TwoParticleGFContainer::IndexCombination(1,1,1,1);
-    v1.push_back(comb1);
-    comb1 = new TwoParticleGFContainer::IndexCombination(1,1+S.N_b()/2,1,1+S.N_b()/2);
-    v1.push_back(comb1);
+//    comb1 = new TwoParticleGFContainer::IndexCombination(1,1,1,1);
+//    v1.push_back(comb1);
+//    comb1 = new TwoParticleGFContainer::IndexCombination(1,1+S.N_b()/2,1,1+S.N_b()/2);
+//    v1.push_back(comb1);
     //
     TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
-    Chi4.readNonTrivialIndices(v1);
+    Chi4.readInitialIndices(v1);
     Chi4.prepare();
     Chi4.compute(wn);
-
+    Chi4.compute(wn);
     saveChi("Chi4.dat",Chi4,wn);
 
     G.prepare();
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
     Gamma4.computeAmputated();
     saveGamma("Gamma4.dat",Gamma4,wn,Amputated);
 
-
+/*
     for (unsigned short i=0;i<v1.size();i++){
       std::cout << "Chi4" << *v1[i] << std::endl;
       std::cout << Chi4(*v1[i],3,2,0) << std::endl;
@@ -314,9 +314,7 @@ int main(int argc, char *argv[])
       std::cout << Gamma4(*v1[i],29,-29,29) << std::endl << std::endl;
  
     };
-
-
-
+*/
     //   comb1 = new TwoParticleGFContainer::IndexCombination(0,2,0,1);
     //   cout << Chi4.vanishes(*comb1) << endl;
     //DEBUG(Chi4.getNumNonResonantTerms() << " non-resonant terms");

@@ -77,6 +77,8 @@ struct Permutation3 {
 struct Permutation4 {
     const size_t perm[4];
     const int sign;
+    bool operator==(const Permutation4& rhs) const {return (sign==rhs.sign && perm[0] == rhs.perm[0] && perm[1]==rhs.perm[1] && perm[2] == rhs.perm[2]);};
+    bool operator!=(const Permutation4& rhs) const {return !(*this==rhs);};
 };
 
 static const Permutation4 permutations4[24] = {

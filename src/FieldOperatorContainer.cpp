@@ -16,12 +16,12 @@ CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleIndex in)
 if (IndexInfo.checkIndex(in)){
     if (mapCreationOperators.count(in)==0){
         CreationOperator *CX = new CreationOperator(S,H,in);
-        DEBUG("Making Creation Operator_"<<in << std::endl);
+        INFO("FieldOperatorContainer: Making Creation Operator_"<<in);
         CX->prepare();
         CX->compute();
         mapCreationOperators[in] = CX;
-        }
-    else DEBUG("using Creation Operator_"<<in << std::endl);
+        };
+    //else INFO("FieldOperatorContainer: Using already computed Creation Operator_"<< in);
     return *mapCreationOperators[in];
     }
 else assert(0);
@@ -32,12 +32,12 @@ AnnihilationOperator& FieldOperatorContainer::getAnnihilationOperator(ParticleIn
 if (IndexInfo.checkIndex(in)){
     if (mapAnnihilationOperators.count(in)==0){
         AnnihilationOperator *C = new AnnihilationOperator(S,H,in);
-        DEBUG("Making Annihilation Operator_"<<in << std::endl);
+        INFO("FieldOperatorContainer: Making Annihilation Operator_"<<in);
         C->prepare();
         C->compute();
         mapAnnihilationOperators[in] = C;
-        }
-    else DEBUG("using Annihilation Operator_"<<in << std::endl);
+        };
+   // else INFO("FieldOperatorContainer: Using already computed Annihilation Operator_"<< in);
     return *mapAnnihilationOperators[in];
     }
 else assert(0);

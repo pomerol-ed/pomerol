@@ -57,9 +57,6 @@ class TwoParticleGF : public ComputableObject {
     /** A flag to determine whether this GF is identical to zero */
     bool vanish;
 
-    /** Algorithms use this object to output various data. */
-    output_handle green_path;
-
     /** Extracts a part of the operator standing at a specified position in a given permutation.
      * \param[in] PermutationNumber The number of the permutation.
      * \param[in] OperatorPosition The number of the position of the operator.
@@ -113,7 +110,7 @@ public:
     /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
      * \param[in] Position Zero-based number of the operator to use.
      */
-    unsigned short getIndex(size_t Position) const;
+    ParticleIndex getIndex(size_t Position) const;
 
     /** Returns the inverse temperature. */
     RealType getBeta() const;
@@ -124,9 +121,6 @@ public:
      * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
      */
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-
-    /** Returns the path of the output directory associated with this two-particle Green's function. */
-    std::string getPath();
 
     /** Returns true, if GF is identical to zero */
     bool vanishes();
