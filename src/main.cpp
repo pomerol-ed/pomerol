@@ -37,7 +37,7 @@ void printFramed (const std::string& str)
 
 enum AmpStyle{UnAmputated, Amputated};
 
-RealType chop(RealType &i){ return (std::fabs(i)<1e-5)?0.0:i; }
+inline RealType chop(RealType &i){ return (std::fabs(i)<1e-5)?0.0:i; }
 
 void saveChi(const char *fname, TwoParticleGFContainer &Chi, int size_wg) 
 {
@@ -68,15 +68,16 @@ void saveChi(const char *fname, TwoParticleGFContainer &Chi, int size_wg)
                     if (w2_>=-size_wg && w2_<size_wg){
                       TwoParticleGFContainer::IndexCombination *comb1;
                       comb1 = new TwoParticleGFContainer::IndexCombination(n1+n_part*z1,n2+n_part*z2,n1_+z1*n_part,n2_+z2*n_part);
-                      std::complex<double> z=Chi(*comb1,w1,w2,w1_);
-                      if(abs(z)>acc){
+                      std::complex<double> *z=new ComplexType(Chi(*comb1,w1,w2,w1_));
+                      delete comb1;
+                      if(abs(*z)>acc){
 #if defined(HRD)
-                        chi_str << chop(real(z)) <<"  "<< chop(imag(z)) << "           "
+                        chi_str << chop(real(*z)) <<"  "<< chop(imag(*z)) << "           "
                           << z1 <<" "<< z2 << "           " << w1 << "  " << w1_ << " " << w2 << "  " << w2_ 
                           << "            "<<n1<<"  "<<n1_<<" "<<n2<<"  "<<n2_<< "            "
                           << std::endl << std::flush;
 #else
-                        chi_str.write(reinterpret_cast<char *>(&z),sizeof(std::complex<double>));
+                        chi_str.write(reinterpret_cast<char *>(z),sizeof(std::complex<double>));
 
                         chi_str.write(reinterpret_cast<char *>(&z1),sizeof(int));
                         chi_str.write(reinterpret_cast<char *>(&z2),sizeof(int));
@@ -92,7 +93,8 @@ void saveChi(const char *fname, TwoParticleGFContainer &Chi, int size_wg)
                         chi_str.write(reinterpret_cast<char *>(&n2_),sizeof(int));
 
 #endif
-                      }
+                      };
+                      delete z;
                     }
                   }
   chi_str<<"0 0"<<std::endl;
@@ -129,19 +131,20 @@ void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg, unsigned short s
                     if (w2_>=-size_wg && w2_<size_wg){
                       TwoParticleGFContainer::IndexCombination *comb1;
                       comb1 = new TwoParticleGFContainer::IndexCombination(n1+n_part*z1,n2+n_part*z2,n1_+z1*n_part,n2_+z2*n_part);
-                       ComplexType z=0.;
+                      ComplexType *z;
                       if ( style == UnAmputated) 
-                          z=Vertex.getUnAmputatedValue(*comb1,w1,w2,w1_);
+                          z=new ComplexType(Vertex.getUnAmputatedValue(*comb1,w1,w2,w1_));
                       else if ( style == Amputated)
-                          z=Vertex.getAmputatedValue(*comb1,w1,w2,w1_);
-                      if(abs(z)>acc){
+                          z=new ComplexType(Vertex.getAmputatedValue(*comb1,w1,w2,w1_));
+                      delete comb1;
+                      if(abs(*z)>acc){
 #if defined(HRD)
-                        gamma_str << chop(real(z)) <<"  "<< chop(imag(z)) << "           "
+                        gamma_str << chop(real(*z)) <<"  "<< chop(imag(*z)) << "           "
                           << z1 <<" "<< z2 << "           " << w1 << "  " << w1_ << " " << w2 << "  " << w2_ 
                           << "            "<<n1<<"  "<<n1_<<" "<<n2<<"  "<<n2_<< "            "
                           << std::endl << std::flush;
 #else
-                        gamma_str.write(reinterpret_cast<char *>(&z),sizeof(std::complex<double>));
+                        gamma_str.write(reinterpret_cast<char *>(z),sizeof(std::complex<double>));
 
                         gamma_str.write(reinterpret_cast<char *>(&z1),sizeof(int));
                         gamma_str.write(reinterpret_cast<char *>(&z2),sizeof(int));
@@ -157,7 +160,8 @@ void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg, unsigned short s
                         gamma_str.write(reinterpret_cast<char *>(&n2_),sizeof(int));
 
 #endif
-                      }
+                      };
+                     delete z;
                     }
                   }
   gamma_str<<"0 0"<<std::endl;

@@ -1,7 +1,7 @@
 #include "FieldOperator.h"
 extern std::ostream& OUTPUT_STREAM;
 
-OperatorContainer::OperatorContainer(StatesClassification &System, Hamiltonian &H, int bit) : 
+OperatorContainer::OperatorContainer(StatesClassification &System, Hamiltonian &H, int bit) : ComputableObject(),
     System(System), H(H), bit(bit)
 {
     size=0;

@@ -18,6 +18,7 @@ protected:
     unsigned short Status;                      //!< Current status of an object
 public:
     unsigned short getStatus(){return Status;}; //!< Get the current status of an object   
+    ComputableObject(){Status=Constructed;};              //!< Constructor
 //    virtual void prepare(){};                   //!< Prepare all the containers of the object, do preliminary fast routines
 //    virtual void compute(){};                   //!< Do the most expensive calculation. Finishing it means the object has finished all calculation jobs
 };
