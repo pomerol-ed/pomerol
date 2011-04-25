@@ -150,9 +150,20 @@ void TwoParticleGFContainer::compute(long NumberOfMatsubaras)
 {
 if (Status == Prepared){
     this->NumberOfMatsubaras = NumberOfMatsubaras;
+#ifndef pomerolOpenMP
     for (std::map<IndexCombination,Element*>::iterator it1=mapNonTrivialCombinations.begin();it1!=mapNonTrivialCombinations.end();++it1){
         it1->second->Computable2PGF->compute(NumberOfMatsubaras);
         };
+#else
+    std::vector<TwoParticleGF*> items;
+    for (std::map<IndexCombination,Element*>::iterator it1=mapNonTrivialCombinations.begin();it1!=mapNonTrivialCombinations.end();++it1){
+        if (it1->second->isComputed) items.push_back(it1->second->Computable2PGF);
+        }
+    #pragma omp parallel for schedule(dynamic,1)
+    for (int i = 0; i < (int) items.size(); ++i){
+        items[i]->compute(NumberOfMatsubaras);
+        };
+#endif
     Status = Computed;    
     };
 };

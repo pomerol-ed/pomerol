@@ -24,6 +24,9 @@
 #include<Eigen/Core>
 #include<Eigen/Sparse>
 
+#ifdef pomerolOpenMP
+#include <omp.h>
+#endif
 /** Real floating point type. */
 typedef double RealType;
 /** Complex type. */
