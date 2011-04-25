@@ -268,7 +268,9 @@ int main(int argc, char *argv[])
     v1.push_back(comb1);
     comb1 = new TwoParticleGFContainer::IndexCombination(0,S.N_b()/2,0,S.N_b()/2);
     v1.push_back(comb1);
-    comb1 = new TwoParticleGFContainer::IndexCombination(S.N_b()/2,0,0,S.N_b()/2);
+    comb1 = new TwoParticleGFContainer::IndexCombination(1,1,1,1);
+    v1.push_back(comb1);
+    comb1 = new TwoParticleGFContainer::IndexCombination(1,1+S.N_b()/2,1,1+S.N_b()/2);
     v1.push_back(comb1);
     //
     TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
@@ -289,24 +291,28 @@ int main(int argc, char *argv[])
     Gamma4.computeAmputated();
     saveGamma("Gamma4.dat",Gamma4,wn,Amputated);
 
+
     for (unsigned short i=0;i<v1.size();i++){
+      std::cout << "Chi4" << *v1[i] << std::endl;
       std::cout << Chi4(*v1[i],3,2,0) << std::endl;
       std::cout << Chi4(*v1[i],2,5,2) << std::endl;
+      std::cout << Chi4(*v1[i],5,2,5) << std::endl;
       std::cout << Chi4(*v1[i],5,2,2) << std::endl;
       std::cout << Chi4(*v1[i],1,7,1) << std::endl;
       std::cout << Chi4(*v1[i],2,-2,4) << std::endl;
       std::cout << Chi4(*v1[i],29,-29,29) << std::endl << std::endl;
-      //cout << *v1[i] << " : " << (bool) Chi4.vanishes(*v1[i]) << endl;
     };
 
     for (unsigned short i=0;i<v1.size();i++){
+      std::cout << "Gamma4" << *v1[i] << std::endl;
       std::cout << Gamma4(*v1[i],3,2,0) << std::endl;
       std::cout << Gamma4(*v1[i],2,5,2) << std::endl;
+      std::cout << Gamma4(*v1[i],5,2,5) << std::endl;
       std::cout << Gamma4(*v1[i],5,2,2) << std::endl;
       std::cout << Gamma4(*v1[i],1,7,1) << std::endl;
       std::cout << Gamma4(*v1[i],2,-2,4) << std::endl;
       std::cout << Gamma4(*v1[i],29,-29,29) << std::endl << std::endl;
-      //cout << *v1[i] << " : " << (bool) Chi4.vanishes(*v1[i]) << endl;
+ 
     };
 
 

@@ -231,7 +231,7 @@ bool IndexClassification::checkIndex(ParticleIndex in)
     return (in <= N_bit-1);
 }
 
-const TermsList& IndexClassification::getTermsList()
+TermsList& IndexClassification::getTermsList()
 {
     return Terms;
 }

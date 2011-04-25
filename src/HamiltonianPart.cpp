@@ -40,13 +40,13 @@ void HamiltonianPart::enter()
 	for (InnerQuantumState st=0; st<N_state_m; st++)
 	{
 		// loop over terms
-		std::list<Term*>::iterator it1;
+		std::list<Term*>::const_iterator it1;
 		for ( it1=Formula.getTermsList().getTerms(2).begin() ; it1 != Formula.getTermsList().getTerms(2).end(); ++it1 )
 		{
 			if (( *it1)->type == "n") add_nTerm(st,(nTerm*) *it1);
 		};
 		
-		std::list<Term*>::iterator it2;
+		std::list<Term*>::const_iterator it2;
 		for ( it2=Formula.getTermsList().getTerms(4).begin() ; it2 != Formula.getTermsList().getTerms(4).end(); ++it2 )
 		{
 			if ( (*it2)->type == "nn") add_nnTerm(st,(nnTerm*) *it2);

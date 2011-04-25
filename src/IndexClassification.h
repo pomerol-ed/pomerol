@@ -105,7 +105,7 @@ public:
     std::vector<IndexInfo*> &getIndexInfoList();        //!< Returns a IndexInfoList
     const int& getIndexSize() const;                    //!< Returns N_bit
     bool checkIndex(ParticleIndex in);                  //!< Returns true if current Index may exist, i.e. if it is between 0 and N_bit-1
-    const TermsList& getTermsList();                    //!< Returns Terms
+    TermsList& getTermsList();                    //!< Returns Terms
     const std::list<IndexClassification::IndexPermutation> &getEquivalentIndexPermutations();  //!< Returns a vector of equivalent index permutation
 private:
     void defineIndices();                               //!< Define the bit classification from the info from file
