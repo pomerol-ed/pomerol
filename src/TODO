@@ -1,5 +1,5 @@
 Shortlist:
-- TwoParticleGFContainer, GFContainer, Vertex4: Take into account equivalent permutations of indices 
+- TwoParticleGFPart: remove MatsubaraContainer
 - Find equivalent permutations of sites of the lattice, find equivalent index permutations
 - Documentation
 ---------------------------------------------------------------------------------------------------------------
