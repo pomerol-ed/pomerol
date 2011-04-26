@@ -18,6 +18,7 @@ std::ostream& operator<<(std::ostream& out, const GreensFunctionPart::GreensTerm
 GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOperatorPart& CX, 
                                         HamiltonianPart& HpartInner, HamiltonianPart& HpartOuter,
                                         DensityMatrixPart& DMpartInner, DensityMatrixPart& DMpartOuter) :
+                                        ComputableObject(),
                                         HpartInner(HpartInner), HpartOuter(HpartOuter),
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
                                         C(C), CX(CX)

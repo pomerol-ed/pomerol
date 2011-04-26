@@ -8,10 +8,9 @@
 
 GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H, 
                                AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM
-                               ) : S(S), H(H), C(C), CX(CX), DM(DM), parts(0)
+                               ) : ComputableObject(),S(S), H(H), C(C), CX(CX), DM(DM), parts(0)
 {
     vanish = true;
-    Status = Constructed;
 }
 
 GreensFunction::~GreensFunction()

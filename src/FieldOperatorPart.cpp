@@ -6,7 +6,7 @@ using std::stringstream;
 
 FieldOperatorPart::FieldOperatorPart(
         int i, StatesClassification &S, HamiltonianPart &h_from,  HamiltonianPart &h_to) : 
-        i(i), S(S), h_from(h_from), h_to(h_to)
+        ComputableObject(), i(i), S(S), h_from(h_from), h_to(h_to)
 {};
 
 

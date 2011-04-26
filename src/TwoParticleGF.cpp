@@ -20,11 +20,10 @@ static const Permutation3 permutations3[6] = {
 TwoParticleGF::TwoParticleGF(StatesClassification& S, Hamiltonian& H,
                 AnnihilationOperator& C1, AnnihilationOperator& C2, 
                 CreationOperator& CX3, CreationOperator& CX4,
-                DensityMatrix& DM) : S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM), parts(0)
+                DensityMatrix& DM) : ComputableObject(), S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM), parts(0)
 {
     Storage = new TwoParticleGFPart::MatsubaraContainer(DM.getBeta());
     vanish = true;
-    Status = Constructed;
 }
 
 TwoParticleGF::~TwoParticleGF()

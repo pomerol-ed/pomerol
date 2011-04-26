@@ -41,13 +41,13 @@ void HamiltonianPart::enter()
 	{
 		// loop over terms
 		std::list<Term*>::const_iterator it1;
-		for ( it1=Formula.getTermsList().getTerms(2).begin() ; it1 != Formula.getTermsList().getTerms(2).end(); ++it1 )
+		for ( it1=IndexInfo.getTermsList().getTerms(2).begin() ; it1 != IndexInfo.getTermsList().getTerms(2).end(); ++it1 )
 		{
 			if (( *it1)->type == "n") add_nTerm(st,(nTerm*) *it1);
 		};
 		
 		std::list<Term*>::const_iterator it2;
-		for ( it2=Formula.getTermsList().getTerms(4).begin() ; it2 != Formula.getTermsList().getTerms(4).end(); ++it2 )
+		for ( it2=IndexInfo.getTermsList().getTerms(4).begin() ; it2 != IndexInfo.getTermsList().getTerms(4).end(); ++it2 )
 		{
 			if ( (*it2)->type == "nn") add_nnTerm(st,(nnTerm*) *it2);
 			else 
@@ -56,7 +56,7 @@ void HamiltonianPart::enter()
 	}
 
 	
-	(*this).add_hopping(Formula.getHoppingMatrix());
+	(*this).add_hopping(IndexInfo.getHoppingMatrix());
 	
 	H.triangularView<Eigen::Lower>() = H.triangularView<Eigen::Upper>().transpose();
 }

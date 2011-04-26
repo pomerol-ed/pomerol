@@ -2,7 +2,7 @@
 #include <Eigen/LU> 
 
 Vertex4::Vertex4(const IndexClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g) :
-Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+1)
+ComputableObject(),Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+1)
 {
     NumberOfMatsubaras = Chi.getNumberOfMatsubaras();
 }

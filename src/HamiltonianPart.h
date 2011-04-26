@@ -7,7 +7,7 @@
 
 class HamiltonianPart : public ComputableObject {
 
-    IndexClassification &Formula;
+    IndexClassification &IndexInfo;
     StatesClassification &S;
 
     QuantumState N_state_m;                //number states of vector st
@@ -44,7 +44,7 @@ private:
 
 public:
 
-    HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id, const std::string &ev_path, const std::string &ef_path) : Formula(F),S(S),hpart_id(id),ev_path(ev_path),ef_path(ef_path){};
+    HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id, const std::string &ev_path, const std::string &ef_path) : ComputableObject(), IndexInfo(F),S(S),hpart_id(id),ev_path(ev_path),ef_path(ef_path){};
     
     void enter();
     

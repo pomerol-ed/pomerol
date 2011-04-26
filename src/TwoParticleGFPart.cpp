@@ -174,6 +174,7 @@ TwoParticleGFPart::TwoParticleGFPart(
                 HamiltonianPart& Hpart1, HamiltonianPart& Hpart2, HamiltonianPart& Hpart3, HamiltonianPart& Hpart4,
                 DensityMatrixPart& DMpart1, DensityMatrixPart& DMpart2, DensityMatrixPart& DMpart3, DensityMatrixPart& DMpart4,
                 Permutation3 Permutation) :
+ComputableObject(),
 O1(O1), O2(O2), O3(O3), CX4(CX4), 
 Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
 DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),

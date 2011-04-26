@@ -22,7 +22,7 @@ return output;
 
 /*=========================================================================*/
 
-GFContainer::GFContainer ( StatesClassification &S, Hamiltonian &H, DensityMatrix &DM,IndexClassification& IndexInfo, FieldOperatorContainer& Operators):S(S),H(H),DM(DM),IndexInfo(IndexInfo),Operators(Operators)
+GFContainer::GFContainer ( StatesClassification &S, Hamiltonian &H, DensityMatrix &DM,IndexClassification& IndexInfo, FieldOperatorContainer& Operators):ComputableObject(),S(S),H(H),DM(DM),IndexInfo(IndexInfo),Operators(Operators)
 {
 };
 

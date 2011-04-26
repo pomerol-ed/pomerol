@@ -7,7 +7,7 @@
 #include "DensityMatrix.h"
 
 DensityMatrix::DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType beta) : 
-    S(S), H(H), parts(S.NumberOfBlocks()), beta(beta)
+    ComputableObject(), S(S), H(H), parts(S.NumberOfBlocks()), beta(beta)
 {}
 
 DensityMatrix::~DensityMatrix()

@@ -1,6 +1,6 @@
 #include "Hamiltonian.h"
 
-Hamiltonian::Hamiltonian(IndexClassification &F_,StatesClassification &S_,output_handle &OUT_, std::string& config_path_):Formula(F_),S(S_),OUT(OUT_),config_path(config_path_){}
+Hamiltonian::Hamiltonian(IndexClassification &F_,StatesClassification &S_,output_handle &OUT_, std::string& config_path_):ComputableObject(),Formula(F_),S(S_),OUT(OUT_),config_path(config_path_){}
 
 void Hamiltonian::enter()
 {
