@@ -37,7 +37,7 @@ void printFramed (const std::string& str)
 
 enum AmpStyle{UnAmputated, Amputated};
 
-inline RealType chop(RealType &i){ return (std::fabs(i)<1e-5)?0.0:i; }
+inline RealType chop(RealType &i){ return (std::fabs(i)<1e-10)?0.0:i; }
 
 void saveChi(const char *fname, TwoParticleGFContainer &Chi, int size_wg) 
 {
@@ -52,7 +52,7 @@ void saveChi(const char *fname, TwoParticleGFContainer &Chi, int size_wg)
   std::ofstream chi_str(fname,std::ios::out | std::ios::binary);
 #endif
   int n_zone=2;
-  int n_part=S.N_b()/2.;
+  int n_part=IndexInfo.getIndexSize()/2.;
   RealType acc=1e-8;
   for (int z1=0; z1<n_zone; z1++)
     for (int z2=n_zone-1; z2>=0; z2--)
@@ -102,7 +102,7 @@ void saveChi(const char *fname, TwoParticleGFContainer &Chi, int size_wg)
   return;
 }			    
 
-void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg, unsigned short style = UnAmputated) 
+void saveGamma(const char *fname, Vertex4 &Vertex, std::vector<TwoParticleGFContainer::IndexCombination*>& Combinations, int size_wg, unsigned short style = Amputated) 
 {
   std::cout << "Dumping Gamma4..." << std::flush;
 #if defined(HRD)
@@ -115,28 +115,30 @@ void saveGamma(const char *fname, Vertex4 &Vertex, int size_wg, unsigned short s
   std::ofstream gamma_str(fname,std::ios::out | std::ios::binary);
 #endif
   int n_zone=2;
-  int n_part=S.N_b()/2.;
-  RealType acc=1e-8;
-  for (int z1=0; z1<n_zone; z1++)
-    for (int z2=n_zone-1; z2>=0; z2--)
-      for(int n1=0; n1<n_part; n1++)
-        for(int n1_=0; n1_<n_part; n1_++)
-          for(int n2=0; n2<n_part; n2++)
-            for(int n2_=0; n2_<n_part; n2_++)
+  int n_part=IndexInfo.getIndexSize()/2.;
+  RealType acc=1e-10;
+  int z1,z2,n1,n1_,n2,n2_;
+  for (std::vector<TwoParticleGFContainer::IndexCombination*>::const_iterator comb1=Combinations.begin(); comb1!=Combinations.end(); ++comb1)
               for(int w1=-size_wg; w1<size_wg; w1++)
                 for(int w1_=-size_wg; w1_<size_wg; w1_++)
                   for(int w2=-size_wg; w2<size_wg; w2++){
 
                     int w2_=w1+w2-w1_;
                     if (w2_>=-size_wg && w2_<size_wg){
-                      TwoParticleGFContainer::IndexCombination *comb1;
-                      comb1 = new TwoParticleGFContainer::IndexCombination(n1+n_part*z1,n2+n_part*z2,n1_+z1*n_part,n2_+z2*n_part);
                       ComplexType *z;
+                      
+                      //comb1 = TwoParticleGFContainer::IndexCombination(n1+n_part*z1,n2+n_part*z2,n1_+z1*n_part,n2_+z2*n_part);
+                      n1 =  (*comb1)->Indices[0]%n_part;
+                      n2 =  (*comb1)->Indices[1]%n_part;
+                      n1_ = (*comb1)->Indices[2]%n_part;
+                      n2_ = (*comb1)->Indices[3]%n_part;
+                      z1 = (*comb1)->Indices[0]/n_part;
+                      z2 = (*comb1)->Indices[1]/n_part;
                       if ( style == UnAmputated) 
-                          z=new ComplexType(Vertex.getUnAmputatedValue(*comb1,w1,w2,w1_));
+                          z=new ComplexType(Vertex.getUnAmputatedValue(**comb1,w1,w2,w1_));
                       else if ( style == Amputated)
-                          z=new ComplexType(Vertex.getAmputatedValue(*comb1,w1,w2,w1_));
-                      delete comb1;
+                          z=new ComplexType(Vertex.getAmputatedValue(**comb1,w1,w2,w1_));
+                          else z = new ComplexType (0);
                       if(abs(*z)>acc){
 #if defined(HRD)
                         gamma_str << chop(real(*z)) <<"  "<< chop(imag(*z)) << "           "
@@ -265,35 +267,28 @@ int main(int argc, char *argv[])
   if (1==1){
     printFramed("Two Particle Green's function calculation");
 
+    TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
+    Chi4.prepare();
+    Chi4.compute(wn);
+    //saveChi("Chi4.dat",Chi4,wn);
+    G.prepare();
+    G.compute();
+    G.dumpToPlainText(2*wn);
+
     TwoParticleGFContainer::IndexCombination *comb1;
     std::vector<TwoParticleGFContainer::IndexCombination*> v1;
 
+    comb1 = new TwoParticleGFContainer::IndexCombination(0,IndexInfo.getIndexSize()/2,0,IndexInfo.getIndexSize()/2);
+    v1.push_back(comb1);
     comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
     v1.push_back(comb1);
-    comb1 = new TwoParticleGFContainer::IndexCombination(0,S.N_b()/2,0,S.N_b()/2);
-    v1.push_back(comb1);
-//    comb1 = new TwoParticleGFContainer::IndexCombination(1,1,1,1);
-//    v1.push_back(comb1);
-//    comb1 = new TwoParticleGFContainer::IndexCombination(1,1+S.N_b()/2,1,1+S.N_b()/2);
-//    v1.push_back(comb1);
-    //
-    TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
-    Chi4.readInitialIndices(v1);
-    Chi4.prepare();
-    Chi4.compute(wn);
-    Chi4.compute(wn);
-    saveChi("Chi4.dat",Chi4,wn);
-
-    G.prepare();
-    G.compute();
-    G.dumpToPlainText(wn);
 
     Vertex4 Gamma4(IndexInfo,Chi4,G);
     Gamma4.prepareUnAmputated();
     Gamma4.computeUnAmputated();
     Gamma4.prepareAmputated(v1);
     Gamma4.computeAmputated();
-    saveGamma("Gamma4.dat",Gamma4,wn,Amputated);
+    saveGamma("Gamma4.dat",Gamma4,v1,wn,Amputated);
 
 /*
     for (unsigned short i=0;i<v1.size();i++){
@@ -318,11 +313,12 @@ int main(int argc, char *argv[])
       std::cout << Gamma4(*v1[i],29,-29,29) << std::endl << std::endl;
  
     };
-*/
+
     //   comb1 = new TwoParticleGFContainer::IndexCombination(0,2,0,1);
     //   cout << Chi4.vanishes(*comb1) << endl;
     //DEBUG(Chi4.getNumNonResonantTerms() << " non-resonant terms");
     //DEBUG(Chi4.getNumResonantTerms() << " resonant terms");    
+*/
   };
   return 0;
 };

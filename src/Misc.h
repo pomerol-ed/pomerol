@@ -82,6 +82,8 @@ struct Permutation4 {
     const int sign;
     bool operator==(const Permutation4& rhs) const {return (sign==rhs.sign && perm[0] == rhs.perm[0] && perm[1]==rhs.perm[1] && perm[2] == rhs.perm[2]);};
     bool operator!=(const Permutation4& rhs) const {return !(*this==rhs);};
+    friend std::ostream& operator<<(std::ostream& out, const Permutation4 &rhs)
+        { out << (rhs.sign==-1?"-":" ") << rhs.perm[0]+1 << rhs.perm[1]+1 << rhs.perm[2]+1 << rhs.perm[3]+1 << std::flush; return out;}; 
 };
 
 static const Permutation4 permutations4[24] = {

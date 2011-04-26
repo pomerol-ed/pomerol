@@ -43,6 +43,11 @@ TwoParticleGFContainer::Element::Element(TwoParticleGF* Computable2PGF, Permutat
     Computable2PGF(Computable2PGF),FrequenciesPermutation(FrequenciesPermutation),isComputed(isComputed)
 {}
 
+FourIndexContainer::IndexCombination TwoParticleGFContainer::Element::getLinkedIndices()
+{
+    return FourIndexContainer::IndexCombination(Computable2PGF->getIndex(0),Computable2PGF->getIndex(1),Computable2PGF->getIndex(2),Computable2PGF->getIndex(3));
+}
+
 /*=========================================================================*/
 
 TwoParticleGFContainer::TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM,IndexClassification& IndexInfo, FieldOperatorContainer& Operators):
@@ -51,18 +56,27 @@ TwoParticleGFContainer::TwoParticleGFContainer(StatesClassification &S, Hamilton
 };
 
 
-void TwoParticleGFContainer::readInitialIndices(std::vector<IndexCombination*>& in)
+void TwoParticleGFContainer::defineInitialIndices()
 {
-InitialCombinations=in;
-
-for (std::vector<IndexCombination*>::const_iterator it1=in.begin(); it1!=in.end(); ++it1){
-}
+for (ParticleIndex i1=0; i1<IndexInfo.getIndexSize(); ++i1)
+    for (ParticleIndex i2=0; i2<IndexInfo.getIndexSize(); ++i2)
+        for (ParticleIndex i3=0; i3<IndexInfo.getIndexSize(); ++i3){
+            ParticleIndex i4=i1+i2;
+            if (i3<=i1+i2){ // ParticleIndex is an unsigned short, so no negative value should be put in
+                i4=i1+i2-i3;
+                if (i4<IndexInfo.getIndexSize()){
+                    IndexCombination *current = new IndexCombination(i1,i2,i3,i4);
+                        InitialCombinations.push_back(current);
+                    };
+                };
+            };
 };
 
 void TwoParticleGFContainer::prepare()
 {
 if (Status < Prepared){
-    for (std::vector<IndexCombination*>::const_iterator it1=InitialCombinations.begin(); it1!=InitialCombinations.end(); ++it1){
+    defineInitialIndices();
+    for (std::vector<IndexCombination*>::const_iterator it1=InitialCombinations.begin(); it1!=InitialCombinations.end(); ++it1) if (mapNonTrivialCombinations.count(**it1)==0 ){
         AnnihilationOperator &C1 = Operators.getAnnihilationOperator((*it1)->Indices[0]);
         AnnihilationOperator &C2 = Operators.getAnnihilationOperator((*it1)->Indices[1]);
         CreationOperator     &CX3 = Operators.getCreationOperator   ((*it1)->Indices[2]);
@@ -82,21 +96,17 @@ if (Status < Prepared){
                                                                       index_perm->Permutation[(*it1)->Indices[3]]
                                                                      );
                     Element* permutedElement = new Element(temp2PGF,TrivialOperatorPermutations[0], false);
-                    if (mapNonTrivialCombinations.count(*permuted)==0){
+                    if (mapNonTrivialCombinations.count(*permuted)==0 || 
+                    (mapNonTrivialCombinations.count(*permuted)>0 && mapNonTrivialCombinations[*permuted]->isComputed && *permuted!= mapNonTrivialCombinations[*permuted]->getLinkedIndices())){
+
                         mapNonTrivialCombinations[*permuted] = permutedElement;
                         NonTrivialCombinations.push_back(permuted);
-                        INFO_NONEWLINE("TwoParticleGFContainer: assigned " << *permuted << " =  " << **it1 );
-                        INFO(" with a frequencies permutation 1234->1234 due to symmetry considerations");
+                        INFO_NONEWLINE("TwoParticleGFContainer: assigned " << *permuted << "->" << **it1 );
+                        INFO(" with a frequencies permutation 1234= 1234 due to symmetry considerations");
                         addInnerPermutationsOfIndexCombination(permuted);
                         }
                     else{
-                        INFO_NONEWLINE("TwoParticleGFContainer: Detected frequency symmetry in " << *permuted << " : 1234=")
-                        INFO_NONEWLINE((mapNonTrivialCombinations[*permuted]->FrequenciesPermutation.sign==-1?"-":""));
-                        INFO_NONEWLINE(mapNonTrivialCombinations[*permuted]->FrequenciesPermutation.perm[0]+1);
-                        INFO_NONEWLINE(mapNonTrivialCombinations[*permuted]->FrequenciesPermutation.perm[1]+1);
-                        INFO_NONEWLINE(mapNonTrivialCombinations[*permuted]->FrequenciesPermutation.perm[2]+1);
-                        INFO_NONEWLINE(mapNonTrivialCombinations[*permuted]->FrequenciesPermutation.perm[3]+1);
-                        INFO("!");
+                        INFO("TwoParticleGFContainer: Detected frequency symmetry in " << *permuted << " : 1234=" << mapNonTrivialCombinations[*permuted]->FrequenciesPermutation << "!")
                         };
                 };
             addInnerPermutationsOfIndexCombination(*it1);
@@ -105,27 +115,32 @@ if (Status < Prepared){
     };
     Status = Prepared;
     InitialCombinations.clear();
+    INFO("");
+    INFO("TwoParticleGCContainer: Following combinations will be obtained:")
+    for (std::vector<IndexCombination*>::const_iterator it1=NonTrivialCombinations.begin(); it1!=NonTrivialCombinations.end(); ++it1){
+        INFO_NONEWLINE(**it1 << " calculated: ");
+        if (mapNonTrivialCombinations[**it1]->isComputed) INFO("y")
+        else {INFO("n, is linked to " << mapNonTrivialCombinations[**it1]->getLinkedIndices()); 
+             };
+        }
+    INFO("");
 };
 };
 
 void TwoParticleGFContainer::addInnerPermutationsOfIndexCombination(const IndexCombination *in)
 {
-    IndexCombination *in_computed = new IndexCombination(
-                                                         mapNonTrivialCombinations[*in]->Computable2PGF->getIndex(0), 
-                                                         mapNonTrivialCombinations[*in]->Computable2PGF->getIndex(1),
-                                                         mapNonTrivialCombinations[*in]->Computable2PGF->getIndex(2),
-                                                         mapNonTrivialCombinations[*in]->Computable2PGF->getIndex(3)
-                                                        );
+    IndexCombination in_computed = IndexCombination(mapNonTrivialCombinations[*in]->getLinkedIndices());
     for (int perm = 1; perm < 4; ++perm){
         Permutation4 perm4 = TrivialOperatorPermutations[perm];
         IndexCombination *permuted = new IndexCombination(in->Indices[perm4.perm[0]],in->Indices[perm4.perm[1]],in->Indices[perm4.perm[2]],in->Indices[perm4.perm[3]]);
         if (*permuted!=*in){
-            if (mapNonTrivialCombinations.count(*permuted)==0){
-                Element* permutedElement = new Element(mapNonTrivialCombinations[*in_computed]->Computable2PGF,perm4,false);
+            if (mapNonTrivialCombinations.count(*permuted)==0 || 
+                (mapNonTrivialCombinations.count(*permuted)>0 && mapNonTrivialCombinations[*permuted]->isComputed && *permuted!= mapNonTrivialCombinations[*permuted]->getLinkedIndices())){
+                Element* permutedElement = new Element(mapNonTrivialCombinations[in_computed]->Computable2PGF,perm4,false);
                 mapNonTrivialCombinations[*permuted] = permutedElement;
                 NonTrivialCombinations.push_back(permuted);
-                INFO_NONEWLINE("TwoParticleGFContainer: assigned " << *permuted << " = " << ((perm4.sign==-1)?"-":" ") << *in_computed);
-                INFO_NONEWLINE(" with a frequencies permutation 1234->" << perm4.perm[0]+1 << perm4.perm[1]+1 << perm4.perm[2]+1 << perm4.perm[3]+1);
+                INFO_NONEWLINE("TwoParticleGFContainer: assigned " << *permuted << "->" << in_computed);
+                INFO_NONEWLINE(" with a frequencies permutation 1234=" << perm4);
                 INFO(" due to internal indices permutation");
             }
             else if (mapNonTrivialCombinations[*permuted]->FrequenciesPermutation != TrivialOperatorPermutations[0]){
@@ -134,12 +149,7 @@ void TwoParticleGFContainer::addInnerPermutationsOfIndexCombination(const IndexC
                 // in NonTrivialCombinations, entered before. This 'if' operator is introduced to avoid stupid messages like 
                 // "TwoParticleGFContainer: Detected frequency symmetry in ... : 1234=1234"
                 INFO_NONEWLINE("TwoParticleGFContainer: Detected frequency symmetry in " << *permuted << " : 1234=");
-                INFO_NONEWLINE((mapNonTrivialCombinations[*permuted]->FrequenciesPermutation.sign==-1?"-":""));
-                INFO_NONEWLINE(mapNonTrivialCombinations[*permuted]->FrequenciesPermutation.perm[0]+1);
-                INFO_NONEWLINE(mapNonTrivialCombinations[*permuted]->FrequenciesPermutation.perm[1]+1);
-                INFO_NONEWLINE(mapNonTrivialCombinations[*permuted]->FrequenciesPermutation.perm[2]+1);
-                INFO_NONEWLINE(mapNonTrivialCombinations[*permuted]->FrequenciesPermutation.perm[3]+1);
-                INFO("!");
+                INFO(mapNonTrivialCombinations[*permuted]->FrequenciesPermutation << "!");
                 };
 
         };

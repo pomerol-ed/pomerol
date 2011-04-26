@@ -28,10 +28,10 @@ private:
     std::vector<IndexCombination*> NonTrivialCombinations;
     std::map<IndexCombination,Element*>  mapNonTrivialCombinations;
     long NumberOfMatsubaras;
+    void defineInitialIndices();
 public:
     TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, IndexClassification& IndexInfo, FieldOperatorContainer& Operators);
 
-    void readInitialIndices(std::vector<IndexCombination*>&);
     void prepare();
     void compute(long NumberOfMatsubaras);
     bool vanishes(const IndexCombination&);
@@ -63,5 +63,6 @@ struct TwoParticleGFContainer::Element
     Permutation4 FrequenciesPermutation;
     bool isComputed;
     Element(TwoParticleGF* Computable2PGF, Permutation4 FrequenciesPermutation, bool isComputed);
+    IndexCombination getLinkedIndices();
 };
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGFCONTAINER_H

@@ -21,7 +21,7 @@ GreensFunction::~GreensFunction()
 
 void GreensFunction::prepare(void)
 {
-if (Status < Prepared){
+if (Status == Constructed){
     // Find out non-trivial blocks of C and CX.
     std::list<BlockMapping> CNontrivialBlocks = C.getNonTrivialIndices();
     std::list<BlockMapping> CXNontrivialBlocks = CX.getNonTrivialIndices();
@@ -58,7 +58,7 @@ Status = Prepared;
 
 void GreensFunction::compute(void)
 {
-if (Status < Computed){
+if (Status == Prepared){
     for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
           (*iter)->compute();
     Status = Computed;

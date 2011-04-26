@@ -21,6 +21,7 @@ public:
     GFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, IndexClassification& IndexInfo, FieldOperatorContainer& Operators);
     void prepare();
     void compute();
+    bool vanishes(ParticleIndex i, ParticleIndex j);
     MatrixType& operator()(long MatsubaraNumber);
     ComplexType operator()(ParticleIndex i, ParticleIndex j, long MatsubaraNumber);
     void dumpToPlainText(long wn);

@@ -5,7 +5,6 @@ OperatorContainer::OperatorContainer(StatesClassification &System, Hamiltonian &
     System(System), H(H), bit(bit)
 {
     size=0;
-    Status = Constructed;
 }
 
 CreationOperator::CreationOperator(StatesClassification &System, Hamiltonian &H, int bit) : 

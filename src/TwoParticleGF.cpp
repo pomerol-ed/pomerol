@@ -100,8 +100,10 @@ if (Status < Prepared)
                       }
             }
     }  
-    if ( parts.size() > 0 ) vanish = false;
-    INFO("TwoParticleGF(" << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << "): " << parts.size() << " parts will be calculated");
+    if ( parts.size() > 0 ) { 
+        vanish = false;
+        INFO("TwoParticleGF(" << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << "): " << parts.size() << " parts will be calculated");
+        };
     Status = Prepared;
 };
 }

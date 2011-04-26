@@ -15,7 +15,7 @@ bool GFContainer::IndexCombination::operator<(const GFContainer::IndexCombinatio
 
 std::ostream& operator<<(std::ostream& output,const GFContainer::IndexCombination& out)
 {
-output << "(" << out.Indices[0] << out.Indices[1] << out.Indices[2] << out.Indices[3] << ")";
+output << "(" << out.Indices[0] << out.Indices[1] << ")" << std::flush;
 return output;
 }
 
@@ -38,24 +38,36 @@ MatrixType& GFContainer::operator()(long MatsubaraNumber)
 
 ComplexType GFContainer::operator()(ParticleIndex i, ParticleIndex j, long MatsubaraNumber)
 {
-    return (mapGreensFunctions.count(IndexCombination(i,j))>0)?(*mapGreensFunctions[IndexCombination(i,j)])(MatsubaraNumber):0;
+    return (!vanishes(i,j))?(*mapGreensFunctions[IndexCombination(i,j)])(MatsubaraNumber):0;
+};
+
+bool GFContainer::vanishes(ParticleIndex i, ParticleIndex j)
+{
+   return (mapGreensFunctions.count(IndexCombination(i,j))==0); 
 };
 
 void GFContainer::prepare()
 {
+if (Status == Constructed){
     for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); ++i)
         for (ParticleIndex j=0; j<IndexInfo.getIndexSize(); ++j){
                 GreensFunction *GF = new GreensFunction (S,H,Operators.getAnnihilationOperator(i),Operators.getCreationOperator(j),DM);
                 GF->prepare();
                 if (!GF->vanishes()) mapGreensFunctions[IndexCombination(i,j)]=GF;
             }
+    Status = Prepared;
+    };
 };
 
 void GFContainer::compute()
 {
+if (Status == Prepared){
     for (std::map<IndexCombination,GreensFunction*>::iterator it1=mapGreensFunctions.begin();it1!=mapGreensFunctions.end();++it1){
+           DEBUG("GFContainer: computing G_{" << it1->first << "}");
            it1->second->compute(); 
         };
+    Status = Computed;
+    };
 };
 
 void GFContainer::dumpToPlainText(long wn)

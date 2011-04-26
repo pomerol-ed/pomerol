@@ -45,8 +45,6 @@ class GreensFunction : public ComputableObject {
     DensityMatrix& DM;
     /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
     bool vanish;
-    /** Represents current status of calculation done with the GF - look for enum ObjectStatus in the config.h */
-    unsigned short Status;
 
     /** A list of pointers to parts (every part corresponds to a part of the annihilation operator
      * and a part of the creation operator).
