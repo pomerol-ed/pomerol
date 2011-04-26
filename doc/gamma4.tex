@@ -1,0 +1,157 @@
+\documentclass{article}
+\usepackage[T1,T2A]{fontenc}
+\usepackage[cp1251]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[dvips]{graphicx}
+
+\oddsidemargin 0.0cm
+\textwidth 7.0in 
+\textheight 9.0in 
+\topmargin 0.0in 
+
+\DeclareMathOperator*{\sgn}{sgn}
+\DeclareMathOperator*{\Tr}{Tr}
+
+\newcommand{\melem}[3]{\langle#1|#2|#3\rangle}
+
+\begin{document}
+
+\section{One-particle fermion Green's function for a Hamiltonian system}
+
+A thermal Green's function for a Hamiltonian system of fermions in the Matsubara representation:
+\begin{eqnarray*}
+    g_{12}(\omega) \equiv -\langle c_{\omega 1} \bar c_{\omega 2} \rangle = 
+    -\int_0^\beta e^{i\omega\tau} d\tau \Tr [\hat w\mathbb{T} \hat c_1(\tau) \hat c^+_2(0)] =\\=
+        \sum_{mn}\frac{\langle n|\hat c_1|m\rangle\langle m|\hat c^+_2|n\rangle(w_m+w_n)}
+            {i\omega - (E_m-E_n)}
+\end{eqnarray*}
+where indices $n, m$ denote Fock states of the system, $E_n$ is an energy level, $\beta$ is the inverse
+temperature and
+\[
+    w_n \equiv \frac{e^{-\beta E_n}}{Z}, \quad Z \equiv \sum_n e^{-\beta E_n}
+\]
+
+\section{Two-particle fermion Green's function and two-particle irreducible vertex part}
+
+For an energy-conserving combination of frequencies $(\omega_1, \omega_2; \omega_3, \omega_4 = \omega_1+\omega_2-\omega_3)$
+a two-particle Green's function is defined as follows:
+
+\begin{equation*}
+    \chi_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv 
+        \langle c_{\omega_1 1} c_{\omega_2 2} \bar c_{\omega_3 3} \bar c_{\omega_4 4} \rangle = 
+        \int_0^\beta e^{i\omega_1\tau_1 + i\omega_2\tau_2 - i\omega_3\tau_3} d\tau 
+            \Tr [\hat w\mathbb{T} \hat c_1(\tau_1) \hat c_2(\tau_2) \hat c^+_3(\tau_3) \hat c^+_4(0)]
+\end{equation*}
+
+\begin{eqnarray*}
+    \chi_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) =
+            \sum_{\Pi}\sgn(\Pi)\sum_{ijkl}
+                \langle i|\hat O_{\Pi_1}|j\rangle \langle j|\hat O_{\Pi_2}|k\rangle
+                \langle k|\hat O_{\Pi_3}|l\rangle \langle l|\hat c_4^+|i\rangle 
+            \phi_{ijkl}(z_{\Pi_1},z_{\Pi_2},z_{\Pi_3})
+\end{eqnarray*}
+where a sum over $\Pi$ is a sum over all permutations of 3 indices, $\hat O = \{\hat c_1, \hat c_2, \hat c^+_3\}$,
+$z = \{i\omega_1, i\omega_2, -i\omega_3\}$. The spectral kernel $\phi_{ijkl}$ has the following form:
+
+\begin{multline*}
+    \phi_{ijkl}(z_1,z_2,z_3) = \\ =
+        \frac{w_i + w_l}{(z_1+E_i-E_j)(z_1+z_2+z_3+E_i-E_l)(z_3+E_k-E_l)} -
+        \frac{w_j + w_k}{(z_1+E_i-E_j)(z_2+E_j-E_k)(z_3+E_k-E_l)} + \\ +
+        \frac{1}{(z_1+E_i-E_j)(z_3+E_k-E_l)}
+            \left[\beta w_i\delta_{z_1+z_2}\delta_{E_i-E_k} + 
+            \frac{w_k-w_i}{z_1+z_2+E_i-E_k}(1-\delta_{z_1+z_2}\delta_{E_i-E_k})\right] -\\-
+        \frac{1}{(z_1+E_i-E_j)(z_3+E_k-E_l)}
+            \left[\beta w_j\delta_{z_2+z_3}\delta_{E_j-E_l} + 
+            \frac{w_l-w_j}{z_2+z_3+E_j-E_l}(1-\delta_{z_2+z_3}\delta_{E_j-E_l})\right]
+\end{multline*}
+
+The Wick part of a two-particle Green's function:
+\begin{eqnarray*}
+    \chi^0_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) = 
+        \beta\delta_{\omega_1\omega_4}\delta_{\omega_2\omega_3}g_{14}(\omega_1)g_{23}(\omega_2) -
+        \beta\delta_{\omega_1\omega_3}\delta_{\omega_2\omega_4}g_{13}(\omega_1)g_{24}(\omega_2)
+\end{eqnarray*}
+
+An irreducible vertex part:
+\[
+    \Gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv 
+        \chi_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) -
+        \chi^{0}_{1234}(\omega_1,\omega_2;\omega_3,\omega_4)
+\]
+
+An amputated irreducible vertex part:
+\[
+    \gamma^{(4)}_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv 
+        \frac{\Gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) 
+        }{g_{11}(\omega_1)g_{22}(\omega_2)g_{33}(\omega_3)g_{44}(\omega_4)}
+\]
+
+\section{Singular part of an irreducible vertex part.}
+
+The singular part of an irreducible vertex part is defined as a sum of all terms proportional to $\beta$.
+It can be expressed using a function $F$ (Wick-like contribution) and a function $R$ (``superconductive'' contribution).
+
+\begin{equation*}
+    \Gamma^{(4),s}_{1234} = 
+          \beta F_{1234}(\omega_1,\omega_2) \delta_{\omega_2-\omega_3} 
+        - \beta F_{2134}(\omega_2,\omega_1) \delta_{\omega_1-\omega_3}
+        + \beta R_{1234}(\omega_1,\omega_3) \delta_{\omega_1+\omega_2}
+\end{equation*}
+
+\begin{eqnarray*}
+    F_{1234}(\omega_1,\omega_2) = \sum_{ijkl} w_i
+        \left\{
+            \frac{\delta_{E_i - E_k}\melem{i}{\hat c_2}{l}\melem{l}{\hat c^+_3}{k}\melem{k}{\hat c^+_4}{j}\melem{j}{\hat c_1}{i}
+                    - w_k \melem{k}{\hat c_2}{l}\melem{l}{\hat c^+_3}{k}\melem{i}{\hat c^+_4}{j}\melem{j}{\hat c_1}{i}
+                }
+                {(i\omega_1-(E_i-E_j))(i\omega_2-(E_l-E_k))} \right. +\\+ \left.
+            \frac{\delta_{E_i - E_k}\melem{i}{\hat c^+_3}{l}\melem{l}{\hat c_2}{k}\melem{k}{\hat c^+_4}{j}\melem{j}{\hat c_1}{i}
+                    - w_k \melem{k}{\hat c^+_3}{l}\melem{l}{\hat c_2}{k}\melem{i}{\hat c^+_4}{j}\melem{j}{\hat c_1}{i}
+                }
+                {(i\omega_1-(E_i-E_j))(i\omega_2-(E_k-E_l))} \right. +\\+ \left.
+            \frac{\delta_{E_i - E_k}\melem{i}{\hat c_1}{j}\melem{j}{\hat c^+_4}{k}\melem{k}{\hat c_2}{l}\melem{l}{\hat c^+_3}{i}
+                    - w_k \melem{i}{\hat c_1}{j}\melem{j}{\hat c^+_4}{i}\melem{k}{\hat c_2}{l}\melem{l}{\hat c^+_3}{k}
+                }
+                {(i\omega_1-(E_j-E_i))(i\omega_2-(E_l-E_k))} \right. +\\+ \left.
+            \frac{\delta_{E_i - E_k}\melem{i}{\hat c_1}{j}\melem{j}{\hat c^+_4}{k}\melem{k}{\hat c^+_3}{l}\melem{l}{\hat c_2}{i}
+                    - w_k \melem{i}{\hat c_1}{j}\melem{j}{\hat c^+_4}{i}\melem{k}{\hat c^+_3}{l}\melem{l}{\hat c_2}{k}
+                }
+                {(i\omega_1-(E_j-E_i))(i\omega_2-(E_k-E_l))}
+        \right\}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+    R_{1234}(\omega_1,\omega_3) = -\sum_{ijkl}\delta_{E_i - E_k} w_i
+        \left\{
+            \frac{\melem{i}{\hat c_1}{j}\melem{j}{\hat c_2}{k}\melem{k}{\hat c^+_3}{l}\melem{l}{\hat c^+_4}{i}}
+                {(i\omega_1-(E_j-E_i))(i\omega_3-(E_k-E_l))}
+          + \frac{\melem{i}{\hat c_2}{j}\melem{j}{\hat c_1}{k}\melem{k}{\hat c^+_3}{l}\melem{l}{\hat c^+_4}{i}}
+                {(i\omega_1-(E_i-E_j))(i\omega_3-(E_k-E_l))} \right. +\\+ \left.
+            \frac{\melem{k}{\hat c_1}{j}\melem{j}{\hat c_2}{i}\melem{i}{\hat c^+_4}{l}\melem{l}{\hat c^+_3}{k}}
+                {(i\omega_1-(E_j-E_i))(i\omega_3-(E_l-E_k))}
+          + \frac{\melem{k}{\hat c_2}{j}\melem{j}{\hat c_1}{i}\melem{i}{\hat c^+_4}{l}\melem{l}{\hat c^+_3}{k}}
+                {(i\omega_1-(E_i-E_j))(i\omega_3-(E_l-E_k))}
+        \right\}
+\end{eqnarray*}    
+
+{\bf $\beta\to\infty$ limit.}
+Weight $w_i$ goes to $1/g$ in the limit of low temperatures, if $i$ is a component of a $g$-fold ground state, and vanishes for excited states.
+Thus a summation over $i$ and $k$ in the formulae above includes only components of the ground state:
+\[
+    \sum_{ijkl} w_i\delta_{E_i-E_k} \mapsto \frac{1}{g}\sum_{ik\in \{|gs\rangle\}}\sum_{jl}
+\]
+
+\[
+    \sum_{ijkl} w_i w_k \mapsto \frac{1}{g^2}\sum_{ik\in \{|gs\rangle\}}\sum_{jl}
+\]
+
+If the ground state is not degenerate ($g=1$), then $\beta F_{1234}(\omega_1,\omega_2) \to 0$ as $\beta\to\infty$.
+It is easy to prove taking the limit for this special case:
+\[
+    w_i \to \delta_{i,gs};
+    \qquad \sum_{ijkl} w_i\delta_{E_i,E_k},\ \sum_{ijkl} w_i w_k \mapsto \sum_{jl};
+    \qquad E_i, E_k \mapsto E_{gs}; \qquad |i\rangle, |k\rangle \mapsto |gs\rangle
+\]
+
+\end{document}
