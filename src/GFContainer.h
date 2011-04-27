@@ -19,12 +19,14 @@ class GFContainer : public ComputableObject
 public:
     struct IndexCombination; 
     GFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, IndexClassification& IndexInfo, FieldOperatorContainer& Operators);
+    void readInitialIndices(std::vector<IndexCombination*> &in);
     void prepare();
     void compute();
     bool vanishes(ParticleIndex i, ParticleIndex j);
     MatrixType& operator()(long MatsubaraNumber);
     ComplexType operator()(ParticleIndex i, ParticleIndex j, long MatsubaraNumber);
     void dumpToPlainText(long wn);
+    std::vector<IndexCombination*> InitialIndices;
 private:
     StatesClassification &S;
     Hamiltonian &H;
@@ -33,6 +35,7 @@ private:
     FieldOperatorContainer &Operators;
 
     std::map<IndexCombination, GreensFunction*> mapGreensFunctions;
+    void defineInitialIndices();
 };
 
 struct GFContainer::IndexCombination

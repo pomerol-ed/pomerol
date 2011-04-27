@@ -134,11 +134,7 @@ void saveGamma(const char *fname, Vertex4 &Vertex, std::vector<TwoParticleGFCont
                       n2_ = (*comb1)->Indices[3]%n_part;
                       z1 = (*comb1)->Indices[0]/n_part;
                       z2 = (*comb1)->Indices[1]/n_part;
-                      if ( style == UnAmputated) 
-                          z=new ComplexType(Vertex.getUnAmputatedValue(**comb1,w1,w2,w1_));
-                      else if ( style == Amputated)
-                          z=new ComplexType(Vertex.getAmputatedValue(**comb1,w1,w2,w1_));
-                          else z = new ComplexType (0);
+                      z=new ComplexType(Vertex(**comb1,w1,w2,w1_));
                       if(abs(*z)>acc){
 #if defined(HRD)
                         gamma_str << chop(real(*z)) <<"  "<< chop(imag(*z)) << "           "
@@ -267,24 +263,23 @@ int main(int argc, char *argv[])
   if (1==1){
     printFramed("Two Particle Green's function calculation");
 
-    TwoParticleGFContainer::IndexCombination *comb1;
+    std::vector<GFContainer::IndexCombination*> v2;
+    v2.push_back(new GFContainer::IndexCombination(0,0));
+    v2.push_back(new GFContainer::IndexCombination(IndexInfo.getIndexSize()/2,IndexInfo.getIndexSize()/2));
+    G.readInitialIndices(v2);
+    G.prepare();
+    G.compute();
+    G.dumpToPlainText(2*wn);
+
     std::vector<TwoParticleGFContainer::IndexCombination*> v1;
-
-    comb1 = new TwoParticleGFContainer::IndexCombination(0,IndexInfo.getIndexSize()/2,0,IndexInfo.getIndexSize()/2);
-    v1.push_back(comb1);
-    comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
-    v1.push_back(comb1);
-
-
+    v1.push_back(new TwoParticleGFContainer::IndexCombination(0,IndexInfo.getIndexSize()/2,0,IndexInfo.getIndexSize()/2));
+    v1.push_back(new TwoParticleGFContainer::IndexCombination(0,0,0,0));
     TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
     Chi4.readInitialIndices(v1);
     Chi4.prepare();
     Chi4.compute(wn);
     //saveChi("Chi4.dat",Chi4,wn);
-    G.prepare();
-    G.compute();
-    G.dumpToPlainText(2*wn);
-
+    
     Vertex4 Gamma4(IndexInfo,Chi4,G);
     Gamma4.prepareUnAmputated();
     Gamma4.computeUnAmputated();

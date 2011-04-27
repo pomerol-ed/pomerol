@@ -38,7 +38,8 @@ MatrixType& GFContainer::operator()(long MatsubaraNumber)
 
 ComplexType GFContainer::operator()(ParticleIndex i, ParticleIndex j, long MatsubaraNumber)
 {
-    return (!vanishes(i,j))?(*mapGreensFunctions[IndexCombination(i,j)])(MatsubaraNumber):0;
+    return (!vanishes(i,j))?(*mapGreensFunctions[IndexCombination(i,j)])(MatsubaraNumber):((i==j)?I*(-1.)*DM.getBeta()/((2*MatsubaraNumber+1)*M_PI):0.);
+    //return (!vanishes(i,j))?(*mapGreensFunctions[IndexCombination(i,j)])(MatsubaraNumber):((i==j)?1.:0.);
 };
 
 bool GFContainer::vanishes(ParticleIndex i, ParticleIndex j)
@@ -46,15 +47,30 @@ bool GFContainer::vanishes(ParticleIndex i, ParticleIndex j)
    return (mapGreensFunctions.count(IndexCombination(i,j))==0); 
 };
 
+void GFContainer::defineInitialIndices()
+{
+    for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); ++i)
+        for (ParticleIndex j=0; j<IndexInfo.getIndexSize(); ++j){
+            IndexCombination * Gij = new IndexCombination(i,j);
+            InitialIndices.push_back(Gij);
+            };
+}
+
+void GFContainer::readInitialIndices(std::vector<IndexCombination*> &in)
+{
+    InitialIndices=in;
+};
+
 void GFContainer::prepare()
 {
 if (Status == Constructed){
-    for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); ++i)
-        for (ParticleIndex j=0; j<IndexInfo.getIndexSize(); ++j){
-                GreensFunction *GF = new GreensFunction (S,H,Operators.getAnnihilationOperator(i),Operators.getCreationOperator(j),DM);
-                GF->prepare();
-                if (!GF->vanishes()) mapGreensFunctions[IndexCombination(i,j)]=GF;
-            }
+    if (InitialIndices.size()==0) defineInitialIndices();
+    for (std::vector<IndexCombination*>::const_iterator it=InitialIndices.begin(); it!=InitialIndices.end(); ++it) {
+        GreensFunction *GF = new GreensFunction (S,H,Operators.getAnnihilationOperator((*it)->Indices[0]),Operators.getCreationOperator((*it)->Indices[1]),DM);
+        DEBUG((*it)->Indices[0] << " " << (*it)->Indices[1])
+        GF->prepare();
+        if (!GF->vanishes()) mapGreensFunctions[**it]=GF;
+        }
     Status = Prepared;
     };
 };
