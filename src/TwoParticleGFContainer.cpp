@@ -55,9 +55,16 @@ TwoParticleGFContainer::TwoParticleGFContainer(StatesClassification &S, Hamilton
 {
 };
 
+void TwoParticleGFContainer::readInitialIndices(std::vector<IndexCombination*>& in)
+{
+InitialCombinations=in;
+for (std::vector<IndexCombination*>::const_iterator it1=in.begin(); it1!=in.end(); ++it1){
+}
+};
 
 void TwoParticleGFContainer::defineInitialIndices()
 {
+if (InitialCombinations.size()==0)
 for (ParticleIndex i1=0; i1<IndexInfo.getIndexSize(); ++i1)
     for (ParticleIndex i2=0; i2<IndexInfo.getIndexSize(); ++i2)
         for (ParticleIndex i3=0; i3<IndexInfo.getIndexSize(); ++i3){

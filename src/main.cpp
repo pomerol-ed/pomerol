@@ -267,14 +267,6 @@ int main(int argc, char *argv[])
   if (1==1){
     printFramed("Two Particle Green's function calculation");
 
-    TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
-    Chi4.prepare();
-    Chi4.compute(wn);
-    //saveChi("Chi4.dat",Chi4,wn);
-    G.prepare();
-    G.compute();
-    G.dumpToPlainText(2*wn);
-
     TwoParticleGFContainer::IndexCombination *comb1;
     std::vector<TwoParticleGFContainer::IndexCombination*> v1;
 
@@ -282,6 +274,16 @@ int main(int argc, char *argv[])
     v1.push_back(comb1);
     comb1 = new TwoParticleGFContainer::IndexCombination(0,0,0,0);
     v1.push_back(comb1);
+
+
+    TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
+    Chi4.readInitialIndices(v1);
+    Chi4.prepare();
+    Chi4.compute(wn);
+    //saveChi("Chi4.dat",Chi4,wn);
+    G.prepare();
+    G.compute();
+    G.dumpToPlainText(2*wn);
 
     Vertex4 Gamma4(IndexInfo,Chi4,G);
     Gamma4.prepareUnAmputated();

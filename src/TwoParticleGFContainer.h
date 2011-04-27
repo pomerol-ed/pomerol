@@ -32,6 +32,7 @@ private:
 public:
     TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, IndexClassification& IndexInfo, FieldOperatorContainer& Operators);
 
+    void readInitialIndices(std::vector<IndexCombination*>&);
     void prepare();
     void compute(long NumberOfMatsubaras);
     bool vanishes(const IndexCombination&);
