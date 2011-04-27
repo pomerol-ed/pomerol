@@ -176,7 +176,7 @@ if (Status == Prepared){
     for (std::map<IndexCombination,Element*>::iterator it1=mapNonTrivialCombinations.begin();it1!=mapNonTrivialCombinations.end();++it1){
         if (it1->second->isComputed) items.push_back(it1->second->Computable2PGF);
         }
-    #pragma omp parallel for schedule(dynamic,1)
+    #pragma omp parallel for 
     for (int i = 0; i < (int) items.size(); ++i){
         items[i]->compute(NumberOfMatsubaras);
         };

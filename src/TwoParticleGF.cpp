@@ -130,7 +130,7 @@ if (Status < Computed){
     std::vector<TwoParticleGFPart*> VectorOfParts;
     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++) VectorOfParts.push_back(*iter);
 
-    #pragma omp parallel for schedule(dynamic,1)
+    #pragma omp parallel for
     for(unsigned int i=0; i<VectorOfParts.size(); ++i)
     {
         std::cout << static_cast<int>((i*100.0)/parts.size()) << "  " << std::flush;
