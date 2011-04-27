@@ -117,6 +117,7 @@ void TwoParticleGF::compute(long NumberOfMatsubaras)
 {
 if (Status < Computed){
     Storage->prepare(NumberOfMatsubaras);
+    #ifndef pomerolOpenMP
     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
     {
         // TODO: More elegant output.
@@ -125,6 +126,20 @@ if (Status < Computed){
         *Storage+=(*iter)->getMatsubaraContainer();
         (*iter)->clear();
     }
+    #else
+    std::vector<TwoParticleGFPart*> VectorOfParts;
+    for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++) VectorOfParts.push_back(*iter);
+
+    #pragma omp parallel for schedule(dynamic,1)
+    for(unsigned int i=0; i<VectorOfParts.size(); ++i)
+    {
+        std::cout << static_cast<int>((i*100.0)/parts.size()) << "  " << std::flush;
+        VectorOfParts[i]->compute(NumberOfMatsubaras);
+        *Storage+=VectorOfParts[i]->getMatsubaraContainer();
+        VectorOfParts[i]->clear();
+    }
+
+    #endif
     std::cout << std::endl;
     Status = Computed;
     }
