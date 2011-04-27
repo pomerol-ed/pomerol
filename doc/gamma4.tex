@@ -82,9 +82,11 @@ An irreducible vertex part:
 
 An amputated irreducible vertex part:
 \[
-    \gamma^{(4)}_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv 
-        \frac{\Gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) 
-        }{g_{11}(\omega_1)g_{22}(\omega_2)g_{33}(\omega_3)g_{44}(\omega_4)}
+    \gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv 
+        \sum_{1'2'3'4'}
+        (g^{-1}(\omega_1))_{11'} (g^{-1}(\omega_2))_{22'}
+        \Gamma_{1'2'3'4'}(\omega_1,\omega_2;\omega_3,\omega_4)
+        (g^{-1}(\omega_3))_{3'3} (g^{-1}(\omega_4))_{4'4}
 \]
 
 \section{Singular part of an irreducible vertex part.}
@@ -93,7 +95,7 @@ The singular part of an irreducible vertex part is defined as a sum of all terms
 It can be expressed using a function $F$ (Wick-like contribution) and a function $R$ (``superconductive'' contribution).
 
 \begin{equation*}
-    \Gamma^{(4),s}_{1234} = 
+    \Gamma^{s}_{1234} = 
           \beta F_{1234}(\omega_1,\omega_2) \delta_{\omega_2-\omega_3} 
         - \beta F_{2134}(\omega_2,\omega_1) \delta_{\omega_1-\omega_3}
         + \beta R_{1234}(\omega_1,\omega_3) \delta_{\omega_1+\omega_2}
