@@ -1,7 +1,7 @@
 Shortlist:
-- TwoParticleGFPart: remove MatsubaraContainer
-- Find equivalent permutations of sites of the lattice, find equivalent index permutations
 - Documentation
+- Add GPL License information to the code, add something like 'We welcome citations' 
+- Find equivalent permutations of sites of the lattice, find equivalent index permutations
 ---------------------------------------------------------------------------------------------------------------
 Forthcoming:
 - HDF5 support, dump and readin from a single .h5 file, implement resume from precalculated part of data
