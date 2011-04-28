@@ -8,7 +8,7 @@
 #ifndef __INCLUDE_DENSITYMATRIX_H
 #define __INCLUDE_DENSITYMATRIX_H
 
-#include "Dumper.h"
+#include "HDF5Storage.h"
 #include "ComputableObject.h"
 #include "StatesClassification.h"
 #include "IndexClassification.h"
@@ -21,10 +21,10 @@
  * the Hamiltonian and the parts of the density matrix itself, since the density matrix
  * is a function of \f$ \hat H \f$.
  */
-#ifdef pomerolHDF5
-class DensityMatrix : public Dumpable, public ComputableObject
-#else
+
 class DensityMatrix : public ComputableObject
+#ifdef pomerolHDF5
+, public HDF5Storable
 #endif
 {
     /** A reference to a states classification object. */
@@ -71,7 +71,8 @@ public:
     RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j);
     
 #ifdef pomerolHDF5
-    void dumpIt(H5::CommonFG* FG) const;
+    void save(H5::CommonFG* FG) const;
+    void load(const H5::CommonFG* FG);
 #endif
 };
 

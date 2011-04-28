@@ -1,6 +1,6 @@
 #include "Misc.h"
 #include "output.h"
-#include "Dumper.h"
+#include "HDF5Storage.h"
 #include "LatticeAnalysis.h"
 #include "Term.h"
 #include "IndexClassification.h"
@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
 	}
 
 #ifdef pomerolHDF5
-  Dumper dmp("test.h5");
+  HDF5Storage dmp("test.h5");
 #endif
 
   printFramed("Lattice Info");
@@ -234,7 +234,13 @@ int main(int argc, char *argv[])
   rho.compute();
   num_cout << "<H> = " << rho.getAverageEnergy() << std::endl;
 #ifdef pomerolHDF5  
-  dmp.dump(rho);
+  dmp.save(rho);
+  
+  DensityMatrix rho_loaded(S,H,beta);
+  dmp.load(rho_loaded);
+  
+  HDF5Storage dmp2("test2.h5");
+  dmp2.save(rho_loaded);
 #endif
 
 

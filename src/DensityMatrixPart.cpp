@@ -73,12 +73,20 @@ RealType DensityMatrixPart::getBeta(void)
 }
 
 #ifdef pomerolHDF5
-void DensityMatrixPart::dumpIt(H5::CommonFG* FG) const
+void DensityMatrixPart::save(H5::CommonFG* FG) const
 {
-    Dumper::dumpReal(*FG,"beta",beta);
-    Dumper::dumpReal(*FG,"GroundEnergy",GroundEnergy);
-    Dumper::dumpReal(*FG,"Z_part",Z_part);
-    Dumper::dumpRealVector(*FG,"weights",weights);
+    HDF5Storage::saveReal(*FG,"beta",beta);
+    HDF5Storage::saveReal(*FG,"GroundEnergy",GroundEnergy);
+    HDF5Storage::saveReal(*FG,"Z_part",Z_part);
+    HDF5Storage::saveRealVector(*FG,"weights",weights);
+}
+
+void DensityMatrixPart::load(const H5::CommonFG* FG)
+{
+    beta = HDF5Storage::loadReal(*FG,"beta");
+    GroundEnergy = HDF5Storage::loadReal(*FG,"GroundEnergy");
+    Z_part = HDF5Storage::loadReal(*FG,"Z_part");
+    HDF5Storage::loadRealVector(*FG,"weights",weights);
 }
 
 #endif // endif :: #ifdef pomerolHDF5

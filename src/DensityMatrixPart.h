@@ -7,7 +7,7 @@
 #ifndef __INCLUDE_DENSITYMATRIXPART_H
 #define __INCLUDE_DENSITYMATRIXPART_H
 
-#include "Dumper.h"
+#include "HDF5Storage.h"
 #include "HamiltonianPart.h"
 
 /** This class represents a part of a density matrix.
@@ -15,10 +15,10 @@
  * and a contribution to the partition function made by the corresponding
  * block of the Hamiltonian.
  */
-#ifdef pomerolHDF5
-class DensityMatrixPart : public Dumpable
-#else
+
 class DensityMatrixPart
+#ifdef pomerolHDF5
+: public HDF5Storable
 #endif
 {
     /** A reference to a states classification object. */
@@ -73,7 +73,8 @@ public:
      */
     InnerQuantumState getMaximumTruncationState( RealType TruncationTolerance);
 #ifdef pomerolHDF5 
-    void dumpIt(H5::CommonFG* FG) const;
+    void save(H5::CommonFG* FG) const;
+    void load(const H5::CommonFG* FG);
 #endif
 };
 

@@ -79,13 +79,13 @@ RealType DensityMatrix::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex
 
 
 #ifdef pomerolHDF5
-void DensityMatrix::dumpIt(H5::CommonFG* FG) const
+void DensityMatrix::save(H5::CommonFG* FG) const
 {
     H5::Group RootGroup(FG->createGroup("DensityMatrix"));
-    
+
     // Dump inverse temperature
-    Dumper::dumpComplex(RootGroup,"beta",beta);
-    
+    HDF5Storage::saveReal(RootGroup,"beta",beta);
+
     // Dump parts
     BlockNumber NumOfBlocks = parts.size();
     H5::Group PartsGroup = RootGroup.createGroup("parts");
@@ -93,7 +93,28 @@ void DensityMatrix::dumpIt(H5::CommonFG* FG) const
 	std::stringstream nStr;
 	nStr << n;
 	H5::Group PartGroup = PartsGroup.createGroup(nStr.str().c_str());
-	parts[n]->dumpIt(&PartGroup);
+	parts[n]->save(&PartGroup);
+    }
+}
+
+void DensityMatrix::load(const H5::CommonFG* FG)
+{
+    H5::Group RootGroup(FG->openGroup("DensityMatrix"));  
+    beta = HDF5Storage::loadReal(RootGroup,"beta");
+
+    if(Status!=Prepared) prepare();
+
+    H5::Group PartsGroup = RootGroup.openGroup("parts");
+    BlockNumber NumOfBlocks = parts.size();
+    if(NumOfBlocks != PartsGroup.getNumObjs()){
+	// TODO: Something is very wrong here!
+	// Throw an exception?
+    }
+    for(BlockNumber n = 0; n < NumOfBlocks; n++){
+	std::stringstream nStr;
+	nStr << n;
+	H5::Group PartGroup = PartsGroup.openGroup(nStr.str().c_str());
+	parts[n]->load(&PartGroup);
     }
 }
 #endif // endif :: #ifdef pomerolHDF5

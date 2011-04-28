@@ -3,7 +3,7 @@ LINKS=-L../lib
 CXXFLAGS+= -O3 -Wall -fPIC -g $(INCLUDES) #-pg
 BINPATH=../bin
 
-objects=output.o Dumper.o LatticeAnalysis.o \
+objects=output.o HDF5Storage.o LatticeAnalysis.o \
 	StatesClassification.o Term.o IndexClassification.o \
 	HamiltonianPart.o Hamiltonian.o FieldOperatorPart.o FieldOperator.o \
 	DensityMatrixPart.o DensityMatrix.o \
@@ -18,7 +18,7 @@ libs=../lib/lib_json.a ${POMEROL_LIBS}
 default: main
 
 output.o: output.cpp output.h
-Dumper.o: Dumper.cpp Dumper.h Misc.h
+HDF5Storage.o: HDF5Storage.cpp HDF5Storage.h Misc.h
 LatticeAnalysis.o: LatticeAnalysis.h LatticeAnalysis.cpp
 Term.o:	Term.cpp Term.h
 IndexClassification.o: IndexClassification.h IndexClassification.cpp Term.h
