@@ -31,13 +31,13 @@ class Vertex4 : public ComputableObject, public FourIndexContainer {
     long NumberOfMatsubaras;
 
     /** A storage for unamputated values */
-    std::map<IndexCombination,TwoParticleGFPart::MatsubaraContainer*> mapUnAmputatedValues;
+    std::map<IndexCombination,FourIndexObject::MatsubaraContainer*> mapUnAmputatedValues;
 
     /** A vector of all nontrivial combinations to compute */
     std::vector<IndexCombination*> NonTrivialAmputatedCombinations;
 
     /** A storage for amputated values */
-    std::map<IndexCombination,TwoParticleGFPart::MatsubaraContainer*> mapAmputatedValues;
+    std::map<IndexCombination,FourIndexObject::MatsubaraContainer*> mapAmputatedValues;
 
 public:
     /** Constructor.

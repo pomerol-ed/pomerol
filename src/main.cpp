@@ -191,6 +191,11 @@ int main(int argc, char *argv[])
   Dumper dmp("test.h5");
 #endif
 
+  std::list<int> a1;
+  std::list<int> a2;
+  a1.push_back(1); a1.push_back(2); a1.push_back(3);
+  a2.push_back(4); a2.push_back(5);
+  for (std::list<int>::const_iterator it=a1.begin(); it!=a1.end(); ++it) std::cout << *it << std::endl;
   printFramed("Lattice Info");
   Lattice.readin(opt.LatticeFile);
   std::cout << Lattice.printSitesList().str() << std::flush;

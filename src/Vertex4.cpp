@@ -19,7 +19,7 @@ void Vertex4::prepareUnAmputated()
     INFO("Vertex4: Preparing unamputated value container map ...");
 
     for (std::vector<IndexCombination*>::const_iterator it1=Chi.getNonTrivialCombinations().begin(); it1!=Chi.getNonTrivialCombinations().end(); ++it1){
-        mapUnAmputatedValues[**it1]= new TwoParticleGFPart::MatsubaraContainer(Chi.getBeta());
+        mapUnAmputatedValues[**it1]= new FourIndexObject::MatsubaraContainer(Chi.getBeta());
         mapUnAmputatedValues[**it1]->prepare(NumberOfMatsubaras);
     };
 };
@@ -47,7 +47,7 @@ void Vertex4::computeUnAmputated(const IndexCombination& in)
 
 void Vertex4::computeUnAmputated()
 {
-    for (std::map<IndexCombination,TwoParticleGFPart::MatsubaraContainer*>::iterator it=mapUnAmputatedValues.begin();
+    for (std::map<IndexCombination,FourIndexObject::MatsubaraContainer*>::iterator it=mapUnAmputatedValues.begin();
             it!=mapUnAmputatedValues.end(); ++it){
                 computeUnAmputated(it->first);
                 }
@@ -86,14 +86,14 @@ void Vertex4::prepareAmputated(std::vector<IndexCombination*>& in)
     INFO("Vertex4: Preparing amputated value container map ...");
     for (std::vector<IndexCombination*>::const_iterator it1=NonTrivialAmputatedCombinations.begin(); 
             it1!=NonTrivialAmputatedCombinations.end(); ++it1){
-                mapAmputatedValues[**it1]= new TwoParticleGFPart::MatsubaraContainer(Chi.getBeta());
+                mapAmputatedValues[**it1]= new FourIndexObject::MatsubaraContainer(Chi.getBeta());
                 mapAmputatedValues[**it1]->prepare(NumberOfMatsubaras);
     }       ;
 };
 
 void Vertex4::computeAmputated()
 {
-    for (std::map<IndexCombination,TwoParticleGFPart::MatsubaraContainer*>::iterator it=mapAmputatedValues.begin();
+    for (std::map<IndexCombination,FourIndexObject::MatsubaraContainer*>::iterator it=mapAmputatedValues.begin();
             it!=mapAmputatedValues.end(); ++it){
                     computeAmputated(it->first);
                     };
@@ -107,7 +107,7 @@ void Vertex4::computeAmputated(const IndexCombination& in)
             for (long MatsubaraNumber3=-NumberOfMatsubaras; MatsubaraNumber3 < NumberOfMatsubaras; ++MatsubaraNumber3)
                 if ( MatsubaraNumber1 + MatsubaraNumber2 - MatsubaraNumber3 < NumberOfMatsubaras && MatsubaraNumber1 + MatsubaraNumber2 - MatsubaraNumber3 >= -NumberOfMatsubaras){ 
                     ComplexType Value=0;
-                    for (std::map<IndexCombination,TwoParticleGFPart::MatsubaraContainer*>::iterator it=mapUnAmputatedValues.begin();
+                    for (std::map<IndexCombination,FourIndexObject::MatsubaraContainer*>::iterator it=mapUnAmputatedValues.begin();
                         it!=mapUnAmputatedValues.end(); ++it){
                             IndexCombination iin = it->first;
                                 { Value += this->getUnAmputatedValue(iin,MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3)*

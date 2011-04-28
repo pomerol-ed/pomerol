@@ -27,7 +27,7 @@ Coeff(Coeff), isz4(isz4)
     Poles[0] = P1; Poles[1] = P2; Poles[2] = P3;
 }
 
-inline ComplexType TwoParticleGFPart::NonResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
+ComplexType TwoParticleGFPart::NonResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
 {
     return isz4 ?   Coeff / ((z1-Poles[0])*(z1+z2+z3-Poles[0]-Poles[1]-Poles[2])*(z3-Poles[2])) :
                     Coeff / ((z1-Poles[0])*(z2-Poles[1])*(z3-Poles[2]));
@@ -61,7 +61,6 @@ ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), isz1z2(isz1z2)
     Poles[0] = P1; Poles[1] = P2; Poles[2] = P3;
 }
 
-inline
 ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
 {
     ComplexType Diff;
@@ -95,78 +94,6 @@ bool TwoParticleGFPart::ResonantTerm::isSimilarTo(const ResonantTerm& AnotherTer
 }
 
 //
-// Matsubara Container
-//
-TwoParticleGFPart::MatsubaraContainer::MatsubaraContainer(RealType beta):MatsubaraSpacing(I*M_PI/beta){};
-
-void TwoParticleGFPart::MatsubaraContainer::prepare(long NumberOfMatsubaras_)
-{
-    NumberOfMatsubaras=NumberOfMatsubaras_;
-    Data.resize(4*NumberOfMatsubaras);
-    FermionicFirstIndex.resize(4*NumberOfMatsubaras);
-    for (int BosonicIndex=-2*NumberOfMatsubaras;BosonicIndex<=(int)(2*NumberOfMatsubaras)-2;BosonicIndex++)
-    {
-        int Size=(BosonicIndex+1>0)?BosonicIndex+1-NumberOfMatsubaras:-NumberOfMatsubaras;
-        FermionicFirstIndex[BosonicIndex+2*NumberOfMatsubaras]=Size;
-        Size=((BosonicIndex+1<0)?BosonicIndex+NumberOfMatsubaras:NumberOfMatsubaras-1) - Size + 1;
-        Size=(Size<=0)?0:Size;
-        //      cout << "Freq = " << BosonicIndex << ", Size = " << Size << ", First Index = " << FermionicFirstIndex[BosonicIndex+2*NumberOfMatsubaras] << endl;
-        Data[BosonicIndex+2*NumberOfMatsubaras].resize(Size,Size);
-        Data[BosonicIndex+2*NumberOfMatsubaras].setZero();
-    };
-    //    exit(0);
-};
-
-ComplexType& TwoParticleGFPart::MatsubaraContainer::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
-// {OMEGA,nu,nu' : OMEGA=w1+w2, nu=w1, nu'=w4=OMEGA-w3
-{
-    unsigned int RealBosonicIndex = MatsubaraNumber1 + MatsubaraNumber2 + 2*NumberOfMatsubaras;
-    int nuIndex = MatsubaraNumber1-FermionicFirstIndex[RealBosonicIndex];
-    int nu1Index= RealBosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber3-FermionicFirstIndex[RealBosonicIndex];
-    //cout << "Bosonic index : " << RealBosonicIndex - 2*NumberOfMatsubaras<< " shift : " << FermionicFirstIndex[RealBosonicIndex] << endl;
-    if (nuIndex >= 0 && nuIndex < Data[RealBosonicIndex].rows() && nu1Index >= 0 && nu1Index < Data[RealBosonicIndex].rows() )
-        return Data[RealBosonicIndex](nuIndex,nu1Index);
-    else {
-        static ComplexType temp(0.0,0.0);
-        std::cout << "Warning! Index (" << MatsubaraNumber1 << "," << MatsubaraNumber2 << "," << MatsubaraNumber3 << "," << MatsubaraNumber1+ MatsubaraNumber2 - MatsubaraNumber3 << ") of TwoParticleGFPart is out of range, returning 0" << std::endl;
-        return temp;
-    };
-};
-
-TwoParticleGFPart::MatsubaraContainer& TwoParticleGFPart::MatsubaraContainer::operator+= (const MatsubaraContainer& rhs)
-{
-    for (long BosonicIndex=0;BosonicIndex<=(4*NumberOfMatsubaras)-2;BosonicIndex++){
-        Data[BosonicIndex]+=rhs.Data[BosonicIndex];
-    }
-    return (*this);
-};
-
-inline void TwoParticleGFPart::MatsubaraContainer::fill(const TwoParticleGFPart& Part)
-{
-    for (long BosonicIndex=0;BosonicIndex<=(4*NumberOfMatsubaras)-2;BosonicIndex++){
-        for (long nuIndex=0;nuIndex<Data[BosonicIndex].cols();++nuIndex){
-            for (long nu1Index=0;nu1Index<Data[BosonicIndex].cols();++nu1Index){
-                
-                long FermionicIndexShift = FermionicFirstIndex[BosonicIndex];
-                long MatsubaraNumber2 = nuIndex +FermionicIndexShift;
-                long MatsubaraNumber1 = BosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber2;
-                long MatsubaraNumber3 = nu1Index+FermionicIndexShift;
-                
-                Data[BosonicIndex](nuIndex,nu1Index) += 
-                Part(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
-            };
-        };
-    };
-};
-
-
-void TwoParticleGFPart::MatsubaraContainer::clear()
-{
-    for (long BosonicIndex=0;BosonicIndex<=(4*NumberOfMatsubaras)-2;BosonicIndex++){
-        Data[BosonicIndex].resize(0,0);
-    }
-}
-//
 // TwoParticleGFPart
 //
 TwoParticleGFPart::TwoParticleGFPart(
@@ -178,14 +105,7 @@ ComputableObject(),
 O1(O1), O2(O2), O3(O3), CX4(CX4), 
 Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
 DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
-Permutation(Permutation),Storage(new MatsubaraContainer(DMpart1.getBeta())){};
-
-void TwoParticleGFPart::clear()
-{
-    NonResonantTerms.clear();
-    ResonantTerms.clear();
-    Storage->clear();
-};
+Permutation(Permutation){};
 
 size_t TwoParticleGFPart::getNumNonResonantTerms() const
 {
@@ -203,7 +123,6 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
     ResonantTerms.clear();
     
     RealType beta = DMpart1.getBeta();
-    Storage->prepare(NumberOfMatsubaras);
     // I don't have any pen now, so I'm writing here:
     // <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
     // Iterate over all values of |1><1| and |3><3|
@@ -305,9 +224,6 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
         INFO_NONEWLINE(NonResonantTerms.size() << "+" << ResonantTerms.size() << " = ");
         INFO(NonResonantTerms.size() + ResonantTerms.size()  << " with tolerances: " << MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1) << ", " << MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1));
 
-        Storage->fill(*this);
-        NonResonantTerms.clear();
-        ResonantTerms.clear();
     };
 }
 
@@ -382,8 +298,9 @@ void TwoParticleGFPart::addMultiterm(ComplexType Coeff, RealType beta,
             ResonantTerm(CoeffZ2Z3Res,CoeffZ2Z3NonRes,P1,P2,P3,false));   
 }
 
-const TwoParticleGFPart::MatsubaraContainer& TwoParticleGFPart::getMatsubaraContainer(){
-    return *Storage;
+
+const Permutation3& TwoParticleGFPart::getPermutation(){
+    return Permutation;
 }
 
 ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
@@ -407,5 +324,20 @@ ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraN
     for(std::list<ResonantTerm>::const_iterator pTerm = ResonantTerms.begin(); pTerm != ResonantTerms.end(); ++pTerm)
         Value += (*pTerm)(z1,z2,z3);
 
-    return Value;//+(*Storage)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    return Value;
 }
+
+const std::list<TwoParticleGFPart::NonResonantTerm>& TwoParticleGFPart::getNonResonantTerms(){
+    return NonResonantTerms;
+}
+
+const std::list<TwoParticleGFPart::ResonantTerm>& TwoParticleGFPart::getResonantTerms(){
+    return ResonantTerms;
+}
+
+void TwoParticleGFPart::clear()
+{
+    NonResonantTerms.clear();
+    ResonantTerms.clear();
+}
+

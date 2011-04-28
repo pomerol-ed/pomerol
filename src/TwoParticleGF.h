@@ -13,6 +13,7 @@
 
 #include"Misc.h"
 #include"ComputableObject.h"
+#include"FourIndexObject.h"
 #include"output.h"
 #include"StatesClassification.h"
 #include"FieldOperator.h"
@@ -34,7 +35,7 @@
  * take place inside the parts). Every part corresponds to a 'world-stripe', a sequence of 4
  * matrix blocks.
  */
-class TwoParticleGF : public ComputableObject {
+class TwoParticleGF : public ComputableObject, public FourIndexSingleObject {
 
     /** A reference to a states classification object. */
     StatesClassification& S;
@@ -53,6 +54,9 @@ class TwoParticleGF : public ComputableObject {
 
     /** A list of pointers to parts. */
     std::list<TwoParticleGFPart*> parts;
+
+    std::list<TwoParticleGFPart::ResonantTerm> ResonantTerms[6];
+    std::list<TwoParticleGFPart::NonResonantTerm> NonResonantTerms[6];
 
     /** A flag to determine whether this GF is identical to zero */
     bool vanish;
@@ -81,7 +85,7 @@ class TwoParticleGF : public ComputableObject {
     BlockNumber getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex); //!< return right index of an operator at current position for a current permutation
 
     /** TODO: need a description. */
-    TwoParticleGFPart::MatsubaraContainer *Storage;
+    MatsubaraContainer *Storage;
 
 public:
     /** Constructor.
@@ -129,8 +133,9 @@ public:
     size_t getNumResonantTerms() const;
     /** Returns the totla number of non-resonant terms for all parts. */
     size_t getNumNonResonantTerms() const;
-   
-    //void dumpMatsubara(unsigned short points);
+    
+    /** Returns the number of current permutation in permutations3 */
+    unsigned short getPermutationNumber(const Permutation3& in);
 };
 
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGF_H

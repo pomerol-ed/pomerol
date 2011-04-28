@@ -8,6 +8,7 @@ objects=output.o Dumper.o LatticeAnalysis.o \
 	HamiltonianPart.o Hamiltonian.o FieldOperatorPart.o FieldOperator.o \
 	DensityMatrixPart.o DensityMatrix.o \
 	GreensFunctionPart.o GreensFunction.o \
+	FourIndexObject.o \
 	TwoParticleGF.o TwoParticleGFPart.o \
 	Vertex4.o FieldOperatorContainer.o \
 	TwoParticleGFContainer.o GFContainer.o 
@@ -31,11 +32,12 @@ DensityMatrixPart.o: DensityMatrixPart.h DensityMatrixPart.cpp ComputableObject.
 DensityMatrix.o: DensityMatrix.h DensityMatrix.cpp ComputableObject.h
 GreensFunctionPart.o: GreensFunctionPart.h GreensFunctionPart.cpp Misc.h ComputableObject.h
 GreensFunction.o: GreensFunction.h GreensFunction.cpp ComputableObject.h
-TwoParticleGFPart.o: TwoParticleGFPart.h TwoParticleGFPart.cpp Misc.h
-TwoParticleGF.o: TwoParticleGF.h TwoParticleGF.cpp ComputableObject.h
-TwoParticleGFContainer.o : TwoParticleGFContainer.h TwoParticleGFContainer.cpp TwoParticleGFPart.h ComputableObject.h
+TwoParticleGFPart.o: TwoParticleGFPart.h TwoParticleGFPart.cpp Misc.h ComputableObject.h
+FourIndexObject.o: FourIndexObject.h FourIndexObject.cpp Misc.h
+TwoParticleGF.o: TwoParticleGF.h TwoParticleGF.cpp FourIndexObject.h ComputableObject.h
+TwoParticleGFContainer.o : TwoParticleGFContainer.h TwoParticleGFContainer.cpp FourIndexObject.h TwoParticleGFPart.h ComputableObject.h
 GFContainer.o : GFContainer.h GFContainer.cpp GreensFunction.h GreensFunctionPart.h ComputableObject.h
-Vertex4.o: Vertex4.h Vertex4.cpp TwoParticleGFContainer.h GFContainer.h ComputableObject.h
+Vertex4.o: Vertex4.h Vertex4.cpp TwoParticleGFContainer.h GFContainer.h FourIndexObject.h ComputableObject.h
 
 libpomerol.so: $(objects)
 	$(CXX) -shared $(objects) $(libs) -o libpomerol.so

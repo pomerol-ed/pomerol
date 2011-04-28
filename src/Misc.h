@@ -74,6 +74,10 @@ enum OrbitalValue {s=0, p=1, d=2, f=3};             //!< The enum for s,p,d,f - 
 struct Permutation3 {
     const size_t perm[3];
     const int sign;
+    bool operator==(const Permutation3& rhs) const {return (sign==rhs.sign && perm[0] == rhs.perm[0] && perm[1]==rhs.perm[1]);};
+    bool operator!=(const Permutation3& rhs) const {return !(*this==rhs);};
+    friend std::ostream& operator<<(std::ostream& out, const Permutation3 &rhs)
+        { out << (rhs.sign==-1?"-":" ") << rhs.perm[0]+1 << rhs.perm[1]+1 << rhs.perm[2]+1 << std::flush; return out;}; 
 };
 
 /** Permutation of 4 elements */

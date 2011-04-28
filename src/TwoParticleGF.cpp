@@ -22,7 +22,7 @@ TwoParticleGF::TwoParticleGF(StatesClassification& S, Hamiltonian& H,
                 CreationOperator& CX3, CreationOperator& CX4,
                 DensityMatrix& DM) : ComputableObject(), S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM), parts(0)
 {
-    Storage = new TwoParticleGFPart::MatsubaraContainer(DM.getBeta());
+    Storage = new MatsubaraContainer(DM.getBeta());
     vanish = true;
 }
 
@@ -117,15 +117,18 @@ void TwoParticleGF::compute(long NumberOfMatsubaras)
 {
 if (Status < Computed){
     Storage->prepare(NumberOfMatsubaras);
+    unsigned short perm_num=0;
     #ifndef pomerolOpenMP
     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
     {
         // TODO: More elegant output.
         std::cout << static_cast<int>((distance(parts.begin(),iter)*100.0)/parts.size()) << "  " << std::flush;
         (*iter)->compute(NumberOfMatsubaras);
-        *Storage+=(*iter)->getMatsubaraContainer();
+        perm_num = getPermutationNumber((*iter)->getPermutation());
+        ResonantTerms[perm_num].insert(ResonantTerms[perm_num].end(),(*iter)->getResonantTerms().begin(), (*iter)->getResonantTerms().end());
+        NonResonantTerms[perm_num].insert(NonResonantTerms[perm_num].end(),(*iter)->getNonResonantTerms().begin(), (*iter)->getNonResonantTerms().end());
         (*iter)->clear();
-    }
+    };
     #else
     std::vector<TwoParticleGFPart*> VectorOfParts;
     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++) VectorOfParts.push_back(*iter);
@@ -135,11 +138,14 @@ if (Status < Computed){
     {
         std::cout << static_cast<int>((i*100.0)/parts.size()) << "  " << std::flush;
         VectorOfParts[i]->compute(NumberOfMatsubaras);
-        *Storage+=VectorOfParts[i]->getMatsubaraContainer();
+        perm_num = getPermutationNumber(VectorOfParts[i]->getPermutation());
+        ResonantTerms[perm_num].insert(ResonantTerms[perm_num].end(),VectorOfParts[i]->getResonantTerms().begin(), VectorOfParts[i]->getResonantTerms().end());
+        NonResonantTerms[perm_num].insert(NonResonantTerms[perm_num].end(),VectorOfParts[i]->getNonResonantTerms().begin(), VectorOfParts[i]->getNonResonantTerms().end());
         VectorOfParts[i]->clear();
     }
 
     #endif
+    for (unsigned short i=0; i<6; i++) Storage->fill(NonResonantTerms[i],ResonantTerms[i],permutations3[i]);
     std::cout << std::endl;
     Status = Computed;
     }
@@ -187,3 +193,9 @@ RealType TwoParticleGF::getBeta() const
     return DM.getBeta();
 }
 
+unsigned short TwoParticleGF::getPermutationNumber ( const Permutation3& in )
+{
+    for (unsigned short i=0; i<6; ++i) if (in == permutations3[i]) return i;
+    ERROR("TwoParticleGF: Permutation " << in << " not found in all permutations3");
+    return 0;
+}
