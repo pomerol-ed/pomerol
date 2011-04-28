@@ -191,11 +191,6 @@ int main(int argc, char *argv[])
   Dumper dmp("test.h5");
 #endif
 
-  std::list<int> a1;
-  std::list<int> a2;
-  a1.push_back(1); a1.push_back(2); a1.push_back(3);
-  a2.push_back(4); a2.push_back(5);
-  for (std::list<int>::const_iterator it=a1.begin(); it!=a1.end(); ++it) std::cout << *it << std::endl;
   printFramed("Lattice Info");
   Lattice.readin(opt.LatticeFile);
   std::cout << Lattice.printSitesList().str() << std::flush;
@@ -252,10 +247,8 @@ int main(int argc, char *argv[])
   out.close();
 
   out.open("output/Stat.NN.dat");
-  std::cout<<"indices:" <<0<<" "<<IndexInfo.getIndexSize()/2.<<std::endl;
   out << iomanip_prefs << rho.getAverageDoubleOccupancy(0,IndexInfo.getIndexSize()/2.) << std::endl;
   out.close();
-
 
   //finishing of creation
   std::cout << std::endl;
@@ -284,7 +277,7 @@ int main(int argc, char *argv[])
     Chi4.readInitialIndices(v1);
     Chi4.prepare();
     Chi4.compute(wn);
-    //saveChi("Chi4.dat",Chi4,wn);
+    saveChi("Chi4.dat",Chi4,wn);
     
     Vertex4 Gamma4(IndexInfo,Chi4,G);
     Gamma4.prepareUnAmputated();

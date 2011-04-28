@@ -60,6 +60,7 @@ public:
     bool reduce(RealType ActualCutoff);
     void dump();                //writing Eigen Values and Eigen Vectors in output file
     void print_to_screen();            //print to screen part of hamiltonian
+    RealVectorType getEigenState(InnerQuantumState m);
     
 };
 

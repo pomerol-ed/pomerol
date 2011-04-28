@@ -19,7 +19,6 @@ RealType DensityMatrixPart::compute(void)
     for(QuantumState m = 0; m < partSize; ++m){
         // The non-normalized weight is <=1 for any state.
         weights(m) = exp(-beta*(hpart.reV(m)-GroundEnergy));
-        std::cout<<"EIGS "<<(hpart.reV(m)-GroundEnergy)<<std::endl;
         Z_part += weights(m);
     }
 
@@ -44,11 +43,11 @@ RealType DensityMatrixPart::getAverageEnergy()
 RealType DensityMatrixPart::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j)
 {
     RealType NN=0.;
-    for(InnerQuantumState m = 0; m < partSize; ++m){
-        NN += weights(m)*S.n_i(S.cst(hpart.id(),m),i)*S.n_i(S.cst(hpart.id(),m),j);
-        std::cout<<" in NN "<<weights(m)<<" "<<S.n_i(S.cst(hpart.id(),m),i)<<" "<<S.n_i(S.cst(hpart.id(),m),j)<<std::endl;
+    for(InnerQuantumState m = 0; m < partSize; ++m){ // m is an EigenState number
+        RealVectorType CurrentEigenState = hpart.getEigenState(m);
+        for (InnerQuantumState fi=0; (long) fi < CurrentEigenState.size(); ++fi)
+            NN += weights(m)*S.n_i(S.cst(hpart.id(),fi),i)*S.n_i(S.cst(hpart.id(),fi),j)*CurrentEigenState(fi)*CurrentEigenState(fi);
     }
-    std::cout<<"================================="<<std::endl;
     return NN;
 };
 

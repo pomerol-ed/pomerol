@@ -216,6 +216,11 @@ void HamiltonianPart::dump()							//writing Eigen Values in output file
 	}
 }
 
+RealVectorType HamiltonianPart::getEigenState(InnerQuantumState m)
+{
+    return H.col(m);
+}
+
 RealType HamiltonianPart::getMinimumEigenvalue()
 {
 	return V.minCoeff();
