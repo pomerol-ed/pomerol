@@ -1,6 +1,6 @@
 LINKS=-L../lib
 
-CXXFLAGS+= -O3 -g -Wall -fPIC -pg $(INCLUDES)
+CXXFLAGS+= -O3 -Wall -fPIC -g $(INCLUDES) #-pg
 BINPATH=../bin
 
 objects=output.o Dumper.o LatticeAnalysis.o \

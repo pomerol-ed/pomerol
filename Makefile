@@ -24,6 +24,7 @@ jsoncpp: lib
 .PHONY: libpomerol
 libpomerol:	lib
 	@echo "Building libpomerol"
+	@mkdir -p bin
 	cd src && $(MAKE)
 	cp src/libpomerol.a ./lib
 	@echo
