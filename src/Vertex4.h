@@ -9,13 +9,14 @@
 
 #include"Misc.h"
 #include"ComputableObject.h"
+#include"FourIndexObject.h"
 #include"GFContainer.h"
 #include"TwoParticleGFContainer.h"
 
 /** Objects of this class just transforms a two-particle Green's function into
  * an irreducible vertex part or into an amputated irreducible vertex.
  */
-class Vertex4 : public ComputableObject, public FourIndexContainer {
+class Vertex4 : public ComputableObject, public FourIndexContainerObject {
 
     /** A reference to a two-particle Green's function. */
     TwoParticleGFContainer &Chi;
@@ -31,13 +32,13 @@ class Vertex4 : public ComputableObject, public FourIndexContainer {
     long NumberOfMatsubaras;
 
     /** A storage for unamputated values */
-    std::map<IndexCombination,FourIndexObject::MatsubaraContainer*> mapUnAmputatedValues;
+    std::map<IndexCombination,MatsubaraContainer*> mapUnAmputatedValues;
 
     /** A vector of all nontrivial combinations to compute */
     std::vector<IndexCombination*> NonTrivialAmputatedCombinations;
 
     /** A storage for amputated values */
-    std::map<IndexCombination,FourIndexObject::MatsubaraContainer*> mapAmputatedValues;
+    std::map<IndexCombination,MatsubaraContainer*> mapAmputatedValues;
 
 public:
     /** Constructor.

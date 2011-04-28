@@ -3,18 +3,11 @@
 
 #include"Misc.h"
 #include"ComputableObject.h"
+#include"FourIndexObject.h"
 #include"TwoParticleGF.h"
 #include"FieldOperatorContainer.h"
 
-class FourIndexContainer
-{
-protected:
-    static const Permutation4 TrivialOperatorPermutations[];
-public:
-    struct IndexCombination;
-};
-
-class TwoParticleGFContainer : public ComputableObject, public FourIndexContainer
+class TwoParticleGFContainer : public ComputableObject, public FourIndexContainerObject
 {
 public:
     struct Element;
@@ -42,20 +35,10 @@ public:
 
     void dump();
     RealType getBeta() const;
-    const std::vector<FourIndexContainer::IndexCombination*>& getNonTrivialCombinations();
-    const std::vector<FourIndexContainer::IndexCombination*>& getTrivialCombinations();
+    const std::vector<IndexCombination*>& getNonTrivialCombinations();
+    const std::vector<IndexCombination*>& getTrivialCombinations();
 private:
     void addInnerPermutationsOfIndexCombination(const IndexCombination *in_nontrivial);
-};
-
-struct FourIndexContainer::IndexCombination
-{
-    ParticleIndex Indices[4];
-    friend std::ostream& operator<<(std::ostream& output, const FourIndexContainer::IndexCombination& out);
-    bool operator< (const FourIndexContainer::IndexCombination& rhs) const ;
-    bool operator==(const FourIndexContainer::IndexCombination& rhs) const ;
-    bool operator!=(const FourIndexContainer::IndexCombination& rhs) const ;
-    IndexCombination(ParticleIndex cindex1, ParticleIndex cindex2, ParticleIndex cdagindex3, ParticleIndex cdagindex4);
 };
 
 struct TwoParticleGFContainer::Element

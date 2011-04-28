@@ -27,12 +27,6 @@ Coeff(Coeff), isz4(isz4)
     Poles[0] = P1; Poles[1] = P2; Poles[2] = P3;
 }
 
-ComplexType TwoParticleGFPart::NonResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
-{
-    return isz4 ?   Coeff / ((z1-Poles[0])*(z1+z2+z3-Poles[0]-Poles[1]-Poles[2])*(z3-Poles[2])) :
-                    Coeff / ((z1-Poles[0])*(z2-Poles[1])*(z3-Poles[2]));
-}
-
 inline
 TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator+=(
                     const NonResonantTerm& AnotherTerm)
@@ -59,20 +53,6 @@ TwoParticleGFPart::ResonantTerm::ResonantTerm(ComplexType ResCoeff, ComplexType 
 ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), isz1z2(isz1z2)
 {
     Poles[0] = P1; Poles[1] = P2; Poles[2] = P3;
-}
-
-ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
-{
-    ComplexType Diff;
-    if(isz1z2){
-        Diff = z1 + z2 - Poles[0] - Poles[1];
-        return (abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff/Diff) )
-                /((z1-Poles[0])*(z3-Poles[2]));
-    } else {
-        Diff = z2 + z3 - Poles[1] - Poles[2];
-        return (abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff/Diff) )
-                /((z1-Poles[0])*(z3-Poles[2]));
-    }
 }
 
 inline

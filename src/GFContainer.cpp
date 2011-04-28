@@ -67,7 +67,6 @@ if (Status == Constructed){
     if (InitialIndices.size()==0) defineInitialIndices();
     for (std::vector<IndexCombination*>::const_iterator it=InitialIndices.begin(); it!=InitialIndices.end(); ++it) {
         GreensFunction *GF = new GreensFunction (S,H,Operators.getAnnihilationOperator((*it)->Indices[0]),Operators.getCreationOperator((*it)->Indices[1]),DM);
-        DEBUG((*it)->Indices[0] << " " << (*it)->Indices[1])
         GF->prepare();
         if (!GF->vanishes()) mapGreensFunctions[**it]=GF;
         }
@@ -79,7 +78,7 @@ void GFContainer::compute()
 {
 if (Status == Prepared){
     for (std::map<IndexCombination,GreensFunction*>::iterator it1=mapGreensFunctions.begin();it1!=mapGreensFunctions.end();++it1){
-           DEBUG("GFContainer: computing G_{" << it1->first << "}");
+           INFO("GFContainer: computing G_{" << it1->first << "}");
            it1->second->compute(); 
         };
     Status = Computed;

@@ -58,22 +58,6 @@ void FourIndexObject::MatsubaraContainer::prepare(long NumberOfMatsubaras_)
     //    exit(0);
 };
 
-ComplexType FourIndexObject::MatsubaraContainer::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
-// {OMEGA,nu,nu' : OMEGA=w1+w2, nu=w1, nu'=w4=OMEGA-w3
-{
-    unsigned int RealBosonicIndex = MatsubaraNumber1 + MatsubaraNumber2 + 2*NumberOfMatsubaras;
-    int nuIndex = MatsubaraNumber1-FermionicFirstIndex[RealBosonicIndex];
-    int nu1Index= RealBosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber3-FermionicFirstIndex[RealBosonicIndex];
-    //cout << "Bosonic index : " << RealBosonicIndex - 2*NumberOfMatsubaras<< " shift : " << FermionicFirstIndex[RealBosonicIndex] << endl;
-    if (nuIndex >= 0 && nuIndex < Data[RealBosonicIndex].rows() && nu1Index >= 0 && nu1Index < Data[RealBosonicIndex].rows() )
-        return Data[RealBosonicIndex](nuIndex,nu1Index);
-    else {
-        static ComplexType temp(0.0,0.0);
-        std::cout << "Warning! Index (" << MatsubaraNumber1 << "," << MatsubaraNumber2 << "," << MatsubaraNumber3 << "," << MatsubaraNumber1+ MatsubaraNumber2 - MatsubaraNumber3 << ") of FourIndexObject is out of range, returning 0" << std::endl;
-        return temp;
-    };
-};
-
 FourIndexObject::MatsubaraContainer& FourIndexObject::MatsubaraContainer::operator+= (const MatsubaraContainer& rhs)
 {
     for (long BosonicIndex=0;BosonicIndex<=(4*NumberOfMatsubaras)-2;BosonicIndex++){

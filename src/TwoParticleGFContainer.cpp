@@ -1,51 +1,15 @@
 #include "TwoParticleGFContainer.h"
 
 extern std::ostream& OUTPUT_STREAM;
-
-const Permutation4 FourIndexContainer::TrivialOperatorPermutations[4] = { permutations4[0], permutations4[1], permutations4[6], permutations4[7] };
-
-/*=========================================================================*/
-FourIndexContainer::IndexCombination::IndexCombination(ParticleIndex cindex1, ParticleIndex cindex2, ParticleIndex cdagindex3, ParticleIndex cdagindex4)
-{
-    Indices[0]=cindex1;
-    Indices[1]=cindex2;
-    Indices[2]=cdagindex3;
-    Indices[3]=cdagindex4;
-}
-
-bool FourIndexContainer::IndexCombination::operator<(const FourIndexContainer::IndexCombination& rhs) const
-{
-  return (Indices[0] < rhs.Indices[0]) || 
-         (Indices[0] == rhs.Indices[0] && Indices[1] < rhs.Indices[1] ) ||
-         (Indices[0] == rhs.Indices[0] && Indices[1] == rhs.Indices[1] && Indices[2] < rhs.Indices[2]) ||
-         (Indices[0] == rhs.Indices[0] && Indices[1] == rhs.Indices[1] && Indices[2] == rhs.Indices[2] && Indices[3] < rhs.Indices[3]); 
-}
-
-bool FourIndexContainer::IndexCombination::operator==(const FourIndexContainer::IndexCombination& rhs) const
-{
-    return (Indices[0] == rhs.Indices[0] && Indices[1] == rhs.Indices[1] && Indices[2] == rhs.Indices[2] && Indices[3] == rhs.Indices[3]); 
-}
-
-bool FourIndexContainer::IndexCombination::operator!=(const FourIndexContainer::IndexCombination& rhs) const
-{
-    return !(*this==rhs);
-}
-
-std::ostream& operator<<(std::ostream& output,const FourIndexContainer::IndexCombination& out)
-{
-output << "(" << out.Indices[0] << out.Indices[1] << out.Indices[2] << out.Indices[3] << ")";
-return output;
-}
-
 /*=========================================================================*/
 
 TwoParticleGFContainer::Element::Element(TwoParticleGF* Computable2PGF, Permutation4 FrequenciesPermutation, bool isComputed):
     Computable2PGF(Computable2PGF),FrequenciesPermutation(FrequenciesPermutation),isComputed(isComputed)
 {}
 
-FourIndexContainer::IndexCombination TwoParticleGFContainer::Element::getLinkedIndices()
+FourIndexContainerObject::IndexCombination TwoParticleGFContainer::Element::getLinkedIndices()
 {
-    return FourIndexContainer::IndexCombination(Computable2PGF->getIndex(0),Computable2PGF->getIndex(1),Computable2PGF->getIndex(2),Computable2PGF->getIndex(3));
+    return FourIndexContainerObject::IndexCombination(Computable2PGF->getIndex(0),Computable2PGF->getIndex(1),Computable2PGF->getIndex(2),Computable2PGF->getIndex(3));
 }
 
 /*=========================================================================*/

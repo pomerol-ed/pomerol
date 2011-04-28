@@ -145,8 +145,9 @@ if (Status < Computed){
     }
 
     #endif
+    INFO_NONEWLINE(std::endl << "TwoParticleGF(" << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << "): substituting values over Matsubara frequencies ... ")
     for (unsigned short i=0; i<6; i++) Storage->fill(NonResonantTerms[i],ResonantTerms[i],permutations3[i]);
-    std::cout << std::endl;
+    INFO("Done." << std::endl);
     Status = Computed;
     }
 }

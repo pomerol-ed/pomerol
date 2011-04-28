@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
     Chi4.readInitialIndices(v1);
     Chi4.prepare();
     Chi4.compute(wn);
-    saveChi("Chi4.dat",Chi4,wn);
+    //saveChi("Chi4.dat",Chi4,wn);
     
     Vertex4 Gamma4(IndexInfo,Chi4,G);
     Gamma4.prepareUnAmputated();
@@ -309,12 +309,12 @@ int main(int argc, char *argv[])
       std::cout << Gamma4(*v1[i],29,-29,29) << std::endl << std::endl;
  
     };
-
+*/
     //   comb1 = new TwoParticleGFContainer::IndexCombination(0,2,0,1);
     //   cout << Chi4.vanishes(*comb1) << endl;
     //DEBUG(Chi4.getNumNonResonantTerms() << " non-resonant terms");
     //DEBUG(Chi4.getNumResonantTerms() << " resonant terms");    
-*/
+
   };
   return 0;
 };

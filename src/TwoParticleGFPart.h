@@ -268,6 +268,26 @@ struct TwoParticleGFPart::ResonantTerm {
     bool isSimilarTo(const ResonantTerm& AnotherTerm) const;
 };
 
+inline
+ComplexType TwoParticleGFPart::NonResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
+{
+    return isz4 ?   Coeff / ((z1-Poles[0])*(z1+z2+z3-Poles[0]-Poles[1]-Poles[2])*(z3-Poles[2])) :
+                    Coeff / ((z1-Poles[0])*(z2-Poles[1])*(z3-Poles[2]));
+}
 
+inline
+ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
+{
+    ComplexType Diff;
+    if(isz1z2){
+        Diff = z1 + z2 - Poles[0] - Poles[1];
+        return (abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff/Diff) )
+                /((z1-Poles[0])*(z3-Poles[2]));
+    } else {
+        Diff = z2 + z3 - Poles[1] - Poles[2];
+        return (abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff/Diff) )
+                /((z1-Poles[0])*(z3-Poles[2]));
+    }
+}
 
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGFPART_H

@@ -48,7 +48,7 @@ public:
      * \param[in] MatsubaraNumber2 An index of the 2nd Matsubara frequency.
      * \param[in] MatsubaraNumber3 An index of the 3rd Matsubara frequency.
      */
-    ComplexType operator()(const IndexCombination& In, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+//    ComplexType operator()(const IndexCombination& In, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
 };
 
 /** A structure to handle a combination of 4 Particle Index. The notation is ccc^*c^* */
@@ -112,6 +112,14 @@ public:
      */
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
+    /** Sets the value for a given Matsubara numbers (not frequencies themselves)
+     * \param[in] MatsubaraNumber1 An index of the 1st Matsubara frequency.
+     * \param[in] MatsubaraNumber2 An index of the 2nd Matsubara frequency.
+     * \param[in] MatsubaraNumber3 An index of the 3rd Matsubara frequency.
+     */
+    void set(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3, ComplexType &Value);
+
+
     /** Fill container from a list of terms 
      * \param[in] NonResonantTerms A list of NonResonant Terms.
      * \param[in] ResonantTerms A list of Resonant Terms.
@@ -127,5 +135,32 @@ public:
     /** Empty memory */
     void clear();
 };
+
+inline
+ComplexType FourIndexObject::MatsubaraContainer::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
+// {OMEGA,nu,nu' : OMEGA=w1+w2, nu=w1, nu'=w4=OMEGA-w3
+{
+    unsigned int RealBosonicIndex = MatsubaraNumber1 + MatsubaraNumber2 + 2*NumberOfMatsubaras;
+    int nuIndex = MatsubaraNumber1-FermionicFirstIndex[RealBosonicIndex];
+    int nu1Index= RealBosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber3-FermionicFirstIndex[RealBosonicIndex];
+    //cout << "Bosonic index : " << RealBosonicIndex - 2*NumberOfMatsubaras<< " shift : " << FermionicFirstIndex[RealBosonicIndex] << endl;
+    if (nuIndex >= 0 && nuIndex < Data[RealBosonicIndex].rows() && nu1Index >= 0 && nu1Index < Data[RealBosonicIndex].rows() )
+        return Data[RealBosonicIndex](nuIndex,nu1Index);
+    else {
+        ERROR("Warning! Matsubara numbers (" << MatsubaraNumber1 << "," << MatsubaraNumber2 << "," << MatsubaraNumber3 << "," << MatsubaraNumber1+ MatsubaraNumber2 - MatsubaraNumber3 << ") of FourIndexObject is out of range, returning 0");
+        return ComplexType (0.0,0.0);
+    };
+};
+
+inline
+void FourIndexObject::MatsubaraContainer::set(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3, ComplexType &Value)
+{
+    unsigned int RealBosonicIndex = MatsubaraNumber1 + MatsubaraNumber2 + 2*NumberOfMatsubaras;
+    int nuIndex = MatsubaraNumber1-FermionicFirstIndex[RealBosonicIndex];
+    int nu1Index= RealBosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber3-FermionicFirstIndex[RealBosonicIndex];
+    if (nuIndex >= 0 && nuIndex < Data[RealBosonicIndex].rows() && nu1Index >= 0 && nu1Index < Data[RealBosonicIndex].rows() )
+        Data[RealBosonicIndex](nuIndex,nu1Index)=Value;
+    else ERROR("Warning! Tried assigning to wrong Matsubara numbers (" << MatsubaraNumber1 << "," << MatsubaraNumber2 << "," << MatsubaraNumber3 << "," << MatsubaraNumber1+ MatsubaraNumber2 - MatsubaraNumber3 <<"). Value left unassigned");
+}
 
 #endif // endif :: #ifndef __INCLUDE_FOURINDEXOBJECT_H 
