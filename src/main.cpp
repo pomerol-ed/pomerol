@@ -252,6 +252,7 @@ int main(int argc, char *argv[])
   out.close();
 
   out.open("output/Stat.NN.dat");
+  std::cout<<"indices:" <<0<<" "<<IndexInfo.getIndexSize()/2.<<std::endl;
   out << iomanip_prefs << rho.getAverageDoubleOccupancy(0,IndexInfo.getIndexSize()/2.) << std::endl;
   out.close();
 
