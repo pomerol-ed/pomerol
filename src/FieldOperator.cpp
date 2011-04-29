@@ -1,59 +1,59 @@
 #include "FieldOperator.h"
 extern std::ostream& OUTPUT_STREAM;
 
-OperatorContainer::OperatorContainer(StatesClassification &System, Hamiltonian &H, int bit) : ComputableObject(),
+FieldOperator::FieldOperator(StatesClassification &System, Hamiltonian &H, int bit) : ComputableObject(),
     System(System), H(H), bit(bit)
-{
-    size=0;
-}
+{}
 
 CreationOperator::CreationOperator(StatesClassification &System, Hamiltonian &H, int bit) : 
-    OperatorContainer(System,H,bit)
+    FieldOperator(System,H,bit)
 {}
 
 AnnihilationOperator::AnnihilationOperator(StatesClassification &System, Hamiltonian &H, int bit) : 
-    OperatorContainer(System,H,bit)
+    FieldOperator(System,H,bit)
 {}
 
-std::list<BlockMapping>& OperatorContainer::getNonTrivialIndices()
+std::list<BlockMapping>& FieldOperator::getNonTrivialIndices()
 {
     return LeftRightIndices;
 };
 
-FieldOperatorPart& OperatorContainer::getPartFromRightIndex(BlockNumber in)
+FieldOperatorPart& FieldOperator::getPartFromRightIndex(BlockNumber in)
 {
   return *Data[mapPartsFromRight[in]];
 }
 
-FieldOperatorPart& OperatorContainer::getPartFromRightIndex(QuantumNumbers in)
+FieldOperatorPart& FieldOperator::getPartFromRightIndex(QuantumNumbers in)
 {
   return *Data[mapPartsFromRight[System.getBlockNumber(in)]];
 }
 
-FieldOperatorPart& OperatorContainer::getPartFromLeftIndex(BlockNumber in)
+FieldOperatorPart& FieldOperator::getPartFromLeftIndex(BlockNumber in)
 {
   return *Data[mapPartsFromLeft[in]];
 }
 
-FieldOperatorPart& OperatorContainer::getPartFromLeftIndex(QuantumNumbers in)
+FieldOperatorPart& FieldOperator::getPartFromLeftIndex(QuantumNumbers in)
 {
   return *Data[mapPartsFromLeft[System.getBlockNumber(in)]];
 }
 
-void OperatorContainer::print_to_screen()
+void FieldOperator::print_to_screen()
 {
-  for (unsigned int b_in=0;b_in<(*this).size;b_in++)
+  size_t size = Data.size();
+  for (unsigned int b_in=0;b_in<size;b_in++)
   {
         Data[b_in]->print_to_screen();
   };
 }
 
-void OperatorContainer::compute()
+void FieldOperator::compute()
 {
 if (Status < Computed ){
+    size_t size = Data.size();
     INFO_NONEWLINE("FieldOperator_" << bit << ", computing: ")
-    for (unsigned int b_in=0;b_in<(*this).size;b_in++){
-        INFO_NONEWLINE( (int) ((1.0*b_in/(*this).size) * 100 ) << "  " << std::flush);
+    for (unsigned int b_in=0;b_in<size;b_in++){
+        INFO_NONEWLINE( (int) ((1.0*b_in/size) * 100 ) << "  " << std::flush);
         Data[b_in]->compute();
         };
     INFO("");
@@ -61,15 +61,16 @@ if (Status < Computed ){
     };
 }
 
-void OperatorContainer::dump()
+void FieldOperator::dump()
 {
-  for (unsigned int b_in=0;b_in<(*this).size;b_in++)
+  size_t size = Data.size();
+  for (unsigned int b_in=0;b_in<size;b_in++)
   {
         Data[b_in]->dump();
   };
 }
 
-unsigned short OperatorContainer::getIndex() const
+unsigned short FieldOperator::getIndex() const
 { 
     return bit;
 }
@@ -77,6 +78,7 @@ unsigned short OperatorContainer::getIndex() const
 void CreationOperator::prepare()
 {
 if (Status < Prepared){
+    size_t size = Data.size();
     for (BlockNumber RightIndex=0;RightIndex<System.NumberOfBlocks();RightIndex++){
             BlockNumber LeftIndex = this->mapsTo(RightIndex);
             if (LeftIndex.isCorrect()){
@@ -99,6 +101,7 @@ if (Status < Prepared){
 void AnnihilationOperator::prepare()
 {
 if (Status < Prepared){
+    size_t size = Data.size();
     for (BlockNumber RightIndex=0;RightIndex<System.NumberOfBlocks();RightIndex++){
         BlockNumber LeftIndex = mapsTo(RightIndex);
         if (LeftIndex.isCorrect()){
@@ -118,12 +121,12 @@ if (Status < Prepared){
     };
 }
 
-BlockNumber OperatorContainer::getRightIndex(BlockNumber LeftIndex)
+BlockNumber FieldOperator::getRightIndex(BlockNumber LeftIndex)
 {
 	return mapLeftToRightIndex.count(LeftIndex)?mapLeftToRightIndex[LeftIndex]:ERROR_BLOCK_NUMBER;
 };
 
-BlockNumber OperatorContainer::getLeftIndex(BlockNumber RightIndex)
+BlockNumber FieldOperator::getLeftIndex(BlockNumber RightIndex)
 {
 	return mapRightToLeftIndex.count(RightIndex)?mapRightToLeftIndex[RightIndex]:ERROR_BLOCK_NUMBER;
 };

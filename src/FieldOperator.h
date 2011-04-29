@@ -10,7 +10,7 @@
 
 typedef std::pair<BlockNumber,BlockNumber> BlockMapping;
 
-class OperatorContainer : public ComputableObject
+class FieldOperator : public ComputableObject
 {
 protected:
     StatesClassification &System;
@@ -20,16 +20,15 @@ protected:
     std::vector<FieldOperatorPart*> Data;
     std::map<unsigned int,BlockNumber> mapPartsFromRight;        // A map from non-zero parts to their BlockNumber indices
     std::map<unsigned int,BlockNumber> mapPartsFromLeft;        // A map from output index to input index, hence there is a unique transform
-    std::map<unsigned int,BlockNumber> mapRightToLeftIndex;        // A map from output index to input index, hence there is a unique transform
-    std::map<unsigned int,BlockNumber> mapLeftToRightIndex;        // A map from output index to input index, hence there is a unique transform
+    std::map<BlockNumber,BlockNumber> mapRightToLeftIndex;        // A map from output index to input index, hence there is a unique transform
+    std::map<BlockNumber,BlockNumber> mapLeftToRightIndex;        // A map from output index to input index, hence there is a unique transform
     std::list<BlockMapping> LeftRightIndices;
-    unsigned int size;
 
     virtual BlockNumber mapsTo(BlockNumber RightIndex)=0;
-    virtual    QuantumNumbers mapsTo(QuantumNumbers in)=0;
+    virtual QuantumNumbers mapsTo(QuantumNumbers in)=0;
 
 public:
-    OperatorContainer(StatesClassification &System, Hamiltonian &H, int bit);
+    FieldOperator(StatesClassification &System, Hamiltonian &H, int bit);
 
     FieldOperatorPart& getPartFromLeftIndex(BlockNumber in);
     FieldOperatorPart& getPartFromLeftIndex(QuantumNumbers in);
@@ -50,7 +49,7 @@ public:
 class CreationOperator;
 class AnnihilationOperator;
 
-class CreationOperator : public OperatorContainer
+class CreationOperator : public FieldOperator
 {
     friend class AnnihilationOperator;
     BlockNumber mapsTo(BlockNumber RightIndex);
@@ -62,7 +61,7 @@ public:
     CreationOperator(StatesClassification &System, Hamiltonian &H, int bit);
 };
 
-class AnnihilationOperator : public OperatorContainer
+class AnnihilationOperator : public FieldOperator
 {
     friend class CreationOperator;
     BlockNumber mapsTo(BlockNumber RightIndex);
