@@ -16,7 +16,7 @@
 /** Objects of this class just transforms a two-particle Green's function into
  * an irreducible vertex part or into an amputated irreducible vertex.
  */
-class Vertex4 : public ComputableObject, public FourIndexContainerObject {
+class Vertex4 : public ComputableObject, public FourIndexContainerObject, public Thermal {
 
     /** A reference to a two-particle Green's function. */
     TwoParticleGFContainer &Chi;

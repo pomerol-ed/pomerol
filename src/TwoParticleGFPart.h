@@ -17,7 +17,7 @@
 /** This class represents a part of a two-particle Green's function.
  * Every part describes one 'world stripe' of four operators.
  */
-class TwoParticleGFPart : public ComputableObject {
+class TwoParticleGFPart : public ComputableObject, public Thermal {
 
 public:
 

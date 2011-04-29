@@ -35,7 +35,7 @@
  * take place inside the parts). Every part corresponds to a 'world-stripe', a sequence of 4
  * matrix blocks.
  */
-class TwoParticleGF : public ComputableObject, public FourIndexSingleObject {
+class TwoParticleGF : public ComputableObject, public FourIndexSingleObject, public Thermal {
 
     /** A reference to a states classification object. */
     StatesClassification& S;
@@ -115,9 +115,6 @@ public:
      * \param[in] Position Zero-based number of the operator to use.
      */
     ParticleIndex getIndex(size_t Position) const;
-
-    /** Returns the inverse temperature. */
-    RealType getBeta() const;
 
     /** Returns the value of the two-particle Green's function calculated at given frequencies.
      * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.

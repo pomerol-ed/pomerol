@@ -20,9 +20,10 @@ static const Permutation3 permutations3[6] = {
 TwoParticleGF::TwoParticleGF(StatesClassification& S, Hamiltonian& H,
                 AnnihilationOperator& C1, AnnihilationOperator& C2, 
                 CreationOperator& CX3, CreationOperator& CX4,
-                DensityMatrix& DM) : ComputableObject(), S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM), parts(0)
+                DensityMatrix& DM) : ComputableObject(), Thermal(beta),
+                S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM), parts(0)
 {
-    Storage = new MatsubaraContainer(DM.getBeta());
+    Storage = new MatsubaraContainer(DM.beta);
     vanish = true;
 }
 
@@ -187,11 +188,6 @@ ParticleIndex TwoParticleGF::getIndex(size_t Position) const
         case 3: return CX4.getIndex();
         default: assert(0);
     }
-}
-
-RealType TwoParticleGF::getBeta() const
-{
-    return DM.getBeta();
 }
 
 unsigned short TwoParticleGF::getPermutationNumber ( const Permutation3& in )

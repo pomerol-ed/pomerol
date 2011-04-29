@@ -22,10 +22,7 @@
  * is a function of \f$ \hat H \f$.
  */
 
-class DensityMatrix : public ComputableObject
-#ifdef pomerolHDF5
-, public HDF5Storable
-#endif
+class DensityMatrix : public ComputableObject, public Thermal, public HDF5Storable
 {
     /** A reference to a states classification object. */
     StatesClassification& S;
@@ -33,8 +30,6 @@ class DensityMatrix : public ComputableObject
     Hamiltonian &H;
     /** A vector of pointers to parts (every part corresponds to a part of the Hamiltonian). */
     std::vector<DensityMatrixPart*> parts;
-    /** The inverse temperature. */
-    RealType beta;
 
 public:
     /** Constructor.
@@ -64,16 +59,12 @@ public:
      */
     RealType operator()(QuantumState &state);
     /** Returns the inverse temperature. */
-    RealType getBeta() const;
-    /** Returns an averaged value of the energy. */
     RealType getAverageEnergy();
     /** Returns an averaged value of the double occupancy. */
     RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j);
     
-#ifdef pomerolHDF5
     void save(H5::CommonFG* FG) const;
     void load(const H5::CommonFG* FG);
-#endif
 };
 
 #endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H

@@ -81,7 +81,7 @@ TwoParticleGFPart::TwoParticleGFPart(
                 HamiltonianPart& Hpart1, HamiltonianPart& Hpart2, HamiltonianPart& Hpart3, HamiltonianPart& Hpart4,
                 DensityMatrixPart& DMpart1, DensityMatrixPart& DMpart2, DensityMatrixPart& DMpart3, DensityMatrixPart& DMpart4,
                 Permutation3 Permutation) :
-ComputableObject(),
+ComputableObject(), Thermal(DMpart1),
 O1(O1), O2(O2), O3(O3), CX4(CX4), 
 Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
 DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
@@ -102,7 +102,7 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
     NonResonantTerms.clear();
     ResonantTerms.clear();
     
-    RealType beta = DMpart1.getBeta();
+    RealType beta = DMpart1.beta;
     // I don't have any pen now, so I'm writing here:
     // <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
     // Iterate over all values of |1><1| and |3><3|
@@ -286,18 +286,18 @@ const Permutation3& TwoParticleGFPart::getPermutation(){
 ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
     // TODO: Place this variable to a wider scope?
-    ComplexType MatsubaraSpacing = I*M_PI/DMpart1.getBeta();
+    ComplexType MatsubaraSpacing = I*M_PI/DMpart1.beta;
     long MatsubaraNumberOdd1 = 2*MatsubaraNumber1 + 1;
     long MatsubaraNumberOdd2 = 2*MatsubaraNumber2 + 1;
     long MatsubaraNumberOdd3 = 2*MatsubaraNumber3 + 1;
     ComplexType Frequencies[3] = {  MatsubaraSpacing * RealType(MatsubaraNumberOdd1),
                                     MatsubaraSpacing * RealType(MatsubaraNumberOdd2),
                                    -MatsubaraSpacing * RealType(MatsubaraNumberOdd3)};
-                                    
-    ComplexType z1 = Frequencies[Permutation.perm[0]];                                    
+
+    ComplexType z1 = Frequencies[Permutation.perm[0]];
     ComplexType z2 = Frequencies[Permutation.perm[1]];
     ComplexType z3 = Frequencies[Permutation.perm[2]];
-    
+
     ComplexType Value = 0;
     for(std::list<NonResonantTerm>::const_iterator pTerm = NonResonantTerms.begin(); pTerm != NonResonantTerms.end(); ++pTerm)
         Value += (*pTerm)(z1,z2,z3);

@@ -1,11 +1,10 @@
-/** \file src/Dumper.cpp
-** \brief HDF5 Dumper object..
+/** \file src/HDF5Storage.cpp
+** \brief HDF5 Storage.
 **
 ** \author Igor Krivenko (igor@shg.ru)
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
 
-#ifdef pomerolHDF5
 #include"HDF5Storage.h"
 
 const unsigned int* HDF5Storage::HDF5Version = HDF5Storage::initHDF5();
@@ -90,12 +89,9 @@ void HDF5Storage::loadRealVector(const H5::CommonFG& FG, const std::string& Name
     H5::DataSet DataSet = FG.openDataSet(Name.c_str());
 
     H5::DataSpace DataSpace = DataSet.getSpace();
-    if(DataSpace.getSimpleExtentNdims() != 1){
-#warning TODO: throw an exception?
-    }
+    if(DataSpace.getSimpleExtentNdims() != 1)
+	throw(H5::DataSpaceIException("HDF5Storage::loadRealVector()","Unexpected multidimentional dataspace."));
 
     V.resize(DataSpace.getSimpleExtentNpoints());
     DataSet.read(V.data(),H5::PredType::NATIVE_DOUBLE);
 }
-
-#endif // endif :: #ifdef pomerolHDF5

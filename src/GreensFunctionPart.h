@@ -20,7 +20,7 @@
  * Every part describes all transitions allowed by selection rules
  * between a given pair of Hamiltonian blocks.
  */
-class GreensFunctionPart : public ComputableObject
+class GreensFunctionPart : public ComputableObject, public Thermal
 {
     /** A reference to a part of a Hamiltonian (inner index iterates through it). */
     HamiltonianPart& HpartInner;

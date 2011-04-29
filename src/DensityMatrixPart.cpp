@@ -7,15 +7,13 @@
 #include "DensityMatrixPart.h"
 
 DensityMatrixPart::DensityMatrixPart(StatesClassification &S, HamiltonianPart& hpart, RealType beta, RealType GroundEnergy) :
-    S(S), hpart(hpart), beta(beta), GroundEnergy(GroundEnergy)
-{
-    partSize = hpart.size();
-    weights.resize(partSize);
-}
+    Thermal(beta), S(S), hpart(hpart), GroundEnergy(GroundEnergy), weights(hpart.size())
+{}
 
 RealType DensityMatrixPart::compute(void)
 {
     Z_part = 0;
+    QuantumState partSize = weights.size();
     for(QuantumState m = 0; m < partSize; ++m){
         // The non-normalized weight is <=1 for any state.
         weights(m) = exp(-beta*(hpart.reV(m)-GroundEnergy));
@@ -34,6 +32,7 @@ void DensityMatrixPart::normalize(RealType Z)
 RealType DensityMatrixPart::getAverageEnergy()
 {
     RealType E=0.;
+    QuantumState partSize = weights.size();
     for(QuantumState m = 0; m < partSize; ++m){
         E += weights(m)*hpart.reV(m);
     }
@@ -43,6 +42,7 @@ RealType DensityMatrixPart::getAverageEnergy()
 RealType DensityMatrixPart::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j)
 {
     RealType NN=0.;
+    QuantumState partSize = weights.size();
     for(InnerQuantumState m = 0; m < partSize; ++m){ // m is an EigenState number
         RealVectorType CurrentEigenState = hpart.getEigenState(m);
         for (InnerQuantumState fi=0; (long) fi < CurrentEigenState.size(); ++fi)
@@ -67,12 +67,6 @@ RealType DensityMatrixPart::weight(int m)
     return weights(m);
 }
 
-RealType DensityMatrixPart::getBeta(void)
-{
-    return beta;
-}
-
-#ifdef pomerolHDF5
 void DensityMatrixPart::save(H5::CommonFG* FG) const
 {
     HDF5Storage::saveReal(*FG,"beta",beta);
@@ -83,10 +77,12 @@ void DensityMatrixPart::save(H5::CommonFG* FG) const
 
 void DensityMatrixPart::load(const H5::CommonFG* FG)
 {
-    beta = HDF5Storage::loadReal(*FG,"beta");
+    RealType newBeta = HDF5Storage::loadReal(*FG,"beta");
+    if(newBeta != beta)
+	throw(H5::DataSetIException("DensityMatrixPart::load()",
+				    "Data in the storage is for another value of the temperature."));
+    
     GroundEnergy = HDF5Storage::loadReal(*FG,"GroundEnergy");
     Z_part = HDF5Storage::loadReal(*FG,"Z_part");
     HDF5Storage::loadRealVector(*FG,"weights",weights);
 }
-
-#endif // endif :: #ifdef pomerolHDF5

@@ -187,10 +187,6 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-#ifdef pomerolHDF5
-  HDF5Storage dmp("test.h5");
-#endif
-
   printFramed("Lattice Info");
   Lattice.readin(opt.LatticeFile);
   std::cout << Lattice.printSitesList().str() << std::flush;
@@ -233,15 +229,19 @@ int main(int argc, char *argv[])
   rho.prepare();
   rho.compute();
   num_cout << "<H> = " << rho.getAverageEnergy() << std::endl;
-#ifdef pomerolHDF5  
-  dmp.save(rho);
+
+  try{
+    HDF5Storage dmp1("test1.h5");
+    dmp1.save(rho);
   
-  DensityMatrix rho_loaded(S,H,beta);
-  dmp.load(rho_loaded);
+    DensityMatrix rho_loaded(S,H,beta);
+    dmp1.load(rho_loaded);
   
-  HDF5Storage dmp2("test2.h5");
-  dmp2.save(rho_loaded);
-#endif
+    HDF5Storage dmp2("test2.h5");
+    dmp2.save(rho_loaded);
+  } catch(H5::Exception& ex){
+      ex.printError();
+  }
 
 
   /*   for (QuantumState i=0; i < S.N_st(); ++i) 

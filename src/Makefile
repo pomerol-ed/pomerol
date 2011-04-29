@@ -6,7 +6,7 @@ BINPATH=../bin
 objects=output.o HDF5Storage.o LatticeAnalysis.o \
 	StatesClassification.o Term.o IndexClassification.o \
 	HamiltonianPart.o Hamiltonian.o FieldOperatorPart.o FieldOperator.o \
-	DensityMatrixPart.o DensityMatrix.o \
+	Thermal.o DensityMatrixPart.o DensityMatrix.o \
 	GreensFunctionPart.o GreensFunction.o \
 	FourIndexObject.o \
 	TwoParticleGF.o TwoParticleGFPart.o \
@@ -28,6 +28,7 @@ Hamiltonian.o: StatesClassification.h Misc.h HamiltonianPart.h Hamiltonian.h Ham
 FieldOperatorPart.o: StatesClassification.h Misc.h HamiltonianPart.h FieldOperatorPart.h FieldOperatorPart.cpp ComputableObject.h
 FieldOperator.o: StatesClassification.h Misc.h HamiltonianPart.h FieldOperatorPart.h FieldOperator.h FieldOperator.cpp ComputableObject.h
 FieldOperatorContainer.o : StatesClassification.h Hamiltonian.h FieldOperatorContainer.h FieldOperatorContainer.cpp ComputableObject.h
+Thermal.o: Thermal.h Thermal.cpp HDF5Storage.cpp HDF5Storage.h
 DensityMatrixPart.o: DensityMatrixPart.h DensityMatrixPart.cpp ComputableObject.h
 DensityMatrix.o: DensityMatrix.h DensityMatrix.cpp ComputableObject.h
 GreensFunctionPart.o: GreensFunctionPart.h GreensFunctionPart.cpp Misc.h ComputableObject.h

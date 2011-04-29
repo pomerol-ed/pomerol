@@ -22,7 +22,8 @@ return output;
 
 /*=========================================================================*/
 
-GFContainer::GFContainer ( StatesClassification &S, Hamiltonian &H, DensityMatrix &DM,IndexClassification& IndexInfo, FieldOperatorContainer& Operators):ComputableObject(),S(S),H(H),DM(DM),IndexInfo(IndexInfo),Operators(Operators)
+GFContainer::GFContainer ( StatesClassification &S, Hamiltonian &H, DensityMatrix &DM,IndexClassification& IndexInfo, FieldOperatorContainer& Operators):
+  ComputableObject(),Thermal(DM),S(S),H(H),DM(DM),IndexInfo(IndexInfo),Operators(Operators)
 {
 };
 
@@ -38,7 +39,7 @@ MatrixType& GFContainer::operator()(long MatsubaraNumber)
 
 ComplexType GFContainer::operator()(ParticleIndex i, ParticleIndex j, long MatsubaraNumber)
 {
-    return (!vanishes(i,j))?(*mapGreensFunctions[IndexCombination(i,j)])(MatsubaraNumber):((i==j)?I*(-1.)*DM.getBeta()/((2*MatsubaraNumber+1)*M_PI):0.);
+    return (!vanishes(i,j))?(*mapGreensFunctions[IndexCombination(i,j)])(MatsubaraNumber):((i==j)?I*(-1.)*beta/((2*MatsubaraNumber+1)*M_PI):0.);
     //return (!vanishes(i,j))?(*mapGreensFunctions[IndexCombination(i,j)])(MatsubaraNumber):((i==j)?1.:0.);
 };
 

@@ -32,7 +32,7 @@
  * take place inside the parts). A pair of parts, one part of an annihilation operator and
  * another from a creation operator, corresponds to a part of the Green's function.
  */
-class GreensFunction : public ComputableObject {
+class GreensFunction : public ComputableObject, public Thermal {
     /** A reference to a states classification object. */
     StatesClassification& S;
     /** A reference to a Hamiltonian. */

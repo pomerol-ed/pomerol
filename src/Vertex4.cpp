@@ -2,7 +2,7 @@
 #include <Eigen/LU> 
 
 Vertex4::Vertex4(const IndexClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g) :
-ComputableObject(),Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+1)
+ComputableObject(),Thermal(Chi),Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+1)
 {
     NumberOfMatsubaras = Chi.getNumberOfMatsubaras();
 }
@@ -19,7 +19,7 @@ void Vertex4::prepareUnAmputated()
     INFO("Vertex4: Preparing unamputated value container map ...");
 
     for (std::vector<IndexCombination*>::const_iterator it1=Chi.getNonTrivialCombinations().begin(); it1!=Chi.getNonTrivialCombinations().end(); ++it1){
-        mapUnAmputatedValues[**it1]= new MatsubaraContainer(Chi.getBeta());
+        mapUnAmputatedValues[**it1]= new MatsubaraContainer(beta);
         mapUnAmputatedValues[**it1]->prepare(NumberOfMatsubaras);
     };
 };
@@ -32,7 +32,6 @@ void Vertex4::computeUnAmputated(const IndexCombination& in)
             for (long MatsubaraNumber3=-NumberOfMatsubaras; MatsubaraNumber3 < NumberOfMatsubaras; ++MatsubaraNumber3)
                 if ( MatsubaraNumber1 + MatsubaraNumber2 - MatsubaraNumber3 < NumberOfMatsubaras && MatsubaraNumber1 + MatsubaraNumber2 - MatsubaraNumber3 >= -NumberOfMatsubaras){ 
                     ComplexType Value = Chi(in, MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
-                    RealType beta = Chi.getBeta();
 
                     if(MatsubaraNumber1 == MatsubaraNumber3)
                         Value += beta*  g(in.Indices[0],in.Indices[2],MatsubaraNumber1)*
@@ -86,9 +85,9 @@ void Vertex4::prepareAmputated(std::vector<IndexCombination*>& in)
     INFO("Vertex4: Preparing amputated value container map ...");
     for (std::vector<IndexCombination*>::const_iterator it1=NonTrivialAmputatedCombinations.begin(); 
             it1!=NonTrivialAmputatedCombinations.end(); ++it1){
-                mapAmputatedValues[**it1]= new MatsubaraContainer(Chi.getBeta());
+                mapAmputatedValues[**it1]= new MatsubaraContainer(beta);
                 mapAmputatedValues[**it1]->prepare(NumberOfMatsubaras);
-    }       ;
+    }
 };
 
 void Vertex4::computeAmputated()

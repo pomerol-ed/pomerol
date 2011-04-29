@@ -13,7 +13,7 @@
 #include"GreensFunction.h"
 #include"FieldOperatorContainer.h"
 
-class GFContainer : public ComputableObject
+class GFContainer : public ComputableObject, public Thermal 
 {
 
 public:

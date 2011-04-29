@@ -7,7 +7,7 @@
 #include"TwoParticleGF.h"
 #include"FieldOperatorContainer.h"
 
-class TwoParticleGFContainer : public ComputableObject, public FourIndexContainerObject
+class TwoParticleGFContainer : public ComputableObject, public FourIndexContainerObject, public Thermal
 {
 public:
     struct Element;
@@ -34,7 +34,6 @@ public:
     ComplexType operator()(const IndexCombination&, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3); 
 
     void dump();
-    RealType getBeta() const;
     const std::vector<IndexCombination*>& getNonTrivialCombinations();
     const std::vector<IndexCombination*>& getTrivialCombinations();
 private:

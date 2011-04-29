@@ -16,15 +16,15 @@
 class ComputableObject{
 protected:
     /** Current status of an object */
-    ObjectStatus  Status;             
+    ObjectStatus  Status;
 public:
     /** Returns the current status of an object */
     ObjectStatus getStatus(){return Status;};
 
     /** Constructor - set status to Constructed */
     ComputableObject():Status(Constructed){};            
-//    virtual void prepare(){};                   //!< Prepare all the containers of the object, do preliminary fast routines
-//    virtual void compute(){};                   //!< Do the most expensive calculation. Finishing it means the object has finished all calculation jobs
+    //virtual void prepare();                   //!< Prepare all the containers of the object, do preliminary fast routines
+    //virtual void compute();                   //!< Do the most expensive calculation. Finishing it means the object has finished all calculation jobs
 };
 
 #endif

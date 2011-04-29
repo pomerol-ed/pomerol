@@ -1,9 +1,8 @@
 /** \file src/HDF5Storage.h
-** \brief HDF5 Dumper object.
+** \brief HDF5 Storage.
 **
 ** \author Igor Krivenko (igor@shg.ru)
 */
-#ifdef pomerolHDF5
 #ifndef __INCLUDE_HDF5STORAGE_H
 #define __INCLUDE_HDF5STORAGE_H
 
@@ -38,4 +37,3 @@ public:
 };
 
 #endif // endif :: #ifndef __INCLUDE_HDF5STORAGE_H
-#endif // endif :: #ifndef pomerolHDF5

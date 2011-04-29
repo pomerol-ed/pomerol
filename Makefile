@@ -2,7 +2,7 @@ EIGEN_INCLUDE=$(shell pkg-config --cflags-only-I eigen3)
 INCLUDES= -I../jsoncpp/include $(EIGEN_INCLUDE) $(shell pkg-config --cflags-only-I hdf5)
 POMEROL_LIBS = $(shell pkg-config --libs hdf5) -lhdf5 -lhdf5_cpp
 OPENMP_SUPPORT=#-DpomerolOpenMP -fopenmp
-CFLAGS=$(INCLUDES) -DHRD ${OPENMP_SUPPORT} -DpomerolHDF5
+CFLAGS=$(INCLUDES) -DHRD ${OPENMP_SUPPORT}
 CXXFLAGS=$(CFLAGS)
 
 export CFLAGS

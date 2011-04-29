@@ -15,7 +15,7 @@ FourIndexContainerObject::IndexCombination TwoParticleGFContainer::Element::getL
 /*=========================================================================*/
 
 TwoParticleGFContainer::TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM,IndexClassification& IndexInfo, FieldOperatorContainer& Operators):
-    ComputableObject(),S(S),H(H),DM(DM),IndexInfo(IndexInfo),Operators(Operators),NumberOfMatsubaras(0)
+    ComputableObject(),Thermal(DM),S(S),H(H),DM(DM),IndexInfo(IndexInfo),Operators(Operators),NumberOfMatsubaras(0)
 {
 };
 
@@ -178,9 +178,4 @@ bool TwoParticleGFContainer::vanishes(const IndexCombination& in)
 long TwoParticleGFContainer::getNumberOfMatsubaras() const
 {
     return NumberOfMatsubaras;
-}
-
-RealType TwoParticleGFContainer::getBeta() const
-{
-    return DM.getBeta();
 }

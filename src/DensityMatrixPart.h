@@ -8,6 +8,7 @@
 #define __INCLUDE_DENSITYMATRIXPART_H
 
 #include "HDF5Storage.h"
+#include "Thermal.h"
 #include "HamiltonianPart.h"
 
 /** This class represents a part of a density matrix.
@@ -16,25 +17,19 @@
  * block of the Hamiltonian.
  */
 
-class DensityMatrixPart
-#ifdef pomerolHDF5
-: public HDF5Storable
-#endif
+class DensityMatrixPart : public HDF5Storable, public Thermal
 {
     /** A reference to a states classification object. */
     StatesClassification& S;
     /** A reference to a part of a Hamiltonian. */
     HamiltonianPart& hpart;
-    /** The inverse temperature. */
-    RealType beta;
+
     /** The ground energy of the Hamiltonian.
      * It is subtracted from all energy levels to avoid
      * large non-normalized weights and possible loss of precision.
      */
     RealType GroundEnergy;
 
-    /** The number of states in this part. */
-    QuantumState partSize;
     /** A real vector holding all weights in this part. */
     RealVectorType weights;
 
@@ -65,17 +60,14 @@ public:
      * \param[in] m A number of a state inside this part.
      */
     RealType weight(int m);
-    /** Returns the inverse temperature. */
-    RealType getBeta();
 
     /** Returns the number of the state, which has the lowest statistical weight before exceeding TruncationTolerance 
      * \param[in] TruncationTolerance - the level at which the statistical weight should be cutted
      */
     InnerQuantumState getMaximumTruncationState( RealType TruncationTolerance);
-#ifdef pomerolHDF5 
+
     void save(H5::CommonFG* FG) const;
     void load(const H5::CommonFG* FG);
-#endif
 };
 
 #endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H

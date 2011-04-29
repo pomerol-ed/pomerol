@@ -19,6 +19,7 @@ GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOpe
                                         HamiltonianPart& HpartInner, HamiltonianPart& HpartOuter,
                                         DensityMatrixPart& DMpartInner, DensityMatrixPart& DMpartOuter) :
                                         ComputableObject(),
+                                        Thermal(DMpartInner),
                                         HpartInner(HpartInner), HpartOuter(HpartOuter),
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
                                         C(C), CX(CX)
@@ -69,7 +70,7 @@ void GreensFunctionPart::compute(void)
 ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const
 {
     // TODO: Place this variable to a wider scope?
-    ComplexType MatsubaraSpacing = I*M_PI/DMpartInner.getBeta();
+    ComplexType MatsubaraSpacing = I*M_PI/beta;
 
     ComplexType G = 0;
     for(std::list<GreensTerm>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm)

@@ -7,7 +7,7 @@
 #include "DensityMatrix.h"
 
 DensityMatrix::DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType beta) : 
-    ComputableObject(), S(S), H(H), parts(S.NumberOfBlocks()), beta(beta)
+    ComputableObject(), Thermal(beta), S(S), H(H), parts(S.NumberOfBlocks())
 {}
 
 DensityMatrix::~DensityMatrix()
@@ -56,11 +56,6 @@ DensityMatrixPart& DensityMatrix::part(BlockNumber in)
     return *parts[in];
 }
 
-RealType DensityMatrix::getBeta() const
-{
-    return beta;
-}
-
 RealType DensityMatrix::getAverageEnergy()
 {
     BlockNumber NumOfBlocks = parts.size();
@@ -77,16 +72,14 @@ RealType DensityMatrix::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex
     return NN;
 };
 
-
-#ifdef pomerolHDF5
 void DensityMatrix::save(H5::CommonFG* FG) const
 {
     H5::Group RootGroup(FG->createGroup("DensityMatrix"));
 
-    // Dump inverse temperature
+    // Save inverse temperature
     HDF5Storage::saveReal(RootGroup,"beta",beta);
 
-    // Dump parts
+    // Save parts
     BlockNumber NumOfBlocks = parts.size();
     H5::Group PartsGroup = RootGroup.createGroup("parts");
     for(BlockNumber n = 0; n < NumOfBlocks; n++){
@@ -100,21 +93,23 @@ void DensityMatrix::save(H5::CommonFG* FG) const
 void DensityMatrix::load(const H5::CommonFG* FG)
 {
     H5::Group RootGroup(FG->openGroup("DensityMatrix"));  
-    beta = HDF5Storage::loadReal(RootGroup,"beta");
+    RealType newBeta = HDF5Storage::loadReal(RootGroup,"beta");
+    if(newBeta != beta)
+	throw(H5::DataSetIException("DensityMatrix::load()",
+				    "Data in the storage is for another value of the temperature."));
 
     if(Status!=Prepared) prepare();
 
     H5::Group PartsGroup = RootGroup.openGroup("parts");
     BlockNumber NumOfBlocks = parts.size();
-    if(NumOfBlocks != PartsGroup.getNumObjs()){
-	// TODO: Something is very wrong here!
-	// Throw an exception?
-    }
+    if(NumOfBlocks != PartsGroup.getNumObjs())
+	throw(H5::GroupIException("DensityMatrix::load()","Inconsistent number of stored parts."));
+
     for(BlockNumber n = 0; n < NumOfBlocks; n++){
 	std::stringstream nStr;
 	nStr << n;
 	H5::Group PartGroup = PartsGroup.openGroup(nStr.str().c_str());
 	parts[n]->load(&PartGroup);
     }
+    Status = Computed;
 }
-#endif // endif :: #ifdef pomerolHDF5
