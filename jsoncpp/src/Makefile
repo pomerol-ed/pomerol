@@ -1,4 +1,4 @@
-JSON_INCLUDE=-I../../include/ 
+JSON_INCLUDE=-I../include/ 
 default : lib_json.a
 
 json_objects=json_reader.o json_writer.o json_value.o
