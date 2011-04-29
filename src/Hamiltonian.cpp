@@ -1,45 +1,57 @@
 #include "Hamiltonian.h"
 
-Hamiltonian::Hamiltonian(IndexClassification &F_,StatesClassification &S_,output_handle &OUT_, std::string& config_path_):ComputableObject(),Formula(F_),S(S_),OUT(OUT_),config_path(config_path_){}
+#warning TODO: Hamiltonian still needs prepare() and compute() methods.
+
+Hamiltonian::Hamiltonian(IndexClassification &F_,StatesClassification &S_,output_handle &OUT_, std::string& config_path_):
+ComputableObject(),Formula(F_),S(S_),OUT(OUT_),config_path(config_path_){}
+
+Hamiltonian::~Hamiltonian()
+{
+    BlockNumber NumberOfBlocks = parts.size();
+    for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
+	delete parts[current_block];
+}
 
 void Hamiltonian::enter()
 {
 	output_handle OUT_EVec(OUT.path()+"/EigenVec");		// create output_folders
 	output_handle OUT_EVal(OUT.path()+"/EigenVal");		// create output_folders
 
-	Hpart = new HamiltonianPart * [S.NumberOfBlocks()];
-	for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
+	BlockNumber NumberOfBlocks = S.NumberOfBlocks();
+	parts.resize(NumberOfBlocks);
+	for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
 	{
-	  Hpart[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block),OUT_EVal.path(), OUT_EVec.path());
-	  Hpart[current_block]->enter();
+	  parts[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block),OUT_EVal.path(), OUT_EVec.path());
+	  parts[current_block]->enter();
 
 	  std::cout << "Hamiltonian block " << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is entered";
-	  std::cout << ". Size = " << S.clstates(S.getBlockInfo(current_block)).size() << std::endl; 
-
+	  std::cout << ". Size = " << S.clstates(S.getBlockInfo(current_block)).size() << std::endl;
 	}
+	Status = Prepared;
 }
 
 HamiltonianPart& Hamiltonian::part(const QuantumNumbers &in)
 {
-  return *Hpart[S.getBlockNumber(in)];
+  return *parts[S.getBlockNumber(in)];
 }
 
 HamiltonianPart& Hamiltonian::part(BlockNumber in)
 {
-  return *Hpart[in];
+  return *parts[in];
 }
 
 RealType Hamiltonian::eigenval(QuantumState &state)
 {
- int inner_state = S.getInnerState(state);
- return part(S.getStateInfo(state)).reV(inner_state);
+    int inner_state = S.getInnerState(state);
+    return part(S.getStateInfo(state)).reV(inner_state);
 }
 
 void Hamiltonian::diagonalize()
 {
-  for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
+  BlockNumber NumberOfBlocks = parts.size();
+  for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
     {
-      Hpart[current_block]->diagonalization();
+      parts[current_block]->diagonalization();
       std::cout << "Hpart" << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is diagonalized." << std::endl;
     }
  computeGroundEnergy();
@@ -47,9 +59,10 @@ void Hamiltonian::diagonalize()
 
 void Hamiltonian::dump()
 {
+  BlockNumber NumberOfBlocks = parts.size();
   for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
     {
-      Hpart[current_block]->dump();
+      parts[current_block]->dump();
     }
   std::cout << "Hamiltonian has been dumped." << std::endl;
 }
@@ -57,9 +70,10 @@ void Hamiltonian::dump()
 void Hamiltonian::computeGroundEnergy()
 {
   RealVectorType LEV(S.NumberOfBlocks());
-  for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
+  BlockNumber NumberOfBlocks = parts.size();
+  for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
   {
-	  LEV(current_block)=Hpart[current_block]->getMinimumEigenvalue();
+	  LEV(current_block)=parts[current_block]->getMinimumEigenvalue();
   }
   GroundEnergy=LEV.minCoeff();
 }
@@ -71,12 +85,21 @@ RealType Hamiltonian::getGroundEnergy()
 
 void Hamiltonian::reduce(const RealType Cutoff)
 {
-	std::cout << "Performing EV cutoff at " << Cutoff << " level" << std::endl;
-	for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
-  	{
-			Hpart[current_block]->reduce(GroundEnergy+Cutoff);
-  	}
-
+    std::cout << "Performing EV cutoff at " << Cutoff << " level" << std::endl;
+    BlockNumber NumberOfBlocks = parts.size();
+    for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
+    {
+	parts[current_block]->reduce(GroundEnergy+Cutoff);
+    }
 };
 
+void Hamiltonian::save(H5::CommonFG* FG) const
+{
+  // TODO
+}
 
+void Hamiltonian::load(const H5::CommonFG* FG)
+{
+    // TODO
+    Status = Computed;
+}
