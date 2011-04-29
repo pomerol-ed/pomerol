@@ -6,33 +6,37 @@
 
 // class HamiltonianPart
 
+HamiltonianPart::HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id, const std::string &ev_path, const std::string &ef_path) :
+  ComputableObject(), IndexInfo(F),S(S),hpart_id(id),ev_path(ev_path),ef_path(ef_path)
+{}
+
 RealType HamiltonianPart::reH(int m, int n)								//return  H(m,n)
 {
-	return H(m,n);
+    return H(m,n);
 }
 RealType HamiltonianPart::reV(int m)									//return V(m)
 {
-	return V(m);
+    return V(m);
 }
 
 InnerQuantumState HamiltonianPart::size(void)
 {
-    return N_state_m;
+    return H.rows();
 }
 
 QuantumNumbers HamiltonianPart::id()
 {
-	return hpart_id;
+    return hpart_id;
 }
 
 BlockNumber HamiltonianPart::getId()
 {
-	return S.getBlockNumber(hpart_id);
+    return S.getBlockNumber(hpart_id);
 };
 
 void HamiltonianPart::enter()
 { 		
-	N_state_m = S.clstates(hpart_id).size();
+	size_t N_state_m = S.clstates(hpart_id).size();
 
 	H.resize(N_state_m,N_state_m);				//creation of H[i][j]=0 
 	H.setZero();
@@ -153,7 +157,7 @@ void HamiltonianPart::add_hopping(RealMatrixType& HoppingMatrix)
 void HamiltonianPart::add_hopping(int i, int j, RealType t)
 {
 
-  for ( InnerQuantumState st1=0; st1<N_state_m; st1++)
+  for ( InnerQuantumState st1=0; st1<H.rows(); st1++)
     {
 	QuantumState state1 = S.cst(hpart_id,st1);				//real state1
 	QuantumState difference = (i>j)?(1<<i)-(1<<j):(1<<j)-(1<<i);
@@ -173,12 +177,12 @@ void HamiltonianPart::add_hopping(int i, int j, RealType t)
 
 void HamiltonianPart::diagonalization()					//method of diagonalization classificated part of Hamiltonian
 {
-	if (N_state_m == 1)
+	if (H.rows() == 1)
 	{	
 		V = H;
 	 	H(0,0) = 1;
 	}
-	if (N_state_m > 1)
+	if (H.rows() > 1)
 	{
 		Eigen::SelfAdjointEigenSolver<RealMatrixType> Solver(H,Eigen::ComputeEigenvectors);
 		H = Solver.eigenvectors();
@@ -194,7 +198,7 @@ void HamiltonianPart::print_to_screen()					//ptint part of Hamiltonian to scree
 
 void HamiltonianPart::dump()							//writing Eigen Values in output file
 {
-	if(N_state_m!=0)
+	if(H.rows()!=0)
 	{
 		std::stringstream filename;
 		filename << (*this).ef_path << "//ef" << hpart_id << ".dat";
@@ -205,7 +209,7 @@ void HamiltonianPart::dump()							//writing Eigen Values in output file
   		outHpart.close();
 	}
 
-	if(N_state_m!=0)
+	if(H.rows()!=0)
 	{
 		std::stringstream filename;
 		filename << (*this).ev_path <<"//ev" << hpart_id << ".dat";
@@ -238,4 +242,18 @@ bool HamiltonianPart::reduce(RealType ActualCutoff)
 		  return true;
 		}
 		else return false;
+}
+
+void HamiltonianPart::save(H5::CommonFG* FG) const
+{
+    HDF5Storage::saveRealVector(FG,"V",V);
+    HDF5Storage::saveRealMatrix(FG,"H",H);
+}
+
+void HamiltonianPart::load(const H5::CommonFG* FG)
+{
+    HDF5Storage::loadRealVector(FG,"V",V);
+    HDF5Storage::loadRealMatrix(FG,"H",H);
+
+    Status = Computed;
 }

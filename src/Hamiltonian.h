@@ -30,11 +30,9 @@ class Hamiltonian : public ComputableObject, public HDF5Storable
     StatesClassification& S;
     /** Reference to an output handling object */
     output_handle &OUT;
-    /** A path to a local config */
-    std::string config_path;
-	/** A value of the ground energy - needed for further renormalization */
+    /** A value of the ground energy - needed for further renormalization */
     RealType GroundEnergy;
-public :
+public:
 
     Hamiltonian(IndexClassification &F_, StatesClassification &S_,output_handle &OUT_, std::string &config_path_);
     ~Hamiltonian();

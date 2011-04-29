@@ -77,7 +77,7 @@ void DensityMatrix::save(H5::CommonFG* FG) const
     H5::Group RootGroup(FG->createGroup("DensityMatrix"));
 
     // Save inverse temperature
-    HDF5Storage::saveReal(RootGroup,"beta",beta);
+    HDF5Storage::saveReal(&RootGroup,"beta",beta);
 
     // Save parts
     BlockNumber NumOfBlocks = parts.size();
@@ -93,7 +93,7 @@ void DensityMatrix::save(H5::CommonFG* FG) const
 void DensityMatrix::load(const H5::CommonFG* FG)
 {
     H5::Group RootGroup(FG->openGroup("DensityMatrix"));  
-    RealType newBeta = HDF5Storage::loadReal(RootGroup,"beta");
+    RealType newBeta = HDF5Storage::loadReal(&RootGroup,"beta");
     if(newBeta != beta)
 	throw(H5::DataSetIException("DensityMatrix::load()",
 				    "Data in the storage is for another value of the temperature."));

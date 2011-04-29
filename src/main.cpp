@@ -231,8 +231,18 @@ int main(int argc, char *argv[])
   num_cout << "<H> = " << rho.getAverageEnergy() << std::endl;
 
   try{
+    HDF5Storage test("test.h5");
+    MatrixType A(2,3); A << I,2,3,
+			    4,5,6;
+    HDF5Storage::saveMatrix(&test,"Matrix",A);
+    
+    MatrixType B;
+    HDF5Storage::loadMatrix(&test,"Matrix",B);
+    std::cout << B << std::endl;
+
     HDF5Storage dmp1("test1.h5");
     dmp1.save(rho);
+    dmp1.save(H);
   
     DensityMatrix rho_loaded(S,H,beta);
     dmp1.load(rho_loaded);

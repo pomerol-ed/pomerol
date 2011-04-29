@@ -69,20 +69,20 @@ RealType DensityMatrixPart::weight(int m)
 
 void DensityMatrixPart::save(H5::CommonFG* FG) const
 {
-    HDF5Storage::saveReal(*FG,"beta",beta);
-    HDF5Storage::saveReal(*FG,"GroundEnergy",GroundEnergy);
-    HDF5Storage::saveReal(*FG,"Z_part",Z_part);
-    HDF5Storage::saveRealVector(*FG,"weights",weights);
+    HDF5Storage::saveReal(FG,"beta",beta);
+    HDF5Storage::saveReal(FG,"GroundEnergy",GroundEnergy);
+    HDF5Storage::saveReal(FG,"Z_part",Z_part);
+    HDF5Storage::saveRealVector(FG,"weights",weights);
 }
 
 void DensityMatrixPart::load(const H5::CommonFG* FG)
 {
-    RealType newBeta = HDF5Storage::loadReal(*FG,"beta");
+    RealType newBeta = HDF5Storage::loadReal(FG,"beta");
     if(newBeta != beta)
 	throw(H5::DataSetIException("DensityMatrixPart::load()",
 				    "Data in the storage is for another value of the temperature."));
     
-    GroundEnergy = HDF5Storage::loadReal(*FG,"GroundEnergy");
-    Z_part = HDF5Storage::loadReal(*FG,"Z_part");
-    HDF5Storage::loadRealVector(*FG,"weights",weights);
+    GroundEnergy = HDF5Storage::loadReal(FG,"GroundEnergy");
+    Z_part = HDF5Storage::loadReal(FG,"Z_part");
+    HDF5Storage::loadRealVector(FG,"weights",weights);
 }

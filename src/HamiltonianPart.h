@@ -1,17 +1,16 @@
 #ifndef __INCLUDE_HAMILTONIANPART_H
 #define __INCLUDE_HAMILTONIANPART_H
-#include"Misc.h"
-#include"ComputableObject.h"
-#include"IndexClassification.h"
-#include"StatesClassification.h"
+#include "Misc.h"
+#include "HDF5Storage.h"
+#include "ComputableObject.h"
+#include "IndexClassification.h"
+#include "StatesClassification.h"
 
-class HamiltonianPart : public ComputableObject {
+class HamiltonianPart : public ComputableObject, public HDF5Storable {
 
     IndexClassification &IndexInfo;
     StatesClassification &S;
 
-    QuantumState N_state_m;                //number states of vector st
-    
     QuantumNumbers hpart_id;
 
     RealMatrixType H;                //part of Hamiltonian
@@ -19,8 +18,6 @@ class HamiltonianPart : public ComputableObject {
 
     std::string ev_path;                    // EigenVectors output path handler
     std::string ef_path;                    // EigenFunctions output path handler
-
-private:
 
     void add_nTerm(InnerQuantumState st, nTerm *N);
 
@@ -44,10 +41,10 @@ private:
 
 public:
 
-    HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id, const std::string &ev_path, const std::string &ef_path) : ComputableObject(), IndexInfo(F),S(S),hpart_id(id),ev_path(ev_path),ef_path(ef_path){};
-    
+    HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id, const std::string &ev_path, const std::string &ef_path);
+
     void enter();
-    
+
     InnerQuantumState size(void);
     RealType reH(int m, int n);        //return H(m,n)
     RealType reV(int m);            //return V(m)
@@ -61,7 +58,10 @@ public:
     void dump();                //writing Eigen Values and Eigen Vectors in output file
     void print_to_screen();            //print to screen part of hamiltonian
     RealVectorType getEigenState(InnerQuantumState m);
-    
+
+    void save(H5::CommonFG* FG) const;
+    void load(const H5::CommonFG* FG);
+
 };
 
                         //structure of values rotated C or CX

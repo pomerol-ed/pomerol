@@ -18,9 +18,10 @@ public:
 
 class HDF5Storage : public H5::H5File {
     static const unsigned int* HDF5Version;
-    static const unsigned int* initHDF5(void);
+    static const H5::CompType ComplexDataType;
 
-    static const H5::CompType& ComplexCType(void);
+    static const unsigned int* initHDF5(void);
+    static const H5::CompType initCompexDataType(void);
 public:
     HDF5Storage(const std::string& FileName);
     ~HDF5Storage(void);
@@ -28,12 +29,17 @@ public:
     void save(const HDF5Storable& Object);
     void load(HDF5Storable& Object) const;
 
-    static void saveReal(H5::CommonFG& FG, const std::string& Name, RealType x);
-    static void saveComplex(H5::CommonFG& FG, const std::string& Name, ComplexType C);
-    static void saveRealVector(H5::CommonFG& FG, const std::string& Name, const RealVectorType& V);
+    static void saveReal(H5::CommonFG* FG, const std::string& Name, RealType x);
+    static void saveComplex(H5::CommonFG* FG, const std::string& Name, ComplexType C);
+    static void saveRealVector(H5::CommonFG* FG, const std::string& Name, const RealVectorType& V);
+    static void saveRealMatrix(H5::CommonFG* FG, const std::string& Name, const RealMatrixType& M);
+    static void saveMatrix(H5::CommonFG* FG, const std::string& Name, const MatrixType& M);
 
-    static RealType loadReal(const H5::CommonFG& FG, const std::string& Name);
-    static void loadRealVector(const H5::CommonFG& FG, const std::string& Name, RealVectorType& V);
+    static RealType loadReal(const H5::CommonFG* FG, const std::string& Name);
+    static ComplexType loadComplex(const H5::CommonFG* FG, const std::string& Name);
+    static void loadRealVector(const H5::CommonFG* FG, const std::string& Name, RealVectorType& V);
+    static void loadRealMatrix(const H5::CommonFG* FG, const std::string& Name, RealMatrixType& M);
+    static void loadMatrix(const H5::CommonFG* FG, const std::string& Name, MatrixType& M);
 };
 
 #endif // endif :: #ifndef __INCLUDE_HDF5STORAGE_H
