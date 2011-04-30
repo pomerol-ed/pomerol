@@ -17,6 +17,7 @@ const unsigned int* HDF5Storage::initHDF5()
 
     INFO("Initializing HDF5 Library (version " << V[0] << "." << V[1] << "." << V[2] << ")...")
     H5::H5Library::open();
+    H5::Exception::dontPrint();
 
     return V;
 }
@@ -29,12 +30,22 @@ const H5::CompType HDF5Storage::initCompexDataType()
     return CType;
 }
 
-HDF5Storage::HDF5Storage(const std::string& FileName) : H5File(FileName.c_str(),H5F_ACC_TRUNC)
-{  
+bool HDF5Storage::fileExists(const std::string& FileName)
+{
+    try {
+      return isHdf5(FileName.c_str());
+    } catch(H5::FileIException){
+      return false;
+    }
+}
+
+HDF5Storage::HDF5Storage(const std::string& FileName) :
+H5File(FileName.c_str(), fileExists(FileName) ? H5F_ACC_RDWR : H5F_ACC_TRUNC)
+{
     INFO("Opened HDF5 file " << FileName)
 }
 
-HDF5Storage::~HDF5Storage(void )
+HDF5Storage::~HDF5Storage(void)
 {
     INFO("Closed HDF5 file " << getFileName())
     close();
