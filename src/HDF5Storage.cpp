@@ -8,7 +8,6 @@
 #include"HDF5Storage.h"
 
 const unsigned int* HDF5Storage::HDF5Version = HDF5Storage::initHDF5();
-const H5::CompType HDF5Storage::ComplexDataType = HDF5Storage::initCompexDataType();
 
 const unsigned int* HDF5Storage::initHDF5()
 {
@@ -17,7 +16,7 @@ const unsigned int* HDF5Storage::initHDF5()
 
     INFO("Initializing HDF5 Library (version " << V[0] << "." << V[1] << "." << V[2] << ")...")
     H5::H5Library::open();
-    H5::Exception::dontPrint();
+    //H5::Exception::dontPrint();
 
     return V;
 }
@@ -27,6 +26,11 @@ const H5::CompType HDF5Storage::initCompexDataType()
     H5::CompType CType(sizeof(ComplexType));
     CType.insertMember("real",0,H5::PredType::NATIVE_DOUBLE);
     CType.insertMember("imag",sizeof(RealType),H5::PredType::NATIVE_DOUBLE);
+
+    try {
+      CType.commit(*this,"complex");
+    } catch(H5::DataTypeIException){};
+
     return CType;
 }
 
@@ -40,7 +44,8 @@ bool HDF5Storage::fileExists(const std::string& FileName)
 }
 
 HDF5Storage::HDF5Storage(const std::string& FileName) :
-H5File(FileName.c_str(), fileExists(FileName) ? H5F_ACC_RDWR : H5F_ACC_TRUNC)
+H5File(FileName.c_str(), fileExists(FileName) ? H5F_ACC_RDWR : H5F_ACC_TRUNC),
+ComplexDataType(initCompexDataType())
 {
     INFO("Opened HDF5 file " << FileName)
 }
@@ -53,22 +58,22 @@ HDF5Storage::~HDF5Storage(void)
 
 void HDF5Storage::save(const HDF5Storable& Object)
 {
-    Object.save(this);
+    Object.save(this,this);
     flush(H5F_SCOPE_LOCAL);
 }
 
 void HDF5Storage::load(HDF5Storable& Object) const
 {
-    Object.load(this);
+    Object.load(this,this);
 }
 
-void HDF5Storage::saveReal(H5::CommonFG* FG, const std::string& Name, RealType x)
+void HDF5Storage::saveReal(H5::CommonFG* FG, const std::string& Name, RealType x) const
 {
     H5::DataSet DataSet = FG->createDataSet(Name.c_str(),H5::PredType::NATIVE_DOUBLE, H5::DataSpace());
     DataSet.write(&x,H5::PredType::NATIVE_DOUBLE);
 }
 
-void HDF5Storage::saveComplex(H5::CommonFG* FG, const std::string& Name, ComplexType C)
+void HDF5Storage::saveComplex(H5::CommonFG* FG, const std::string& Name, ComplexType C) const
 {
 
     H5::DataSet DataSet = FG->createDataSet(Name.c_str(),ComplexDataType, H5::DataSpace());
@@ -76,7 +81,7 @@ void HDF5Storage::saveComplex(H5::CommonFG* FG, const std::string& Name, Complex
     DataSet.write(RealImag,ComplexDataType);
 }
 
-void HDF5Storage::saveRealVector(H5::CommonFG* FG, const std::string& Name, const RealVectorType& V)
+void HDF5Storage::saveRealVector(H5::CommonFG* FG, const std::string& Name, const RealVectorType& V) const
 {
     hsize_t Dim[1] = {V.size()};
     H5::DataSpace DataSpace(1,Dim);
@@ -84,7 +89,7 @@ void HDF5Storage::saveRealVector(H5::CommonFG* FG, const std::string& Name, cons
     DataSet.write(V.data(),H5::PredType::NATIVE_DOUBLE);
 }
 
-void HDF5Storage::saveRealMatrix(H5::CommonFG* FG, const std::string& Name, const RealMatrixType& M)
+void HDF5Storage::saveRealMatrix(H5::CommonFG* FG, const std::string& Name, const RealMatrixType& M) const
 {
     hsize_t Dims[2] = {M.rows(),M.cols()};
     H5::DataSpace DataSpace(2,Dims);
@@ -92,7 +97,7 @@ void HDF5Storage::saveRealMatrix(H5::CommonFG* FG, const std::string& Name, cons
     DataSet.write(M.data(),H5::PredType::NATIVE_DOUBLE);
 }
 
-void HDF5Storage::saveMatrix(H5::CommonFG* FG, const std::string& Name, const MatrixType& M)
+void HDF5Storage::saveMatrix(H5::CommonFG* FG, const std::string& Name, const MatrixType& M) const
 {
     hsize_t Dims[2] = {M.rows(),M.cols()};
     H5::DataSpace DataSpace(2,Dims);
@@ -100,7 +105,7 @@ void HDF5Storage::saveMatrix(H5::CommonFG* FG, const std::string& Name, const Ma
     DataSet.write(M.data(),ComplexDataType);
 }
 
-RealType HDF5Storage::loadReal(const H5::CommonFG* FG, const std::string& Name)
+RealType HDF5Storage::loadReal(const H5::CommonFG* FG, const std::string& Name) const
 {
     H5::DataSet DataSet = FG->openDataSet(Name.c_str());
     RealType x;
@@ -108,7 +113,7 @@ RealType HDF5Storage::loadReal(const H5::CommonFG* FG, const std::string& Name)
     return x;
 }
 
-ComplexType HDF5Storage::loadComplex(const H5::CommonFG* FG, const std::string& Name)
+ComplexType HDF5Storage::loadComplex(const H5::CommonFG* FG, const std::string& Name) const
 {
     H5::DataSet DataSet = FG->openDataSet(Name.c_str());
     ComplexType C;
@@ -116,7 +121,7 @@ ComplexType HDF5Storage::loadComplex(const H5::CommonFG* FG, const std::string& 
     return C;
 }
 
-void HDF5Storage::loadRealVector(const H5::CommonFG* FG, const std::string& Name, RealVectorType& V)
+void HDF5Storage::loadRealVector(const H5::CommonFG* FG, const std::string& Name, RealVectorType& V) const
 {
     H5::DataSet DataSet = FG->openDataSet(Name.c_str());
 
@@ -128,7 +133,7 @@ void HDF5Storage::loadRealVector(const H5::CommonFG* FG, const std::string& Name
     DataSet.read(V.data(),H5::PredType::NATIVE_DOUBLE);
 }
 
-void HDF5Storage::loadRealMatrix(const H5::CommonFG* FG, const std::string& Name, RealMatrixType& M)
+void HDF5Storage::loadRealMatrix(const H5::CommonFG* FG, const std::string& Name, RealMatrixType& M) const
 {
     H5::DataSet DataSet = FG->openDataSet(Name.c_str());
 
@@ -143,7 +148,7 @@ void HDF5Storage::loadRealMatrix(const H5::CommonFG* FG, const std::string& Name
     DataSet.read(M.data(),H5::PredType::NATIVE_DOUBLE);
 }
 
-void HDF5Storage::loadMatrix(const H5::CommonFG* FG, const std::string& Name, MatrixType& M)
+void HDF5Storage::loadMatrix(const H5::CommonFG* FG, const std::string& Name, MatrixType& M) const
 {
     H5::DataSet DataSet = FG->openDataSet(Name.c_str());
 

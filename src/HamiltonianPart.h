@@ -23,13 +23,13 @@ class HamiltonianPart : public ComputableObject, public HDF5Storable {
 
     void add_nnTerm(InnerQuantumState st, nnTerm *T);
     void add_spinflipTerm(InnerQuantumState st, spinflipTerm *T);
-    
+
     int measurefunc(QuantumState state1, QuantumState state2, int i, int j, int k, int l);         // basic function for next two functions
-    
+
     // s-orbital functions
 
     //chem. potentials
-    
+
     void add_mu(int st, RealType mu);                        //adds chem. potential on multiorbital
     void add_mus(int st, RealType mus);                        //adds chem. potential on s-orbitals
 
@@ -59,8 +59,8 @@ public:
     void print_to_screen();            //print to screen part of hamiltonian
     RealVectorType getEigenState(InnerQuantumState m);
 
-    void save(H5::CommonFG* FG) const;
-    void load(const H5::CommonFG* FG);
+    void save(H5::CommonFG* RootGroup, HDF5Storage const* const Storage) const;
+    void load(const H5::CommonFG* RootGroup, HDF5Storage const* const Storage);
 
 };
 

@@ -93,33 +93,33 @@ void Hamiltonian::reduce(const RealType Cutoff)
     }
 };
 
-void Hamiltonian::save(H5::CommonFG* FG) const
+void Hamiltonian::save(H5::CommonFG* RootGroup, HDF5Storage const* const Storage) const
 {
-    H5::Group RootGroup(FG->createGroup("Hamiltonian"));
+    H5::Group HRootGroup(RootGroup->createGroup("Hamiltonian"));
 
-    HDF5Storage::saveReal(&RootGroup,"GroundEnergy",GroundEnergy);
+    Storage->saveReal(&HRootGroup,"GroundEnergy",GroundEnergy);
 
     // Save parts
     BlockNumber NumberOfBlocks = parts.size();
-    H5::Group PartsGroup = RootGroup.createGroup("parts");
+    H5::Group PartsGroup = HRootGroup.createGroup("parts");
     for(BlockNumber n = 0; n < NumberOfBlocks; n++){
 	std::stringstream nStr;
 	nStr << n;
 	H5::Group PartGroup = PartsGroup.createGroup(nStr.str().c_str());
-	parts[n]->save(&PartGroup);
+	parts[n]->save(&PartGroup,Storage);
     }
 }
 
-void Hamiltonian::load(const H5::CommonFG* FG)
+void Hamiltonian::load(const H5::CommonFG* RootGroup, HDF5Storage const* const Storage)
 {
-    H5::Group RootGroup(FG->openGroup("Hamiltonian"));  
+    H5::Group HRootGroup(RootGroup->openGroup("Hamiltonian"));  
 
-    GroundEnergy = HDF5Storage::loadReal(&RootGroup,"GroundEnergy");
+    GroundEnergy = Storage->loadReal(&HRootGroup,"GroundEnergy");
 
     // FIXME!
     //if(Status!=Prepared) prepare();
 
-    H5::Group PartsGroup = RootGroup.openGroup("parts");
+    H5::Group PartsGroup = HRootGroup.openGroup("parts");
     BlockNumber NumberOfBlocks = parts.size();
     if(NumberOfBlocks != PartsGroup.getNumObjs())
 	throw(H5::GroupIException("Hamiltonian::load()","Inconsistent number of stored parts."));
@@ -128,7 +128,7 @@ void Hamiltonian::load(const H5::CommonFG* FG)
 	std::stringstream nStr;
 	nStr << n;
 	H5::Group PartGroup = PartsGroup.openGroup(nStr.str().c_str());
-	parts[n]->load(&PartGroup);
+	parts[n]->load(&PartGroup,Storage);
     }
     Status = Computed;
 }

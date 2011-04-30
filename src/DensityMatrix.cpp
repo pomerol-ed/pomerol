@@ -72,35 +72,35 @@ RealType DensityMatrix::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex
     return NN;
 };
 
-void DensityMatrix::save(H5::CommonFG* FG) const
+void DensityMatrix::save(H5::CommonFG* RootGroup, HDF5Storage const* const Storage) const
 {
-    H5::Group RootGroup(FG->createGroup("DensityMatrix"));
+    H5::Group DMRootGroup(RootGroup->createGroup("DensityMatrix"));
 
     // Save inverse temperature
-    HDF5Storage::saveReal(&RootGroup,"beta",beta);
+    Storage->saveReal(&DMRootGroup,"beta",beta);
 
     // Save parts
     BlockNumber NumOfBlocks = parts.size();
-    H5::Group PartsGroup = RootGroup.createGroup("parts");
+    H5::Group PartsGroup = DMRootGroup.createGroup("parts");
     for(BlockNumber n = 0; n < NumOfBlocks; n++){
 	std::stringstream nStr;
 	nStr << n;
 	H5::Group PartGroup = PartsGroup.createGroup(nStr.str().c_str());
-	parts[n]->save(&PartGroup);
+	parts[n]->save(&PartGroup,Storage);
     }
 }
 
-void DensityMatrix::load(const H5::CommonFG* FG)
+void DensityMatrix::load(const H5::CommonFG* RootGroup, HDF5Storage const* const Storage)
 {
-    H5::Group RootGroup(FG->openGroup("DensityMatrix"));  
-    RealType newBeta = HDF5Storage::loadReal(&RootGroup,"beta");
+    H5::Group DMRootGroup(RootGroup->openGroup("DensityMatrix"));  
+    RealType newBeta = Storage->loadReal(&DMRootGroup,"beta");
     if(newBeta != beta)
 	throw(H5::DataSetIException("DensityMatrix::load()",
 				    "Data in the storage is for another value of the temperature."));
 
-    if(Status!=Prepared) prepare();
+    if(Status<Prepared) prepare();
 
-    H5::Group PartsGroup = RootGroup.openGroup("parts");
+    H5::Group PartsGroup = DMRootGroup.openGroup("parts");
     BlockNumber NumOfBlocks = parts.size();
     if(NumOfBlocks != PartsGroup.getNumObjs())
 	throw(H5::GroupIException("DensityMatrix::load()","Inconsistent number of stored parts."));
@@ -109,8 +109,7 @@ void DensityMatrix::load(const H5::CommonFG* FG)
 	std::stringstream nStr;
 	nStr << n;
 	H5::Group PartGroup = PartsGroup.openGroup(nStr.str().c_str());
-	parts[n]->load(&PartGroup);
+	parts[n]->load(&PartGroup,Storage);
     }
     Status = Computed;
 }
-

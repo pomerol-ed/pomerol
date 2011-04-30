@@ -66,8 +66,8 @@ public:
      */
     InnerQuantumState getMaximumTruncationState( RealType TruncationTolerance);
 
-    void save(H5::CommonFG* FG) const;
-    void load(const H5::CommonFG* FG);
+    void save(H5::CommonFG* RootGroup, HDF5Storage const* const Storage) const;
+    void load(const H5::CommonFG* RootGroup, HDF5Storage const* const Storage);
 };
 
 #endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H
