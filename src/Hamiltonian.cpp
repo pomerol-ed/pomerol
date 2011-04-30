@@ -93,11 +93,11 @@ void Hamiltonian::reduce(const RealType Cutoff)
     }
 };
 
-void Hamiltonian::save(H5::CommonFG* RootGroup, HDF5Storage const* const Storage) const
+void Hamiltonian::save(H5::CommonFG* RootGroup) const
 {
     H5::Group HRootGroup(RootGroup->createGroup("Hamiltonian"));
 
-    Storage->saveReal(&HRootGroup,"GroundEnergy",GroundEnergy);
+    HDF5Storage::saveReal(&HRootGroup,"GroundEnergy",GroundEnergy);
 
     // Save parts
     BlockNumber NumberOfBlocks = parts.size();
@@ -106,15 +106,15 @@ void Hamiltonian::save(H5::CommonFG* RootGroup, HDF5Storage const* const Storage
 	std::stringstream nStr;
 	nStr << n;
 	H5::Group PartGroup = PartsGroup.createGroup(nStr.str().c_str());
-	parts[n]->save(&PartGroup,Storage);
+	parts[n]->save(&PartGroup);
     }
 }
 
-void Hamiltonian::load(const H5::CommonFG* RootGroup, HDF5Storage const* const Storage)
+void Hamiltonian::load(const H5::CommonFG* RootGroup)
 {
     H5::Group HRootGroup(RootGroup->openGroup("Hamiltonian"));  
 
-    GroundEnergy = Storage->loadReal(&HRootGroup,"GroundEnergy");
+    GroundEnergy = HDF5Storage::loadReal(&HRootGroup,"GroundEnergy");
 
     // FIXME!
     //if(Status!=Prepared) prepare();
@@ -128,7 +128,7 @@ void Hamiltonian::load(const H5::CommonFG* RootGroup, HDF5Storage const* const S
 	std::stringstream nStr;
 	nStr << n;
 	H5::Group PartGroup = PartsGroup.openGroup(nStr.str().c_str());
-	parts[n]->load(&PartGroup,Storage);
+	parts[n]->load(&PartGroup);
     }
     Status = Computed;
 }

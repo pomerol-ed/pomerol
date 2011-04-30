@@ -63,8 +63,8 @@ public:
     /** Returns an averaged value of the double occupancy. */
     RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j);
     
-    void save(H5::CommonFG* RootGroup, HDF5Storage const* const Storage) const;
-    void load(const H5::CommonFG* RootGroup, HDF5Storage const* const Storage);
+    void save(H5::CommonFG* RootGroup) const;
+    void load(const H5::CommonFG* RootGroup);
 };
 
 #endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H

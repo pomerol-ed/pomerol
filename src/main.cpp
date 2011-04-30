@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
   rho.compute();
   num_cout << "<H> = " << rho.getAverageEnergy() << std::endl;
 
-  //try{
+  try{
       {
 	HDF5Storage dmp1("test1.h5");
 	dmp1.save(rho);
@@ -243,10 +243,9 @@ int main(int argc, char *argv[])
 
     HDF5Storage dmp2("test2.h5");
     dmp2.save(rho_loaded);
-  //} catch(H5::Exception& ex){
-  //    ex.printError();
-  //  }
-
+  } catch(H5::Exception& ex){
+      ex.printError();
+  }
 
   /*   for (QuantumState i=0; i < S.N_st(); ++i) 
        cout << std::setw(20) << "E:" << H.eigenval(i) << "\t E-E0 " << H.eigenval(i) - rho.getAverageEnergy() << "\t weight: " << rho(i) << "  " << exp(-beta*(H.eigenval(i) - H.getGroundEnergy()))/1.000 << endl; 

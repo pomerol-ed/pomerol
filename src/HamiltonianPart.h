@@ -59,8 +59,8 @@ public:
     void print_to_screen();            //print to screen part of hamiltonian
     RealVectorType getEigenState(InnerQuantumState m);
 
-    void save(H5::CommonFG* RootGroup, HDF5Storage const* const Storage) const;
-    void load(const H5::CommonFG* RootGroup, HDF5Storage const* const Storage);
+    void save(H5::CommonFG* RootGroup) const;
+    void load(const H5::CommonFG* RootGroup);
 
 };
 

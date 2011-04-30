@@ -244,16 +244,16 @@ bool HamiltonianPart::reduce(RealType ActualCutoff)
 		else return false;
 }
 
-void HamiltonianPart::save(H5::CommonFG* RootGroup, HDF5Storage const* const Storage) const
+void HamiltonianPart::save(H5::CommonFG* RootGroup) const
 {
-    Storage->saveRealVector(RootGroup,"V",V);
-    Storage->saveRealMatrix(RootGroup,"H",H);
+    HDF5Storage::saveRealVector(RootGroup,"V",V);
+    HDF5Storage::saveRealMatrix(RootGroup,"H",H);
 }
 
-void HamiltonianPart::load(const H5::CommonFG* RootGroup, HDF5Storage const* const Storage)
+void HamiltonianPart::load(const H5::CommonFG* RootGroup)
 {
-    Storage->loadRealVector(RootGroup,"V",V);
-    Storage->loadRealMatrix(RootGroup,"H",H);
+    HDF5Storage::loadRealVector(RootGroup,"V",V);
+    HDF5Storage::loadRealMatrix(RootGroup,"H",H);
 
     Status = Computed;
 }
