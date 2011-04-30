@@ -132,3 +132,4 @@ void Hamiltonian::load(const H5::CommonFG* FG)
     }
     Status = Computed;
 }
+

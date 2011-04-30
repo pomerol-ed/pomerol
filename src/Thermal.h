@@ -16,3 +16,4 @@ struct Thermal {
 };
 
 #endif // endif :: #ifndef __INCLUDE_THERMAL_H
+
