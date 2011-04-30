@@ -175,7 +175,7 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
             }
         };
     }
-    if (ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize > 1e5){ 
+    if (ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize > ReduceInvocationThreshold ){ 
         INFO_NONEWLINE(NonResonantTerms.size()-NonResonantTermsPreviousSize << " nonresonant + " << ResonantTerms.size() - ResonantTermsPreviousSize << " resonant = ");
         INFO_NONEWLINE(ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize);
         INFO_NONEWLINE(" terms reduced to ");

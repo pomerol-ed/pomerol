@@ -19,6 +19,8 @@
  */
 class TwoParticleGFPart : public ComputableObject, public Thermal {
 
+friend class TwoParticleGF;
+
 public:
 
     /** A non-resonant term has the following form:
@@ -131,8 +133,19 @@ private:
     static const RealType ReduceResonanceTolerance = 1e-8;//1e-16;
     /** Minimal magnitude of the coefficient of a term to take it into account. */
     static const RealType CoefficientTolerance = 1e-16;//1e-16;
+    /** A maximum amount of terms put into a list at which the reduceTerms method should be called */
+    static const RealType ReduceInvocationThreshold = 1e5;
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
     static const RealType MultiTermCoefficientTolerance = 1e-5;//1e-5;
+
+    /** Reduces the number of calculated terms 
+    * \param[in] NonResonantTolerance The tolerance for the nonresonant terms cutoff.
+    * \param[in] ResonantTolerance    The tolerance for the resonant terms cutoff.
+    * \param[in] NonResonantTerms     The list of nonresonant terms.
+    * \param[in] ResonantTerms        The list of resonant terms.
+    */
+    static void reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance, std::list<NonResonantTerm>& NonResonantTerms, std::list<ResonantTerm>& ResonantTerms);
+
 public:
     /** Constructor.
      * \param[in] O1 A reference to a part of the first operator.
@@ -166,13 +179,6 @@ public:
     */
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
-    /** Reduces the number of calculated terms 
-    * \param[in] NonResonantTolerance The tolerance for the nonresonant terms cutoff.
-    * \param[in] ResonantTolerance    The tolerance for the resonant terms cutoff.
-    * \param[in] NonResonantTerms     The list of nonresonant terms.
-    * \param[in] ResonantTerms        The list of resonant terms.
-    */
-    static void reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance, std::list<NonResonantTerm>& NonResonantTerms, std::list<ResonantTerm>& ResonantTerms);
 
     /** Returns the number of resonant terms in the cache. */
     size_t getNumResonantTerms() const;
