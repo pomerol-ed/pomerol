@@ -12,7 +12,8 @@ Hamiltonian::~Hamiltonian()
 	delete parts[current_block];
 }
 
-void Hamiltonian::enter()
+//void Hamiltonian::enter()
+void Hamiltonian::prepare()
 {
     output_handle OUT_EVec(OUT.path()+"/EigenVec");		// create output_folders
     output_handle OUT_EVal(OUT.path()+"/EigenVal");		// create output_folders
@@ -46,7 +47,8 @@ RealType Hamiltonian::eigenval(QuantumState &state)
     return part(S.getStateInfo(state)).reV(inner_state);
 }
 
-void Hamiltonian::diagonalize()
+//void Hamiltonian::diagonalize()
+void Hamiltonian::compute()
 {
   BlockNumber NumberOfBlocks = parts.size();
   for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
@@ -116,8 +118,7 @@ void Hamiltonian::load(const H5::CommonFG* RootGroup)
 
     GroundEnergy = HDF5Storage::loadReal(&HRootGroup,"GroundEnergy");
 
-    // FIXME!
-    //if(Status!=Prepared) prepare();
+    if(Status<Prepared) prepare();
 
     H5::Group PartsGroup = HRootGroup.openGroup("parts");
     BlockNumber NumberOfBlocks = parts.size();

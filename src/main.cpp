@@ -210,9 +210,9 @@ int main(int argc, char *argv[])
   
   //begining of creation all part of Hammiltonian
 
-  H.enter();
+  H.prepare();
   H.dump();
-  H.diagonalize();
+  H.compute();
   RealType beta = opt.beta;
   H.dump();
 

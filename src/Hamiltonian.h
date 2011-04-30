@@ -36,14 +36,16 @@ public:
 
     Hamiltonian(IndexClassification &F_, StatesClassification &S_,output_handle &OUT_, std::string &config_path_);
     ~Hamiltonian();
-    void enter();
+
+    void prepare(); // was void enter();
 
     HamiltonianPart& part(const QuantumNumbers &in);
     HamiltonianPart& part(BlockNumber in);
     RealType eigenval( QuantumState &state );
     RealType getGroundEnergy();
 
-    void diagonalize();
+    void compute(); // was void diagonalize();
+
     void dump();
     void reduce(const RealType Cutoff);
 

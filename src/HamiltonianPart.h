@@ -34,7 +34,7 @@ class HamiltonianPart : public ComputableObject, public HDF5Storable {
     void add_mus(int st, RealType mus);                        //adds chem. potential on s-orbitals
 
     //functions describe hoppings
-    
+
     int checkhop(long int state1, long int state2, int i, int j);        //check probability hopping between state1 and state2
     void add_hopping(RealMatrixType& HoppingMatrix);            //function adds to Hamilt hopping electron from "i"
     void add_hopping(int i,int j, RealType t);            //function adds to Hamilt hopping electron from "i"
