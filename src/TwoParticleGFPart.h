@@ -78,11 +78,6 @@ private:
     /** A list of resonant terms. */
     std::list<ResonantTerm> ResonantTerms;
     
-    /** Reduces the number of calculated terms 
-    * \param[in] NonResonantTolerance The tolerance for the nonresonant rems cutoff.
-    * \param[in] ResonantTolerance    The tolerance for the resonant terms cutoff$.
-    */
-    void reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance);
     
     /** Adds a multi-term that has the following form:
     * \f[
@@ -170,6 +165,14 @@ public:
     * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
     */
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
+
+    /** Reduces the number of calculated terms 
+    * \param[in] NonResonantTolerance The tolerance for the nonresonant terms cutoff.
+    * \param[in] ResonantTolerance    The tolerance for the resonant terms cutoff.
+    * \param[in] NonResonantTerms     The list of nonresonant terms.
+    * \param[in] ResonantTerms        The list of resonant terms.
+    */
+    static void reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance, std::list<NonResonantTerm>& NonResonantTerms, std::list<ResonantTerm>& ResonantTerms);
 
     /** Returns the number of resonant terms in the cache. */
     size_t getNumResonantTerms() const;
