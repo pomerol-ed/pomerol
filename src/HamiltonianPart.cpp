@@ -295,10 +295,13 @@ void HamiltonianPart::load(const H5::CommonFG* RootGroup)
 
     short* buf = new short[DataSpace.getSimpleExtentNpoints()];
     DataSet.read(buf,H5::PredType::NATIVE_SHORT);
-    // FIXME!!!
-    hpart_id = QuantumNumbers(buf[0],buf[1],buf[2]);
+
+    if(! (hpart_id == QuantumNumbers(buf[0],buf[1],buf[2]))) // FIXME!!!
+	throw(H5::DataSetIException("HamiltonianPart::load()",
+				    "Data in the storage is for another set of quantum numbers."));
+
     delete [] buf;
-    
+
     Status = Computed;
 }
 
