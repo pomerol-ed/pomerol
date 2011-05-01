@@ -269,6 +269,16 @@ void HamiltonianPart::save(H5::CommonFG* RootGroup) const
 {
     HDF5Storage::saveRealVector(RootGroup,"V",V);
     HDF5Storage::saveRealMatrix(RootGroup,"H",H);
+
+    // Save hpart_id
+    hsize_t Dim[1] = {hpart_id.size()};
+    H5::DataSpace DataSpace(1,Dim);
+    H5::DataSet DataSet = RootGroup->createDataSet("hpart_id",H5::PredType::NATIVE_SHORT,DataSpace);
+
+    short* buf = new short[Dim[0]];
+    std::copy(hpart_id.begin(), hpart_id.end(), buf);
+    DataSet.write(buf,H5::PredType::NATIVE_SHORT);
+    delete [] buf;
 }
 
 void HamiltonianPart::load(const H5::CommonFG* RootGroup)
@@ -276,5 +286,21 @@ void HamiltonianPart::load(const H5::CommonFG* RootGroup)
     HDF5Storage::loadRealVector(RootGroup,"V",V);
     HDF5Storage::loadRealMatrix(RootGroup,"H",H);
 
+    // Load hpart_id
+    H5::DataSet DataSet = RootGroup->openDataSet("hpart_id");
+
+    H5::DataSpace DataSpace = DataSet.getSpace();
+    if(DataSpace.getSimpleExtentNdims() != 1)
+	throw(H5::DataSpaceIException("HamiltonianPart::load()","Unexpected multidimentional dataspace."));
+
+    short* buf = new short[DataSpace.getSimpleExtentNpoints()];
+    DataSet.read(buf,H5::PredType::NATIVE_SHORT);
+    // FIXME!!!
+    hpart_id = QuantumNumbers(buf[0],buf[1],buf[2]);
+    delete [] buf;
+    
     Status = Computed;
 }
+
+
+

@@ -21,8 +21,6 @@
 
 #include "Hamiltonian.h"
 
-#warning TODO: Hamiltonian still needs prepare() and compute() methods.
-
 Hamiltonian::Hamiltonian(IndexClassification &F_,StatesClassification &S_,output_handle &OUT_, std::string& config_path_):
 ComputableObject(),Formula(F_),S(S_),OUT(OUT_){}
 
@@ -41,6 +39,7 @@ void Hamiltonian::prepare()
 
     BlockNumber NumberOfBlocks = S.NumberOfBlocks();
     parts.resize(NumberOfBlocks);
+
     for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
     {
 	parts[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block),OUT_EVal.path(), OUT_EVec.path());

@@ -56,37 +56,6 @@ std::ostream& operator<<(std::ostream& output,const QuantumNumbers& out)
   return output;
 }
 
-void QuantumNumbers::save(H5::CommonFG* RootGroup) const
-{
-    // We create only a transient datatype, because it could be tricky and probably
-    // expensive to commit it. Anyway this class is to be completely redesigned.
-    /*static H5::CompType QuantumNumbersType(sizeof(QuantumNumbers));
-    do_once
-	QuantumNumbersType.insertMember("Lz",offsetof(QuantumNumbers,Lz),H5::PredType::NATIVE_INT);
-	QuantumNumbersType.insertMember("N_up",sizeof(int),H5::PredType::NATIVE_INT);
-	QuantumNumbersType.insertMember("N_down",2*sizeof(int),H5::PredType::NATIVE_INT);
-    end_do_once
-
-    H5::DataSet DataSet = RootGroup->createDataSet("QuantumNumbers",QuantumNumbersType,H5::DataSpace());
-    int buf[3] = {Lz,N_up,N_down};
-    DataSet.write(buf,QuantumNumbersType);*/
-}
-
-void QuantumNumbers::load(const H5::CommonFG* RootGroup)
-{
-    /*static H5::CompType QuantumNumbersType(sizeof(*this));
-    do_once
-	QuantumNumbersType.insertMember("Lz",0,H5::PredType::NATIVE_INT);
-	QuantumNumbersType.insertMember("N_up",sizeof(int)QuantumNumbers,N_up),H5::PredType::NATIVE_INT);
-	QuantumNumbersType.insertMember("N_down",2*sizeof(int),H5::PredType::NATIVE_INT);
-    end_do_once
-
-    H5::DataSet DataSet = RootGroup->openDataSet("QuantumNumbers");
-    int buf[3];
-    DataSet.read(buf,QuantumNumbersType);
-    Lz = buf[0]; N_up = buf[1]; N_down = buf[2];*/
-}
-
 //class StatesClassification
 
 const std::vector<QuantumState>& StatesClassification::clstates( QuantumNumbers in )            //return st[in.Lz][in.N_up][in.N_down]

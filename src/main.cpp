@@ -229,13 +229,24 @@ int main(int argc, char *argv[])
   printFramed("System is determined");
   printFramed("Process of creation and diagonalization all parts of Hamiltonian has started");
   
+  HDF5Storage storage("test.h5");
+  
   //begining of creation all part of Hammiltonian
 
   H.prepare();
-  H.dump();
   H.compute();
   RealType beta = opt.beta;
   H.dump();
+  storage.save(H);
+
+  // DEBUG HDF5 save/load
+  //storage.close();
+  //HDF5Storage storage_load("test.h5");
+  //Hamiltonian H2(IndexInfo,S,OUT,input);
+  //storage_load.load(H2);
+  //HDF5Storage storage2("test2.h5");
+  //storage2.save(H2);
+  //exit(0);
 
   num_cout << std::endl << "The value of ground energy is " << H.getGroundEnergy() << std::endl;
 
@@ -250,23 +261,6 @@ int main(int argc, char *argv[])
   rho.prepare();
   rho.compute();
   num_cout << "<H> = " << rho.getAverageEnergy() << std::endl;
-
-  try{
-      {
-	HDF5Storage dmp1("test1.h5");
-	dmp1.save(rho);
-	dmp1.save(H);
-      }
-
-      HDF5Storage dmp1("test1.h5");
-      DensityMatrix rho_loaded(S,H,beta);
-      dmp1.load(rho_loaded);
-
-    HDF5Storage dmp2("test2.h5");
-    dmp2.save(rho_loaded);
-  } catch(H5::Exception& ex){
-      ex.printError();
-  }
 
   /*   for (QuantumState i=0; i < S.N_st(); ++i) 
        cout << std::setw(20) << "E:" << H.eigenval(i) << "\t E-E0 " << H.eigenval(i) - rho.getAverageEnergy() << "\t weight: " << rho(i) << "  " << exp(-beta*(H.eigenval(i) - H.getGroundEnergy()))/1.000 << endl; 

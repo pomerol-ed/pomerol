@@ -45,6 +45,9 @@ const unsigned int* HDF5Storage::initHDF5()
 const H5::CompType HDF5Storage::initCompexDataType()
 {
     H5::CompType CType(sizeof(ComplexType));
+    // FIXME: we should NOT rely on the internal structure of a complex type.
+    // But currently there is no choice (perhaps HDF5 1.10 with native complex datatypes
+    // will change things for the better).
     CType.insertMember("real",0,H5::PredType::NATIVE_DOUBLE);
     CType.insertMember("imag",sizeof(RealType),H5::PredType::NATIVE_DOUBLE);
 
@@ -140,8 +143,9 @@ ComplexType HDF5Storage::loadComplex(const H5::CommonFG* FG, const std::string& 
     H5::CompType ComplexDataType = FG->openCompType("complex");
     H5::DataSet DataSet = FG->openDataSet(Name.c_str());
     ComplexType C;
-    DataSet.read(&C,ComplexDataType);
-    return C;
+    RealType RealImag[2];
+    DataSet.read(RealImag,ComplexDataType);
+    return ComplexType(RealImag[0],RealImag[1]);
 }
 
 void HDF5Storage::loadRealVector(const H5::CommonFG* FG, const std::string& Name, RealVectorType& V)
