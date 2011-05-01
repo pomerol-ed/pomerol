@@ -17,12 +17,12 @@ AC_PROG_CXX
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([limits.h stdlib.h string.h])
+#AC_CHECK_HEADERS([limits.h stdlib.h string.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_HEADER_STDBOOL
-AC_C_INLINE
-AC_TYPE_SIZE_T
+#AC_HEADER_STDBOOL
+#AC_C_INLINE
+#AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_CHECK_FUNCS([strchr strpbrk])
