@@ -43,7 +43,9 @@ PKG_CHECK_MODULES([hdf5], [hdf5 >= 1.8.0],[
                     AC_SUBST([hdf5_LIBS])
                     ],
                     [
-                    AC_MSG_ERROR(["No hdf5 >= 1.8.0 found. Check your \$PKG_CONFIG_PATH or set --with-hdf5 flag "])
+                    hdf5_LIBS="-L/usr/lib -lhdf5 -lhdf5_cpp"
+                    hdf5_CFLAGS="-I/usr/include"
+                    AC_MSG_WARN(["No hdf5 >= 1.8.0 found automatically. Check your \$PKG_CONFIG_PATH or set --with-hdf5 flag. Assuming hdf5 is stored in /usr "])
                     ]
                   )
 AC_CHECK_HEADERS([hdf5.h],,AC_MSG_ERROR(cannot find hdf5.h in hdf5 include path))
