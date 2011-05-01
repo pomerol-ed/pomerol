@@ -80,7 +80,7 @@ void DensityMatrixPart::load(const H5::CommonFG* RootGroup)
     RealType newBeta = HDF5Storage::loadReal(RootGroup,"beta");
     if(newBeta != beta)
 	throw(H5::DataSetIException("DensityMatrixPart::load()",
-				    "Data in the storage is for another value of the temperature."));
+ 				     "Data in the storage is for another value of the temperature."));
     
     GroundEnergy = HDF5Storage::loadReal(RootGroup,"GroundEnergy");
     Z_part = HDF5Storage::loadReal(RootGroup,"Z_part");
