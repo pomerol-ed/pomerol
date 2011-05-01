@@ -24,47 +24,80 @@
 bool BlockNumber::operator<(const BlockNumber& rhs) const {return number<rhs.number;}
 bool BlockNumber::operator==(const BlockNumber& rhs) const {return number==rhs.number;}
 
-QuantumNumbers::QuantumNumbers(int LZ, int N_UP, int N_DOWN)                    //inicialization QuantumNumbers
+QuantumNumbers::QuantumNumbers(int LZ, int N_UP, int N_DOWN) : std::vector<short>(3)
 {
-    Lz=LZ;
-    N_up=N_UP;
-    N_down=N_DOWN;
-
+    (*this)[0]=LZ;
+    (*this)[1]=N_UP;
+    (*this)[2]=N_DOWN;
 }
 
-QuantumNumbers::QuantumNumbers()                    //inicialization QuantumNumbers
-{
-}
+QuantumNumbers::QuantumNumbers() : std::vector<short>()
+{}
 
 bool QuantumNumbers::operator<(const QuantumNumbers &rhs) const
 {
-    if(Lz != rhs.Lz) return Lz < rhs.Lz;
-    if(N_up != rhs.N_up) return N_up < rhs.N_up;
-    return N_down < rhs.N_down;
+    if((*this)[0]!= rhs[0]) return (*this)[0] < rhs[0];
+    if((*this)[1] != rhs[1]) return (*this)[1] < rhs[1];
+    return (*this)[2] < rhs[2];
 }
 
 bool QuantumNumbers::operator==(const QuantumNumbers &rhs) const 
 {
-    return (rhs.Lz == (*this).Lz && rhs.N_up == (*this).N_up && (*this).N_down == rhs.N_down );
+    return (rhs[0] == (*this)[0] && rhs[1] == (*this)[1] && rhs[2] == (*this)[2] );
 }
 
 std::ostream& operator<<(std::ostream& output,const QuantumNumbers& out)
 {
-  output << "(" << out.Lz << "," << out.N_up << "," << out.N_down << ")";
+  const short& Lz = out[0];
+  const short& N_up = out[1];
+  const short& N_down = out[2];
+
+  output << "(" << Lz << "," << N_up << "," << N_down << ")";
   return output;
+}
+
+void QuantumNumbers::save(H5::CommonFG* RootGroup) const
+{
+    // We create only a transient datatype, because it could be tricky and probably
+    // expensive to commit it. Anyway this class is to be completely redesigned.
+    /*static H5::CompType QuantumNumbersType(sizeof(QuantumNumbers));
+    do_once
+	QuantumNumbersType.insertMember("Lz",offsetof(QuantumNumbers,Lz),H5::PredType::NATIVE_INT);
+	QuantumNumbersType.insertMember("N_up",sizeof(int),H5::PredType::NATIVE_INT);
+	QuantumNumbersType.insertMember("N_down",2*sizeof(int),H5::PredType::NATIVE_INT);
+    end_do_once
+
+    H5::DataSet DataSet = RootGroup->createDataSet("QuantumNumbers",QuantumNumbersType,H5::DataSpace());
+    int buf[3] = {Lz,N_up,N_down};
+    DataSet.write(buf,QuantumNumbersType);*/
+}
+
+void QuantumNumbers::load(const H5::CommonFG* RootGroup)
+{
+    /*static H5::CompType QuantumNumbersType(sizeof(*this));
+    do_once
+	QuantumNumbersType.insertMember("Lz",0,H5::PredType::NATIVE_INT);
+	QuantumNumbersType.insertMember("N_up",sizeof(int)QuantumNumbers,N_up),H5::PredType::NATIVE_INT);
+	QuantumNumbersType.insertMember("N_down",2*sizeof(int),H5::PredType::NATIVE_INT);
+    end_do_once
+
+    H5::DataSet DataSet = RootGroup->openDataSet("QuantumNumbers");
+    int buf[3];
+    DataSet.read(buf,QuantumNumbersType);
+    Lz = buf[0]; N_up = buf[1]; N_down = buf[2];*/
 }
 
 //class StatesClassification
 
 const std::vector<QuantumState>& StatesClassification::clstates( QuantumNumbers in )            //return st[in.Lz][in.N_up][in.N_down]
 {
-    return st[in.Lz][in.N_up][in.N_down];
+    return st[in[0]][in[1]][in[2]];
 }
 
 
 const QuantumState StatesClassification::cst( QuantumNumbers in, int m )            //return st[in.Lz][in.N_up][in.N_down][m]
 {
-    return st[in.Lz][in.N_up][in.N_down][m];
+    return st[in[0]][in[1]][in[2]][m];
 }
 
 const InnerQuantumState StatesClassification::getInnerState(QuantumState state)

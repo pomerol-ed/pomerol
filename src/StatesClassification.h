@@ -23,6 +23,7 @@
 #define __INCLUDE_STATESCLASSIFICATION_H
 
 #include"Misc.h"
+#include"HDF5Storage.h"
 #include"IndexClassification.h"
 
 struct BlockNumber {
@@ -41,17 +42,20 @@ struct BlockNumber {
 
 const BlockNumber ERROR_BLOCK_NUMBER = -1;
 
-struct QuantumNumbers {            
+struct QuantumNumbers : public std::vector<short>, public HDF5Storable {
 
-    int Lz;                    
-    int N_up;
-    int N_down;
+    //short Lz; 	[0]
+    //short N_up;	[1]
+    //short N_down;	[2]
 
     QuantumNumbers(int LZ, int N_UP, int N_DOWN);
     QuantumNumbers();
     friend std::ostream& operator<<(std::ostream& output, const QuantumNumbers& out);
     bool operator==(const QuantumNumbers &rhs)const ;
     bool operator<(const QuantumNumbers &rhs) const ;
+
+    void save(H5::CommonFG* RootGroup) const;
+    void load(const H5::CommonFG* RootGroup);
 };
 
 const QuantumNumbers ERROR_QUANTUM_NUMBERS = QuantumNumbers(0,-1,-1);
