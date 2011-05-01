@@ -13,7 +13,8 @@ libpomerol_a_SOURCES= output.cpp HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp
 	TwoParticleGFContainer.cpp GFContainer.cpp Misc.h ComputableObject.h LatticeAnalysis.h
 pomerolDiag_SOURCES=main.cpp 
 pomerolDiag_LDADD=libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -lhdf5 -lhdf5_cpp
-include_libpomerol_a=*.h
+libpomerol_a_includedir=$(includedir)/pomerol
+#libpomerol_a_include_HEADERS=*.h
 
 pomerolDiag_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a libpomerol.a
 
