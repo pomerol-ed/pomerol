@@ -43,12 +43,12 @@ PKG_CHECK_MODULES([hdf5], [hdf5 >= 1.8.0],[
                     AC_SUBST([hdf5_LIBS])
                     ],
                     [
-                    AC_MSG_ERROR(["No hdf5 >= 1.8.0 found. Check your $PKG_CONFIG_PATH or set --with-hdf5 flag "])
+                    AC_MSG_ERROR(["No hdf5 >= 1.8.0 found. Check your \$PKG_CONFIG_PATH or set --with-hdf5 flag "])
                     ]
                   )
-AC_CHECK_HEADERS([hdf5.h],,AC_MSG_ERROR(cannot find hdf5.h in hdf5))
-AC_CHECK_LIB(hdf5, H5Fflush,,AC_MSG_ERROR([invalid hdf5 in hdf5]))
-AC_CHECK_LIB(hdf5_hl, H5DSis_scale,,AC_MSG_ERROR(invalid hdf5 high-level library in hdf5))
+AC_CHECK_HEADERS([hdf5.h],,AC_MSG_ERROR(cannot find hdf5.h in hdf5 include path))
+AC_CHECK_LIB(hdf5, H5Fflush,,AC_MSG_ERROR([invalid hdf5 in hdf5 path]))
+AC_CHECK_LIB(hdf5_hl, H5DSis_scale,,AC_MSG_ERROR(invalid hdf5 high-level library in hdf5 path))
 
 #End :: Check HDF5 suport
 #Check Eigen3 via pkg-config 
