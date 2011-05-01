@@ -158,9 +158,9 @@ QuantumNumbers CreationOperator::mapsTo(QuantumNumbers in) // Require explicit k
   System.getSiteInfo(bit,lz,spin);
   QuantumNumbers q_out;
   if (spin == 1) 
-    q_out = QuantumNumbers(in.Lz + lz,in.N_up+1,in.N_down);
+    q_out = QuantumNumbers(in[0] + lz,in[1]+1,in[2]);
   else 
-    q_out = QuantumNumbers(in.Lz + lz,in.N_up,in.N_down+1);
+    q_out = QuantumNumbers(in[0] + lz,in[1],in[2]+1);
   return System.checkQuantumNumbers(q_out)?q_out:ERROR_QUANTUM_NUMBERS;
 }
 
@@ -178,9 +178,9 @@ QuantumNumbers AnnihilationOperator::mapsTo(QuantumNumbers in) // Require explic
   System.getSiteInfo(bit,lz,spin);
   QuantumNumbers q_out;
   if (spin == 1) 
-    q_out = QuantumNumbers(in.Lz - lz,in.N_up-1,in.N_down);
+    q_out = QuantumNumbers(in[0] - lz,in[1]-1,in[2]);
   else 
-    q_out = QuantumNumbers(in.Lz - lz,in.N_up,in.N_down-1);
+    q_out = QuantumNumbers(in[0] - lz,in[1],in[2]-1);
   return System.checkQuantumNumbers(q_out)?q_out:ERROR_QUANTUM_NUMBERS;
 }
 
