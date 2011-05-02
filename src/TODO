@@ -1,5 +1,5 @@
 Shortlist:
-- Document FieldOperator.h, FieldOperatorPart.h, GFContainer.h, Hamiltonian.h, HamiltonianPart.h, IndexClassification.h, LatticeAnalysis.h, 
+- Document FieldOperatorPart.h, GFContainer.h, Hamiltonian.h, HamiltonianPart.h, IndexClassification.h, LatticeAnalysis.h, 
 Term.h, Thermal.h (if needed).
 - Cleanup HamiltonianPart.h, introduce human-readable method names
 - Add something like 'We welcome reference' 

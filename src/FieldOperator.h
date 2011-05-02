@@ -37,7 +37,7 @@
 #include"FieldOperatorPart.h"
 
 /** \typedef 
- * A unique correspondence between BlockNumber and product of an operator acting on this Block
+ * A pair of left and right indices of a part in a Field Operator. Each part is a non-vanishing worldline in an operator
  */
 typedef std::pair<BlockNumber,BlockNumber> BlockMapping;
 
@@ -55,38 +55,57 @@ protected:
 
     /** An index of the operator */
     ParticleIndex Index;
-    /** A vector of parts. Each part corresponds to a non-vanishing worldline in an operator */
+    /** A vector of parts */
     std::vector<FieldOperatorPart*> Data;
-    /** A map from non-zero parts to their BlockNumbers  */
-    std::map<unsigned int,BlockNumber> mapPartsFromRight;        // A map from non-zero parts to their BlockNumber indices
-    std::map<unsigned int,BlockNumber> mapPartsFromLeft;        // A map from output index to input index, hence there is a unique transform
-    std::map<BlockNumber,BlockNumber> mapRightToLeftIndex;        // A map from output index to input index, hence there is a unique transform
-    std::map<BlockNumber,BlockNumber> mapLeftToRightIndex;        // A map from output index to input index, hence there is a unique transform
+    /** A map between non-vanishing parts and their right BlockNumbers  */
+    std::map<unsigned int,BlockNumber> mapPartsFromRight;      
+    /** A map between non-vanishing parts and their right BlockNumbers  */
+    std::map<unsigned int,BlockNumber> mapPartsFromLeft;        
+    /** A map from right to left BlockNumbers of non-vanishing parts */
+    std::map<BlockNumber,BlockNumber> mapRightToLeftIndex;   
+    /** A map from left to right BlockNumbers of non-vanishing parts */
+    std::map<BlockNumber,BlockNumber> mapLeftToRightIndex; 
+    /** A list of indices of non-vanishing part */
     std::list<BlockMapping> LeftRightIndices;
 
     virtual BlockNumber mapsTo(BlockNumber RightIndex)=0;
     virtual QuantumNumbers mapsTo(QuantumNumbers in)=0;
 
 public:
+    /** Constructor
+     * \param[in] IndexInfo A reference to an IndexClassification object
+     * \param[in] System A reference to a StatesClassification object
+     * \param[in] H A reference to a Hamiltonian object
+     * \param[in] Index An index of an operator
+     */
     FieldOperator(IndexClassification &IndexInfo, StatesClassification &System, Hamiltonian &H, ParticleIndex Index);
 
+    /** Returns a FieldOperatorPart based on its left BlockNumber */
     FieldOperatorPart& getPartFromLeftIndex(BlockNumber in);
+    /** Returns a FieldOperatorPart based on its left QuantumNumbers */
     FieldOperatorPart& getPartFromLeftIndex(QuantumNumbers in);
+    /** Returns a FieldOperatorPart based on its right BlockNumber */
     FieldOperatorPart& getPartFromRightIndex(BlockNumber out);
+    /** Returns a FieldOperatorPart based on its right QuantumNumbers */
     FieldOperatorPart& getPartFromRightIndex(QuantumNumbers out);
+    /** Returns a left BlockNumber for a given right BlockNumber */
     BlockNumber getLeftIndex(BlockNumber RightIndex);
+    /** Returns a right BlockNumber for a given left BlockNumber */
     BlockNumber getRightIndex(BlockNumber LeftIndex);
+    /** Returns a list of indices of non-vanishing parts */
     std::list<BlockMapping>& getNonTrivialIndices();
 
+    /** Returns acting ParticleIndex of current operator */
+    ParticleIndex getIndex() const;
+    /** Virtual method for assigning world-lines */
     virtual void prepare()=0;
-    
+    /** Computes all world-lines */
     void compute();
-    void dump();
-    void print_to_screen();
-    unsigned short getIndex() const;
 };
 
+/** A creation operator in the eigenspace of a Hamiltonian */
 class CreationOperator;
+/** An annihilation operator in the eigenspace of a Hamiltonian */
 class AnnihilationOperator;
 
 class CreationOperator : public FieldOperator
@@ -95,9 +114,16 @@ class CreationOperator : public FieldOperator
     BlockNumber mapsTo(BlockNumber RightIndex);
     QuantumNumbers mapsTo(QuantumNumbers in);
 public:
+    /* Returns hermitian conjugate of current operator */
     AnnihilationOperator& transpose();
-        void prepare();
-    
+    void prepare();
+
+    /** Constructor
+     * \param[in] IndexInfo A reference to an IndexClassification object
+     * \param[in] System A reference to a StatesClassification object
+     * \param[in] H A reference to a Hamiltonian object
+     * \param[in] Index An index of an operator
+     */
     CreationOperator(IndexClassification &IndexInfo, StatesClassification &System, Hamiltonian &H, ParticleIndex Index);
 };
 
@@ -107,9 +133,17 @@ class AnnihilationOperator : public FieldOperator
     BlockNumber mapsTo(BlockNumber RightIndex);
     QuantumNumbers mapsTo(QuantumNumbers in);
 public:
+    /* Returns hermitian conjugate of current operator */
     CreationOperator& transpose();
-        void prepare();
     
+    void prepare();
+
+    /** Constructor
+     * \param[in] IndexInfo A reference to an IndexClassification object
+     * \param[in] System A reference to a StatesClassification object
+     * \param[in] H A reference to a Hamiltonian object
+     * \param[in] Index An index of an operator
+     */
     AnnihilationOperator(IndexClassification &IndexInfo, StatesClassification &System, Hamiltonian &H, ParticleIndex Index);
 };
 

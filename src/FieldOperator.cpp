@@ -59,15 +59,6 @@ FieldOperatorPart& FieldOperator::getPartFromLeftIndex(QuantumNumbers in)
   return *Data[mapPartsFromLeft[System.getBlockNumber(in)]];
 }
 
-void FieldOperator::print_to_screen()
-{
-  size_t size = Data.size();
-  for (unsigned int b_in=0;b_in<size;b_in++)
-  {
-        Data[b_in]->print_to_screen();
-  };
-}
-
 void FieldOperator::compute()
 {
 if (Status < Computed ){
@@ -82,16 +73,7 @@ if (Status < Computed ){
     };
 }
 
-void FieldOperator::dump()
-{
-  size_t size = Data.size();
-  for (unsigned int b_in=0;b_in<size;b_in++)
-  {
-        Data[b_in]->dump();
-  };
-}
-
-unsigned short FieldOperator::getIndex() const
+ParticleIndex FieldOperator::getIndex() const
 { 
     return Index;
 }
