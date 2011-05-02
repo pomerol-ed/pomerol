@@ -1,13 +1,16 @@
 Shortlist:
-- Documentation
-- Add GPL License information to the code, add something like 'We welcome citations' 
-- Find equivalent permutations of sites of the lattice, find equivalent index permutations
+- Document FieldOperator.h, FieldOperatorPart.h, GFContainer.h, Hamiltonian.h, HamiltonianPart.h, IndexClassification.h, LatticeAnalysis.h, 
+Term.h, Thermal.h (if needed).
+- Cleanup HamiltonianPart.h, introduce human-readable method names
+- Add something like 'We welcome reference' 
+- Create a first tag
 ---------------------------------------------------------------------------------------------------------------
 Forthcoming:
 - HDF5 support, dump and readin from a single .h5 file, implement resume from precalculated part of data
+- Document HDFStorage.h
 - Rewrite StatesClassification class and check it's methods
+- Find equivalent permutations of sites of the lattice, find equivalent index permutations
 ---------------------------------------------------------------------------------------------------------------
 Long standing plans:
 - MPI implementation 
-- autotools support
 - Liboperator support for more complex models, support of various basises

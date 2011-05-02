@@ -36,7 +36,8 @@
 #include"IndexClassification.h"
 
 /** This class represents a number of a current block of QuantumStates which have
- * the same quantum numbers. If such block cannot exist it's value is assigned to an ERROR_BLOCK_NUMBER
+ * the same quantum numbers. If such block can't exist ( can't be created by anyone else )
+ * it's value is assigned to an ERROR_BLOCK_NUMBER.
  * The classification of blocks is now done by StatesClassification class
  */
 struct BlockNumber {
@@ -55,7 +56,7 @@ struct BlockNumber {
     /** Type conversion to integer */
     operator int() const {return number;}
 
-    /** post-incremet operator */
+    /** post-increment operator */
     BlockNumber& operator ++(int unused){number++; return *this;}
 
     /** Returns true if such block exists */
@@ -69,7 +70,7 @@ struct BlockNumber {
 /** All blocks with this number are treated as nonexistent */
 const BlockNumber ERROR_BLOCK_NUMBER = -1;
 
-/** This struct is a set of QuantumNumbers */
+/** This struct is a set of quantum numbers, available in current model */
 // TODO: remove explicit dependence from Lz, N_up, N_down
 struct QuantumNumbers : public std::vector<short> {
 
