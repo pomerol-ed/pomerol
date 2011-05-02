@@ -47,8 +47,6 @@
 #ifdef pomerolOpenMP
 #include <omp.h>
 #endif
-
-#define REALTYPE_DOUBLE
 /** Real floating point type. */
 typedef double RealType;
 /** Complex type. */
@@ -148,4 +146,63 @@ end_do_once
 #define num_cout std::cout << std::setprecision(8) << std::setw(9) << std::left
 #define iomanip_prefs std::setprecision(8) << std::setw(9) << std::left
 
+/** \mainpage 
+ * \section   ref_intro Introduction
+ * pomerol is an Exact Diagonalization code, mostly oriented on computing single and two-particle Greens Functions and corresponding Vertex functions.
+ * It supports calculations of Hubbard model on finite size lattices. The lattices are provided with a *.json 
+ * files with a flag -l <LatticeFile> when executing pomerolDiag.
+ * \section   ref_API API
+ * The general sequence of a calculation is:
+ * -    Open a Lattice .json file ( by LatticeAnalysis )
+ * -    Define all indices of each mode of the system, i.e. site + spin indices ( by IndexClassification ). 
+ *      This is also a moment to discover symmetries against permutations of indices
+ * -    Define the Hilbert space in Fock basis - create QuantumStates and sort them into the blocks by their Quantum Numbers. ( by StatesClassification )
+ * -    Enter blocks of the hamiltonian ( by Hamiltonian and HamiltonianPart) and diagonalize them
+ * -    Find creation and annihilation operators in the space of EigenFunctions ( by FieldOperator and FieldOperatorPart )
+ * -    Calculate thermal quantities :
+ *      -   The density matrix ( by DensityMatrix and DensityMatrixPart )
+ *      -   The Greens Function ( by GreensFunction, GreensFunctionPart and GFContainer to store the values of GF for various index combinations )
+ *      -   The TwoParticle Greens Function ( by TwoParticleGF, TwoParticleGFPart and TwoParticleGFContainer )
+ * -    Calculcate the Vertex Function out of GF- and TwoParticleGF- containers - no work with Hilbert Space is done
+ * 
+ * This structure can be seen Class Hierarchy tab under Classes
+ *
+ * \section ref_conventions Conventions
+ *
+ * Greens Function:
+ * \f[
+ *      G(\omega_n) = -\int_0^\beta \langle\mathbf{T}c_i(\tau)c^+_j(0)\rangle e^{i\omega_n\tau} d\tau
+ * \f]
+ *
+ * Two-Particle Greens Function:
+ * \f[ \chi_{ijkl}(\omega_{n_1},\omega_{n_2};\omega_{n_3},\omega_{n_1}+\omega_{n_2}-\omega_{n_3}) =
+ *   -\int_0^\beta
+ *      \langle\mathbf{T} c_i(\tau_1)c_j(\tau_2)c^+_k(\tau_3)c^+_l(0) \rangle
+ *      \exp(i\omega_{n_1}\tau_1+i\omega_{n_2}\tau_2-i\omega_{n_3}\tau_3)
+ *    d\tau_1 d\tau_2 d\tau_3
+ * \f]
+ *
+ * An irreducible vertex part:
+ * \f[ \Gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv 
+ *     \chi_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) -
+ *     \chi^{0}_{1234}(\omega_1,\omega_2;\omega_3,\omega_4)
+ * \f]
+ *
+ * An amputated irreducible vertex part:
+ * \f[ \gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv 
+ *     \sum_{1'2'3'4'}
+ *     (g^{-1}(\omega_1))_{11'} (g^{-1}(\omega_2))_{22'}
+ *     \Gamma_{1'2'3'4'}(\omega_1,\omega_2;\omega_3,\omega_4)
+ *     (g^{-1}(\omega_3))_{3'3} (g^{-1}(\omega_4))_{4'4}
+ * \f]
+ *
+ *
+ * \section ref_authors Authors
+ *      Andrey Antipov <antipov[at]ct-qmc.org>
+ *      Igor Krivenko <igor[at]shg.ru>
+ *
+ * with kind help of Mikhail Alejnikov, Alexey Rubtsov, Christoph Jung and Aljoscha Wilhelm
+ */
+
 #endif // #ifndef __INCLUDE_MISC_H
+
