@@ -42,6 +42,7 @@ class HDF5Storage : public H5::H5File {
     static const unsigned int* initHDF5(void);
 
     H5::CompType ComplexDataType;
+
     const H5::CompType initCompexDataType(void);
 
     static bool fileExists(const std::string& FileName);
