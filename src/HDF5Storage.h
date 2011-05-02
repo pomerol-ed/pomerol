@@ -59,12 +59,16 @@ public:
     static void saveRealVector(H5::CommonFG* FG, const std::string& Name, const RealVectorType& V);
     static void saveRealMatrix(H5::CommonFG* FG, const std::string& Name, const RealMatrixType& M);
     static void saveMatrix(H5::CommonFG* FG, const std::string& Name, const MatrixType& M);
+    static void saveColMajorMatrix(H5::CommonFG* FG, const std::string& Name, const ColMajorMatrixType& CMSM);
+    static void saveRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, const RowMajorMatrixType& RMSM);
 
     static RealType loadReal(const H5::CommonFG* FG, const std::string& Name);
     static ComplexType loadComplex(const H5::CommonFG* FG, const std::string& Name);
     static void loadRealVector(const H5::CommonFG* FG, const std::string& Name, RealVectorType& V);
     static void loadRealMatrix(const H5::CommonFG* FG, const std::string& Name, RealMatrixType& M);
     static void loadMatrix(const H5::CommonFG* FG, const std::string& Name, MatrixType& M);
+    static void loadColMajorMatrix(H5::CommonFG* FG, const std::string& Name, ColMajorMatrixType& CMSM);
+    static void loadRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, RowMajorMatrixType& RMSM);
 };
 
 #endif // endif :: #ifndef __INCLUDE_HDF5STORAGE_H

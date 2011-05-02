@@ -253,6 +253,23 @@ int main(int argc, char *argv[])
   //HDF5Storage storage2("test2.h5");
   //storage2.save(H2);
   //exit(0);
+  //RowMajorMatrixType SP1(2,3);
+  //SP1.startVec(0);
+  //SP1.insertBack(0,0) = 1;
+  //SP1.insertBack(0,1) = 2;
+  //SP1.insertBack(0,2) = 3;
+  //SP1.startVec(1);
+  //SP1.insertBack(1,0) = 4;
+  //SP1.insertBack(1,1) = 5;
+  //SP1.insertBack(1,2) = 6;
+  //SP1.finalize();
+  
+  //DEBUG("SP1" << SP1)
+  //HDF5Storage::saveRowMajorMatrix(&storage,"SP",SP1);
+  //RowMajorMatrixType SP2;
+  //HDF5Storage::loadRowMajorMatrix(&storage,"SP",SP2);
+  //DEBUG("SP2" << SP2)
+  //exit(0);
 
   num_cout << std::endl << "The value of ground energy is " << H.getGroundEnergy() << std::endl;
 

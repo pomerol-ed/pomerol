@@ -37,7 +37,7 @@ const unsigned int* HDF5Storage::initHDF5()
 
     INFO("Initializing HDF5 Library (version " << V[0] << "." << V[1] << "." << V[2] << ")...")
     H5::H5Library::open();
-    H5::Exception::dontPrint();
+    //H5::Exception::dontPrint();
 
     return V;
 }
@@ -209,4 +209,144 @@ void HDF5Storage::loadMatrix(const H5::CommonFG* FG, const std::string& Name, Ma
 
     M.resize(Dims[0],Dims[1]);
     DataSet.read(M.data(),ComplexDataType);
+}
+
+// Save/load ColMajorMatrix
+void HDF5Storage::saveColMajorMatrix(H5::CommonFG* FG, const std::string& Name, const ColMajorMatrixType& CMSM)
+{
+    // WARNING: This method uses undocumented methods of SparseMatrix
+    H5::Group Group = FG->createGroup(Name.c_str());
+
+    // Save outer indices array
+    int outerSize = CMSM.outerSize();
+    hsize_t outerDim[1] = {outerSize};
+    H5::DataSpace outerDataSpace(1,outerDim);
+    Group.createDataSet("outerIndex",H5::PredType::NATIVE_INT,outerDataSpace)
+	.write(CMSM._outerIndexPtr(),H5::PredType::NATIVE_INT);
+
+    // Save inner size
+    int innerSize = CMSM.innerSize();
+    Group.createDataSet("innerSize",H5::PredType::NATIVE_INT,H5::DataSpace())
+	.write(&innerSize,H5::PredType::NATIVE_INT);
+
+    // Save data
+    hsize_t innerDim[1] = {CMSM.nonZeros()};
+    H5::DataSpace innerDataSpace(1,innerDim);
+    Group.createDataSet("innerIndex",H5::PredType::NATIVE_INT,innerDataSpace)
+	.write(CMSM._innerIndexPtr(),H5::PredType::NATIVE_INT);
+    Group.createDataSet("values",H5_REAL_TYPE,innerDataSpace)
+	.write(CMSM._valuePtr(),H5_REAL_TYPE);
+}
+
+void HDF5Storage::loadColMajorMatrix(H5::CommonFG* FG, const std::string& Name, ColMajorMatrixType& CMSM)
+{
+    // WARNING: This method uses undocumented methods of SparseMatrix
+    H5::Group Group = FG->openGroup(Name.c_str());
+
+    H5::DataSet outerIndexDataSet = Group.openDataSet("outerIndex");
+    H5::DataSpace outerIndexDataSpace = outerIndexDataSet.getSpace();
+    if(outerIndexDataSpace.getSimpleExtentNdims() != 1)
+	throw(H5::DataSpaceIException("HDF5Storage::loadColMajorMatrix()",
+				      "Unexpected multidimentional dataspace."));
+    int outerSize = outerIndexDataSpace.getSimpleExtentNpoints();
+
+    int innerSize;
+    Group.openDataSet("innerSize").read(&innerSize,H5::PredType::NATIVE_INT);;
+
+    CMSM.resize(innerSize,outerSize);
+
+    outerIndexDataSet.read(CMSM._outerIndexPtr(),H5::PredType::NATIVE_INT);
+
+    H5::DataSet innerIndexDataSet = Group.openDataSet("innerIndex");
+    H5::DataSet valuesDataSet = Group.openDataSet("values");
+    H5::DataSpace innerIndexDataSpace = innerIndexDataSet.getSpace();
+    H5::DataSpace valuesDataSpace = valuesDataSet.getSpace();
+    if(	innerIndexDataSpace.getSimpleExtentNdims() != 1 ||
+	valuesDataSpace.getSimpleExtentNdims() != 1)
+	throw(H5::DataSpaceIException("HDF5Storage::loadColMajorMatrix()",
+				      "Unexpected multidimentional dataspace."));
+    int innerIndexPoints = innerIndexDataSpace.getSimpleExtentNpoints();
+    int valuesPoints = valuesDataSpace.getSimpleExtentNpoints();
+    if(innerIndexPoints != valuesPoints)
+	throw(H5::DataSpaceIException("HDF5Storage::loadColMajorMatrix()",
+				      "innerIndex and values arrays must have the same number of elements."));
+    if(innerIndexPoints > innerSize*outerSize)
+	throw(H5::DataSpaceIException("HDF5Storage::loadColMajorMatrix()",
+				      "Number of nonzero elements must not exceed "
+				      "innerSize*outerSize."));
+
+    CMSM.resizeNonZeros(valuesPoints);
+    innerIndexDataSet.read(CMSM._innerIndexPtr(),H5::PredType::NATIVE_INT);
+    valuesDataSet.read(CMSM._valuePtr(),H5_REAL_TYPE);
+    CMSM.finalize();
+}
+
+// Save/load RowMajorMatrix
+void HDF5Storage::saveRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, const RowMajorMatrixType& RMSM)
+{
+    // WARNING: This method uses undocumented methods of SparseMatrix
+    H5::Group Group = FG->createGroup(Name.c_str());
+
+    // Save outer indices array
+    int outerSize = RMSM.outerSize();
+    hsize_t outerDim[1] = {outerSize};
+    H5::DataSpace outerDataSpace(1,outerDim);
+    Group.createDataSet("outerIndex",H5::PredType::NATIVE_INT,outerDataSpace)
+	.write(RMSM._outerIndexPtr(),H5::PredType::NATIVE_INT);
+
+    // Save inner size
+    int innerSize = RMSM.innerSize();
+    Group.createDataSet("innerSize",H5::PredType::NATIVE_INT,H5::DataSpace())
+	.write(&innerSize,H5::PredType::NATIVE_INT);
+
+    // Save data
+    hsize_t innerDim[1] = {RMSM.nonZeros()};
+    H5::DataSpace innerDataSpace(1,innerDim);
+    Group.createDataSet("innerIndex",H5::PredType::NATIVE_INT,innerDataSpace)
+	.write(RMSM._innerIndexPtr(),H5::PredType::NATIVE_INT);
+    Group.createDataSet("values",H5_REAL_TYPE,innerDataSpace)
+	.write(RMSM._valuePtr(),H5_REAL_TYPE);
+}
+
+void HDF5Storage::loadRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, RowMajorMatrixType& RMSM)
+{
+    // WARNING: This method uses undocumented methods of SparseMatrix
+    H5::Group Group = FG->openGroup(Name.c_str());
+
+    H5::DataSet outerIndexDataSet = Group.openDataSet("outerIndex");
+    H5::DataSpace outerIndexDataSpace = outerIndexDataSet.getSpace();
+    if(outerIndexDataSpace.getSimpleExtentNdims() != 1)
+	throw(H5::DataSpaceIException("HDF5Storage::loadRowMajorMatrix()",
+				      "Unexpected multidimentional dataspace."));
+    int outerSize = outerIndexDataSpace.getSimpleExtentNpoints();
+
+    int innerSize;
+    Group.openDataSet("innerSize").read(&innerSize,H5::PredType::NATIVE_INT);;
+
+    RMSM.resize(outerSize,innerSize);
+
+    outerIndexDataSet.read(RMSM._outerIndexPtr(),H5::PredType::NATIVE_INT);
+
+    H5::DataSet innerIndexDataSet = Group.openDataSet("innerIndex");
+    H5::DataSet valuesDataSet = Group.openDataSet("values");
+    H5::DataSpace innerIndexDataSpace = innerIndexDataSet.getSpace();
+    H5::DataSpace valuesDataSpace = valuesDataSet.getSpace();
+    if(	innerIndexDataSpace.getSimpleExtentNdims() != 1 ||
+	valuesDataSpace.getSimpleExtentNdims() != 1)
+	throw(H5::DataSpaceIException("HDF5Storage::loadRowMajorMatrix()",
+				      "Unexpected multidimentional dataspace."));
+    int innerIndexPoints = innerIndexDataSpace.getSimpleExtentNpoints();
+    int valuesPoints = valuesDataSpace.getSimpleExtentNpoints();
+    if(innerIndexPoints != valuesPoints)
+	throw(H5::DataSpaceIException("HDF5Storage::loadRowMajorMatrix()",
+				      "innerIndex and values arrays must have the same number of elements."));
+    if(innerIndexPoints > innerSize*outerSize)
+	throw(H5::DataSpaceIException("HDF5Storage::loadRowMajorMatrix()",
+				      "Number of nonzero elements must not exceed "
+				      "innerSize*outerSize."));
+
+    RMSM.resizeNonZeros(valuesPoints);
+    innerIndexDataSet.read(RMSM._innerIndexPtr(),H5::PredType::NATIVE_INT);
+    valuesDataSet.read(RMSM._valuePtr(),H5_REAL_TYPE);
+    RMSM.finalize();
 }
