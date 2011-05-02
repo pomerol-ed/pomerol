@@ -27,12 +27,25 @@
 */
 #include "GreensFunctionPart.h"
 
-GreensFunctionPart::GreensTerm::GreensTerm(ComplexType Residue, ComplexType Pole) : Residue(Residue), Pole(Pole) {};
-ComplexType GreensFunctionPart::GreensTerm::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
+GreensFunctionPart::Term::Term(ComplexType Residue, RealType Pole) : Residue(Residue), Pole(Pole) {};
+ComplexType GreensFunctionPart::Term::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
 
-std::ostream& operator<<(std::ostream& out, const GreensFunctionPart::GreensTerm& Term)
+inline
+GreensFunctionPart::Term& GreensFunctionPart::Term::operator+=(const Term& AnotherTerm)
 {
-    out << Term.Residue << "/(z - " << Term.Pole << ")";
+    Residue += AnotherTerm.Residue;
+    return *this;
+}
+
+inline
+bool GreensFunctionPart::Term::isSimilarTo(const Term& AnotherTerm) const
+{
+    return (fabs(Pole - AnotherTerm.Pole) < ReduceResonanceTolerance);
+}
+
+std::ostream& operator<<(std::ostream& out, const GreensFunctionPart::Term& T)
+{
+    out << T.Residue << "/(z - " << T.Pole << ")";
     return out;
 }
 
@@ -74,8 +87,8 @@ void GreensFunctionPart::compute(void)
                 if(abs(Residue) > MatrixElementTolerance) // Is the residue relevant?
                 {
                     // Create a new term and append it to the list.
-                    ComplexType Pole = HpartInner.reV(C_index2) - HpartOuter.reV(index1);
-                    Terms.push_back(GreensTerm(Residue,Pole));
+                    RealType Pole = HpartInner.reV(C_index2) - HpartOuter.reV(index1);
+                    Terms.push_back(Term(Residue,Pole));
                 };
                 ++Cinner;   // The next non-zero element
                 ++CXinner;  // The next non-zero element
@@ -86,6 +99,8 @@ void GreensFunctionPart::compute(void)
             }
         }
     }
+
+    reduceTerms(ReduceTolerance/Terms.size(),Terms);
 }
 
 ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const
@@ -94,8 +109,29 @@ ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const
     ComplexType MatsubaraSpacing = I*M_PI/beta;
 
     ComplexType G = 0;
-    for(std::list<GreensTerm>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm)
+    for(std::list<Term>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm)
         G += (*pTerm)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1));
 
     return G;
 }
+
+void GreensFunctionPart::reduceTerms(const RealType Tolerance, std::list<Term> &Terms)
+{
+    // Sieve reduction of the terms
+    for(std::list<Term>::iterator it1 = Terms.begin(); it1 != Terms.end();){
+        std::list<Term>::iterator it2 = it1;
+        for(it2++; it2 != Terms.end();){
+            if(it1->isSimilarTo(*it2)){
+                *it1 += *it2;
+                it2 = Terms.erase(it2);
+            }else
+                it2++;
+        }
+
+        if(abs(it1->Residue) < Tolerance)
+            it1 = Terms.erase(it1);
+        else
+            it1++;
+    }
+}
+

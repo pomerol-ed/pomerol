@@ -57,31 +57,16 @@ class GreensFunctionPart : public ComputableObject, public Thermal
     /** A reference to a part of a creation operator. */
     CreationOperatorPart& CX;
 
-    /** Every term is a fraction \f$ \frac{R}{z - P} \f$. */
-    struct GreensTerm{
-        /** Residue at the pole (\f$ R \f$). */
-        ComplexType Residue;
-        /** Position of the pole (\f$ P \f$). */
-        ComplexType Pole;
+    struct Term;
 
-        /** Constructor.
-         * \param[in] Residue Value of the residue.
-         * \param[in] Pole Position of the pole.
-         */
-        GreensTerm(ComplexType Residue, ComplexType Pole);
-        /** Returns a contribution to the Green's function made by this term.
-        * \param[in] Frequency Complex frequency \f$ z \f$ to substitute into this term.
-        */
-        ComplexType operator()(ComplexType Frequency) const;
-    };
     /** A stream insertion operator for type GreensTerm.
      * \param[in] out An output stream to insert to.
      * \param[in] Term A term to be inserted.
      */
-    friend std::ostream& operator<< (std::ostream& out, const GreensFunctionPart::GreensTerm& Term);
+    friend std::ostream& operator<< (std::ostream& out, const GreensFunctionPart::Term& T);
 
     /** A list of all terms. */
-    std::list<GreensTerm> Terms;
+    std::list<Term> Terms;
 
     /** A matrix element with magnitude less than this value is treated as zero. */
     static const RealType MatrixElementTolerance = 1e-8;
@@ -106,8 +91,48 @@ public:
     * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi*(2*n+1)/\beta \f$).
     */
     ComplexType operator()(long MatsubaraNum) const;
+
+    /** Reduces the number of calculated terms 
+    * \param[in] Tolerance The tolerance for the terms cutoff.
+    * \param[in] ResonantTerms The list of terms.
+    */
+    static void reduceTerms(const RealType Tolerance, std::list<Term>& Terms);
+
+    /** A difference in energies with magnitude less than this value is treated as zero. */
+    static const RealType ReduceResonanceTolerance = 1e-8;//1e-16;
+    /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
+    static const RealType ReduceTolerance = 1e-8;
 };
 
-std::ostream& operator<< (std::ostream& out, const GreensFunctionPart::GreensTerm& Term);
+/** Every term is a fraction \f$ \frac{R}{z - P} \f$. */
+struct GreensFunctionPart::Term {
+    /** Residue at the pole (\f$ R \f$). */
+    ComplexType Residue;
+    /** Position of the pole (\f$ P \f$). */
+    RealType Pole;
+
+    /** Constructor.
+     * \param[in] Residue Value of the residue.
+     * \param[in] Pole Position of the pole.
+     */
+    Term(ComplexType Residue, RealType Pole);
+    /** Returns a contribution to the Green's function made by this term.
+     * \param[in] Frequency Complex frequency \f$ z \f$ to substitute into this term.
+     */
+    ComplexType operator()(ComplexType Frequency) const;
+
+    /** This operator add a term to this one.
+    * It does not check the similarity of the terms! 
+    * \param[in] AnotherTerm Another term to add to this.
+    */
+    Term& operator+=(const Term& AnotherTerm);
+
+    /** Returns true if another term is similar to this
+     * (sum of the terms is again a correct term).
+    */
+    bool isSimilarTo(const Term& T) const;
+};
+
+std::ostream& operator<< (std::ostream& out, const GreensFunctionPart::Term& T);
 
 #endif // endif :: #ifndef __INCLUDE_GREENSFUNCTIONPART_H
