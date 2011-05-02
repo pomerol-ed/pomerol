@@ -167,7 +167,7 @@ end_do_once
  *      -   The density matrix ( by DensityMatrix and DensityMatrixPart )
  *      -   The Greens Function ( by GreensFunction, GreensFunctionPart and GFContainer to store the values of GF for various index combinations )
  *      -   The TwoParticle Greens Function ( by TwoParticleGF, TwoParticleGFPart and TwoParticleGFContainer )
- * -    Calculcate the Vertex Function out of GF- and TwoParticleGF- containers - no work with Hilbert Space is done
+ * -    Calculcate the Vertex Function out of GF- and TwoParticleGF- containers - no work with Hilbert Space is done ( by Vertex4 )
  * 
  * A hint: Refer to <a href="inherits.html">a Class Hierarchy</a> if provided
  *
@@ -175,7 +175,7 @@ end_do_once
  *
  * \par Greens Function
  * \f[
- *      G(\omega_n) = -\int_0^\beta \langle\mathbf{T}c_i(\tau)c^+_j(0)\rangle e^{i\omega_n\tau} d\tau
+ *      g(\omega_n) = -\int_0^\beta \langle\mathbf{T}c_i(\tau)c^+_j(0)\rangle e^{i\omega_n\tau} d\tau
  * \f]
  *
  * \par Two-Particle Greens Function:
