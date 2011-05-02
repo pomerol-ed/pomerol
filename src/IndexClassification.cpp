@@ -21,13 +21,13 @@
 
 #include "IndexClassification.h"
 
-std::ostream& operator<<(std::ostream& output,const sIndexInfo& out)
+std::ostream& operator<<(std::ostream& output,const sSingleIndex& out)
 {
 output << "Index " << out.bitNumber << " of s-orbital, site N " << out.site << ", spin " << ((out.spin==1)?"up  ":"down") << ", U= " << out.U; 
 return output;
 }
 
-std::ostream& operator<<(std::ostream& output,const pIndexInfo& out)
+std::ostream& operator<<(std::ostream& output,const pSingleIndex& out)
 {
 output << "Index " << out.bitNumber << " of p-orbital, site N " << out.site << ", spin " << ((out.spin==1)?"up  ":"down") << ", U= " << out.U << ", J=" << out.J; 
 return output;
@@ -44,7 +44,7 @@ int IndexClassification::prepare()
 }
 
 
-void IndexInfo::setIndexNumber(const unsigned short& in)
+void SingleIndex::setIndexNumber(const unsigned short& in)
 {
   bitNumber = in;
 }
@@ -66,10 +66,10 @@ void IndexClassification::defineIndices()
             case s: 
                 {
                     sLatticeSite S = (sLatticeSite&)(**SiteIterator);
-                    sIndexInfo *S1 = new sIndexInfo(S.number,s,0,S.U,S.LocalMu);
-                    sIndexInfo *S2 = new sIndexInfo(S.number,s,1,S.U,S.LocalMu);
-                    IndexInfoList.insert(IndexInfoList.begin()+N_bit/2,S1);
-                    IndexInfoList.push_back(S2);
+                    sSingleIndex *S1 = new sSingleIndex(S.number,s,0,S.U,S.LocalMu);
+                    sSingleIndex *S2 = new sSingleIndex(S.number,s,1,S.U,S.LocalMu);
+                    SingleIndexList.insert(SingleIndexList.begin()+N_bit/2,S1);
+                    SingleIndexList.push_back(S2);
 
                     N_bit+=2; 
                     break;
@@ -78,18 +78,18 @@ void IndexClassification::defineIndices()
             case p: 
                 {
                     pLatticeSite P = (pLatticeSite&)(**SiteIterator);
-                    pIndexInfo *P1 = new pIndexInfo(P.number,p,0,0,P.basis,P.U,P.J);
-                    pIndexInfo *P2 = new pIndexInfo(P.number,p,0,1,P.basis,P.U,P.J);
-                    pIndexInfo *P3 = new pIndexInfo(P.number,p,0,2,P.basis,P.U,P.J);
-                    pIndexInfo *P4 = new pIndexInfo(P.number,p,1,0,P.basis,P.U,P.J);
-                    pIndexInfo *P5 = new pIndexInfo(P.number,p,1,1,P.basis,P.U,P.J);
-                    pIndexInfo *P6 = new pIndexInfo(P.number,p,1,2,P.basis,P.U,P.J);
-                    IndexInfoList.insert(IndexInfoList.begin()+N_bit/2,P3);
-                    IndexInfoList.insert(IndexInfoList.begin()+N_bit/2,P2);
-                    IndexInfoList.insert(IndexInfoList.begin()+N_bit/2,P1);
-                    IndexInfoList.push_back(P4);
-                    IndexInfoList.push_back(P5);
-                    IndexInfoList.push_back(P6);
+                    pSingleIndex *P1 = new pSingleIndex(P.number,p,0,0,P.basis,P.U,P.J);
+                    pSingleIndex *P2 = new pSingleIndex(P.number,p,0,1,P.basis,P.U,P.J);
+                    pSingleIndex *P3 = new pSingleIndex(P.number,p,0,2,P.basis,P.U,P.J);
+                    pSingleIndex *P4 = new pSingleIndex(P.number,p,1,0,P.basis,P.U,P.J);
+                    pSingleIndex *P5 = new pSingleIndex(P.number,p,1,1,P.basis,P.U,P.J);
+                    pSingleIndex *P6 = new pSingleIndex(P.number,p,1,2,P.basis,P.U,P.J);
+                    SingleIndexList.insert(SingleIndexList.begin()+N_bit/2,P3);
+                    SingleIndexList.insert(SingleIndexList.begin()+N_bit/2,P2);
+                    SingleIndexList.insert(SingleIndexList.begin()+N_bit/2,P1);
+                    SingleIndexList.push_back(P4);
+                    SingleIndexList.push_back(P5);
+                    SingleIndexList.push_back(P6);
                     N_bit+=6; 
                     break;
                 }
@@ -99,19 +99,19 @@ void IndexClassification::defineIndices()
         }
 
     }
-  for (unsigned short bit = 0; bit < IndexInfoList.size(); bit++ ) IndexInfoList[bit]->setIndexNumber(bit);
+  for (unsigned short bit = 0; bit < SingleIndexList.size(); bit++ ) SingleIndexList[bit]->setIndexNumber(bit);
 }
 
 void IndexClassification::defineTerms()
 {
     INFO("IndexClassification: Defining all local terms");
-   for (unsigned short bit = 0; bit < IndexInfoList.size()/2; bit++ ) 
+   for (unsigned short bit = 0; bit < SingleIndexList.size()/2; bit++ ) 
       {
-     switch (IndexInfoList[bit]->type)
+     switch (SingleIndexList[bit]->type)
         {
                 case s:
              {
-               sIndexInfo *current = (sIndexInfo*) IndexInfoList[bit];
+               sSingleIndex *current = (sSingleIndex*) SingleIndexList[bit];
              Term *T1 = new nnTerm(bit,bit+N_bit/2,current->U);
              Terms.addTerm(T1);    
              Term *N1 = new nTerm(bit,-current->LocalMu);
@@ -122,13 +122,13 @@ void IndexClassification::defineTerms()
              };
            case p:
              {
-             pIndexInfo *list[6];
-             list[0]=(pIndexInfo*) IndexInfoList[bit];
-             list[1]=(pIndexInfo*) IndexInfoList[bit+1];
-             list[2]=(pIndexInfo*) IndexInfoList[bit+2];
-             list[3]=(pIndexInfo*) IndexInfoList[bit+N_bit/2];
-             list[4]=(pIndexInfo*) IndexInfoList[bit+N_bit/2+1];
-             list[5]=(pIndexInfo*) IndexInfoList[bit+N_bit/2+2];
+             pSingleIndex *list[6];
+             list[0]=(pSingleIndex*) SingleIndexList[bit];
+             list[1]=(pSingleIndex*) SingleIndexList[bit+1];
+             list[2]=(pSingleIndex*) SingleIndexList[bit+2];
+             list[3]=(pSingleIndex*) SingleIndexList[bit+N_bit/2];
+             list[4]=(pSingleIndex*) SingleIndexList[bit+N_bit/2+1];
+             list[5]=(pSingleIndex*) SingleIndexList[bit+N_bit/2+2];
 
              // The array of all bits for p-orbital is created. First 3 bits are one spin direction, second 3 bits correspond to opposite direction.
              if ((list[0]->basis == "spherical") || (list[0]->basis=="Spherical")) definePorbitalSphericalTerms(list); 
@@ -160,30 +160,30 @@ void IndexClassification::defineEquivalentIndexPermutations()
     EquivalentPermutations.push_back(IndexPermutation(CurrentAcceptedPermutation));
 }
 
-void IndexClassification::printIndexInfoList()
+void IndexClassification::printIndexList()
 {
-  for (std::vector<IndexInfo*>::iterator it=IndexInfoList.begin(); it != IndexInfoList.end(); it++ ) (*it)->print_to_screen();
+  for (std::vector<SingleIndex*>::iterator it=SingleIndexList.begin(); it != SingleIndexList.end(); it++ ) (*it)->print_to_screen();
 }
 
 unsigned short IndexClassification::findIndex(const unsigned short &site, const unsigned short &orbital, const unsigned short &spin)
 {
-  for (unsigned short bit = 0; bit < IndexInfoList.size(); bit++ ) 
-      if (IndexInfoList[bit]->site == site && IndexInfoList[bit]->spin == spin) 
+  for (unsigned short bit = 0; bit < SingleIndexList.size(); bit++ ) 
+      if (SingleIndexList[bit]->site == site && SingleIndexList[bit]->spin == spin) 
         { 
-          if (IndexInfoList[bit]->type == s) return bit;
-          if (IndexInfoList[bit]->type == p)
+          if (SingleIndexList[bit]->type == s) return bit;
+          if (SingleIndexList[bit]->type == p)
             {
-          pIndexInfo *current = (pIndexInfo*) IndexInfoList[bit];
+          pSingleIndex *current = (pSingleIndex*) SingleIndexList[bit];
           if ( ((current->basis == "Spherical") || (current->basis == "spherical" )) && ( current->orbital == orbital)) return bit;
         };
           /*
-          if (IndexInfoList[bit]->type == "d")
+          if (SingleIndexList[bit]->type == "d")
             {
-          if ( ( IndexInfoList[bit]->basis = "Spherical" || IndexInfoList[bit]->basis = "spherical" ) && ( IndexInfoList[bit]->orbital == 3)) return bit;
+          if ( ( SingleIndexList[bit]->basis = "Spherical" || SingleIndexList[bit]->basis = "spherical" ) && ( SingleIndexList[bit]->orbital == 3)) return bit;
         };
-          if (IndexInfoList[bit]->type == "f")
+          if (SingleIndexList[bit]->type == "f")
             {
-          if ( ( IndexInfoList[bit]->basis = "Spherical" || IndexInfoList[bit]->basis = "spherical" ) && ( IndexInfoList[bit]->orbital == 5)) return bit;
+          if ( ( SingleIndexList[bit]->basis = "Spherical" || SingleIndexList[bit]->basis = "spherical" ) && ( SingleIndexList[bit]->orbital == 5)) return bit;
         };
         */
         }
@@ -238,9 +238,9 @@ RealMatrixType& IndexClassification::getHoppingMatrix()
   return HoppingMatrix;
 }
 
-std::vector<IndexInfo*>& IndexClassification::getIndexInfoList()
+std::vector<SingleIndex*>& IndexClassification::getSingleIndexList()
 {
-  return IndexInfoList;
+  return SingleIndexList;
 }
 const int& IndexClassification::getIndexSize() const
 {
@@ -262,7 +262,7 @@ const std::list<IndexClassification::IndexPermutation>&  IndexClassification::ge
     return EquivalentPermutations;
 }
 
-void IndexClassification::definePorbitalSphericalTerms(pIndexInfo **list)
+void IndexClassification::definePorbitalSphericalTerms(pSingleIndex **list)
 {
     RealType F0 = list[0]->U - 4./3.* list[1]->J; 
     RealType F2 = list[0]->J*25/3.;
@@ -298,7 +298,7 @@ void IndexClassification::definePorbitalSphericalTerms(pIndexInfo **list)
         }
     }
 };
-void IndexClassification::definePorbitalNativeTerms(pIndexInfo **list)
+void IndexClassification::definePorbitalNativeTerms(pSingleIndex **list)
 {
     RealType U = list[0]->U;
     RealType J = list[0]->J;

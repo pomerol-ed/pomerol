@@ -22,16 +22,16 @@
 #include "FieldOperator.h"
 extern std::ostream& OUTPUT_STREAM;
 
-FieldOperator::FieldOperator(StatesClassification &System, Hamiltonian &H, int bit) : ComputableObject(),
-    System(System), H(H), bit(bit)
+FieldOperator::FieldOperator(IndexClassification &IndexInfo, StatesClassification &System, Hamiltonian &H, ParticleIndex Index) : ComputableObject(),
+    IndexInfo(IndexInfo), System(System), H(H), Index(Index)
 {}
 
-CreationOperator::CreationOperator(StatesClassification &System, Hamiltonian &H, int bit) : 
-    FieldOperator(System,H,bit)
+CreationOperator::CreationOperator(IndexClassification &IndexInfo, StatesClassification &System, Hamiltonian &H, ParticleIndex Index) : 
+    FieldOperator(IndexInfo,System,H,Index)
 {}
 
-AnnihilationOperator::AnnihilationOperator(StatesClassification &System, Hamiltonian &H, int bit) : 
-    FieldOperator(System,H,bit)
+AnnihilationOperator::AnnihilationOperator(IndexClassification &IndexInfo, StatesClassification &System, Hamiltonian &H, ParticleIndex Index) : 
+    FieldOperator(IndexInfo,System,H,Index)
 {}
 
 std::list<BlockMapping>& FieldOperator::getNonTrivialIndices()
@@ -72,7 +72,7 @@ void FieldOperator::compute()
 {
 if (Status < Computed ){
     size_t size = Data.size();
-    INFO_NONEWLINE("FieldOperator_" << bit << ", computing: ")
+    INFO_NONEWLINE("FieldOperator_" << Index << ", computing: ")
     for (unsigned int b_in=0;b_in<size;b_in++){
         INFO_NONEWLINE( (int) ((1.0*b_in/size) * 100 ) << "  " << std::flush);
         Data[b_in]->compute();
@@ -93,7 +93,7 @@ void FieldOperator::dump()
 
 unsigned short FieldOperator::getIndex() const
 { 
-    return bit;
+    return Index;
 }
 
 void CreationOperator::prepare()
@@ -103,7 +103,7 @@ if (Status < Prepared){
     for (BlockNumber RightIndex=0;RightIndex<System.NumberOfBlocks();RightIndex++){
             BlockNumber LeftIndex = this->mapsTo(RightIndex);
             if (LeftIndex.isCorrect()){
-                FieldOperatorPart *Part = new CreationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex));
+                FieldOperatorPart *Part = new CreationOperatorPart(IndexInfo, System,H.part(RightIndex),H.part(LeftIndex), Index);
                 Data.push_back(Part);
                 //OUTPUT_STREAM << "Entering creation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) <<std::endl; 
                 mapPartsFromRight[RightIndex]=size;
@@ -115,7 +115,7 @@ if (Status < Prepared){
                 }    
             }
     Status=Prepared;
-    INFO("CreationOperator_" << bit <<": " << size << " parts will be computed");
+    INFO("CreationOperator_" << Index <<": " << size << " parts will be computed");
     };
 }
 
@@ -126,7 +126,7 @@ if (Status < Prepared){
     for (BlockNumber RightIndex=0;RightIndex<System.NumberOfBlocks();RightIndex++){
         BlockNumber LeftIndex = mapsTo(RightIndex);
         if (LeftIndex.isCorrect()){
-            FieldOperatorPart *Part = new AnnihilationOperatorPart(bit,System,H.part(RightIndex),H.part(LeftIndex));
+            FieldOperatorPart *Part = new AnnihilationOperatorPart(IndexInfo, System,H.part(RightIndex),H.part(LeftIndex), Index);
             Data.push_back(Part);
             //OUTPUT_STREAM << "Entering annihilation operator part " << System.getBlockInfo(RightIndex) << "->" << System.getBlockInfo(LeftIndex) << std::endl; 
             mapPartsFromRight[RightIndex]=size;
@@ -138,7 +138,7 @@ if (Status < Prepared){
             }    
         };
     Status=Prepared;
-    INFO("AnnihilationOperator_" << bit <<": " << size << " parts will be computed");
+    INFO("AnnihilationOperator_" << Index <<": " << size << " parts will be computed");
     };
 }
 
@@ -155,7 +155,7 @@ BlockNumber FieldOperator::getLeftIndex(BlockNumber RightIndex)
 QuantumNumbers CreationOperator::mapsTo(QuantumNumbers in) // Require explicit knowledge of QuantumNumbers structure - Not very good
 {
   int lz, spin;
-  System.getSiteInfo(bit,lz,spin);
+  System.getSiteInfo(Index,lz,spin);
   QuantumNumbers q_out;
   if (spin == 1) 
     q_out = QuantumNumbers(in[0] + lz,in[1]+1,in[2]);
@@ -175,7 +175,7 @@ BlockNumber CreationOperator::mapsTo(BlockNumber RightIndex)
 QuantumNumbers AnnihilationOperator::mapsTo(QuantumNumbers in) // Require explicit knowledge of QuantumNumbers structure - Not very good
 {
   int lz, spin;
-  System.getSiteInfo(bit,lz,spin);
+  System.getSiteInfo(Index,lz,spin);
   QuantumNumbers q_out;
   if (spin == 1) 
     q_out = QuantumNumbers(in[0] - lz,in[1]-1,in[2]);

@@ -26,8 +26,8 @@
 using std::stringstream;
 
 FieldOperatorPart::FieldOperatorPart(
-        int i, StatesClassification &S, HamiltonianPart &h_from,  HamiltonianPart &h_to) : 
-        ComputableObject(), i(i), S(S), h_from(h_from), h_to(h_to)
+        IndexClassification &IndexInfo, StatesClassification &S, HamiltonianPart &h_from,  HamiltonianPart &h_to, ParticleIndex i) : 
+        ComputableObject(), IndexInfo(IndexInfo), S(S), h_from(h_from), h_to(h_to), i(i)
 {};
 
 
@@ -123,14 +123,14 @@ void FieldOperatorPart::compute()
 
 // Functions of specialized classes
 
-AnnihilationOperatorPart::AnnihilationOperatorPart(int i, StatesClassification &S, 
-                                                   HamiltonianPart &h_from, HamiltonianPart &h_to) :
-FieldOperatorPart(i,S,h_from,h_to)
+AnnihilationOperatorPart::AnnihilationOperatorPart(IndexClassification &IndexInfo, StatesClassification &S, 
+                                                   HamiltonianPart &h_from, HamiltonianPart &h_to, ParticleIndex i) :
+FieldOperatorPart(IndexInfo,S,h_from,h_to,i)
 {}
 
-CreationOperatorPart::CreationOperatorPart(int i, StatesClassification &S, 
-                                                  HamiltonianPart &h_from, HamiltonianPart &h_to) :
-FieldOperatorPart(i,S,h_from,h_to)
+CreationOperatorPart::CreationOperatorPart(IndexClassification &IndexInfo, StatesClassification &S, 
+                                                  HamiltonianPart &h_from, HamiltonianPart &h_to, ParticleIndex i) :
+FieldOperatorPart(IndexInfo,S,h_from,h_to,i)
 {}
 
 QuantumState AnnihilationOperatorPart::retK(QuantumState L)							//return K for C
@@ -145,10 +145,10 @@ QuantumState CreationOperatorPart::retK(QuantumState L)							//return K for CX
 
 }
 
-int AnnihilationOperatorPart::mFunc(QuantumState state1, QuantumState state2, int i)
+int AnnihilationOperatorPart::mFunc(QuantumState state1, QuantumState state2, ParticleIndex i)
 {
 	int flag=1, p=0;
-	for (int m=0; m<S.N_b(); m++)
+	for (int m=0; m<IndexInfo.getIndexSize(); m++)
 	{
 		if( m == i )
 		{
@@ -166,10 +166,10 @@ int AnnihilationOperatorPart::mFunc(QuantumState state1, QuantumState state2, in
 	return (flag*(1-2*(p%2)));
 }
 
-int CreationOperatorPart::mFunc(QuantumState state1, QuantumState state2, int i)
+int CreationOperatorPart::mFunc(QuantumState state1, QuantumState state2, ParticleIndex i)
 {
 	int flag=1, p=0;
-	for (int m=0; m<S.N_b(); m++)
+	for (int m=0; m<IndexInfo.getIndexSize(); m++)
 	{
 		if( m == i )
 		{
@@ -210,7 +210,7 @@ BlockNumber FieldOperatorPart::getRightIndex()
 
 CreationOperatorPart& AnnihilationOperatorPart::transpose()
 {
-	CreationOperatorPart *CX = new CreationOperatorPart(i, S, h_to, h_from); // swapped h_to and h_from
+	CreationOperatorPart *CX = new CreationOperatorPart(IndexInfo, S, h_to, h_from, i); // swapped h_to and h_from
 	CX->elementsRowMajor = elementsRowMajor.transpose();
 	CX->elementsColMajor = elementsColMajor.transpose();
 	return *CX;
@@ -218,7 +218,7 @@ CreationOperatorPart& AnnihilationOperatorPart::transpose()
 
 AnnihilationOperatorPart& CreationOperatorPart::transpose()
 {
-	AnnihilationOperatorPart *C = new AnnihilationOperatorPart(i, S, h_to, h_from); // swapped h_to and h_from
+	AnnihilationOperatorPart *C = new AnnihilationOperatorPart(IndexInfo, S, h_to, h_from, i); // swapped h_to and h_from
 	C->elementsRowMajor = elementsRowMajor.transpose();
 	C->elementsColMajor = elementsColMajor.transpose();
 	return *C;

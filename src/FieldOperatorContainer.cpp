@@ -36,7 +36,7 @@ CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleIndex in)
 {
 if (IndexInfo.checkIndex(in)){
     if (mapCreationOperators.count(in)==0){
-        CreationOperator *CX = new CreationOperator(S,H,in);
+        CreationOperator *CX = new CreationOperator(IndexInfo, S,H,in);
         INFO("FieldOperatorContainer: Making Creation Operator_"<<in);
         CX->prepare();
         CX->compute();
@@ -52,7 +52,7 @@ AnnihilationOperator& FieldOperatorContainer::getAnnihilationOperator(ParticleIn
 {
 if (IndexInfo.checkIndex(in)){
     if (mapAnnihilationOperators.count(in)==0){
-        AnnihilationOperator *C = new AnnihilationOperator(S,H,in);
+        AnnihilationOperator *C = new AnnihilationOperator(IndexInfo, S,H,in);
         INFO("FieldOperatorContainer: Making Annihilation Operator_"<<in);
         C->prepare();
         C->compute();

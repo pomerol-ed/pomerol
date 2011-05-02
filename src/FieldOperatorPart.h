@@ -29,24 +29,25 @@
 
 class FieldOperatorPart : public ComputableObject {
 protected:
-    unsigned short i;
-    RowMajorMatrixType elementsRowMajor;    
-    ColMajorMatrixType elementsColMajor;    
 
+    IndexClassification &IndexInfo;
     StatesClassification &S;
     HamiltonianPart &h_from;
     HamiltonianPart &h_to;
 
+    ParticleIndex i;
+    RowMajorMatrixType elementsRowMajor;    
+    ColMajorMatrixType elementsColMajor;    
     // basic functions
     virtual QuantumState retK(QuantumState L)=0;  
-    virtual int mFunc(QuantumState state1, QuantumState state2, int i)=0;   //checks matrix element of an operator between state1 and state2
+    virtual int mFunc(QuantumState state1, QuantumState state2, ParticleIndex i)=0;   //checks matrix element of an operator between state1 and state2
     virtual bool checkL(QuantumState L)=0;  //checks state L to be appropriate as a result of a creation/destruction operator
     
     static const RealType MatrixElementTolerance = 1e-8;
    
 public:
   
-    FieldOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from,    HamiltonianPart &h_to);
+    FieldOperatorPart(IndexClassification &IndexInfo, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, ParticleIndex i);
 
     void compute();
     void dump();
@@ -64,24 +65,24 @@ class CreationOperatorPart;
 class AnnihilationOperatorPart : public FieldOperatorPart
 { 
     QuantumState retK(QuantumState L);    
-    int mFunc(QuantumState state1, QuantumState state2, int i);
+    int mFunc(QuantumState state1, QuantumState state2, ParticleIndex i);
     bool checkL(QuantumState L);
     friend class CreationOperatorPart;
 
 public :
-    AnnihilationOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to);
+    AnnihilationOperatorPart(IndexClassification &IndexInfo, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, ParticleIndex i);
     CreationOperatorPart& transpose();
 };
 
 class CreationOperatorPart : public FieldOperatorPart
 {
     QuantumState retK(QuantumState L);    
-    int mFunc(QuantumState state1, QuantumState state2, int i);    
+    int mFunc(QuantumState state1, QuantumState state2, ParticleIndex i);    
     bool checkL(QuantumState L);
     friend class AnnihilationOperatorPart;
   
 public :
-    CreationOperatorPart(int i, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to);
+    CreationOperatorPart(IndexClassification &IndexInfo, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, ParticleIndex i);
     AnnihilationOperatorPart& transpose();
 };
 

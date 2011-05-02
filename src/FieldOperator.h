@@ -34,10 +34,11 @@ typedef std::pair<BlockNumber,BlockNumber> BlockMapping;
 class FieldOperator : public ComputableObject
 {
 protected:
+    IndexClassification &IndexInfo;
     StatesClassification &System;
     Hamiltonian &H;
 
-    unsigned short bit;
+    ParticleIndex Index;
     std::vector<FieldOperatorPart*> Data;
     std::map<unsigned int,BlockNumber> mapPartsFromRight;        // A map from non-zero parts to their BlockNumber indices
     std::map<unsigned int,BlockNumber> mapPartsFromLeft;        // A map from output index to input index, hence there is a unique transform
@@ -49,7 +50,7 @@ protected:
     virtual QuantumNumbers mapsTo(QuantumNumbers in)=0;
 
 public:
-    FieldOperator(StatesClassification &System, Hamiltonian &H, int bit);
+    FieldOperator(IndexClassification &IndexInfo, StatesClassification &System, Hamiltonian &H, ParticleIndex Index);
 
     FieldOperatorPart& getPartFromLeftIndex(BlockNumber in);
     FieldOperatorPart& getPartFromLeftIndex(QuantumNumbers in);
@@ -79,7 +80,7 @@ public:
     AnnihilationOperator& transpose();
         void prepare();
     
-    CreationOperator(StatesClassification &System, Hamiltonian &H, int bit);
+    CreationOperator(IndexClassification &IndexInfo, StatesClassification &System, Hamiltonian &H, ParticleIndex Index);
 };
 
 class AnnihilationOperator : public FieldOperator
@@ -91,7 +92,7 @@ public:
     CreationOperator& transpose();
         void prepare();
     
-    AnnihilationOperator(StatesClassification &System, Hamiltonian &H, int bit);
+    AnnihilationOperator(IndexClassification &IndexInfo, StatesClassification &System, Hamiltonian &H, ParticleIndex Index);
 };
 
 #endif // endif :: #ifdef __INCLUDE_FIELDOPERATOR_H

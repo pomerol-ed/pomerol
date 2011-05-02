@@ -113,10 +113,6 @@ BlockNumber StatesClassification::NumberOfBlocks()
 {
     return maximumBlockNumber_+1; 
 }
-const int StatesClassification::N_b()                        //return N_bit
-{
-    return N_bit;
-}
 const int StatesClassification::N_b_m()                        //return N_bit_m
 {
     return N_bit_m;
@@ -130,13 +126,13 @@ const int StatesClassification::L()
     return (N_bit_m/2-1)/2;
 }
 
-void StatesClassification::iniStatesClassification()             //initalize StatesClassification class by sorting all quantum states in system
+void StatesClassification::compute()             //initalize StatesClassification class by sorting all quantum states in system
 {
-    N_bit = Formula.getIndexSize(); 
+    N_bit = IndexInfo.getIndexSize(); 
     N_state = ( 1 << N_bit ); 
     N_bit_m=0;
     #warning : bad N_bit_m definition. Actually existence of N_bit_m is definetely bad.
-      for (std::vector<IndexInfo*>::iterator it=Formula.getIndexInfoList().begin(); it != Formula.getIndexInfoList().end(); it++ ) 
+      for (std::vector<SingleIndex*>::iterator it=IndexInfo.getSingleIndexList().begin(); it != IndexInfo.getSingleIndexList().end(); it++ ) 
     {
         if ((*it)->type == p) { N_bit_m = 6; break;};
         if ((*it)->type == d) { N_bit_m = 10; break; };
@@ -226,18 +222,18 @@ QuantumNumbers StatesClassification::getStateInfo(QuantumState in)              
 
     int Lz_st=0, N_up_st=0, N_down_st=0;
 
-    for (int p=0;p<(*this).N_b();p++)
+    for (int p=0;p<N_bit;p++)
     {    
         if ((*this).N_b_m()!=0)
         {
             if ( (p<(*this).N_b_m()/2) )
                 Lz_st+=(*this).n_i(in,p)*( p%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );
             
-            if ( (p>=(*this).N_b()/2) && (p<(*this).N_b()/2+(*this).N_b_m()/2) )
-                Lz_st+=(*this).n_i(in,p)*( (p-(*this).N_b()/2)%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );    
+            if ( (p>=N_bit/2) && (p<N_bit/2+(*this).N_b_m()/2) )
+                Lz_st+=(*this).n_i(in,p)*( (p-N_bit/2)%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );    
         }            
         
-        if (p<(*this).N_b()/2)
+        if (p<N_bit/2)
             N_up_st+=(*this).n_i(in,p);
     
         else

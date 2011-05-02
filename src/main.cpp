@@ -213,7 +213,7 @@ int main(int argc, char *argv[])
   std::cout << Lattice.printSitesList().str() << std::flush;
   IndexInfo.prepare();
   printFramed("System Info");
-  IndexInfo.printIndexInfoList();
+  IndexInfo.printIndexList();
   printFramed("Hopping Matrix");
   IndexInfo.printHoppingMatrix();
   printFramed("Terms check");
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
   IndexInfo.printEquivalentPermutations();
   OUT = output_handle("output");
 
-  S.iniStatesClassification();
+  S.compute();
 
   //end of determination    
 
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
   H.compute();
   RealType beta = opt.beta;
   H.dump();
-  storage.save(H);
+  //storage.save(H);
 
   // DEBUG HDF5 save/load
   //storage.close();

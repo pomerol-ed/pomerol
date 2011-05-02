@@ -120,7 +120,7 @@ void HamiltonianPart::add_spinflipTerm(InnerQuantumState inner_state, spinflipTe
 int HamiltonianPart::measurefunc(QuantumState state1, QuantumState state2, int i, int j, int k, int l)		//auxiliary function
 {
 	int flag=1, p=0;
-	for (int m=0; m<S.N_b();m++)								//checking of "hopping" between state1 and state2
+	for (int m=0; m<IndexInfo.getIndexSize();m++)								//checking of "hopping" between state1 and state2
 	{
 		if ( (m==i) || (m==j) || (m==k) || (m==l) )
 		{
@@ -147,7 +147,7 @@ int HamiltonianPart::measurefunc(QuantumState state1, QuantumState state2, int i
 int HamiltonianPart::checkhop(long int state1, long int state2, int i, int j)			//analog measurefunc
 {
 	int flag=1, p=0;
-	for (int m=0; m<S.N_b(); m++)
+	for (int m=0; m<IndexInfo.getIndexSize(); m++)
 	{
 		if( (m==i) || (m==j) )
 		{
