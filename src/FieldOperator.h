@@ -19,6 +19,13 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
+/** \file src/FieldOperator.h
+** \brief Declaration of field operators : creation and annihilation operators.
+** 
+** \author Igor Krivenko (igor@shg.ru)
+** \author Andrey Antipov (antipov@ct-qmc.org)
+*/
+
 #ifndef __INCLUDE_FIELDOPERATOR_H
 #define __INCLUDE_FIELDOPERATOR_H
 
@@ -29,17 +36,28 @@
 #include"Hamiltonian.h" 
 #include"FieldOperatorPart.h"
 
+/** \typedef 
+ * A unique correspondence between BlockNumber and product of an operator acting on this Block
+ */
 typedef std::pair<BlockNumber,BlockNumber> BlockMapping;
 
+/** This class is a parent class for creation/annihilation operators which act
+ * on all blocks of quantum states */ 
 class FieldOperator : public ComputableObject
 {
 protected:
+    /** A reference to a IndexClassification object */
     IndexClassification &IndexInfo;
+    /** A reference to a StatesClassification object */
     StatesClassification &System;
+    /** A reference to a Hamiltonian object */
     Hamiltonian &H;
 
+    /** An index of the operator */
     ParticleIndex Index;
+    /** A vector of parts. Each part corresponds to a non-vanishing worldline in an operator */
     std::vector<FieldOperatorPart*> Data;
+    /** A map from non-zero parts to their BlockNumbers  */
     std::map<unsigned int,BlockNumber> mapPartsFromRight;        // A map from non-zero parts to their BlockNumber indices
     std::map<unsigned int,BlockNumber> mapPartsFromLeft;        // A map from output index to input index, hence there is a unique transform
     std::map<BlockNumber,BlockNumber> mapRightToLeftIndex;        // A map from output index to input index, hence there is a unique transform
