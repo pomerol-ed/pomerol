@@ -1,12 +1,12 @@
 import json
 
-n=3
+U=4.0
+t=[0.5,1,0.3,0.4]
+n=len(t)+1
 
 print "Creating Lattice file from scratch for VLA calc with 1 correlated and " + str(n-1) + " bath sites"
 
 filename="LatticeTest.json"
-U=4.0
-t=[0.5,1]
 
 lattice=dict()
 lattice["sites"]={}
