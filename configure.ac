@@ -58,7 +58,16 @@ AC_CHECK_LIB(hdf5_hl, H5DSis_scale,,AC_MSG_ERROR(invalid hdf5 high-level library
 PKG_CHECK_MODULES([eigen3], [eigen3 >= 3.0.0])
 #End
 
+DX_HTML_FEATURE(ON)
+DX_CHM_FEATURE(OFF)
+DX_CHI_FEATURE(OFF)
+DX_MAN_FEATURE(OFF)
+DX_RTF_FEATURE(OFF)
+DX_XML_FEATURE(OFF)
+DX_PDF_FEATURE(OFF)
+DX_PS_FEATURE(OFF)
 
+DX_INIT_DOXYGEN([$PACKAGE_NAME],[doxygen.cfg])
 
 
 # Checks for header files.
