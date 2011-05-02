@@ -183,7 +183,13 @@ void saveGamma(const char *fname, Vertex4 &Vertex, std::vector<TwoParticleGFCont
                      delete z;
                     }
                   }
+#ifndef HRD
+  int n=0;
+  gamma_str.write(reinterpret_cast<char *>(&n),sizeof(int));
+  gamma_str.write(reinterpret_cast<char *>(&n),sizeof(int));
+#else
   gamma_str<<"0 0"<<std::endl;
+#endif
   std::cout << "Finished." << std::endl;
   return;
 }			    
