@@ -150,37 +150,37 @@ end_do_once
 
 /** \mainpage 
  * \section   ref_intro Introduction
- * \b pomerol is an exact diagonalization code writen C++ aimed at solving condensed matter second-quantized models of interacting particles on a finite size lattices.
- * It is mostly developed to produce single and two-particle Greens Functions and corresponding Vertex functions of a Hubbard model on a cluster. The static library, \a libpomerol is built, the executable \a pomerolDiag is linked with it.
+ * \b pomerol is an exact diagonalization code written in C++ aimed at solving condensed matter second-quantized models of interacting fermions on finite size lattices.
+ * It is mostly developed to produce single and two-particle Green's functions and corresponding Vertex functions of a Hubbard model on a cluster. The static library, \a libpomerol is built, the executable \a pomerolDiag is linked with it.
  * \section pomerolDiag
  * \b pomerolDiag -b <beta> -m <Nm> -l <LatticeFile>
- * \param beta An inverse temperature of calculations
+ * \param beta An inverse temperature for calculations
  * \param Nm A number of positive Matsubara frequencies, for which the computation should be performed
  * \param LatticeFile A lattice .json file
  * \section   ref_API libpomerol API
  * The general sequence of a calculation is:
- * -    Open a Lattice .json file ( by LatticeAnalysis )
- * -    Define all indices of each mode of the system, i.e. site + spin indices ( by IndexClassification ). 
- *      This is also a moment to discover symmetries against permutations of indices
- * -    Define the Hilbert space in Fock basis - create QuantumStates and sort them into the blocks by their Quantum Numbers. ( by StatesClassification )
- * -    Enter blocks of the hamiltonian ( by Hamiltonian and HamiltonianPart) and diagonalize them
- * -    Find creation and annihilation operators in the space of EigenFunctions ( by FieldOperator and FieldOperatorPart )
- * -    Calculate thermal quantities :
- *      -   The density matrix ( by DensityMatrix and DensityMatrixPart )
- *      -   The Greens Function ( by GreensFunction, GreensFunctionPart and GFContainer to store the values of GF for various index combinations )
- *      -   The TwoParticle Greens Function ( by TwoParticleGF, TwoParticleGFPart and TwoParticleGFContainer )
- * -    Calculcate the Vertex Function out of GF- and TwoParticleGF- containers - no work with Hilbert Space is done ( by Vertex4 )
+ * -    Open a Lattice .json file ( by LatticeAnalysis ).
+ * -    Define all indices of each mode of the system, i.e. site + spin indices ( by IndexClassification ).
+ *      This is also a moment to discover symmetries against permutations of indices.
+ * -    Define the Fock space - create QuantumStates and sort them into the blocks by their quantum numbers ( by StatesClassification ).
+ * -    Enter blocks of the Hamiltonian ( by Hamiltonian and HamiltonianPart) and diagonalize them.
+ * -    Find creation and annihilation operators in the eigenbasis of the Hamiltonian ( by FieldOperator and FieldOperatorPart ).
+ * -    Calculate thermal quantities:
+ *      -   The density matrix ( by DensityMatrix and DensityMatrixPart ).
+ *      -   The Green's function ( by GreensFunction, GreensFunctionPart and GFContainer to store the values of GF for various index combinations ).
+ *      -   The TwoParticle Greens Function ( by TwoParticleGF, TwoParticleGFPart and TwoParticleGFContainer ).
+ * -    Calculcate the Vertex Function out of GF- and TwoParticleGF- containers - no work with Fock space is done ( by Vertex4 ).
  * 
  * A hint: Refer to <a href="inherits.html">a Class Hierarchy</a> if provided
  *
  * \section ref_conventions Conventions
  *
- * \par Greens Function
+ * \par Green's function
  * \f[
- *      g(\omega_n) = -\int_0^\beta \langle\mathbf{T}c_i(\tau)c^+_j(0)\rangle e^{i\omega_n\tau} d\tau
+ *      G(\omega_n) = -\int_0^\beta \langle\mathbf{T}c_i(\tau)c^+_j(0)\rangle e^{i\omega_n\tau} d\tau
  * \f]
  *
- * \par Two-Particle Greens Function:
+ * \par Two-particle Green's function:
  * \f[ \chi_{ijkl}(\omega_{n_1},\omega_{n_2};\omega_{n_3},\omega_{n_1}+\omega_{n_2}-\omega_{n_3}) =
  *   -\int_0^\beta
  *      \langle\mathbf{T} c_i(\tau_1)c_j(\tau_2)c^+_k(\tau_3)c^+_l(0) \rangle
@@ -191,8 +191,8 @@ end_do_once
  * \par The Wick part of a two-particle Green's function:
  * \f[
  * \chi^0_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) = 
- * \beta\delta_{\omega_1\omega_4}\delta_{\omega_2\omega_3}g_{14}(\omega_1)g_{23}(\omega_2) -
- *  \beta\delta_{\omega_1\omega_3}\delta_{\omega_2\omega_4}g_{13}(\omega_1)g_{24}(\omega_2)
+ * \beta\delta_{\omega_1\omega_4}\delta_{\omega_2\omega_3}G_{14}(\omega_1)G_{23}(\omega_2) -
+ *  \beta\delta_{\omega_1\omega_3}\delta_{\omega_2\omega_4}G_{13}(\omega_1)G_{24}(\omega_2)
  * \f]
  * \par An irreducible vertex part:
  * \f[ \Gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv 
@@ -203,9 +203,9 @@ end_do_once
  * \par An amputated irreducible vertex part:
  * \f[ \gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv 
  *     \sum_{1'2'3'4'}
- *     (g^{-1}(\omega_1))_{11'} (g^{-1}(\omega_2))_{22'}
+ *     (G^{-1}(\omega_1))_{11'} (G^{-1}(\omega_2))_{22'}
  *     \Gamma_{1'2'3'4'}(\omega_1,\omega_2;\omega_3,\omega_4)
- *     (g^{-1}(\omega_3))_{3'3} (g^{-1}(\omega_4))_{4'4}
+ *     (G^{-1}(\omega_3))_{3'3} (G^{-1}(\omega_4))_{4'4}
  * \f]
  *
  * \section Features
