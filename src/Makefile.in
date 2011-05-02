@@ -35,7 +35,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 bin_PROGRAMS = pomerolDiag$(EXEEXT)
 subdir = src
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in TODO
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac

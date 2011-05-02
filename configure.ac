@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([pomerol],[0.8.0],[pomerol@googlecode.com])
+AC_INIT([pomerol],[0.6],[pomerol@googlecode.com])
 AM_SILENT_RULES([yes])
 AC_COPYRIGHT(GNU General Public License v3)
 AC_CONFIG_SRCDIR([src/main.cpp])
@@ -67,7 +67,7 @@ DX_XML_FEATURE(ON)
 DX_PDF_FEATURE(OFF)
 DX_PS_FEATURE(OFF)
 
-DX_INIT_DOXYGEN([$PACKAGE_NAME],[Doxyfile])
+DX_INIT_DOXYGEN([$PACKAGE_NAME],[doxygen.cfg])
 
 
 # Checks for header files.

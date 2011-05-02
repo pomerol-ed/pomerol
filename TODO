@@ -15,3 +15,9 @@ Forthcoming:
 Long standing plans (beyond 1.0):
 - MPI implementation 
 - Liboperator support for more complex models, support of various basises
+
+Roadmap:
+1.0 - cleanup main.cpp 
+0.9 - All symmetry considerations
+0.8 - Python scripts: hdf5 -> text, json
+0.7 - full documentation, full HDF5 support
