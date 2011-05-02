@@ -48,8 +48,8 @@ void FieldOperatorPart::print_to_screen()  //print to screen C and CX
     for (int P=0; P<elementsColMajor.outerSize(); ++P)
         for (ColMajorMatrixType::InnerIterator it(elementsColMajor,P); it; ++it)
         {
-                QuantumState N = S.clstates(to)[it.row()];
-                QuantumState M = S.clstates(from)[it.col()];
+                QuantumState N = S.getQuantumStates(to)[it.row()];
+                QuantumState M = S.getQuantumStates(from)[it.col()];
                 std::cout << N <<" " << M << " : " << it.value() << std::endl;
         };
 }
@@ -65,9 +65,9 @@ assert(0);
      for (int P=0; P<elementsColMajor.outerSize(); ++P)
         for (ColMajorMatrixType::InnerIterator it(elementsColMajor,P); it; ++it)
         {
-                QuantumState N = it.row();//S.clstates(to)[it.row()];
-                QuantumState M = it.col();//S.clstates(from)[it.col()];
-                outCpart << S.clstates(h_to.id())[N] <<" " << S.clstates(h_from.id())[M] << "  " << it.value() << endl;
+                QuantumState N = it.row();//S.getQuantumStates(to)[it.row()];
+                QuantumState M = it.col();//S.getQuantumStates(from)[it.col()];
+                outCpart << S.getQuantumStates(h_to.id())[N] <<" " << S.getQuantumStates(h_from.id())[M] << "  " << it.value() << endl;
         };
 
 
@@ -83,8 +83,8 @@ void FieldOperatorPart::compute()
     QuantumNumbers to = h_to.id();
     QuantumNumbers from = h_from.id();
 
-    const std::vector<QuantumState>& toStates = S.clstates(to);
-    const std::vector<QuantumState>& fromStates = S.clstates(from);
+    const std::vector<QuantumState>& toStates = S.getQuantumStates(to);
+    const std::vector<QuantumState>& fromStates = S.getQuantumStates(from);
     
     DynamicSparseMatrixType tempElements(toStates.size(),fromStates.size());
     

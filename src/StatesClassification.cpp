@@ -58,13 +58,13 @@ std::ostream& operator<<(std::ostream& output,const QuantumNumbers& out)
 
 //class StatesClassification
 
-const std::vector<QuantumState>& StatesClassification::clstates( QuantumNumbers in )            //return st[in.Lz][in.N_up][in.N_down]
+const std::vector<QuantumState>& StatesClassification::getQuantumStates( QuantumNumbers in )            //return st[in.Lz][in.N_up][in.N_down]
 {
     return st[in[0]][in[1]][in[2]];
 }
 
 
-const QuantumState StatesClassification::cst( QuantumNumbers in, int m )            //return st[in.Lz][in.N_up][in.N_down][m]
+const QuantumState StatesClassification::getQuantumState( QuantumNumbers in, int m )            //return st[in.Lz][in.N_up][in.N_down][m]
 {
     return st[in[0]][in[1]][in[2]][m];
 }
@@ -72,9 +72,9 @@ const QuantumState StatesClassification::cst( QuantumNumbers in, int m )        
 const InnerQuantumState StatesClassification::getInnerState(QuantumState state)
 {
   int ST=-1;                // "state" in part of Hamilt            
-  for (unsigned int n=0; n<(*this).clstates((*this).getStateInfo(state)).size(); n++ )
+  for (unsigned int n=0; n<(*this).getQuantumStates((*this).getStateInfo(state)).size(); n++ )
     {    
-        if ( (*this).cst((*this).getStateInfo(state),n)== state) ST=n;    //get ST
+        if ( (*this).getQuantumState((*this).getStateInfo(state),n)== state) ST=n;    //get ST
     }
  return ST;
 }
@@ -107,23 +107,15 @@ void StatesClassification::getSiteInfo(int bit, int& lz, int& spin)
 {
   spin = (bit>=N_bit/2)?-1:1; 
   bit%=(N_bit/2);
-  lz = (bit>=N_bit_m/2)?0:bit-(*this).L();
+  lz = (bit>=N_bit_m/2)?0:bit-(N_bit_m/2-1)/2;
 }
 BlockNumber StatesClassification::NumberOfBlocks()
 {
     return maximumBlockNumber_+1; 
 }
-const int StatesClassification::N_b_m()                        //return N_bit_m
-{
-    return N_bit_m;
-}
-const QuantumState StatesClassification::N_st()
+const QuantumState StatesClassification::getNumberOfStates()
 {
     return N_state;
-}
-const int StatesClassification::L()
-{
-    return (N_bit_m/2-1)/2;
 }
 
 void StatesClassification::compute()             //initalize StatesClassification class by sorting all quantum states in system
@@ -217,20 +209,20 @@ QuantumNumbers StatesClassification::getStateInfo(QuantumState in)              
     if (in >= N_state) return ERROR_QUANTUM_NUMBERS;
     int Lz_max=0;                                //begining of calculating Lz,N_up,N_down
     
-    for(int L=((*this).N_b_m()/2-1)/2;L>0;L--)
+    for(int L=(N_bit_m/2-1)/2;L>0;L--)
         Lz_max+=2*L;
 
     int Lz_st=0, N_up_st=0, N_down_st=0;
 
     for (int p=0;p<N_bit;p++)
     {    
-        if ((*this).N_b_m()!=0)
+        if (N_bit_m!=0)
         {
-            if ( (p<(*this).N_b_m()/2) )
-                Lz_st+=(*this).n_i(in,p)*( p%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );
+            if ( (p<N_bit_m/2) )
+                Lz_st+=(*this).n_i(in,p)*( p%(N_bit_m/2) - (N_bit_m/2-1)/2 );
             
-            if ( (p>=N_bit/2) && (p<N_bit/2+(*this).N_b_m()/2) )
-                Lz_st+=(*this).n_i(in,p)*( (p-N_bit/2)%((*this).N_b_m()/2) - ((*this).N_b_m()/2-1)/2 );    
+            if ( (p>=N_bit/2) && (p<N_bit/2+N_bit_m/2) )
+                Lz_st+=(*this).n_i(in,p)*( (p-N_bit/2)%(N_bit_m/2) - (N_bit_m/2-1)/2 );    
         }            
         
         if (p<N_bit/2)

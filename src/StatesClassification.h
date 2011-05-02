@@ -19,6 +19,15 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
+/** \file src/StatesClassification.h
+** \brief Declaration of BlockNumber, QuantumNumbers and StatesClassification classes
+**
+** \author Andrey Antipov (antipov@ct-qmc.org)
+** \author Mikhail Aleynikov (alejnikov89@mail.ru)
+** \author Igor Krivenko (igor@shg.ru)
+*/
+
+
 #ifndef __INCLUDE_STATESCLASSIFICATION_H
 #define __INCLUDE_STATESCLASSIFICATION_H
 
@@ -143,23 +152,54 @@ public:
     /** Perform a classification of all QuantumStates */
     void compute();                     
 
-    const int N_b_m();                            //return N_bit_m
-    const int L();                                //return value of orbital moment
-    const QuantumState N_st();                            //return N_state
+    /** get total number of Quantum States ( 2^IndexInfo.size() ) */
+    const QuantumState getNumberOfStates();                           
 
-    const std::vector<QuantumState>& clstates( QuantumNumbers in );                //return st[in.Lz][in.N_up][in.N_down]
-    const QuantumState cst( QuantumNumbers in, int m);                    //return st[in.Lz][in.N_up][in.N_down][m]
-    const InnerQuantumState getInnerState( QuantumState state);                    //finds number of state @state in corresponding block 
+    /** get a vector of all QuantumStates with a given set of QuantumNumbers
+     * \param[in] in A set of quantum numbers to get a vector of QuantumStates 
+     */
+    const std::vector<QuantumState>& getQuantumStates( QuantumNumbers in );   
 
-    BlockNumber getBlockNumber(QuantumNumbers in);            //returns a number of Block which corresponds to given Quantum Numbers
-    QuantumNumbers getBlockInfo(BlockNumber in);        //return Lz,N_up,N_down of number num
-    BlockNumber NumberOfBlocks();                        //return amount of non-trivial hamiltonian blocks
-    QuantumNumbers getStateInfo(QuantumState in);        //return Lz,N_up,N_down of number num
-    BlockNumber getBlockNumber(QuantumState in);            //returns a number of Block which corresponds to given Quantum Numbers
+    /** get a QuantumState, corresponding to an internal InnerQuantumState
+     * \param[in] QuantumNumbers of block in which the InnerQuantumState is located
+     * \param[in] m InnerQuantumState for which the correspondence is required
+     */
+    const QuantumState getQuantumState( QuantumNumbers in, int m);
+    /** get InnerQuantumState of a given QuantumState. Since QuantumState is associated with
+     * the Block number no explicit BlockNumber or QuantumNumbers is required 
+     * \param[in] state QuantumState for which the correspondence is required
+     */
+    const InnerQuantumState getInnerState( QuantumState state);   
 
-    inline int n_i(long int state, int i) { return ((state&(1<<i))>>i) ;};
+    /** Returns a number of Block which corresponds to given Quantum Numbers 
+     * \param[in] in A set of QuantumNumbers to find corresponding BlockNumber
+     */
+    BlockNumber getBlockNumber(QuantumNumbers in);            
+
+    /** Returns QuantumNumbers for a given BlockNumber
+     * \param[in] in A BlockNumber to find a set of corresponding QuantumNumbers
+     */
+    QuantumNumbers getBlockInfo(BlockNumber in);        
+    /** Returns total amount of non-vanishing blocks */
+    BlockNumber NumberOfBlocks();                        
+
+    /** Returns QuantumNumbers of a given QuantumState 
+     * \param[in] in A QuantumState for which the QuantumNumbers are requested
+     */
+    QuantumNumbers getStateInfo(QuantumState in);        
+    /** Returns BlockNumber of a given QuantumState 
+     * \param[in] in A QuantumState for which the BlockNumber is requested
+     */
+    BlockNumber getBlockNumber(QuantumState in);       
+
+    /** Returns the value of <QuantumState|\hat n_i|QuantumState> */
+    inline int n_i(QuantumState state, ParticleIndex i) { return ((state&(1<<i))>>i) ;};
+    // TODO: rewrite this method
     void getSiteInfo(int bit, int& lz, int& spin);
 
+    /** Checks that a block with a given QuantumNumbers does not vanish 
+     * \param[in] in A set of QuantumNumbers to check
+     */
     bool checkQuantumNumbers(QuantumNumbers in);
 };
 

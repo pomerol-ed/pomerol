@@ -57,7 +57,7 @@ BlockNumber HamiltonianPart::getId()
 
 void HamiltonianPart::enter()
 { 		
-	size_t N_state_m = S.clstates(hpart_id).size();
+	size_t N_state_m = S.getQuantumStates(hpart_id).size();
 
 	H.resize(N_state_m,N_state_m);				//creation of H[i][j]=0 
 	H.setZero();
@@ -88,22 +88,22 @@ void HamiltonianPart::enter()
 
 void HamiltonianPart::add_nTerm(InnerQuantumState inner_state,nTerm *N)
 {
-	QuantumState state = S.cst(hpart_id,inner_state);					//real state	
+	QuantumState state = S.getQuantumState(hpart_id,inner_state);					//real state	
       	H(inner_state,inner_state)+=N->Value*S.n_i(state,N->bit[0]);	
 };
 void HamiltonianPart::add_nnTerm(InnerQuantumState inner_state, nnTerm *T)
 {
-	QuantumState state = S.cst(hpart_id,inner_state);					//real state	
+	QuantumState state = S.getQuantumState(hpart_id,inner_state);					//real state	
       	H(inner_state,inner_state)+=T->Value*S.n_i(state,T->bit[0])*S.n_i(state,T->bit[2]);	
 };
 
 void HamiltonianPart::add_spinflipTerm(InnerQuantumState inner_state, spinflipTerm *T)
 {
-	QuantumState in = S.cst(hpart_id,inner_state); //real state	
+	QuantumState in = S.getQuantumState(hpart_id,inner_state); //real state	
 	if ( S.n_i(in,T->bit[0]) || S.n_i(in,T->bit[1]) || !S.n_i(in,T->bit[2]) || !S.n_i(in,T->bit[3])) { return; }
 	QuantumState diff1 = (1<<T->bit[0]) + (1<<T->bit[1]);
 	QuantumState diff2 = (1<<T->bit[2]) + (1<<T->bit[3]);
-	if ((diff2 > in + diff1) || ((diff2 <= in) && (S.N_st() - diff1 <= in - diff2))) return;
+	if ((diff2 > in + diff1) || ((diff2 <= in) && (S.getNumberOfStates() - diff1 <= in - diff2))) return;
 	QuantumState out = in + diff1 - diff2;	
 	if (out>in ) return;
 //	#warning The fact that hamiltonian is hermitian isn't taken into account. There may be slight perfomance issues.
@@ -180,9 +180,9 @@ void HamiltonianPart::add_hopping(int i, int j, RealType t)
 
   for ( InnerQuantumState st1=0; st1<H.rows(); st1++)
     {
-	QuantumState state1 = S.cst(hpart_id,st1);				//real state1
+	QuantumState state1 = S.getQuantumState(hpart_id,st1);				//real state1
 	QuantumState difference = (i>j)?(1<<i)-(1<<j):(1<<j)-(1<<i);
-	if (!((difference > S.N_st()-state1 && i>j) || (i<j && difference > state1 )))
+	if (!((difference > S.getNumberOfStates()-state1 && i>j) || (i<j && difference > state1 )))
 	{
 		QuantumState state2=(i>j)?state1+difference:state1-difference;
 		if (S.getStateInfo(state1) == S.getStateInfo(state2))

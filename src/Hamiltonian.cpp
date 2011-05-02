@@ -46,7 +46,7 @@ void Hamiltonian::prepare()
 	parts[current_block]->enter();
 
 	std::cout << "Hamiltonian block " << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is entered";
-	std::cout << ". Size = " << S.clstates(S.getBlockInfo(current_block)).size() << std::endl;
+	std::cout << ". Size = " << S.getQuantumStates(S.getBlockInfo(current_block)).size() << std::endl;
     }
     Status = Prepared;
 }
