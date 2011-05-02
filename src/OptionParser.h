@@ -239,7 +239,7 @@ public:
 	BEGIN_OPTION_MAP_INLINE()
 		ON_OPTION(SHORTOPT('b') || LONGOPT("beta"))
 			beta = std::atof(arg);
-            NumberOfMatsubaras = (int)std::fabs(beta+0.5);
+            //NumberOfMatsubaras = (int)std::fabs(beta+0.5);
 			used_args = 1;	// Notify the parser of a consumption of argument.
 
 		ON_OPTION_WITH_ARG(SHORTOPT('m') || LONGOPT("matsubaras"))
