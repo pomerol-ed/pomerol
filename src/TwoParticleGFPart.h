@@ -44,24 +44,7 @@ friend class TwoParticleGF;
 
 public:
 
-    /** A non-resonant term has the following form:
-     * \f[
-     * \frac{C}{(z_1-P_1)(z_2-P_2)(z_3-P_3)}
-     * \f]
-     * if isz4 == false, and
-     * \f[
-     * \frac{C}{(z_1-P_1)(z_1+z_2+z_3-P_1-P_2-P_3)(z_3-P_3)}
-     * \f]
-     * otherwise.
-     */
     struct NonResonantTerm;
-     
-    /** A resonant term has the following form:
-    * \f[
-    * \frac{1}{(z_1-P_1)(z_3-P_3)}
-    *   \left( R \delta(z_1+z_2-P_1-P_2) + N \frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2} \right)
-    * \f]
-    */
     struct ResonantTerm;
    
 private:
@@ -217,6 +200,16 @@ public:
     void clear();
 };
 
+    /** A non-resonant term has the following form:
+     * \f[
+     * \frac{C}{(z_1-P_1)(z_2-P_2)(z_3-P_3)}
+     * \f]
+     * if isz4 == false, and
+     * \f[
+     * \frac{C}{(z_1-P_1)(z_1+z_2+z_3-P_1-P_2-P_3)(z_3-P_3)}
+     * \f]
+     * otherwise.
+     */
 struct TwoParticleGFPart::NonResonantTerm{
     /** Coefficient \f$ C \f$. */
     ComplexType Coeff;
@@ -254,7 +247,14 @@ struct TwoParticleGFPart::NonResonantTerm{
     */
     bool isSimilarTo(const NonResonantTerm& AnotherTerm) const;
     };
-  
+       
+
+    /** A resonant term has the following form:
+    * \f[
+    * \frac{1}{(z_1-P_1)(z_3-P_3)}
+    *   \left( R \delta(z_1+z_2-P_1-P_2) + N \frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2} \right)
+    * \f]
+    */
 struct TwoParticleGFPart::ResonantTerm {
 
     /** Coefficient \f$ R \f$. */
