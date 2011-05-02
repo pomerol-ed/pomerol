@@ -215,7 +215,7 @@ end_do_once
  * -    Andrey Antipov <antipov[at]ct-qmc.org>
  * -    Igor Krivenko <igor[at]shg.ru>
  *
- * with kind help of Mikhail Alejnikov, Alexey Rubtsov, Christoph Jung and Aljoscha Wilhelm
+ * with a kind help from Mikhail Alejnikov, Alexey Rubtsov, Christoph Jung and Aljoscha Wilhelm
  *
  */
 
