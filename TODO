@@ -7,10 +7,11 @@ Term.h, Thermal.h (if needed).
 ---------------------------------------------------------------------------------------------------------------
 Forthcoming:
 - HDF5 support, dump and readin from a single .h5 file, implement resume from precalculated part of data
-- Document HDFStorage.h
+- Script(s) to convert .h5 files into plain text.
+- Document HDF5Storage.h
 - Rewrite StatesClassification class and check it's methods
 - Find equivalent permutations of sites of the lattice, find equivalent index permutations
 ---------------------------------------------------------------------------------------------------------------
-Long standing plans:
+Long standing plans (beyond 1.0):
 - MPI implementation 
 - Liboperator support for more complex models, support of various basises
