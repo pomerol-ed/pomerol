@@ -1,5 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
-AM_CXXFLAGS= ${eigen3_CFLAGS} -I../jsoncpp/include/ 
+AM_CXXFLAGS+= ${eigen3_CFLAGS} -I../jsoncpp/include/
 
 lib_LIBRARIES=libpomerol.a
 bin_PROGRAMS=pomerolDiag

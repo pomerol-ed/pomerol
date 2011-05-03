@@ -671,6 +671,7 @@ PKG_CONFIG_PATH
 PKG_CONFIG
 hdf5_LIBS
 hdf5_CFLAGS
+AM_CXXFLAGS
 RANLIB
 am__fastdepCXX_FALSE
 am__fastdepCXX_TRUE
@@ -756,6 +757,7 @@ ac_user_opts='
 enable_option_checking
 enable_silent_rules
 enable_dependency_tracking
+enable_openmp
 with_hdf5
 with_hdf5_include
 with_hdf5_lib
@@ -1410,6 +1412,7 @@ Optional Features:
   --disable-silent-rules         verbose build output (undo: `make V=0')
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
+  --disable-openmp        turn off openMP support
   --disable-doxygen-doc   don't generate any doxygen documentation
   --disable-doxygen-dot   don't generate graphics for doxygen documentation
   --enable-doxygen-man    generate doxygen manual pages
@@ -3591,6 +3594,21 @@ else
   RANLIB="$ac_cv_prog_RANLIB"
 fi
 
+#check openmp request
+# Check whether --enable-openmp was given.
+if test "${enable_openmp+set}" = set; then :
+  enableval=$enable_openmp;
+fi
+
+
+if test "x$enable_openmp" != "xno"; then :
+
+    AM_CXXFLAGS="-DpomerolOpenMP -fopenmp"
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: openMP support enabled" >&5
+$as_echo "openMP support enabled" >&6; }
+
+fi
 # Checks for libraries.
 # start: Check for HDF5 support
 

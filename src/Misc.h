@@ -149,14 +149,6 @@ end_do_once
 #define iomanip_prefs std::setprecision(8) << std::setw(9) << std::left
 
 /** \mainpage 
- * \section   ref_intro Introduction
- * \b pomerol is an exact diagonalization code written in C++ aimed at solving condensed matter second-quantized models of interacting fermions on finite size lattices.
- * It is mostly developed to produce single and two-particle Green's functions and corresponding Vertex functions of a Hubbard model on a cluster. The static library, \a libpomerol is built, the executable \a pomerolDiag is linked with it.
- * \section pomerolDiag
- * \b pomerolDiag -b <beta> -m <Nm> -l <LatticeFile>
- * \param beta An inverse temperature for calculations
- * \param Nm A number of positive Matsubara frequencies, for which the computation should be performed
- * \param LatticeFile A lattice .json file
  * \section   ref_API libpomerol API
  * The general sequence of a calculation is:
  * -    Open a Lattice .json file ( by LatticeAnalysis ).

@@ -12,6 +12,15 @@ AC_PROG_CXX
 
 AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
+#check openmp request
+AC_ARG_ENABLE([openmp], AS_HELP_STRING([--disable-openmp], [turn off openMP support]))
+
+AS_IF([test "x$enable_openmp" != "xno"], 
+      [
+    AM_CXXFLAGS="-DpomerolOpenMP -fopenmp"
+    AC_SUBST([AM_CXXFLAGS])
+    AC_MSG_RESULT([openMP support enabled])
+      ])
 # Checks for libraries.
 # start: Check for HDF5 support
 AC_ARG_WITH([hdf5],
