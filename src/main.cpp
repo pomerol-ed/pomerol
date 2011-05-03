@@ -155,7 +155,7 @@ void saveGamma(const char *fname, Vertex4 &Vertex, std::vector<TwoParticleGFCont
                       n2_ = (*comb1)->Indices[3]%n_part;
                       z1 = (*comb1)->Indices[0]/n_part;
                       z2 = (*comb1)->Indices[1]/n_part;
-                      z=new ComplexType(Vertex(**comb1,w1,w2,w1_));
+                      z=new ComplexType(Vertex(**comb1,w1,w2,w1_)*(-1.));
                       if(abs(*z)>acc){
 #if defined(HRD)
                         gamma_str << chop(real(*z)) <<"  "<< chop(imag(*z)) << "           "
@@ -184,9 +184,8 @@ void saveGamma(const char *fname, Vertex4 &Vertex, std::vector<TwoParticleGFCont
                     }
                   }
 #ifndef HRD
-  int n=0;
-  gamma_str.write(reinterpret_cast<char *>(&n),sizeof(int));
-  gamma_str.write(reinterpret_cast<char *>(&n),sizeof(int));
+  std::complex<double> zero(0.0);
+  gamma_str.write(reinterpret_cast<char *>(&zero),sizeof(std::complex<double>));
 #else
   gamma_str<<"0 0"<<std::endl;
 #endif
@@ -315,7 +314,7 @@ int main(int argc, char *argv[])
     G.readInitialIndices(v2);
     G.prepare();
     G.compute();
-    G.dumpToPlainText(2*wn);
+    G.dumpToPlainText(8*wn);
 
     std::vector<TwoParticleGFContainer::IndexCombination*> v1;
     v1.push_back(new TwoParticleGFContainer::IndexCombination(0,IndexInfo.getIndexSize()/2,0,IndexInfo.getIndexSize()/2));
