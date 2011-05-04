@@ -148,12 +148,16 @@ end_do_once
 #define num_cout std::cout << std::setprecision(8) << std::setw(9) << std::left
 #define iomanip_prefs std::setprecision(8) << std::setw(9) << std::left
 
-/** \mainpage 
+/**
+ * \mainpage 
+ * The source code and fetch instructions are located at <a href="http://pomerol.googlecode.com">project's Google code page</a>.
  * \section ref_exec pomerolDiag       
- * \b pomerolDiag -b <beta> -m <Nm> -l <LatticeFile>        
- * \param beta An inverse temperature for calculations      
- * \param Nm A number of positive Matsubara frequencies, for which the computation should be performed      
- * \param LatticeFile A lattice .json file, see page \ref ref_lattice
+ * \verbatim pomerolDiag -b <beta> -m <Nm> -l <LatticeFile> \endverbatim
+ * \param beta The value of inverse temperature for Thermal objects (i.e DensityMatrix, TwoParticleGF, GreensFunction etc).     
+ * \param Nm A number of positive Matsubara frequencies, for which the computation of TwoParticleGF and Vertex4 should be performed. The GreensFunction is obtained with 8*Nm Matsubara Frequencies.      
+ * \param LatticeFile A lattice .json file, see page \ref ref_lattice .
+ *
+ * Call "pomerolDiag -h" for this information
  * \section   ref_API libpomerol API
  * The general sequence of a calculation is:
  * -    Open a Lattice .json file ( by LatticeAnalysis ).
