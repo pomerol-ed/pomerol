@@ -212,7 +212,7 @@ end_do_once
  * -    Andrey Antipov <antipov[at]ct-qmc.org>
  * -    Igor Krivenko <igor[at]shg.ru>
  *
- * with a kind help from Mikhail Alejnikov, Alexey Rubtsov, Christoph Jung and Aljoscha Wilhelm
+ * with a help from Mikhail Alejnikov, Alexey Rubtsov, Christoph Jung and Aljoscha Wilhelm
  *
  * We acknowledge <em>RRC Kurchatov Institute</em> for providing computing resources.
  *
