@@ -209,6 +209,8 @@ end_do_once
  *
  * with a kind help from Mikhail Alejnikov, Alexey Rubtsov, Christoph Jung and Aljoscha Wilhelm
  *
+ * We acknowledge <em>RRC Kurchatov Institute</em> for providing computing resources.
+ *
  */
 
 #endif // #ifndef __INCLUDE_MISC_H

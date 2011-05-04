@@ -244,10 +244,12 @@ public:
 
 		ON_OPTION_WITH_ARG(SHORTOPT('m') || LONGOPT("matsubaras"))
 			NumberOfMatsubaras = std::atoi(arg);
+			used_args = 1;	// Notify the parser of a consumption of argument.
 			// no need of the notification: used_args variable will be set to 1.
 
 		ON_OPTION(SHORTOPT('l') || LONGOPT("lattice") || LONGOPT("Lattice"))
 			LatticeFile = arg;
+			used_args = 1;	// Notify the parser of a consumption of argument.
 
         ON_OPTION(SHORTOPT('h') || LONGOPT("help"))
             std::cout << "pomerolDiag - an ED code, which provides one- and two- particle Greens functions and irreducible vertex part in Matsubara domain" << std::endl;
