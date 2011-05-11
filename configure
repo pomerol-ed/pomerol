@@ -567,7 +567,7 @@ PACKAGE_STRING='pomerol 0.6'
 PACKAGE_BUGREPORT='pomerol@googlecode.com'
 PACKAGE_URL=''
 
-ac_unique_file="src/main.cpp"
+ac_unique_file="lib/Misc.h"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -7106,7 +7106,7 @@ $as_echo "no" >&6; }
 fi
 
 
-ac_config_files="$ac_config_files Makefile jsoncpp/Makefile src/Makefile jsoncpp/src/Makefile"
+ac_config_files="$ac_config_files Makefile jsoncpp/Makefile lib/Makefile prog/Makefile jsoncpp/src/Makefile"
 
                  #jsoncpp/example/Makefile
 cat >confcache <<\_ACEOF
@@ -7949,7 +7949,8 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "jsoncpp/Makefile") CONFIG_FILES="$CONFIG_FILES jsoncpp/Makefile" ;;
-    "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "lib/Makefile") CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
+    "prog/Makefile") CONFIG_FILES="$CONFIG_FILES prog/Makefile" ;;
     "jsoncpp/src/Makefile") CONFIG_FILES="$CONFIG_FILES jsoncpp/src/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;

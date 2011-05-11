@@ -2,7 +2,6 @@ MAINTAINERCLEANFILES = Makefile.in
 AM_CXXFLAGS+= ${eigen3_CFLAGS} -I../jsoncpp/include/
 
 lib_LIBRARIES=libpomerol.a
-bin_PROGRAMS=pomerolDiag
 
 libpomerol_a_CPPFLAGS=-Wall -g
 libpomerol_a_SOURCES= output.cpp HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp \
@@ -15,13 +14,7 @@ libpomerol_a_SOURCES= output.cpp HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp
 	Vertex4.cpp FieldOperatorContainer.cpp \
 	TwoParticleGFContainer.cpp GFContainer.cpp Misc.h ComputableObject.h LatticeAnalysis.h
 
-pomerolDiag_CPPFLAGS=-g
-pomerolDiag_SOURCES=main.cpp 
-pomerolDiag_LDADD=libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -lhdf5 -lhdf5_cpp
 libpomerol_a_includedir=$(includedir)/pomerol
-#libpomerol_a_include_HEADERS=*.h
-
-pomerolDiag_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a libpomerol.a
 
 all-clean:
 	$(RM) *.o *.a

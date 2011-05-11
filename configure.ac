@@ -4,7 +4,7 @@
 AC_INIT([pomerol],[0.6],[pomerol@googlecode.com])
 AM_SILENT_RULES([yes])
 AC_COPYRIGHT(GNU General Public License v3)
-AC_CONFIG_SRCDIR([src/main.cpp])
+AC_CONFIG_SRCDIR([lib/Misc.h])
 
 
 # Checks for programs.

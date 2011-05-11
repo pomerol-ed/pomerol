@@ -61,9 +61,9 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-DIST_COMMON = $(am__configure_deps) $(srcdir)/Makefile.am \
+DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(top_srcdir)/aminclude.am \
-	$(top_srcdir)/configure COPYING INSTALL TODO depcomp \
+	$(top_srcdir)/configure COPYING INSTALL NEWS TODO depcomp \
 	install-sh missing
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -286,7 +286,7 @@ top_srcdir = @top_srcdir@
 
 EXTRA_DIST = doxygen.cfg
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = jsoncpp src
+SUBDIRS = jsoncpp lib prog
 all: all-recursive
 
 .SUFFIXES:
