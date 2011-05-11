@@ -94,7 +94,8 @@ AC_PROG_MAKE_SET
 
 AC_CONFIG_FILES([Makefile
                  jsoncpp/Makefile
-                 src/Makefile
+                 lib/Makefile
+                 prog/Makefile
                  jsoncpp/src/Makefile
                ])
                  #jsoncpp/example/Makefile
