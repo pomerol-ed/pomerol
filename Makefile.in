@@ -286,7 +286,7 @@ top_srcdir = @top_srcdir@
 
 EXTRA_DIST = doxygen.cfg
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = jsoncpp lib prog
+SUBDIRS = jsoncpp src prog
 all: all-recursive
 
 .SUFFIXES:
