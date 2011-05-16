@@ -207,7 +207,7 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
         RealType NonResonantTolerance = MultiTermCoefficientTolerance*(index1+1)/NonResonantTermsUnreducedSize/(index1Max+1);
         RealType ResonantTolerance = MultiTermCoefficientTolerance*(index1+1)/ResonantTermsUnreducedSize/(index1Max+1);
 
-        reduceTerms(NonResonantTolerance, ResonantTolerance, NonResonantTerms, ResonantTerms); 
+        this->reduceTerms(NonResonantTolerance, ResonantTolerance, NonResonantTerms, ResonantTerms); 
         NonResonantTermsPreviousSize = NonResonantTerms.size();
         ResonantTermsPreviousSize = ResonantTerms.size(); 
 
@@ -221,7 +221,7 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
     if (ResonantTermsUnreducedSize + NonResonantTermsUnreducedSize > 0){
         INFO_NONEWLINE("Total " << NonResonantTermsUnreducedSize << " nonresonant + " << ResonantTermsUnreducedSize << " resonant = ");
         INFO_NONEWLINE(NonResonantTermsUnreducedSize+ResonantTermsUnreducedSize << " terms reduced to ");
-        reduceTerms(MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1), MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1), NonResonantTerms, ResonantTerms);
+        this->reduceTerms(MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1), MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1), NonResonantTerms, ResonantTerms);
         INFO_NONEWLINE(NonResonantTerms.size() << "+" << ResonantTerms.size() << " = ");
         INFO(NonResonantTerms.size() + ResonantTerms.size()  << " with tolerances: " << MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1) << ", " << MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1));
 
@@ -231,9 +231,12 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
 
 void TwoParticleGFPart::reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance, std::list<NonResonantTerm> &NonResonantTerms, std::list<ResonantTerm>& ResonantTerms)
 {
+    #ifndef noReduction
     // Sieve reduction of the non-resonant terms
+    //int i=0
     for(std::list<NonResonantTerm>::iterator it1 = NonResonantTerms.begin(); it1 != NonResonantTerms.end();){
         std::list<NonResonantTerm>::iterator it2 = it1;
+    //    DEBUG(++i << "/" << NonResonantTerms.size());
         for(it2++; it2 != NonResonantTerms.end();){
             if(it1->isSimilarTo(*it2)){
                 *it1 += *it2;
@@ -264,6 +267,9 @@ void TwoParticleGFPart::reduceTerms(const RealType NonResonantTolerance, const R
         else
             it1++;
     }
+    #else 
+        INFO("No reduction is done due to -DnoReduction flag turned on");
+    #endif // endif :: #ifndef noReduction
     //DEBUG("After: " << NonResonantTerms.size() << " non resonant terms + " << ResonantTerms.size() << " resonant terms = " << ResonantTerms.size()+NonResonantTerms.size());
 }
 
