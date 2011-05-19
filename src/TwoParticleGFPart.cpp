@@ -45,13 +45,16 @@ inline
 TwoParticleGFPart::NonResonantTerm::NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4) :
 Coeff(Coeff), isz4(isz4)
 {
-    Poles[0] = P1; Poles[1] = P2; Poles[2] = P3;
+    Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight=1;
 }
 
 inline
 TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator+=(
                     const NonResonantTerm& AnotherTerm)
 {  
+    long combinedWeight=Weight + AnotherTerm.Weight;
+    for (unsigned short p=0; p<3; ++p) Poles[p]= (Weight*Poles[p] + AnotherTerm.Weight*AnotherTerm.Poles[p])/combinedWeight;
+    Weight=combinedWeight;
     Coeff += AnotherTerm.Coeff;   
     return *this;
 }
@@ -73,13 +76,16 @@ TwoParticleGFPart::ResonantTerm::ResonantTerm(ComplexType ResCoeff, ComplexType 
                                               RealType P1, RealType P2, RealType P3, bool isz1z2) : 
 ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), isz1z2(isz1z2)
 {
-    Poles[0] = P1; Poles[1] = P2; Poles[2] = P3;
+    Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight=1;
 }
 
 inline
 TwoParticleGFPart::ResonantTerm& TwoParticleGFPart::ResonantTerm::operator+=(
                 const ResonantTerm& AnotherTerm)
 {
+    long combinedWeight=Weight + AnotherTerm.Weight;
+    for (unsigned short p=0; p<3; ++p) Poles[p]= (Weight*Poles[p] + AnotherTerm.Weight*AnotherTerm.Poles[p])/combinedWeight;
+    Weight=combinedWeight;
     ResCoeff += AnotherTerm.ResCoeff;
     NonResCoeff += AnotherTerm.NonResCoeff;
     return *this;

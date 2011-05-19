@@ -220,6 +220,9 @@ struct TwoParticleGFPart::NonResonantTerm{
     /** Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term? */
     bool isz4;
 
+    /** A statistical weight of current term for averaging ( when averaging formula (*this.weight + other.weight)/(*this.weight+other.weight) is used */
+    long Weight;
+
     /** Constructor.
     * \param[in] Coeff Numerator of the term.
     * \param[in] P1 Pole P1.
@@ -268,6 +271,9 @@ struct TwoParticleGFPart::ResonantTerm {
     /** Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
      Otherwise we are using \f$ \delta(z_2+z_3-P_2-P_3) \f$. */
     bool isz1z2;
+
+    /** A statistical weight of current term for averaging ( when averaging formula (*this.weight + other.weight)/(*this.weight+other.weight) is used */
+    long Weight;
 
     /** Constructor.
      * \param[in] ResCoeff Numerator of the term for a resonant case.
