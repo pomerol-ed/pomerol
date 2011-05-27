@@ -234,7 +234,7 @@ public:
 	std::string LatticeFile;
 	std::string help;
 
-	pomerolOptionParser() : beta(10), NumberOfMatsubaras(30), LatticeFile("Lattice.json"), help("") {}
+	pomerolOptionParser() : beta(10), NumberOfMatsubaras(60), LatticeFile("Lattice.json"), help("") {}
 
 	BEGIN_OPTION_MAP_INLINE()
 		ON_OPTION(SHORTOPT('b') || LONGOPT("beta"))
@@ -256,7 +256,7 @@ public:
             std::cout << "Usage: pomerolDiag [options]" << std::endl;
             std::cout << "Options: " << std::endl;
             std::cout << "-b     --beta        : The value of inverse temperature. Default: " << beta << std::endl;
-            std::cout << "-m     --matsubaras  : Amount of Matsubara frequencies for Two Particle GF calculation. Default: " << NumberOfMatsubaras<< std::endl;
+            std::cout << "-m     --matsubaras  : Amount of Matsubara frequencies. Default: " << NumberOfMatsubaras<< std::endl;
             std::cout << "-l     --lattice     : A file with the lattice. Default : " << LatticeFile << std::endl;
             std::cout << "-h     --help        : Show this help message" << std::endl;
             exit(0);
