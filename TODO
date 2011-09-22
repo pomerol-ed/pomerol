@@ -1,3 +1,10 @@
+2011-09-23
+1) IndexClassification - отдельно, h- и U-матрицы отдельно
+2) Также отдельно класс-симметризатор h- и U-матрицы
+3) Размер n^4 как бы намекает на оптимизацию
+4) Json файл из 3х частей. 1я - для IndexClassification, 2я - для h-матрицы, 3я - для U-матрицы
+
+Older:
 Shortlist:
 - Document FieldOperatorPart.h, GFContainer.h, Hamiltonian.h, HamiltonianPart.h, IndexClassification.h, LatticeAnalysis.h, 
 Term.h, Thermal.h (if needed).
