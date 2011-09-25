@@ -1,0 +1,28 @@
+// Model configuration
+{
+"General" : {
+    "ExplicitSymmetry" : ["N", "Sz"] // optional
+    },
+
+"Sites" : {
+    "0" : {
+        "Type"              : "s",
+        "EnergyLevel"       : 0.5,         // A shortcut for a quadratic local interaction. Can be specified also in "QuadraticTerms" section
+        "U"                 : 1            // A shortcut for a quartic Hubbard-like local interaction, can be specified also in "QuarticTerms" section
+        },
+    "1" : {      
+        "Type"              : "s",
+        "EnergyLevel"       : 0.0,
+        "U"                 : 0
+        }        
+    },
+
+"QuadraticTerms" : [ // Put all hoppings here. If no spin specified term is applied to both spin components
+    {"site1": "0", "orbital1" : 0,"site2":"1", "orbital2":0, "value":1.0}
+    ],
+
+"QuarticTerms" : [  // Four-point interaction terms. Can be used for specific interactions, e.g. S+S- or \vec S \vec S.
+    ]
+}
+    
+
