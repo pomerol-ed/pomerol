@@ -1,27 +1,40 @@
-// Model configuration
+// Model configuration. Case insensitive.
 {
 "General" : {
-    "ExplicitSymmetry" : ["N", "Sz"] // optional
+    "ExplicitSymmetry" : ["N", "Sz"],      // Optional : These operations will be first to check for symmetry. 
+    "mu" : 0                               // Global chemical potential
     },
 
 "Sites" : {
     "0" : {
-        "Type"              : "s",
-        "EnergyLevel"       : 0.5,         // A shortcut for a quadratic local interaction. Can be specified also in "QuadraticTerms" section
-        "U"                 : 1            // A shortcut for a quartic Hubbard-like local interaction, can be specified also in "QuarticTerms" section
+        "Type"              : "Hubbard-s",
+        "Level"             : 0.5,         // A shortcut for a quadratic local interaction. Can be specified also in "QuadraticTerms" section
+        "U"                 : 1,           // A shortcut for a quartic Hubbard local interaction, can be specified also in "QuarticTerms" section
+        "Field"             : 0            // A shortcut for a local magnetic field. Warning! - breaks spin symmetry.
         },
     "1" : {      
-        "Type"              : "s",
-        "EnergyLevel"       : 0.0,
-        "U"                 : 0
+        "Type"              : "Hubbard-p", // A shortcut for a 3-band Hubbard interaction, defined by U,U',J parameters. If U' is avoided it is equal to U-J
+        "OrbitalSize"       : 2            // An explicit definition of orbital dimensionality to use a model for a given orbital size
+        "Level"             : 0.0,
+        "U"                 : 4,
+        "J"                 : 1
         }        
     },
 
-"QuadraticTerms" : [ // Put all hoppings here. If no spin specified term is applied to both spin components
-    {"site1": "0", "orbital1" : 0,"site2":"1", "orbital2":0, "value":1.0}
+"QuadraticTerms" : [ // A list of all 2-point terms, i.e. hoppings. If no spin specified a term is applied to both spin components
+    {"type" : "hopping", "site1" : "0", "orbital1" : 0, "site2" : "1", "orbital2" : 0, "value" : 1.0 },
+    {"type" : "field", "site": "1", "value" : 0.4 },        // auxiliary, can be defined in "Sites" section
+    {"type" : "level", "site": "0", "value" : 2.1 },        // auxiliary, can be avoided in "Sites" section
     ],
 
 "QuarticTerms" : [  // Four-point interaction terms. Can be used for specific interactions, e.g. S+S- or \vec S \vec S.
+    {"type" : "generic", "site1" : 0, "spin1" : 0, 
+                         "site2" : 1, "spin2" : 0,
+                         "site3" : 1, "spin3" : 0,
+                         "site4" : 0, "spin4" : 0,
+                         "value" : 0}, 
+    {"type" : "generic", "site1" : 0, "site2" : 1, "spin2" : 0, "site3" : 1, "site4" : 0, "value" : 0} 
+        // A "generic" term is a c_1 c_2 c^{\dagger}_3 c^{\dagger}_4 term in a Hamiltonian. If no spin specified a term is appied to the same spin component for each spin.
     ]
 }
     
