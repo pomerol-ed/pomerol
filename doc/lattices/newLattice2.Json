@@ -24,7 +24,7 @@
 "QuadraticTerms" : [ // A list of all 2-point terms, i.e. hoppings. If no spin specified a term is applied to both spin components
     {"type" : "hopping", "site1" : "0", "orbital1" : 0, "site2" : "1", "orbital2" : 0, "value" : 1.0 },
     {"type" : "field", "site": "1", "value" : 0.4 },        // auxiliary, can be defined in "Sites" section
-    {"type" : "level", "site": "0", "value" : 2.1 },        // auxiliary, can be avoided in "Sites" section
+    {"type" : "level", "site": "0", "value" : 2.1 }        // auxiliary, can be avoided in "Sites" section
     ],
 
 "QuarticTerms" : [  // Four-point interaction terms. Can be used for specific interactions, e.g. S+S- or \vec S \vec S.
