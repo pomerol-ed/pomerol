@@ -15,6 +15,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -33,7 +34,8 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 subdir = src
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(libpomerol_a_include_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
@@ -63,7 +65,8 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(libdir)"
+am__installdirs = "$(DESTDIR)$(libdir)" \
+	"$(DESTDIR)$(libpomerol_a_includedir)"
 LIBRARIES = $(lib_LIBRARIES)
 AR = ar
 ARFLAGS = cru
@@ -130,6 +133,7 @@ am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libpomerol_a_SOURCES)
 DIST_SOURCES = $(libpomerol_a_SOURCES)
+HEADERS = $(libpomerol_a_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -272,6 +276,7 @@ libpomerol_a_SOURCES = HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp \
 	Vertex4.cpp FieldOperatorContainer.cpp \
 	TwoParticleGFContainer.cpp GFContainer.cpp Misc.h ComputableObject.h LatticeAnalysis.h
 
+libpomerol_a_include_HEADERS = *.h 
 libpomerol_a_includedir = $(includedir)/pomerol
 all: all-am
 
@@ -723,6 +728,26 @@ libpomerol_a-GFContainer.obj: GFContainer.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='GFContainer.cpp' object='libpomerol_a-GFContainer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-GFContainer.obj `if test -f 'GFContainer.cpp'; then $(CYGPATH_W) 'GFContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/GFContainer.cpp'; fi`
+install-libpomerol_a_includeHEADERS: $(libpomerol_a_include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(libpomerol_a_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libpomerol_a_includedir)"
+	@list='$(libpomerol_a_include_HEADERS)'; test -n "$(libpomerol_a_includedir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libpomerol_a_includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libpomerol_a_includedir)" || exit $$?; \
+	done
+
+uninstall-libpomerol_a_includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(libpomerol_a_include_HEADERS)'; test -n "$(libpomerol_a_includedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(libpomerol_a_includedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(libpomerol_a_includedir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -808,9 +833,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES)
+all-am: Makefile $(LIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libpomerol_a_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -861,7 +886,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-libpomerol_a_includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -906,7 +931,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libLIBRARIES
+uninstall-am: uninstall-libLIBRARIES \
+	uninstall-libpomerol_a_includeHEADERS
 
 .MAKE: install-am install-strip
 
@@ -916,12 +942,14 @@ uninstall-am: uninstall-libLIBRARIES
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libLIBRARIES install-man install-pdf \
+	install-info-am install-libLIBRARIES \
+	install-libpomerol_a_includeHEADERS install-man install-pdf \
 	install-pdf-am install-ps install-ps-am install-strip \
 	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-libLIBRARIES
+	uninstall-am uninstall-libLIBRARIES \
+	uninstall-libpomerol_a_includeHEADERS
 
 
 all-clean:
