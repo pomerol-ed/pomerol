@@ -28,10 +28,10 @@
     ],
 
 "QuarticTerms" : [  // Four-point interaction terms. Can be used for specific interactions, e.g. S+S- or \vec S \vec S.
-    {"type" : "generic", "site1" : 0, "spin1" : 0, 
-                         "site2" : 1, "spin2" : 0,
-                         "site3" : 1, "spin3" : 0,
-                         "site4" : 0, "spin4" : 0,
+    {"type" : "generic", "site1" : 0, "spin1" : 0, "orbital1" : 0,
+                         "site2" : 1, "spin2" : 0, "orbital2" : 0,
+                         "site3" : 1, "spin3" : 0, "orbital3" : 0,
+                         "site4" : 0, "spin4" : 0, "orbital4" : 0,
                          "value" : 0}, 
     {"type" : "generic", "site1" : 0, "site2" : 1, "spin2" : 0, "site3" : 1, "site4" : 0, "value" : 0} 
         // A "generic" term is a c_1 c_2 c^{\dagger}_3 c^{\dagger}_4 term in a Hamiltonian. If no spin specified a term is appied to the same spin component for each spin.

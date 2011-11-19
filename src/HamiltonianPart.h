@@ -37,9 +37,6 @@ class HamiltonianPart : public ComputableObject, public HDF5Storable {
     RealMatrixType H;                //part of Hamiltonian
     RealVectorType V;                //vector of Eigen Values
 
-    std::string ev_path;                    // EigenVectors output path handler
-    std::string ef_path;                    // EigenFunctions output path handler
-
     void add_nTerm(InnerQuantumState st, nTerm *N);
 
     void add_nnTerm(InnerQuantumState st, nnTerm *T);
@@ -62,7 +59,7 @@ class HamiltonianPart : public ComputableObject, public HDF5Storable {
 
 public:
 
-    HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id, const std::string &ev_path, const std::string &ef_path);
+    HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id);
 
     void enter();
 
@@ -76,7 +73,6 @@ public:
     RealType getMinimumEigenvalue();        //!<Return the lowest Eigenvalue of the current part;
     
     bool reduce(RealType ActualCutoff);
-    void dump();                //writing Eigen Values and Eigen Vectors in output file
     void print_to_screen();            //print to screen part of hamiltonian
     RealVectorType getEigenState(InnerQuantumState m);
 

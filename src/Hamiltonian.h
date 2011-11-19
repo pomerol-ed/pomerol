@@ -34,7 +34,6 @@
 #include "IndexClassification.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
-#include "output.h"
 
 /** This class represents a Hamiltonian, written as a matrix of matrix elements in a Fock basis.
  * It is a container for several hamiltonian parts, each for single defined QuantumNumbers and a corresponding BlockNumber. 
@@ -49,13 +48,11 @@ class Hamiltonian : public ComputableObject, public HDF5Storable
     IndexClassification &Formula;
     /** Reference to a states classification object. */
     StatesClassification& S;
-    /** Reference to an output handling object */
-    output_handle &OUT;
     /** A value of the ground energy - needed for further renormalization */
     RealType GroundEnergy;
 public:
 
-    Hamiltonian(IndexClassification &F_, StatesClassification &S_,output_handle &OUT_, std::string &config_path_);
+    Hamiltonian(IndexClassification &F_, StatesClassification &S_);
     ~Hamiltonian();
 
     void prepare(); // was void enter();

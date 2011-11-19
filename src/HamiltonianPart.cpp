@@ -27,8 +27,8 @@
 
 // class HamiltonianPart
 
-HamiltonianPart::HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id, const std::string &ev_path, const std::string &ef_path) :
-  ComputableObject(), IndexInfo(F),S(S),hpart_id(id),ev_path(ev_path),ef_path(ef_path)
+HamiltonianPart::HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id) : 
+  ComputableObject(), IndexInfo(F),S(S),hpart_id(id)
 {}
 
 RealType HamiltonianPart::reH(int m, int n)								//return  H(m,n)
@@ -215,30 +215,6 @@ void HamiltonianPart::print_to_screen()					//ptint part of Hamiltonian to scree
 {
 	std::cout << H << std::endl;
 	std::cout << std::endl;
-}
-
-void HamiltonianPart::dump()							//writing Eigen Values in output file
-{
-	if(H.rows()!=0)
-	{
-		std::stringstream filename;
-		filename << (*this).ef_path << "//ef" << hpart_id << ".dat";
-  		std::ofstream outHpart;
-		outHpart.open(filename.str().c_str());
-		outHpart << H << std::endl;
-		outHpart << std::endl;
-  		outHpart.close();
-	}
-
-	if(H.rows()!=0)
-	{
-		std::stringstream filename;
-		filename << (*this).ev_path <<"//ev" << hpart_id << ".dat";
-		std::ofstream outHpart;
-  		outHpart.open(filename.str().c_str());
-		outHpart << V << std::endl;
-  		outHpart.close();
-	}
 }
 
 RealVectorType HamiltonianPart::getEigenState(InnerQuantumState m)

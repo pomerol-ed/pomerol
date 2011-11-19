@@ -4,7 +4,7 @@ AM_CXXFLAGS+= ${hdf5_CFLAGS} ${eigen3_CFLAGS} -I../jsoncpp/include/
 lib_LIBRARIES=libpomerol.a
 
 libpomerol_a_CPPFLAGS=-Wall -g
-libpomerol_a_SOURCES= output.cpp HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp \
+libpomerol_a_SOURCES= HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp \
 	StatesClassification.cpp Term.cpp IndexClassification.cpp \
 	HamiltonianPart.cpp Hamiltonian.cpp FieldOperatorPart.cpp FieldOperator.cpp \
 	DensityMatrixPart.cpp DensityMatrix.cpp \

@@ -26,7 +26,6 @@
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
 #include "TwoParticleGF.h"
-extern output_handle OUT;
 extern std::ostream& OUTPUT_STREAM;
 
 static const Permutation3 permutations3[6] = {

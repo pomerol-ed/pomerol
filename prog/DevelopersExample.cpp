@@ -20,7 +20,6 @@
 
 
 #include "Misc.h"
-#include "output.h"
 #include "HDF5Storage.h"
 #include "LatticeAnalysis.h"
 #include "Term.h"
@@ -40,8 +39,7 @@ std::string input = "system.ini";
 LatticeAnalysis Lattice;
 IndexClassification IndexInfo(Lattice);
 StatesClassification S(IndexInfo); 
-output_handle OUT;
-Hamiltonian H(IndexInfo,S,OUT,input);
+Hamiltonian H(IndexInfo,S);
 
 std::ostream &OUTPUT_STREAM=std::cout;
 
@@ -225,7 +223,6 @@ int main(int argc, char *argv[])
   IndexInfo.printTerms();
   printFramed("Equivalent Permutations");
   IndexInfo.printEquivalentPermutations();
-  OUT = output_handle("output");
 
   S.compute();
 
@@ -241,7 +238,7 @@ int main(int argc, char *argv[])
   H.prepare();
   H.compute();
   RealType beta = opt.beta;
-  H.dump();
+  //H.dump();
   //storage.save(H);
 
   // DEBUG HDF5 save/load

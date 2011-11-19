@@ -19,7 +19,6 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Misc.h"
-#include "output.h"
 #include "LatticeAnalysis.h"
 #include "Term.h"
 #include "IndexClassification.h"
@@ -40,8 +39,7 @@ std::string input = "system.ini";
 LatticeAnalysis Lattice;
 IndexClassification IndexInfo(Lattice);
 StatesClassification S(IndexInfo); 
-output_handle OUT;
-Hamiltonian H(IndexInfo,S,OUT,input);
+Hamiltonian H(IndexInfo,S);
 
 std::ostream &OUTPUT_STREAM=std::cout;
 
@@ -307,7 +305,6 @@ int main(int argc, char *argv[])
     IndexInfo.printTerms();
     printFramed("Equivalent Permutations");
     IndexInfo.printEquivalentPermutations();
-    OUT = output_handle("output");
 
     S.compute();
 
@@ -321,7 +318,6 @@ int main(int argc, char *argv[])
     H.prepare();
     H.compute();
     RealType beta = opt.beta;
-    H.dump();
 
     num_cout << std::endl << "The value of ground energy is " << H.getGroundEnergy() << std::endl;
 

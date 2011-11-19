@@ -25,7 +25,6 @@
 #include"ComputableObject.h"
 #include"StatesClassification.h"
 #include"Hamiltonian.h"
-#include"output.h"
 
 class FieldOperatorPart : public ComputableObject {
 protected:

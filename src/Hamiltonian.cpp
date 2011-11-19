@@ -21,8 +21,8 @@
 
 #include "Hamiltonian.h"
 
-Hamiltonian::Hamiltonian(IndexClassification &F_,StatesClassification &S_,output_handle &OUT_, std::string& config_path_):
-ComputableObject(),Formula(F_),S(S_),OUT(OUT_){}
+Hamiltonian::Hamiltonian(IndexClassification &F_,StatesClassification &S_):
+ComputableObject(),Formula(F_),S(S_){}
 
 Hamiltonian::~Hamiltonian()
 {
@@ -31,18 +31,14 @@ Hamiltonian::~Hamiltonian()
 	delete parts[current_block];
 }
 
-//void Hamiltonian::enter()
 void Hamiltonian::prepare()
 {
-    output_handle OUT_EVec(OUT.path()+"/EigenVec");		// create output_folders
-    output_handle OUT_EVal(OUT.path()+"/EigenVal");		// create output_folders
-
     BlockNumber NumberOfBlocks = S.NumberOfBlocks();
     parts.resize(NumberOfBlocks);
 
     for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
     {
-	parts[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block),OUT_EVal.path(), OUT_EVec.path());
+	parts[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block));
 	parts[current_block]->enter();
 
 	std::cout << "Hamiltonian block " << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is entered";
@@ -79,6 +75,7 @@ void Hamiltonian::compute()
  computeGroundEnergy();
 }
 
+/* Remove this after it is not needed
 void Hamiltonian::dump()
 {
   BlockNumber NumberOfBlocks = parts.size();
@@ -87,7 +84,7 @@ void Hamiltonian::dump()
       parts[current_block]->dump();
     }
   std::cout << "Hamiltonian has been dumped." << std::endl;
-}
+}*/
 
 void Hamiltonian::computeGroundEnergy()
 {

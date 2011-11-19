@@ -35,7 +35,6 @@
 
 #include"Misc.h"
 #include"ComputableObject.h"
-#include"output.h"
 #include"StatesClassification.h"
 #include"FieldOperator.h"
 #include"DensityMatrix.h"
