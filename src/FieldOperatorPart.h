@@ -26,6 +26,8 @@
 #include"StatesClassification.h"
 #include"Hamiltonian.h"
 
+namespace Pomerol{
+
 class FieldOperatorPart : public ComputableObject {
 protected:
 
@@ -85,4 +87,5 @@ public :
     AnnihilationOperatorPart& transpose();
 };
 
+} // end of namespace Pomerol
 #endif // endif :: #ifdef __INCLUDE_FIELDOPERATORPART_H

@@ -35,6 +35,8 @@
 #include"Hamiltonian.h" 
 #include"FieldOperatorPart.h"
 
+namespace Pomerol{
+
 /** \typedef 
  * A pair of left and right indices of a part in a Field Operator. Each part is a non-vanishing worldline in an operator
  */
@@ -146,4 +148,5 @@ public:
     AnnihilationOperator(IndexClassification &IndexInfo, StatesClassification &System, Hamiltonian &H, ParticleIndex Index);
 };
 
+} // end of namespace Pomerol
 #endif // endif :: #ifdef __INCLUDE_FIELDOPERATOR_H

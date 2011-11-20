@@ -27,6 +27,8 @@
 */
 #include "DensityMatrix.h"
 
+namespace Pomerol{
+
 DensityMatrix::DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType beta) : 
     ComputableObject(), Thermal(beta), S(S), H(H), parts(S.NumberOfBlocks())
 {}
@@ -134,3 +136,5 @@ void DensityMatrix::load(const H5::CommonFG* RootGroup)
     }
     Status = Computed;
 }
+
+} // end of namespace Pomerol

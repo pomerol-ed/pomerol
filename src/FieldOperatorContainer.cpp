@@ -28,6 +28,8 @@
 
 #include "FieldOperatorContainer.h"
 
+namespace Pomerol{
+
 FieldOperatorContainer::FieldOperatorContainer(StatesClassification &S, Hamiltonian &H, IndexClassification &IndexInfo):S(S),H(H),IndexInfo(IndexInfo)
 {
 };
@@ -64,3 +66,4 @@ if (IndexInfo.checkIndex(in)){
 else assert(0);
 }
 
+} // end of namespace Pomerol

@@ -27,4 +27,9 @@
 
 #include"Thermal.h"
 
+namespace Pomerol{
+
 Thermal::Thermal(RealType beta) : beta(beta) {}
+
+} // end of namespace Pomerol
+

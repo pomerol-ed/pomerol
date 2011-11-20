@@ -21,6 +21,8 @@
 
 #include "TwoParticleGFContainer.h"
 
+namespace Pomerol{
+
 extern std::ostream& OUTPUT_STREAM;
 /*=========================================================================*/
 
@@ -200,3 +202,5 @@ long TwoParticleGFContainer::getNumberOfMatsubaras() const
 {
     return NumberOfMatsubaras;
 }
+
+} // end of namespace Pomerol

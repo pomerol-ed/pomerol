@@ -35,6 +35,8 @@
 #include"Hamiltonian.h"
 #include"StatesClassification.h"
 
+namespace Pomerol{
+
 /** This class represents a container to store and retrieve FieldOperators ( CreationOperator or AnnihilationOperator 
  * rotated to eigenvector basis of Hamiltonian H ) for a given Index.
  * If no field operator is yet initialized then calculation of the field operator is done.
@@ -67,4 +69,5 @@ public:
     AnnihilationOperator& getAnnihilationOperator(ParticleIndex in);
 };
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_FIELDOPERATORCONTAINER_H

@@ -34,6 +34,8 @@
 #include"GFContainer.h"
 #include"TwoParticleGFContainer.h"
 
+namespace Pomerol{
+
 /** Objects of this class just transforms a two-particle Green's function into
  * an irreducible vertex part or into an amputated irreducible vertex.
  */
@@ -128,4 +130,5 @@ private:
     void computeAmputated(const IndexCombination& in);
 };
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_VERTEX4_H

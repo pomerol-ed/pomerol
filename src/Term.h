@@ -35,6 +35,8 @@
 
 #include"Misc.h"
 
+namespace Pomerol{
+
 /** Term - a class to represent a term in a formula. 
  * The term is meant to be a finite number (defined by template parameter len) of creation and annihilation operators. 
  * Their indices and order are stored in this class. Examples are nn or spinflip or other type of terms.
@@ -73,4 +75,6 @@ class nTerm : public Term {
 public:
    nTerm(unsigned short bit,RealType Val);
 };
+
+} // end of namespace Pomerol
 #endif // #define __INCLUDE_TERM_H

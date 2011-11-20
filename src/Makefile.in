@@ -98,7 +98,8 @@ am_libpomerol_a_OBJECTS = libpomerol_a-HDF5Storage.$(OBJEXT) \
 	libpomerol_a-Vertex4.$(OBJEXT) \
 	libpomerol_a-FieldOperatorContainer.$(OBJEXT) \
 	libpomerol_a-TwoParticleGFContainer.$(OBJEXT) \
-	libpomerol_a-GFContainer.$(OBJEXT)
+	libpomerol_a-GFContainer.$(OBJEXT) \
+	libpomerol_a-LatticeReader.$(OBJEXT)
 libpomerol_a_OBJECTS = $(am_libpomerol_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -274,7 +275,7 @@ libpomerol_a_SOURCES = HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp \
 	FourIndexObject.cpp \
 	TwoParticleGF.cpp TwoParticleGFPart.cpp \
 	Vertex4.cpp FieldOperatorContainer.cpp \
-	TwoParticleGFContainer.cpp GFContainer.cpp Misc.h ComputableObject.h LatticeAnalysis.h
+	TwoParticleGFContainer.cpp GFContainer.cpp Misc.h ComputableObject.h LatticeAnalysis.h LatticeReader.h LatticeReader.cpp
 
 libpomerol_a_include_HEADERS = *.h 
 libpomerol_a_includedir = $(includedir)/pomerol
@@ -369,6 +370,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-HamiltonianPart.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-IndexClassification.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-LatticeAnalysis.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-LatticeReader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-StatesClassification.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Term.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Thermal.Po@am__quote@
@@ -728,6 +730,22 @@ libpomerol_a-GFContainer.obj: GFContainer.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='GFContainer.cpp' object='libpomerol_a-GFContainer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-GFContainer.obj `if test -f 'GFContainer.cpp'; then $(CYGPATH_W) 'GFContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/GFContainer.cpp'; fi`
+
+libpomerol_a-LatticeReader.o: LatticeReader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-LatticeReader.o -MD -MP -MF $(DEPDIR)/libpomerol_a-LatticeReader.Tpo -c -o libpomerol_a-LatticeReader.o `test -f 'LatticeReader.cpp' || echo '$(srcdir)/'`LatticeReader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-LatticeReader.Tpo $(DEPDIR)/libpomerol_a-LatticeReader.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticeReader.cpp' object='libpomerol_a-LatticeReader.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticeReader.o `test -f 'LatticeReader.cpp' || echo '$(srcdir)/'`LatticeReader.cpp
+
+libpomerol_a-LatticeReader.obj: LatticeReader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-LatticeReader.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-LatticeReader.Tpo -c -o libpomerol_a-LatticeReader.obj `if test -f 'LatticeReader.cpp'; then $(CYGPATH_W) 'LatticeReader.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticeReader.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-LatticeReader.Tpo $(DEPDIR)/libpomerol_a-LatticeReader.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticeReader.cpp' object='libpomerol_a-LatticeReader.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticeReader.obj `if test -f 'LatticeReader.cpp'; then $(CYGPATH_W) 'LatticeReader.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticeReader.cpp'; fi`
 install-libpomerol_a_includeHEADERS: $(libpomerol_a_include_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(libpomerol_a_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libpomerol_a_includedir)"

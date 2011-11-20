@@ -22,6 +22,8 @@
 #include "LatticeAnalysis.h"
 #include <fstream>
 
+namespace Pomerol{
+
 std::ostream& operator<<(std::ostream& output, const SiteHoppingElement& out)
 {
 	output << out.From << "_{" << out.OrbitalFrom << "} -> " << out.To << "_{" << out.OrbitalTo << "} : " << out.Value;
@@ -169,3 +171,5 @@ std::stringstream& LatticeAnalysis::printSitesList()
 	}
 	return current;
 };
+
+} // end of namespace Pomerol

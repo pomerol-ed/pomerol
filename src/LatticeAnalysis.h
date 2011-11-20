@@ -25,6 +25,8 @@
 #include"Misc.h"
 #include<json/json.h>
 
+namespace Pomerol{
+
 struct SiteHoppingElement
  {
     unsigned short From;
@@ -84,4 +86,5 @@ public:
     std::stringstream& printSitesList();
 };
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_LATTICEANALYSIS_H

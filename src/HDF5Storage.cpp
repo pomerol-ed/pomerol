@@ -28,6 +28,8 @@
 
 #include"HDF5Storage.h"
 
+namespace Pomerol{
+
 const unsigned int* HDF5Storage::HDF5Version = HDF5Storage::initHDF5();
 
 const unsigned int* HDF5Storage::initHDF5()
@@ -350,3 +352,5 @@ void HDF5Storage::loadRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
     valuesDataSet.read(RMSM._valuePtr(),H5_REAL_TYPE);
     RMSM.finalize();
 }
+
+} // end of namespace Pomerol

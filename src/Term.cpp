@@ -21,6 +21,8 @@
 
 #include "Term.h"
 
+namespace Pomerol{
+
 nnTerm::nnTerm(unsigned short bit1, unsigned short bit2, RealType Val)
 {
   diag = true;
@@ -100,4 +102,5 @@ Term::~Term() {
 	delete[] bit;
 };
 
+} // end of namespace Pomerol
 

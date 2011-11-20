@@ -34,6 +34,8 @@
 #include"GreensFunction.h"
 #include"FieldOperatorContainer.h"
 
+namespace Pomerol{
+
 class GFContainer : public ComputableObject, public Thermal 
 {
 
@@ -67,4 +69,5 @@ struct GFContainer::IndexCombination
     IndexCombination(ParticleIndex cindex1, ParticleIndex cdagindex2);
 };
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_GFCONTAINER_H

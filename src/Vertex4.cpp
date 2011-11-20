@@ -22,6 +22,8 @@
 #include "Vertex4.h"
 #include <Eigen/LU> 
 
+namespace Pomerol{
+
 Vertex4::Vertex4(const IndexClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g) :
 ComputableObject(),Thermal(Chi),Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+1)
 {
@@ -156,4 +158,5 @@ ComplexType Vertex4::getAmputatedValue(const IndexCombination& in,
     return (*mapAmputatedValues[in])(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3);
 };
 
+} // end of namespace Pomerol
 

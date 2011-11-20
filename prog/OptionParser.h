@@ -229,7 +229,7 @@ protected:
  */
 class pomerolOptionParser : public optparse {
 public:
-	RealType beta ;
+	Pomerol::RealType beta ;
 	unsigned long NumberOfMatsubaras;
 	std::string LatticeFile;
 	std::string help;

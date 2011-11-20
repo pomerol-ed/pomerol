@@ -27,6 +27,8 @@
 */
 #include "GreensFunctionPart.h"
 
+namespace Pomerol{
+
 GreensFunctionPart::Term::Term(ComplexType Residue, RealType Pole) : Residue(Residue), Pole(Pole) {};
 ComplexType GreensFunctionPart::Term::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
 
@@ -135,3 +137,4 @@ void GreensFunctionPart::reduceTerms(const RealType Tolerance, std::list<Term> &
     }
 }
 
+} // end of namespace Pomerol

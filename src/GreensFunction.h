@@ -40,6 +40,8 @@
 #include"DensityMatrix.h"
 #include"GreensFunctionPart.h"
 
+namespace Pomerol{
+
 /** This class represents a thermal Green's function in the Matsubara representation.
  *
  * Exact definition:
@@ -110,5 +112,6 @@ public:
     bool vanishes();
 };
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_GREENSFUNCTION_H
 

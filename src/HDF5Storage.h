@@ -30,6 +30,8 @@
 #include<H5Cpp.h>
 #include"Misc.h"
 
+namespace Pomerol{
+
 class HDF5Storage;
 class HDF5Storable {
 public:
@@ -71,5 +73,6 @@ public:
     static void loadRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, RowMajorMatrixType& RMSM);
 };
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_HDF5STORAGE_H
 

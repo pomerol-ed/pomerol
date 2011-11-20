@@ -27,6 +27,8 @@
 
 // class HamiltonianPart
 
+namespace Pomerol{
+
 HamiltonianPart::HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id) : 
   ComputableObject(), IndexInfo(F),S(S),hpart_id(id)
 {}
@@ -281,5 +283,5 @@ void HamiltonianPart::load(const H5::CommonFG* RootGroup)
     Status = Computed;
 }
 
-
+} // end of namespace Pomerol
 

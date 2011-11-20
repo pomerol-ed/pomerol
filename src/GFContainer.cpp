@@ -22,6 +22,8 @@
 #include "GFContainer.h"
 extern std::ostream& OUTPUT_STREAM;
 
+namespace Pomerol{
+
 GFContainer::IndexCombination::IndexCombination(ParticleIndex cindex1, ParticleIndex cdagindex2)
 {
     Indices[0]=cindex1;
@@ -113,3 +115,5 @@ void GFContainer::dumpToPlainText(long wn)
            it1->second->dumpToPlainText(wn); 
         };
 };
+
+} // end of namespace Pomerol

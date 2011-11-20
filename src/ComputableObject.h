@@ -30,6 +30,8 @@
 #ifndef __INCLUDE_COMPUTABLEOBJECT_H
 #define __INCLUDE_COMPUTABLEOBJECT_H
 
+namespace Pomerol{
+
 /** This abstract class is a prototype for any computable object in the current code, i.e. Greens Function, Two Particle GF, Density Matrix etc...
  *  It defines the current state of calculation and declares virtual methods "compute" and "dump". 
  *  The enumeration of statuses is listed in the Misc.h file
@@ -48,4 +50,5 @@ public:
     //virtual void compute();                   //!< Do the most expensive calculation. Finishing it means the object has finished all calculation jobs
 };
 
+} // end of namespace Pomerol
 #endif

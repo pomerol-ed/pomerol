@@ -27,6 +27,8 @@
 #include "IndexClassification.h"
 #include "StatesClassification.h"
 
+namespace Pomerol{
+
 class HamiltonianPart : public ComputableObject, public HDF5Storable {
 
     IndexClassification &IndexInfo;
@@ -81,5 +83,5 @@ public:
 
 };
 
-                        //structure of values rotated C or CX
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_HAMILTONIANPART_H

@@ -25,6 +25,8 @@
 
 using std::stringstream;
 
+namespace Pomerol{
+
 FieldOperatorPart::FieldOperatorPart(
         IndexClassification &IndexInfo, StatesClassification &S, HamiltonianPart &h_from,  HamiltonianPart &h_to, ParticleIndex i) : 
         ComputableObject(), IndexInfo(IndexInfo), S(S), h_from(h_from), h_to(h_to), i(i)
@@ -223,3 +225,5 @@ AnnihilationOperatorPart& CreationOperatorPart::transpose()
 	C->elementsColMajor = elementsColMajor.transpose();
 	return *C;
 };
+
+} // end of namespace Pomerol

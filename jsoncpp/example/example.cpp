@@ -9,6 +9,7 @@ int main()
 {
 Json::Value root;   // will contains the root value after parsing.
 Json::Reader reader;
+Json::StyledStreamWriter writer;
 std::ifstream in("example.json");
 bool parsingSuccessful = reader.parse( in, root );
 if ( !parsingSuccessful )
@@ -33,6 +34,15 @@ for ( int index = 0; index < plugins.size(); ++index )  // Iterates over the seq
 
  double shit = root["JJ"].asDouble();
  cout << endl << shit << endl;
+
+root["writtenvalue"]=12.2;
+root["wri"]["wq"][(unsigned int)0]=1;
+root["wri"]["wq"][1]=2;
+root["wri"]["wq"][1]=3;
+root["wri"]["wq"][2]=5;
+
+std::ofstream out("out.json");
+writer.write(out,root);
 
    
 return 1;

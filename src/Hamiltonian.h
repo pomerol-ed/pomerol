@@ -35,6 +35,8 @@
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
 
+namespace Pomerol{
+
 /** This class represents a Hamiltonian, written as a matrix of matrix elements in a Fock basis.
  * It is a container for several hamiltonian parts, each for single defined QuantumNumbers and a corresponding BlockNumber. 
  * It provides eigenvalues and eigenfunctions of any of its parts once they are obtained within its parts. 
@@ -74,5 +76,6 @@ private:
     void computeGroundEnergy();
 };
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_HAMILTONIAN_H
 

@@ -33,6 +33,8 @@
 #include"Term.h"
 #include<json/json.h>
 
+namespace Pomerol{
+
 /**
  * SingleIndex class is an abstract class to handle all info about current ParticleIndex. 
  *  is a site+spin index. The class also handles the number of the bit and the type of the site which it belongs to
@@ -150,6 +152,6 @@ public:
     friend std::ostream& operator<<(std::ostream& output, const IndexPermutation& out);
 };
 
-
+} // end of namespace Pomerol
 #endif // endif :: #ifndef #__INCLUDE_INDEXCLASSIFICATION_H
 

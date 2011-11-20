@@ -35,6 +35,8 @@
 #include"HDF5Storage.h"
 #include"IndexClassification.h"
 
+namespace Pomerol{
+
 /** This class represents a number of a current block of QuantumStates which have
  * the same quantum numbers. If such block can't exist ( can't be created by anyone else )
  * it's value is assigned to an ERROR_BLOCK_NUMBER.
@@ -204,4 +206,5 @@ public:
     bool checkQuantumNumbers(QuantumNumbers in);
 };
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_STATESCLASSIFICATION_H

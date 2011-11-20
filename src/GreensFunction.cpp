@@ -27,6 +27,8 @@
 */
 #include "GreensFunction.h"
 
+namespace Pomerol{
+
 GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H, 
                                AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM
                                ) : ComputableObject(), Thermal(DM), S(S), H(H), C(C), CX(CX), DM(DM), parts(0)
@@ -129,3 +131,5 @@ void GreensFunction::dumpToPlainText(long points)
     }
     output.close();
 }
+
+} // end of namespace Pomerol

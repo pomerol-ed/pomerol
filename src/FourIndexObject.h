@@ -30,6 +30,8 @@
 #include "Misc.h"
 #include "TwoParticleGFPart.h"
 
+namespace Pomerol{
+
 /** This class is a prototype for every object which is defined by a combination of 4 arbitrary Particle Indices
  *  It defines main subobjects, which are used by the 4 index-dependent quantites: IndexCombination and MatsubaraContainer
  */
@@ -184,4 +186,5 @@ void FourIndexObject::MatsubaraContainer::set(long MatsubaraNumber1, long Matsub
     else ERROR("Warning! Tried assigning to wrong Matsubara numbers (" << MatsubaraNumber1 << "," << MatsubaraNumber2 << "," << MatsubaraNumber3 << "," << MatsubaraNumber1+ MatsubaraNumber2 - MatsubaraNumber3 <<"). Value left unassigned");
 }
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_FOURINDEXOBJECT_H 

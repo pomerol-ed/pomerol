@@ -32,6 +32,8 @@
 #include "Thermal.h"
 #include "HamiltonianPart.h"
 
+namespace Pomerol{
+
 /** This class represents a part of a density matrix.
  * It is responsible for calculations of exponential weights
  * and a contribution to the partition function made by the corresponding
@@ -91,4 +93,5 @@ public:
     void load(const H5::CommonFG* RootGroup);
 };
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H

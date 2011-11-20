@@ -21,6 +21,8 @@
 
 #include "TwoParticleGFPart.h"
 
+namespace Pomerol{
+
 // Make the lagging index catch up or outrun the leading index.
 inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter, 
                          ColMajorMatrixType::InnerIterator& index2_iter)
@@ -353,4 +355,6 @@ void TwoParticleGFPart::clear()
     NonResonantTerms.clear();
     ResonantTerms.clear();
 }
+
+} // end of namespace Pomerol
 

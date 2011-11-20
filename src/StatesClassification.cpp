@@ -21,6 +21,8 @@
 
 #include "StatesClassification.h"
 
+namespace Pomerol{
+
 bool BlockNumber::operator<(const BlockNumber& rhs) const {return number<rhs.number;}
 bool BlockNumber::operator==(const BlockNumber& rhs) const {return number==rhs.number;}
 
@@ -245,4 +247,5 @@ BlockNumber StatesClassification::getBlockNumber(QuantumState in)
     return (*this).getBlockNumber((*this).getStateInfo(in));
 }
 
+} // end of namespace Pomerol
 

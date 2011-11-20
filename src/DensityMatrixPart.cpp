@@ -27,6 +27,7 @@
 */
 #include "DensityMatrixPart.h"
 
+namespace Pomerol{
 DensityMatrixPart::DensityMatrixPart(StatesClassification &S, HamiltonianPart& hpart, RealType beta, RealType GroundEnergy) :
     Thermal(beta), S(S), hpart(hpart), GroundEnergy(GroundEnergy), weights(hpart.size())
 {}
@@ -107,3 +108,5 @@ void DensityMatrixPart::load(const H5::CommonFG* RootGroup)
     Z_part = HDF5Storage::loadReal(RootGroup,"Z_part");
     HDF5Storage::loadRealVector(RootGroup,"weights",weights);
 }
+
+} // end of namespace Pomerol

@@ -36,6 +36,8 @@
 #include <H5Group.h>
 std::string input = "system.ini";
 
+using namespace Pomerol;
+
 LatticeAnalysis Lattice;
 IndexClassification IndexInfo(Lattice);
 StatesClassification S(IndexInfo); 

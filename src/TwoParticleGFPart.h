@@ -35,6 +35,8 @@
 #include"FieldOperatorPart.h"
 #include"DensityMatrixPart.h"
 
+namespace Pomerol{
+
 /** This class represents a part of a two-particle Green's function.
  * Every part describes one 'world stripe' of four operators.
  */
@@ -326,4 +328,5 @@ ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexT
     }
 }
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGFPART_H

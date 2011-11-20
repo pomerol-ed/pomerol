@@ -34,6 +34,9 @@
 #include "OptionParser.h"
 
 #include <fstream>
+
+using namespace Pomerol;
+
 std::string input = "system.ini";
 
 LatticeAnalysis Lattice;

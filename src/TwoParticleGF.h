@@ -40,6 +40,8 @@
 #include"DensityMatrix.h"
 #include"TwoParticleGFPart.h"
 
+namespace Pomerol{
+
 /** This class represents a thermal Green's function in the Matsubara representation.
  *
  * Exact definition:
@@ -155,4 +157,5 @@ public:
     unsigned short getPermutationNumber(const Permutation3& in);
 };
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGF_H

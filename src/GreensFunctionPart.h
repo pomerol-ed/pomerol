@@ -37,6 +37,8 @@
 #include"FieldOperator.h"
 #include"DensityMatrixPart.h"
 
+namespace Pomerol{
+
 /** This class represents a part of a Green's function.
  * Every part describes all transitions allowed by selection rules
  * between a given pair of Hamiltonian blocks.
@@ -135,4 +137,5 @@ struct GreensFunctionPart::Term {
 
 std::ostream& operator<< (std::ostream& out, const GreensFunctionPart::Term& T);
 
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_GREENSFUNCTIONPART_H

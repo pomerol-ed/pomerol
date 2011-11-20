@@ -28,6 +28,8 @@
 #include"TwoParticleGF.h"
 #include"FieldOperatorContainer.h"
 
+namespace Pomerol{
+
 class TwoParticleGFContainer : public ComputableObject, public FourIndexContainerObject, public Thermal
 {
 public:
@@ -69,4 +71,6 @@ struct TwoParticleGFContainer::Element
     Element(TwoParticleGF* Computable2PGF, Permutation4 FrequenciesPermutation, bool isComputed);
     IndexCombination getLinkedIndices();
 };
+
+} // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGFCONTAINER_H

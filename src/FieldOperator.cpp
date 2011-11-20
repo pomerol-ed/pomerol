@@ -22,6 +22,7 @@
 #include "FieldOperator.h"
 extern std::ostream& OUTPUT_STREAM;
 
+namespace Pomerol{
 FieldOperator::FieldOperator(IndexClassification &IndexInfo, StatesClassification &System, Hamiltonian &H, ParticleIndex Index) : ComputableObject(),
     IndexInfo(IndexInfo), System(System), H(H), Index(Index)
 {}
@@ -173,3 +174,5 @@ BlockNumber AnnihilationOperator::mapsTo(BlockNumber in)
   BlockNumber out = System.getBlockNumber(q_out);
   return out;
 }
+
+} // end of namespace Pomerol

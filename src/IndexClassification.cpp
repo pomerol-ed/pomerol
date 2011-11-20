@@ -21,6 +21,8 @@
 
 #include "IndexClassification.h"
 
+namespace Pomerol{
+
 std::ostream& operator<<(std::ostream& output,const sSingleIndex& out)
 {
 output << "Index " << out.bitNumber << " of s-orbital, site N " << out.site << ", spin " << ((out.spin==1)?"up  ":"down") << ", U= " << out.U; 
@@ -385,3 +387,5 @@ std::ostream& operator<<(std::ostream& output, const IndexClassification::IndexP
     output << ")" << std::flush;
     return output;
 }
+
+} // end of namespace Pomerol

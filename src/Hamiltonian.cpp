@@ -21,6 +21,8 @@
 
 #include "Hamiltonian.h"
 
+namespace Pomerol{
+
 Hamiltonian::Hamiltonian(IndexClassification &F_,StatesClassification &S_):
 ComputableObject(),Formula(F_),S(S_){}
 
@@ -150,4 +152,6 @@ void Hamiltonian::load(const H5::CommonFG* RootGroup)
     }
     Status = Computed;
 }
+
+} // end of namespace Pomerol
 

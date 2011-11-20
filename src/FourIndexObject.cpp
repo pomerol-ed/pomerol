@@ -24,6 +24,8 @@
 //FourIndexObject::IndexCombination
 //
 
+namespace Pomerol{
+
 FourIndexObject::IndexCombination::IndexCombination(ParticleIndex cindex1, ParticleIndex cindex2, ParticleIndex cdagindex3, ParticleIndex cdagindex4)
 {
     Indices[0]=cindex1;
@@ -137,3 +139,5 @@ void FourIndexObject::MatsubaraContainer::fill(const std::list<TwoParticleGFPart
 // FourIndexContainerObject
 //
 const Permutation4 FourIndexContainerObject::TrivialOperatorPermutations[4] = { permutations4[0], permutations4[1], permutations4[6], permutations4[7] };
+
+} // end of namespace Pomerol

@@ -36,13 +36,14 @@
 #include "Hamiltonian.h"
 #include "DensityMatrixPart.h"
 
+namespace Pomerol{
+
 /** This class represents a density matrix \f$ \rho = \exp(-\beta \hat H)/Z \f$.
  * It is actually a container class for a collection of parts (all real calculations
  * take place inside the parts). There is one-to-one correspondence between parts of
  * the Hamiltonian and the parts of the density matrix itself, since the density matrix
  * is a function of \f$ \hat H \f$.
  */
-
 class DensityMatrix : public ComputableObject, public Thermal, public HDF5Storable
 {
     /** A reference to a states classification object. */
@@ -88,4 +89,5 @@ public:
     void load(const H5::CommonFG* RootGroup);
 };
 
+}; // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H

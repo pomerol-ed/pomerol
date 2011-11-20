@@ -49,6 +49,9 @@
 #endif
 
 #define REALTYPE_DOUBLE
+
+namespace Pomerol{
+
 /** Real floating point type. */
 typedef double RealType;
 /** Complex type. */
@@ -147,6 +150,8 @@ end_do_once
 
 #define num_cout std::cout << std::setprecision(8) << std::setw(9) << std::left
 #define iomanip_prefs std::setprecision(8) << std::setw(9) << std::left
+
+} // end of namespace Pomerol
 
 /**
  * \mainpage 

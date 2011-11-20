@@ -18,26 +18,31 @@
 // You should have received a copy of the GNU General Public License
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
-
-/** \file src/Thermal.h
-** \brief Thermal object (an object which has sense only for a finite temperature).
-**
+/** \file src/LatticeReader.h
+** \brief A lattice file dictionary unit.
+** 
 ** \author Igor Krivenko (igor@shg.ru)
+** \author Andrey Antipov (antipov@ct-qmc.org)
 */
-#ifndef __INCLUDE_THERMAL_H
-#define __INCLUDE_THERMAL_H
 
-#include "Misc.h"
-#include "HDF5Storage.h"
+#ifndef __INCLUDE_LATTICEREADER_H
+#define __INCLUDE_LATTICEREADER_H
+
+#include"Misc.h"
+#include<json/json.h>
 
 namespace Pomerol{
 
-struct Thermal {
-    const RealType beta;
+/* This class reads data from input JSON file, defined by a string and returns all of its entries by a request */
+class LatticeReader
+{
+    Json::Value *root;
 
-    Thermal(RealType beta);
+public:
+    LatticeReader ();
+    int readinFromJSON(const std::string filename);
+    const Json::Value& getValue();
 };
 
 } // end of namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_THERMAL_H
-
+#endif // endif :: #ifndef __INCLUDE_LATTICEREADER_H

@@ -28,6 +28,8 @@
 #include "TwoParticleGF.h"
 extern std::ostream& OUTPUT_STREAM;
 
+namespace Pomerol{
+
 static const Permutation3 permutations3[6] = {
     {{0,1,2},1},
     {{0,2,1},-1},
@@ -223,3 +225,6 @@ unsigned short TwoParticleGF::getPermutationNumber ( const Permutation3& in )
     ERROR("TwoParticleGF: Permutation " << in << " not found in all permutations3");
     return 0;
 }
+
+} // end of namespace Pomerol
+
