@@ -33,15 +33,20 @@
 
 namespace Pomerol{
 
-/* This class reads data from input JSON file, defined by a string and returns all of its entries by a request */
+/** This class reads data from input JSON file, defined by a string and returns all of its entries by a request.
+ *  The data is stored as a jsoncpp dictonary. */
 class LatticeReader
 {
+    /** The jsoncpp dictionary variable */
     Json::Value *root;
 
 public:
+    /** Empty constructor */
     LatticeReader ();
+    /** Read the contents of a dictionary from an external JSON file */
     int readinFromJSON(const std::string filename);
-    const Json::Value& getValue();
+    /** Get the contents of the dictionary */
+    const Json::Value& getDictionary();
 };
 
 } // end of namespace Pomerol

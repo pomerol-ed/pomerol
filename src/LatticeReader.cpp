@@ -30,4 +30,8 @@ int LatticeReader::readinFromJSON(const std::string filename)
   return 0;
 }
 
+const Json::Value& LatticeReader::getDictionary(){
+  return *root;
+};
+
 } // end of namespace Pomerol
