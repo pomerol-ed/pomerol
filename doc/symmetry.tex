@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\oddsidemargin 0.0cm
+\textwidth 7.0in 
+\textheight 9.0in 
+\topmargin 0.0in 
+
+\newcommand{\up}{\ensuremath{\uparrow}}
+\newcommand{\down}{\ensuremath{\downarrow}}
+\newcommand{\bra}[1]{\ensuremath{\langle#1|}}
+\newcommand{\ket}[1]{\ensuremath{|#1\rangle}}
+\newcommand{\melem}[3]{\ensuremath{\langle #1|#2|#3\rangle}}
+\newcommand{\aver}[1]{\ensuremath{\langle#1\rangle}}
+\newcommand{\bc}{\ensuremath{\bar c}}
+\newcommand{\hc}{\ensuremath{\hat c}}
+\newcommand{\hcd}{\ensuremath{\hat c^\dagger}}
+ 
+\DeclareMathOperator*{\sgn}{sgn}
+\DeclareMathOperator{\Sp}{Sp}
+\DeclareMathOperator*{\Tr}{Tr}
+
+\begin{document}
+
+\section{A short note on symmetry analysis}
+
+Consider a general Hamiltonian of a many-body fermion system with $N$ fermionic modes and
+pair interactions:
+\begin{equation}\label{Hamiltonian}
+    \hat H = \sum_{\alpha\beta} h_{\alpha\beta}\hcd_\alpha \hc_\beta +
+        \frac{1}{2}\sum_{\alpha\beta\gamma\delta} U_{\alpha\beta\gamma\delta}
+        \hcd_\alpha \hcd_\beta \hc_\gamma \hc_\delta
+\end{equation}
+
+\paragraph{Theorem 1.} If there exists a pair of permutation $N\times N$ matrices $P_c$ and $P_a$,
+obeying additional conditions $(P_c)_{jl}=(P_c)_{lj}=1$ and $(P_a)_{ik}=(P_a)_{ki}=1$, such that
+\begin{equation}\label{theorem1:eq_h}
+    h_{\alpha\beta} = \sum_{\alpha'\beta'}(P_c)_{\alpha\alpha'} h_{\alpha'\beta'} (P_a)_{\beta'\beta},\\
+\end{equation}
+\begin{equation}\label{theorem:eq_U}
+    U_{\alpha\beta\gamma\delta} = \sum_{\alpha'\beta'\gamma'\delta'}
+        (P_c)_{\alpha\alpha'}(P_c)_{\beta\beta'}
+        U_{\alpha'\beta'\gamma'\delta'}
+        (P_a)_{\gamma'\gamma}(P_a)_{\delta'\delta},
+\end{equation}
+then
+\begin{equation}\label{theorem1:result}
+    g_{ij}(\omega) = g_{kl}(\omega).
+\end{equation}
+
+\paragraph{Proof.} Equalities \ref{theorem1:eq_h}, \ref{theorem:eq_U} mean that the action
+corresponding to Hamiltonian \ref{Hamiltonian} is invariant under a permutation (relabeling) $R_c$
+of variables $\bc_\alpha$ and a permutation $R_a$ of variables $c_\beta$.
+The additional conditions $(P_c)_{jl}=(P_c)_{lj}=1$ and $(P_a)_{ik}=(P_a)_{ki}=1$ make
+permutation $P_c$ swap $\bc_j$ with $\bc_l$ and permutation $P_a$ swap $c_i$ with $c_k$.
+It is then clear that definitions of $g_{ij}(\omega)$ and $g_{kl}(\omega)$ coincide up
+to the described relabeling. \textbf{Q.E.D.}
+
+\vspace{5mm}
+\textbf{TODO:} Is there an efficient algorithm that allows to check the existence of $P_c$ and $P_a$?
+
+\end{document}
