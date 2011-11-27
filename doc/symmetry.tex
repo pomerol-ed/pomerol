@@ -16,6 +16,7 @@
 \newcommand{\bc}{\ensuremath{\bar c}}
 \newcommand{\hc}{\ensuremath{\hat c}}
 \newcommand{\hcd}{\ensuremath{\hat c^\dagger}}
+\newcommand{\bC}{\ensuremath{\bar C}}
  
 \DeclareMathOperator*{\sgn}{sgn}
 \DeclareMathOperator{\Sp}{Sp}
@@ -32,32 +33,73 @@ pair interactions:
         \frac{1}{2}\sum_{\alpha\beta\gamma\delta} U_{\alpha\beta\gamma\delta}
         \hcd_\alpha \hcd_\beta \hc_\gamma \hc_\delta
 \end{equation}
-
-\paragraph{Theorem 1.} If there exists a pair of permutation $N\times N$ matrices $P_c$ and $P_a$,
-obeying additional conditions $(P_c)_{jl}=(P_c)_{lj}=1$ and $(P_a)_{ik}=(P_a)_{ki}=1$, such that
-\begin{equation}\label{theorem1:eq_h}
-    h_{\alpha\beta} = \sum_{\alpha'\beta'}(P_c)_{\alpha\alpha'} h_{\alpha'\beta'} (P_a)_{\beta'\beta},\\
+This Hamiltonian corresponds to the following action:    
+\begin{equation}\label{action}
+    S = -\sum_{\omega_n}\sum_{\alpha\beta}
+        \bc_{\alpha\omega_n}(i\omega_n\delta_{\alpha\beta}-h_{\alpha\beta})c_{\beta\omega_n} +
+        \frac{1}{2}\int_0^\beta d\tau
+        \sum_{\alpha\beta\gamma\delta}U_{\alpha\beta\gamma\delta}
+        \bc_{\alpha}(\tau)\bc_{\beta}(\tau)c_{\gamma}(\tau)c_\delta(\tau)
 \end{equation}
-\begin{equation}\label{theorem:eq_U}
+
+\paragraph{Theorem 1.} If there exists a permutation $N\times N$ matrix $P$ obeying additional
+conditions $P_{lj}=1$ and $P_{ik}=1$, such that
+\begin{equation}\label{theorem1:eq_h}
+    h_{\alpha\beta} =
+        \sum_{\alpha'\beta'}P_{\alpha\alpha'} h_{\alpha'\beta'} P_{\beta'\beta},
+\end{equation}
+\begin{equation}\label{theorem1:eq_U}
     U_{\alpha\beta\gamma\delta} = \sum_{\alpha'\beta'\gamma'\delta'}
-        (P_c)_{\alpha\alpha'}(P_c)_{\beta\beta'}
+        P_{\alpha\alpha'}P_{\beta\beta'}
         U_{\alpha'\beta'\gamma'\delta'}
-        (P_a)_{\gamma'\gamma}(P_a)_{\delta'\delta},
+        P_{\gamma'\gamma}P_{\delta'\delta},
 \end{equation}
 then
 \begin{equation}\label{theorem1:result}
-    g_{ij}(\omega) = g_{kl}(\omega).
+    g_{ij}(\omega_n) = g_{kl}(\omega_n).
 \end{equation}
 
-\paragraph{Proof.} Equalities \ref{theorem1:eq_h}, \ref{theorem:eq_U} mean that the action
-corresponding to Hamiltonian \ref{Hamiltonian} is invariant under a permutation (relabeling) $R_c$
-of variables $\bc_\alpha$ and a permutation $R_a$ of variables $c_\beta$.
-The additional conditions $(P_c)_{jl}=(P_c)_{lj}=1$ and $(P_a)_{ik}=(P_a)_{ki}=1$ make
-permutation $P_c$ swap $\bc_j$ with $\bc_l$ and permutation $P_a$ swap $c_i$ with $c_k$.
-It is then clear that definitions of $g_{ij}(\omega)$ and $g_{kl}(\omega)$ coincide up
-to the described relabeling. \textbf{Q.E.D.}
+\paragraph{Proof.} By definition $g_{ij}(\omega_n)$ is
+\begin{equation}
+    g_{ij}(\omega_n) = -\frac{\int\mathcal{D}[\bc,c]c_{i\omega_n}\bc_{j\omega_n}e^{-S}}
+        {\int\mathcal{D}[\bc,c]e^{-S}}
+\end{equation}
+
+Let's perform a change of variables which is the permutation (relabeling) of creation and annihilation
+operators defined by the matrix $P$:
+\begin{equation}
+        \bc_{\alpha\omega_n} = \sum_{\alpha'}\bC_{\alpha'\omega_n}P_{\alpha'\alpha},\quad
+        c_{\beta\omega_n} = \sum_{\beta'}P_{\beta\beta'}C_{\beta'\omega_n}
+\end{equation}
+
+In terms of the new variables the definition of a Green's function reads:
+\begin{equation}\label{g_def}
+    g_{ij}(\omega_n) = -\frac{\int\mathcal{D}[\bC,C]C_{k\omega_n}\bC_{l\omega_n}e^{-\tilde S}}
+        {\int\mathcal{D}[\bC,C]e^{-\tilde S}}
+\end{equation}
+with the new action
+\begin{multline}\label{action_new}
+    \tilde S = -\sum_{\omega_n}\sum_{\alpha\beta}\sum_{\alpha'\beta'}
+        \bC_{\alpha'\omega_n}P_{\alpha'\alpha}
+            (i\omega_n\delta_{\alpha\beta}-h_{\alpha\beta})
+        P_{\beta\beta'}C_{\beta'\omega_n} +\\+
+        \frac{1}{2}\int_0^\beta d\tau
+        \sum_{\alpha\beta\gamma\delta}
+        \sum_{\alpha'\beta'\gamma'\delta'}
+        \bC_{\alpha'\omega_n}\bC_{\beta'\omega_n}
+        P_{\alpha'\alpha}(\tau)P_{\beta'\beta}(\tau)
+        U_{\alpha\beta\gamma\delta}
+        P_{\gamma\gamma'}P_{\delta\delta'}
+        C_{\gamma'\omega_n}(\tau)C_{\delta'\omega_n}(\tau)
+\end{multline}
+
+Permutation matrices are unitary, thus $\sum_{\alpha\beta} P_{\alpha'\alpha}\delta_{\alpha\beta}
+P_{\beta\beta'} = \sum_{\alpha} P_{\alpha'\alpha}P_{\alpha\beta'} = \delta_{\alpha'\beta'}$.
+Taking into account conditions \ref{theorem1:eq_h} and \ref{theorem1:eq_U}, we find that the
+action $\tilde S$ as a function of $\bC,C$ coincides with $S$ as a function of $\bc,c$. It means
+that the RHS of definition \ref{g_def} is actually a definition of $g_{kl}(\omega_n)$. \textbf{Q.E.D.}
 
 \vspace{5mm}
-\textbf{TODO:} Is there an efficient algorithm that allows to check the existence of $P_c$ and $P_a$?
+\textbf{TODO:} Is there an efficient algorithm that allows to check the existence of $P$?
 
 \end{document}
