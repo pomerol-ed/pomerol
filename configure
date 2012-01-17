@@ -7167,7 +7167,7 @@ $as_echo "no" >&6; }
 fi
 
 
-ac_config_files="$ac_config_files Makefile jsoncpp/Makefile src/Makefile prog/Makefile jsoncpp/src/Makefile"
+ac_config_files="$ac_config_files Makefile jsoncpp/Makefile src/Makefile prog/Makefile jsoncpp/src/Makefile pomerol.pc"
 
                  #jsoncpp/example/Makefile
 cat >confcache <<\_ACEOF
@@ -8013,6 +8013,7 @@ do
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "prog/Makefile") CONFIG_FILES="$CONFIG_FILES prog/Makefile" ;;
     "jsoncpp/src/Makefile") CONFIG_FILES="$CONFIG_FILES jsoncpp/src/Makefile" ;;
+    "pomerol.pc") CONFIG_FILES="$CONFIG_FILES pomerol.pc" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
