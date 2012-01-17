@@ -3696,6 +3696,7 @@ fi
 
 
 
+
 if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
 	if test -n "$ac_tool_prefix"; then
   # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
@@ -3824,6 +3825,7 @@ if test -n "$hdf5_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_hdf5_CFLAGS=`$PKG_CONFIG --cflags "hdf5 >= 1.8.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -3840,6 +3842,7 @@ if test -n "$hdf5_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_hdf5_LIBS=`$PKG_CONFIG --libs "hdf5 >= 1.8.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -3859,9 +3862,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        hdf5_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "hdf5 >= 1.8.0" 2>&1`
+	        hdf5_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "hdf5 >= 1.8.0" 2>&1`
         else
-	        hdf5_PKG_ERRORS=`$PKG_CONFIG --print-errors "hdf5 >= 1.8.0" 2>&1`
+	        hdf5_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "hdf5 >= 1.8.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$hdf5_PKG_ERRORS" >&5
@@ -4426,6 +4429,7 @@ if test -n "$eigen3_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_eigen3_CFLAGS=`$PKG_CONFIG --cflags "eigen3 >= 3.0.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4442,6 +4446,7 @@ if test -n "$eigen3_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_eigen3_LIBS=`$PKG_CONFIG --libs "eigen3 >= 3.0.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4461,9 +4466,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        eigen3_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "eigen3 >= 3.0.0" 2>&1`
+	        eigen3_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "eigen3 >= 3.0.0" 2>&1`
         else
-	        eigen3_PKG_ERRORS=`$PKG_CONFIG --print-errors "eigen3 >= 3.0.0" 2>&1`
+	        eigen3_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "eigen3 >= 3.0.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$eigen3_PKG_ERRORS" >&5
