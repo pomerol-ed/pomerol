@@ -34,7 +34,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 subdir = src
-DIST_COMMON = $(libpomerol_a_include_HEADERS) $(srcdir)/Makefile.am \
+DIST_COMMON = $(libpomerol_a_pkginclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
@@ -66,7 +66,7 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)" \
-	"$(DESTDIR)$(libpomerol_a_includedir)"
+	"$(DESTDIR)$(libpomerol_a_pkgincludedir)"
 LIBRARIES = $(lib_LIBRARIES)
 AR = ar
 ARFLAGS = cru
@@ -134,7 +134,7 @@ am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libpomerol_a_SOURCES)
 DIST_SOURCES = $(libpomerol_a_SOURCES)
-HEADERS = $(libpomerol_a_include_HEADERS)
+HEADERS = $(libpomerol_a_pkginclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -277,8 +277,8 @@ libpomerol_a_SOURCES = HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp \
 	Vertex4.cpp FieldOperatorContainer.cpp \
 	TwoParticleGFContainer.cpp GFContainer.cpp Misc.h ComputableObject.h LatticeAnalysis.h LatticeReader.h LatticeReader.cpp
 
-libpomerol_a_include_HEADERS = *.h 
-libpomerol_a_includedir = $(includedir)/pomerol
+libpomerol_a_pkginclude_HEADERS = *.h 
+libpomerol_a_pkgincludedir = $(includedir)/pomerol
 all: all-am
 
 .SUFFIXES:
@@ -746,26 +746,26 @@ libpomerol_a-LatticeReader.obj: LatticeReader.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticeReader.cpp' object='libpomerol_a-LatticeReader.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticeReader.obj `if test -f 'LatticeReader.cpp'; then $(CYGPATH_W) 'LatticeReader.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticeReader.cpp'; fi`
-install-libpomerol_a_includeHEADERS: $(libpomerol_a_include_HEADERS)
+install-libpomerol_a_pkgincludeHEADERS: $(libpomerol_a_pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(libpomerol_a_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libpomerol_a_includedir)"
-	@list='$(libpomerol_a_include_HEADERS)'; test -n "$(libpomerol_a_includedir)" || list=; \
+	test -z "$(libpomerol_a_pkgincludedir)" || $(MKDIR_P) "$(DESTDIR)$(libpomerol_a_pkgincludedir)"
+	@list='$(libpomerol_a_pkginclude_HEADERS)'; test -n "$(libpomerol_a_pkgincludedir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libpomerol_a_includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libpomerol_a_includedir)" || exit $$?; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libpomerol_a_pkgincludedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libpomerol_a_pkgincludedir)" || exit $$?; \
 	done
 
-uninstall-libpomerol_a_includeHEADERS:
+uninstall-libpomerol_a_pkgincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(libpomerol_a_include_HEADERS)'; test -n "$(libpomerol_a_includedir)" || list=; \
+	@list='$(libpomerol_a_pkginclude_HEADERS)'; test -n "$(libpomerol_a_pkgincludedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(libpomerol_a_includedir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(libpomerol_a_includedir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(libpomerol_a_pkgincludedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(libpomerol_a_pkgincludedir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -853,7 +853,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libpomerol_a_includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libpomerol_a_pkgincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -904,7 +904,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-libpomerol_a_includeHEADERS
+install-data-am: install-libpomerol_a_pkgincludeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -950,7 +950,7 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-libLIBRARIES \
-	uninstall-libpomerol_a_includeHEADERS
+	uninstall-libpomerol_a_pkgincludeHEADERS
 
 .MAKE: install-am install-strip
 
@@ -961,13 +961,13 @@ uninstall-am: uninstall-libLIBRARIES \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
 	install-info-am install-libLIBRARIES \
-	install-libpomerol_a_includeHEADERS install-man install-pdf \
+	install-libpomerol_a_pkgincludeHEADERS install-man install-pdf \
 	install-pdf-am install-ps install-ps-am install-strip \
 	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-libLIBRARIES \
-	uninstall-libpomerol_a_includeHEADERS
+	uninstall-libpomerol_a_pkgincludeHEADERS
 
 
 all-clean:
