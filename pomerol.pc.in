@@ -5,7 +5,7 @@ includedir=@includedir@
 
 Name: pomerol
 Description: An exact diagonalization code for an efficient calculation of second-order correlators of a Hubbard model on finite size lattices
-Requires: eigen-3.0.0 hdf5
+Requires: eigen3 hdf5
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lpomerol
 Cflags: -I${includedir}/pomerol
