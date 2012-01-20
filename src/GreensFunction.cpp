@@ -31,7 +31,8 @@ namespace Pomerol{
 
 GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H, 
                                AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM
-                               ) : ComputableObject(), Thermal(DM), S(S), H(H), C(C), CX(CX), DM(DM), parts(0)
+                               ) : ComputableObject(), Thermal(DM), S(S), H(H), C(C), CX(CX), DM(DM),
+                               parts(0)
 {
     vanish = true;
 }
@@ -88,11 +89,26 @@ void GreensFunction::compute(void)
     }
 }
 
+void GreensFunction::precomputeValues(long NumberOfMatsubaras) const
+{
+    PrecomputedValues.resize(NumberOfMatsubaras);
+    for(long MatsubaraNum=-NumberOfMatsubaras; MatsubaraNum<NumberOfMatsubaras; MatsubaraNum++){
+        ComplexType Value = 0;
+        for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+            Value += (**iter)(MatsubaraNum);
+            PrecomputedValues[MatsubaraNum+NumberOfMatsubaras] = Value;
+    }
+}
+
 ComplexType GreensFunction::operator()(long MatsubaraNum)
 {
+    long NumberOfMatsubaras = PrecomputedValues.size();
+    if(CHECK_MATSUBARA_NUM(MatsubaraNum,NumberOfMatsubaras))
+        return PrecomputedValues[MatsubaraNum+NumberOfMatsubaras];
+
     ComplexType Value = 0;
     for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
-	Value += (**iter)(MatsubaraNum);
+        Value += (**iter)(MatsubaraNum);
     return Value;
 }
 

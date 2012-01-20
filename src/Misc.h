@@ -151,6 +151,8 @@ end_do_once
 #define num_cout std::cout << std::setprecision(8) << std::setw(9) << std::left
 #define iomanip_prefs std::setprecision(8) << std::setw(9) << std::left
 
+#define CHECK_MATSUBARA_NUM(num,num_of_matsubaras)	(num) < (num_of_matsubaras) && (num) >= -(num_of_matsubaras)
+
 } // end of namespace Pomerol
 
 /**

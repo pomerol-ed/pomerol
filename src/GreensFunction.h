@@ -73,6 +73,9 @@ class GreensFunction : public ComputableObject, public Thermal {
      */
     std::list<GreensFunctionPart*> parts;
 
+    /** A vector of precomputed values of the function. */
+    mutable VectorType PrecomputedValues;
+
 public:
      /** Constructor.
      * \param[in] S A reference to a states classification object.
@@ -90,6 +93,11 @@ public:
     void prepare(void);
     /** Actually computes the parts. */
     void compute(void);
+
+    /** (Re)fill the internal cache of precomputed values.
+     * \param[in] NumberOfMatsubaras Number of positive (or negative) Matsubara frequencies.
+     */
+    void precomputeValues(long NumberOfMatsubaras) const;
 
     /** Returns the 'bit' (index) of the operator C or CX.
      * \param[in] Position Use C for Position==0 and CX for Position==1.
