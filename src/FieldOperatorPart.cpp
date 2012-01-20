@@ -80,6 +80,11 @@ assert(0);
 */
 }
 
+void FieldOperatorPart::prepare()
+{
+    Status = Prepared;
+}
+
 void FieldOperatorPart::compute()
 {
     QuantumNumbers to = h_to.id();
@@ -121,6 +126,8 @@ void FieldOperatorPart::compute()
     tempElements.prune(MatrixElementTolerance);
     elementsRowMajor = tempElements;
     elementsColMajor = tempElements;
+
+    Status = Computed;
 }
 
 // Functions of specialized classes

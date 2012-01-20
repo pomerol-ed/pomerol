@@ -50,6 +50,7 @@ public:
   
     FieldOperatorPart(IndexClassification &IndexInfo, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, ParticleIndex i);
 
+    void prepare();
     void compute();
     void dump();
     void print_to_screen();                        //print to screen matrices UXCU UXCXU
