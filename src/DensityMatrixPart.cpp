@@ -32,7 +32,10 @@ DensityMatrixPart::DensityMatrixPart(StatesClassification &S, HamiltonianPart& h
     Thermal(beta), S(S), hpart(hpart), GroundEnergy(GroundEnergy), weights(hpart.size())
 {}
 
-RealType DensityMatrixPart::compute(void)
+void DensityMatrixPart::prepare(void)
+{}
+
+void DensityMatrixPart::compute(void)
 {
     Z_part = 0;
     QuantumState partSize = weights.size();
@@ -41,14 +44,18 @@ RealType DensityMatrixPart::compute(void)
         weights(m) = exp(-beta*(hpart.reV(m)-GroundEnergy));
         Z_part += weights(m);
     }
-
-    return Z_part;
 }
 
 void DensityMatrixPart::normalize(RealType Z)
 {
     weights /= Z;
     Z_part /= Z;
+    Status = Computed;
+}
+
+RealType DensityMatrixPart::getPartialZ(void)
+{
+    return Z_part;
 }
 
 RealType DensityMatrixPart::getAverageEnergy()

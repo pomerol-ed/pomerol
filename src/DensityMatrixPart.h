@@ -40,7 +40,7 @@ namespace Pomerol{
  * block of the Hamiltonian.
  */
 
-class DensityMatrixPart : public HDF5Storable, public Thermal
+class DensityMatrixPart : public ComputableObject, public HDF5Storable, public Thermal
 {
     /** A reference to a states classification object. */
     StatesClassification& S;
@@ -77,12 +77,17 @@ public:
     RealType getAverageEnergy(void);
     /** Returns an averaged value of the double occupancy. */
     RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j);
+    /** Stub prepare() method. */
+    void prepare(void);
     /** Performs computations of the weights and a contribution to the partition function. */
-    RealType compute(void);
+    void compute(void);
     /** Returns the weight corresponding to a specified number of state.
      * \param[in] m A number of a state inside this part.
      */
     RealType weight(int m);
+
+    /** Returns the partition function of this part. */
+    RealType getPartialZ(void);
 
     /** Returns the number of the state, which has the lowest statistical weight before exceeding TruncationTolerance 
      * \param[in] TruncationTolerance - the level at which the statistical weight should be cutted

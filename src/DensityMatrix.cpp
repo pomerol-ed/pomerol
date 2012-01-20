@@ -55,7 +55,10 @@ void DensityMatrix::compute(void)
     RealType Z = 0;
     // A total partition function is a sum over partition functions of
     // all non-normalized parts.
-    for(BlockNumber n = 0; n < NumOfBlocks; n++) Z += parts[n]->compute();
+    for(BlockNumber n = 0; n < NumOfBlocks; n++){
+        parts[n]->compute();
+        Z += parts[n]->getPartialZ();
+    }
     // Divide the density matrix by Z.
     for(BlockNumber n = 0; n < NumOfBlocks; n++) parts[n]->normalize(Z);
     std::cout << "Partition Function = " << Z << std::endl;
