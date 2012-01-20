@@ -57,7 +57,7 @@ BlockNumber HamiltonianPart::getId()
     return S.getBlockNumber(hpart_id);
 };
 
-void HamiltonianPart::enter()
+void HamiltonianPart::prepare()
 { 		
 	size_t N_state_m = S.getQuantumStates(hpart_id).size();
 
@@ -86,6 +86,7 @@ void HamiltonianPart::enter()
 	(*this).add_hopping(IndexInfo.getHoppingMatrix());
 	
 	H.triangularView<Eigen::Lower>() = H.triangularView<Eigen::Upper>().transpose();
+    Status = Prepared;
 }
 
 void HamiltonianPart::add_nTerm(InnerQuantumState inner_state,nTerm *N)
@@ -198,7 +199,7 @@ void HamiltonianPart::add_hopping(int i, int j, RealType t)
 
 //other functions
 
-void HamiltonianPart::diagonalization()					//method of diagonalization classificated part of Hamiltonian
+void HamiltonianPart::compute()					//method of diagonalization classificated part of Hamiltonian
 {
 	if (H.rows() == 1)
 	{	
@@ -211,6 +212,7 @@ void HamiltonianPart::diagonalization()					//method of diagonalization classifi
 		H = Solver.eigenvectors();
 		V = Solver.eigenvalues();				// eigenvectors are ready
 	}
+    Status = Computed;
 }
 
 void HamiltonianPart::print_to_screen()					//ptint part of Hamiltonian to screen

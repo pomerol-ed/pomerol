@@ -41,7 +41,7 @@ void Hamiltonian::prepare()
     for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
     {
 	parts[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block));
-	parts[current_block]->enter();
+	parts[current_block]->prepare();
 
 	std::cout << "Hamiltonian block " << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is entered";
 	std::cout << ". Size = " << S.getQuantumStates(S.getBlockInfo(current_block)).size() << std::endl;
@@ -71,10 +71,11 @@ void Hamiltonian::compute()
   BlockNumber NumberOfBlocks = parts.size();
   for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
     {
-      parts[current_block]->diagonalization();
+      parts[current_block]->compute();
       std::cout << "Hpart" << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is diagonalized." << std::endl;
     }
  computeGroundEnergy();
+  Status = Computed;
 }
 
 /* Remove this after it is not needed

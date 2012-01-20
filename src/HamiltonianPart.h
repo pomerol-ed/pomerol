@@ -63,13 +63,13 @@ public:
 
     HamiltonianPart(IndexClassification &F, StatesClassification &S, QuantumNumbers id);
 
-    void enter();
+    void prepare(void);	// was void inter();
 
     InnerQuantumState size(void);
     RealType reH(int m, int n);        //return H(m,n)
     RealType reV(int m);            //return V(m)
 
-    void diagonalization();                //method of process diagonalization
+    void compute(void);                //method of process diagonalization (was diagonalization();)
     QuantumNumbers id();                //return id of current hpart
     BlockNumber getId();
     RealType getMinimumEigenvalue();        //!<Return the lowest Eigenvalue of the current part;
