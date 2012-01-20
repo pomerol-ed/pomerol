@@ -61,6 +61,9 @@ GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOpe
                                         C(C), CX(CX)
 {}
 
+void GreensFunctionPart::prepare(void)
+{}
+
 void GreensFunctionPart::compute(void)
 {
     Terms.clear();

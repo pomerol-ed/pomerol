@@ -87,6 +87,9 @@ public:
                        HamiltonianPart& HpartInner, HamiltonianPart& HpartOuter,
                        DensityMatrixPart& DMpartInner, DensityMatrixPart& DMpartOuter);
 
+    /** Stub prepare() method.*/
+    void prepare();
+
     /** Iterates over all matrix elements and fills the list of terms. */
     void compute(void);
     /** Returns a sum of all the terms with a substituted Matsubara frequency.
