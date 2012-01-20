@@ -110,9 +110,6 @@ void GreensFunctionPart::compute(void)
 
 ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const
 {
-    // TODO: Place this variable to a wider scope?
-    ComplexType MatsubaraSpacing = I*M_PI/beta;
-
     ComplexType G = 0;
     for(std::list<Term>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm)
         G += (*pTerm)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1));

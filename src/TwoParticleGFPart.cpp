@@ -321,7 +321,6 @@ const Permutation3& TwoParticleGFPart::getPermutation(){
 ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
     // TODO: Place this variable to a wider scope?
-    ComplexType MatsubaraSpacing = I*M_PI/DMpart1.beta;
     long MatsubaraNumberOdd1 = 2*MatsubaraNumber1 + 1;
     long MatsubaraNumberOdd2 = 2*MatsubaraNumber2 + 1;
     long MatsubaraNumberOdd3 = 2*MatsubaraNumber3 + 1;

@@ -34,6 +34,7 @@ namespace Pomerol{
 
 struct Thermal {
     const RealType beta;
+    const ComplexType MatsubaraSpacing;
 
     Thermal(RealType beta);
 };
