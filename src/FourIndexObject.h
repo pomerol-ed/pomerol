@@ -43,20 +43,6 @@ public:
     class MatsubaraContainer;
 };
 
-/** A prototype class for objects which are constructed for a given set of 4 indices, i.e Chi_{ijkl} */
-class FourIndexSingleObject : public FourIndexObject {
-public:
-    /** Return the combination of indices, for which the object is constructed */
-    IndexCombination getIndices();
-
-    /** Return the value for a given Matsubara numbers (not frequencies themselves)
-     * \param[in] MatsubaraNumber1 An index of the 1st Matsubara frequency.
-     * \param[in] MatsubaraNumber2 An index of the 2nd Matsubara frequency.
-     * \param[in] MatsubaraNumber3 An index of the 3rd Matsubara frequency.
-     */
-    ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
-    };
-
 /** A prototype container class of Four Indices Objects - stores all values for all possible Particle Indices 
  * The notation is ccc^*c^*
  */ 

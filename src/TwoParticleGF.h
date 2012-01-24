@@ -57,7 +57,7 @@ namespace Pomerol{
  * take place inside the parts). Every part corresponds to a 'world-stripe', a sequence of 4
  * matrix blocks.
  */
-class TwoParticleGF : public ComputableObject, public FourIndexSingleObject, public Thermal {
+class TwoParticleGF : public ComputableObject, public FourIndexObject, public Thermal {
 
     /** A reference to a states classification object. */
     StatesClassification& S;
