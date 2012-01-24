@@ -39,6 +39,7 @@
 #include"FieldOperator.h"
 #include"DensityMatrix.h"
 #include"GreensFunctionPart.h"
+#include"MatsubaraContainers.h"
 
 namespace Pomerol{
 
@@ -73,8 +74,14 @@ class GreensFunction : public ComputableObject, public Thermal {
      */
     std::list<GreensFunctionPart*> parts;
 
-    /** A vector of precomputed values of the function. */
-    mutable VectorType PrecomputedValues;
+    /** Storage for precomputed values. */
+    mutable MatsubaraContainer1<GreensFunction>* pStorage;
+    friend class MatsubaraContainer1<GreensFunction>;
+
+    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
+    * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
+    */
+    ComplexType rawValue(long MatsubaraNum) const;
 
 public:
      /** Constructor.
@@ -107,7 +114,7 @@ public:
      /** Returns the value of the Green's function calculated at a given frequency.
      * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
      */
-    ComplexType operator()(long MatsubaraNum);
+    ComplexType operator()(long MatsubaraNum) const;
 
     void dumpToPlainText(long wn);
     /** Returns the path of the output directory associated with this Green's function. */

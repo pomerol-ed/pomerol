@@ -32,7 +32,7 @@ namespace Pomerol{
 GreensFunction::GreensFunction(StatesClassification& S, Hamiltonian& H, 
                                AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM
                                ) : ComputableObject(), Thermal(DM), S(S), H(H), C(C), CX(CX), DM(DM),
-                               parts(0)
+                               parts(0), pStorage(NULL)
 {
     vanish = true;
 }
@@ -41,6 +41,8 @@ GreensFunction::~GreensFunction()
 {
     for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
         delete *iter;
+
+    delete pStorage;
 }
 
 void GreensFunction::prepare(void)
@@ -91,25 +93,25 @@ void GreensFunction::compute(void)
 
 void GreensFunction::precomputeValues(long NumberOfMatsubaras) const
 {
-    PrecomputedValues.resize(NumberOfMatsubaras);
-    for(long MatsubaraNum=-NumberOfMatsubaras; MatsubaraNum<NumberOfMatsubaras; MatsubaraNum++){
-        ComplexType Value = 0;
-        for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
-            Value += (**iter)(MatsubaraNum);
-            PrecomputedValues[MatsubaraNum+NumberOfMatsubaras] = Value;
-    }
+    delete pStorage;
+    pStorage = new MatsubaraContainer1<GreensFunction>(NumberOfMatsubaras);
+    pStorage->fill(this);
 }
 
-ComplexType GreensFunction::operator()(long MatsubaraNum)
+inline
+ComplexType GreensFunction::rawValue(long int MatsubaraNum) const
 {
-    long NumberOfMatsubaras = PrecomputedValues.size();
-    if(CHECK_MATSUBARA_NUM(MatsubaraNum,NumberOfMatsubaras))
-        return PrecomputedValues[MatsubaraNum+NumberOfMatsubaras];
-
     ComplexType Value = 0;
     for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
         Value += (**iter)(MatsubaraNum);
     return Value;
+}
+
+ComplexType GreensFunction::operator()(long MatsubaraNum) const
+{
+    if(pStorage->isInContainer(MatsubaraNum))
+	return (*pStorage)(MatsubaraNum);
+    return rawValue(MatsubaraNum);
 }
 
 unsigned short GreensFunction::getIndex(size_t Position) const

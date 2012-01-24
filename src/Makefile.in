@@ -272,7 +272,7 @@ libpomerol_a_SOURCES = HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp \
 	HamiltonianPart.cpp Hamiltonian.cpp FieldOperatorPart.cpp FieldOperator.cpp \
 	DensityMatrixPart.cpp DensityMatrix.cpp \
 	GreensFunctionPart.cpp GreensFunction.cpp \
-	FourIndexObject.cpp \
+	FourIndexObject.cpp MatsubaraContainers.h \
 	TwoParticleGF.cpp TwoParticleGFPart.cpp \
 	Vertex4.cpp FieldOperatorContainer.cpp \
 	TwoParticleGFContainer.cpp GFContainer.cpp Misc.h ComputableObject.h LatticeAnalysis.h LatticeReader.h LatticeReader.cpp
