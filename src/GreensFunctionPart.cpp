@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -51,17 +51,13 @@ std::ostream& operator<<(std::ostream& out, const GreensFunctionPart::Term& T)
     return out;
 }
 
-GreensFunctionPart::GreensFunctionPart( AnnihilationOperatorPart& C, CreationOperatorPart& CX, 
-                                        HamiltonianPart& HpartInner, HamiltonianPart& HpartOuter,
-                                        DensityMatrixPart& DMpartInner, DensityMatrixPart& DMpartOuter) :
-                                        ComputableObject(),
+GreensFunctionPart::GreensFunctionPart( const AnnihilationOperatorPart& C, const CreationOperatorPart& CX, 
+                                        const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
+                                        const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
                                         Thermal(DMpartInner),
                                         HpartInner(HpartInner), HpartOuter(HpartOuter),
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
                                         C(C), CX(CX)
-{}
-
-void GreensFunctionPart::prepare(void)
 {}
 
 void GreensFunctionPart::compute(void)
@@ -69,8 +65,8 @@ void GreensFunctionPart::compute(void)
     Terms.clear();
 
     // Blocks (submatrices) of C and CX
-    RowMajorMatrixType& Cmatrix = C.getRowMajorValue();
-    ColMajorMatrixType& CXmatrix = CX.getColMajorValue();
+    const RowMajorMatrixType& Cmatrix = C.getRowMajorValue();
+    const ColMajorMatrixType& CXmatrix = CX.getColMajorValue();
     QuantumState outerSize = Cmatrix.outerSize();
 
     // Iterate over all values of the outer index.
@@ -88,11 +84,11 @@ void GreensFunctionPart::compute(void)
             // A meaningful matrix element
             if(C_index2 == CX_index2){
                 ComplexType Residue = Cinner.value() * CXinner.value() * 
-                                      (DMpartOuter.weight(index1) + DMpartInner.weight(C_index2));
+                                      (DMpartOuter.getWeight(index1) + DMpartInner.getWeight(C_index2));
                 if(abs(Residue) > MatrixElementTolerance) // Is the residue relevant?
                 {
                     // Create a new term and append it to the list.
-                    RealType Pole = HpartInner.reV(C_index2) - HpartOuter.reV(index1);
+                    RealType Pole = HpartInner.getEigenValue(C_index2) - HpartOuter.getEigenValue(index1);
                     Terms.push_back(Term(Residue,Pole));
                 };
                 ++Cinner;   // The next non-zero element

@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,16 +29,15 @@
 #define __INCLUDE_TWOPARTICLEGF_H
 
 #include <sstream>
-#include <fstream>
 #include <iomanip>
 
 #include"Misc.h"
-#include"ComputableObject.h"
 #include"FourIndexObject.h"
 #include"StatesClassification.h"
 #include"FieldOperator.h"
 #include"DensityMatrix.h"
 #include"TwoParticleGFPart.h"
+#include"MatsubaraContainers.h"
 
 namespace Pomerol{
 
@@ -57,22 +56,22 @@ namespace Pomerol{
  * take place inside the parts). Every part corresponds to a 'world-stripe', a sequence of 4
  * matrix blocks.
  */
-class TwoParticleGF : public ComputableObject, public FourIndexObject, public Thermal {
+class TwoParticleGF : public FourIndexObject, public Thermal {
 
     /** A reference to a states classification object. */
     StatesClassification& S;
     /** A reference to a Hamiltonian. */
-    Hamiltonian& H;
+    const Hamiltonian& H;
     /** A reference to the first annihilation operator. */
-    AnnihilationOperator& C1;
+    const AnnihilationOperator& C1;
     /** A reference to the second annihilation operator. */
-    AnnihilationOperator& C2;
+    const AnnihilationOperator& C2;
     /** A reference to the first creation operator. */
-    CreationOperator& CX3;
+    const CreationOperator& CX3;
     /** A reference to the second creation operator. */
-    CreationOperator& CX4;
+    const CreationOperator& CX4;
     /** A reference to a density matrix. */
-    DensityMatrix& DM;
+    const DensityMatrix& DM;
 
     /** A list of pointers to parts. */
     std::list<TwoParticleGFPart*> parts;
@@ -81,14 +80,14 @@ class TwoParticleGF : public ComputableObject, public FourIndexObject, public Th
     std::list<TwoParticleGFPart::NonResonantTerm> NonResonantTerms[6];
 
     /** A flag to determine whether this GF is identical to zero */
-    bool vanish;
+    bool Vanishing;
 
     /** Extracts a part of the operator standing at a specified position in a given permutation.
      * \param[in] PermutationNumber The number of the permutation.
      * \param[in] OperatorPosition The number of the position of the operator.
      * \param[in] LeftIndex A left block index referring to the part needed.
      */
-    FieldOperatorPart& OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex);
+    const FieldOperatorPart& OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const;
     /** Chooses an operator standing at a specified position in a given permutation and
      * returns a left block index corresponding to the right block index. May return ERROR_BLOCK_NUMBER if
      * the operator does not have such a (non-zero) block.
@@ -96,7 +95,7 @@ class TwoParticleGF : public ComputableObject, public FourIndexObject, public Th
      * \param[in] OperatorPosition The number of the position of the operator.
      * \param[in] RightIndex A right block index.
      */
-    BlockNumber getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber RightIndex);
+    BlockNumber getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber RightIndex) const;
     /** Chooses an operator standing at a specified position in a given permutation and
      * returns a right block index corresponding to the left block index. May return ERROR_BLOCK_NUMBER if
      * the operator does not have such a (non-zero) block.
@@ -104,10 +103,18 @@ class TwoParticleGF : public ComputableObject, public FourIndexObject, public Th
      * \param[in] OperatorPosition The number of the position of the operator.
      * \param[in] LeftIndex A left block index.
      */
-    BlockNumber getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex); //!< return right index of an operator at current position for a current permutation
+    BlockNumber getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const; //!< return right index of an operator at current position for a current permutation
 
-    /** TODO: need a description. */
-    MatsubaraContainer *Storage;
+    /** Storage for precomputed values. */
+    MatsubaraContainer4<TwoParticleGF>* pStorage;
+    friend class MatsubaraContainer4<TwoParticleGF>;
+
+    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
+    * \param[in] MatsubaraNum Number of the Matsubara frequency 1.
+    * \param[in] MatsubaraNum Number of the Matsubara frequency 2.
+    * \param[in] MatsubaraNum Number of the Matsubara frequency 3.
+    */
+    ComplexType rawValue(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
 public:
     /** Constructor.
@@ -119,19 +126,22 @@ public:
      * \param[in] CX4 A reference to the second creation operator.
      * \param[in] DM A reference to a density matrix.
      */
-    TwoParticleGF(StatesClassification& S, Hamiltonian& H,
-            AnnihilationOperator& C1, AnnihilationOperator& C2,
-            CreationOperator& CX3, CreationOperator& CX4,
-            DensityMatrix& DM);
+    TwoParticleGF(StatesClassification& S, const Hamiltonian& H,
+            const AnnihilationOperator& C1, const AnnihilationOperator& C2,
+            const CreationOperator& CX3, const CreationOperator& CX4,
+            const DensityMatrix& DM);
     /** Destructor. */
     ~TwoParticleGF();
 
     /** Chooses relevant parts of C1, C2, CX3 and CX4 and allocates resources for the parts. */
     void prepare(void);
-    /** Actually computes the parts.
-     * \param[in] NumberOfMatsubaras: TODO: need a description.
+    /** Actually computes the parts. */
+    void precomputeParts(void);
+    /** (Re)fill the internal cache of precomputed values.
+     * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
      */
-    void compute(long NumberOfMatsubaras);
+    void computeValues(long NumberOfMatsubaras);
+
 
     /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
      * \param[in] Position Zero-based number of the operator to use.
@@ -143,10 +153,10 @@ public:
      * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
      * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
      */
-    ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
+    ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
     /** Returns true, if GF is identical to zero */
-    bool vanishes();
+    bool isVanishing(void) const;
 
     /** Returns the total number of resonant terms for all parts. */
     size_t getNumResonantTerms() const;

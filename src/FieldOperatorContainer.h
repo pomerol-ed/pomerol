@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@
 #define __INCLUDE_FIELDOPERATORCONTAINER_H
 
 #include"Misc.h"
-#include"ComputableObject.h"
 #include"FieldOperator.h"
 #include"Hamiltonian.h"
 #include"StatesClassification.h"
@@ -47,13 +46,15 @@ private:
     /** A reference to a states classification object. */
     StatesClassification &S;
     /** A reference to a Hamiltonian. */
-    Hamiltonian &H;
+    const Hamiltonian &H;
     /** A reference to a IndexClassification object in order to check the input indices. */
     IndexClassification &IndexInfo;
+    // WARNING! In contrast to other classes this one is designed to follow the "computation-on-demand" semantics.
+    // Do we really want it to work in this way?
     /** A map which gives a link to the CreationOperator for a given index */
-    std::map <ParticleIndex, CreationOperator*>     mapCreationOperators;
+    mutable std::map <ParticleIndex, CreationOperator*> mapCreationOperators;
     /** A map which gives a link to the AnnihilationOperator for a given index */
-    std::map <ParticleIndex, AnnihilationOperator*> mapAnnihilationOperators;
+    mutable std::map <ParticleIndex, AnnihilationOperator*> mapAnnihilationOperators;
 public:
     /** Constructor.
      * \param[in] S A reference to a states classification object.
@@ -61,12 +62,12 @@ public:
      * \param[in] IndexInfo A reference to a IndexClassification
      */
     FieldOperatorContainer(StatesClassification &S, 
-        Hamiltonian &H, IndexClassification &IndexInfo);
+        const Hamiltonian &H, IndexClassification &IndexInfo);
 
     /** Returns the CreationOperator for a given Index */
-    CreationOperator& getCreationOperator(ParticleIndex in);
+    const CreationOperator& getCreationOperator(ParticleIndex in) const;
     /** Returns the AnnihilationOperator for a given Index */
-    AnnihilationOperator& getAnnihilationOperator(ParticleIndex in);
+    const AnnihilationOperator& getAnnihilationOperator(ParticleIndex in) const;
 };
 
 } // end of namespace Pomerol

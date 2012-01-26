@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@
 #define __INCLUDE_VERTEX4_H
 
 #include"Misc.h"
-#include"ComputableObject.h"
 #include"FourIndexObject.h"
 #include"GFContainer.h"
 #include"TwoParticleGFContainer.h"
@@ -39,7 +38,7 @@ namespace Pomerol{
 /** Objects of this class just transforms a two-particle Green's function into
  * an irreducible vertex part or into an amputated irreducible vertex.
  */
-class Vertex4 : public ComputableObject, public FourIndexContainerObject, public Thermal {
+class Vertex4 : public FourIndexContainerObject, public Thermal {
 
     /** A reference to a two-particle Green's function. */
     TwoParticleGFContainer &Chi;

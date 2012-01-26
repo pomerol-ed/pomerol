@@ -95,7 +95,6 @@ am_libpomerol_a_OBJECTS = libpomerol_a-HDF5Storage.$(OBJEXT) \
 	libpomerol_a-FourIndexObject.$(OBJEXT) \
 	libpomerol_a-TwoParticleGF.$(OBJEXT) \
 	libpomerol_a-TwoParticleGFPart.$(OBJEXT) \
-	libpomerol_a-Vertex4.$(OBJEXT) \
 	libpomerol_a-FieldOperatorContainer.$(OBJEXT) \
 	libpomerol_a-TwoParticleGFContainer.$(OBJEXT) \
 	libpomerol_a-GFContainer.$(OBJEXT) \
@@ -274,8 +273,8 @@ libpomerol_a_SOURCES = HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp \
 	GreensFunctionPart.cpp GreensFunction.cpp \
 	FourIndexObject.cpp MatsubaraContainers.h \
 	TwoParticleGF.cpp TwoParticleGFPart.cpp \
-	Vertex4.cpp FieldOperatorContainer.cpp \
-	TwoParticleGFContainer.cpp GFContainer.cpp Misc.h ComputableObject.h LatticeAnalysis.h LatticeReader.h LatticeReader.cpp
+	FieldOperatorContainer.cpp \
+	TwoParticleGFContainer.cpp GFContainer.cpp Misc.h LatticeAnalysis.h LatticeReader.h LatticeReader.cpp
 
 libpomerol_a_pkginclude_HEADERS = *.h 
 libpomerol_a_pkgincludedir = $(includedir)/pomerol
@@ -377,7 +376,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-TwoParticleGF.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-TwoParticleGFContainer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-TwoParticleGFPart.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Vertex4.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -666,22 +664,6 @@ libpomerol_a-TwoParticleGFPart.obj: TwoParticleGFPart.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TwoParticleGFPart.cpp' object='libpomerol_a-TwoParticleGFPart.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-TwoParticleGFPart.obj `if test -f 'TwoParticleGFPart.cpp'; then $(CYGPATH_W) 'TwoParticleGFPart.cpp'; else $(CYGPATH_W) '$(srcdir)/TwoParticleGFPart.cpp'; fi`
-
-libpomerol_a-Vertex4.o: Vertex4.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Vertex4.o -MD -MP -MF $(DEPDIR)/libpomerol_a-Vertex4.Tpo -c -o libpomerol_a-Vertex4.o `test -f 'Vertex4.cpp' || echo '$(srcdir)/'`Vertex4.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Vertex4.Tpo $(DEPDIR)/libpomerol_a-Vertex4.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Vertex4.cpp' object='libpomerol_a-Vertex4.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Vertex4.o `test -f 'Vertex4.cpp' || echo '$(srcdir)/'`Vertex4.cpp
-
-libpomerol_a-Vertex4.obj: Vertex4.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Vertex4.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-Vertex4.Tpo -c -o libpomerol_a-Vertex4.obj `if test -f 'Vertex4.cpp'; then $(CYGPATH_W) 'Vertex4.cpp'; else $(CYGPATH_W) '$(srcdir)/Vertex4.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Vertex4.Tpo $(DEPDIR)/libpomerol_a-Vertex4.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Vertex4.cpp' object='libpomerol_a-Vertex4.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Vertex4.obj `if test -f 'Vertex4.cpp'; then $(CYGPATH_W) 'Vertex4.cpp'; else $(CYGPATH_W) '$(srcdir)/Vertex4.cpp'; fi`
 
 libpomerol_a-FieldOperatorContainer.o: FieldOperatorContainer.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-FieldOperatorContainer.o -MD -MP -MF $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Tpo -c -o libpomerol_a-FieldOperatorContainer.o `test -f 'FieldOperatorContainer.cpp' || echo '$(srcdir)/'`FieldOperatorContainer.cpp

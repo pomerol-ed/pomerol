@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,43 +30,46 @@
 #define __INCLUDE_GFCONTAINER_H
 
 #include"Misc.h"
-#include"ComputableObject.h"
 #include"GreensFunction.h"
 #include"FieldOperatorContainer.h"
 
 namespace Pomerol{
 
-class GFContainer : public ComputableObject, public Thermal 
+class GFContainer : public Thermal 
 {
 
 public:
     struct IndexCombination; 
-    GFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, IndexClassification& IndexInfo, FieldOperatorContainer& Operators);
-    void readInitialIndices(std::vector<IndexCombination*> &in);
-    void prepare();
-    void compute();
-    bool vanishes(ParticleIndex i, ParticleIndex j);
-    MatrixType& operator()(long MatsubaraNumber);
-    ComplexType operator()(ParticleIndex i, ParticleIndex j, long MatsubaraNumber);
-    void dumpToPlainText(long wn);
-    std::vector<IndexCombination*> InitialIndices;
+    GFContainer(StatesClassification &S, const Hamiltonian &H, const DensityMatrix &DM, IndexClassification& IndexInfo, const FieldOperatorContainer& Operators);
+
+    void prepare(void);
+    void prepare(const std::vector<IndexCombination*>& InitialIndices);
+    void computeValues(long NumberOfMatsubaras);
+
+    bool isVanishing(ParticleIndex Index1, ParticleIndex Index2) const;
+
+    const MatrixType& operator()(long MatsubaraNumber) const;
+    ComplexType operator()(ParticleIndex Index1, ParticleIndex Index2, long MatsubaraNumber) const;
+
 private:
-    StatesClassification &S;
-    Hamiltonian &H;
-    DensityMatrix &DM;
     IndexClassification &IndexInfo;
-    FieldOperatorContainer &Operators;
+    StatesClassification &S;
+
+    const Hamiltonian &H;
+    const DensityMatrix &DM;
+    const FieldOperatorContainer &Operators;
 
     std::map<IndexCombination, GreensFunction*> mapGreensFunctions;
-    void defineInitialIndices();
 };
 
 struct GFContainer::IndexCombination
 {
-    ParticleIndex Indices[2];
+    const ParticleIndex Index1, Index2;
+
+    bool operator<(const GFContainer::IndexCombination& rhs) const;
+    IndexCombination(ParticleIndex Index1, ParticleIndex Index2);
+
     friend std::ostream& operator<<(std::ostream& output, const GFContainer::IndexCombination& out);
-    bool operator<(const GFContainer::IndexCombination& rhs) const ;
-    IndexCombination(ParticleIndex cindex1, ParticleIndex cdagindex2);
 };
 
 } // end of namespace Pomerol

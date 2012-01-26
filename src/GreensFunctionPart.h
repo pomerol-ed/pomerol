@@ -31,7 +31,6 @@
 #include<iomanip>
 
 #include"Misc.h"
-#include"ComputableObject.h"
 #include"StatesClassification.h"
 #include"HamiltonianPart.h"
 #include"FieldOperator.h"
@@ -43,21 +42,21 @@ namespace Pomerol{
  * Every part describes all transitions allowed by selection rules
  * between a given pair of Hamiltonian blocks.
  */
-class GreensFunctionPart : public ComputableObject, public Thermal
+class GreensFunctionPart : public Thermal
 {
     /** A reference to a part of a Hamiltonian (inner index iterates through it). */
-    HamiltonianPart& HpartInner;
+    const HamiltonianPart& HpartInner;
     /** A reference to a part of a Hamiltonian (outer index iterates through it). */
-    HamiltonianPart& HpartOuter;
+    const HamiltonianPart& HpartOuter;
     /** A reference to a part of a density matrix (the part corresponding to HpartInner). */
-    DensityMatrixPart& DMpartInner;
+    const DensityMatrixPart& DMpartInner;
     /** A reference to a part of a density matrix (the part corresponding to HpartOuter). */
-    DensityMatrixPart& DMpartOuter;
+    const DensityMatrixPart& DMpartOuter;
 
     /** A reference to a part of an annihilation operator. */
-    AnnihilationOperatorPart& C;
+    const AnnihilationOperatorPart& C;
     /** A reference to a part of a creation operator. */
-    CreationOperatorPart& CX;
+    const CreationOperatorPart& CX;
 
     struct Term;
 
@@ -83,12 +82,9 @@ public:
      * \param[in] DMpartInner A reference to a part of the density matrix (inner index).
      * \param[in] DMpartOuter A reference to a part of the density matrix (outer index).
      */
-    GreensFunctionPart(AnnihilationOperatorPart& C, CreationOperatorPart& CX, 
-                       HamiltonianPart& HpartInner, HamiltonianPart& HpartOuter,
-                       DensityMatrixPart& DMpartInner, DensityMatrixPart& DMpartOuter);
-
-    /** Stub prepare() method.*/
-    void prepare();
+    GreensFunctionPart(const AnnihilationOperatorPart& C, const CreationOperatorPart& CX, 
+                       const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
+                       const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter);
 
     /** Iterates over all matrix elements and fills the list of terms. */
     void compute(void);

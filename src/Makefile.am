@@ -11,8 +11,8 @@ libpomerol_a_SOURCES= HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp \
 	GreensFunctionPart.cpp GreensFunction.cpp \
 	FourIndexObject.cpp MatsubaraContainers.h \
 	TwoParticleGF.cpp TwoParticleGFPart.cpp \
-	Vertex4.cpp FieldOperatorContainer.cpp \
-	TwoParticleGFContainer.cpp GFContainer.cpp Misc.h ComputableObject.h LatticeAnalysis.h LatticeReader.h LatticeReader.cpp
+	FieldOperatorContainer.cpp \
+	TwoParticleGFContainer.cpp GFContainer.cpp Misc.h LatticeAnalysis.h LatticeReader.h LatticeReader.cpp
 libpomerol_a_pkginclude_HEADERS=*.h 
 libpomerol_a_pkgincludedir=$(includedir)/pomerol
 
