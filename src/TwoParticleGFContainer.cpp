@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 namespace Pomerol{
 
+extern std::ostream& OUTPUT_STREAM;
 /*=========================================================================*/
 
 TwoParticleGFContainer::Element::Element(TwoParticleGF* Computable2PGF, Permutation4 FrequenciesPermutation, bool isComputed):
@@ -36,8 +37,8 @@ FourIndexContainerObject::IndexCombination TwoParticleGFContainer::Element::getL
 
 /*=========================================================================*/
 
-TwoParticleGFContainer::TwoParticleGFContainer(StatesClassification &S, const Hamiltonian &H, const DensityMatrix &DM,IndexClassification& IndexInfo, const FieldOperatorContainer& Operators):
-    Thermal(DM),S(S),H(H),DM(DM),IndexInfo(IndexInfo),Operators(Operators)
+TwoParticleGFContainer::TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM,IndexClassification& IndexInfo, FieldOperatorContainer& Operators):
+    ComputableObject(),Thermal(DM),S(S),H(H),DM(DM),IndexInfo(IndexInfo),Operators(Operators),NumberOfMatsubaras(0)
 {
 };
 
@@ -67,15 +68,16 @@ for (ParticleIndex i1=0; i1<IndexInfo.getIndexSize(); ++i1)
 
 void TwoParticleGFContainer::prepare()
 {
+if (Status < Prepared){
     defineInitialIndices();
     for (std::vector<IndexCombination*>::const_iterator it1=InitialCombinations.begin(); it1!=InitialCombinations.end(); ++it1) if (mapNonTrivialCombinations.count(**it1)==0 ){
-        const AnnihilationOperator &C1 = Operators.getAnnihilationOperator((*it1)->Indices[0]);
-        const AnnihilationOperator &C2 = Operators.getAnnihilationOperator((*it1)->Indices[1]);
-        const CreationOperator     &CX3 = Operators.getCreationOperator   ((*it1)->Indices[2]);
-        const CreationOperator     &CX4 = Operators.getCreationOperator   ((*it1)->Indices[3]);
+        AnnihilationOperator &C1 = Operators.getAnnihilationOperator((*it1)->Indices[0]);
+        AnnihilationOperator &C2 = Operators.getAnnihilationOperator((*it1)->Indices[1]);
+        CreationOperator     &CX3 = Operators.getCreationOperator   ((*it1)->Indices[2]);
+        CreationOperator     &CX4 = Operators.getCreationOperator   ((*it1)->Indices[3]);
         TwoParticleGF * temp2PGF = new TwoParticleGF(S,H,C1,C2,CX3,CX4,DM);
         temp2PGF->prepare();
-        if (!temp2PGF->isVanishing()){
+        if (!temp2PGF->vanishes()){
             Element *ComputableElement = new Element(temp2PGF,TrivialOperatorPermutations[0],true); 
             mapNonTrivialCombinations[**it1] = ComputableElement;
             NonTrivialCombinations.push_back(*it1);
@@ -102,10 +104,10 @@ void TwoParticleGFContainer::prepare()
                         };
                 };
             addInnerPermutationsOfIndexCombination(*it1);
-
+                
         };
     };
-
+    Status = Prepared;
     InitialCombinations.clear();
     INFO("");
     INFO("TwoParticleGCContainer: Following combinations will be obtained:")
@@ -116,7 +118,8 @@ void TwoParticleGFContainer::prepare()
              };
         }
     INFO("");
-}
+};
+};
 
 void TwoParticleGFContainer::addInnerPermutationsOfIndexCombination(const IndexCombination *in)
 {
@@ -149,10 +152,11 @@ void TwoParticleGFContainer::addInnerPermutationsOfIndexCombination(const IndexC
 
 void TwoParticleGFContainer::compute(long NumberOfMatsubaras)
 {
+if (Status == Prepared){
+    this->NumberOfMatsubaras = NumberOfMatsubaras;
 #ifndef pomerolOpenMP
     for (std::map<IndexCombination,Element*>::iterator it1=mapNonTrivialCombinations.begin();it1!=mapNonTrivialCombinations.end();++it1){
-        it1->second->Computable2PGF->precomputeParts();
-        it1->second->Computable2PGF->computeValues(NumberOfMatsubaras);
+        it1->second->Computable2PGF->compute(NumberOfMatsubaras);
         };
 #else
     std::vector<TwoParticleGF*> items;
@@ -161,10 +165,11 @@ void TwoParticleGFContainer::compute(long NumberOfMatsubaras)
         }
     #pragma omp parallel for 
     for (int i = 0; i < (int) items.size(); ++i){
-        items[i]->precomputeParts();
-        items[i]->computeValues(NumberOfMatsubaras);
+        items[i]->compute(NumberOfMatsubaras);
         };
 #endif
+    Status = Computed;    
+    };
 };
 
 
@@ -191,6 +196,11 @@ const std::vector<TwoParticleGFContainer::IndexCombination*>& TwoParticleGFConta
 bool TwoParticleGFContainer::vanishes(const IndexCombination& in)
 {
     return (mapNonTrivialCombinations.count(in) == 0);
+}
+
+long TwoParticleGFContainer::getNumberOfMatsubaras() const
+{
+    return NumberOfMatsubaras;
 }
 
 } // end of namespace Pomerol

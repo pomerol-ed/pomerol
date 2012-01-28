@@ -318,14 +318,14 @@ int main(int argc, char *argv[])
     //begining of creation all part of Hammiltonian
 
     H.prepare();
-    H.diagonalize();
+    H.compute();
     RealType beta = opt.beta;
 
     num_cout << std::endl << "The value of ground energy is " << H.getGroundEnergy() << std::endl;
 
     DensityMatrix rho(S,H,beta);
-    rho.allocateParts();
-    rho.computeParts();
+    rho.prepare();
+    rho.compute();
     num_cout << "<H> = " << rho.getAverageEnergy() << std::endl;
 
     std::ofstream out;
@@ -343,7 +343,7 @@ int main(int argc, char *argv[])
     // Single-particle Green's functions
     GFContainer G(S,H,rho,IndexInfo,Operators);
     G.prepare();
-    G.computeValues(opt.NumberOfMatsubaras);
+    G.compute();
     writeGForHartmut(G,opt.NumberOfMatsubaras);
 
     /*

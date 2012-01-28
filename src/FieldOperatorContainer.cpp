@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,42 +30,40 @@
 
 namespace Pomerol{
 
-FieldOperatorContainer::FieldOperatorContainer(StatesClassification &S, const Hamiltonian &H, IndexClassification &IndexInfo) : 
-    S(S), H(H), IndexInfo(IndexInfo)
-{}
-
-const CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleIndex in) const
+FieldOperatorContainer::FieldOperatorContainer(StatesClassification &S, Hamiltonian &H, IndexClassification &IndexInfo):S(S),H(H),IndexInfo(IndexInfo)
 {
-    if (IndexInfo.checkIndex(in)){
-        if (mapCreationOperators.count(in)==0){
-            CreationOperator *CX = new CreationOperator(IndexInfo, S,H,in);
-            INFO("FieldOperatorContainer: Making Creation Operator_"<<in);
-            CX->prepare();
-            CX->compute();
-            mapCreationOperators[in] = CX;
+};
+
+CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleIndex in)
+{
+if (IndexInfo.checkIndex(in)){
+    if (mapCreationOperators.count(in)==0){
+        CreationOperator *CX = new CreationOperator(IndexInfo, S,H,in);
+        INFO("FieldOperatorContainer: Making Creation Operator_"<<in);
+        CX->prepare();
+        CX->compute();
+        mapCreationOperators[in] = CX;
         };
-        //else INFO("FieldOperatorContainer: Using already computed Creation Operator_"<< in);
-        return *mapCreationOperators[in];
+    //else INFO("FieldOperatorContainer: Using already computed Creation Operator_"<< in);
+    return *mapCreationOperators[in];
     }
-    else
-        assert(0);
+else assert(0);
 }
 
-const AnnihilationOperator& FieldOperatorContainer::getAnnihilationOperator(ParticleIndex in) const
+AnnihilationOperator& FieldOperatorContainer::getAnnihilationOperator(ParticleIndex in)
 {
-    if (IndexInfo.checkIndex(in)){
-        if (mapAnnihilationOperators.count(in)==0){
-            AnnihilationOperator *C = new AnnihilationOperator(IndexInfo, S,H,in);
-            INFO("FieldOperatorContainer: Making Annihilation Operator_"<<in);
-            C->prepare();
-            C->compute();
-            mapAnnihilationOperators[in] = C;
+if (IndexInfo.checkIndex(in)){
+    if (mapAnnihilationOperators.count(in)==0){
+        AnnihilationOperator *C = new AnnihilationOperator(IndexInfo, S,H,in);
+        INFO("FieldOperatorContainer: Making Annihilation Operator_"<<in);
+        C->prepare();
+        C->compute();
+        mapAnnihilationOperators[in] = C;
         };
-        // else INFO("FieldOperatorContainer: Using already computed Annihilation Operator_"<< in);
-        return *mapAnnihilationOperators[in];
+   // else INFO("FieldOperatorContainer: Using already computed Annihilation Operator_"<< in);
+    return *mapAnnihilationOperators[in];
     }
-    else
-        assert(0);
+else assert(0);
 }
 
 } // end of namespace Pomerol

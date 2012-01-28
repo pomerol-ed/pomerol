@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 #define __INCLUDE_TWOPARTICLEGFPART_H
 
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"StatesClassification.h"
 #include"HamiltonianPart.h"
 #include"FieldOperatorPart.h"
@@ -39,7 +40,7 @@ namespace Pomerol{
 /** This class represents a part of a two-particle Green's function.
  * Every part describes one 'world stripe' of four operators.
  */
-class TwoParticleGFPart : public Thermal {
+class TwoParticleGFPart : public ComputableObject, public Thermal {
 
 friend class TwoParticleGF;
 
@@ -51,31 +52,31 @@ public:
 private:
 
     /** A reference to a part of the first operator. */
-    const FieldOperatorPart& O1;
+    FieldOperatorPart& O1;
     /** A reference to a part of the second operator. */
-    const FieldOperatorPart& O2;
+    FieldOperatorPart& O2;
     /** A reference to a part of the third operator. */
-    const FieldOperatorPart& O3;
+    FieldOperatorPart& O3;
     /** A reference to a part of the fourth (creation) operator. */
-    const CreationOperatorPart& CX4;
+    CreationOperatorPart& CX4;
 
     /** A reference to the first part of a Hamiltonian. */
-    const HamiltonianPart& Hpart1;
+    HamiltonianPart& Hpart1;
     /** A reference to the second part of a Hamiltonian. */
-    const HamiltonianPart& Hpart2;
+    HamiltonianPart& Hpart2;
     /** A reference to the third part of a Hamiltonian. */
-    const HamiltonianPart& Hpart3;
+    HamiltonianPart& Hpart3;
     /** A reference to the fourth part of a Hamiltonian. */
-    const HamiltonianPart& Hpart4;
+    HamiltonianPart& Hpart4;
 
     /** A reference to the first part of a density matrix (the part corresponding to Hpart1). */
-    const DensityMatrixPart& DMpart1;
+    DensityMatrixPart& DMpart1;
     /** A reference to the second part of a density matrix (the part corresponding to Hpart2). */
-    const DensityMatrixPart& DMpart2;
+    DensityMatrixPart& DMpart2;
     /** A reference to the third part of a density matrix (the part corresponding to Hpart3). */
-    const DensityMatrixPart& DMpart3;
+    DensityMatrixPart& DMpart3;
     /** A reference to the fourth part of a density matrix (the part corresponding to Hpart4). */
-    const DensityMatrixPart& DMpart4;
+    DensityMatrixPart& DMpart4;
 
     /** A permutation of the operators for this part. */
     Permutation3 Permutation;
@@ -84,7 +85,8 @@ private:
     std::list<NonResonantTerm> NonResonantTerms;
     /** A list of resonant terms. */
     std::list<ResonantTerm> ResonantTerms;
-
+    
+    
     /** Adds a multi-term that has the following form:
     * \f[
     * \frac{1}{(z_1-P_1)(z_3-P_3)}
@@ -166,19 +168,15 @@ public:
      * \param[in] DMpart4 A reference to the fourth part of a density matrix.
      * \param[in] Permutation A permutation of the operators for this part.
      */
-    TwoParticleGFPart(const FieldOperatorPart& O1, const FieldOperatorPart& O2,
-                      const FieldOperatorPart& O3, const CreationOperatorPart& CX4,
-                      const HamiltonianPart& Hpart1, const HamiltonianPart& Hpart2,
-                      const HamiltonianPart& Hpart3, const HamiltonianPart& Hpart4,
-                      const DensityMatrixPart& DMpart1, const DensityMatrixPart& DMpart2,
-                      const DensityMatrixPart& DMpart3, const DensityMatrixPart& DMpart4,
+    TwoParticleGFPart(FieldOperatorPart& O1, FieldOperatorPart& O2, FieldOperatorPart& O3, CreationOperatorPart& CX4,
+                HamiltonianPart& Hpart1, HamiltonianPart& Hpart2, HamiltonianPart& Hpart3, HamiltonianPart& Hpart4,
+                DensityMatrixPart& DMpart1, DensityMatrixPart& DMpart2, DensityMatrixPart& DMpart3, DensityMatrixPart& DMpart4,
                 Permutation3 Permutation);
 
-    /** Actually computes the part. */
-    void compute();
-
-    /** Purges all terms. */
-    void clear();
+    /** Actually computes the part.
+     * \param[in] NumberOfMatsubaras: TODO: describes this parameter.
+     */
+    void compute(long NumberOfMatsubaras);
 
     /** Returns a contribution to the two-particle Green's function made by this part.
     * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
@@ -187,18 +185,21 @@ public:
     */
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
-    /** Returns the number of resonant terms in the cache. */
-    size_t getNumResonantTerms(void) const;
-    /** Returns the number of non-resonant terms in the cache. */
-    size_t getNumNonResonantTerms(void) const;
 
+    /** Returns the number of resonant terms in the cache. */
+    size_t getNumResonantTerms() const;
+    /** Returns the number of non-resonant terms in the cache. */
+    size_t getNumNonResonantTerms() const;
+    
     /** Returns a Permutation3 of the current part */
-    const Permutation3& getPermutation(void) const;
+    const Permutation3& getPermutation();
 
     /** Return the list of Resonant Terms */
-    const std::list<NonResonantTerm>& getNonResonantTerms(void) const;
+    const std::list<NonResonantTerm>& getNonResonantTerms();
     /** Return the list of NonResonantTerms */
-    const std::list<ResonantTerm>& getResonantTerms(void) const;
+    const std::list<ResonantTerm>& getResonantTerms();
+    /** Purges all terms. */
+    void clear();
 };
 
     /** A non-resonant term has the following form:
@@ -217,7 +218,7 @@ struct TwoParticleGFPart::NonResonantTerm{
 
     /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
     RealType Poles[3];
-
+        
     /** Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term? */
     bool isz4;
 
@@ -292,13 +293,13 @@ struct TwoParticleGFPart::ResonantTerm {
     * \param[in] z3 Complex frequency \f$ z_3 \f$.
     */
     ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3) const;
-
+        
     /** This operator add a non-resonant term to this one.
     * It does not check the similarity of the terms! 
     * \param[in] AnotherTerm Another term to add to this.
     */
     ResonantTerm& operator+=(const ResonantTerm& AnotherTerm);
-
+        
     /** Returns true if another term is similar to this
      * (sum of the terms is again a correct non-resonant term).
     */

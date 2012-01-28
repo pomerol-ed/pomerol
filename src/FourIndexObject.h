@@ -43,6 +43,20 @@ public:
     class MatsubaraContainer;
 };
 
+/** A prototype class for objects which are constructed for a given set of 4 indices, i.e Chi_{ijkl} */
+class FourIndexSingleObject : public FourIndexObject {
+public:
+    /** Return the combination of indices, for which the object is constructed */
+    IndexCombination getIndices();
+
+    /** Return the value for a given Matsubara numbers (not frequencies themselves)
+     * \param[in] MatsubaraNumber1 An index of the 1st Matsubara frequency.
+     * \param[in] MatsubaraNumber2 An index of the 2nd Matsubara frequency.
+     * \param[in] MatsubaraNumber3 An index of the 3rd Matsubara frequency.
+     */
+    ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
+    };
+
 /** A prototype container class of Four Indices Objects - stores all values for all possible Particle Indices 
  * The notation is ccc^*c^*
  */ 
@@ -81,6 +95,96 @@ struct FourIndexObject::IndexCombination
      */
     IndexCombination(ParticleIndex cindex1, ParticleIndex cindex2, ParticleIndex cdagindex3, ParticleIndex cdagindex4);
 };
+
+
+/**
+* A subclass of FourIndexObject - it stores values of a 4 FourIndexObject  over Matsubara frequencies. 
+* The data is stored in a 1 bosonic and 2 fermionic degrees flavour : 
+* (OMEGA,nu,nu'), 
+* where OMEGA=w1+w2 - bosonic frequency, nu=w1, nu'=w4
+*/
+class FourIndexObject::MatsubaraContainer 
+{
+    /** This is a i\frac{\pi}{\beta} - an interval between 2 adjacent matsubaras. 
+     * It is more convenient to store Inverse Temperature with a spacing, rather than to invert it afterwards 
+     */
+    ComplexType MatsubaraSpacing;
+
+    /* An amount of positive Matsubaras on which to store the values. The range of values [-MatsubaraSpacing;MatsubaraSpacing-1] will be available */
+    long NumberOfMatsubaras;
+
+    /* The storage - an array of Matrices for nu,nu' space, stored as a vector which is dependent on a bosonic frequency index */
+    std::vector<MatrixType> Data;
+    /* A first non-vanishing fermionic index - used for correspondence between number of element in a matrix and real Matsubara numbers */
+    std::vector<long> FermionicFirstIndex;
+public:
+    /** Constructor
+     * \param[in] beta An inverse temperature.
+     */
+    MatsubaraContainer(RealType beta);
+
+    /** Allocate memory for a storage
+     * \param[in] NumberOfMatsubaras An amount of positive Matsubara frequencies that will be held in a MatsubaraContainer.
+     */
+    void prepare(long NumberOfMatsubaras);
+
+    /** Returns the value for a given Matsubara numbers (not frequencies themselves)
+     * \param[in] MatsubaraNumber1 An index of the 1st Matsubara frequency.
+     * \param[in] MatsubaraNumber2 An index of the 2nd Matsubara frequency.
+     * \param[in] MatsubaraNumber3 An index of the 3rd Matsubara frequency.
+     */
+    ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
+
+    /** Sets the value for a given Matsubara numbers (not frequencies themselves)
+     * \param[in] MatsubaraNumber1 An index of the 1st Matsubara frequency.
+     * \param[in] MatsubaraNumber2 An index of the 2nd Matsubara frequency.
+     * \param[in] MatsubaraNumber3 An index of the 3rd Matsubara frequency.
+     */
+    void set(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3, ComplexType &Value);
+
+
+    /** Fill container from a list of terms 
+     * \param[in] NonResonantTerms A list of NonResonant Terms.
+     * \param[in] ResonantTerms A list of Resonant Terms.
+     * \param[in] Permutation A permutation of input Matsubara frequencies
+     */
+    void fill(const std::list<TwoParticleGFPart::NonResonantTerm>& NonResonantTerms, const std::list<TwoParticleGFPart::ResonantTerm>& ResonantTerms, Permutation3 Permutation);
+
+    /** Operator+= : adds to a current MatsubaraContainer another one
+     * \param[in] rhs Right hand side of the equation Matsubara Container to add.
+     */
+    MatsubaraContainer& operator+=(const MatsubaraContainer& rhs);
+
+    /** Empty memory */
+    void clear();
+};
+
+inline
+ComplexType FourIndexObject::MatsubaraContainer::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
+// {OMEGA,nu,nu' : OMEGA=w1+w2, nu=w1, nu'=w4=OMEGA-w3
+{
+    unsigned int RealBosonicIndex = MatsubaraNumber1 + MatsubaraNumber2 + 2*NumberOfMatsubaras;
+    int nuIndex = MatsubaraNumber1-FermionicFirstIndex[RealBosonicIndex];
+    int nu1Index= RealBosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber3-FermionicFirstIndex[RealBosonicIndex];
+    //cout << "Bosonic index : " << RealBosonicIndex - 2*NumberOfMatsubaras<< " shift : " << FermionicFirstIndex[RealBosonicIndex] << endl;
+    if (nuIndex >= 0 && nuIndex < Data[RealBosonicIndex].rows() && nu1Index >= 0 && nu1Index < Data[RealBosonicIndex].rows() )
+        return Data[RealBosonicIndex](nuIndex,nu1Index);
+    else {
+        ERROR("Warning! Matsubara numbers (" << MatsubaraNumber1 << "," << MatsubaraNumber2 << "," << MatsubaraNumber3 << "," << MatsubaraNumber1+ MatsubaraNumber2 - MatsubaraNumber3 << ") of FourIndexObject is out of range, returning 0");
+        return ComplexType (0.0,0.0);
+    };
+};
+
+inline
+void FourIndexObject::MatsubaraContainer::set(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3, ComplexType &Value)
+{
+    unsigned int RealBosonicIndex = MatsubaraNumber1 + MatsubaraNumber2 + 2*NumberOfMatsubaras;
+    int nuIndex = MatsubaraNumber1-FermionicFirstIndex[RealBosonicIndex];
+    int nu1Index= RealBosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber3-FermionicFirstIndex[RealBosonicIndex];
+    if (nuIndex >= 0 && nuIndex < Data[RealBosonicIndex].rows() && nu1Index >= 0 && nu1Index < Data[RealBosonicIndex].rows() )
+        Data[RealBosonicIndex](nuIndex,nu1Index)=Value;
+    else ERROR("Warning! Tried assigning to wrong Matsubara numbers (" << MatsubaraNumber1 << "," << MatsubaraNumber2 << "," << MatsubaraNumber3 << "," << MatsubaraNumber1+ MatsubaraNumber2 - MatsubaraNumber3 <<"). Value left unassigned");
+}
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_FOURINDEXOBJECT_H 

@@ -82,13 +82,17 @@ typedef unsigned short ParticleIndex;
 /** Possible spin projections are \b down and \b up */
 enum spin {down, up};
 
+/** This represent the progress of calculation of any complex object in the code */
+enum ObjectStatus {Constructed, Prepared, Loaded, Computed, Stored};
+
 /** A short name for imaginary unit. */
 static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
+
 
 /** Generalized 'square' function. */
 template<typename T> inline T sqr(T x) { return x*x; }
 
-/** Easy enumeration for orbital names. */
+/** Easy enumeration for orbital names */
 enum OrbitalValue {s=0, p=1, d=2, f=3};             //!< The enum for s,p,d,f - orbitals
 
 /** Permutation of 3 elements */
@@ -146,8 +150,6 @@ end_do_once
 
 #define num_cout std::cout << std::setprecision(8) << std::setw(9) << std::left
 #define iomanip_prefs std::setprecision(8) << std::setw(9) << std::left
-
-#define CHECK_MATSUBARA_NUM(num,num_of_matsubaras)	(num) < (num_of_matsubaras) && (num) >= -(num_of_matsubaras)
 
 } // end of namespace Pomerol
 

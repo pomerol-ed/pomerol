@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 ** \author Andrey Antipov (antipov@ct-qmc.org)
 */
 #include "TwoParticleGF.h"
+extern std::ostream& OUTPUT_STREAM;
 
 namespace Pomerol{
 
@@ -38,14 +39,15 @@ static const Permutation3 permutations3[6] = {
     {{2,1,0},-1}
 };
 
-TwoParticleGF::TwoParticleGF(StatesClassification& S, const Hamiltonian& H,
-                const AnnihilationOperator& C1, const AnnihilationOperator& C2, 
-                const CreationOperator& CX3, const CreationOperator& CX4,
-                const DensityMatrix& DM) :
-    Thermal(beta),
-    S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM),
-    parts(0), pStorage(NULL), Vanishing(true)
-{}
+TwoParticleGF::TwoParticleGF(StatesClassification& S, Hamiltonian& H,
+                AnnihilationOperator& C1, AnnihilationOperator& C2, 
+                CreationOperator& CX3, CreationOperator& CX4,
+                DensityMatrix& DM) : ComputableObject(), Thermal(beta),
+                S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM), parts(0)
+{
+    Storage = new MatsubaraContainer(DM.beta);
+    vanish = true;
+}
 
 TwoParticleGF::~TwoParticleGF()
 {
@@ -53,7 +55,7 @@ TwoParticleGF::~TwoParticleGF()
           delete *iter;
 }
 
-BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber RightIndex) const
+BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber RightIndex)
 {
     switch(permutations3[PermutationNumber].perm[OperatorPosition]){
         case 0: return C1.getLeftIndex(RightIndex);
@@ -63,7 +65,7 @@ BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t Operato
     }
 }
 
-BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const
+BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex)
 {
     switch(permutations3[PermutationNumber].perm[OperatorPosition]){
         case 0: return C1.getRightIndex(LeftIndex);
@@ -73,7 +75,7 @@ BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t Operat
     }
 }
 
-const FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const
+FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex)
 {
     switch(permutations3[PermutationNumber].perm[OperatorPosition]){
         case 0: return C1.getPartFromLeftIndex(LeftIndex);
@@ -84,6 +86,8 @@ const FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t Permutatio
 }
 
 void TwoParticleGF::prepare(void)
+{
+if (Status < Prepared)
 {
     // Find out non-trivial blocks of CX4.
     std::list<BlockMapping> CX4NontrivialBlocks = CX4.getNonTrivialIndices();
@@ -113,32 +117,36 @@ void TwoParticleGF::prepare(void)
                             OperatorPartAtPosition(p,1,LeftIndices[1]),
                             OperatorPartAtPosition(p,2,LeftIndices[2]),
                             (CreationOperatorPart&)CX4.getPartFromLeftIndex(LeftIndices[3]),
-                            H.getPart(LeftIndices[0]), H.getPart(LeftIndices[1]), H.getPart(LeftIndices[2]), H.getPart(LeftIndices[3]),
-                            DM.getPart(LeftIndices[0]), DM.getPart(LeftIndices[1]), DM.getPart(LeftIndices[2]), DM.getPart(LeftIndices[3]),
+                            H.part(LeftIndices[0]), H.part(LeftIndices[1]), H.part(LeftIndices[2]), H.part(LeftIndices[3]),
+                            DM.part(LeftIndices[0]), DM.part(LeftIndices[1]), DM.part(LeftIndices[2]), DM.part(LeftIndices[3]),
                       permutations3[p]));
                       }
             }
     }  
     if ( parts.size() > 0 ) { 
-        Vanishing = false;
+        vanish = false;
         INFO("TwoParticleGF(" << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << "): " << parts.size() << " parts will be calculated");
-        }
+        };
+    Status = Prepared;
+};
 }
 
-bool TwoParticleGF::isVanishing(void) const
+bool TwoParticleGF::vanishes()
 {
-    return Vanishing;
+return vanish;
 }
 
-void TwoParticleGF::precomputeParts()
+void TwoParticleGF::compute(long NumberOfMatsubaras)
 {
+if (Status < Computed){
+    Storage->prepare(NumberOfMatsubaras);
     unsigned short perm_num=0;
     #ifndef pomerolOpenMP
     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
     {
         // TODO: More elegant output.
         std::cout << static_cast<int>((distance(parts.begin(),iter)*100.0)/parts.size()) << "  " << std::flush;
-        (*iter)->compute();
+        (*iter)->compute(NumberOfMatsubaras);
         perm_num = getPermutationNumber((*iter)->getPermutation());
         ResonantTerms[perm_num].insert(ResonantTerms[perm_num].end(),(*iter)->getResonantTerms().begin(), (*iter)->getResonantTerms().end());
         NonResonantTerms[perm_num].insert(NonResonantTerms[perm_num].end(),(*iter)->getNonResonantTerms().begin(), (*iter)->getNonResonantTerms().end());
@@ -152,29 +160,26 @@ void TwoParticleGF::precomputeParts()
     for(unsigned int i=0; i<VectorOfParts.size(); ++i)
     {
         std::cout << static_cast<int>((i*100.0)/parts.size()) << "  " << std::flush;
-        VectorOfParts[i]->compute();
+        VectorOfParts[i]->compute(NumberOfMatsubaras);
         perm_num = getPermutationNumber(VectorOfParts[i]->getPermutation());
         ResonantTerms[perm_num].insert(ResonantTerms[perm_num].end(),VectorOfParts[i]->getResonantTerms().begin(), VectorOfParts[i]->getResonantTerms().end());
         NonResonantTerms[perm_num].insert(NonResonantTerms[perm_num].end(),VectorOfParts[i]->getNonResonantTerms().begin(), VectorOfParts[i]->getNonResonantTerms().end());
         VectorOfParts[i]->clear();
     }
+
     #endif
-}
-
-void TwoParticleGF::computeValues(long NumberOfMatsubaras)
-{
-    delete pStorage;
-    pStorage = new MatsubaraContainer4<TwoParticleGF>(NumberOfMatsubaras);
-    pStorage->fill(this);
-}
-
-ComplexType TwoParticleGF::rawValue(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
-{
-    ComplexType Value = 0;
-    for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){
-        Value += (**iter)(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3);
+    INFO(std::endl << "TwoParticleGF(" << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << "): substituting values over Matsubara frequencies ... ")
+    for (unsigned short i=0; i<6; i++) {
+        INFO_NONEWLINE(i+1 << "/6 : " << NonResonantTerms[i].size() << " nonresonant terms and " << ResonantTerms[i].size() << " resonant terms reduced to ");
+        TwoParticleGFPart::reduceTerms(TwoParticleGFPart::MultiTermCoefficientTolerance/NonResonantTerms[i].size(), 
+                                       TwoParticleGFPart::MultiTermCoefficientTolerance/ResonantTerms[i].size(), 
+                                       NonResonantTerms[i],ResonantTerms[i]);
+        INFO( NonResonantTerms[i].size() << " nonresonant terms and " << ResonantTerms[i].size() << " resonant terms");
+        Storage->fill(NonResonantTerms[i],ResonantTerms[i],permutations3[i]);
+        };
+    INFO("Done." << std::endl);
+    Status = Computed;
     }
-    return Value;
 }
 
 size_t TwoParticleGF::getNumResonantTerms() const
@@ -193,12 +198,14 @@ size_t TwoParticleGF::getNumNonResonantTerms() const
     return num;
 }
 
-ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
+ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
 {
-    if(pStorage && pStorage->isInContainer(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3))
-        return (*pStorage)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
-    else
-        return rawValue(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    ComplexType Value = 0;
+    for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++){
+        Value+=(**iter)(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3 );
+        };
+    return (*Storage)(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3)+Value;
+
 }
 
 ParticleIndex TwoParticleGF::getIndex(size_t Position) const

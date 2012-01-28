@@ -25,7 +25,7 @@
 namespace Pomerol{
 
 Vertex4::Vertex4(const IndexClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g) :
-    Thermal(Chi),Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+1)
+ComputableObject(),Thermal(Chi),Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+1)
 {
     NumberOfMatsubaras = Chi.getNumberOfMatsubaras();
 }

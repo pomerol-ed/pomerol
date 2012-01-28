@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 #define __INCLUDE_HAMILTONIAN_H
 #include "Misc.h"
 #include "HDF5Storage.h"
+#include "ComputableObject.h"
 #include "IndexClassification.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
@@ -41,7 +42,7 @@ namespace Pomerol{
  * It provides eigenvalues and eigenfunctions of any of its parts once they are obtained within its parts. 
  * The diagonalization and entering routines are done inside Hamiltonian Parts
  */
-class Hamiltonian : public HDF5Storable
+class Hamiltonian : public ComputableObject, public HDF5Storable
 {
     /** Array of pointers to the Hamiltonian Parts */
     std::vector<HamiltonianPart*> parts;
@@ -56,14 +57,17 @@ public:
     Hamiltonian(IndexClassification &F_, StatesClassification &S_);
     ~Hamiltonian();
 
-    void prepare();
-    void diagonalize(void);
-    void reduce(const RealType Cutoff);
+    void prepare(); // was void enter();
 
-    const HamiltonianPart& getPart(const QuantumNumbers &in) const;
-    const HamiltonianPart& getPart(BlockNumber in) const;
-    RealType getEigenValue(QuantumState state) const;
-    RealType getGroundEnergy() const;
+    HamiltonianPart& part(const QuantumNumbers &in);
+    HamiltonianPart& part(BlockNumber in);
+    RealType eigenval( QuantumState &state );
+    RealType getGroundEnergy();
+
+    void compute(); // was void diagonalize();
+
+    void dump();
+    void reduce(const RealType Cutoff);
 
     void save(H5::CommonFG* RootGroup) const;
     void load(const H5::CommonFG* RootGroup);

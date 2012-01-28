@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -28,19 +28,20 @@
 #include "DensityMatrixPart.h"
 
 namespace Pomerol{
-DensityMatrixPart::DensityMatrixPart(StatesClassification &S, const HamiltonianPart& hpart, RealType beta, RealType GroundEnergy) :
-    Thermal(beta), S(S), hpart(hpart), GroundEnergy(GroundEnergy), weights(hpart.getSize())
+DensityMatrixPart::DensityMatrixPart(StatesClassification &S, HamiltonianPart& hpart, RealType beta, RealType GroundEnergy) :
+    Thermal(beta), S(S), hpart(hpart), GroundEnergy(GroundEnergy), weights(hpart.size())
 {}
 
-RealType DensityMatrixPart::computeUnnormalized(void)
+RealType DensityMatrixPart::compute(void)
 {
     Z_part = 0;
     QuantumState partSize = weights.size();
-    for(InnerQuantumState s = 0; s < partSize; ++s){
+    for(QuantumState m = 0; m < partSize; ++m){
         // The non-normalized weight is <=1 for any state.
-        weights(s) = exp(-beta*(hpart.getEigenValue(s)-GroundEnergy));
-        Z_part += weights(s);
+        weights(m) = exp(-beta*(hpart.reV(m)-GroundEnergy));
+        Z_part += weights(m);
     }
+
     return Z_part;
 }
 
@@ -50,39 +51,42 @@ void DensityMatrixPart::normalize(RealType Z)
     Z_part /= Z;
 }
 
-RealType DensityMatrixPart::getPartialZ(void) const
-{
-    return Z_part;
-}
-
-RealType DensityMatrixPart::getAverageEnergy(void) const
+RealType DensityMatrixPart::getAverageEnergy()
 {
     RealType E=0.;
-    InnerQuantumState partSize = weights.size();
-    for(InnerQuantumState s = 0; s < partSize; ++s){
-        E += weights(s)*hpart.getEigenValue(s);
+    QuantumState partSize = weights.size();
+    for(QuantumState m = 0; m < partSize; ++m){
+        E += weights(m)*hpart.reV(m);
     }
     return E;
 };
 
-RealType DensityMatrixPart::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const
+RealType DensityMatrixPart::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j)
 {
     RealType NN=0.;
     QuantumState partSize = weights.size();
-    for(InnerQuantumState s = 0; s < partSize; ++s){ // s is an EigenState number
-        RealVectorType CurrentEigenState = hpart.getEigenState(s);
+    for(InnerQuantumState m = 0; m < partSize; ++m){ // m is an EigenState number
+        RealVectorType CurrentEigenState = hpart.getEigenState(m);
         for (InnerQuantumState fi=0; (long) fi < CurrentEigenState.size(); ++fi)
-            NN += weights(s)*
-		S.n_i(S.getQuantumState(hpart.getQuantumNumbers(),fi),i)*
-		S.n_i(S.getQuantumState(hpart.getQuantumNumbers(),fi),j)*
-		CurrentEigenState(fi)*CurrentEigenState(fi);
+            NN += weights(m)*S.n_i(S.getQuantumState(hpart.id(),fi),i)*S.n_i(S.getQuantumState(hpart.id(),fi),j)*CurrentEigenState(fi)*CurrentEigenState(fi);
     }
     return NN;
 };
 
-RealType DensityMatrixPart::getWeight(InnerQuantumState s) const
+/*
+InnerQuantumState DensityMatrixPart::getMaximumTruncationState(RealType TruncationTolerance)
 {
-    return weights(s);
+    InnerQuantumState m=0;
+    DEBUG("");
+    for (m=0; m<partSize && weights(m)>TruncationTolerance; ++m) DEBUG(hpart.reV(m) << " -> " << weights(m));
+    DEBUG("m = " << m << " size = " << partSize << endl << endl);
+    return m; // m>partSize-1?partSize-1:m;
+}
+*/
+
+RealType DensityMatrixPart::weight(int m)
+{
+    return weights(m);
 }
 
 void DensityMatrixPart::save(H5::CommonFG* RootGroup) const
