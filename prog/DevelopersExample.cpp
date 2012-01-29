@@ -30,6 +30,7 @@
 #include "GFContainer.h"
 #include "TwoParticleGFContainer.h"
 #include "Vertex4.h"
+#include "Logger.h"
 
 #include "OptionParser.h"
 
@@ -270,7 +271,7 @@ int main(int argc, char *argv[])
   //DEBUG("SP2" << SP2)
   //exit(0);
 
-  num_cout << std::endl << "The value of ground energy is " << H.getGroundEnergy() << std::endl;
+  INFO("The value of ground energy is " << H.getGroundEnergy());
 
  //   GFContainer G(S,H,rho,IndexInfo,Operators);
  //   G.prepare();
@@ -282,18 +283,18 @@ int main(int argc, char *argv[])
   //    DensityMatrix.reduce();
   rho.prepare();
   rho.compute();
-  num_cout << "<H> = " << rho.getAverageEnergy() << std::endl;
+  INFO("<H> = " << rho.getAverageEnergy() << std::endl)
 
   /*   for (QuantumState i=0; i < S.N_st(); ++i) 
        cout << std::setw(20) << "E:" << H.eigenval(i) << "\t E-E0 " << H.eigenval(i) - rho.getAverageEnergy() << "\t weight: " << rho(i) << "  " << exp(-beta*(H.eigenval(i) - H.getGroundEnergy()))/1.000 << endl; 
        */
   std::ofstream out;
   out.open("output/Stat.En.dat");
-  out << iomanip_prefs << rho.getAverageEnergy() << std::endl;
+  out << rho.getAverageEnergy() << std::endl;
   out.close();
 
   out.open("output/Stat.NN.dat");
-  out << iomanip_prefs << rho.getAverageDoubleOccupancy(0,IndexInfo.getIndexSize()/2.) << std::endl;
+  out << rho.getAverageDoubleOccupancy(0,IndexInfo.getIndexSize()/2.) << std::endl;
   out.close();
 
   //finishing of creation

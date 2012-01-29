@@ -29,6 +29,7 @@
 
 #include<H5Cpp.h>
 #include"Misc.h"
+#include"Logger.h"
 
 namespace Pomerol{
 

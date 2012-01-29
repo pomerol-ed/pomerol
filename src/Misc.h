@@ -138,19 +138,6 @@ end_do_once
 #define end_do_once }; };
 //@}
 
-#define INFO(MSG)                 std::cout << MSG << std::endl;
-#define INFO_NONEWLINE(MSG)       std::cout << MSG << std::flush;
-#define ERROR(MSG)                std::cerr << MSG << std::endl;
-
-#ifdef NDEBUG
-  #define DEBUG(x)
-#else
-  #define DEBUG(x)  INFO(x)
-#endif
-
-#define num_cout std::cout << std::setprecision(8) << std::setw(9) << std::left
-#define iomanip_prefs std::setprecision(8) << std::setw(9) << std::left
-
 } // end of namespace Pomerol
 
 /**

@@ -81,6 +81,7 @@ libpomerol_a_LIBADD =
 am_libpomerol_a_OBJECTS = libpomerol_a-HDF5Storage.$(OBJEXT) \
 	libpomerol_a-Thermal.$(OBJEXT) \
 	libpomerol_a-LatticeAnalysis.$(OBJEXT) \
+	libpomerol_a-Logger.$(OBJEXT) \
 	libpomerol_a-StatesClassification.$(OBJEXT) \
 	libpomerol_a-Term.$(OBJEXT) \
 	libpomerol_a-IndexClassification.$(OBJEXT) \
@@ -268,6 +269,7 @@ MAINTAINERCLEANFILES = Makefile.in
 lib_LIBRARIES = libpomerol.a
 libpomerol_a_CPPFLAGS = -Wall -g
 libpomerol_a_SOURCES = HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp \
+	Logger.cpp Logger.h \
 	StatesClassification.cpp Term.cpp IndexClassification.cpp \
 	HamiltonianPart.cpp Hamiltonian.cpp FieldOperatorPart.cpp FieldOperator.cpp \
 	DensityMatrixPart.cpp DensityMatrix.cpp \
@@ -371,6 +373,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-IndexClassification.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-LatticeAnalysis.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-LatticeReader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Logger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-StatesClassification.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Term.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Thermal.Po@am__quote@
@@ -442,6 +445,22 @@ libpomerol_a-LatticeAnalysis.obj: LatticeAnalysis.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticeAnalysis.cpp' object='libpomerol_a-LatticeAnalysis.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticeAnalysis.obj `if test -f 'LatticeAnalysis.cpp'; then $(CYGPATH_W) 'LatticeAnalysis.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticeAnalysis.cpp'; fi`
+
+libpomerol_a-Logger.o: Logger.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Logger.o -MD -MP -MF $(DEPDIR)/libpomerol_a-Logger.Tpo -c -o libpomerol_a-Logger.o `test -f 'Logger.cpp' || echo '$(srcdir)/'`Logger.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Logger.Tpo $(DEPDIR)/libpomerol_a-Logger.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Logger.cpp' object='libpomerol_a-Logger.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Logger.o `test -f 'Logger.cpp' || echo '$(srcdir)/'`Logger.cpp
+
+libpomerol_a-Logger.obj: Logger.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Logger.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-Logger.Tpo -c -o libpomerol_a-Logger.obj `if test -f 'Logger.cpp'; then $(CYGPATH_W) 'Logger.cpp'; else $(CYGPATH_W) '$(srcdir)/Logger.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Logger.Tpo $(DEPDIR)/libpomerol_a-Logger.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Logger.cpp' object='libpomerol_a-Logger.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Logger.obj `if test -f 'Logger.cpp'; then $(CYGPATH_W) 'Logger.cpp'; else $(CYGPATH_W) '$(srcdir)/Logger.cpp'; fi`
 
 libpomerol_a-StatesClassification.o: StatesClassification.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-StatesClassification.o -MD -MP -MF $(DEPDIR)/libpomerol_a-StatesClassification.Tpo -c -o libpomerol_a-StatesClassification.o `test -f 'StatesClassification.cpp' || echo '$(srcdir)/'`StatesClassification.cpp

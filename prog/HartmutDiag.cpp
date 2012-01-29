@@ -321,16 +321,16 @@ int main(int argc, char *argv[])
     H.compute();
     RealType beta = opt.beta;
 
-    num_cout << std::endl << "The value of ground energy is " << H.getGroundEnergy() << std::endl;
+    INFO("The value of ground energy is " << H.getGroundEnergy() << std::endl)
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
     rho.compute();
-    num_cout << "<H> = " << rho.getAverageEnergy() << std::endl;
+    INFO("<H> = " << rho.getAverageEnergy() << std::endl)
 
     std::ofstream out;
     out.open("output/Stat.En.dat");
-    out << iomanip_prefs << rho.getAverageEnergy() << std::endl;
+    out << rho.getAverageEnergy() << std::endl;
     out.close();
 
     //finishing of creation

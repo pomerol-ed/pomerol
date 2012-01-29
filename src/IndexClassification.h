@@ -31,6 +31,7 @@
 #include"Misc.h"
 #include"LatticeAnalysis.h"
 #include"Term.h"
+#include"Logger.h"
 #include<json/json.h>
 
 namespace Pomerol{
