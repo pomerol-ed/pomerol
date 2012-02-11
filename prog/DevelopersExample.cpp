@@ -38,15 +38,6 @@
 
 using namespace Pomerol;
 
-std::string input = "system.ini";
-
-LatticeAnalysis Lattice;
-IndexClassification IndexInfo(Lattice);
-StatesClassification S(IndexInfo); 
-Hamiltonian H(IndexInfo,S);
-
-std::ostream &OUTPUT_STREAM=std::cout;
-
 
 /* ======================================================================== */
 // To be removed
@@ -60,145 +51,11 @@ void printFramed (const std::string& str)
 
 enum AmpStyle{UnAmputated, Amputated};
 
-inline RealType chop(RealType &i){ return (std::fabs(i)<1e-10)?0.0:i; }
-
-void saveChi(const char *fname, TwoParticleGFContainer &Chi, int size_wg) 
-{
-  std::cout << "Dumping Chi4..." << std::flush;
-#if defined(HRD)
-  std::ofstream chi_str(fname,std::ios::out);
-  chi_str.setf(std::ios::scientific, std::ios::floatfield);
-  chi_str.setf(std::ios::showpoint);
-  chi_str.precision(8);
-  chi_str<<"Re              Im                       z1 z2          w1' w1 w2' w2           n1' n1 n2' n2\n";
-#else
-  std::ofstream chi_str(fname,std::ios::out | std::ios::binary);
-#endif
-  int n_zone=2;
-  int n_part=IndexInfo.getIndexSize()/2.;
-  RealType acc=1e-8;
-  for (int z1=0; z1<n_zone; z1++)
-    for (int z2=n_zone-1; z2>=0; z2--)
-      for(int n1=0; n1<n_part; n1++)
-        for(int n1_=0; n1_<n_part; n1_++)
-          for(int n2=0; n2<n_part; n2++)
-            for(int n2_=0; n2_<n_part; n2_++)
-              for(int w1=-size_wg; w1<size_wg; w1++)
-                for(int w1_=-size_wg; w1_<size_wg; w1_++)
-                  for(int w2=-size_wg; w2<size_wg; w2++){
-
-                    int w2_=w1+w2-w1_;
-                    if (w2_>=-size_wg && w2_<size_wg){
-                      TwoParticleGFContainer::IndexCombination *comb1;
-                      comb1 = new TwoParticleGFContainer::IndexCombination(n1+n_part*z1,n2+n_part*z2,n1_+z1*n_part,n2_+z2*n_part);
-                      std::complex<double> *z=new ComplexType(Chi(*comb1,w1,w2,w1_));
-                      delete comb1;
-                      if(abs(*z)>acc){
-#if defined(HRD)
-                        chi_str << chop(real(*z)) <<"  "<< chop(imag(*z)) << "           "
-                          << z1 <<" "<< z2 << "           " << w1 << "  " << w1_ << " " << w2 << "  " << w2_ 
-                          << "            "<<n1<<"  "<<n1_<<" "<<n2<<"  "<<n2_<< "            "
-                          << std::endl << std::flush;
-#else
-                        chi_str.write(reinterpret_cast<char *>(z),sizeof(std::complex<double>));
-
-                        chi_str.write(reinterpret_cast<char *>(&z1),sizeof(int));
-                        chi_str.write(reinterpret_cast<char *>(&z2),sizeof(int));
-
-                        chi_str.write(reinterpret_cast<char *>(&w1),sizeof(int));
-                        chi_str.write(reinterpret_cast<char *>(&w1_),sizeof(int));
-                        chi_str.write(reinterpret_cast<char *>(&w2),sizeof(int));
-                        chi_str.write(reinterpret_cast<char *>(&w2_),sizeof(int));
-
-                        chi_str.write(reinterpret_cast<char *>(&n1),sizeof(int));
-                        chi_str.write(reinterpret_cast<char *>(&n1_),sizeof(int));
-                        chi_str.write(reinterpret_cast<char *>(&n2),sizeof(int));
-                        chi_str.write(reinterpret_cast<char *>(&n2_),sizeof(int));
-
-#endif
-                      };
-                      delete z;
-                    }
-                  }
-  chi_str<<"0 0"<<std::endl;
-  std::cout << "Finished." << std::endl;
-  return;
-}			    
-
-void saveGamma(const char *fname, Vertex4 &Vertex, std::vector<TwoParticleGFContainer::IndexCombination*>& Combinations, int size_wg, unsigned short style = Amputated) 
-{
-  std::cout << "Dumping Gamma4..." << std::flush;
-#if defined(HRD)
-  std::ofstream gamma_str(fname,std::ios::out);
-  gamma_str.setf(std::ios::scientific, std::ios::floatfield);
-  gamma_str.setf(std::ios::showpoint);
-  gamma_str.precision(8);
-  gamma_str<<"Re              Im                       z1 z2          w1' w1 w2' w2           n1' n1 n2' n2\n";
-#else
-  std::ofstream gamma_str(fname,std::ios::out | std::ios::binary);
-#endif
-  int n_zone=2;
-  int n_part=IndexInfo.getIndexSize()/2.;
-  RealType acc=1e-10;
-  int z1,z2,n1,n1_,n2,n2_;
-  for (std::vector<TwoParticleGFContainer::IndexCombination*>::const_iterator comb1=Combinations.begin(); comb1!=Combinations.end(); ++comb1)
-              for(int w1=-size_wg; w1<size_wg; w1++)
-                for(int w1_=-size_wg; w1_<size_wg; w1_++)
-                  for(int w2=-size_wg; w2<size_wg; w2++){
-
-                    int w2_=w1+w2-w1_;
-                    if (w2_>=-size_wg && w2_<size_wg){
-                      ComplexType *z;
-                      
-                      //comb1 = TwoParticleGFContainer::IndexCombination(n1+n_part*z1,n2+n_part*z2,n1_+z1*n_part,n2_+z2*n_part);
-                      n1 =  (*comb1)->Indices[0]%n_part;
-                      n2 =  (*comb1)->Indices[1]%n_part;
-                      n1_ = (*comb1)->Indices[2]%n_part;
-                      n2_ = (*comb1)->Indices[3]%n_part;
-                      z1 = (*comb1)->Indices[0]/n_part;
-                      z2 = (*comb1)->Indices[1]/n_part;
-                      z=new ComplexType(Vertex(**comb1,w1,w2,w1_)*(-1.));
-                      if(abs(*z)>acc){
-#if defined(HRD)
-                        gamma_str << chop(real(*z)) <<"  "<< chop(imag(*z)) << "           "
-                          << z1 <<" "<< z2 << "           " << w1 << "  " << w1_ << " " << w2 << "  " << w2_ 
-                          << "            "<<n1<<"  "<<n1_<<" "<<n2<<"  "<<n2_<< "            "
-                          << std::endl << std::flush;
-#else
-                        gamma_str.write(reinterpret_cast<char *>(z),sizeof(std::complex<double>));
-
-                        gamma_str.write(reinterpret_cast<char *>(&z1),sizeof(int));
-                        gamma_str.write(reinterpret_cast<char *>(&z2),sizeof(int));
-
-                        gamma_str.write(reinterpret_cast<char *>(&w1),sizeof(int));
-                        gamma_str.write(reinterpret_cast<char *>(&w1_),sizeof(int));
-                        gamma_str.write(reinterpret_cast<char *>(&w2),sizeof(int));
-                        gamma_str.write(reinterpret_cast<char *>(&w2_),sizeof(int));
-
-                        gamma_str.write(reinterpret_cast<char *>(&n1),sizeof(int));
-                        gamma_str.write(reinterpret_cast<char *>(&n1_),sizeof(int));
-                        gamma_str.write(reinterpret_cast<char *>(&n2),sizeof(int));
-                        gamma_str.write(reinterpret_cast<char *>(&n2_),sizeof(int));
-
-#endif
-                      };
-                     delete z;
-                    }
-                  }
-#ifndef HRD
-  std::complex<double> zero(0.0);
-  gamma_str.write(reinterpret_cast<char *>(&zero),sizeof(std::complex<double>));
-#else
-  gamma_str<<"0 0"<<std::endl;
-#endif
-  std::cout << "Finished." << std::endl;
-  return;
-}			    
-
 /* ======================================================================== */
 
 int main(int argc, char *argv[])
 {
+
    pomerolOptionParser opt;
    try {
 		opt.parse(&argv[1], argc-1); // Skip argv[0].
@@ -215,6 +72,10 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+  LatticeAnalysis Lattice;
+  IndexClassification IndexInfo(Lattice);
+  StatesClassification S(IndexInfo); 
+  Hamiltonian H(IndexInfo,S);
   printFramed("Lattice Info");
   Lattice.readin(opt.LatticeFile);
   std::cout << Lattice.printSitesList().str() << std::flush;
@@ -235,7 +96,8 @@ int main(int argc, char *argv[])
   printFramed("System is determined");
   printFramed("Process of creation and diagonalization all parts of Hamiltonian has started");
   
-  HDF5Storage storage("test.h5");
+  #warning Something is wrong with HDF5Storage. segfaults detected in this rev
+  //  HDF5Storage storage("test.h5"); 
   
   //begining of creation all part of Hammiltonian
 
@@ -245,33 +107,7 @@ int main(int argc, char *argv[])
   //H.dump();
   //storage.save(H);
 
-  // DEBUG HDF5 save/load
-  //storage.close();
-  //HDF5Storage storage_load("test.h5");
-  //Hamiltonian H2(IndexInfo,S,OUT,input);
-  //storage_load.load(H2);
-  //HDF5Storage storage2("test2.h5");
-  //storage2.save(H2);
-  //exit(0);
-  //RowMajorMatrixType SP1(2,3);
-  //SP1.startVec(0);
-  //SP1.insertBack(0,0) = 1;
-  //SP1.insertBack(0,1) = 2;
-  //SP1.insertBack(0,2) = 3;
-  //SP1.startVec(1);
-  //SP1.insertBack(1,0) = 4;
-  //SP1.insertBack(1,1) = 5;
-  //SP1.insertBack(1,2) = 6;
-  //SP1.finalize();
-  
-  //DEBUG("SP1" << SP1)
-  //HDF5Storage::saveRowMajorMatrix(&storage,"SP",SP1);
-  //RowMajorMatrixType SP2;
-  //HDF5Storage::loadRowMajorMatrix(&storage,"SP",SP2);
-  //DEBUG("SP2" << SP2)
-  //exit(0);
-
-  INFO("The value of ground energy is " << H.getGroundEnergy());
+   INFO("The value of ground energy is " << H.getGroundEnergy());
 
  //   GFContainer G(S,H,rho,IndexInfo,Operators);
  //   G.prepare();
@@ -331,7 +167,6 @@ int main(int argc, char *argv[])
     Gamma4.computeUnAmputated();
     Gamma4.prepareAmputated(v1);
     Gamma4.computeAmputated();
-    saveGamma("Gamma4.dat",Gamma4,v1,wn,Amputated);
 
 /*
     for (unsigned short i=0;i<v1.size();i++){
@@ -363,6 +198,33 @@ int main(int argc, char *argv[])
     //DEBUG(Chi4.getNumResonantTerms() << " resonant terms");    
 
   };
+ // DEBUG HDF5 save/load
+  //storage.close();
+  //HDF5Storage storage_load("test.h5");
+  //Hamiltonian H2(IndexInfo,S,OUT,input);
+  //storage_load.load(H2);
+  //HDF5Storage storage2("test2.h5");
+  //storage2.save(H2);
+  //exit(0);
+  //RowMajorMatrixType SP1(2,3);
+  //SP1.startVec(0);
+  //SP1.insertBack(0,0) = 1;
+  //SP1.insertBack(0,1) = 2;
+  //SP1.insertBack(0,2) = 3;
+  //SP1.startVec(1);
+  //SP1.insertBack(1,0) = 4;
+  //SP1.insertBack(1,1) = 5;
+  //SP1.insertBack(1,2) = 6;
+  //SP1.finalize();
+  
+  //DEBUG("SP1" << SP1)
+  //HDF5Storage::saveRowMajorMatrix(&storage,"SP",SP1);
+  //RowMajorMatrixType SP2;
+  //HDF5Storage::loadRowMajorMatrix(&storage,"SP",SP2);
+  //DEBUG("SP2" << SP2)
+  //exit(0);
+
+
   return 0;
 };
 
