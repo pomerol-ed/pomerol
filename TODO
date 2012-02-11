@@ -1,6 +1,9 @@
+2012-02-12
+1) Implement gamma^4 tests (make test)
+
 2012-01-17
 DONE: 1) сделать так, чтобы *.a и *.so ставились в $prefix/lib64 (или lib32), а *.h падали в $prefix/include/pomerol
-2) pkg-config support
+DONE: 2) pkg-config support
 
 2011-09-23
 1) IndexClassification - отдельно, h- и U-матрицы отдельно
