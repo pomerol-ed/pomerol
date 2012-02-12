@@ -44,7 +44,7 @@ public:
     /** Empty constructor */
     LatticeReader ();
     /** Read the contents of a dictionary from an external JSON file */
-    int readinFromJSON(const std::string filename);
+    int readinFromJSON(const std::string &filename);
     /** Get the contents of the dictionary */
     const Json::Value& getDictionary();
 };

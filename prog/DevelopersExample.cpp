@@ -21,6 +21,7 @@
 
 #include "Misc.h"
 #include "HDF5Storage.h"
+#include "LatticeReader.h"
 #include "LatticeAnalysis.h"
 #include "Term.h"
 #include "IndexClassification.h"
@@ -37,7 +38,7 @@
 #include <fstream>
 
 using namespace Pomerol;
-
+using std::string; using std::cout; using std::endl;
 
 /* ======================================================================== */
 // To be removed
@@ -71,6 +72,13 @@ int main(int argc, char *argv[])
 		std::cout << "invalid value: " << e.what() << std::endl;
 		return 1;
 	}
+    
+  LatticeReader L;
+  L.readinFromJSON(opt.LatticeFile);
+  Json::Value A=L.getDictionary();
+  cout << A["General"]["mu"].asDouble() << endl;
+  cout << A["General"] << endl;
+  exit(0);
 
   LatticeAnalysis Lattice;
   IndexClassification IndexInfo(Lattice);

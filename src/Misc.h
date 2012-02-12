@@ -105,6 +105,14 @@ struct Permutation3 {
         { out << (rhs.sign==-1?"-":" ") << rhs.perm[0]+1 << rhs.perm[1]+1 << rhs.perm[2]+1 << std::flush; return out;}; 
 };
 
+/** Convert string to lowercase - should be omitted while merging with boost */
+#include <algorithm>
+inline std::string& toLower ( const std::string &in ) {
+    static std::string temp (in);
+    std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
+    return temp;
+};
+
 /** Permutation of 4 elements */
 struct Permutation4 {
     const size_t perm[4];

@@ -4,9 +4,10 @@
 namespace Pomerol{
 
 LatticeReader::LatticeReader(){
+	root = new Json::Value;
 };
 
-int LatticeReader::readinFromJSON(const std::string filename)
+int LatticeReader::readinFromJSON(const std::string &filename)
 {
   Json::Reader reader;
   std::ifstream in;
@@ -14,6 +15,7 @@ int LatticeReader::readinFromJSON(const std::string filename)
   try
   {
     bool parsingSuccessful = reader.parse( in, *root );
+  std::cout << filename << std::endl;
     if ( !parsingSuccessful )
   	{
 		std::cout  << "Failed to parse configuration\n";
