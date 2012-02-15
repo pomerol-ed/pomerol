@@ -18,7 +18,7 @@
 // You should have received a copy of the GNU General Public License
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
-/** \file tests/green.h
+/** \file tests/green.cpp
 ** \brief Test of a Green's function calculation (1 s-orbital).
 **
 ** \author Igor Krivenko (igor@shg.ru)
