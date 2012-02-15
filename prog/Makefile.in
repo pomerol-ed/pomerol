@@ -32,7 +32,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = pomerolDiag$(EXEEXT) HartmutDiag$(EXEEXT)
+bin_PROGRAMS = pomerolDiag$(EXEEXT)
 subdir = prog
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -45,11 +45,9 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_HartmutDiag_OBJECTS = HartmutDiag-HartmutDiag.$(OBJEXT)
-HartmutDiag_OBJECTS = $(am_HartmutDiag_OBJECTS)
-am__DEPENDENCIES_1 =
 am_pomerolDiag_OBJECTS = pomerolDiag-DevelopersExample.$(OBJEXT)
 pomerolDiag_OBJECTS = $(am_pomerolDiag_OBJECTS)
+am__DEPENDENCIES_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -74,8 +72,8 @@ am__v_CXXLD_0 = @echo "  CXXLD " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(HartmutDiag_SOURCES) $(pomerolDiag_SOURCES)
-DIST_SOURCES = $(HartmutDiag_SOURCES) $(pomerolDiag_SOURCES)
+SOURCES = $(pomerolDiag_SOURCES)
+DIST_SOURCES = $(pomerolDiag_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -212,12 +210,6 @@ pomerolDiag_CPPFLAGS = -I../src
 pomerolDiag_SOURCES = DevelopersExample.cpp 
 pomerolDiag_LDADD = ../src/libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -lhdf5 -lhdf5_cpp
 pomerolDiag_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a $(top_builddir)/src/libpomerol.a
-
-# HartmutDiag
-HartmutDiag_CPPFLAGS = -I../src
-HartmutDiag_SOURCES = HartmutDiag.cpp 
-HartmutDiag_LDADD = ../src/libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -lhdf5 -lhdf5_cpp
-HartmutDiag_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a $(top_builddir)/src/libpomerol.a
 all: all-am
 
 .SUFFIXES:
@@ -231,9 +223,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu prog/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign prog/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu prog/Makefile
+	  $(AUTOMAKE) --foreign prog/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -289,9 +281,6 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-HartmutDiag$(EXEEXT): $(HartmutDiag_OBJECTS) $(HartmutDiag_DEPENDENCIES) 
-	@rm -f HartmutDiag$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(HartmutDiag_OBJECTS) $(HartmutDiag_LDADD) $(LIBS)
 pomerolDiag$(EXEEXT): $(pomerolDiag_OBJECTS) $(pomerolDiag_DEPENDENCIES) 
 	@rm -f pomerolDiag$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(pomerolDiag_OBJECTS) $(pomerolDiag_LDADD) $(LIBS)
@@ -302,7 +291,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HartmutDiag-HartmutDiag.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pomerolDiag-DevelopersExample.Po@am__quote@
 
 .cpp.o:
@@ -320,22 +308,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
-HartmutDiag-HartmutDiag.o: HartmutDiag.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(HartmutDiag_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT HartmutDiag-HartmutDiag.o -MD -MP -MF $(DEPDIR)/HartmutDiag-HartmutDiag.Tpo -c -o HartmutDiag-HartmutDiag.o `test -f 'HartmutDiag.cpp' || echo '$(srcdir)/'`HartmutDiag.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/HartmutDiag-HartmutDiag.Tpo $(DEPDIR)/HartmutDiag-HartmutDiag.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HartmutDiag.cpp' object='HartmutDiag-HartmutDiag.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(HartmutDiag_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o HartmutDiag-HartmutDiag.o `test -f 'HartmutDiag.cpp' || echo '$(srcdir)/'`HartmutDiag.cpp
-
-HartmutDiag-HartmutDiag.obj: HartmutDiag.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(HartmutDiag_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT HartmutDiag-HartmutDiag.obj -MD -MP -MF $(DEPDIR)/HartmutDiag-HartmutDiag.Tpo -c -o HartmutDiag-HartmutDiag.obj `if test -f 'HartmutDiag.cpp'; then $(CYGPATH_W) 'HartmutDiag.cpp'; else $(CYGPATH_W) '$(srcdir)/HartmutDiag.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/HartmutDiag-HartmutDiag.Tpo $(DEPDIR)/HartmutDiag-HartmutDiag.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HartmutDiag.cpp' object='HartmutDiag-HartmutDiag.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(HartmutDiag_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o HartmutDiag-HartmutDiag.obj `if test -f 'HartmutDiag.cpp'; then $(CYGPATH_W) 'HartmutDiag.cpp'; else $(CYGPATH_W) '$(srcdir)/HartmutDiag.cpp'; fi`
 
 pomerolDiag-DevelopersExample.o: DevelopersExample.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pomerolDiag_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pomerolDiag-DevelopersExample.o -MD -MP -MF $(DEPDIR)/pomerolDiag-DevelopersExample.Tpo -c -o pomerolDiag-DevelopersExample.o `test -f 'DevelopersExample.cpp' || echo '$(srcdir)/'`DevelopersExample.cpp

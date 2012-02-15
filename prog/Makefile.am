@@ -1,7 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 AM_CXXFLAGS+= ${hdf5_CFLAGS} ${eigen3_CFLAGS} -I../jsoncpp/include/
 
-bin_PROGRAMS=pomerolDiag HartmutDiag
+bin_PROGRAMS=pomerolDiag 
 
 # pomerolDiag
 pomerolDiag_CPPFLAGS=-I../src
@@ -10,12 +10,6 @@ pomerolDiag_LDADD=../src/libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -
 
 pomerolDiag_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a $(top_builddir)/src/libpomerol.a
 
-# HartmutDiag
-HartmutDiag_CPPFLAGS=-I../src
-HartmutDiag_SOURCES=HartmutDiag.cpp 
-HartmutDiag_LDADD=../src/libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -lhdf5 -lhdf5_cpp
-
-HartmutDiag_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a $(top_builddir)/src/libpomerol.a
 
 all-clean:
 	$(RM) *.o $(bin_PROGRAMS)
