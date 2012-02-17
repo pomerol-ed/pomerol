@@ -21,8 +21,8 @@
 /** \file src/Lattice.h
 ** \brief A lattice handler. Reads and stores the lattice from a JSON file. Designed to be extended to other formats.
 ** 
-** \author Igor Krivenko (igor@shg.ru)
 ** \author Andrey Antipov (antipov@ct-qmc.org)
+** \author Igor Krivenko (igor@shg.ru)
 */
 
 #ifndef __INCLUDE_LATTICE_H
@@ -35,57 +35,130 @@
 namespace Pomerol{
 
 /** This class stores the information about a lattice. 
- *  It can be read from a JSON file.
  */
 class Lattice
 {
 public:
-
+    /** This holds the information about a given site of the lattice, namely it's label, number of spins and orbitals. */ 
     struct Site;
-    template <unsigned short> struct Term;
-
-private:
-    /* A map between the particular Site and it's label */
-    std::map<unsigned short, Site> Sites; 
-    //std::list<Term<unsigned short> > Terms;
-
+    /** This structure holds the information, about a written term in a formula - it's matrix element, corresponding site labels, spins and orbitals. */
+    struct Term;
+    /** A typedef for a list of pointers to the terms. */
+    typedef std::list<Term*> TermList;
+    /** A typedef for a map between the label and the corresponding site */
+    typedef std::map<std::string, Site*> SiteMap;
+    /** A storage for all the terms. Realized as a map between the order of the Lattice::Terms and the corresponding Lattice::TermList. */
+    class TermStorage;
+    /** A set of presets to fill the TermStorage and Sites for some commonly used examples. Look at the LatticePresets.h . */
+    class Presets;
+    virtual void do_nothing()=0;
+protected:
+    /** A map between the particular Lattice::Site and it's label. */
+    SiteMap Sites; 
+    //Lattice::TermStorage Terms1;
+    TermStorage* Terms;
 public:
-    /** Empty constructor */
-    Lattice ();
+    Lattice();
+    ~Lattice();
 };
 
-class JSONLattice : public Lattice
-{
-    Json::Value *root;
-    void readSites(Json::Value &JSONSites);
-    void readTerms(Json::Value &JSONTerms);
-    public:
-    /** Read the contents of a dictionary from an external JSON file */
-    int readin (const std::string &filename);
-    JSONLattice();
-};
 
+/** This structure holds the information about a given site of the lattice, namely it's label, number of spins and orbitals. */ 
 struct Lattice::Site{
 friend class Lattice;
 protected:
+    /** Site label. */
     std::string label;
+    /** Amount of orbitals on a site. */
     unsigned short OrbitalSize;
+    /** Amount of spins on a site. */
     unsigned short SpinSize;
+public:
+    /** Empty constructor */
+    Site();
+    /** Full constructor 
+     * \param[in] label Site label
+     * \param[in] OrbitalSize Number of Orbitals for current site 
+     * \param[in] SpinSize Number of spins for current site 
+     * */
+    Site(std::string label, unsigned short OrbitalSize, unsigned short SpinSize );
+/** Make the object printable. */
 friend std::ostream& operator<<(std::ostream& output, const Site& out);
 };
 
-template <unsigned short N> struct Lattice::Term{
+
+/** This structure holds the information, about a written term in a formula - it's matrix element, corresponding site labels, spins and orbitals. 
+ */
+struct Lattice::Term { 
 friend class Lattice;
-protected:
-   unsigned short type;
-   bool OperatorOrder[N]; 
-   std::string ConnectedSites[N];
-   unsigned short Spins[N];
-   unsigned short Orbitals[N];
-   RealType Value;
+private:
+    /** Total amount of operators in Lattice::Term. */
+    unsigned int N;
 public:
-    Term();
+    /** The order of the creation/annihilation operator in the Lattice::Term. */
+    std::vector<bool> Order; 
+    /** An array with labels of sites, connected by this Lattice::Term. */
+    std::vector<std::string> Sites;
+    /** An array of spins on the sites, which are connected by this Lattice::Term. */
+    std::vector<unsigned short> Spins;
+    /** An array of orbitals on the sites, which are connected by this Lattice::Term. */
+    std::vector<unsigned short> Orbitals;
+    /** The matrix element of the Lattice::Term. */
+    RealType Value;
+    /** This returns the order of Term. Also the inheritance from TermPointer is provided by this method. */
+    unsigned int getOrder() const;
+    /** Constructor */
+    Term(unsigned int N);
+
+    /** Full constructor */
+    Term(unsigned int N, bool Order[ ], std::string Sites[ ], unsigned short Spins[ ], unsigned short Orbitals[ ], RealType Value);
+
+    /** Copy-constuctor 
+     * \param[in] in A Lattice::Term to copy.
+     */
+    Term(const Lattice::Term &in);
+/** Make the Term printable */
+friend std::ostream& operator<< (std::ostream& output, const Term& out);
 };
+
+
+/** A storage for all the terms. Realized as a map between the order of the Lattice::Terms and the corresponding Lattice::TermList */
+class Lattice::TermStorage { 
+private:
+    /** A storage for the TermLists for the corresponding order */
+    std::map<unsigned int, Lattice::TermList> Terms;
+public:
+    /** Add a Term to the storage.
+     * \param[in] T The Term to add.
+     */
+    int addTerm(const Term* T);
+    /** Get a List of Terms of a given order.
+     * \param[in] N The required order of Terms. */
+    const Lattice::TermList &getTermList (unsigned int N);
+    /** Empty constructor */
+    TermStorage();
+};
+
+/** This class stores the information about a lattice and reads it from a provided JSON file. */
+class JSONLattice : public Lattice
+{
+
+    /** Read and store the information about the sites of the lattice. This also add some local Terms<2> to the Terms map.
+     * \param[in] JSONSites A "Sites" section of the dictionary from the JSON file.
+     */
+    void readSites(Json::Value &JSONSites);
+    /** Read and store the information about the Terms between the sites of the lattice.
+     * \param[in] JSONTerm A "Terms" section of the dictionary from the JSON file.
+     */
+    void readTerms(Json::Value &JSONTerms);
+    virtual void do_nothing(){};
+    public:
+    /** Read the contents of a dictionary from an external JSON file. */
+    int readin (const std::string &filename);
+    /** Empty constructor. */
+    JSONLattice();
+};
+
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_LATTICEREADER_H

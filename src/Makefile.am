@@ -5,7 +5,7 @@ lib_LIBRARIES=libpomerol.a
 
 libpomerol_a_CPPFLAGS=-Wall -g
 libpomerol_a_SOURCES= \
-	Lattice.h Lattice.cpp \
+	Lattice.h Lattice.cpp LatticePresets.h \
 	Logger.cpp Logger.h 
 #HDF5Storage.cpp Thermal.cpp Lattice.cpp \
 #StatesClassification.cpp Term.cpp IndexClassification.cpp \
