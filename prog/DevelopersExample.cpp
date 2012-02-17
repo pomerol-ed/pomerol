@@ -81,8 +81,8 @@ int main(int argc, char *argv[])
   Lattice::Term T1(2);
   T1.Order[0]=false;
   T1.Order[1]=true;
-  T1.Sites[0]="A";
-  T1.Sites[1]="B";
+  T1.SiteLabels[0]="A";
+  T1.SiteLabels[1]="B";
   T1.Spins[0]=0;
   T1.Spins[1]=0;
   T1.Orbitals[0]=0;
@@ -99,10 +99,10 @@ int main(int argc, char *argv[])
   T2.Order[1]=true;
   T2.Order[2]=false;
   T2.Order[3]=true;
-  T2.Sites[0]="A";
-  T2.Sites[1]="B";
-  T2.Sites[2]="C";
-  T2.Sites[3]="D";
+  T2.SiteLabels[0]="A";
+  T2.SiteLabels[1]="B";
+  T2.SiteLabels[2]="C";
+  T2.SiteLabels[3]="D";
 
   T=&T2;
   cout << T2 << endl;
@@ -112,7 +112,8 @@ int main(int argc, char *argv[])
   s1.getTermList(2);
 
   Lattice::Presets::addSSite((Lattice*) &L,  std::string("A"), 1.0, 0.5);  
-  Lattice::Presets::addSSite((Lattice*) &L,  std::string("B"), 2.0, 0.5, 3, 3);  
+  Lattice::Presets::addSSite((Lattice*) &L,  std::string("B"), 2.0, 0.5);  
+  //Lattice::Presets::addPSite((Lattice*) &L,  std::string("C"), 4.0, 0.5, 2.0);  
 
   return 0;
 };

@@ -95,10 +95,12 @@ private:
     /** Total amount of operators in Lattice::Term. */
     unsigned int N;
 public:
+    /** A set of presets to simplify term generation */
+    class Presets;
     /** The order of the creation/annihilation operator in the Lattice::Term. */
     std::vector<bool> Order; 
     /** An array with labels of sites, connected by this Lattice::Term. */
-    std::vector<std::string> Sites;
+    std::vector<std::string> SiteLabels;
     /** An array of spins on the sites, which are connected by this Lattice::Term. */
     std::vector<unsigned short> Spins;
     /** An array of orbitals on the sites, which are connected by this Lattice::Term. */
@@ -111,7 +113,7 @@ public:
     Term(unsigned int N);
 
     /** Full constructor */
-    Term(unsigned int N, bool Order[ ], std::string Sites[ ], unsigned short Spins[ ], unsigned short Orbitals[ ], RealType Value);
+    Term(unsigned int N, bool Order[ ], RealType Value, std::string SiteLabels[ ], unsigned short Orbitals[ ], unsigned short Spins[ ]);
 
     /** Copy-constuctor 
      * \param[in] in A Lattice::Term to copy.
@@ -142,7 +144,8 @@ public:
 /** This class stores the information about a lattice and reads it from a provided JSON file. */
 class JSONLattice : public Lattice
 {
-
+    //typedef void (addSite)(Lattice *L ) JSONPreset;
+    //std::map<std::string, JSONPreset> Meth; 
     /** Read and store the information about the sites of the lattice. This also add some local Terms<2> to the Terms map.
      * \param[in] JSONSites A "Sites" section of the dictionary from the JSON file.
      */

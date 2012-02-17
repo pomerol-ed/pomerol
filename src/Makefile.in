@@ -79,6 +79,7 @@ am__v_at_0 = @
 libpomerol_a_AR = $(AR) $(ARFLAGS)
 libpomerol_a_LIBADD =
 am_libpomerol_a_OBJECTS = libpomerol_a-Lattice.$(OBJEXT) \
+	libpomerol_a-LatticePresets.$(OBJEXT) \
 	libpomerol_a-Logger.$(OBJEXT)
 libpomerol_a_OBJECTS = $(am_libpomerol_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -248,7 +249,7 @@ MAINTAINERCLEANFILES = Makefile.in
 lib_LIBRARIES = libpomerol.a
 libpomerol_a_CPPFLAGS = -Wall -g
 libpomerol_a_SOURCES = \
-	Lattice.h Lattice.cpp LatticePresets.h \
+	Lattice.h Lattice.cpp LatticePresets.h LatticePresets.cpp \
 	Logger.cpp Logger.h 
 
 #HDF5Storage.cpp Thermal.cpp Lattice.cpp \
@@ -340,6 +341,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Lattice.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-LatticePresets.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Logger.Po@am__quote@
 
 .cpp.o:
@@ -373,6 +375,22 @@ libpomerol_a-Lattice.obj: Lattice.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Lattice.cpp' object='libpomerol_a-Lattice.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Lattice.obj `if test -f 'Lattice.cpp'; then $(CYGPATH_W) 'Lattice.cpp'; else $(CYGPATH_W) '$(srcdir)/Lattice.cpp'; fi`
+
+libpomerol_a-LatticePresets.o: LatticePresets.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-LatticePresets.o -MD -MP -MF $(DEPDIR)/libpomerol_a-LatticePresets.Tpo -c -o libpomerol_a-LatticePresets.o `test -f 'LatticePresets.cpp' || echo '$(srcdir)/'`LatticePresets.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-LatticePresets.Tpo $(DEPDIR)/libpomerol_a-LatticePresets.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticePresets.cpp' object='libpomerol_a-LatticePresets.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticePresets.o `test -f 'LatticePresets.cpp' || echo '$(srcdir)/'`LatticePresets.cpp
+
+libpomerol_a-LatticePresets.obj: LatticePresets.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-LatticePresets.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-LatticePresets.Tpo -c -o libpomerol_a-LatticePresets.obj `if test -f 'LatticePresets.cpp'; then $(CYGPATH_W) 'LatticePresets.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticePresets.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-LatticePresets.Tpo $(DEPDIR)/libpomerol_a-LatticePresets.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticePresets.cpp' object='libpomerol_a-LatticePresets.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticePresets.obj `if test -f 'LatticePresets.cpp'; then $(CYGPATH_W) 'LatticePresets.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticePresets.cpp'; fi`
 
 libpomerol_a-Logger.o: Logger.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Logger.o -MD -MP -MF $(DEPDIR)/libpomerol_a-Logger.Tpo -c -o libpomerol_a-Logger.o `test -f 'Logger.cpp' || echo '$(srcdir)/'`Logger.cpp

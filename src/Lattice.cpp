@@ -31,25 +31,25 @@ std::ostream& operator<<(std::ostream& output, const Lattice::Site& out)
 Lattice::Term::Term (unsigned int N):N(N)
 {
     Order.resize(N);
-    Sites.resize(N);
+    SiteLabels.resize(N);
     Spins.resize(N);
     Orbitals.resize(N);
-    for (unsigned int i=0; i<N; ++i) { Order[i]=false; Sites[i]=""; Spins[i]=0; Orbitals[i]=0.0; }; 
+    for (unsigned int i=0; i<N; ++i) { Order[i]=false; SiteLabels[i]=""; Spins[i]=0; Orbitals[i]=0.0; }; 
     Value=0.0; 
 };
 
 
-Lattice::Term::Term(unsigned int N, bool * Order_, std::string * Sites_, unsigned short * Spins_, unsigned short *Orbitals_, RealType Value_):
+Lattice::Term::Term(unsigned int N, bool * Order_, RealType Value_, std::string * SiteLabels_, unsigned short * Orbitals_, unsigned short *Spins_):
 N(N)
 {
   Order.assign( Order_, Order_+N );
-  Sites.assign( Sites_, Sites_+N );
+  SiteLabels.assign( SiteLabels_, SiteLabels_+N );
   Spins.assign( Spins_, Spins_+N );
   Orbitals.assign( Orbitals_, Orbitals_+N );
   Value=Value_;
 }
 
-Lattice::Term::Term (const Lattice::Term &in):N(in.N), Order(in.Order), Sites(in.Sites), Spins(in.Spins), Orbitals(in.Orbitals), Value(in.Value)
+Lattice::Term::Term (const Lattice::Term &in):N(in.N), Order(in.Order), SiteLabels(in.SiteLabels), Spins(in.Spins), Orbitals(in.Orbitals), Value(in.Value)
 {
 };
 unsigned int Lattice::Term::getOrder() const { return N; };
@@ -57,7 +57,7 @@ unsigned int Lattice::Term::getOrder() const { return N; };
 std::ostream& operator<< (std::ostream& output, const Lattice::Term& out)
 {   
     output << out.Value << "*"; 
-    for (unsigned int i=0; i<out.N; ++i) output << ((out.Order[i])?"c^{+}":"c") << "_{" << out.Sites[i] << "," << out.Spins[i] << "," << out.Orbitals[i] << "}" ; 
+    for (unsigned int i=0; i<out.N; ++i) output << ((out.Order[i])?"c^{+}":"c") << "_{" << out.SiteLabels[i] << "," << out.Orbitals[i] << "," << out.Spins[i] << "}" ; 
     return output; 
 };
 
