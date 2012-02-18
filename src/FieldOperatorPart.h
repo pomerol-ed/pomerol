@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,42 +22,42 @@
 #ifndef __INCLUDE_FIELDOPERATORPART_H
 #define __INCLUDE_FIELDOPERATORPART_H
 #include"Misc.h"
-#include"ComputableObject.h"
 #include"StatesClassification.h"
 #include"Hamiltonian.h"
 
 namespace Pomerol{
 
-class FieldOperatorPart : public ComputableObject {
+class FieldOperatorPart {
 protected:
 
-    IndexClassification &IndexInfo;
-    StatesClassification &S;
-    HamiltonianPart &h_from;
-    HamiltonianPart &h_to;
+    const IndexClassification &IndexInfo;
+    const StatesClassification &S;
+    const HamiltonianPart &HFrom;
+    const HamiltonianPart &HTo;
 
-    ParticleIndex i;
-    RowMajorMatrixType elementsRowMajor;    
-    ColMajorMatrixType elementsColMajor;    
+    ParticleIndex PIndex;
+    RowMajorMatrixType elementsRowMajor;
+    ColMajorMatrixType elementsColMajor;
     // basic functions
-    virtual QuantumState retK(QuantumState L)=0;  
-    virtual int mFunc(QuantumState state1, QuantumState state2, ParticleIndex i)=0;   //checks matrix element of an operator between state1 and state2
-    virtual bool checkL(QuantumState L)=0;  //checks state L to be appropriate as a result of a creation/destruction operator
-    
+#warning The following 3 functions need more descriptive names... and bodies.
+    virtual QuantumState retK(QuantumState L) const = 0;  
+    virtual int mFunc(QuantumState state1, QuantumState state2, ParticleIndex i) const = 0;   //checks matrix element of an operator between state1 and state2
+    virtual bool checkL(QuantumState L) const = 0; //checks state L to be appropriate as a result of a creation/destruction operator
+
     static const RealType MatrixElementTolerance = 1e-8;
-   
+
 public:
-  
-    FieldOperatorPart(IndexClassification &IndexInfo, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, ParticleIndex i);
+
+    FieldOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S, const HamiltonianPart &HFrom, const HamiltonianPart &HTo, ParticleIndex PIndex);
 
     void compute();
-    void dump();
+    // DEPRECATED
     void print_to_screen();                        //print to screen matrices UXCU UXCXU
 
-    RowMajorMatrixType& getRowMajorValue();
-    ColMajorMatrixType& getColMajorValue();
-    BlockNumber getLeftIndex();
-    BlockNumber getRightIndex();
+    const RowMajorMatrixType& getRowMajorValue(void) const;
+    const ColMajorMatrixType& getColMajorValue(void) const;
+    BlockNumber getLeftIndex(void) const;
+    BlockNumber getRightIndex(void) const;
 };
 
 class AnnihilationOperatorPart;
@@ -65,26 +65,26 @@ class CreationOperatorPart;
 
 class AnnihilationOperatorPart : public FieldOperatorPart
 { 
-    QuantumState retK(QuantumState L);    
-    int mFunc(QuantumState state1, QuantumState state2, ParticleIndex i);
-    bool checkL(QuantumState L);
+    QuantumState retK(QuantumState L) const;
+    int mFunc(QuantumState state1, QuantumState state2, ParticleIndex PIndex) const;
+    bool checkL(QuantumState L) const;
     friend class CreationOperatorPart;
 
 public :
-    AnnihilationOperatorPart(IndexClassification &IndexInfo, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, ParticleIndex i);
-    CreationOperatorPart& transpose();
+    AnnihilationOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S, const HamiltonianPart &HFrom, const HamiltonianPart &HTo, ParticleIndex PIndex);
+    const CreationOperatorPart& transpose(void) const;
 };
 
 class CreationOperatorPart : public FieldOperatorPart
 {
-    QuantumState retK(QuantumState L);    
-    int mFunc(QuantumState state1, QuantumState state2, ParticleIndex i);    
-    bool checkL(QuantumState L);
+    QuantumState retK(QuantumState L) const;
+    int mFunc(QuantumState state1, QuantumState state2, ParticleIndex PIndex) const;
+    bool checkL(QuantumState L) const;
     friend class AnnihilationOperatorPart;
-  
+
 public :
-    CreationOperatorPart(IndexClassification &IndexInfo, StatesClassification &S, HamiltonianPart &h_from, HamiltonianPart &h_to, ParticleIndex i);
-    AnnihilationOperatorPart& transpose();
+    CreationOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S, const HamiltonianPart &HFrom, const HamiltonianPart &HTo, ParticleIndex PIndex);
+    const AnnihilationOperatorPart& transpose(void) const;
 };
 
 } // end of namespace Pomerol

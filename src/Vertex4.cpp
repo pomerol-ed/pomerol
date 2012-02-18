@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,139 +24,118 @@
 
 namespace Pomerol{
 
-Vertex4::Vertex4(const IndexClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g) :
-ComputableObject(),Thermal(Chi),Chi(Chi), g(g), IndexInfo(IndexInfo), InvertedGFs(2*Chi.getNumberOfMatsubaras()+1)
+Vertex4Element::Vertex4Element(const TwoParticleGFContainer& Chi, const GFContainer& g,
+                               const FourIndexObject::IndexCombination& Indices) :
+    Thermal(Chi), Chi(Chi), g(g), Indices(Indices), Computed(false)
+{}
+
+void Vertex4Element::compute(long NumberOfMatsubaras)
 {
-    NumberOfMatsubaras = Chi.getNumberOfMatsubaras();
+    Storage.fill(this,NumberOfMatsubaras);
 }
 
-ComplexType Vertex4::operator()(const IndexCombination& in,
-                    long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
+ComplexType Vertex4Element::value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
-    return this->getAmputatedValue(in,MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    ComplexType Value = Chi(Indices,MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+
+    if(MatsubaraNumber1 == MatsubaraNumber3)
+        Value += beta*  g(Indices.Index1,Indices.Index3,MatsubaraNumber1)*
+                        g(Indices.Index2,Indices.Index4,MatsubaraNumber2);
+    if(MatsubaraNumber2 == MatsubaraNumber3)
+        Value -= beta*  g(Indices.Index1,Indices.Index4,MatsubaraNumber1)*
+                        g(Indices.Index2,Indices.Index3,MatsubaraNumber2);
+    return Value;
 }
-//============================= UnAmputated methods ==============================//
 
-void Vertex4::prepareUnAmputated()
+ComplexType Vertex4Element::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
-    INFO("Vertex4: Preparing unamputated value container map ...");
+    return Storage(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+}
 
-    for (std::vector<IndexCombination*>::const_iterator it1=Chi.getNonTrivialCombinations().begin(); it1!=Chi.getNonTrivialCombinations().end(); ++it1){
-        mapUnAmputatedValues[**it1]= new MatsubaraContainer(beta);
-        mapUnAmputatedValues[**it1]->prepare(NumberOfMatsubaras);
-    };
-};
-
-void Vertex4::computeUnAmputated(const IndexCombination& in)
+bool Vertex4Element::isComputed(void) const
 {
-    INFO("Vertex4: Computing unamputated values for " << in << " combination");
-    for (long MatsubaraNumber1=-NumberOfMatsubaras; MatsubaraNumber1 < NumberOfMatsubaras; ++MatsubaraNumber1)
-        for (long MatsubaraNumber2=-NumberOfMatsubaras; MatsubaraNumber2 < NumberOfMatsubaras; ++MatsubaraNumber2)
-            for (long MatsubaraNumber3=-NumberOfMatsubaras; MatsubaraNumber3 < NumberOfMatsubaras; ++MatsubaraNumber3)
-                if ( MatsubaraNumber1 + MatsubaraNumber2 - MatsubaraNumber3 < NumberOfMatsubaras && MatsubaraNumber1 + MatsubaraNumber2 - MatsubaraNumber3 >= -NumberOfMatsubaras){ 
-                    ComplexType Value = Chi(in, MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    return Computed;
+}
 
-                    if(MatsubaraNumber1 == MatsubaraNumber3)
-                        Value += beta*  g(in.Indices[0],in.Indices[2],MatsubaraNumber1)*
-                                        g(in.Indices[1],in.Indices[3],MatsubaraNumber2);
-                    if(MatsubaraNumber2 == MatsubaraNumber3)
-                        Value -= beta*  g(in.Indices[0],in.Indices[3],MatsubaraNumber1)*
-                                        g(in.Indices[1],in.Indices[2],MatsubaraNumber2);
+bool Vertex4Element::isVanishing(void) const
+{
+    // We need a smarter mechanism to detect this.
+    return false;
+}
 
-                    mapUnAmputatedValues[in]->set(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3, Value);
+Vertex4::Vertex4(const IndexClassification &IndexInfo, const TwoParticleGFContainer &Chi, const GFContainer &g) :
+    FourIndexContainerObject(IndexInfo), Thermal(Chi), Chi(Chi), g(g)
+{}
+
+static Permutation4 EquivalentPermutations[4] =
+    {permutations4[0],permutations4[1],permutations4[6],permutations4[7]};
+
+void Vertex4::prepare(void)
+{
+    // TODO: This function is to be rewritten when the symmetry analyzer is done.
+    ParticleIndex MaxIndex = IndexInfo.getIndexSize();
+    for(ParticleIndex Index1=0; Index1 < MaxIndex; ++Index1)
+    for(ParticleIndex Index2=Index1; Index2 < MaxIndex; ++Index2)
+        for(ParticleIndex Index3=0; Index3 < MaxIndex; ++Index3)
+        for(ParticleIndex Index4=Index3; Index4 < MaxIndex; ++Index4){
+            Vertex4Element* tempV4E = new Vertex4Element(Chi,g,IndexCombination(Index1,Index2,Index3,Index4));
+            ParticleIndex PI[4] = {Index1,Index2,Index3,Index4};
+            for(size_t p=0; p<4; ++p){
+                IndexCombination PermutedIndices(
+                PI[EquivalentPermutations[p].perm[0]],
+                PI[EquivalentPermutations[p].perm[1]],
+                PI[EquivalentPermutations[p].perm[2]],
+                PI[EquivalentPermutations[p].perm[3]]);
+                ElementsMap[PermutedIndices] = new ElementWithPermFreq(tempV4E,EquivalentPermutations[p]);
+                DEBUG("Adding Gamma4 component " << PermutedIndices <<
+                       " with frequency permutation " << EquivalentPermutations[p] << ":" <<
+                       " Vertex4Element at " << ElementsMap[PermutedIndices]->Element
+                    )
             }
-}
-
-void Vertex4::computeUnAmputated()
-{
-    for (std::map<IndexCombination,MatsubaraContainer*>::iterator it=mapUnAmputatedValues.begin();
-            it!=mapUnAmputatedValues.end(); ++it){
-                computeUnAmputated(it->first);
-                }
-};
-
-
-ComplexType Vertex4::getUnAmputatedValue(const IndexCombination& in,
-                                long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
-{
-    if(MatsubaraNumber1 > NumberOfMatsubaras || MatsubaraNumber1 < -NumberOfMatsubaras ||
-       MatsubaraNumber2 > NumberOfMatsubaras || MatsubaraNumber2 < -NumberOfMatsubaras ||
-       MatsubaraNumber3 > NumberOfMatsubaras || MatsubaraNumber3 < -NumberOfMatsubaras ||
-       mapUnAmputatedValues.count(in) == 0
-       ) return 0;
-    return (*mapUnAmputatedValues[in])(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3);
-}
-
-//============================= Amputated methods ==============================//
-
-void Vertex4::prepareAmputated(std::vector<IndexCombination*>& in)
-{
-    NonTrivialAmputatedCombinations=in;
-    INFO("Vertex4: Inverting Greens Function...");
-    ParticleIndex N_bit = IndexInfo.getIndexSize();
-    for(long MatsubaraNumber=-NumberOfMatsubaras; MatsubaraNumber<NumberOfMatsubaras; ++MatsubaraNumber){
-        MatrixType GMatrix(N_bit,N_bit);
-        GMatrix.setIdentity();
-        for(ParticleIndex index1=0; index1 < N_bit; ++index1)
-        for(ParticleIndex index2=0; index2 < N_bit; ++index2){
-            GMatrix(index1,index2) = g(index1,index2,MatsubaraNumber);
         }
-        //DEBUG("        GF[" << MatsubaraNumber << "] = " << GMatrix );
-        //DEBUG("InvertedGF[" << MatsubaraNumber << "] = " << GMatrix.inverse() );
-        InvertedGFs[MatsubaraNumber+NumberOfMatsubaras] = GMatrix.inverse();
-    }
-    INFO("Vertex4: Preparing amputated value container map ...");
-    for (std::vector<IndexCombination*>::const_iterator it1=NonTrivialAmputatedCombinations.begin(); 
-            it1!=NonTrivialAmputatedCombinations.end(); ++it1){
-                mapAmputatedValues[**it1]= new MatsubaraContainer(beta);
-                mapAmputatedValues[**it1]->prepare(NumberOfMatsubaras);
-    }
-};
-
-void Vertex4::computeAmputated()
-{
-    for (std::map<IndexCombination,MatsubaraContainer*>::iterator it=mapAmputatedValues.begin();
-            it!=mapAmputatedValues.end(); ++it){
-                    computeAmputated(it->first);
-                    };
 }
 
-void Vertex4::computeAmputated(const IndexCombination& in)
+void Vertex4::prepare(const std::set<IndexCombination>& InitialCombinations)
 {
-    INFO("Vertex4: Computing amputated values for " << in << " combination");
-    for (long MatsubaraNumber1=-NumberOfMatsubaras; MatsubaraNumber1 < NumberOfMatsubaras; ++MatsubaraNumber1)
-        for (long MatsubaraNumber2=-NumberOfMatsubaras; MatsubaraNumber2 < NumberOfMatsubaras; ++MatsubaraNumber2){
-            for (long MatsubaraNumber3=-NumberOfMatsubaras; MatsubaraNumber3 < NumberOfMatsubaras; ++MatsubaraNumber3)
-                if ( MatsubaraNumber1 + MatsubaraNumber2 - MatsubaraNumber3 < NumberOfMatsubaras && MatsubaraNumber1 + MatsubaraNumber2 - MatsubaraNumber3 >= -NumberOfMatsubaras){ 
-                    ComplexType Value=0;
-                    for (std::map<IndexCombination,MatsubaraContainer*>::iterator it=mapUnAmputatedValues.begin();
-                        it!=mapUnAmputatedValues.end(); ++it){
-                            IndexCombination iin = it->first;
-                                { Value += this->getUnAmputatedValue(iin,MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3)*
-                                        InvertedGFs[MatsubaraNumber1+NumberOfMatsubaras](in.Indices[0],iin.Indices[0])*
-                                        InvertedGFs[MatsubaraNumber2+NumberOfMatsubaras](in.Indices[1],iin.Indices[1])*
-                                        InvertedGFs[MatsubaraNumber3+NumberOfMatsubaras](iin.Indices[2],in.Indices[2])*
-                                        InvertedGFs[MatsubaraNumber1+MatsubaraNumber2-MatsubaraNumber3+NumberOfMatsubaras](iin.Indices[3],in.Indices[3]);
-                                }
-                            };
-                    mapAmputatedValues[in]->set(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3, Value);
-                    };
-                    }
+    // TODO: This function is to be rewritten when the symmetry analyzer is done.
+    for (std::set<IndexCombination>::iterator it1=InitialCombinations.begin(); it1!=InitialCombinations.end(); ++it1){
+        Vertex4Element* tempV4E = new Vertex4Element(Chi,g,*it1);
+        ParticleIndex PI[4] = {(*it1).Index1,(*it1).Index2,(*it1).Index3,(*it1).Index4};
+        for(size_t p=0; p<sizeof(EquivalentPermutations); ++p){
+            IndexCombination PermutedIndices(
+                PI[EquivalentPermutations[p].perm[0]],
+                PI[EquivalentPermutations[p].perm[1]],
+                PI[EquivalentPermutations[p].perm[2]],
+                PI[EquivalentPermutations[p].perm[3]]);
+            if(ElementsMap.count(PermutedIndices)==0){
+                ElementsMap[PermutedIndices] = new ElementWithPermFreq(tempV4E,EquivalentPermutations[p]);
+                DEBUG("Adding Gamma4 component " << PermutedIndices <<
+                      " with frequency permutation " << EquivalentPermutations[p] << ":" <<
+                      " Vertex4Element at " << ElementsMap[PermutedIndices]
+                )
+            }
+        }
+    }
 }
-
-
-ComplexType Vertex4::getAmputatedValue(const IndexCombination& in,
-                                  long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3)
+ 
+void Vertex4::compute(long NumberOfMatsubaras)
 {
-   
-    if(MatsubaraNumber1 > NumberOfMatsubaras || MatsubaraNumber1 < -NumberOfMatsubaras ||
-       MatsubaraNumber2 > NumberOfMatsubaras || MatsubaraNumber2 < -NumberOfMatsubaras ||
-       MatsubaraNumber3 > NumberOfMatsubaras || MatsubaraNumber3 < -NumberOfMatsubaras || 
-       mapAmputatedValues.count(in) == 0
-       ) return 0;
-
-    return (*mapAmputatedValues[in])(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3);
-};
+#ifndef pomerolOpenMP
+    for (std::map<IndexCombination,ElementWithPermFreq*>::iterator it1=ElementsMap.begin();it1!=ElementsMap.end();++it1){
+        if(!it1->second->Element->isComputed())
+            it1->second->Element->compute(NumberOfMatsubaras);
+    };
+#else
+    std::vector<Vertex4Element*> items;
+    for (std::map<IndexCombination,ElementWithPermFreq*>::iterator it1=ElementsMap.begin();it1!=ElementsMap.end();++it1){
+        if (it1->second->Element->isComputed()) items.push_back(it1->second->Element);
+    }
+#pragma omp parallel for 
+    for (int i = 0; i < (int) items.size(); ++i){
+       if(!items[i]->isComputed())
+            items[i]->compute(NumberOfMatsubaras);
+    };
+#endif
+}
 
 } // end of namespace Pomerol
-

@@ -78,29 +78,28 @@ am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
 am__v_at_0 = @
 libpomerol_a_AR = $(AR) $(ARFLAGS)
 libpomerol_a_LIBADD =
-am_libpomerol_a_OBJECTS = libpomerol_a-HDF5Storage.$(OBJEXT) \
-	libpomerol_a-Thermal.$(OBJEXT) \
+am_libpomerol_a_OBJECTS = libpomerol_a-Misc.$(OBJEXT) \
+	libpomerol_a-HDF5Storage.$(OBJEXT) \
+	libpomerol_a-Logger.$(OBJEXT) libpomerol_a-Thermal.$(OBJEXT) \
+	libpomerol_a-Index.$(OBJEXT) \
+	libpomerol_a-LatticeReader.$(OBJEXT) \
 	libpomerol_a-LatticeAnalysis.$(OBJEXT) \
-	libpomerol_a-Logger.$(OBJEXT) \
-	libpomerol_a-StatesClassification.$(OBJEXT) \
 	libpomerol_a-Term.$(OBJEXT) \
 	libpomerol_a-IndexClassification.$(OBJEXT) \
+	libpomerol_a-StatesClassification.$(OBJEXT) \
 	libpomerol_a-HamiltonianPart.$(OBJEXT) \
 	libpomerol_a-Hamiltonian.$(OBJEXT) \
 	libpomerol_a-FieldOperatorPart.$(OBJEXT) \
 	libpomerol_a-FieldOperator.$(OBJEXT) \
+	libpomerol_a-FieldOperatorContainer.$(OBJEXT) \
 	libpomerol_a-DensityMatrixPart.$(OBJEXT) \
 	libpomerol_a-DensityMatrix.$(OBJEXT) \
 	libpomerol_a-GreensFunctionPart.$(OBJEXT) \
 	libpomerol_a-GreensFunction.$(OBJEXT) \
-	libpomerol_a-FourIndexObject.$(OBJEXT) \
-	libpomerol_a-TwoParticleGF.$(OBJEXT) \
-	libpomerol_a-TwoParticleGFPart.$(OBJEXT) \
-	libpomerol_a-Vertex4.$(OBJEXT) \
-	libpomerol_a-FieldOperatorContainer.$(OBJEXT) \
-	libpomerol_a-TwoParticleGFContainer.$(OBJEXT) \
 	libpomerol_a-GFContainer.$(OBJEXT) \
-	libpomerol_a-LatticeReader.$(OBJEXT)
+	libpomerol_a-TwoParticleGFPart.$(OBJEXT) \
+	libpomerol_a-TwoParticleGF.$(OBJEXT) \
+	libpomerol_a-TwoParticleGFContainer.$(OBJEXT)
 libpomerol_a_OBJECTS = $(am_libpomerol_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -268,18 +267,32 @@ top_srcdir = @top_srcdir@
 MAINTAINERCLEANFILES = Makefile.in
 lib_LIBRARIES = libpomerol.a
 libpomerol_a_CPPFLAGS = -Wall -g
-libpomerol_a_SOURCES = HDF5Storage.cpp Thermal.cpp LatticeAnalysis.cpp \
+libpomerol_a_SOURCES = Misc.cpp Misc.h \
+	HDF5Storage.cpp HDF5Storage.h \
 	Logger.cpp Logger.h \
-	StatesClassification.cpp Term.cpp IndexClassification.cpp \
-	HamiltonianPart.cpp Hamiltonian.cpp FieldOperatorPart.cpp FieldOperator.cpp \
-	DensityMatrixPart.cpp DensityMatrix.cpp \
-	GreensFunctionPart.cpp GreensFunction.cpp \
-	FourIndexObject.cpp \
-	TwoParticleGF.cpp TwoParticleGFPart.cpp \
-	Vertex4.cpp FieldOperatorContainer.cpp \
-	TwoParticleGFContainer.cpp GFContainer.cpp Misc.h ComputableObject.h LatticeAnalysis.h LatticeReader.h LatticeReader.cpp
+	Thermal.cpp Thermal.h ComputableObject.h \
+	Index.cpp Index.h \
+	LatticeReader.cpp LatticeReader.h \
+	LatticeAnalysis.cpp LatticeAnalysis.h \
+	Term.cpp Term.h \
+	IndexClassification.cpp IndexClassification.h \
+	StatesClassification.cpp StatesClassification.h \
+	HamiltonianPart.cpp HamiltonianPart.h Hamiltonian.cpp Hamiltonian.h \
+	FieldOperatorPart.cpp FieldOperatorPart.h FieldOperator.cpp FieldOperator.h \
+	FieldOperatorContainer.cpp FieldOperatorContainer.h \
+	DensityMatrixPart.cpp DensityMatrixPart.h DensityMatrix.cpp DensityMatrix.h \
+	IndexContainer2.h \
+	GreensFunctionPart.cpp GreensFunctionPart.h GreensFunction.cpp GreensFunction.h \
+	GFContainer.cpp GFContainer.h \
+	IndexContainer4.h \
+	TwoParticleGFPart.cpp TwoParticleGFPart.h TwoParticleGF.cpp TwoParticleGF.h \
+	TwoParticleGFContainer.cpp TwoParticleGFContainer.h
 
-libpomerol_a_pkginclude_HEADERS = *.h 
+#	Vertex4.cpp Vertex4.h \
+#	Vertex4Container.cpp Vertex4Container.h \
+#	AmputatedVertex4.cpp AmputatedVertex4.h \
+#	AmputatedVertex4Container.cpp AmputatedVertex4Container.h
+libpomerol_a_pkginclude_HEADERS = *.h
 libpomerol_a_pkgincludedir = $(includedir)/pomerol
 all: all-am
 
@@ -294,9 +307,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/Makefile
+	  $(AUTOMAKE) --foreign src/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -363,24 +376,24 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-FieldOperator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-FieldOperatorContainer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-FieldOperatorPart.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-FourIndexObject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-GFContainer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-GreensFunction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-GreensFunctionPart.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-HDF5Storage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Hamiltonian.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-HamiltonianPart.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Index.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-IndexClassification.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-LatticeAnalysis.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-LatticeReader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Logger.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Misc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-StatesClassification.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Term.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Thermal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-TwoParticleGF.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-TwoParticleGFContainer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-TwoParticleGFPart.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Vertex4.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -398,6 +411,22 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
+libpomerol_a-Misc.o: Misc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Misc.o -MD -MP -MF $(DEPDIR)/libpomerol_a-Misc.Tpo -c -o libpomerol_a-Misc.o `test -f 'Misc.cpp' || echo '$(srcdir)/'`Misc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Misc.Tpo $(DEPDIR)/libpomerol_a-Misc.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Misc.cpp' object='libpomerol_a-Misc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Misc.o `test -f 'Misc.cpp' || echo '$(srcdir)/'`Misc.cpp
+
+libpomerol_a-Misc.obj: Misc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Misc.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-Misc.Tpo -c -o libpomerol_a-Misc.obj `if test -f 'Misc.cpp'; then $(CYGPATH_W) 'Misc.cpp'; else $(CYGPATH_W) '$(srcdir)/Misc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Misc.Tpo $(DEPDIR)/libpomerol_a-Misc.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Misc.cpp' object='libpomerol_a-Misc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Misc.obj `if test -f 'Misc.cpp'; then $(CYGPATH_W) 'Misc.cpp'; else $(CYGPATH_W) '$(srcdir)/Misc.cpp'; fi`
+
 libpomerol_a-HDF5Storage.o: HDF5Storage.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-HDF5Storage.o -MD -MP -MF $(DEPDIR)/libpomerol_a-HDF5Storage.Tpo -c -o libpomerol_a-HDF5Storage.o `test -f 'HDF5Storage.cpp' || echo '$(srcdir)/'`HDF5Storage.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-HDF5Storage.Tpo $(DEPDIR)/libpomerol_a-HDF5Storage.Po
@@ -413,38 +442,6 @@ libpomerol_a-HDF5Storage.obj: HDF5Storage.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HDF5Storage.cpp' object='libpomerol_a-HDF5Storage.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-HDF5Storage.obj `if test -f 'HDF5Storage.cpp'; then $(CYGPATH_W) 'HDF5Storage.cpp'; else $(CYGPATH_W) '$(srcdir)/HDF5Storage.cpp'; fi`
-
-libpomerol_a-Thermal.o: Thermal.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Thermal.o -MD -MP -MF $(DEPDIR)/libpomerol_a-Thermal.Tpo -c -o libpomerol_a-Thermal.o `test -f 'Thermal.cpp' || echo '$(srcdir)/'`Thermal.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Thermal.Tpo $(DEPDIR)/libpomerol_a-Thermal.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Thermal.cpp' object='libpomerol_a-Thermal.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Thermal.o `test -f 'Thermal.cpp' || echo '$(srcdir)/'`Thermal.cpp
-
-libpomerol_a-Thermal.obj: Thermal.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Thermal.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-Thermal.Tpo -c -o libpomerol_a-Thermal.obj `if test -f 'Thermal.cpp'; then $(CYGPATH_W) 'Thermal.cpp'; else $(CYGPATH_W) '$(srcdir)/Thermal.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Thermal.Tpo $(DEPDIR)/libpomerol_a-Thermal.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Thermal.cpp' object='libpomerol_a-Thermal.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Thermal.obj `if test -f 'Thermal.cpp'; then $(CYGPATH_W) 'Thermal.cpp'; else $(CYGPATH_W) '$(srcdir)/Thermal.cpp'; fi`
-
-libpomerol_a-LatticeAnalysis.o: LatticeAnalysis.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-LatticeAnalysis.o -MD -MP -MF $(DEPDIR)/libpomerol_a-LatticeAnalysis.Tpo -c -o libpomerol_a-LatticeAnalysis.o `test -f 'LatticeAnalysis.cpp' || echo '$(srcdir)/'`LatticeAnalysis.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-LatticeAnalysis.Tpo $(DEPDIR)/libpomerol_a-LatticeAnalysis.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticeAnalysis.cpp' object='libpomerol_a-LatticeAnalysis.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticeAnalysis.o `test -f 'LatticeAnalysis.cpp' || echo '$(srcdir)/'`LatticeAnalysis.cpp
-
-libpomerol_a-LatticeAnalysis.obj: LatticeAnalysis.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-LatticeAnalysis.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-LatticeAnalysis.Tpo -c -o libpomerol_a-LatticeAnalysis.obj `if test -f 'LatticeAnalysis.cpp'; then $(CYGPATH_W) 'LatticeAnalysis.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticeAnalysis.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-LatticeAnalysis.Tpo $(DEPDIR)/libpomerol_a-LatticeAnalysis.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticeAnalysis.cpp' object='libpomerol_a-LatticeAnalysis.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticeAnalysis.obj `if test -f 'LatticeAnalysis.cpp'; then $(CYGPATH_W) 'LatticeAnalysis.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticeAnalysis.cpp'; fi`
 
 libpomerol_a-Logger.o: Logger.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Logger.o -MD -MP -MF $(DEPDIR)/libpomerol_a-Logger.Tpo -c -o libpomerol_a-Logger.o `test -f 'Logger.cpp' || echo '$(srcdir)/'`Logger.cpp
@@ -462,21 +459,69 @@ libpomerol_a-Logger.obj: Logger.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Logger.obj `if test -f 'Logger.cpp'; then $(CYGPATH_W) 'Logger.cpp'; else $(CYGPATH_W) '$(srcdir)/Logger.cpp'; fi`
 
-libpomerol_a-StatesClassification.o: StatesClassification.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-StatesClassification.o -MD -MP -MF $(DEPDIR)/libpomerol_a-StatesClassification.Tpo -c -o libpomerol_a-StatesClassification.o `test -f 'StatesClassification.cpp' || echo '$(srcdir)/'`StatesClassification.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-StatesClassification.Tpo $(DEPDIR)/libpomerol_a-StatesClassification.Po
+libpomerol_a-Thermal.o: Thermal.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Thermal.o -MD -MP -MF $(DEPDIR)/libpomerol_a-Thermal.Tpo -c -o libpomerol_a-Thermal.o `test -f 'Thermal.cpp' || echo '$(srcdir)/'`Thermal.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Thermal.Tpo $(DEPDIR)/libpomerol_a-Thermal.Po
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='StatesClassification.cpp' object='libpomerol_a-StatesClassification.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Thermal.cpp' object='libpomerol_a-Thermal.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-StatesClassification.o `test -f 'StatesClassification.cpp' || echo '$(srcdir)/'`StatesClassification.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Thermal.o `test -f 'Thermal.cpp' || echo '$(srcdir)/'`Thermal.cpp
 
-libpomerol_a-StatesClassification.obj: StatesClassification.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-StatesClassification.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-StatesClassification.Tpo -c -o libpomerol_a-StatesClassification.obj `if test -f 'StatesClassification.cpp'; then $(CYGPATH_W) 'StatesClassification.cpp'; else $(CYGPATH_W) '$(srcdir)/StatesClassification.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-StatesClassification.Tpo $(DEPDIR)/libpomerol_a-StatesClassification.Po
+libpomerol_a-Thermal.obj: Thermal.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Thermal.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-Thermal.Tpo -c -o libpomerol_a-Thermal.obj `if test -f 'Thermal.cpp'; then $(CYGPATH_W) 'Thermal.cpp'; else $(CYGPATH_W) '$(srcdir)/Thermal.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Thermal.Tpo $(DEPDIR)/libpomerol_a-Thermal.Po
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='StatesClassification.cpp' object='libpomerol_a-StatesClassification.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Thermal.cpp' object='libpomerol_a-Thermal.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-StatesClassification.obj `if test -f 'StatesClassification.cpp'; then $(CYGPATH_W) 'StatesClassification.cpp'; else $(CYGPATH_W) '$(srcdir)/StatesClassification.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Thermal.obj `if test -f 'Thermal.cpp'; then $(CYGPATH_W) 'Thermal.cpp'; else $(CYGPATH_W) '$(srcdir)/Thermal.cpp'; fi`
+
+libpomerol_a-Index.o: Index.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Index.o -MD -MP -MF $(DEPDIR)/libpomerol_a-Index.Tpo -c -o libpomerol_a-Index.o `test -f 'Index.cpp' || echo '$(srcdir)/'`Index.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Index.Tpo $(DEPDIR)/libpomerol_a-Index.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Index.cpp' object='libpomerol_a-Index.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Index.o `test -f 'Index.cpp' || echo '$(srcdir)/'`Index.cpp
+
+libpomerol_a-Index.obj: Index.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Index.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-Index.Tpo -c -o libpomerol_a-Index.obj `if test -f 'Index.cpp'; then $(CYGPATH_W) 'Index.cpp'; else $(CYGPATH_W) '$(srcdir)/Index.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Index.Tpo $(DEPDIR)/libpomerol_a-Index.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Index.cpp' object='libpomerol_a-Index.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Index.obj `if test -f 'Index.cpp'; then $(CYGPATH_W) 'Index.cpp'; else $(CYGPATH_W) '$(srcdir)/Index.cpp'; fi`
+
+libpomerol_a-LatticeReader.o: LatticeReader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-LatticeReader.o -MD -MP -MF $(DEPDIR)/libpomerol_a-LatticeReader.Tpo -c -o libpomerol_a-LatticeReader.o `test -f 'LatticeReader.cpp' || echo '$(srcdir)/'`LatticeReader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-LatticeReader.Tpo $(DEPDIR)/libpomerol_a-LatticeReader.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticeReader.cpp' object='libpomerol_a-LatticeReader.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticeReader.o `test -f 'LatticeReader.cpp' || echo '$(srcdir)/'`LatticeReader.cpp
+
+libpomerol_a-LatticeReader.obj: LatticeReader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-LatticeReader.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-LatticeReader.Tpo -c -o libpomerol_a-LatticeReader.obj `if test -f 'LatticeReader.cpp'; then $(CYGPATH_W) 'LatticeReader.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticeReader.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-LatticeReader.Tpo $(DEPDIR)/libpomerol_a-LatticeReader.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticeReader.cpp' object='libpomerol_a-LatticeReader.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticeReader.obj `if test -f 'LatticeReader.cpp'; then $(CYGPATH_W) 'LatticeReader.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticeReader.cpp'; fi`
+
+libpomerol_a-LatticeAnalysis.o: LatticeAnalysis.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-LatticeAnalysis.o -MD -MP -MF $(DEPDIR)/libpomerol_a-LatticeAnalysis.Tpo -c -o libpomerol_a-LatticeAnalysis.o `test -f 'LatticeAnalysis.cpp' || echo '$(srcdir)/'`LatticeAnalysis.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-LatticeAnalysis.Tpo $(DEPDIR)/libpomerol_a-LatticeAnalysis.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticeAnalysis.cpp' object='libpomerol_a-LatticeAnalysis.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticeAnalysis.o `test -f 'LatticeAnalysis.cpp' || echo '$(srcdir)/'`LatticeAnalysis.cpp
+
+libpomerol_a-LatticeAnalysis.obj: LatticeAnalysis.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-LatticeAnalysis.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-LatticeAnalysis.Tpo -c -o libpomerol_a-LatticeAnalysis.obj `if test -f 'LatticeAnalysis.cpp'; then $(CYGPATH_W) 'LatticeAnalysis.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticeAnalysis.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-LatticeAnalysis.Tpo $(DEPDIR)/libpomerol_a-LatticeAnalysis.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticeAnalysis.cpp' object='libpomerol_a-LatticeAnalysis.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticeAnalysis.obj `if test -f 'LatticeAnalysis.cpp'; then $(CYGPATH_W) 'LatticeAnalysis.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticeAnalysis.cpp'; fi`
 
 libpomerol_a-Term.o: Term.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Term.o -MD -MP -MF $(DEPDIR)/libpomerol_a-Term.Tpo -c -o libpomerol_a-Term.o `test -f 'Term.cpp' || echo '$(srcdir)/'`Term.cpp
@@ -509,6 +554,22 @@ libpomerol_a-IndexClassification.obj: IndexClassification.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='IndexClassification.cpp' object='libpomerol_a-IndexClassification.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-IndexClassification.obj `if test -f 'IndexClassification.cpp'; then $(CYGPATH_W) 'IndexClassification.cpp'; else $(CYGPATH_W) '$(srcdir)/IndexClassification.cpp'; fi`
+
+libpomerol_a-StatesClassification.o: StatesClassification.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-StatesClassification.o -MD -MP -MF $(DEPDIR)/libpomerol_a-StatesClassification.Tpo -c -o libpomerol_a-StatesClassification.o `test -f 'StatesClassification.cpp' || echo '$(srcdir)/'`StatesClassification.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-StatesClassification.Tpo $(DEPDIR)/libpomerol_a-StatesClassification.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='StatesClassification.cpp' object='libpomerol_a-StatesClassification.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-StatesClassification.o `test -f 'StatesClassification.cpp' || echo '$(srcdir)/'`StatesClassification.cpp
+
+libpomerol_a-StatesClassification.obj: StatesClassification.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-StatesClassification.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-StatesClassification.Tpo -c -o libpomerol_a-StatesClassification.obj `if test -f 'StatesClassification.cpp'; then $(CYGPATH_W) 'StatesClassification.cpp'; else $(CYGPATH_W) '$(srcdir)/StatesClassification.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-StatesClassification.Tpo $(DEPDIR)/libpomerol_a-StatesClassification.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='StatesClassification.cpp' object='libpomerol_a-StatesClassification.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-StatesClassification.obj `if test -f 'StatesClassification.cpp'; then $(CYGPATH_W) 'StatesClassification.cpp'; else $(CYGPATH_W) '$(srcdir)/StatesClassification.cpp'; fi`
 
 libpomerol_a-HamiltonianPart.o: HamiltonianPart.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-HamiltonianPart.o -MD -MP -MF $(DEPDIR)/libpomerol_a-HamiltonianPart.Tpo -c -o libpomerol_a-HamiltonianPart.o `test -f 'HamiltonianPart.cpp' || echo '$(srcdir)/'`HamiltonianPart.cpp
@@ -574,6 +635,22 @@ libpomerol_a-FieldOperator.obj: FieldOperator.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-FieldOperator.obj `if test -f 'FieldOperator.cpp'; then $(CYGPATH_W) 'FieldOperator.cpp'; else $(CYGPATH_W) '$(srcdir)/FieldOperator.cpp'; fi`
 
+libpomerol_a-FieldOperatorContainer.o: FieldOperatorContainer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-FieldOperatorContainer.o -MD -MP -MF $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Tpo -c -o libpomerol_a-FieldOperatorContainer.o `test -f 'FieldOperatorContainer.cpp' || echo '$(srcdir)/'`FieldOperatorContainer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Tpo $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FieldOperatorContainer.cpp' object='libpomerol_a-FieldOperatorContainer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-FieldOperatorContainer.o `test -f 'FieldOperatorContainer.cpp' || echo '$(srcdir)/'`FieldOperatorContainer.cpp
+
+libpomerol_a-FieldOperatorContainer.obj: FieldOperatorContainer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-FieldOperatorContainer.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Tpo -c -o libpomerol_a-FieldOperatorContainer.obj `if test -f 'FieldOperatorContainer.cpp'; then $(CYGPATH_W) 'FieldOperatorContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/FieldOperatorContainer.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Tpo $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FieldOperatorContainer.cpp' object='libpomerol_a-FieldOperatorContainer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-FieldOperatorContainer.obj `if test -f 'FieldOperatorContainer.cpp'; then $(CYGPATH_W) 'FieldOperatorContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/FieldOperatorContainer.cpp'; fi`
+
 libpomerol_a-DensityMatrixPart.o: DensityMatrixPart.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-DensityMatrixPart.o -MD -MP -MF $(DEPDIR)/libpomerol_a-DensityMatrixPart.Tpo -c -o libpomerol_a-DensityMatrixPart.o `test -f 'DensityMatrixPart.cpp' || echo '$(srcdir)/'`DensityMatrixPart.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-DensityMatrixPart.Tpo $(DEPDIR)/libpomerol_a-DensityMatrixPart.Po
@@ -638,37 +715,21 @@ libpomerol_a-GreensFunction.obj: GreensFunction.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-GreensFunction.obj `if test -f 'GreensFunction.cpp'; then $(CYGPATH_W) 'GreensFunction.cpp'; else $(CYGPATH_W) '$(srcdir)/GreensFunction.cpp'; fi`
 
-libpomerol_a-FourIndexObject.o: FourIndexObject.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-FourIndexObject.o -MD -MP -MF $(DEPDIR)/libpomerol_a-FourIndexObject.Tpo -c -o libpomerol_a-FourIndexObject.o `test -f 'FourIndexObject.cpp' || echo '$(srcdir)/'`FourIndexObject.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-FourIndexObject.Tpo $(DEPDIR)/libpomerol_a-FourIndexObject.Po
+libpomerol_a-GFContainer.o: GFContainer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-GFContainer.o -MD -MP -MF $(DEPDIR)/libpomerol_a-GFContainer.Tpo -c -o libpomerol_a-GFContainer.o `test -f 'GFContainer.cpp' || echo '$(srcdir)/'`GFContainer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-GFContainer.Tpo $(DEPDIR)/libpomerol_a-GFContainer.Po
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FourIndexObject.cpp' object='libpomerol_a-FourIndexObject.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='GFContainer.cpp' object='libpomerol_a-GFContainer.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-FourIndexObject.o `test -f 'FourIndexObject.cpp' || echo '$(srcdir)/'`FourIndexObject.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-GFContainer.o `test -f 'GFContainer.cpp' || echo '$(srcdir)/'`GFContainer.cpp
 
-libpomerol_a-FourIndexObject.obj: FourIndexObject.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-FourIndexObject.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-FourIndexObject.Tpo -c -o libpomerol_a-FourIndexObject.obj `if test -f 'FourIndexObject.cpp'; then $(CYGPATH_W) 'FourIndexObject.cpp'; else $(CYGPATH_W) '$(srcdir)/FourIndexObject.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-FourIndexObject.Tpo $(DEPDIR)/libpomerol_a-FourIndexObject.Po
+libpomerol_a-GFContainer.obj: GFContainer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-GFContainer.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-GFContainer.Tpo -c -o libpomerol_a-GFContainer.obj `if test -f 'GFContainer.cpp'; then $(CYGPATH_W) 'GFContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/GFContainer.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-GFContainer.Tpo $(DEPDIR)/libpomerol_a-GFContainer.Po
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FourIndexObject.cpp' object='libpomerol_a-FourIndexObject.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='GFContainer.cpp' object='libpomerol_a-GFContainer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-FourIndexObject.obj `if test -f 'FourIndexObject.cpp'; then $(CYGPATH_W) 'FourIndexObject.cpp'; else $(CYGPATH_W) '$(srcdir)/FourIndexObject.cpp'; fi`
-
-libpomerol_a-TwoParticleGF.o: TwoParticleGF.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-TwoParticleGF.o -MD -MP -MF $(DEPDIR)/libpomerol_a-TwoParticleGF.Tpo -c -o libpomerol_a-TwoParticleGF.o `test -f 'TwoParticleGF.cpp' || echo '$(srcdir)/'`TwoParticleGF.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-TwoParticleGF.Tpo $(DEPDIR)/libpomerol_a-TwoParticleGF.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TwoParticleGF.cpp' object='libpomerol_a-TwoParticleGF.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-TwoParticleGF.o `test -f 'TwoParticleGF.cpp' || echo '$(srcdir)/'`TwoParticleGF.cpp
-
-libpomerol_a-TwoParticleGF.obj: TwoParticleGF.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-TwoParticleGF.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-TwoParticleGF.Tpo -c -o libpomerol_a-TwoParticleGF.obj `if test -f 'TwoParticleGF.cpp'; then $(CYGPATH_W) 'TwoParticleGF.cpp'; else $(CYGPATH_W) '$(srcdir)/TwoParticleGF.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-TwoParticleGF.Tpo $(DEPDIR)/libpomerol_a-TwoParticleGF.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TwoParticleGF.cpp' object='libpomerol_a-TwoParticleGF.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-TwoParticleGF.obj `if test -f 'TwoParticleGF.cpp'; then $(CYGPATH_W) 'TwoParticleGF.cpp'; else $(CYGPATH_W) '$(srcdir)/TwoParticleGF.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-GFContainer.obj `if test -f 'GFContainer.cpp'; then $(CYGPATH_W) 'GFContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/GFContainer.cpp'; fi`
 
 libpomerol_a-TwoParticleGFPart.o: TwoParticleGFPart.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-TwoParticleGFPart.o -MD -MP -MF $(DEPDIR)/libpomerol_a-TwoParticleGFPart.Tpo -c -o libpomerol_a-TwoParticleGFPart.o `test -f 'TwoParticleGFPart.cpp' || echo '$(srcdir)/'`TwoParticleGFPart.cpp
@@ -686,37 +747,21 @@ libpomerol_a-TwoParticleGFPart.obj: TwoParticleGFPart.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-TwoParticleGFPart.obj `if test -f 'TwoParticleGFPart.cpp'; then $(CYGPATH_W) 'TwoParticleGFPart.cpp'; else $(CYGPATH_W) '$(srcdir)/TwoParticleGFPart.cpp'; fi`
 
-libpomerol_a-Vertex4.o: Vertex4.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Vertex4.o -MD -MP -MF $(DEPDIR)/libpomerol_a-Vertex4.Tpo -c -o libpomerol_a-Vertex4.o `test -f 'Vertex4.cpp' || echo '$(srcdir)/'`Vertex4.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Vertex4.Tpo $(DEPDIR)/libpomerol_a-Vertex4.Po
+libpomerol_a-TwoParticleGF.o: TwoParticleGF.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-TwoParticleGF.o -MD -MP -MF $(DEPDIR)/libpomerol_a-TwoParticleGF.Tpo -c -o libpomerol_a-TwoParticleGF.o `test -f 'TwoParticleGF.cpp' || echo '$(srcdir)/'`TwoParticleGF.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-TwoParticleGF.Tpo $(DEPDIR)/libpomerol_a-TwoParticleGF.Po
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Vertex4.cpp' object='libpomerol_a-Vertex4.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TwoParticleGF.cpp' object='libpomerol_a-TwoParticleGF.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Vertex4.o `test -f 'Vertex4.cpp' || echo '$(srcdir)/'`Vertex4.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-TwoParticleGF.o `test -f 'TwoParticleGF.cpp' || echo '$(srcdir)/'`TwoParticleGF.cpp
 
-libpomerol_a-Vertex4.obj: Vertex4.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Vertex4.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-Vertex4.Tpo -c -o libpomerol_a-Vertex4.obj `if test -f 'Vertex4.cpp'; then $(CYGPATH_W) 'Vertex4.cpp'; else $(CYGPATH_W) '$(srcdir)/Vertex4.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Vertex4.Tpo $(DEPDIR)/libpomerol_a-Vertex4.Po
+libpomerol_a-TwoParticleGF.obj: TwoParticleGF.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-TwoParticleGF.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-TwoParticleGF.Tpo -c -o libpomerol_a-TwoParticleGF.obj `if test -f 'TwoParticleGF.cpp'; then $(CYGPATH_W) 'TwoParticleGF.cpp'; else $(CYGPATH_W) '$(srcdir)/TwoParticleGF.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-TwoParticleGF.Tpo $(DEPDIR)/libpomerol_a-TwoParticleGF.Po
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Vertex4.cpp' object='libpomerol_a-Vertex4.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TwoParticleGF.cpp' object='libpomerol_a-TwoParticleGF.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Vertex4.obj `if test -f 'Vertex4.cpp'; then $(CYGPATH_W) 'Vertex4.cpp'; else $(CYGPATH_W) '$(srcdir)/Vertex4.cpp'; fi`
-
-libpomerol_a-FieldOperatorContainer.o: FieldOperatorContainer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-FieldOperatorContainer.o -MD -MP -MF $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Tpo -c -o libpomerol_a-FieldOperatorContainer.o `test -f 'FieldOperatorContainer.cpp' || echo '$(srcdir)/'`FieldOperatorContainer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Tpo $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FieldOperatorContainer.cpp' object='libpomerol_a-FieldOperatorContainer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-FieldOperatorContainer.o `test -f 'FieldOperatorContainer.cpp' || echo '$(srcdir)/'`FieldOperatorContainer.cpp
-
-libpomerol_a-FieldOperatorContainer.obj: FieldOperatorContainer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-FieldOperatorContainer.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Tpo -c -o libpomerol_a-FieldOperatorContainer.obj `if test -f 'FieldOperatorContainer.cpp'; then $(CYGPATH_W) 'FieldOperatorContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/FieldOperatorContainer.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Tpo $(DEPDIR)/libpomerol_a-FieldOperatorContainer.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FieldOperatorContainer.cpp' object='libpomerol_a-FieldOperatorContainer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-FieldOperatorContainer.obj `if test -f 'FieldOperatorContainer.cpp'; then $(CYGPATH_W) 'FieldOperatorContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/FieldOperatorContainer.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-TwoParticleGF.obj `if test -f 'TwoParticleGF.cpp'; then $(CYGPATH_W) 'TwoParticleGF.cpp'; else $(CYGPATH_W) '$(srcdir)/TwoParticleGF.cpp'; fi`
 
 libpomerol_a-TwoParticleGFContainer.o: TwoParticleGFContainer.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-TwoParticleGFContainer.o -MD -MP -MF $(DEPDIR)/libpomerol_a-TwoParticleGFContainer.Tpo -c -o libpomerol_a-TwoParticleGFContainer.o `test -f 'TwoParticleGFContainer.cpp' || echo '$(srcdir)/'`TwoParticleGFContainer.cpp
@@ -733,38 +778,6 @@ libpomerol_a-TwoParticleGFContainer.obj: TwoParticleGFContainer.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TwoParticleGFContainer.cpp' object='libpomerol_a-TwoParticleGFContainer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-TwoParticleGFContainer.obj `if test -f 'TwoParticleGFContainer.cpp'; then $(CYGPATH_W) 'TwoParticleGFContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/TwoParticleGFContainer.cpp'; fi`
-
-libpomerol_a-GFContainer.o: GFContainer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-GFContainer.o -MD -MP -MF $(DEPDIR)/libpomerol_a-GFContainer.Tpo -c -o libpomerol_a-GFContainer.o `test -f 'GFContainer.cpp' || echo '$(srcdir)/'`GFContainer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-GFContainer.Tpo $(DEPDIR)/libpomerol_a-GFContainer.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='GFContainer.cpp' object='libpomerol_a-GFContainer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-GFContainer.o `test -f 'GFContainer.cpp' || echo '$(srcdir)/'`GFContainer.cpp
-
-libpomerol_a-GFContainer.obj: GFContainer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-GFContainer.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-GFContainer.Tpo -c -o libpomerol_a-GFContainer.obj `if test -f 'GFContainer.cpp'; then $(CYGPATH_W) 'GFContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/GFContainer.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-GFContainer.Tpo $(DEPDIR)/libpomerol_a-GFContainer.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='GFContainer.cpp' object='libpomerol_a-GFContainer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-GFContainer.obj `if test -f 'GFContainer.cpp'; then $(CYGPATH_W) 'GFContainer.cpp'; else $(CYGPATH_W) '$(srcdir)/GFContainer.cpp'; fi`
-
-libpomerol_a-LatticeReader.o: LatticeReader.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-LatticeReader.o -MD -MP -MF $(DEPDIR)/libpomerol_a-LatticeReader.Tpo -c -o libpomerol_a-LatticeReader.o `test -f 'LatticeReader.cpp' || echo '$(srcdir)/'`LatticeReader.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-LatticeReader.Tpo $(DEPDIR)/libpomerol_a-LatticeReader.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticeReader.cpp' object='libpomerol_a-LatticeReader.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticeReader.o `test -f 'LatticeReader.cpp' || echo '$(srcdir)/'`LatticeReader.cpp
-
-libpomerol_a-LatticeReader.obj: LatticeReader.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-LatticeReader.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-LatticeReader.Tpo -c -o libpomerol_a-LatticeReader.obj `if test -f 'LatticeReader.cpp'; then $(CYGPATH_W) 'LatticeReader.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticeReader.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-LatticeReader.Tpo $(DEPDIR)/libpomerol_a-LatticeReader.Po
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='LatticeReader.cpp' object='libpomerol_a-LatticeReader.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-LatticeReader.obj `if test -f 'LatticeReader.cpp'; then $(CYGPATH_W) 'LatticeReader.cpp'; else $(CYGPATH_W) '$(srcdir)/LatticeReader.cpp'; fi`
 install-libpomerol_a_pkgincludeHEADERS: $(libpomerol_a_pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(libpomerol_a_pkgincludedir)" || $(MKDIR_P) "$(DESTDIR)$(libpomerol_a_pkgincludedir)"

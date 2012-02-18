@@ -23,14 +23,14 @@
 
 namespace Pomerol{
 
-Hamiltonian::Hamiltonian(IndexClassification &F_,StatesClassification &S_):
-ComputableObject(),Formula(F_),S(S_){}
+Hamiltonian::Hamiltonian(IndexClassification &F, StatesClassification &S) :
+    Formula(F), S(S)
+{}
 
 Hamiltonian::~Hamiltonian()
 {
-    BlockNumber NumberOfBlocks = parts.size();
-    for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
-	delete parts[current_block];
+    for(std::vector<HamiltonianPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+	delete *iter;
 }
 
 void Hamiltonian::prepare()
@@ -38,81 +38,68 @@ void Hamiltonian::prepare()
     BlockNumber NumberOfBlocks = S.NumberOfBlocks();
     parts.resize(NumberOfBlocks);
 
-    for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
+    for (BlockNumber CurrentBlock = 0; CurrentBlock < NumberOfBlocks; CurrentBlock++)
     {
-	parts[current_block] = new HamiltonianPart(Formula,S,S.getBlockInfo(current_block));
-	parts[current_block]->enter();
+	parts[CurrentBlock] = new HamiltonianPart(Formula,S,S.getBlockInfo(CurrentBlock));
+	parts[CurrentBlock]->prepare();
 
-	std::cout << "Hamiltonian block " << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is entered";
-	std::cout << ". Size = " << S.getQuantumStates(S.getBlockInfo(current_block)).size() << std::endl;
+	std::cout << "Hamiltonian block " << S.getBlockInfo(CurrentBlock) << " ( Block N " << CurrentBlock << " ) is entered";
+	std::cout << ". Size = " << S.getQuantumStates(S.getBlockInfo(CurrentBlock)).size() << std::endl;
     }
-    Status = Prepared;
 }
 
-HamiltonianPart& Hamiltonian::part(const QuantumNumbers &in)
+void Hamiltonian::diagonalize()
 {
-  return *parts[S.getBlockNumber(in)];
-}
-
-HamiltonianPart& Hamiltonian::part(BlockNumber in)
-{
-  return *parts[in];
-}
-
-RealType Hamiltonian::eigenval(QuantumState &state)
-{
-    int inner_state = S.getInnerState(state);
-    return part(S.getStateInfo(state)).reV(inner_state);
-}
-
-//void Hamiltonian::diagonalize()
-void Hamiltonian::compute()
-{
-  BlockNumber NumberOfBlocks = parts.size();
-  for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
+    BlockNumber NumberOfBlocks = parts.size();
+    for (BlockNumber CurrentBlock=0; CurrentBlock<NumberOfBlocks; CurrentBlock++)
     {
-      parts[current_block]->diagonalization();
-      std::cout << "Hpart" << S.getBlockInfo(current_block) << " ( Block N " << current_block << " ) is diagonalized." << std::endl;
+	parts[CurrentBlock]->diagonalize();
+	std::cout << "Hpart" << S.getBlockInfo(CurrentBlock) << " ( Block N " << CurrentBlock << " ) is diagonalized." << std::endl;
     }
- computeGroundEnergy();
+    computeGroundEnergy();
 }
-
-/* Remove this after it is not needed
-void Hamiltonian::dump()
-{
-  BlockNumber NumberOfBlocks = parts.size();
-  for (BlockNumber current_block=0;current_block<S.NumberOfBlocks();current_block++)
-    {
-      parts[current_block]->dump();
-    }
-  std::cout << "Hamiltonian has been dumped." << std::endl;
-}*/
-
-void Hamiltonian::computeGroundEnergy()
-{
-  RealVectorType LEV(S.NumberOfBlocks());
-  BlockNumber NumberOfBlocks = parts.size();
-  for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
-  {
-	  LEV(current_block)=parts[current_block]->getMinimumEigenvalue();
-  }
-  GroundEnergy=LEV.minCoeff();
-}
-
-RealType Hamiltonian::getGroundEnergy()
-{
-  return GroundEnergy;
-};
 
 void Hamiltonian::reduce(const RealType Cutoff)
 {
     std::cout << "Performing EV cutoff at " << Cutoff << " level" << std::endl;
     BlockNumber NumberOfBlocks = parts.size();
-    for (BlockNumber current_block=0;current_block<NumberOfBlocks;current_block++)
+    for (BlockNumber CurrentBlock=0; CurrentBlock<NumberOfBlocks; CurrentBlock++)
     {
-	parts[current_block]->reduce(GroundEnergy+Cutoff);
+	parts[CurrentBlock]->reduce(GroundEnergy+Cutoff);
     }
-};
+}
+
+void Hamiltonian::computeGroundEnergy()
+{
+    RealVectorType LEV(S.NumberOfBlocks());
+    BlockNumber NumberOfBlocks = parts.size();
+    for (BlockNumber CurrentBlock=0; CurrentBlock<NumberOfBlocks; CurrentBlock++)
+    {
+	LEV(CurrentBlock) = parts[CurrentBlock]->getMinimumEigenvalue();
+    }
+    GroundEnergy=LEV.minCoeff();
+}
+
+const HamiltonianPart& Hamiltonian::getPart(const QuantumNumbers &in) const
+{
+    return *parts[S.getBlockNumber(in)];
+}
+
+const HamiltonianPart& Hamiltonian::getPart(BlockNumber in) const
+{
+    return *parts[in];
+}
+
+RealType Hamiltonian::getEigenValue(QuantumState state) const
+{
+    InnerQuantumState InnerState = S.getInnerState(state);
+    return getPart(S.getStateInfo(state)).getEigenValue(InnerState);
+}
+
+RealType Hamiltonian::getGroundEnergy() const
+{
+    return GroundEnergy;
+}
 
 void Hamiltonian::save(H5::CommonFG* RootGroup) const
 {
@@ -137,8 +124,6 @@ void Hamiltonian::load(const H5::CommonFG* RootGroup)
 
     GroundEnergy = HDF5Storage::loadReal(&HRootGroup,"GroundEnergy");
 
-    if(Status<Prepared) prepare();
-
     H5::Group PartsGroup = HRootGroup.openGroup("parts");
     BlockNumber NumberOfBlocks = parts.size();
     if(NumberOfBlocks != PartsGroup.getNumObjs())
@@ -150,8 +135,6 @@ void Hamiltonian::load(const H5::CommonFG* RootGroup)
 	H5::Group PartGroup = PartsGroup.openGroup(nStr.str().c_str());
 	parts[n]->load(&PartGroup);
     }
-    Status = Computed;
 }
 
 } // end of namespace Pomerol
-

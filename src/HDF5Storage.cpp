@@ -37,7 +37,7 @@ const unsigned int* HDF5Storage::initHDF5()
     unsigned int* V = new unsigned int[3];
     H5::H5Library::getLibVersion(V[0],V[1],V[2]);
 
-    INFO("Initializing HDF5 Library (version " << V[0] << "." << V[1] << "." << V[2] << ")...")
+    //info() << "Initializing HDF5 Library (version " << V[0] << "." << V[1] << "." << V[2] << ")...";
     H5::H5Library::open();
     //H5::Exception::dontPrint();
 
@@ -55,7 +55,7 @@ const unsigned int* HDF5Storage::initHDF5()
     #define H5_REAL_TYPE	H5::PredType::NATIVE_LDOUBLE
 #endif
 #ifndef H5_REAL_TYPE
-    #error We do not know how choose an HDF5 DataType for this RealType.
+    #error We do not know how to choose an HDF5 DataType for this RealType.
 #endif
 
 const H5::CompType HDF5Storage::initCompexDataType()

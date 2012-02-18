@@ -59,11 +59,11 @@ std::ostream& debug(void);
 std::ostream& info(void);
 std::ostream& error(void);
 
-#define MSG_PREFIX            __FILE__ << ":" << __LINE__ << ":" << __func__ << "():"
+#define MSG_PREFIX            __FILE__ << ":" << __LINE__ << ": "
 #define DEBUG(MSG)            debug() << MSG_PREFIX << MSG << std::endl;
-#define INFO(MSG)             info() << MSG_PREFIX << MSG << std::endl;
-#define INFO_NONEWLINE(MSG)   info() << MSG_PREFIX << MSG << std::flush;
-#define ERROR(MSG)            error() << MSG_PREFIX << MSG << std::endl;
+#define INFO(MSG)             info() << MSG << std::endl;
+#define INFO_NONEWLINE(MSG)   info() << MSG << std::flush;
+#define ERROR(MSG)            error() << MSG << std::endl;
 
 #ifndef __IN_LOGGER_CPP
 extern Logger Log;

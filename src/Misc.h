@@ -76,51 +76,12 @@ typedef Eigen::SparseMatrix<RealType,Eigen::ColMajor> ColMajorMatrixType;
 typedef Eigen::SparseMatrix<RealType,Eigen::RowMajor> RowMajorMatrixType;
 typedef Eigen::DynamicSparseMatrix<RealType,Eigen::ColMajor> DynamicSparseMatrixType;
 
-/** Index represents a combination of spin, orbital, and lattice indices **/
-typedef unsigned short ParticleIndex;
-
-/** Possible spin projections are \b down and \b up */
-enum spin {down, up};
-
-/** This represent the progress of calculation of any complex object in the code */
-enum ObjectStatus {Constructed, Prepared, Loaded, Computed, Stored};
-
 /** A short name for imaginary unit. */
 static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
-
 
 /** Generalized 'square' function. */
 template<typename T> inline T sqr(T x) { return x*x; }
 
-/** Easy enumeration for orbital names */
-enum OrbitalValue {s=0, p=1, d=2, f=3};             //!< The enum for s,p,d,f - orbitals
-
-/** Permutation of 3 elements */
-struct Permutation3 {
-    const size_t perm[3];
-    const int sign;
-    bool operator==(const Permutation3& rhs) const {return (sign==rhs.sign && perm[0] == rhs.perm[0] && perm[1]==rhs.perm[1]);};
-    bool operator!=(const Permutation3& rhs) const {return !(*this==rhs);};
-    friend std::ostream& operator<<(std::ostream& out, const Permutation3 &rhs)
-        { out << (rhs.sign==-1?"-":" ") << rhs.perm[0]+1 << rhs.perm[1]+1 << rhs.perm[2]+1 << std::flush; return out;}; 
-};
-
-/** Permutation of 4 elements */
-struct Permutation4 {
-    const size_t perm[4];
-    const int sign;
-    bool operator==(const Permutation4& rhs) const {return (sign==rhs.sign && perm[0] == rhs.perm[0] && perm[1]==rhs.perm[1] && perm[2] == rhs.perm[2]);};
-    bool operator!=(const Permutation4& rhs) const {return !(*this==rhs);};
-    friend std::ostream& operator<<(std::ostream& out, const Permutation4 &rhs)
-        { out << (rhs.sign==-1?"-":" ") << rhs.perm[0]+1 << rhs.perm[1]+1 << rhs.perm[2]+1 << rhs.perm[3]+1 << std::flush; return out;}; 
-};
-
-static const Permutation4 permutations4[24] = {
-    {{0,1,2,3}, 1},  {{0,1,3,2},-1},  {{0,2,1,3},-1},  {{0,2,3,1}, 1},  {{0,3,1,2}, 1},  {{0,3,2,1},-1},
-    {{1,0,2,3},-1},  {{1,0,3,2}, 1},  {{1,2,0,3}, 1},  {{1,2,3,0},-1},  {{1,3,0,2},-1},  {{1,3,2,0}, 1},
-    {{2,0,1,3}, 1},  {{2,0,3,1},-1},  {{2,1,0,3},-1},  {{2,1,3,0}, 1},  {{2,3,0,1}, 1},  {{2,3,1,0},-1},
-    {{3,0,1,2},-1},  {{3,0,2,1}, 1},  {{3,1,0,2}, 1},  {{3,1,2,0},-1},  {{3,2,0,1},-1},  {{3,2,1,0}, 1}
-};
 /** */
 #define DUMP_FLOATING_POINT_NUMBERS    10
 
@@ -137,6 +98,28 @@ end_do_once
 #define do_once { static bool done_once=false; if (!done_once) {done_once=true;
 #define end_do_once }; };
 //@}
+
+#define CHECK_MATSUBARA_NUM(num,num_of_matsubaras)	(num) < (num_of_matsubaras) && (num) >= -(num_of_matsubaras)
+
+/** Permutation of 3 elements */
+struct Permutation3 {
+    const size_t perm[3];
+    const int sign;
+    bool operator==(const Permutation3& rhs) const;
+    bool operator!=(const Permutation3& rhs) const;
+    friend std::ostream& operator<<(std::ostream& out, const Permutation3 &rhs);
+};
+extern const Permutation3 permutations3[6];
+
+/** Permutation of 4 elements */
+struct Permutation4 {
+    const size_t perm[4];
+    const int sign;
+    bool operator==(const Permutation4& rhs) const;
+    bool operator!=(const Permutation4& rhs) const;
+    friend std::ostream& operator<<(std::ostream& out, const Permutation4 &p);
+};
+extern const Permutation4 permutations4[24];
 
 } // end of namespace Pomerol
 

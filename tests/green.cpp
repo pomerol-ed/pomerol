@@ -73,34 +73,33 @@ int main(int argc, char* argv[])
     S.compute();
 
     H.prepare();
-    H.compute();
+    H.diagonalize();
 
     srand (time(NULL));
     RealType beta = 10.0 + 10.0*RealType(rand())/RAND_MAX;
 
     DensityMatrix rho(S,H,beta);
-    rho.prepare();
-    rho.compute();
+    rho.allocateParts();
+    rho.computeParts();
 
     FieldOperatorContainer Operators(S,H,IndexInfo);
-    
-    GFContainer G(S,H,rho,IndexInfo,Operators);
 
-    std::vector<GFContainer::IndexCombination*> indices;
-    indices.push_back(new GFContainer::IndexCombination(0,0));
-    indices.push_back(new GFContainer::IndexCombination(0,1));
-    indices.push_back(new GFContainer::IndexCombination(1,0));
-    indices.push_back(new GFContainer::IndexCombination(1,1));
-    
-    G.readInitialIndices(indices);
-    G.prepare();
-    G.compute();
+    GFContainer G(IndexInfo,S,H,rho,Operators);
+
+    std::set<IndexCombination2> indices;
+    indices.insert(IndexCombination2(0,0));
+    indices.insert(IndexCombination2(0,1));
+    indices.insert(IndexCombination2(1,0));
+    indices.insert(IndexCombination2(1,1));
+
+    G.prepareAll(indices);
+    G.computeAll(100);
 
     for(int n = -100; n<100; ++n)
-        if( !compare(G(0,0,n),Gref(n,beta)) ||
-            !compare(G(0,1,n),0.0) ||
-            !compare(G(1,0,n),0.0) ||
-            !compare(G(1,1,n),Gref(n,beta))
+        if( !compare(G(0,0)(n),Gref(n,beta)) ||
+            !compare(G(0,1)(n),0.0) ||
+            !compare(G(1,0)(n),0.0) ||
+            !compare(G(1,1)(n),Gref(n,beta))
             )
             return EXIT_FAILURE;
 

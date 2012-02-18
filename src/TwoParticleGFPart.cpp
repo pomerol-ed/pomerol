@@ -106,40 +106,34 @@ bool TwoParticleGFPart::ResonantTerm::isSimilarTo(const ResonantTerm& AnotherTer
 // TwoParticleGFPart
 //
 TwoParticleGFPart::TwoParticleGFPart(
-                FieldOperatorPart& O1, FieldOperatorPart& O2, FieldOperatorPart& O3, CreationOperatorPart& CX4,
-                HamiltonianPart& Hpart1, HamiltonianPart& Hpart2, HamiltonianPart& Hpart3, HamiltonianPart& Hpart4,
-                DensityMatrixPart& DMpart1, DensityMatrixPart& DMpart2, DensityMatrixPart& DMpart3, DensityMatrixPart& DMpart4,
+                const FieldOperatorPart& O1, const FieldOperatorPart& O2,
+                const FieldOperatorPart& O3, const CreationOperatorPart& CX4,
+                const HamiltonianPart& Hpart1, const HamiltonianPart& Hpart2,
+                const HamiltonianPart& Hpart3, const HamiltonianPart& Hpart4,
+                const DensityMatrixPart& DMpart1, const DensityMatrixPart& DMpart2,
+                const DensityMatrixPart& DMpart3, const DensityMatrixPart& DMpart4,
                 Permutation3 Permutation) :
-ComputableObject(), Thermal(DMpart1),
-O1(O1), O2(O2), O3(O3), CX4(CX4), 
-Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
-DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
-Permutation(Permutation){};
+    Thermal(DMpart1),
+    O1(O1), O2(O2), O3(O3), CX4(CX4), 
+    Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
+    DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
+    Permutation(Permutation)
+{}
 
-size_t TwoParticleGFPart::getNumNonResonantTerms() const
-{
-    return NonResonantTerms.size();
-}
-
-size_t TwoParticleGFPart::getNumResonantTerms() const
-{
-    return ResonantTerms.size();
-}
-
-void TwoParticleGFPart::compute(long NumberOfMatsubaras)
+void TwoParticleGFPart::compute()
 {
     NonResonantTerms.clear();
     ResonantTerms.clear();
-    
+
     RealType beta = DMpart1.beta;
     // I don't have any pen now, so I'm writing here:
     // <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
     // Iterate over all values of |1><1| and |3><3|
     // Chase indices |2> and <2|, |4> and <4|.
-    RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
-    ColMajorMatrixType& O2matrix = O2.getColMajorValue();    
-    RowMajorMatrixType& O3matrix = O3.getRowMajorValue();
-    ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
+    const RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
+    const ColMajorMatrixType& O2matrix = O2.getColMajorValue();    
+    const RowMajorMatrixType& O3matrix = O3.getRowMajorValue();
+    const ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
 
     InnerQuantumState index1;
     InnerQuantumState index1Max = CX4matrix.outerSize();
@@ -169,10 +163,10 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
 
         if (!Index4List.empty())
         {
-            RealType E1 = Hpart1.reV(index1);
-            RealType E3 = Hpart3.reV(index3);
-            RealType weight1 = DMpart1.weight(index1);
-            RealType weight3 = DMpart3.weight(index3);
+            RealType E1 = Hpart1.getEigenValue(index1);
+            RealType E3 = Hpart3.getEigenValue(index3);
+            RealType weight1 = DMpart1.getWeight(index1);
+            RealType weight3 = DMpart3.getWeight(index3);
 
             ColMajorMatrixType::InnerIterator index2bra_iter(O2matrix,index3);
             RowMajorMatrixType::InnerIterator index2ket_iter(O1matrix,index1);       
@@ -180,14 +174,14 @@ void TwoParticleGFPart::compute(long NumberOfMatsubaras)
                 if (chaseIndices(index2ket_iter,index2bra_iter)){
 
                     InnerQuantumState index2 = index2ket_iter.index();
-                    RealType E2 = Hpart2.reV(index2);
-                    RealType weight2 = DMpart2.weight(index2);
+                    RealType E2 = Hpart2.getEigenValue(index2);
+                    RealType weight2 = DMpart2.getWeight(index2);
 
                     for (std::list<InnerQuantumState>::iterator pIndex4 = Index4List.begin(); pIndex4!=Index4List.end(); ++pIndex4) 
                     {
                         InnerQuantumState index4 = *pIndex4;
-                        RealType E4 = Hpart4.reV(index4);                       
-                        RealType weight4 = DMpart4.weight(index4);
+                        RealType E4 = Hpart4.getEigenValue(index4);                       
+                        RealType weight4 = DMpart4.getWeight(index4);
 
                         ComplexType MatrixElement = index2ket_iter.value()*
                                                     index2bra_iter.value()*
@@ -313,15 +307,23 @@ void TwoParticleGFPart::addMultiterm(ComplexType Coeff, RealType beta,
             ResonantTerm(CoeffZ2Z3Res,CoeffZ2Z3NonRes,P1,P2,P3,false));   
 }
 
+size_t TwoParticleGFPart::getNumNonResonantTerms() const
+{
+    return NonResonantTerms.size();
+}
 
-const Permutation3& TwoParticleGFPart::getPermutation(){
+size_t TwoParticleGFPart::getNumResonantTerms() const
+{
+    return ResonantTerms.size();
+}
+
+const Permutation3& TwoParticleGFPart::getPermutation() const
+{
     return Permutation;
 }
 
 ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
-    // TODO: Place this variable to a wider scope?
-    ComplexType MatsubaraSpacing = I*M_PI/DMpart1.beta;
     long MatsubaraNumberOdd1 = 2*MatsubaraNumber1 + 1;
     long MatsubaraNumberOdd2 = 2*MatsubaraNumber2 + 1;
     long MatsubaraNumberOdd3 = 2*MatsubaraNumber3 + 1;
@@ -342,11 +344,13 @@ ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraN
     return Value;
 }
 
-const std::list<TwoParticleGFPart::NonResonantTerm>& TwoParticleGFPart::getNonResonantTerms(){
+const std::list<TwoParticleGFPart::NonResonantTerm>& TwoParticleGFPart::getNonResonantTerms() const
+{
     return NonResonantTerms;
 }
 
-const std::list<TwoParticleGFPart::ResonantTerm>& TwoParticleGFPart::getResonantTerms(){
+const std::list<TwoParticleGFPart::ResonantTerm>& TwoParticleGFPart::getResonantTerms() const
+{
     return ResonantTerms;
 }
 

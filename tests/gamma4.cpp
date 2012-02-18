@@ -31,7 +31,7 @@
 #include "Hamiltonian.h"
 #include "GFContainer.h"
 #include "TwoParticleGFContainer.h"
-#include "Vertex4.h"
+//#include "Vertex4.h"
 
 #include<cstdlib>
 
@@ -99,6 +99,7 @@ ComplexType gamma4ref_udud(int n1, int n2, int n3)
 
 int main(int argc, char* argv[])
 {
+    Log.setDebugging(true);
     LatticeAnalysis Lattice;
 
     IndexClassification IndexInfo(Lattice);
@@ -113,69 +114,82 @@ int main(int argc, char* argv[])
     S.compute();
 
     H.prepare();
-    H.compute();
+    H.diagonalize();
 
     srand(time(NULL));
-    beta = 10.0 + 10.0*RealType(rand())/RAND_MAX;
+    beta = 40.0 ;//+ 10.0*RealType(rand())/RAND_MAX;
 
     DensityMatrix rho(S,H,beta);
-    rho.prepare();
-    rho.compute();
+    rho.allocateParts();
+    rho.computeParts();
 
     FieldOperatorContainer Operators(S,H,IndexInfo);
 
-    GFContainer G(S,H,rho,IndexInfo,Operators);
+    GFContainer G(IndexInfo,S,H,rho,Operators);
 
-    std::vector<GFContainer::IndexCombination*> GFindices;
-    GFindices.push_back(new GFContainer::IndexCombination(0,0));
-    GFindices.push_back(new GFContainer::IndexCombination(0,1));
-    GFindices.push_back(new GFContainer::IndexCombination(1,0));
-    GFindices.push_back(new GFContainer::IndexCombination(1,1));
+    std::set<IndexCombination2> GFindices;
+    GFindices.insert(IndexCombination2(0,0));
+    GFindices.insert(IndexCombination2(0,1));
+    GFindices.insert(IndexCombination2(1,0));
+    GFindices.insert(IndexCombination2(1,1));
 
-    G.readInitialIndices(GFindices);
-    G.prepare();
-    G.compute();
+    G.prepareAll(GFindices);
+    G.computeAll(30);
 
-    typedef TwoParticleGFContainer::IndexCombination IC;
-    std::vector<IC*> GF2indices;
+    std::set<IndexCombination4> GF2indices;
     for(int i1=0; i1<=1; ++i1)
     for(int i2=0; i2<=1; ++i2)
     for(int i3=0; i3<=1; ++i3)
     for(int i4=0; i4<=1; ++i4)
-        GF2indices.push_back(new IC(i1,i2,i3,i4));
+        GF2indices.insert(IndexCombination4(i1,i2,i3,i4));
 
-    TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
-    Chi4.readInitialIndices(GF2indices);
-    Chi4.prepare();
-    Chi4.compute(30);
+    TwoParticleGFContainer Chi4(IndexInfo,S,H,rho,Operators);
+    Chi4.prepareAll(GF2indices);
+    Chi4.computeAll(7);
 
-    Vertex4 Gamma4(IndexInfo,Chi4,G);
-    Gamma4.prepareUnAmputated();
-    Gamma4.computeUnAmputated();
-    Gamma4.prepareAmputated(GF2indices);
-    Gamma4.computeAmputated();
+//     std::cout << Chi4(0,0,0,0)(3,2,0) << std::endl;
+//     std::cout << Chi4(0,0,0,0)(2,5,2) << std::endl;
+//     std::cout << Chi4(0,0,0,0)(5,2,5) << std::endl;
+//     std::cout << Chi4(0,0,0,0)(5,2,2) << std::endl;
+//     std::cout << Chi4(0,0,0,0)(1,7,1) << std::endl;
+//     std::cout << Chi4(0,0,0,0)(2,-2,4) << std::endl;
+//     std::cout << Chi4(0,0,0,0)(29,-29,29) << std::endl;
 
-    for(int n1 = -10; n1<10; ++n1)
-    for(int n2 = -10; n2<10; ++n2)
-    for(int n3 = -10; n3<10; ++n3){
-        if( !compare(Gamma4.getAmputatedValue(IC(0,0,0,0),n1,n2,n3),gamma4ref_uuuu(n1,n2,n3)) ||
-            !compare(Gamma4.getAmputatedValue(IC(1,1,1,1),n1,n2,n3),gamma4ref_uuuu(n1,n2,n3)) ||
-            !compare(Gamma4(IC(0,1,0,1),n1,n2,n3),gamma4ref_udud(n1,n2,n3)) ||
-            !compare(Gamma4(IC(1,0,1,0),n1,n2,n3),gamma4ref_udud(n1,n2,n3)) ||
-            !compare(Gamma4(IC(0,1,1,0),n1,n2,n3),-gamma4ref_udud(n2,n1,n3)) ||
-            !compare(Gamma4(IC(1,0,0,1),n1,n2,n3),-gamma4ref_udud(n2,n1,n3)) ||
-            !compare(Gamma4.getAmputatedValue(IC(1,1,0,0),n1,n2,n3),0) ||
-            !compare(Gamma4.getAmputatedValue(IC(0,0,1,1),n1,n2,n3),0) ||
-            !compare(Gamma4.getAmputatedValue(IC(1,0,0,0),n1,n2,n3),0) ||
-            !compare(Gamma4.getAmputatedValue(IC(0,1,0,0),n1,n2,n3),0) ||
-            !compare(Gamma4.getAmputatedValue(IC(0,0,1,0),n1,n2,n3),0) ||
-            !compare(Gamma4.getAmputatedValue(IC(0,0,0,1),n1,n2,n3),0) ||
-            !compare(Gamma4.getAmputatedValue(IC(0,1,1,1),n1,n2,n3),0) ||
-            !compare(Gamma4.getAmputatedValue(IC(1,0,1,1),n1,n2,n3),0) ||
-            !compare(Gamma4.getAmputatedValue(IC(1,1,0,1),n1,n2,n3),0) ||
-            !compare(Gamma4.getAmputatedValue(IC(1,1,1,0),n1,n2,n3),0))
-        return EXIT_FAILURE;
-    }
+//     std::cout << Chi4(0,1,0,1)(3,2,0) << std::endl;
+//     std::cout << Chi4(0,1,0,1)(2,5,2) << std::endl;
+//     std::cout << Chi4(0,1,0,1)(5,2,5) << std::endl;
+//     std::cout << Chi4(0,1,0,1)(5,2,2) << std::endl;
+//     std::cout << Chi4(0,1,0,1)(1,7,1) << std::endl;
+//     std::cout << Chi4(0,1,0,1)(2,-2,4) << std::endl;
+//     std::cout << Chi4(0,1,0,1)(29,-29,29) << std::endl;
+
+//     Vertex4 Gamma4(IndexInfo,Chi4,G);
+//     Gamma4.prepareUnAmputated();
+//     Gamma4.computeUnAmputated();
+//     Gamma4.prepareAmputated(GF2indices);
+//     Gamma4.computeAmputated();
+// 
+//     for(int n1 = -10; n1<10; ++n1)
+//     for(int n2 = -10; n2<10; ++n2)
+//     for(int n3 = -10; n3<10; ++n3){
+//         if( !compare(Gamma4.getAmputatedValue(IC(0,0,0,0),n1,n2,n3),gamma4ref_uuuu(n1,n2,n3)) ||
+//             !compare(Gamma4.getAmputatedValue(IC(1,1,1,1),n1,n2,n3),gamma4ref_uuuu(n1,n2,n3)) ||
+//             !compare(Gamma4(IC(0,1,0,1),n1,n2,n3),gamma4ref_udud(n1,n2,n3)) ||
+//             !compare(Gamma4(IC(1,0,1,0),n1,n2,n3),gamma4ref_udud(n1,n2,n3)) ||
+//             !compare(Gamma4(IC(0,1,1,0),n1,n2,n3),-gamma4ref_udud(n2,n1,n3)) ||
+//             !compare(Gamma4(IC(1,0,0,1),n1,n2,n3),-gamma4ref_udud(n2,n1,n3)) ||
+//             !compare(Gamma4.getAmputatedValue(IC(1,1,0,0),n1,n2,n3),0) ||
+//             !compare(Gamma4.getAmputatedValue(IC(0,0,1,1),n1,n2,n3),0) ||
+//             !compare(Gamma4.getAmputatedValue(IC(1,0,0,0),n1,n2,n3),0) ||
+//             !compare(Gamma4.getAmputatedValue(IC(0,1,0,0),n1,n2,n3),0) ||
+//             !compare(Gamma4.getAmputatedValue(IC(0,0,1,0),n1,n2,n3),0) ||
+//             !compare(Gamma4.getAmputatedValue(IC(0,0,0,1),n1,n2,n3),0) ||
+//             !compare(Gamma4.getAmputatedValue(IC(0,1,1,1),n1,n2,n3),0) ||
+//             !compare(Gamma4.getAmputatedValue(IC(1,0,1,1),n1,n2,n3),0) ||
+//             !compare(Gamma4.getAmputatedValue(IC(1,1,0,1),n1,n2,n3),0) ||
+//             !compare(Gamma4.getAmputatedValue(IC(1,1,1,0),n1,n2,n3),0))
+//         return EXIT_FAILURE;
+//     }
 
     return EXIT_SUCCESS;
 }

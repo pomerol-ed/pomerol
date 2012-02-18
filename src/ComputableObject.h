@@ -32,22 +32,16 @@
 
 namespace Pomerol{
 
-/** This abstract class is a prototype for any computable object in the current code, i.e. Greens Function, Two Particle GF, Density Matrix etc...
- *  It defines the current state of calculation and declares virtual methods "compute" and "dump". 
- *  The enumeration of statuses is listed in the Misc.h file
- */
-class ComputableObject{
+class ComputableObject {
 protected:
     /** Current status of an object */
-    ObjectStatus  Status;
+    unsigned int Status;
 public:
     /** Returns the current status of an object */
-    ObjectStatus getStatus(){return Status;};
+    unsigned int getStatus(){return Status;};
 
     /** Constructor - set status to Constructed */
-    ComputableObject():Status(Constructed){};            
-    //virtual void prepare();                   //!< Prepare all the containers of the object, do preliminary fast routines
-    //virtual void compute();                   //!< Do the most expensive calculation. Finishing it means the object has finished all calculation jobs
+    ComputableObject(unsigned int InitialStatus) : Status(InitialStatus){};
 };
 
 } // end of namespace Pomerol

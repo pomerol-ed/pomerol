@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,53 +23,34 @@
 #define __INCLUDE_TWOPARTICLEGFCONTAINER_H
 
 #include"Misc.h"
-#include"ComputableObject.h"
-#include"FourIndexObject.h"
 #include"TwoParticleGF.h"
 #include"FieldOperatorContainer.h"
+#include"IndexContainer4.h"
 
 namespace Pomerol{
 
-class TwoParticleGFContainer : public ComputableObject, public FourIndexContainerObject, public Thermal
+typedef boost::shared_ptr<TwoParticleGF> GF2Pointer;
+
+class TwoParticleGFContainer: public IndexContainer4<TwoParticleGF,TwoParticleGFContainer>, public Thermal
 {
 public:
-    struct Element;
-private:
-    StatesClassification &S;
-    Hamiltonian &H;
-    DensityMatrix &DM; 
-    IndexClassification &IndexInfo;
-    FieldOperatorContainer &Operators;
-    std::vector<IndexCombination*> InitialCombinations;
-    std::vector<IndexCombination*> NonTrivialCombinations;
-    std::map<IndexCombination,Element*>  mapNonTrivialCombinations;
-    long NumberOfMatsubaras;
-    void defineInitialIndices();
-public:
-    TwoParticleGFContainer(StatesClassification &S, Hamiltonian &H, DensityMatrix &DM, IndexClassification& IndexInfo, FieldOperatorContainer& Operators);
 
-    void readInitialIndices(std::vector<IndexCombination*>&);
-    void prepare();
-    void compute(long NumberOfMatsubaras);
-    bool vanishes(const IndexCombination&);
-    long getNumberOfMatsubaras() const;
+    TwoParticleGFContainer(const IndexClassification& IndexInfo, const StatesClassification &S,
+                           const Hamiltonian &H, const DensityMatrix &DM, const FieldOperatorContainer& Operators);
 
-    ComplexType operator()(const IndexCombination&, long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3); 
+    void prepareAll(const std::set<IndexCombination4>& InitialIndices = std::set<IndexCombination4>());
+    void computeAll(long NumberOfMatsubaras = 0);
 
-    void dump();
-    const std::vector<IndexCombination*>& getNonTrivialCombinations();
-    const std::vector<IndexCombination*>& getTrivialCombinations();
-private:
-    void addInnerPermutationsOfIndexCombination(const IndexCombination *in_nontrivial);
-};
+protected:
 
-struct TwoParticleGFContainer::Element
-{
-    TwoParticleGF* Computable2PGF;
-    Permutation4 FrequenciesPermutation;
-    bool isComputed;
-    Element(TwoParticleGF* Computable2PGF, Permutation4 FrequenciesPermutation, bool isComputed);
-    IndexCombination getLinkedIndices();
+    friend class IndexContainer4<TwoParticleGF,TwoParticleGFContainer>;
+    TwoParticleGF* createElement(const IndexCombination4& Indices) const;
+
+    const StatesClassification &S;
+
+    const Hamiltonian &H;
+    const DensityMatrix &DM; 
+    const FieldOperatorContainer &Operators;
 };
 
 } // end of namespace Pomerol

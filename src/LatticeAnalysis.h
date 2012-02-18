@@ -23,6 +23,7 @@
 #define __INCLUDE_LATTICEANALYSIS_H
 
 #include"Misc.h"
+#include"Index.h"
 #include<json/json.h>
 
 namespace Pomerol{

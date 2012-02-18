@@ -43,9 +43,9 @@ namespace Pomerol{
 class DensityMatrixPart : public HDF5Storable, public Thermal
 {
     /** A reference to a states classification object. */
-    StatesClassification& S;
+    const StatesClassification& S;
     /** A reference to a part of a Hamiltonian. */
-    HamiltonianPart& hpart;
+    const HamiltonianPart& hpart;
 
     /** The ground energy of the Hamiltonian.
      * It is subtracted from all energy levels to avoid
@@ -56,7 +56,7 @@ class DensityMatrixPart : public HDF5Storable, public Thermal
     /** A real vector holding all weights in this part. */
     RealVectorType weights;
 
-    /** A contribution to the partition function. */
+    /** The contribution to the partition function. */
     RealType Z_part;
 
 public:
@@ -65,29 +65,33 @@ public:
      * \param[in] beta The inverse temperature.
      * \param[in] GroundEnergy The ground state energy of the Hamiltonian.
      */
-    DensityMatrixPart(StatesClassification &S, HamiltonianPart& hpart, RealType beta, RealType GroundEnergy);
+    DensityMatrixPart(const StatesClassification &S, const HamiltonianPart& hpart, RealType beta, RealType GroundEnergy);
+
+    /** Compute unnormalized weights (diagonal matrix elements)
+     * 
+     * \return The partial partition function.
+     */
+    RealType computeUnnormalized(void);
+
     /** Divide all the weights by the partition function.
      * 
-     * Warning! Must be called once and only once!
      * \param[in] Z The partition function.
      */
     void normalize(RealType Z);
 
-    /** Returns an averaged value of the energy. */
-    RealType getAverageEnergy(void);
-    /** Returns an averaged value of the double occupancy. */
-    RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j);
-    /** Performs computations of the weights and a contribution to the partition function. */
-    RealType compute(void);
-    /** Returns the weight corresponding to a specified number of state.
-     * \param[in] m A number of a state inside this part.
+    /** Returns the weight corresponding to a specified state.
+     * \param[in] s State inside this part.
      */
-    RealType weight(int m);
+    RealType getWeight(InnerQuantumState s) const;
 
-    /** Returns the number of the state, which has the lowest statistical weight before exceeding TruncationTolerance 
-     * \param[in] TruncationTolerance - the level at which the statistical weight should be cutted
-     */
-    InnerQuantumState getMaximumTruncationState( RealType TruncationTolerance);
+    /** Returns an averaged value of the energy. */
+    RealType getAverageEnergy(void) const;
+
+    /** Returns an averaged value of the double occupancy. */
+    RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const;
+
+    /** Returns the partition function of this part. */
+    RealType getPartialZ(void) const;
 
     void save(H5::CommonFG* RootGroup) const;
     void load(const H5::CommonFG* RootGroup);
