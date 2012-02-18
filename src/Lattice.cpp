@@ -95,6 +95,18 @@ Lattice::Lattice():Terms(new TermStorage)
 
 Lattice::~Lattice(){
 delete Terms;
+};
+
+void Lattice::printTerms(unsigned int n){
+TermList Temp = Terms->getTermList(n);
+for (TermList::const_iterator it1=Temp.begin(); it1!=Temp.end(); ++it1) {
+    INFO(**it1 );
+    };
+}
+
+void Lattice::addTerm(const Lattice::Term *T)
+{
+    Terms->addTerm(T);
 }
 
 //

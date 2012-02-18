@@ -78,42 +78,16 @@ int main(int argc, char *argv[])
   //L.readin(opt.LatticeFile);
   Lattice::TermStorage s1; 
 
-  Lattice::Term T1(2);
-  T1.Order[0]=false;
-  T1.Order[1]=true;
-  T1.SiteLabels[0]="A";
-  T1.SiteLabels[1]="B";
-  T1.Spins[0]=0;
-  T1.Spins[1]=0;
-  T1.Orbitals[0]=0;
-  T1.Orbitals[1]=0;
-  T1.Value=1.0;
-
-  cout << T1 << endl;
-  Lattice::Term *T=&T1;
-  s1.addTerm(T);
-  cout << T->getOrder() << endl;
-
-  Lattice::Term T2(4);
-  T2.Order[0]=false;
-  T2.Order[1]=true;
-  T2.Order[2]=false;
-  T2.Order[3]=true;
-  T2.SiteLabels[0]="A";
-  T2.SiteLabels[1]="B";
-  T2.SiteLabels[2]="C";
-  T2.SiteLabels[3]="D";
-
-  T=&T2;
-  cout << T2 << endl;
-  cout << T->getOrder() << endl;
-  s1.addTerm(T);
-
-  s1.getTermList(2);
-
   Lattice::Presets::addSSite((Lattice*) &L,  std::string("A"), 1.0, 0.5);  
   Lattice::Presets::addSSite((Lattice*) &L,  std::string("B"), 2.0, 0.5);  
-  //Lattice::Presets::addPSite((Lattice*) &L,  std::string("C"), 4.0, 0.5, 2.0);  
+  L.addTerm(Lattice::Term::Presets::Hopping(std::string("A"), std::string("B"), 1.0, 0, up));
+  L.addTerm(Lattice::Term::Presets::Hopping(std::string("A"), std::string("B"), 1.0, 0, down));
+  //Lattice::Presets::addPSite((Lattice*) &L,  std::string("C"), 4, 1, 5, 2, 2);  
+
+  INFO("Terms with 2 operators");
+  L.printTerms(2);
+  INFO("Terms with 4 operators");
+  L.printTerms(4);
 
   return 0;
 };

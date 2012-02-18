@@ -51,6 +51,15 @@ public:
     class TermStorage;
     /** A set of presets to fill the TermStorage and Sites for some commonly used examples. Look at the LatticePresets.h . */
     class Presets;
+    
+    /** Add a Term to the Lattice::Storage.
+     * \param[in] T The Term to add.
+     */
+    void addTerm(const Term* T);
+    /** Print all terms of the given order
+     * \param[in] order The order of Terms to print 
+     */
+    void printTerms(unsigned int order);
     virtual void do_nothing()=0;
 protected:
     /** A map between the particular Lattice::Site and it's label. */
@@ -126,7 +135,8 @@ friend std::ostream& operator<< (std::ostream& output, const Term& out);
 
 /** A storage for all the terms. Realized as a map between the order of the Lattice::Terms and the corresponding Lattice::TermList */
 class Lattice::TermStorage { 
-private:
+friend class Lattice;
+protected:
     /** A storage for the TermLists for the corresponding order */
     std::map<unsigned int, Lattice::TermList> Terms;
 public:
