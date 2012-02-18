@@ -41,26 +41,26 @@ const Lattice::Site pSite (std::string(""), 3, 2);
 class Lattice::Term::Presets{
 private:
 public:
-    static Term* Hopping     ( std::string Label1, std::string Label2, RealType Value, unsigned short orbital, unsigned short spin);
-    static Term* Level       ( std::string Label, RealType Value, unsigned short orbital, unsigned short spin);
+    static Term* Hopping     ( const std::string& Label1, const std::string& Label2, RealType Value, unsigned short orbital, unsigned short spin);
+    static Term* Level       ( const std::string& Label, RealType Value, unsigned short orbital, unsigned short spin);
 
-    static Term* NupNdown    ( std::string Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2);
-    static Term* NupNdown    ( std::string Label, RealType Value, unsigned short orbital1, unsigned short orbital2);
-    static Term* NupNdown    ( std::string Label, RealType Value, unsigned short orbital, unsigned short spin1 = up, unsigned short spin2 = down);
+    static Term* NupNdown    ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2);
+    static Term* NupNdown    ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2);
+    static Term* NupNdown    ( const std::string& Label, RealType Value, unsigned short orbital, unsigned short spin1 = up, unsigned short spin2 = down);
 
-    static Term* Spinflip ( std::string Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 = up, unsigned short spin2 = down);
-    static Term* PairHopping (std::string Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 = up, unsigned short spin2 = down);
+    static Term* Spinflip ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 = up, unsigned short spin2 = down);
+    static Term* PairHopping (const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 = up, unsigned short spin2 = down);
 };
 
 class Lattice::Presets {
 public:
-    static void addSSite(Lattice *L, std::string label, RealType U, RealType Level, unsigned short Orbitals=1, unsigned short Spins=2);
+    static void addSSite(Lattice *L, const std::string& label, RealType U, RealType Level, unsigned short Orbitals=1, unsigned short Spins=2);
 
-    static void addPSite(Lattice *L, std::string label, RealType U, RealType U_p, RealType J, RealType Level, unsigned short Orbitals, unsigned short Spins);
-    static void addPSite(Lattice *L, std::string label, RealType U, RealType J, RealType Level, unsigned short Orbitals, unsigned short Spins);
-    static void addPSite(Lattice *L, std::string label, RealType U, RealType J, RealType Level, unsigned Orbitals);
+    static void addPSite(Lattice *L, const std::string& label, RealType U, RealType U_p, RealType J, RealType Level, unsigned short Orbitals, unsigned short Spins);
+    static void addPSite(Lattice *L, const std::string& label, RealType U, RealType J, RealType Level, unsigned short Orbitals, unsigned short Spins);
+    static void addPSite(Lattice *L, const std::string& label, RealType U, RealType J, RealType Level, unsigned Orbitals);
 
-    static void addMagnetization( Lattice *L, std::string label, RealType Magnetization, unsigned short Orbitals, unsigned short Spins=2);
+    static void addMagnetization( Lattice *L, const std::string& label, RealType Magnetization, unsigned short Orbitals, unsigned short Spins=2);
 };
 
 

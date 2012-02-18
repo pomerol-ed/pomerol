@@ -13,7 +13,7 @@ Lattice::Site::Site()
 {
 };
 
-Lattice::Site::Site(std::string label, unsigned short OrbitalSize, unsigned short SpinSize):label(label), OrbitalSize(OrbitalSize), SpinSize(SpinSize)
+Lattice::Site::Site(const std::string& label, unsigned short OrbitalSize, unsigned short SpinSize):label(label), OrbitalSize(OrbitalSize), SpinSize(SpinSize)
 {
 };
 

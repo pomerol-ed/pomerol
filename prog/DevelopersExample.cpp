@@ -78,11 +78,11 @@ int main(int argc, char *argv[])
   //L.readin(opt.LatticeFile);
   Lattice::TermStorage s1; 
 
-  Lattice::Presets::addSSite((Lattice*) &L,  std::string("A"), 1.0, 0.5);  
-  Lattice::Presets::addSSite((Lattice*) &L,  std::string("B"), 2.0, 0.5);  
-  L.addTerm(Lattice::Term::Presets::Hopping(std::string("A"), std::string("B"), 1.0, 0, up));
-  L.addTerm(Lattice::Term::Presets::Hopping(std::string("A"), std::string("B"), 1.0, 0, down));
-  Lattice::Presets::addPSite((Lattice*) &L,  std::string("C"), 4, 1, 5, 2, 2);  
+  Lattice::Presets::addSSite((Lattice*) &L, "A", 1.0, 0.5);  
+  Lattice::Presets::addSSite((Lattice*) &L, "B", 2.0, 0.5);  
+  L.addTerm(Lattice::Term::Presets::Hopping("A", "B", 1.0, 0, up));
+  L.addTerm(Lattice::Term::Presets::Hopping("A", "B", 1.0, 0, down));
+  Lattice::Presets::addPSite((Lattice*) &L, "C", 4, 1, 5, 2, 2);  
 
   INFO("Terms with 2 operators");
   L.printTerms(2);

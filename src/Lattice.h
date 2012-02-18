@@ -90,7 +90,7 @@ public:
      * \param[in] OrbitalSize Number of Orbitals for current site 
      * \param[in] SpinSize Number of spins for current site 
      * */
-    Site(std::string label, unsigned short OrbitalSize, unsigned short SpinSize );
+    Site(const std::string& label, unsigned short OrbitalSize, unsigned short SpinSize );
 /** Make the object printable. */
 friend std::ostream& operator<<(std::ostream& output, const Site& out);
 };

@@ -35,7 +35,7 @@ namespace Pomerol {
 
 // 2-index presets
 
-Lattice::Term* Lattice::Term::Presets::Hopping ( std::string Label1, std::string Label2, RealType Value, unsigned short orbital, unsigned short spin)
+Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, const std::string& Label2, RealType Value, unsigned short orbital, unsigned short spin)
 {
     Lattice::Term *T = new Term(2);
     bool Order[2] = { 1, 0 };
@@ -50,14 +50,14 @@ Lattice::Term* Lattice::Term::Presets::Hopping ( std::string Label1, std::string
     return T;
 };
 
-Lattice::Term* Lattice::Term::Presets::Level ( std::string Label, RealType Value, unsigned short orbital, unsigned short spin)
+Lattice::Term* Lattice::Term::Presets::Level ( const std::string& Label, RealType Value, unsigned short orbital, unsigned short spin)
 {
     return Hopping(Label, Label, Value, orbital, spin);
 };
 
 // 4-index presets
 
-Lattice::Term* Lattice::Term::Presets::NupNdown ( std::string Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     Lattice::Term *T = new Term(4); 
     bool order[4]              =      { 1,     0,     1,     0     };       
@@ -72,17 +72,17 @@ Lattice::Term* Lattice::Term::Presets::NupNdown ( std::string Label, RealType Va
     return T;
 }
 
-Lattice::Term* Lattice::Term::Presets::NupNdown ( std::string Label, RealType Value, unsigned short orbital1, unsigned short orbital2 )
+Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2 )
 { 
     return NupNdown(Label, Value, orbital1, orbital2, up, down);
 };
 
-Lattice::Term* Lattice::Term::Presets::NupNdown ( std::string Label, RealType Value, unsigned short Orbital, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, RealType Value, unsigned short Orbital, unsigned short spin1, unsigned short spin2 )
 {
     return NupNdown(Label, Value, Orbital, Orbital, spin1, spin2);
 };
 
-Lattice::Term* Lattice::Term::Presets::Spinflip ( std::string Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::Spinflip ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     if (orbital1 == orbital2 || spin1 == spin2) { ERROR("Spinflips should have different spins and orbitals"); }
     Lattice::Term *T = new Term(4); 
@@ -98,7 +98,7 @@ Lattice::Term* Lattice::Term::Presets::Spinflip ( std::string Label, RealType Va
     return T;
 }
 
-Lattice::Term* Lattice::Term::Presets::PairHopping ( std::string Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::PairHopping ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     if (orbital1 == orbital2 || spin1 == spin2) { ERROR("Pair hopping terms should have different spins and orbitals"); }
     Lattice::Term *T = new Term(4); 
@@ -119,7 +119,7 @@ Lattice::Term* Lattice::Term::Presets::PairHopping ( std::string Label, RealType
 // Lattice::Presets
 //
 
-void Lattice::Presets::addSSite(Lattice *L, std::string label, RealType U, RealType Level, unsigned short Orbitals, unsigned short Spins)
+void Lattice::Presets::addSSite(Lattice *L, const std::string& label, RealType U, RealType Level, unsigned short Orbitals, unsigned short Spins)
 {
     Lattice::Site* current = new Lattice::Site(sSite);
     current->label=label;
@@ -145,7 +145,7 @@ void Lattice::Presets::addSSite(Lattice *L, std::string label, RealType U, RealT
        };
 };
 
-void Lattice::Presets::addPSite(Lattice *L, std::string label, RealType U, RealType U_p, RealType J, RealType Level, unsigned short Orbitals, unsigned short Spins)
+void Lattice::Presets::addPSite(Lattice *L, const std::string& label, RealType U, RealType U_p, RealType J, RealType Level, unsigned short Orbitals, unsigned short Spins)
 {
     Lattice::Site* current = new Lattice::Site(pSite);
     current->label=label;
@@ -169,17 +169,17 @@ void Lattice::Presets::addPSite(Lattice *L, std::string label, RealType U, RealT
         };
 };
 
-void Lattice::Presets::addPSite(Lattice *L, std::string label, RealType U, RealType J, RealType Level, unsigned short Orbitals, unsigned short Spins)
+void Lattice::Presets::addPSite(Lattice *L, const std::string& label, RealType U, RealType J, RealType Level, unsigned short Orbitals, unsigned short Spins)
 {
     addPSite(L, label, U, U-J, J, Level, Orbitals, Spins);
 }
 
-void Lattice::Presets::addPSite(Lattice *L, std::string label, RealType U, RealType J, RealType Level, unsigned Orbitals)
+void Lattice::Presets::addPSite(Lattice *L, const std::string& label, RealType U, RealType J, RealType Level, unsigned Orbitals)
 {
     addPSite(L, label, U, U-J, J, Level, Orbitals, 2);
 }
 
-void Lattice::Presets::addMagnetization(Lattice *L, std::string label, RealType Magnetization, unsigned short Orbitals, unsigned short Spins)
+void Lattice::Presets::addMagnetization(Lattice *L, const std::string& label, RealType Magnetization, unsigned short Orbitals, unsigned short Spins)
 {
 }
 
