@@ -60,18 +60,18 @@ std::ostream& operator<<(std::ostream& output,const QuantumNumbers& out)
 
 //class StatesClassification
 
-const std::vector<QuantumState>& StatesClassification::getQuantumStates( QuantumNumbers in )            //return st[in.Lz][in.N_up][in.N_down]
+const std::vector<QuantumState>& StatesClassification::getQuantumStates( QuantumNumbers in ) const            //return st[in.Lz][in.N_up][in.N_down]
 {
     return st[in[0]][in[1]][in[2]];
 }
 
 
-const QuantumState StatesClassification::getQuantumState( QuantumNumbers in, int m )            //return st[in.Lz][in.N_up][in.N_down][m]
+const QuantumState StatesClassification::getQuantumState( QuantumNumbers in, int m ) const            //return st[in.Lz][in.N_up][in.N_down][m]
 {
     return st[in[0]][in[1]][in[2]][m];
 }
 
-const InnerQuantumState StatesClassification::getInnerState(QuantumState state)
+const InnerQuantumState StatesClassification::getInnerState(QuantumState state) const
 {
   int ST=-1;                // "state" in part of Hamilt            
   for (unsigned int n=0; n<(*this).getQuantumStates((*this).getStateInfo(state)).size(); n++ )
@@ -81,13 +81,13 @@ const InnerQuantumState StatesClassification::getInnerState(QuantumState state)
  return ST;
 }
 
-bool StatesClassification::checkQuantumNumbers(QuantumNumbers in)
+bool StatesClassification::checkQuantumNumbers(QuantumNumbers in) const
 {
     return (QuantumToBlock.count(in)>0);
 };
 
 
-BlockNumber StatesClassification::getBlockNumber(QuantumNumbers in)
+BlockNumber StatesClassification::getBlockNumber(QuantumNumbers in) const
 {
  /* if ((in.Lz*(N_bit/2 + 1)*(N_bit/2 + 1) + in.N_up*(N_bit/2 + 1) + in.N_down) <= ((int) BLOCKNUMBERLIMIT) 
     && 
@@ -97,25 +97,25 @@ BlockNumber StatesClassification::getBlockNumber(QuantumNumbers in)
   }
   else return ERROR_BLOCK_NUMBER;
   */
-    return (QuantumToBlock.count(in))?QuantumToBlock[in]:ERROR_BLOCK_NUMBER;
+    return (QuantumToBlock.count(in))?QuantumToBlock.find(in)->second:ERROR_BLOCK_NUMBER;
 }
 
-QuantumNumbers StatesClassification::getBlockInfo(BlockNumber in)
+QuantumNumbers StatesClassification::getBlockInfo(BlockNumber in) const
 {
-      return (BlockToQuantum.count(in))?BlockToQuantum[in]:ERROR_QUANTUM_NUMBERS;
+      return (BlockToQuantum.count(in))?BlockToQuantum.find(in)->second:ERROR_QUANTUM_NUMBERS;
 }
 
-void StatesClassification::getSiteInfo(int bit, int& lz, int& spin)
+void StatesClassification::getSiteInfo(int bit, int& lz, int& spin) const
 {
   spin = (bit>=N_bit/2)?-1:1; 
   bit%=(N_bit/2);
   lz = (bit>=N_bit_m/2)?0:bit-(N_bit_m/2-1)/2;
 }
-BlockNumber StatesClassification::NumberOfBlocks()
+BlockNumber StatesClassification::NumberOfBlocks() const
 {
     return maximumBlockNumber_+1; 
 }
-const QuantumState StatesClassification::getNumberOfStates()
+const QuantumState StatesClassification::getNumberOfStates() const
 {
     return N_state;
 }
@@ -126,7 +126,7 @@ void StatesClassification::compute()             //initalize StatesClassificatio
     N_state = ( 1 << N_bit ); 
     N_bit_m=0;
     #warning : bad N_bit_m definition. Actually existence of N_bit_m is definetely bad.
-      for (std::vector<SingleIndex*>::iterator it=IndexInfo.getSingleIndexList().begin(); it != IndexInfo.getSingleIndexList().end(); it++ ) 
+      for (std::vector<SingleIndex*>::const_iterator it=IndexInfo.getSingleIndexList().begin(); it != IndexInfo.getSingleIndexList().end(); it++ ) 
     {
         if ((*it)->type == p) { N_bit_m = 6; break;};
         if ((*it)->type == d) { N_bit_m = 10; break; };
@@ -205,7 +205,7 @@ void StatesClassification::compute()             //initalize StatesClassificatio
     }
 }
 
-QuantumNumbers StatesClassification::getStateInfo(QuantumState in)                        //returns Lz,N_up,N_down for number in
+QuantumNumbers StatesClassification::getStateInfo(QuantumState in) const                        //returns Lz,N_up,N_down for number in
 {
     
     if (in >= N_state) return ERROR_QUANTUM_NUMBERS;
@@ -242,7 +242,7 @@ QuantumNumbers StatesClassification::getStateInfo(QuantumState in)              
 
 }
 
-BlockNumber StatesClassification::getBlockNumber(QuantumState in)
+BlockNumber StatesClassification::getBlockNumber(QuantumState in) const
 {
     return (*this).getBlockNumber((*this).getStateInfo(in));
 }

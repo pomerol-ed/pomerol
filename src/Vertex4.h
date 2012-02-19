@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,105 +29,40 @@
 #define __INCLUDE_VERTEX4_H
 
 #include"Misc.h"
-#include"ComputableObject.h"
-#include"FourIndexObject.h"
+#include"Logger.h"
 #include"GFContainer.h"
 #include"TwoParticleGFContainer.h"
+#include"MatsubaraContainers.h"
 
 namespace Pomerol{
 
-/** Objects of this class just transforms a two-particle Green's function into
- * an irreducible vertex part or into an amputated irreducible vertex.
- */
-class Vertex4 : public ComputableObject, public FourIndexContainerObject, public Thermal {
+class Vertex4 : public Thermal, public ComputableObject {
 
-    /** A reference to a two-particle Green's function. */
-    TwoParticleGFContainer &Chi;
-    /** A reference to a Green's function container */
-    GFContainer &g;
-    /** A reference to a bit classification object */
-    const IndexClassification &IndexInfo;
-    
-    /** Precomputed inverted Green's function matrices calculated at different Matsubara frequencies. */
-    std::vector<MatrixType> InvertedGFs;
+    enum {Constructed,Computed};
 
-    /** Amount of computed matsubaras in TwoParticleGF */
-    long NumberOfMatsubaras;
+    TwoParticleGF &Chi4;
+    GreensFunction &G13;
+    GreensFunction &G24;
+    GreensFunction &G14;
+    GreensFunction &G23;
 
-    /** A storage for unamputated values */
-    std::map<IndexCombination,MatsubaraContainer*> mapUnAmputatedValues;
+    /** Storage for precomputed values. */
+    mutable MatsubaraContainer4<Vertex4> Storage;
+    friend class MatsubaraContainer4<Vertex4>;
 
-    /** A vector of all nontrivial combinations to compute */
-    std::vector<IndexCombination*> NonTrivialAmputatedCombinations;
-
-    /** A storage for amputated values */
-    std::map<IndexCombination,MatsubaraContainer*> mapAmputatedValues;
+    ComplexType value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
 public:
-    /** Constructor.
-     * \param[in] IndexInfo A reference to a bit classification object.
-     * \param[in] Chi A reference to a two-particle Green's function.
-     * \param[in] g1 A reference to a Green's function container.
-     */
-    Vertex4(const IndexClassification &IndexInfo, TwoParticleGFContainer &Chi, GFContainer &g);
 
-    //============================= UnAmputated methods ==============================//
+    Vertex4(TwoParticleGF& Chi4,
+            GreensFunction& G13, GreensFunction& G24,
+            GreensFunction& G14, GreensFunction& G23);
 
-    /** Do some preparation procedures : prepare storage */
-    void prepareUnAmputated();
+    void compute(long NumberOfMatsubaras = 0);
 
-    /** Compute unamputated values
-     */
-    void computeUnAmputated();
+    ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
-     /** Returns the value of the unamputated irreducible vertex calculated at given frequencies.
-     * \param[in] Requested indices.
-     * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
-     * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
-     * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
-     */
-    ComplexType getUnAmputatedValue(const IndexCombination& in,
-                             long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-
-
-    //============================= Amputated methods ==============================//
-     /** Do some preparation procedures : calculate inverted GF's, prepare storage */
-    void prepareAmputated(std::vector<IndexCombination*>&);
-
-     /** Returns the value of the amputated irreducible vertex calculated at given frequencies.
-     * \param[in] Requested indices.
-     * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
-     * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
-     * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
-     */
-    ComplexType getAmputatedValue(const IndexCombination& in,
-                             long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-
-    void computeAmputated();
-
-    //==============================================================================//
-    /** Returns the value of the irreducible vertex calculated at given frequencies.
-     * \param[in] in Requested indices.
-     * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
-     * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
-     * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
-     */
-    ComplexType operator()(const IndexCombination& in, 
-                           long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3);
-
-
-private:
-    bool vanishes(const IndexCombination& in); 
-
-    /** Compute unamputated values
-     * \param[in] Requested indices.
-     */
-    void computeUnAmputated(const IndexCombination& in);
-
-    /** Compute amputated values
-     * \param[in] Requested indices.
-     */
-    void computeAmputated(const IndexCombination& in);
+    bool isVanishing(void) const;
 };
 
 } // end of namespace Pomerol

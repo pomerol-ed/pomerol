@@ -29,9 +29,9 @@
 #define __INCLUDE_INDEXCLASSIFICATION_H
 
 #include"Misc.h"
+#include"Logger.h"
 #include"LatticeAnalysis.h"
 #include"Term.h"
-#include"Logger.h"
 #include<json/json.h>
 
 namespace Pomerol{
@@ -92,7 +92,7 @@ class TermsList
    public:
    void addTerm(Term* in);                                           //!< Add a new term to the List
    TermsList(){maxOrder=0;};
-   std::list<Term*> &getTerms(unsigned short order);                 //!< Get a list of terms of a given order
+   const std::list<Term*> &getTerms(unsigned short order) const;                 //!< Get a list of terms of a given order
    friend std::ostream& operator<<(std::ostream& output,TermsList& out);
 };
 
@@ -122,11 +122,11 @@ public:
     void printHoppingMatrix();                          //!< Print HoppingMatrix to screen
     void printTerms();                                  //!< Print TermsList to screen
     void printEquivalentPermutations();                 //!< Print all equivalent ParticleIndex permutations
-    RealMatrixType& getHoppingMatrix();                 //!< Returns a Hopping Matrix
-    std::vector<SingleIndex*> &getSingleIndexList();    //!< Returns a SingleIndexList
+    const RealMatrixType& getHoppingMatrix() const;                 //!< Returns a Hopping Matrix
+    const std::vector<SingleIndex*> &getSingleIndexList() const;    //!< Returns a SingleIndexList
     const int& getIndexSize() const;                    //!< Returns N_bit
-    bool checkIndex(ParticleIndex in);                  //!< Returns true if current Index may exist, i.e. if it is between 0 and N_bit-1
-    TermsList& getTermsList();                    //!< Returns Terms
+    bool checkIndex(ParticleIndex in) const;                  //!< Returns true if current Index may exist, i.e. if it is between 0 and N_bit-1
+    const TermsList& getTermsList() const;                    //!< Returns Terms
     const std::list<IndexClassification::IndexPermutation> &getEquivalentIndexPermutations();  //!< Returns a vector of equivalent index permutation
 private:
     void defineIndices();                               //!< Define the bit classification from the info from file

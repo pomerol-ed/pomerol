@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,100 +20,35 @@
 
 
 #include "GFContainer.h"
-extern std::ostream& OUTPUT_STREAM;
 
 namespace Pomerol{
 
-GFContainer::IndexCombination::IndexCombination(ParticleIndex cindex1, ParticleIndex cdagindex2)
+GFContainer::GFContainer ( const IndexClassification& IndexInfo,
+                           const StatesClassification& S,
+                           const Hamiltonian &H, const DensityMatrix &DM,
+                           const FieldOperatorContainer& Operators) :
+    IndexContainer2(this,IndexInfo), Thermal(DM), S(S), H(H), DM(DM), Operators(Operators)
+{}
+
+void GFContainer::prepareAll(const std::set<IndexCombination2>& InitialIndices)
 {
-    Indices[0]=cindex1;
-    Indices[1]=cdagindex2;
+    fill(InitialIndices);
+    for(std::map<IndexCombination2,GFPointer>::iterator iter = ElementsMap.begin();
+        iter != ElementsMap.end(); iter++)
+        (iter->second)->prepare();
 }
 
-bool GFContainer::IndexCombination::operator<(const GFContainer::IndexCombination& rhs) const
+void GFContainer::computeAll(long NumberOfMatsubaras)
 {
-  return (Indices[0]<rhs.Indices[0]) || (Indices[0]==rhs.Indices[0] && Indices[1] < rhs.Indices[1]);
+    for(std::map<IndexCombination2,GFPointer>::iterator iter = ElementsMap.begin();
+        iter != ElementsMap.end(); iter++)
+        (iter->second)->compute(NumberOfMatsubaras);
 }
 
-
-std::ostream& operator<<(std::ostream& output,const GFContainer::IndexCombination& out)
+GreensFunction* GFContainer::createElement(const IndexCombination2& Indices) const
 {
-output << "(" << out.Indices[0] << out.Indices[1] << ")" << std::flush;
-return output;
+    return new GreensFunction(S,H, Operators.getAnnihilationOperator(Indices.Index1),
+                                   Operators.getCreationOperator(Indices.Index2),DM);
 }
-
-
-/*=========================================================================*/
-
-GFContainer::GFContainer ( StatesClassification &S, Hamiltonian &H, DensityMatrix &DM,IndexClassification& IndexInfo, FieldOperatorContainer& Operators):
-  ComputableObject(),Thermal(DM),S(S),H(H),DM(DM),IndexInfo(IndexInfo),Operators(Operators)
-{
-};
-
-MatrixType& GFContainer::operator()(long MatsubaraNumber)
-{
-    MatrixType* Output = new MatrixType(IndexInfo.getIndexSize(), IndexInfo.getIndexSize());
-    Output->setZero();
-    for (std::map<IndexCombination, GreensFunction*>::iterator it1=mapGreensFunctions.begin(); it1!=mapGreensFunctions.end(); it1++){
-        (*Output)(it1->first.Indices[0],it1->first.Indices[1]) = (*it1->second)(MatsubaraNumber);
-        };
-    return *Output; 
-};
-
-ComplexType GFContainer::operator()(ParticleIndex i, ParticleIndex j, long MatsubaraNumber)
-{
-    return (!vanishes(i,j))?(*mapGreensFunctions[IndexCombination(i,j)])(MatsubaraNumber):((i==j)?I*(-1.)*beta/((2*MatsubaraNumber+1)*M_PI):0.);
-    //return (!vanishes(i,j))?(*mapGreensFunctions[IndexCombination(i,j)])(MatsubaraNumber):((i==j)?1.:0.);
-};
-
-bool GFContainer::vanishes(ParticleIndex i, ParticleIndex j)
-{
-   return (mapGreensFunctions.count(IndexCombination(i,j))==0); 
-};
-
-void GFContainer::defineInitialIndices()
-{
-    for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); ++i)
-        for (ParticleIndex j=0; j<IndexInfo.getIndexSize(); ++j){
-            IndexCombination * Gij = new IndexCombination(i,j);
-            InitialIndices.push_back(Gij);
-            };
-}
-
-void GFContainer::readInitialIndices(std::vector<IndexCombination*> &in)
-{
-    InitialIndices=in;
-};
-
-void GFContainer::prepare()
-{
-if (Status == Constructed){
-    if (InitialIndices.size()==0) defineInitialIndices();
-    for (std::vector<IndexCombination*>::const_iterator it=InitialIndices.begin(); it!=InitialIndices.end(); ++it) {
-        GreensFunction *GF = new GreensFunction (S,H,Operators.getAnnihilationOperator((*it)->Indices[0]),Operators.getCreationOperator((*it)->Indices[1]),DM);
-        GF->prepare();
-        if (!GF->vanishes()) mapGreensFunctions[**it]=GF;
-        }
-    Status = Prepared;
-    };
-};
-
-void GFContainer::compute()
-{
-if (Status == Prepared){
-    for (std::map<IndexCombination,GreensFunction*>::iterator it1=mapGreensFunctions.begin();it1!=mapGreensFunctions.end();++it1){
-           INFO("GFContainer: computing G_{" << it1->first << "}");
-           it1->second->compute(); 
-        };
-    Status = Computed;
-    };
-};
-
-void GFContainer::dumpToPlainText(long wn)
-{
-    for (std::map<IndexCombination,GreensFunction*>::iterator it1=mapGreensFunctions.begin();it1!=mapGreensFunctions.end();++it1){
-           it1->second->dumpToPlainText(wn); 
-        };
-};
 
 } // end of namespace Pomerol

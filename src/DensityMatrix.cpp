@@ -29,14 +29,14 @@
 
 namespace Pomerol{
 
-DensityMatrix::DensityMatrix(StatesClassification& S, Hamiltonian& H, RealType beta) : 
-    ComputableObject(), Thermal(beta), S(S), H(H), parts(S.NumberOfBlocks())
+DensityMatrix::DensityMatrix(const StatesClassification& S, const Hamiltonian& H, RealType beta) : 
+    Thermal(beta), S(S), H(H), parts(S.NumberOfBlocks())
 {}
 
 DensityMatrix::~DensityMatrix()
 {
-    BlockNumber NumOfBlocks = parts.size();
-    for(BlockNumber n = 0; n < NumOfBlocks; n++) delete parts[n];
+    for(std::vector<DensityMatrixPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+	delete *iter;
 }
 
 void DensityMatrix::prepare(void)
@@ -46,7 +46,7 @@ void DensityMatrix::prepare(void)
     // There is one-to-one correspondence between parts of the Hamiltonian
     // and parts of the density matrix itself. 
     for(BlockNumber n = 0; n < NumOfBlocks; n++)
-        parts[n] = new DensityMatrixPart(S, H.part(n),beta,GroundEnergy);
+        parts[n] = new DensityMatrixPart(S, H.getPart(n),beta,GroundEnergy);
 }
 
 void DensityMatrix::compute(void)
@@ -55,46 +55,50 @@ void DensityMatrix::compute(void)
     RealType Z = 0;
     // A total partition function is a sum over partition functions of
     // all non-normalized parts.
-    for(BlockNumber n = 0; n < NumOfBlocks; n++) Z += parts[n]->compute();
+    for(std::vector<DensityMatrixPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+        Z += (*iter)->computeUnnormalized();
+ 
     // Divide the density matrix by Z.
-    for(BlockNumber n = 0; n < NumOfBlocks; n++) parts[n]->normalize(Z);
-    std::cout << "Partition Function = " << Z << std::endl;
+    for(std::vector<DensityMatrixPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+        (*iter)->normalize(Z);
 }
 
-RealType DensityMatrix::operator()( QuantumState &state )
+RealType DensityMatrix::getWeight(QuantumState state) const
 {
-    BlockNumber block_num = S.getBlockNumber(S.getStateInfo(state));
-    int inner_state = S.getInnerState(state);
+    BlockNumber BlockNumber = S.getBlockNumber(S.getStateInfo(state));
+    InnerQuantumState InnerState = S.getInnerState(state);
 
-    return parts[block_num]->weight(inner_state);
+    return parts[BlockNumber]->getWeight(InnerState);
 }
-
-DensityMatrixPart& DensityMatrix::part(const QuantumNumbers &in)
+ 
+const DensityMatrixPart& DensityMatrix::getPart(const QuantumNumbers &in) const
 {
     return *parts[S.getBlockNumber(in)];
 }
-
-DensityMatrixPart& DensityMatrix::part(BlockNumber in)
+ 
+const DensityMatrixPart& DensityMatrix::getPart(BlockNumber in) const
 {
     return *parts[in];
 }
 
-RealType DensityMatrix::getAverageEnergy()
+RealType DensityMatrix::getAverageEnergy() const
 {
     BlockNumber NumOfBlocks = parts.size();
     RealType E = 0;
-    for(BlockNumber n = 0; n < NumOfBlocks; n++) E += parts[n]->getAverageEnergy();
+    for(std::vector<DensityMatrixPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+    E += (*iter)->getAverageEnergy();
     return E;
 };
 
-RealType DensityMatrix::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j)
+RealType DensityMatrix::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const
 {
     BlockNumber NumOfBlocks = parts.size();
     RealType NN = 0;
-    for(BlockNumber n = 0; n < NumOfBlocks; n++) NN += parts[n]->getAverageDoubleOccupancy(i,j);
+    for(std::vector<DensityMatrixPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+    NN += (*iter)->getAverageDoubleOccupancy(i,j);
     return NN;
 };
-
+ 
 void DensityMatrix::save(H5::CommonFG* RootGroup) const
 {
     H5::Group DMRootGroup(RootGroup->createGroup("DensityMatrix"));
@@ -106,35 +110,32 @@ void DensityMatrix::save(H5::CommonFG* RootGroup) const
     BlockNumber NumOfBlocks = parts.size();
     H5::Group PartsGroup = DMRootGroup.createGroup("parts");
     for(BlockNumber n = 0; n < NumOfBlocks; n++){
-	std::stringstream nStr;
-	nStr << n;
-	H5::Group PartGroup = PartsGroup.createGroup(nStr.str().c_str());
-	parts[n]->save(&PartGroup);
+    std::stringstream nStr;
+    nStr << n;
+    H5::Group PartGroup = PartsGroup.createGroup(nStr.str().c_str());
+    parts[n]->save(&PartGroup);
     }
 }
-
+ 
 void DensityMatrix::load(const H5::CommonFG* RootGroup)
 {
     H5::Group DMRootGroup(RootGroup->openGroup("DensityMatrix"));  
     RealType newBeta = HDF5Storage::loadReal(&DMRootGroup,"beta");
     if(newBeta != beta)
-	throw(H5::DataSetIException("DensityMatrix::load()",
-				    "Data in the storage is for another value of the temperature."));
-
-    if(Status<Prepared) prepare();
+    throw(H5::DataSetIException("DensityMatrix::load()",
+                    "Data in the storage is for another value of the temperature."));
 
     H5::Group PartsGroup = DMRootGroup.openGroup("parts");
     BlockNumber NumOfBlocks = parts.size();
     if(NumOfBlocks != PartsGroup.getNumObjs())
-	throw(H5::GroupIException("DensityMatrix::load()","Inconsistent number of stored parts."));
+    throw(H5::GroupIException("DensityMatrix::load()","Inconsistent number of stored parts."));
 
     for(BlockNumber n = 0; n < NumOfBlocks; n++){
-	std::stringstream nStr;
-	nStr << n;
-	H5::Group PartGroup = PartsGroup.openGroup(nStr.str().c_str());
-	parts[n]->load(&PartGroup);
+    std::stringstream nStr;
+    nStr << n;
+    H5::Group PartGroup = PartsGroup.openGroup(nStr.str().c_str());
+    parts[n]->load(&PartGroup);
     }
-    Status = Computed;
 }
 
 } // end of namespace Pomerol

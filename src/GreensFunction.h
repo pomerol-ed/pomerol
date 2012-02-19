@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
+// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,16 +29,15 @@
 #define __INCLUDE_GREENSFUNCTION_H
 
 #include <sstream>
-#include <fstream>
-//#include <iomanip>
-//#include <cmath>
 
 #include"Misc.h"
+#include"Thermal.h"
 #include"ComputableObject.h"
 #include"StatesClassification.h"
 #include"FieldOperator.h"
 #include"DensityMatrix.h"
 #include"GreensFunctionPart.h"
+#include"MatsubaraContainers.h"
 
 namespace Pomerol{
 
@@ -54,24 +53,37 @@ namespace Pomerol{
  * take place inside the parts). A pair of parts, one part of an annihilation operator and
  * another from a creation operator, corresponds to a part of the Green's function.
  */
-class GreensFunction : public ComputableObject, public Thermal {
+class GreensFunction : public Thermal, public ComputableObject {
+
+    enum {Constructed,Prepared,Computed};
+
     /** A reference to a states classification object. */
-    StatesClassification& S;
+    const StatesClassification& S;
     /** A reference to a Hamiltonian. */
-    Hamiltonian& H;
+    const Hamiltonian& H;
     /** A reference to an annihilation operator. */
-    AnnihilationOperator& C;
+    const AnnihilationOperator& C;
     /** A reference to a creation operator. */
-    CreationOperator& CX;
+    const CreationOperator& CX;
     /** A reference to a density matrix. */
-    DensityMatrix& DM;
+    const DensityMatrix& DM;
+
     /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
-    bool vanish;
+    bool Vanishing;
 
     /** A list of pointers to parts (every part corresponds to a part of the annihilation operator
      * and a part of the creation operator).
      */
     std::list<GreensFunctionPart*> parts;
+
+    /** Storage for precomputed values. */
+    mutable MatsubaraContainer1<GreensFunction> Storage;
+    friend class MatsubaraContainer1<GreensFunction>;
+
+    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
+    * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
+    */
+    ComplexType value(long MatsubaraNum) const;
 
 public:
      /** Constructor.
@@ -81,15 +93,17 @@ public:
      * \param[in] CX A reference to a creation operator.
      * \param[in] DM A reference to a density matrix.
      */
-    GreensFunction(StatesClassification& S, Hamiltonian& H,
-                   AnnihilationOperator& C, CreationOperator& CX, DensityMatrix& DM);
+    GreensFunction(const StatesClassification& S, const Hamiltonian& H,
+                   const AnnihilationOperator& C, const CreationOperator& CX, const DensityMatrix& DM);
     /** Destructor. */
     ~GreensFunction();
 
     /** Chooses relevant parts of C and CX and allocates resources for the parts of the Green's function. */
     void prepare(void);
-    /** Actually computes the parts. */
-    void compute(void);
+    /** Actually computes the parts and fills the internal cache of precomputed values.
+     * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
+     */
+    void compute(long NumberOfMatsubaras = 0);
 
     /** Returns the 'bit' (index) of the operator C or CX.
      * \param[in] Position Use C for Position==0 and CX for Position==1.
@@ -99,17 +113,9 @@ public:
      /** Returns the value of the Green's function calculated at a given frequency.
      * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
      */
-    ComplexType operator()(long MatsubaraNum);
+    ComplexType operator()(long MatsubaraNum) const;
 
-    void dumpToPlainText(long wn);
-    /** Returns the path of the output directory associated with this Green's function. */
-    std::string getPath();
-    /** Dumps the Green's function for a range of the Matsubara frequencies.
-     * \param[in] point The number of points in the range.
-     */
-    void dumpMatsubara(unsigned short points);
-    /** Returns true if current Greens function is identical to zero */
-    bool vanishes();
+    bool isVanishing(void) const;
 };
 
 } // end of namespace Pomerol

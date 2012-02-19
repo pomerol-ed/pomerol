@@ -142,7 +142,7 @@ class StatesClassification {
     unsigned int BLOCKNUMBERLIMIT;
 
     /** A reference to an IndexClassification object */
-    IndexClassification &IndexInfo;
+    const IndexClassification &IndexInfo;
 
     // TODO: remove putstates()
     void putstates();            //function gets all clasificated states with Lz = "Lz", N_up = "N_up", N_down = "N_down"
@@ -150,60 +150,60 @@ public:
     /** Constructor
      * \param[in] IndexInfo A reference to an IndexClassification object
      */
-    StatesClassification(IndexClassification& IndexInfo):IndexInfo(IndexInfo) {};
+    StatesClassification(const IndexClassification& IndexInfo):IndexInfo(IndexInfo) {};
 
     /** Perform a classification of all QuantumStates */
-    void compute();                     
+    void compute();
 
     /** get total number of Quantum States ( 2^IndexInfo.size() ) */
-    const QuantumState getNumberOfStates();                           
+    const QuantumState getNumberOfStates() const;
 
     /** get a vector of all QuantumStates with a given set of QuantumNumbers
      * \param[in] in A set of quantum numbers to get a vector of QuantumStates 
      */
-    const std::vector<QuantumState>& getQuantumStates( QuantumNumbers in );   
+    const std::vector<QuantumState>& getQuantumStates( QuantumNumbers in ) const;
 
     /** get a QuantumState, corresponding to an internal InnerQuantumState
      * \param[in] QuantumNumbers of block in which the InnerQuantumState is located
      * \param[in] m InnerQuantumState for which the correspondence is required
      */
-    const QuantumState getQuantumState( QuantumNumbers in, int m);
+    const QuantumState getQuantumState( QuantumNumbers in, int m) const;
     /** get InnerQuantumState of a given QuantumState. Since QuantumState is associated with
      * the Block number no explicit BlockNumber or QuantumNumbers is required 
      * \param[in] state QuantumState for which the correspondence is required
      */
-    const InnerQuantumState getInnerState( QuantumState state);   
+    const InnerQuantumState getInnerState( QuantumState state) const;
 
     /** Returns a number of Block which corresponds to given Quantum Numbers 
      * \param[in] in A set of QuantumNumbers to find corresponding BlockNumber
      */
-    BlockNumber getBlockNumber(QuantumNumbers in);            
+    BlockNumber getBlockNumber(QuantumNumbers in) const;
 
     /** Returns QuantumNumbers for a given BlockNumber
      * \param[in] in A BlockNumber to find a set of corresponding QuantumNumbers
      */
-    QuantumNumbers getBlockInfo(BlockNumber in);        
+    QuantumNumbers getBlockInfo(BlockNumber in) const;
     /** Returns total amount of non-vanishing blocks */
-    BlockNumber NumberOfBlocks();                        
+    BlockNumber NumberOfBlocks() const;
 
     /** Returns QuantumNumbers of a given QuantumState 
      * \param[in] in A QuantumState for which the QuantumNumbers are requested
      */
-    QuantumNumbers getStateInfo(QuantumState in);        
+    QuantumNumbers getStateInfo(QuantumState in) const;
     /** Returns BlockNumber of a given QuantumState 
      * \param[in] in A QuantumState for which the BlockNumber is requested
      */
-    BlockNumber getBlockNumber(QuantumState in);       
+    BlockNumber getBlockNumber(QuantumState in) const;
 
     /** Returns the value of <QuantumState|\hat n_i|QuantumState> */
-    inline int n_i(QuantumState state, ParticleIndex i) { return ((state&(1<<i))>>i) ;};
+    inline int n_i(QuantumState state, ParticleIndex i) const { return ((state&(1<<i))>>i) ;};
     // TODO: rewrite this method
-    void getSiteInfo(int bit, int& lz, int& spin);
+    void getSiteInfo(int bit, int& lz, int& spin) const;
 
     /** Checks that a block with a given QuantumNumbers does not vanish 
      * \param[in] in A set of QuantumNumbers to check
      */
-    bool checkQuantumNumbers(QuantumNumbers in);
+    bool checkQuantumNumbers(QuantumNumbers in) const;
 };
 
 } // end of namespace Pomerol
