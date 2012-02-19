@@ -42,7 +42,7 @@ RealType beta;
 
 bool compare(ComplexType a, ComplexType b)
 {
-    return abs(a-b) < 1e-10;
+    return abs(a-b) < 1e-12;
 }
 
 RealType delta(int n1, int n2)
@@ -58,6 +58,12 @@ RealType deltam(int n1, int n2)
 inline RealType w(int n)
 {
     return M_PI*(2*n+1)/beta;
+}
+
+// Reference Green's function
+ComplexType Gref(int n)
+{
+    return 0.5/(I*w(n)+0.5*U) + 0.5/(I*w(n)-0.5*U);
 }
 
 // Reference gamma4(up,up,up,up)
@@ -99,7 +105,6 @@ ComplexType gamma4ref_udud(int n1, int n2, int n3)
 
 int main(int argc, char* argv[])
 {
-    //Log.setDebugging(true);
     LatticeAnalysis Lattice;
 
     IndexClassification IndexInfo(Lattice);
@@ -146,54 +151,33 @@ int main(int argc, char* argv[])
     TwoParticleGFContainer Chi4(IndexInfo,S,H,rho,Operators);
     Chi4.prepareAll(GF2indices);
     Chi4.computeAll(7);
-    
+
     Vertex4Container Gamma4(Chi4,G);
     Gamma4.prepareAll(GF2indices);
     Gamma4.computeAll(7);
 
-//     std::cout << Gamma4(0,0,0,0)(3,2,0) << std::endl;
-//     std::cout << Gamma4(0,0,0,0)(2,5,2) << std::endl;
-//     std::cout << Gamma4(0,0,0,0)(5,2,5) << std::endl;
-//     std::cout << Gamma4(0,0,0,0)(5,2,2) << std::endl;
-//     std::cout << Gamma4(0,0,0,0)(1,7,1) << std::endl;
-//     std::cout << Gamma4(0,0,0,0)(2,-2,4) << std::endl;
-//     std::cout << Gamma4(0,0,0,0)(29,-29,29) << std::endl;
-// 
-//     std::cout << Gamma4(0,1,0,1)(3,2,0) << std::endl;
-//     std::cout << Gamma4(0,1,0,1)(2,5,2) << std::endl;
-//     std::cout << Gamma4(0,1,0,1)(5,2,5) << std::endl;
-//     std::cout << Gamma4(0,1,0,1)(5,2,2) << std::endl;
-//     std::cout << Gamma4(0,1,0,1)(1,7,1) << std::endl;
-//     std::cout << Gamma4(0,1,0,1)(2,-2,4) << std::endl;
-//     std::cout << Gamma4(0,1,0,1)(29,-29,29) << std::endl;
-
-//     Vertex4 Gamma4(IndexInfo,Chi4,G);
-//     Gamma4.prepareUnAmputated();
-//     Gamma4.computeUnAmputated();
-//     Gamma4.prepareAmputated(GF2indices);
-//     Gamma4.computeAmputated();
-// 
-//     for(int n1 = -10; n1<10; ++n1)
-//     for(int n2 = -10; n2<10; ++n2)
-//     for(int n3 = -10; n3<10; ++n3){
-//         if( !compare(Gamma4.getAmputatedValue(IC(0,0,0,0),n1,n2,n3),gamma4ref_uuuu(n1,n2,n3)) ||
-//             !compare(Gamma4.getAmputatedValue(IC(1,1,1,1),n1,n2,n3),gamma4ref_uuuu(n1,n2,n3)) ||
-//             !compare(Gamma4(IC(0,1,0,1),n1,n2,n3),gamma4ref_udud(n1,n2,n3)) ||
-//             !compare(Gamma4(IC(1,0,1,0),n1,n2,n3),gamma4ref_udud(n1,n2,n3)) ||
-//             !compare(Gamma4(IC(0,1,1,0),n1,n2,n3),-gamma4ref_udud(n2,n1,n3)) ||
-//             !compare(Gamma4(IC(1,0,0,1),n1,n2,n3),-gamma4ref_udud(n2,n1,n3)) ||
-//             !compare(Gamma4.getAmputatedValue(IC(1,1,0,0),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(0,0,1,1),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(1,0,0,0),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(0,1,0,0),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(0,0,1,0),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(0,0,0,1),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(0,1,1,1),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(1,0,1,1),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(1,1,0,1),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(1,1,1,0),n1,n2,n3),0))
-//         return EXIT_FAILURE;
-//     }
+    for(int n1 = -10; n1<10; ++n1)
+    for(int n2 = -10; n2<10; ++n2)
+    for(int n3 = -10; n3<10; ++n3){
+        ComplexType gggg = Gref(n1)*Gref(n2)*Gref(n3)*Gref(n1+n2-n3);
+        if( !compare(Gamma4(0,0,0,0)(n1,n2,n3),gamma4ref_uuuu(n1,n2,n3)*gggg) ||
+            !compare(Gamma4(1,1,1,1)(n1,n2,n3),gamma4ref_uuuu(n1,n2,n3)*gggg) ||
+            !compare(Gamma4(0,1,0,1)(n1,n2,n3),gamma4ref_udud(n1,n2,n3)*gggg) ||
+            !compare(Gamma4(1,0,1,0)(n1,n2,n3),gamma4ref_udud(n1,n2,n3)*gggg) ||
+            !compare(Gamma4(0,1,1,0)(n1,n2,n3),-gamma4ref_udud(n2,n1,n3)*gggg) ||
+            !compare(Gamma4(1,0,0,1)(n1,n2,n3),-gamma4ref_udud(n2,n1,n3)*gggg) ||
+            !compare(Gamma4(1,1,0,0)(n1,n2,n3),0) ||
+            !compare(Gamma4(0,0,1,1)(n1,n2,n3),0) ||
+            !compare(Gamma4(1,0,0,0)(n1,n2,n3),0) ||
+            !compare(Gamma4(0,1,0,0)(n1,n2,n3),0) ||
+            !compare(Gamma4(0,0,1,0)(n1,n2,n3),0) ||
+            !compare(Gamma4(0,0,0,1)(n1,n2,n3),0) ||
+            !compare(Gamma4(0,1,1,1)(n1,n2,n3),0) ||
+            !compare(Gamma4(1,0,1,1)(n1,n2,n3),0) ||
+            !compare(Gamma4(1,1,0,1)(n1,n2,n3),0) ||
+            !compare(Gamma4(1,1,1,0)(n1,n2,n3),0))
+        return EXIT_FAILURE;
+    }
 
     return EXIT_SUCCESS;
 }
