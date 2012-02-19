@@ -86,7 +86,7 @@ public:
     static Term* Spinflip ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 = up, unsigned short spin2 = down);
 
 
-    /** Generates a pair-hopping \f$ c^\dagger_{i\alpha\sigma}c^\dagger_{i\alpha\sigma'}c_{i\alpha'\sigma}c_{i\alpha'\sigma'}, \alpha \neq \alpha', \sigma \neq \sigma' \f$ term.
+    /** Generates a pair-hopping \f$ J c^\dagger_{i\alpha\sigma}c^\dagger_{i\alpha\sigma'}c_{i\alpha'\sigma}c_{i\alpha'\sigma'}, \alpha \neq \alpha', \sigma \neq \sigma' \f$ term.
      * \param[in] Label \f$i\f$ - site affected by this Lattice::Term.
      * \param[in] Value \f$J\f$ - matrix element of the term.
      * \param[in] orbital \f$\alpha\f$ - first orbital affected by this term.
