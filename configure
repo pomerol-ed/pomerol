@@ -7167,7 +7167,7 @@ $as_echo "no" >&6; }
 fi
 
 
-ac_config_files="$ac_config_files Makefile jsoncpp/Makefile src/Makefile prog/Makefile jsoncpp/src/Makefile pomerol.pc"
+ac_config_files="$ac_config_files Makefile jsoncpp/Makefile src/Makefile prog/Makefile tests/Makefile jsoncpp/src/Makefile pomerol.pc"
 
                  #jsoncpp/example/Makefile
 cat >confcache <<\_ACEOF
@@ -8012,6 +8012,7 @@ do
     "jsoncpp/Makefile") CONFIG_FILES="$CONFIG_FILES jsoncpp/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "prog/Makefile") CONFIG_FILES="$CONFIG_FILES prog/Makefile" ;;
+    "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
     "jsoncpp/src/Makefile") CONFIG_FILES="$CONFIG_FILES jsoncpp/src/Makefile" ;;
     "pomerol.pc") CONFIG_FILES="$CONFIG_FILES pomerol.pc" ;;
 

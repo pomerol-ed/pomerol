@@ -64,8 +64,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/pomerol.pc.in \
-	$(top_srcdir)/aminclude.am $(top_srcdir)/configure COPYING \
-	INSTALL NEWS TODO depcomp install-sh missing
+	$(top_srcdir)/aminclude.am $(top_srcdir)/configure AUTHORS \
+	COPYING ChangeLog INSTALL NEWS TODO depcomp install-sh missing
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
@@ -310,7 +310,7 @@ top_srcdir = @top_srcdir@
 
 EXTRA_DIST = doxygen.cfg
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = jsoncpp src prog
+SUBDIRS = jsoncpp src prog tests
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pomerol.pc
 all: all-recursive

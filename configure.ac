@@ -105,6 +105,7 @@ AC_CONFIG_FILES([Makefile
                  jsoncpp/Makefile
                  src/Makefile
                  prog/Makefile
+                 tests/Makefile
                  jsoncpp/src/Makefile
                  pomerol.pc
                ])

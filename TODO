@@ -1,3 +1,8 @@
+2012-02-13
+1) bimap after boost merging
+2) autotools: detect boost
+
+
 2012-02-12
 1) Implement gamma^4 tests (make test)
 
