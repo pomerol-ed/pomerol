@@ -24,118 +24,42 @@
 
 namespace Pomerol{
 
-Vertex4Element::Vertex4Element(const TwoParticleGFContainer& Chi, const GFContainer& g,
-                               const FourIndexObject::IndexCombination& Indices) :
-    Thermal(Chi), Chi(Chi), g(g), Indices(Indices), Computed(false)
+Vertex4::Vertex4(TwoParticleGF& Chi4,
+                 GreensFunction& G13, GreensFunction& G24,
+                 GreensFunction& G14, GreensFunction& G23) :
+    Thermal(Chi4), ComputableObject(Constructed),
+    Chi4(Chi4), G13(G13), G24(G24), G14(G14), G23(G23)
 {}
 
-void Vertex4Element::compute(long NumberOfMatsubaras)
+void Vertex4::compute(long NumberOfMatsubaras)
 {
     Storage.fill(this,NumberOfMatsubaras);
 }
 
-ComplexType Vertex4Element::value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
+ComplexType Vertex4::value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
-    ComplexType Value = Chi(Indices,MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    ComplexType Value = Chi4(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
 
     if(MatsubaraNumber1 == MatsubaraNumber3)
-        Value += beta*  g(Indices.Index1,Indices.Index3,MatsubaraNumber1)*
-                        g(Indices.Index2,Indices.Index4,MatsubaraNumber2);
+        Value += beta*  G13(MatsubaraNumber1)*G24(MatsubaraNumber2);
     if(MatsubaraNumber2 == MatsubaraNumber3)
-        Value -= beta*  g(Indices.Index1,Indices.Index4,MatsubaraNumber1)*
-                        g(Indices.Index2,Indices.Index3,MatsubaraNumber2);
+        Value -= beta*  G14(MatsubaraNumber1)*G23(MatsubaraNumber2);
+
     return Value;
 }
 
-ComplexType Vertex4Element::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
+ComplexType Vertex4::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
-    return Storage(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    //if(isVanishing())
+    //    return 0.0;
+    //else
+        return Storage(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
 }
 
-bool Vertex4Element::isComputed(void) const
+bool Vertex4::isVanishing(void) const
 {
-    return Computed;
-}
-
-bool Vertex4Element::isVanishing(void) const
-{
-    // We need a smarter mechanism to detect this.
+    // TODO: We need a smarter mechanism to detect this.
     return false;
-}
-
-Vertex4::Vertex4(const IndexClassification &IndexInfo, const TwoParticleGFContainer &Chi, const GFContainer &g) :
-    FourIndexContainerObject(IndexInfo), Thermal(Chi), Chi(Chi), g(g)
-{}
-
-static Permutation4 EquivalentPermutations[4] =
-    {permutations4[0],permutations4[1],permutations4[6],permutations4[7]};
-
-void Vertex4::prepare(void)
-{
-    // TODO: This function is to be rewritten when the symmetry analyzer is done.
-    ParticleIndex MaxIndex = IndexInfo.getIndexSize();
-    for(ParticleIndex Index1=0; Index1 < MaxIndex; ++Index1)
-    for(ParticleIndex Index2=Index1; Index2 < MaxIndex; ++Index2)
-        for(ParticleIndex Index3=0; Index3 < MaxIndex; ++Index3)
-        for(ParticleIndex Index4=Index3; Index4 < MaxIndex; ++Index4){
-            Vertex4Element* tempV4E = new Vertex4Element(Chi,g,IndexCombination(Index1,Index2,Index3,Index4));
-            ParticleIndex PI[4] = {Index1,Index2,Index3,Index4};
-            for(size_t p=0; p<4; ++p){
-                IndexCombination PermutedIndices(
-                PI[EquivalentPermutations[p].perm[0]],
-                PI[EquivalentPermutations[p].perm[1]],
-                PI[EquivalentPermutations[p].perm[2]],
-                PI[EquivalentPermutations[p].perm[3]]);
-                ElementsMap[PermutedIndices] = new ElementWithPermFreq(tempV4E,EquivalentPermutations[p]);
-                DEBUG("Adding Gamma4 component " << PermutedIndices <<
-                       " with frequency permutation " << EquivalentPermutations[p] << ":" <<
-                       " Vertex4Element at " << ElementsMap[PermutedIndices]->Element
-                    )
-            }
-        }
-}
-
-void Vertex4::prepare(const std::set<IndexCombination>& InitialCombinations)
-{
-    // TODO: This function is to be rewritten when the symmetry analyzer is done.
-    for (std::set<IndexCombination>::iterator it1=InitialCombinations.begin(); it1!=InitialCombinations.end(); ++it1){
-        Vertex4Element* tempV4E = new Vertex4Element(Chi,g,*it1);
-        ParticleIndex PI[4] = {(*it1).Index1,(*it1).Index2,(*it1).Index3,(*it1).Index4};
-        for(size_t p=0; p<sizeof(EquivalentPermutations); ++p){
-            IndexCombination PermutedIndices(
-                PI[EquivalentPermutations[p].perm[0]],
-                PI[EquivalentPermutations[p].perm[1]],
-                PI[EquivalentPermutations[p].perm[2]],
-                PI[EquivalentPermutations[p].perm[3]]);
-            if(ElementsMap.count(PermutedIndices)==0){
-                ElementsMap[PermutedIndices] = new ElementWithPermFreq(tempV4E,EquivalentPermutations[p]);
-                DEBUG("Adding Gamma4 component " << PermutedIndices <<
-                      " with frequency permutation " << EquivalentPermutations[p] << ":" <<
-                      " Vertex4Element at " << ElementsMap[PermutedIndices]
-                )
-            }
-        }
-    }
-}
- 
-void Vertex4::compute(long NumberOfMatsubaras)
-{
-#ifndef pomerolOpenMP
-    for (std::map<IndexCombination,ElementWithPermFreq*>::iterator it1=ElementsMap.begin();it1!=ElementsMap.end();++it1){
-        if(!it1->second->Element->isComputed())
-            it1->second->Element->compute(NumberOfMatsubaras);
-    };
-#else
-    std::vector<Vertex4Element*> items;
-    for (std::map<IndexCombination,ElementWithPermFreq*>::iterator it1=ElementsMap.begin();it1!=ElementsMap.end();++it1){
-        if (it1->second->Element->isComputed()) items.push_back(it1->second->Element);
-    }
-#pragma omp parallel for 
-    for (int i = 0; i < (int) items.size(); ++i){
-       if(!items[i]->isComputed())
-            items[i]->compute(NumberOfMatsubaras);
-    };
-#endif
 }
 
 } // end of namespace Pomerol

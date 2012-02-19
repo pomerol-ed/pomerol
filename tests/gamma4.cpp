@@ -31,7 +31,7 @@
 #include "Hamiltonian.h"
 #include "GFContainer.h"
 #include "TwoParticleGFContainer.h"
-//#include "Vertex4.h"
+#include "Vertex4Container.h"
 
 #include<cstdlib>
 
@@ -120,8 +120,8 @@ int main(int argc, char* argv[])
     beta = 40.0 ;//+ 10.0*RealType(rand())/RAND_MAX;
 
     DensityMatrix rho(S,H,beta);
-    rho.allocateParts();
-    rho.computeParts();
+    rho.prepare();
+    rho.compute();
 
     FieldOperatorContainer Operators(S,H,IndexInfo);
 
@@ -146,8 +146,9 @@ int main(int argc, char* argv[])
     TwoParticleGFContainer Chi4(IndexInfo,S,H,rho,Operators);
     Chi4.prepareAll(GF2indices);
     Chi4.computeAll(7);
+    Vertex4Container Gamma4(Chi4,G);
 
-//     std::cout << Chi4(0,0,0,0)(3,2,0) << std::endl;
+    std::cout << Gamma4(0,0,0,0)(3,2,0) << std::endl;
 //     std::cout << Chi4(0,0,0,0)(2,5,2) << std::endl;
 //     std::cout << Chi4(0,0,0,0)(5,2,5) << std::endl;
 //     std::cout << Chi4(0,0,0,0)(5,2,2) << std::endl;

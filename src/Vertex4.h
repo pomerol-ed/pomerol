@@ -30,55 +30,39 @@
 
 #include"Misc.h"
 #include"Logger.h"
-#include"FourIndexObject.h"
 #include"GFContainer.h"
 #include"TwoParticleGFContainer.h"
 #include"MatsubaraContainers.h"
 
 namespace Pomerol{
 
-class Vertex4Element : public Thermal {
-    const TwoParticleGFContainer &Chi;
-    const GFContainer &g;
-    const FourIndexObject::IndexCombination& Indices;
+class Vertex4 : public Thermal, public ComputableObject {
 
-    bool Computed;
+    enum {Constructed,Computed};
 
-    mutable MatsubaraContainer4<Vertex4Element> Storage;
-    friend class MatsubaraContainer4<Vertex4Element>;
+    TwoParticleGF &Chi4;
+    GreensFunction &G13;
+    GreensFunction &G24;
+    GreensFunction &G14;
+    GreensFunction &G23;
+
+    /** Storage for precomputed values. */
+    mutable MatsubaraContainer4<Vertex4> Storage;
+    friend class MatsubaraContainer4<Vertex4>;
 
     ComplexType value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
 public:
 
-    Vertex4Element(const TwoParticleGFContainer &Chi, const GFContainer &g,
-                   const FourIndexObject::IndexCombination& Indices);
+    Vertex4(TwoParticleGF& Chi4,
+            GreensFunction& G13, GreensFunction& G24,
+            GreensFunction& G14, GreensFunction& G23);
 
     void compute(long NumberOfMatsubaras = 0);
 
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
-    bool isComputed(void) const;
     bool isVanishing(void) const;
-};
-
-/** Objects of this class just transforms a two-particle Green's function into
- * an irreducible vertex part or into an amputated irreducible vertex.
- */
-class Vertex4 : public FourIndexContainerObject<Vertex4Element>, public Thermal {
-
-    /** A reference to a two-particle Green's function. */
-    const TwoParticleGFContainer &Chi;
-    /** A reference to a Green's function container */
-    const GFContainer &g;
-
-public:
-
-    Vertex4(const IndexClassification &IndexInfo, const TwoParticleGFContainer &Chi, const GFContainer &g);
-
-    void prepare(void);
-    void prepare(const std::set<IndexCombination>& InitialCombinations);
-    void compute(long NumberOfMatsubaras = 0);
 };
 
 } // end of namespace Pomerol

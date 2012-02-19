@@ -23,12 +23,12 @@ libpomerol_a_SOURCES= Misc.cpp Misc.h \
 	GFContainer.cpp GFContainer.h \
 	IndexContainer4.h \
 	TwoParticleGFPart.cpp TwoParticleGFPart.h TwoParticleGF.cpp TwoParticleGF.h \
-	TwoParticleGFContainer.cpp TwoParticleGFContainer.h
-#	Vertex4.cpp Vertex4.h \
-#	Vertex4Container.cpp Vertex4Container.h \
+	TwoParticleGFContainer.cpp TwoParticleGFContainer.h \
+	Vertex4.cpp Vertex4.h \
+	Vertex4Container.cpp Vertex4Container.h
 #	AmputatedVertex4.cpp AmputatedVertex4.h \
 #	AmputatedVertex4Container.cpp AmputatedVertex4Container.h
-	
+
 libpomerol_a_pkginclude_HEADERS=*.h
 libpomerol_a_pkgincludedir=$(includedir)/pomerol
 

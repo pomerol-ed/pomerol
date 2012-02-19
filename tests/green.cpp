@@ -79,8 +79,8 @@ int main(int argc, char* argv[])
     RealType beta = 10.0 + 10.0*RealType(rand())/RAND_MAX;
 
     DensityMatrix rho(S,H,beta);
-    rho.allocateParts();
-    rho.computeParts();
+    rho.prepare();
+    rho.compute();
 
     FieldOperatorContainer Operators(S,H,IndexInfo);
 
