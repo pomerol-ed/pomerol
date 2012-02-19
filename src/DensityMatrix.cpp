@@ -39,7 +39,7 @@ DensityMatrix::~DensityMatrix()
 	delete *iter;
 }
 
-void DensityMatrix::allocateParts(void)
+void DensityMatrix::prepare(void)
 {
     BlockNumber NumOfBlocks = parts.size();
     RealType GroundEnergy = H.getGroundEnergy();
@@ -49,7 +49,7 @@ void DensityMatrix::allocateParts(void)
         parts[n] = new DensityMatrixPart(S, H.getPart(n),beta,GroundEnergy);
 }
 
-void DensityMatrix::computeParts(void)
+void DensityMatrix::compute(void)
 {
     BlockNumber NumOfBlocks = parts.size();
     RealType Z = 0;

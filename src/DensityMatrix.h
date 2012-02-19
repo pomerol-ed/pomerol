@@ -63,10 +63,10 @@ public:
     ~DensityMatrix();
 
     /** Allocates resources for the parts. */
-    void allocateParts(void);
+    void prepare(void);
 
     /** Actually computes the parts. */
-    void computeParts(void);
+    void compute(void);
 
     /** Returns a part of the density matrix.
     * \param[in] in A set of the quantum numbers to be resolved into a part number.

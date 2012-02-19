@@ -29,7 +29,7 @@
 #include "FieldOperator.h"
 #include "GFContainer.h"
 #include "TwoParticleGFContainer.h"
-#include "Vertex4.h"
+//#include "Vertex4.h"
 #include "Logger.h"
 
 #include "OptionParser.h"
@@ -96,13 +96,12 @@ int main(int argc, char *argv[])
   printFramed("System is determined");
   printFramed("Process of creation and diagonalization all parts of Hamiltonian has started");
   
-  #warning Something is wrong with HDF5Storage. segfaults detected in this rev
-  //  HDF5Storage storage("test.h5"); 
+  //HDF5Storage storage("test.h5"); 
   
   //begining of creation all part of Hammiltonian
 
   H.prepare();
-  H.compute();
+  H.diagonalize();
   RealType beta = opt.beta;
   //H.dump();
   //storage.save(H);
@@ -139,34 +138,32 @@ int main(int argc, char *argv[])
   std::cout << std::endl;
 
   FieldOperatorContainer Operators(S,H,IndexInfo);
-  GFContainer G(S,H,rho,IndexInfo,Operators);
+  GFContainer G(IndexInfo,S,H,rho,Operators);
   long wn = opt.NumberOfMatsubaras;
 
   if (1==1){
     printFramed("Two Particle Green's function calculation");
 
-    std::vector<GFContainer::IndexCombination*> v2;
-    v2.push_back(new GFContainer::IndexCombination(0,0));
-    v2.push_back(new GFContainer::IndexCombination(IndexInfo.getIndexSize()/2,IndexInfo.getIndexSize()/2));
-    G.readInitialIndices(v2);
-    G.prepare();
-    G.compute();
-    G.dumpToPlainText(8*wn);
+    std::set<IndexCombination2> v2;
+    v2.insert(IndexCombination2(0,0));
+    v2.insert(IndexCombination2(IndexInfo.getIndexSize()/2,IndexInfo.getIndexSize()/2));
+    G.prepareAll(v2);
+    G.computeAll();
+    //G.dumpToPlainText(8*wn);
 
-    std::vector<TwoParticleGFContainer::IndexCombination*> v1;
-    v1.push_back(new TwoParticleGFContainer::IndexCombination(0,IndexInfo.getIndexSize()/2,0,IndexInfo.getIndexSize()/2));
-    v1.push_back(new TwoParticleGFContainer::IndexCombination(0,0,0,0));
-    TwoParticleGFContainer Chi4(S,H,rho,IndexInfo,Operators);
-    Chi4.readInitialIndices(v1);
-    Chi4.prepare();
-    Chi4.compute(wn);
+    std::set<IndexCombination4> v1;
+    v1.insert(IndexCombination4(0,IndexInfo.getIndexSize()/2,0,IndexInfo.getIndexSize()/2));
+    v1.insert(IndexCombination4(0,0,0,0));
+    TwoParticleGFContainer Chi4(IndexInfo,S,H,rho,Operators);
+    Chi4.prepareAll(v1);
+    Chi4.computeAll(wn);
     //saveChi("Chi4.dat",Chi4,wn);
     
-    Vertex4 Gamma4(IndexInfo,Chi4,G);
-    Gamma4.prepareUnAmputated();
-    Gamma4.computeUnAmputated();
-    Gamma4.prepareAmputated(v1);
-    Gamma4.computeAmputated();
+//    Vertex4 Gamma4(IndexInfo,Chi4,G);
+//    Gamma4.prepareUnAmputated();
+//    Gamma4.computeUnAmputated();
+//    Gamma4.prepareAmputated(v1);
+//    Gamma4.computeAmputated();
 
 /*
     for (unsigned short i=0;i<v1.size();i++){
