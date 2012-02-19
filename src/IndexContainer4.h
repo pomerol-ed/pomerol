@@ -63,7 +63,7 @@ public:
     IndexContainer4<ElementType,SourceObject>(SourceObject* pSource, const IndexClassification& IndexInfo);
 
     void fill(std::set<IndexCombination4> InitialIndices = std::set<IndexCombination4>());
-    void set(const IndexCombination4& Indices);
+    ElementWithPermFreq<ElementType>& set(const IndexCombination4& Indices);
 
     bool isInContainer(const IndexCombination4& Indices) const;
     bool isInContainer( ParticleIndex Index1, ParticleIndex Index2,
@@ -152,14 +152,15 @@ void IndexContainer4<ElementType,SourceObject>::fill(std::set<IndexCombination4>
 
 template<typename ElementType, typename SourceObject>
 inline
-void IndexContainer4<ElementType,SourceObject>::set(const IndexCombination4& Indices)
+ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::set(const IndexCombination4& Indices)
 {
     // TODO: rewrite this method entirely (merge with fill()?)
     boost::shared_ptr<ElementType> pElement(pSource->createElement(Indices));
-
-    ElementsMap.insert(
-        std::pair<IndexCombination4,ElementWithPermFreq<ElementType> >
-            (Indices,ElementWithPermFreq<ElementType>(pElement,permutations4[0])));
+    typename std::map<IndexCombination4,ElementWithPermFreq<ElementType> >::iterator iter =
+        ElementsMap.insert(
+            std::pair<IndexCombination4,ElementWithPermFreq<ElementType> >
+                (Indices,ElementWithPermFreq<ElementType>(pElement,permutations4[0]))).first;
+    
     DEBUG("IndexContainer4::fill() at " << this << ": " <<
         "added an element with indices " << Indices <<
         " and frequency permutation " << permutations4[0] <<
@@ -207,6 +208,8 @@ void IndexContainer4<ElementType,SourceObject>::set(const IndexCombination4& Ind
                 " (" << pElement << ").");
         }
     }
+
+    return iter->second;
 }
 
 template<typename ElementType, typename SourceObject>
@@ -217,9 +220,16 @@ ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::ope
     typename std::map<IndexCombination4,ElementWithPermFreq<ElementType> >::iterator iter
         = ElementsMap.find(Indices);
 
-    if(iter == ElementsMap.end())
-        set(Indices);
-    else
+    if(iter == ElementsMap.end()){
+        DEBUG("IndexContainer4 at " << this << ": " <<
+              "cache miss for Index1=" << Indices.Index1 <<
+              ", Index2=" << Indices.Index2 <<
+              ", Index3=" << Indices.Index3 <<
+              ", Index4=" << Indices.Index4 <<
+              "; add a new element to the container using source " << pSource
+        )
+        return set(Indices);
+    }else
         return iter->second;
 }
 

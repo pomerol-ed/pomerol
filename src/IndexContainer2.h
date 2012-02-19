@@ -49,7 +49,7 @@ public:
     IndexContainer2<ElementType,SourceObject>(SourceObject* pSource, const IndexClassification& IndexInfo);
 
     void fill(std::set<IndexCombination2> InitialIndices = std::set<IndexCombination2>());
-    void set(const IndexCombination2& Indices);
+    ElementType& set(const IndexCombination2& Indices);
 
     bool isInContainer(const IndexCombination2& Indices) const;
     bool isInContainer(ParticleIndex Index1, ParticleIndex Index2) const;
@@ -103,13 +103,15 @@ void IndexContainer2<ElementType,SourceObject>::fill(std::set<IndexCombination2>
 }
 
 template<typename ElementType, typename SourceObject>
-void IndexContainer2<ElementType,SourceObject>::set(const IndexCombination2& Indices)
+ElementType& IndexContainer2<ElementType,SourceObject>::set(const IndexCombination2& Indices)
 {
     boost::shared_ptr<ElementType> pElement(pSource->createElement(Indices));
     ElementsMap[Indices] = pElement;
 
     DEBUG("IndexContainer2::set() at " << this << ": "
           "added an element with indices " << Indices << " (" << pElement << ").");
+
+    return *pElement;
 }
 
 template<typename ElementType, typename SourceObject>
@@ -118,10 +120,15 @@ ElementType& IndexContainer2<ElementType,SourceObject>::operator()(const IndexCo
     typename std::map<IndexCombination2,boost::shared_ptr<ElementType> >::iterator
         iter = ElementsMap.find(Indices);
 
-    if(iter == ElementsMap.end())
-        set(Indices);
-    else
-        return *(iter->second);
+    if(iter == ElementsMap.end()){
+        DEBUG("IndexContainer2 at " << this << ": " <<
+              "cache miss for Index1=" << Indices.Index1 <<
+              ", Index2=" << Indices.Index2 <<
+              "; add a new element to the container using source " << pSource
+        )
+        return set(Indices);
+    }
+    return *(iter->second);
 }
 
 template<typename ElementType, typename SourceObject>

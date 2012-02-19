@@ -146,7 +146,9 @@ int main(int argc, char* argv[])
     TwoParticleGFContainer Chi4(IndexInfo,S,H,rho,Operators);
     Chi4.prepareAll(GF2indices);
     Chi4.computeAll(7);
+    
     Vertex4Container Gamma4(Chi4,G);
+    Gamma4.computeAll(7);
 
     std::cout << Gamma4(0,0,0,0)(3,2,0) << std::endl;
 //     std::cout << Chi4(0,0,0,0)(2,5,2) << std::endl;

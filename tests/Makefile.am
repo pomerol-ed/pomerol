@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 AM_CXXFLAGS+= ${hdf5_CFLAGS} ${eigen3_CFLAGS} -I../jsoncpp/include/ -I../src
-AM_LDFLAGS=../src/libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -lhdf5 -lhdf5_cpp
+#AM_LDFLAGS=../src/libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -lhdf5 -lhdf5_cpp
 
 check_PROGRAMS=gamma4 green
 TESTS=gamma4 green 
