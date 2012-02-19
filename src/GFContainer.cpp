@@ -27,7 +27,8 @@ GFContainer::GFContainer ( const IndexClassification& IndexInfo,
                            const StatesClassification& S,
                            const Hamiltonian &H, const DensityMatrix &DM,
                            const FieldOperatorContainer& Operators) :
-    IndexContainer2(this,IndexInfo), Thermal(DM), S(S), H(H), DM(DM), Operators(Operators)
+    IndexContainer2<GreensFunction,GFContainer>(this,IndexInfo),
+    Thermal(DM), S(S), H(H), DM(DM), Operators(Operators)
 {}
 
 void GFContainer::prepareAll(const std::set<IndexCombination2>& InitialIndices)
