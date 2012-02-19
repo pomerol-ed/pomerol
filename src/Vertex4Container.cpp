@@ -24,7 +24,7 @@
 namespace Pomerol{
 
 Vertex4Container::Vertex4Container(TwoParticleGFContainer& Chi4, GFContainer& G) :
-    IndexContainer4(this,IndexInfo), Thermal(Chi4),
+    IndexContainer4<Vertex4,Vertex4Container>(this,IndexInfo), Thermal(Chi4),
     Chi4(Chi4), G(G)
 {}
 
