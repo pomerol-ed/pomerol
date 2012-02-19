@@ -74,20 +74,21 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-  JSONLattice L;
-  //L.readin(opt.LatticeFile);
+  JSONLattice JL;
+  Lattice *L=&JL;
+  JL.readin(opt.LatticeFile);
   Lattice::TermStorage s1; 
 
-  Lattice::Presets::addSSite((Lattice*) &L, "A", 1.0, 0.5);  
-  Lattice::Presets::addSSite((Lattice*) &L, "B", 2.0, 0.5);  
-  L.addTerm(Lattice::Term::Presets::Hopping("A", "B", 1.0, 0, up));
-  L.addTerm(Lattice::Term::Presets::Hopping("A", "B", 1.0, 0, down));
-  Lattice::Presets::addPSite((Lattice*) &L, "C", 4, 1, 5, 2, 2);  
+  Lattice::Presets::addSSite( L, "A", 1.0, 0.5);  
+  Lattice::Presets::addSSite( L, "B", 2.0, 0.5);  
+  L->addTerm(Lattice::Term::Presets::Hopping("A", "B", 1.0, 0, up));
+  L->addTerm(Lattice::Term::Presets::Hopping("A", "B", 1.0, 0, down));
+  Lattice::Presets::addPSite( L, "C", 4, 1, 5, 2, 2);  
 
   INFO("Terms with 2 operators");
-  L.printTerms(2);
+  L->printTerms(2);
   INFO("Terms with 4 operators");
-  L.printTerms(4);
+  L->printTerms(4);
 
   return 0;
 };

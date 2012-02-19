@@ -152,7 +152,6 @@ void JSONLattice::readSites(Json::Value &JSONSites)
         DEBUG(OrbitalSize);
         DEBUG((*it)["U"].asDouble());
         }
-    exit(0);
 };
 
 } // end of namespace Pomerol

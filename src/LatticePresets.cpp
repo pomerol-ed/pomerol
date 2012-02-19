@@ -121,7 +121,7 @@ Lattice::Term* Lattice::Term::Presets::PairHopping ( const std::string& Label, R
 
 void Lattice::Presets::addSSite(Lattice *L, const std::string& label, RealType U, RealType Level, unsigned short Orbitals, unsigned short Spins)
 {
-    Lattice::Site* current = new Lattice::Site(sSite);
+    Lattice::Site* current = new Lattice::Site(label, Orbitals, Spins);
     current->label=label;
     L->Sites[label]=current;
     Log.setDebugging(true);
@@ -147,19 +147,18 @@ void Lattice::Presets::addSSite(Lattice *L, const std::string& label, RealType U
 
 void Lattice::Presets::addPSite(Lattice *L, const std::string& label, RealType U, RealType U_p, RealType J, RealType Level, unsigned short Orbitals, unsigned short Spins)
 {
-    Lattice::Site* current = new Lattice::Site(pSite);
-    current->label=label;
+    Lattice::Site* current = new Lattice::Site(label, Orbitals, Spins);
     L->Sites[label]=current;
     Log.setDebugging(true);
     for (unsigned short i=0; i<Orbitals; ++i){
         for (unsigned short z1=0; z1<Spins; ++z1){
             L->Terms->addTerm(Lattice::Term::Presets::Level(label, Level, i, z1 ));
-            for (unsigned short j=0; j<Orbitals; ++j) if (i!=j) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(label, (U-3*J)/2., i, j, z1, z1));
+            for (unsigned short j=0; j<Orbitals; ++j) if (i!=j) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(label, (U_p-J)/2., i, j, z1, z1));
             for (unsigned short z2=0; z2<z1; ++z2){
                 L->Terms->addTerm(Lattice::Term::Presets::NupNdown(label, U, i, i, z1, z2));
                 for (unsigned short j=0; j<Orbitals; ++j){
                         if (i!=j) {
-                            L->Terms->addTerm(Lattice::Term::Presets::NupNdown(label, U-2.0*J, i, j, z1, z2));
+                            L->Terms->addTerm(Lattice::Term::Presets::NupNdown(label, U_p, i, j, z1, z2));
                             L->Terms->addTerm(Lattice::Term::Presets::Spinflip(label, -J, i, j, z1, z2)); 
                             L->Terms->addTerm(Lattice::Term::Presets::PairHopping(label, -J, i, j, z1, z2)); 
                             };
@@ -171,12 +170,12 @@ void Lattice::Presets::addPSite(Lattice *L, const std::string& label, RealType U
 
 void Lattice::Presets::addPSite(Lattice *L, const std::string& label, RealType U, RealType J, RealType Level, unsigned short Orbitals, unsigned short Spins)
 {
-    addPSite(L, label, U, U-J, J, Level, Orbitals, Spins);
+    addPSite(L, label, U, U-2.0*J, J, Level, Orbitals, Spins);
 }
 
 void Lattice::Presets::addPSite(Lattice *L, const std::string& label, RealType U, RealType J, RealType Level, unsigned Orbitals)
 {
-    addPSite(L, label, U, U-J, J, Level, Orbitals, 2);
+    addPSite(L, label, U, U-2.0*J, J, Level, Orbitals, 2);
 }
 
 void Lattice::Presets::addMagnetization(Lattice *L, const std::string& label, RealType Magnetization, unsigned short Orbitals, unsigned short Spins)
