@@ -99,7 +99,7 @@ ComplexType gamma4ref_udud(int n1, int n2, int n3)
 
 int main(int argc, char* argv[])
 {
-    Log.setDebugging(true);
+    //Log.setDebugging(true);
     LatticeAnalysis Lattice;
 
     IndexClassification IndexInfo(Lattice);
@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
     H.diagonalize();
 
     srand(time(NULL));
-    beta = 40.0 ;//+ 10.0*RealType(rand())/RAND_MAX;
+    beta = 10.0 + 10.0*RealType(rand())/RAND_MAX;
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
@@ -148,23 +148,24 @@ int main(int argc, char* argv[])
     Chi4.computeAll(7);
     
     Vertex4Container Gamma4(Chi4,G);
+    Gamma4.prepareAll(GF2indices);
     Gamma4.computeAll(7);
 
-    std::cout << Gamma4(0,0,0,0)(3,2,0) << std::endl;
-//     std::cout << Chi4(0,0,0,0)(2,5,2) << std::endl;
-//     std::cout << Chi4(0,0,0,0)(5,2,5) << std::endl;
-//     std::cout << Chi4(0,0,0,0)(5,2,2) << std::endl;
-//     std::cout << Chi4(0,0,0,0)(1,7,1) << std::endl;
-//     std::cout << Chi4(0,0,0,0)(2,-2,4) << std::endl;
-//     std::cout << Chi4(0,0,0,0)(29,-29,29) << std::endl;
-
-//     std::cout << Chi4(0,1,0,1)(3,2,0) << std::endl;
-//     std::cout << Chi4(0,1,0,1)(2,5,2) << std::endl;
-//     std::cout << Chi4(0,1,0,1)(5,2,5) << std::endl;
-//     std::cout << Chi4(0,1,0,1)(5,2,2) << std::endl;
-//     std::cout << Chi4(0,1,0,1)(1,7,1) << std::endl;
-//     std::cout << Chi4(0,1,0,1)(2,-2,4) << std::endl;
-//     std::cout << Chi4(0,1,0,1)(29,-29,29) << std::endl;
+//     std::cout << Gamma4(0,0,0,0)(3,2,0) << std::endl;
+//     std::cout << Gamma4(0,0,0,0)(2,5,2) << std::endl;
+//     std::cout << Gamma4(0,0,0,0)(5,2,5) << std::endl;
+//     std::cout << Gamma4(0,0,0,0)(5,2,2) << std::endl;
+//     std::cout << Gamma4(0,0,0,0)(1,7,1) << std::endl;
+//     std::cout << Gamma4(0,0,0,0)(2,-2,4) << std::endl;
+//     std::cout << Gamma4(0,0,0,0)(29,-29,29) << std::endl;
+// 
+//     std::cout << Gamma4(0,1,0,1)(3,2,0) << std::endl;
+//     std::cout << Gamma4(0,1,0,1)(2,5,2) << std::endl;
+//     std::cout << Gamma4(0,1,0,1)(5,2,5) << std::endl;
+//     std::cout << Gamma4(0,1,0,1)(5,2,2) << std::endl;
+//     std::cout << Gamma4(0,1,0,1)(1,7,1) << std::endl;
+//     std::cout << Gamma4(0,1,0,1)(2,-2,4) << std::endl;
+//     std::cout << Gamma4(0,1,0,1)(29,-29,29) << std::endl;
 
 //     Vertex4 Gamma4(IndexInfo,Chi4,G);
 //     Gamma4.prepareUnAmputated();
