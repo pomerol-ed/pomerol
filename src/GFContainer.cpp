@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "GFContainer.h"
+#include"GFContainer.h"
 
 namespace Pomerol{
 
@@ -50,6 +50,18 @@ GreensFunction* GFContainer::createElement(const IndexCombination2& Indices) con
 {
     return new GreensFunction(S,H, Operators.getAnnihilationOperator(Indices.Index1),
                                    Operators.getCreationOperator(Indices.Index2),DM);
+}
+
+std::set< IndexCombination2 > GFContainer::getNonVanishingElements(void) const
+{
+    std::set<IndexCombination2> NonVanishingElements;
+
+    for(std::map<IndexCombination2,GFPointer>::const_iterator iter = ElementsMap.begin();
+        iter != ElementsMap.end(); iter++){
+        if(!iter->second->isVanishing())
+            NonVanishingElements.insert(iter->first);
+    }
+    return NonVanishingElements;
 }
 
 } // end of namespace Pomerol

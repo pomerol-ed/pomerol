@@ -34,12 +34,14 @@
 #include"FieldOperatorContainer.h"
 #include"IndexContainer2.h"
 
-namespace Pomerol{
+#include<set>
 
-typedef boost::shared_ptr<GreensFunction> GFPointer;
+namespace Pomerol{
 
 class GFContainer: public IndexContainer2<GreensFunction,GFContainer>, public Thermal
 {
+    typedef boost::shared_ptr<GreensFunction> GFPointer;
+    typedef std::pair<IndexCombination2,GFPointer> IndicesGFPair;
 
 public:
     GFContainer(const IndexClassification& IndexInfo,
@@ -49,6 +51,8 @@ public:
 
     void prepareAll(const std::set<IndexCombination2>& InitialIndices = std::set<IndexCombination2>());
     void computeAll(long NumberOfMatsubaras = 0);
+
+    std::set<IndexCombination2> getNonVanishingElements(void) const;
 
 protected:
 

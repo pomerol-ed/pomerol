@@ -29,10 +29,10 @@
 
 namespace Pomerol{
 
-typedef boost::shared_ptr<TwoParticleGF> GF2Pointer;
-
 class TwoParticleGFContainer: public IndexContainer4<TwoParticleGF,TwoParticleGFContainer>, public Thermal
 {
+    typedef boost::shared_ptr<TwoParticleGF> GF2Pointer;
+
 public:
 
     TwoParticleGFContainer(const IndexClassification& IndexInfo, const StatesClassification &S,
@@ -40,6 +40,8 @@ public:
 
     void prepareAll(const std::set<IndexCombination4>& InitialIndices = std::set<IndexCombination4>());
     void computeAll(long NumberOfMatsubaras = 0);
+
+    std::set<IndexCombination4> getNonVanishingElements(void) const;
 
 protected:
 
