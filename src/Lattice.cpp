@@ -149,21 +149,30 @@ void JSONLattice::readSites(Json::Value &JSONSites)
     Log.setDebugging(true);
     JSONLattice::JSONPresets Helper;
     for (Json::Value::iterator it=JSONSites.begin(); it!=JSONSites.end(); ++it){
+
+        std::string label = it.key().asString();
         bool preset = (*it)["Type"]!=Json::nullValue;
+
         if (preset) { 
             std::string preset_name=(*it)["Type"].asString();
             DEBUG(preset_name);
-            if (Helper.SiteActions.find(preset_name)!=Helper.SiteActions.end()) (Helper.*Helper.SiteActions[preset_name])(this,*it);
+            if (Helper.SiteActions.find(preset_name)!=Helper.SiteActions.end()) (Helper.*Helper.SiteActions[preset_name])(this, label, *it);
             else { 
                 ERROR("No JSON preset " << preset_name << " found. Treating site as a generic one. ");
                 preset = false;
                 };
             }; // end of : if (preset)
+
         if (!preset) {
-            std::string label = it.key().asString();
-            unsigned short OrbitalSize = (*it)["OrbitalSize"].asInt();
-            DEBUG(label << ": " << OrbitalSize);
-            DEBUG((*it)["U"].asDouble());
+            DEBUG(label);
+            unsigned short Orbitals = (*it)["Orbitals"].asInt();
+            unsigned short Spins=2;
+            if ((*it)["Spins"]!=Json::nullValue) Spins=(*it)["Spins"].asInt();
+            Lattice::Site *S = new Lattice::Site(label, Orbitals, Spins);
+            this->Sites[label]=S;
+            if ((*it)["Level"]!=Json::nullValue) { 
+                Lattice::Presets::addLevel(this, label, (*it)["Level"].asDouble(), Orbitals, Spins);
+                };
             };
         }
 };

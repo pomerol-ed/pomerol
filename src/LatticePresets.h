@@ -133,15 +133,24 @@ public:
      * \param[in] Spins Total amount of spin components on the site. By default equal to 2. Works only for 2 spins.
      */
     static void addMagnetization( Lattice *L, const std::string& label, RealType Magnetization, unsigned short Orbitals, unsigned short Spins=2);
+
+    /** Adds a level \f$ \sum\limits_{\alpha, \sigma} \varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma} \f$.
+     * \param[in] L A pointer to the Lattice to add the site.
+     * \param[in] label \f$i\f$ - label of the site.
+     * \param[in] Level \f$\varepsilon\f$ - energy level to add.
+     * \param[in] Orbitals Total amount of orbitals on the site. By default equal to 1.
+     * \param[in] Spins Total amount of spin components on the site. By default equal to 2. Works only for 2 spins.
+     */
+    static void addLevel ( Lattice *L, const std::string& label, RealType Level, unsigned short Orbitals, unsigned short Spins=2);
 };
 
 class JSONLattice::JSONPresets{
 private:
-    typedef void (JSONLattice::JSONPresets::*SiteCmdHandlerPtr)(Lattice *, Json::Value&);
+    typedef void (JSONLattice::JSONPresets::*SiteCmdHandlerPtr)(Lattice *, const std::string &label, Json::Value&);
     typedef std::map<const std::string,SiteCmdHandlerPtr> JSONSiteSet;
 
-    void readSSite(Lattice *L, Json::Value& in);
-    void readPSite(Lattice *L, Json::Value& in);
+    void readSSite(Lattice *L, const std::string &label, Json::Value& in);
+    void readPSite(Lattice *L, const std::string &label, Json::Value& in);
 public:
     JSONPresets();
     JSONSiteSet SiteActions;

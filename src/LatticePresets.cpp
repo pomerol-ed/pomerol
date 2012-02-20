@@ -122,26 +122,14 @@ Lattice::Term* Lattice::Term::Presets::PairHopping ( const std::string& Label, R
 void Lattice::Presets::addSSite(Lattice *L, const std::string& label, RealType U, RealType Level, unsigned short Orbitals, unsigned short Spins)
 {
     Lattice::Site* current = new Lattice::Site(label, Orbitals, Spins);
-    current->label=label;
     L->Sites[label]=current;
     Log.setDebugging(true);
     for (unsigned short i=0; i<Orbitals; ++i) 
         for (unsigned short z1=0; z1<Spins; ++z1){
-            L->Terms->addTerm(Lattice::Term::Presets::Level(label, Level, i, z1 ));
+            if (Level) L->Terms->addTerm(Lattice::Term::Presets::Level(label, Level, i, z1 ));
             for (unsigned short z2=0; z2<z1; ++z2) {
-                L->Terms->addTerm(Lattice::Term::Presets::NupNdown(label, U, i, i, z1, z2));
-                /*if (Magnetization) { 
-                    Term *T = Lattice::Term::Presets::Level(label,  Magnetization, i, z1); 
-                    DEBUG("Adding term " << *T);
-                    L->Terms->addTerm(T);
-                    delete T;
-                    T = Lattice::Term::Presets::Level(label, -Magnetization, i, z2); 
-                    DEBUG("Adding term " << *T);
-                    L->Terms->addTerm(T);
-                    delete T;
-                    };
-                */
-            };
+                if (U) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(label, U, i, i, z1, z2));
+                };
        };
 };
 
@@ -149,18 +137,19 @@ void Lattice::Presets::addPSite(Lattice *L, const std::string& label, RealType U
 {
     Lattice::Site* current = new Lattice::Site(label, Orbitals, Spins);
     L->Sites[label]=current;
-    Log.setDebugging(true);
     for (unsigned short i=0; i<Orbitals; ++i){
         for (unsigned short z1=0; z1<Spins; ++z1){
-            L->Terms->addTerm(Lattice::Term::Presets::Level(label, Level, i, z1 ));
+            if (Level) L->Terms->addTerm(Lattice::Term::Presets::Level(label, Level, i, z1 ));
             for (unsigned short j=0; j<Orbitals; ++j) if (i!=j) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(label, (U_p-J)/2., i, j, z1, z1));
             for (unsigned short z2=0; z2<z1; ++z2){
-                L->Terms->addTerm(Lattice::Term::Presets::NupNdown(label, U, i, i, z1, z2));
+                if (U) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(label, U, i, i, z1, z2));
                 for (unsigned short j=0; j<Orbitals; ++j){
                         if (i!=j) {
-                            L->Terms->addTerm(Lattice::Term::Presets::NupNdown(label, U_p, i, j, z1, z2));
-                            L->Terms->addTerm(Lattice::Term::Presets::Spinflip(label, -J, i, j, z1, z2)); 
-                            L->Terms->addTerm(Lattice::Term::Presets::PairHopping(label, -J, i, j, z1, z2)); 
+                            if (U_p) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(label, U_p, i, j, z1, z2));
+                            if (J) { 
+                                L->Terms->addTerm(Lattice::Term::Presets::Spinflip(label, -J, i, j, z1, z2)); 
+                                L->Terms->addTerm(Lattice::Term::Presets::PairHopping(label, -J, i, j, z1, z2)); 
+                                };
                             };
                         };
                     };
@@ -178,8 +167,22 @@ void Lattice::Presets::addPSite(Lattice *L, const std::string& label, RealType U
     addPSite(L, label, U, U-2.0*J, J, Level, Orbitals, 2);
 }
 
-void Lattice::Presets::addMagnetization(Lattice *L, const std::string& label, RealType Magnetization, unsigned short Orbitals, unsigned short Spins)
+void Lattice::Presets::addLevel(Lattice *L, const std::string& Label, RealType Level, unsigned short Orbitals, unsigned short Spins)
 {
+    if (L->Sites.find(Label)==L->Sites.end()) return;
+    for (unsigned short i=0; i<Orbitals; ++i) 
+        for (unsigned short z=0; z<Spins; ++z) {
+            if (Level) L->Terms->addTerm(Lattice::Term::Presets::Level(Label, Level, i, z ));
+            };
+}
+
+void Lattice::Presets::addMagnetization(Lattice *L, const std::string& Label, RealType Magnetization, unsigned short Orbitals, unsigned short Spins)
+{
+    if (Spins!=2 || L->Sites.find(Label)==L->Sites.end()) return;
+    for (unsigned short i=0; i<Orbitals; ++i) {
+            L->Terms->addTerm(Lattice::Term::Presets::Level(Label, Magnetization, i, Pomerol::up ));
+            L->Terms->addTerm(Lattice::Term::Presets::Level(Label, -Magnetization, i, Pomerol::down ));
+        };
 }
 
 //
@@ -192,14 +195,43 @@ JSONLattice::JSONPresets::JSONPresets()
     SiteActions["Hubbard-p"] = &JSONLattice::JSONPresets::readPSite; 
 };
 
-void JSONLattice::JSONPresets::readSSite(Lattice *L, Json::Value& in)
+void JSONLattice::JSONPresets::readSSite(Lattice *L, const std::string& label, Json::Value& in)
 {
-    DEBUG(__PRETTY_FUNCTION__);
+    RealType U = in["U"].asDouble();
+    int Orbitals=1; 
+    if (in["Orbitals"]!=Json::nullValue) Orbitals = in["Orbitals"].asInt();
+    RealType Level=U/2; // set default Level to half-filled value
+    if (in["Level"]!=Json::nullValue) Level=in["Level"].asDouble();
+    int Spins=2;
+    if (in["Spins"]!=Json::nullValue) Spins=in["Spins"].asInt();
+    Lattice::Presets::addSSite(L, label, U, Level, Orbitals, Spins);
+    if (in["Field"]!=Json::nullValue) 
+        if (in["Field"].asDouble()!=0)
+            Lattice::Presets::addMagnetization(L, label, in["Field"].asDouble(), Orbitals, Spins);
 }
 
-void JSONLattice::JSONPresets::readPSite(Lattice *L, Json::Value& in)
+void JSONLattice::JSONPresets::readPSite(Lattice *L, const std::string& label, Json::Value& in)
 {
     DEBUG(__PRETTY_FUNCTION__);
+    RealType U = in["U"].asDouble();
+    RealType J = in["J"].asDouble();
+    RealType U_p = U-2.0*J;
+    if (in["U'"]!=Json::nullValue) U_p = in["U'"].asDouble(); 
+
+    int Orbitals=3; 
+    if (in["Orbitals"]!=Json::nullValue) Orbitals = in["Orbitals"].asInt();
+
+    RealType Level=(Orbitals-0.5)*U-2.5*(Orbitals-1)*J; // set default Level to half-filled value
+    if (in["Level"]!=Json::nullValue) Level=in["Level"].asDouble();
+
+    int Spins=2;
+    if (in["Spins"]!=Json::nullValue) Spins=in["Spins"].asInt();
+
+    Lattice::Presets::addPSite(L, label, U, U_p, J, Level, Orbitals, Spins);
+    if (in["Field"]!=Json::nullValue) 
+        if (in["Field"].asDouble()!=0)
+            Lattice::Presets::addMagnetization(L, label, in["Field"].asDouble(), Orbitals, Spins);
+
 }
 
 } // end of namespace Pomerol
