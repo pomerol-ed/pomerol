@@ -63,7 +63,7 @@ std::ostream& error(void);
 #define DEBUG(MSG)            debug() << MSG_PREFIX << MSG << std::endl;
 #define INFO(MSG)             info() << MSG << std::endl;
 #define INFO_NONEWLINE(MSG)   info() << MSG << std::flush;
-#define ERROR(MSG)            error() << MSG << std::endl;
+#define ERROR(MSG)            error() << MSG_PREFIX << MSG << std::endl;
 
 #ifndef __IN_LOGGER_CPP
 extern Logger Log;

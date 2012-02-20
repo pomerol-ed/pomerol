@@ -182,5 +182,24 @@ void Lattice::Presets::addMagnetization(Lattice *L, const std::string& label, Re
 {
 }
 
+//
+// JSONLattice :: JSONPresets
+//
+
+JSONLattice::JSONPresets::JSONPresets()
+{
+    SiteActions["Hubbard-s"] = &JSONLattice::JSONPresets::readSSite; 
+    SiteActions["Hubbard-p"] = &JSONLattice::JSONPresets::readPSite; 
+};
+
+void JSONLattice::JSONPresets::readSSite(Lattice *L, Json::Value& in)
+{
+    DEBUG(__PRETTY_FUNCTION__);
+}
+
+void JSONLattice::JSONPresets::readPSite(Lattice *L, Json::Value& in)
+{
+    DEBUG(__PRETTY_FUNCTION__);
+}
 
 } // end of namespace Pomerol

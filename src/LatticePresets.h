@@ -135,6 +135,18 @@ public:
     static void addMagnetization( Lattice *L, const std::string& label, RealType Magnetization, unsigned short Orbitals, unsigned short Spins=2);
 };
 
+class JSONLattice::JSONPresets{
+private:
+    typedef void (JSONLattice::JSONPresets::*SiteCmdHandlerPtr)(Lattice *, Json::Value&);
+    typedef std::map<const std::string,SiteCmdHandlerPtr> JSONSiteSet;
+
+    void readSSite(Lattice *L, Json::Value& in);
+    void readPSite(Lattice *L, Json::Value& in);
+public:
+    JSONPresets();
+    JSONSiteSet SiteActions;
+};
+
 
 }; // end of namespace Pomerol
 

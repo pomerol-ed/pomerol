@@ -34,6 +34,7 @@ Vertex4::Vertex4(TwoParticleGF& Chi4,
 void Vertex4::compute(long NumberOfMatsubaras)
 {
     Storage.fill(this,NumberOfMatsubaras);
+    Status = Computed;
 }
 
 ComplexType Vertex4::value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const

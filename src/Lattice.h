@@ -154,6 +154,7 @@ public:
 /** This class stores the information about a lattice and reads it from a provided JSON file. */
 class JSONLattice : public Lattice
 {
+    class JSONPresets;
     //typedef void (addSite)(Lattice *L ) JSONPreset;
     //std::map<std::string, JSONPreset> Meth; 
     /** Read and store the information about the sites of the lattice. This also add some local Terms<2> to the Terms map.
@@ -174,4 +175,4 @@ class JSONLattice : public Lattice
 
 
 } // end of namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_LATTICEREADER_H
+#endif // endif :: #ifndef __INCLUDE_LATTICE_H

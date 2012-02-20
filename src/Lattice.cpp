@@ -146,11 +146,25 @@ int JSONLattice::readin(const std::string &filename)
 
 void JSONLattice::readSites(Json::Value &JSONSites)
 {
+    Log.setDebugging(true);
+    JSONLattice::JSONPresets Helper;
     for (Json::Value::iterator it=JSONSites.begin(); it!=JSONSites.end(); ++it){
-        std::string label = it.key().asString();
-        unsigned short OrbitalSize = (*it)["OrbitalSize"].asInt();
-        DEBUG(OrbitalSize);
-        DEBUG((*it)["U"].asDouble());
+        bool preset = (*it)["Type"]!=Json::nullValue;
+        if (preset) { 
+            std::string preset_name=(*it)["Type"].asString();
+            DEBUG(preset_name);
+            if (Helper.SiteActions.find(preset_name)!=Helper.SiteActions.end()) (Helper.*Helper.SiteActions[preset_name])(this,*it);
+            else { 
+                ERROR("No JSON preset " << preset_name << " found. Treating site as a generic one. ");
+                preset = false;
+                };
+            }; // end of : if (preset)
+        if (!preset) {
+            std::string label = it.key().asString();
+            unsigned short OrbitalSize = (*it)["OrbitalSize"].asInt();
+            DEBUG(label << ": " << OrbitalSize);
+            DEBUG((*it)["U"].asDouble());
+            };
         }
 };
 

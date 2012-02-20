@@ -46,6 +46,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am_gamma4_OBJECTS = gamma4.$(OBJEXT)
 gamma4_OBJECTS = $(am_gamma4_OBJECTS)
 gamma4_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
 am_green_OBJECTS = green.$(OBJEXT)
 green_OBJECTS = $(am_green_OBJECTS)
 green_LDADD = $(LDADD)
@@ -204,7 +205,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAINTAINERCLEANFILES = Makefile.in
-AM_LDFLAGS = ../src/libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -lhdf5 -lhdf5_cpp
+LDADD = ../src/libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -lhdf5 -lhdf5_cpp
 
 #gamma4
 gamma4_SOURCES = gamma4.cpp
@@ -572,7 +573,7 @@ uninstall-am:
 
 
 all-clean:
-	$(RM) *.o $(TESTS_programs)
+	$(RM) *.o $(check_programs)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
