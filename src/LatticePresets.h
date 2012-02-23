@@ -169,8 +169,6 @@ public:
      * \param[in] Label1 \f$i\f$ - label of the first connected site.
      * \param[in] Label2 \f$j\f$ - label of the second connected site. Site can be choosen the same as the first site.
      * \param[in] ExchJ \f$J\f$ - magnetic exchange constant.
-     * \param[in] Orbitals Total amount of orbitals on the site. By default equal to 1.
-     * \param[in] Spins Total amount of spin components on the site. By default equal to 2. Works only for 2 spins.
      */
     static void addSS ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType ExchJ);
 
@@ -207,7 +205,7 @@ private:
 
     void readHoppingTerm(Lattice *L, Json::Value& in);
     void readLevelTerm(Lattice *L, Json::Value& in);
-    void readNNTerm(Lattice *L, Json::Value& in);
+    //void readNNTerm(Lattice *L, Json::Value& in);
     void readSzSzTerm(Lattice *L, Json::Value& in);
     void readSSTerm(Lattice *L, Json::Value& in);
 

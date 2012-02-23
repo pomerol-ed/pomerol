@@ -295,8 +295,8 @@ void Lattice::Presets::addHopping ( Lattice *L, const std::string& Label1, const
 
 void Lattice::Presets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2)
 {
-    if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
-    if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
+    if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site " << Label1 << " found."); throw (Lattice::exWrongLabel()); };
+    if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site " << Label2 << " found."); throw (Lattice::exWrongLabel()); };
     if (Orbital1 >= L->Sites[Label1]->OrbitalSize || Orbital2 >= L->Sites[Label2]->OrbitalSize ){
         ERROR("Orbital or Spin index mismatch"); throw ( Lattice::Term::Presets::exWrongIndices() ); 
         };
@@ -332,7 +332,7 @@ JSONLattice::JSONPresets::JSONPresets()
 
     TermActions["Hopping"]= &JSONLattice::JSONPresets::readHoppingTerm;
     TermActions["Level"]=   &JSONLattice::JSONPresets::readLevelTerm;
-    TermActions["NN"]=      &JSONLattice::JSONPresets::readNNTerm;
+    //TermActions["NN"]=      &JSONLattice::JSONPresets::readNNTerm;
     TermActions["SzSz"]=    &JSONLattice::JSONPresets::readSzSzTerm;
     TermActions["SS"]=      &JSONLattice::JSONPresets::readSSTerm;
 };
@@ -380,10 +380,8 @@ void JSONLattice::JSONPresets::readPSite(Lattice *L, const std::string& Label, J
 void JSONLattice::JSONPresets::readHoppingTerm(Lattice *L, Json::Value& in)
 {
     RealType t = in["Value"].asDouble();
-    std::list<std::pair<unsigned short, unsigned short> > spins;
-    std::list<std::pair<unsigned short, unsigned short> > orbitals;
-    std::string site1 = (*(in["Sites"].begin())).asString();
-    std::string site2 = (*(in["Sites"].end())).asString();
+    std::string site1 = in["Sites"][Json::Value::UInt (0)].asString();
+    std::string site2 = in["Sites"][Json::Value::UInt (1)].asString();
     bool foundSpins = ( in["Spins"] != Json::nullValue );
     bool foundOrbitals = ( in["Orbitals"] != Json::nullValue ); 
 
@@ -407,18 +405,36 @@ void JSONLattice::JSONPresets::readHoppingTerm(Lattice *L, Json::Value& in)
 
 void JSONLattice::JSONPresets::readLevelTerm(Lattice *L, Json::Value& in)
 {
+    RealType eps = in["Value"].asDouble();
+    std::string label = in["Site"].asString();
+    Lattice::Presets::addLevel(L,label,eps);
 }
 
+/*
 void JSONLattice::JSONPresets::readNNTerm(Lattice *L, Json::Value& in)
 {
-}
+   RealType U = in["Value"].asDouble(); 
+   std::string label1 = in["Sites"][Json::Value::UInt (0)].asString();
+   std::string label2 = in["Sites"][Json::Value::UInt (1)].asString();
+   int orbital1 = in["Orbitals"][Json::Value::UInt (0)].asInt();
+   int orbital2 = in["Orbitals"][Json::Value::UInt (1)].asInt();
+   Lattice::Presets::addNupNdown(L, label1, label2, U);
+} */
 
 void JSONLattice::JSONPresets::readSzSzTerm(Lattice *L, Json::Value& in)
 {
+    RealType J = in["Value"].asDouble(); 
+    std::string label1 = in["Sites"][Json::Value::UInt (0)].asString();
+    std::string label2 = in["Sites"][Json::Value::UInt (1)].asString();
+    Lattice::Presets::addSzSz(L, label1, label2, J);
 }
 
 void JSONLattice::JSONPresets::readSSTerm(Lattice *L, Json::Value& in)
 {
+    RealType J = in["Value"].asDouble(); 
+    std::string label1 = in["Sites"][Json::Value::UInt (0)].asString();
+    std::string label2 = in["Sites"][Json::Value::UInt (1)].asString();
+    Lattice::Presets::addSS(L, label1, label2, J);
 }
 
 const char* JSONLattice::JSONPresets::exWrongSpins::what() const throw(){

@@ -160,13 +160,13 @@ int JSONLattice::readin(const std::string &filename)
   	}
   in.close();
   readSites((*root)["Sites"]);
+  readTerms((*root)["Terms"]);
   delete root;
   return 0;
 };
 
 void JSONLattice::readSites(Json::Value &JSONSites)
 {
-    Log.setDebugging(true);
     JSONLattice::JSONPresets Helper;
     for (Json::Value::iterator it=JSONSites.begin(); it!=JSONSites.end(); ++it){
 
@@ -196,5 +196,26 @@ void JSONLattice::readSites(Json::Value &JSONSites)
             };
         }
 };
+
+void JSONLattice::readTerms(Json::Value &JSONTerms)
+{
+    JSONLattice::JSONPresets Helper;
+    Log.setDebugging(true);
+    for (Json::Value::iterator it=JSONTerms.begin(); it!=JSONTerms.end(); ++it){
+
+        bool preset = (*it)["Type"]!=Json::nullValue && (*it)["Type"]!="Generic";
+
+        if (preset) { 
+            std::string preset_name=(*it)["Type"].asString();
+            DEBUG(preset_name);
+            //DEBUG(*it);
+            if (Helper.TermActions.find(preset_name)!=Helper.TermActions.end()) (Helper.*Helper.TermActions[preset_name])(this, *it);
+            else { 
+                ERROR("No JSON preset " << preset_name << " found. Treating site as a generic one. ");
+                preset = false;
+                };
+            }; // end of : if (preset)
+        };
+}
 
 } // end of namespace Pomerol
