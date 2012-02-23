@@ -13,14 +13,14 @@ Lattice::Site::Site()
 {
 };
 
-Lattice::Site::Site(const std::string& label, unsigned short OrbitalSize, unsigned short SpinSize):label(label), OrbitalSize(OrbitalSize), SpinSize(SpinSize)
+Lattice::Site::Site(const std::string& Label, unsigned short OrbitalSize, unsigned short SpinSize):Label(Label), OrbitalSize(OrbitalSize), SpinSize(SpinSize)
 {
 };
 
 
 std::ostream& operator<<(std::ostream& output, const Lattice::Site& out)
 {
-    output << "Site \"" << out.label << "\", " << out.OrbitalSize << " orbital" << ((out.OrbitalSize>1)?"s":"") << ", " << out.SpinSize << " spin" << ((out.SpinSize>1)?"s":"") << ".";
+    output << "Site \"" << out.Label << "\", " << out.OrbitalSize << " orbital" << ((out.OrbitalSize>1)?"s":"") << ", " << out.SpinSize << " spin" << ((out.SpinSize>1)?"s":"") << ".";
 	return output;
 }
 
@@ -104,10 +104,30 @@ for (TermList::const_iterator it1=Temp.begin(); it1!=Temp.end(); ++it1) {
     };
 }
 
+void Lattice::addSite(Lattice::Site* S)
+{
+    Sites[S->Label]= S ;
+}
+
+void Lattice::addSite(const std::string &Label, unsigned short orbitals, unsigned short spins)
+{
+    addSite(new Lattice::Site(Label, orbitals, spins));
+}
+
 void Lattice::addTerm(const Lattice::Term *T)
 {
     Terms->addTerm(T);
 }
+
+const Lattice::Site& Lattice::getSite(const std::string& Label)
+{
+    if (Sites.find(Label)!=Sites.end()) throw (exWrongLabel()); 
+    return *Sites[Label];
+}
+
+const char* Lattice::exWrongLabel::what() const throw(){
+    return "Wrong requested Label";
+};
 
 //
 // JSONLattice
@@ -150,13 +170,13 @@ void JSONLattice::readSites(Json::Value &JSONSites)
     JSONLattice::JSONPresets Helper;
     for (Json::Value::iterator it=JSONSites.begin(); it!=JSONSites.end(); ++it){
 
-        std::string label = it.key().asString();
+        std::string Label = it.key().asString();
         bool preset = (*it)["Type"]!=Json::nullValue;
 
         if (preset) { 
             std::string preset_name=(*it)["Type"].asString();
             DEBUG(preset_name);
-            if (Helper.SiteActions.find(preset_name)!=Helper.SiteActions.end()) (Helper.*Helper.SiteActions[preset_name])(this, label, *it);
+            if (Helper.SiteActions.find(preset_name)!=Helper.SiteActions.end()) (Helper.*Helper.SiteActions[preset_name])(this, Label, *it);
             else { 
                 ERROR("No JSON preset " << preset_name << " found. Treating site as a generic one. ");
                 preset = false;
@@ -164,14 +184,14 @@ void JSONLattice::readSites(Json::Value &JSONSites)
             }; // end of : if (preset)
 
         if (!preset) {
-            DEBUG(label);
+            DEBUG(Label);
             unsigned short Orbitals = (*it)["Orbitals"].asInt();
             unsigned short Spins=2;
             if ((*it)["Spins"]!=Json::nullValue) Spins=(*it)["Spins"].asInt();
-            Lattice::Site *S = new Lattice::Site(label, Orbitals, Spins);
-            this->Sites[label]=S;
+            Lattice::Site *S = new Lattice::Site(Label, Orbitals, Spins);
+            this->Sites[Label]=S;
             if ((*it)["Level"]!=Json::nullValue) { 
-                Lattice::Presets::addLevel(this, label, (*it)["Level"].asDouble(), Orbitals, Spins);
+                Lattice::Presets::addLevel(this, Label, (*it)["Level"].asDouble());
                 };
             };
         }

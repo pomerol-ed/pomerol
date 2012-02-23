@@ -77,15 +77,16 @@ int main(int argc, char *argv[])
   JSONLattice JL;
   Lattice *L=&JL;
   JL.readin(opt.LatticeFile);
-/*
-  Lattice::TermStorage s1; 
 
-  Lattice::Presets::addSSite( L, "A", 1.0, 0.5);  
-  Lattice::Presets::addSSite( L, "B", 2.0, 0.5);  
-  L->addTerm(Lattice::Term::Presets::Hopping("A", "B", 1.0, 0, up));
-  L->addTerm(Lattice::Term::Presets::Hopping("A", "B", 1.0, 0, down));
-  Lattice::Presets::addPSite( L, "C", 4, 1, 5, 2, 2);  
-*/
+/*
+  L->addSite(new Lattice::Site("A",1,2));
+  L->addSite(new Lattice::Site("B",2,2));
+  L->addSite(new Lattice::Site("C",1,2));
+  Lattice::Presets::addHopping(L,"A","B",1.37,0,1);
+  Lattice::Presets::addHopping(L,"B","C",1.0,1,0);
+  Lattice::Presets::addCoulombP(L, "B",4, 0.5, 0.0);
+  Lattice::Presets::addHopping(L,"A","C",0.612);
+  */
   INFO("Terms with 2 operators");
   L->printTerms(2);
   INFO("Terms with 4 operators");

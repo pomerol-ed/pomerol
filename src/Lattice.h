@@ -52,6 +52,17 @@ public:
     /** A set of presets to fill the TermStorage and Sites for some commonly used examples. Look at the LatticePresets.h . */
     class Presets;
     
+    /** Add a Site to list of Sites 
+     * \param[in] S A site to add.
+     */
+    void addSite(Lattice::Site* S);
+    /** Add a Site to list of Sites 
+     * \param[in] Label Label of Site.
+     * \param[in] Orbitals Amount of orbitals on Site.
+     * \param[in] Spins Amount of spins on Site. By default 2
+     */
+    void addSite(const std::string &Label, unsigned short orbitals, unsigned short spins=2);
+
     /** Add a Term to the Lattice::Storage.
      * \param[in] T The Term to add.
      */
@@ -69,6 +80,10 @@ protected:
 public:
     Lattice();
     ~Lattice();
+    const Lattice::Site& getSite(const std::string& Label);
+    class exWrongLabel : public std::exception { 
+        virtual const char* what() const throw();
+    };
 };
 
 
@@ -77,7 +92,7 @@ struct Lattice::Site{
 friend class Lattice;
 protected:
     /** Site label. */
-    std::string label;
+    std::string Label;
     /** Amount of orbitals on a site. */
     unsigned short OrbitalSize;
     /** Amount of spins on a site. */
@@ -86,11 +101,14 @@ public:
     /** Empty constructor */
     Site();
     /** Full constructor 
-     * \param[in] label Site label
+     * \param[in] Label Site label
      * \param[in] OrbitalSize Number of Orbitals for current site 
      * \param[in] SpinSize Number of spins for current site 
      * */
-    Site(const std::string& label, unsigned short OrbitalSize, unsigned short SpinSize );
+    Site(const std::string& Label, unsigned short OrbitalSize, unsigned short SpinSize );
+    inline const unsigned short getOrbitalSize () const { return OrbitalSize; } 
+    inline const unsigned short getSpinSize () const { return OrbitalSize; } 
+    inline const std::string& getLabel () const { return Label; } 
 /** Make the object printable. */
 friend std::ostream& operator<<(std::ostream& output, const Site& out);
 };

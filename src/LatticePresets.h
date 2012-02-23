@@ -43,31 +43,39 @@ const Lattice::Site egSite (std::string(""), 2, 2);
 class Lattice::Term::Presets{
 private:
 public:
-    /** Generates a hopping term \f$ t c^{\dagger}_{i\alpha\sigma}c_{j\alpha\sigma}, j \neq i \f$ between two sites. 
+    /** Generates a hopping term \f$ t c^{\dagger}_{i\alpha\sigma}c_{j\alpha'\sigma}, j \neq i \f$ between two sites. 
      * \param[in] Label1 \f$i\f$ - the first site which is connected by this term.
      * \param[in] Label2 \f$j\f$ - the second site which is connected by this term.
      * \param[in] Value \f$t\f$ - matrix element of a term.
-     * \param[in] orbital \f$m\f$ - orbitals of sites, which are connected by this term.
+     * \param[in] orbital \f$\alpha\f$ - orbital of site \f$i\f$, which is connected by this term.
+     * \param[in] orbital \f$\alpha'\f$ - orbital of site \f$j\f$, which is connected by this term.
      * \param[in] spin \f$\sigma\f$ - spins of sites, which are connected by this term.
      */
+    static Term* Hopping     ( const std::string& Label1, const std::string& Label2, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 , unsigned short spin2);
+
+    /** A shortcut to hopping Lattice::Term \f$ t c^{\dagger}_{i\alpha\sigma}c_{j\alpha\sigma}, j \neq i \f$ */
     static Term* Hopping     ( const std::string& Label1, const std::string& Label2, RealType Value, unsigned short orbital, unsigned short spin);
 
     /** Generates a single energy level term \f$\varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma} \f$ on a local site for a given spin and orbital. 
      * \param[in] Label \f$i\f$ - site affected by this Lattice::Term.
      * \param[in] Value \f$\varepsilon\f$ - the energy level. 
-     * \param[in] orbital \f$m\f$ - affected orbital of the site.
+     * \param[in] orbital \f$\alpha\f$ - affected orbital of the site.
      * \param[in] spin \f$\sigma\f$ - affected spin component.
      */
     static Term* Level       ( const std::string& Label, RealType Value, unsigned short orbital, unsigned short spin);
 
-    /** Generates a local density-density 4-point term \f$ U n_{i\alpha\sigma}n_{i\alpha'\sigma'} \f$.
-     * \param[in] Label \f$i\f$ - site affected by this Lattice::Term.
+    /** Generates a local density-density 4-point term \f$ U n_{i\alpha\sigma}n_{j\alpha'\sigma'} \f$.
+     * \param[in] Label1 \f$i\f$ - site affected by this Lattice::Term.
+     * \param[in] Label2 \f$j\f$ - site affected by this Lattice::Term.
      * \param[in] Value \f$U\f$ - matrix element of the term.
-     * \param[in] orbital1 \f$m\f$ - the orbital affected by the first density operator.
-     * \param[in] orbital2 \f$m'\f$ - the orbital affected by the second density operator.
+     * \param[in] orbital1 \f$\alpha\f$ - the orbital affected by the first density operator.
+     * \param[in] orbital2 \f$\alpha'\f$ - the orbital affected by the second density operator.
      * \param[in] spin1 \f$\sigma\f$ - the spin component affected by the first density operator.
      * \param[in] spin2 \f$\sigma'\f$ - the spin component affected by the second density operator.
      */
+    static Term* NupNdown    ( const std::string& Label1, const std::string& Label2, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2);
+
+    /** A shortcut to Pomerol::Lattice::Term::Presets::NupNdown \f$ U n_{i\alpha\uparrow}n_{j\alpha'\downarrow'} \f$ term for \f$i=j\f$. */
     static Term* NupNdown    ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2);
     /** A shortcut to Pomerol::Lattice::Term::Presets::NupNdown \f$ U n_{i\alpha\uparrow}n_{i\alpha'\downarrow'} \f$ term for spin1 = \f$\uparrow\f$, spin2 = \f$\downarrow\f$. */
     static Term* NupNdown    ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2);
@@ -95,65 +103,124 @@ public:
      * \param[in] spin2 \f$\sigma'\f$ - second affected spin component. By default set to \f$\downarrow\f$.
      */
     static Term* PairHopping (const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 = up, unsigned short spin2 = down);
+
+
+    static Term* SplusSminus ( const std::string& label1, const std::string& label2, RealType Value, unsigned short orbital); 
+    static Term* SminusSplus ( const std::string& label1, const std::string& label2, RealType Value, unsigned short orbital);
+
+    /** Exception: wrong indices. */
+    class exWrongIndices : public std::exception { 
+    public:
+        virtual const char* what() const throw();
+    };
 };
 
 class Lattice::Presets {
 public:
-    /** Adds a site with a hamiltonian \f[ \sum\limits_{\alpha, \sigma > \sigma'} Un_{i\alpha\sigma}Un_{i\alpha\sigma'} + \sum\limits_{\alpha,\sigma} \varepsilon n_{i\alpha\sigma}. \f] 
-     * \param[in] L A pointer to the Lattice to add the site.
-     * \param[in] label \f$i\f$ - label of the site.
-     * \param[in] U \f$U\f$ - value of the onsite Coulomb interaction.
-     * \param[in] Level \f$\varepsilon\f$ - the local energy level on the site.
-     * \param[in] Orbitals Total amount of orbitals on the site. By default equal to 1.
-     * \param[in] Spins Total amount of spin components on the site. By default equal to 2.
-     */
-    static void addSSite(Lattice *L, const std::string& label, RealType U, RealType Level, unsigned short Orbitals=1, unsigned short Spins=2);
 
-    /** Adds a site with a hamiltonian \f[ U \sum_{\alpha, \sigma > \sigma'} n_{i\alpha\sigma}n_{i\alpha\sigma'} + U' \sum_{\alpha\neq\alpha',\sigma > \sigma'} n_{i\alpha\sigma} n_{i\alpha'\sigma'} + \frac{U'-J}{2} \sum_{\alpha\neq\alpha',\sigma} n_{i\alpha\sigma} n_{i\alpha'\sigma} - J \sum_{\alpha\neq\alpha',\sigma > \sigma'} (c^\dagger_{i\alpha \sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha'\sigma}c_{i\alpha\sigma'} + c^\dagger_{i\alpha'\sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha\sigma}c_{i\alpha\sigma'}). \f] 
+    /** Adds an interaction with the hamiltonian \f[ \sum\limits_{\alpha, \sigma > \sigma'} Un_{i\alpha\sigma}Un_{i\alpha\sigma'} + \sum\limits_{\alpha,\sigma} \varepsilon n_{i\alpha\sigma} to a specified site. \f] 
      * \param[in] L A pointer to the Lattice to add the site.
      * \param[in] label \f$i\f$ - label of the site.
      * \param[in] U \f$U\f$ - value of the onsite Coulomb interaction.
-     * \param[in] U_p \f$U'\f$ - value of Kanamori parameter. 
-     * \param[in] J \f$J\f$ - value of the Hund's coupling.
      * \param[in] Level \f$\varepsilon\f$ - the local energy level on the site.
-     * \param[in] Orbitals Total amount of orbitals on the site. By default equal to 1.
-     * \param[in] Spins Total amount of spin components on the site. By default equal to 2.
      */
-    static void addPSite(Lattice *L, const std::string& label, RealType U, RealType U_p, RealType J, RealType Level, unsigned short Orbitals, unsigned short Spins);
+    static void addCoulombS(Lattice *L, const std::string& label, RealType U, RealType Level);
+
+    /** Adds an interaction with the hamiltonian \f[ U \sum_{\alpha, \sigma > \sigma'} n_{i\alpha\sigma}n_{i\alpha\sigma'} + U' \sum_{\alpha\neq\alpha',\sigma > \sigma'} n_{i\alpha\sigma} n_{i\alpha'\sigma'} + \frac{U'-J}{2} \sum_{\alpha\neq\alpha',\sigma} n_{i\alpha\sigma} n_{i\alpha'\sigma} - J \sum_{\alpha\neq\alpha',\sigma > \sigma'} (c^\dagger_{i\alpha \sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha'\sigma}c_{i\alpha\sigma'} + c^\dagger_{i\alpha'\sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha\sigma}c_{i\alpha\sigma'}) to the specified site. \f] 
+     * \param[in] L A pointer to the Lattice to add the site.
+     * \param[in] label \f$i\f$ - label of the site.
+     * \param[in] U \f$U\f$ - Kanamori \f$U\f$,  value of the onsite Coulomb interaction.
+     * \param[in] U_p \f$U'\f$ - Kanamori \f$U'\f$. 
+     * \param[in] J \f$J\f$ - Kanamori J, value of the Hund's coupling.
+     * \param[in] Level \f$\varepsilon\f$ - the local energy level on the site.
+     */
+    static void addCoulombP(Lattice *L, const std::string& label, RealType U, RealType U_p, RealType J, RealType Level);
     /** A shortcut to Lattice::Presets::addPSite with \f$U'=U-2J\f$, i.e. U_p = U - 2.0* J */
-    static void addPSite(Lattice *L, const std::string& label, RealType U, RealType J, RealType Level, unsigned short Orbitals, unsigned short Spins);
-    /** A shortcut to Lattice::Presets::addPSite with \f$U'=U-2J\f$, i.e. U_p = U - 2.0* J, and 2 spins */
-    static void addPSite(Lattice *L, const std::string& label, RealType U, RealType J, RealType Level, unsigned Orbitals);
+    static void addCoulombP(Lattice *L, const std::string& label, RealType U, RealType J, RealType Level);
 
-    /** Adds a magnetic \f$ \sum\limits_\alpha mH \frac{1}{2} (n_{i\alpha\uparrow} - n_{i\alpha\downarrow}) \f$ splitting to a given site.
-     * \param[in] L A pointer to the Lattice to add the site.
+    /** Adds a magnetic \f$ \sum\limits_\alpha mH \frac{1}{2} (n_{i\alpha\uparrow} - n_{i\alpha\downarrow}) \f$ splitting to a given site. Valid only for 2 spins.
+     * \param[in] L A pointer to the Lattice to add the terms. 
      * \param[in] label \f$i\f$ - label of the site.
      * \param[in] Magnetization \f$mH\f$ - magnetization to add.
-     * \param[in] Orbitals Total amount of orbitals on the site. By default equal to 1.
-     * \param[in] Spins Total amount of spin components on the site. By default equal to 2. Works only for 2 spins.
      */
-    static void addMagnetization( Lattice *L, const std::string& label, RealType Magnetization, unsigned short Orbitals, unsigned short Spins=2);
+    static void addMagnetization( Lattice *L, const std::string& label, RealType Magnetization);
 
     /** Adds a level \f$ \sum\limits_{\alpha, \sigma} \varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma} \f$.
-     * \param[in] L A pointer to the Lattice to add the site.
+     * \param[in] L A pointer to the Lattice to add the terms.
      * \param[in] label \f$i\f$ - label of the site.
      * \param[in] Level \f$\varepsilon\f$ - energy level to add.
+     */
+    static void addLevel ( Lattice *L, const std::string& label, RealType Level);
+
+    /** Adds a SzSz \f[ \sum\limits_{\alpha} J \frac{1}{2}(n_{i\alpha\uparrow} - n_{i\alpha\downarrow})\frac{1}{2}(n_{j\alpha\uparrow} - n_{j\alpha\downarrow}) \f]
+     * interaction terms. Valid only for 2 spins 
+     * \param[in] L A pointer to the Lattice to add the terms. 
+     * \param[in] Label1 \f$i\f$ - label of the first connected site.
+     * \param[in] Label2 \f$j\f$ - label of the second connected site. Site can be choosen the same as the first site.
+     * \param[in] ExchJ \f$J\f$ - magnetic exchange constant.
      * \param[in] Orbitals Total amount of orbitals on the site. By default equal to 1.
      * \param[in] Spins Total amount of spin components on the site. By default equal to 2. Works only for 2 spins.
      */
-    static void addLevel ( Lattice *L, const std::string& label, RealType Level, unsigned short Orbitals, unsigned short Spins=2);
+    static void addSzSz ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType ExchJ);
+
+    /** Adds a spin-spin \f[ \sum\limits_{\alpha} J \hat S_{i\alpha} \hat S_{j\alpha} \f]
+     * interaction terms. Valid only for 2 spins 
+     * \param[in] L A pointer to the Lattice to add the terms. 
+     * \param[in] Label1 \f$i\f$ - label of the first connected site.
+     * \param[in] Label2 \f$j\f$ - label of the second connected site. Site can be choosen the same as the first site.
+     * \param[in] ExchJ \f$J\f$ - magnetic exchange constant.
+     * \param[in] Orbitals Total amount of orbitals on the site. By default equal to 1.
+     * \param[in] Spins Total amount of spin components on the site. By default equal to 2. Works only for 2 spins.
+     */
+    static void addSS ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType ExchJ);
+
+    /** Adds a hopping \f$ t c^{\dagger}_{i\alpha\sigma}c_{j\alpha'\sigma'} \f$ term to the Lattice. This is a safe method : indices are checked to belong to the lattice.
+     * \param[in] L A pointer to the Lattice to add the terms. 
+     * \param[in] Label1 \f$i\f$ - label of the first connected site.
+     * \param[in] Label2 \f$j\f$ - label of the second connected site. Site can be choosen the same as the first site.
+     * \param[in] t \f$t\f$ - hopping matrix element.
+     * \param[in] Orbital1 \f$\alpha\f$ - orbital of the first site.
+     * \param[in] Orbital2 \f$\alpha\f$ - orbital of the second site.
+     * \param[in] Spin1 \f$\sigma\f$ - spin component of the first site
+     * \param[in] Spin2 \f$\sigma\f$ - spin component of the second site
+     */
+    static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, RealType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short spin1, unsigned short spin2 );
+    /** A shortcut to addHopping \f$ t c^{\dagger}_{i\alpha\sigma}c_{j\alpha\sigma} \f$ */
+    static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, RealType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short spin );
+    /** A shortcut to addHopping \f$ \sum_{\sigma} t c^{\dagger}_{i\alpha\sigma}c_{j\alpha\sigma} \f$ */
+    static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, RealType t, unsigned short Orbital1, unsigned short Orbital2 );
+    /** A shortcut to addHopping \f$ \sum_{\sigma\alpha} t c^{\dagger}_{i\alpha\sigma}c_{j\alpha\sigma} \f$ */
+    static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, RealType t );
 };
 
 class JSONLattice::JSONPresets{
+friend class JSONLattice;
 private:
     typedef void (JSONLattice::JSONPresets::*SiteCmdHandlerPtr)(Lattice *, const std::string &label, Json::Value&);
-    typedef std::map<const std::string,SiteCmdHandlerPtr> JSONSiteSet;
+    typedef std::map<const std::string,SiteCmdHandlerPtr> JSONSitePresetMap;
+    
+    typedef void (JSONLattice::JSONPresets::*TermCmdHandlerPtr)(Lattice *, Json::Value&);
+    typedef std::map<const std::string,TermCmdHandlerPtr> JSONTermPresetMap;
 
     void readSSite(Lattice *L, const std::string &label, Json::Value& in);
     void readPSite(Lattice *L, const std::string &label, Json::Value& in);
+
+    void readHoppingTerm(Lattice *L, Json::Value& in);
+    void readLevelTerm(Lattice *L, Json::Value& in);
+    void readNNTerm(Lattice *L, Json::Value& in);
+    void readSzSzTerm(Lattice *L, Json::Value& in);
+    void readSSTerm(Lattice *L, Json::Value& in);
+
+    /** Exception: wrong indices. */
+    class exWrongSpins : public std::exception { 
+    public:
+        virtual const char* what() const throw();
+    };
+
+    JSONSitePresetMap SiteActions;
+    JSONTermPresetMap TermActions;
 public:
     JSONPresets();
-    JSONSiteSet SiteActions;
 };
 
 
