@@ -80,7 +80,8 @@ libpomerol_a_AR = $(AR) $(ARFLAGS)
 libpomerol_a_LIBADD =
 am_libpomerol_a_OBJECTS = libpomerol_a-Lattice.$(OBJEXT) \
 	libpomerol_a-LatticePresets.$(OBJEXT) \
-	libpomerol_a-Logger.$(OBJEXT)
+	libpomerol_a-Logger.$(OBJEXT) \
+	libpomerol_a-IndexClassification.$(OBJEXT)
 libpomerol_a_OBJECTS = $(am_libpomerol_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -250,7 +251,8 @@ lib_LIBRARIES = libpomerol.a
 libpomerol_a_CPPFLAGS = -Wall -g
 libpomerol_a_SOURCES = \
 	Lattice.h Lattice.cpp LatticePresets.h LatticePresets.cpp \
-	Logger.cpp Logger.h 
+	Logger.cpp Logger.h \
+	IndexClassification.h IndexClassification.cpp
 
 #HDF5Storage.cpp Thermal.cpp Lattice.cpp \
 #StatesClassification.cpp Term.cpp IndexClassification.cpp \
@@ -340,6 +342,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-IndexClassification.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Lattice.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-LatticePresets.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Logger.Po@am__quote@
@@ -407,6 +410,22 @@ libpomerol_a-Logger.obj: Logger.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Logger.cpp' object='libpomerol_a-Logger.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Logger.obj `if test -f 'Logger.cpp'; then $(CYGPATH_W) 'Logger.cpp'; else $(CYGPATH_W) '$(srcdir)/Logger.cpp'; fi`
+
+libpomerol_a-IndexClassification.o: IndexClassification.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-IndexClassification.o -MD -MP -MF $(DEPDIR)/libpomerol_a-IndexClassification.Tpo -c -o libpomerol_a-IndexClassification.o `test -f 'IndexClassification.cpp' || echo '$(srcdir)/'`IndexClassification.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-IndexClassification.Tpo $(DEPDIR)/libpomerol_a-IndexClassification.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='IndexClassification.cpp' object='libpomerol_a-IndexClassification.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-IndexClassification.o `test -f 'IndexClassification.cpp' || echo '$(srcdir)/'`IndexClassification.cpp
+
+libpomerol_a-IndexClassification.obj: IndexClassification.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-IndexClassification.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-IndexClassification.Tpo -c -o libpomerol_a-IndexClassification.obj `if test -f 'IndexClassification.cpp'; then $(CYGPATH_W) 'IndexClassification.cpp'; else $(CYGPATH_W) '$(srcdir)/IndexClassification.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-IndexClassification.Tpo $(DEPDIR)/libpomerol_a-IndexClassification.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='IndexClassification.cpp' object='libpomerol_a-IndexClassification.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-IndexClassification.obj `if test -f 'IndexClassification.cpp'; then $(CYGPATH_W) 'IndexClassification.cpp'; else $(CYGPATH_W) '$(srcdir)/IndexClassification.cpp'; fi`
 install-libpomerol_a_pkgincludeHEADERS: $(libpomerol_a_pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(libpomerol_a_pkgincludedir)" || $(MKDIR_P) "$(DESTDIR)$(libpomerol_a_pkgincludedir)"

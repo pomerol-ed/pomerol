@@ -206,8 +206,6 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAINTAINERCLEANFILES = Makefile.in
 LDADD = ../src/libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -lhdf5 -lhdf5_cpp
-
-#gamma4
 gamma4_SOURCES = gamma4.cpp
 green_SOURCES = green.cpp
 gamma4_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a $(top_builddir)/src/libpomerol.a

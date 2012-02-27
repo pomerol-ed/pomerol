@@ -78,9 +78,17 @@ protected:
     //Lattice::TermStorage Terms1;
     TermStorage* Terms;
 public:
+    /** Empty constructor. */
     Lattice();
+    /** Destructor. */
     ~Lattice();
+    /** Returns a Lattice::Site for a given Label. */
     const Lattice::Site& getSite(const std::string& Label);
+    /** Returns an iterator, pointing to the beginning of the map of Sites. */
+    SiteMap::const_iterator getSitesStartIterator();
+    /** Returns an iterator, pointing to the end of the map of Sites. */
+    SiteMap::const_iterator getSitesEndIterator();
+    /** An exception, which is thrown when a wrong Term added. */
     class exWrongLabel : public std::exception { 
         virtual const char* what() const throw();
     };
@@ -92,14 +100,12 @@ struct Lattice::Site{
 friend class Lattice;
 protected:
     /** Site label. */
-    std::string Label;
+    const std::string Label;
     /** Amount of orbitals on a site. */
-    unsigned short OrbitalSize;
+    const unsigned short OrbitalSize;
     /** Amount of spins on a site. */
-    unsigned short SpinSize;
+    const unsigned short SpinSize;
 public:
-    /** Empty constructor */
-    Site();
     /** Full constructor 
      * \param[in] Label Site label
      * \param[in] OrbitalSize Number of Orbitals for current site 

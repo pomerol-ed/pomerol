@@ -9,10 +9,6 @@ namespace Pomerol{
 // Lattice::Site
 //
 
-Lattice::Site::Site()
-{
-};
-
 Lattice::Site::Site(const std::string& Label, unsigned short OrbitalSize, unsigned short SpinSize):Label(Label), OrbitalSize(OrbitalSize), SpinSize(SpinSize)
 {
 };
@@ -96,6 +92,16 @@ Lattice::Lattice():Terms(new TermStorage)
 Lattice::~Lattice(){
 delete Terms;
 };
+
+Lattice::SiteMap::const_iterator Lattice::getSitesStartIterator()
+{
+    return Sites.begin();
+}
+
+Lattice::SiteMap::const_iterator Lattice::getSitesEndIterator()
+{
+    return Sites.end();
+}
 
 void Lattice::printTerms(unsigned int n){
 TermList Temp = Terms->getTermList(n);
