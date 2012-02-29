@@ -38,17 +38,19 @@ namespace Pomerol{
 /** This class handles all the indices classification, it allocates the indices to particular Site+Spin+Orbital configuration.
  *  It also returns the information about current ParticleIndex on request. */
 class IndexClassification {
-private:
+public:
+    template <int N> class InteractionMatrix;
     /** A structure, which holds the site label, orbital and spin of a ParticleIndex. */
     struct IndexInfo;
+private:
     /** A link to a Lattice object. */
-    Lattice *L;
+    const Lattice::SiteMap &Sites;
     /** Total number of indices. */
     ParticleIndex IndexSize;
     /** A map of each ParticleIndex to the information about it. */
     std::map<IndexInfo, ParticleIndex> InfoToIndices;
     /** A vector of IndexInfo - each element corresponds to its number. */
-    std::vector<IndexInfo> IndicesToInfo;
+    std::vector<IndexInfo*> IndicesToInfo;
 public:
     /** Returns total number of ParticleIndices. */
     const ParticleIndex getIndexSize();
@@ -69,7 +71,13 @@ public:
     /** Constructor 
      * \param[in] L A pointer to a Lattice Object. 
      */
-    IndexClassification (Lattice *L);
+    IndexClassification (const Lattice::SiteMap &Sites);
+    
+    /** Define the index space */
+    void prepare();
+
+    /** Print all Indices to the information stream */
+    void printIndices();
 };
 
 /** This structure holds the site label, the orbital and spin of a ParticleIndex */
@@ -89,7 +97,12 @@ public:
     bool operator<(const IndexClassification::IndexInfo& rhs) const ;
     /** Constructor */
     IndexInfo( const std::string &SiteLabel, const unsigned short Orbital, const unsigned short Spin);
+/** Make the object printable. */
+friend std::ostream& operator<<(std::ostream& output, const IndexClassification::IndexInfo& out);
 };
+
+typedef IndexClassification::InteractionMatrix<2> hMatrix;
+typedef IndexClassification::InteractionMatrix<4> UMatrix;
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef #__INCLUDE_INDEXCLASSIFICATION_H

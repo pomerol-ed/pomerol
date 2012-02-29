@@ -93,21 +93,24 @@ Lattice::~Lattice(){
 delete Terms;
 };
 
-Lattice::SiteMap::const_iterator Lattice::getSitesStartIterator()
+const Lattice::SiteMap& Lattice::getSiteMap()
 {
-    return Sites.begin();
+    return Sites;
 }
 
-Lattice::SiteMap::const_iterator Lattice::getSitesEndIterator()
+void Lattice::printTerms(unsigned int n)
 {
-    return Sites.end();
-}
-
-void Lattice::printTerms(unsigned int n){
 TermList Temp = Terms->getTermList(n);
 for (TermList::const_iterator it1=Temp.begin(); it1!=Temp.end(); ++it1) {
     INFO(**it1 );
     };
+}
+
+void Lattice::printSites()
+{
+    for (SiteMap::const_iterator it1=Sites.begin(); it1!=Sites.end(); ++it1) {
+            INFO(*(it1->second));
+        };
 }
 
 void Lattice::addSite(Lattice::Site* S)

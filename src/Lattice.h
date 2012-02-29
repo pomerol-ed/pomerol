@@ -71,6 +71,10 @@ public:
      * \param[in] order The order of Terms to print 
      */
     void printTerms(unsigned int order);
+
+    /** Print all Sites */
+    void printSites();
+
     virtual void do_nothing()=0;
 protected:
     /** A map between the particular Lattice::Site and it's label. */
@@ -84,10 +88,8 @@ public:
     ~Lattice();
     /** Returns a Lattice::Site for a given Label. */
     const Lattice::Site& getSite(const std::string& Label);
-    /** Returns an iterator, pointing to the beginning of the map of Sites. */
-    SiteMap::const_iterator getSitesStartIterator();
-    /** Returns an iterator, pointing to the end of the map of Sites. */
-    SiteMap::const_iterator getSitesEndIterator();
+    /** Returns the map of Sites*/
+    const Lattice::SiteMap& getSiteMap();
     /** An exception, which is thrown when a wrong Term added. */
     class exWrongLabel : public std::exception { 
         virtual const char* what() const throw();
@@ -98,23 +100,19 @@ public:
 /** This structure holds the information about a given site of the lattice, namely it's label, number of spins and orbitals. */ 
 struct Lattice::Site{
 friend class Lattice;
-protected:
+public:
     /** Site label. */
     const std::string Label;
     /** Amount of orbitals on a site. */
     const unsigned short OrbitalSize;
     /** Amount of spins on a site. */
     const unsigned short SpinSize;
-public:
     /** Full constructor 
      * \param[in] Label Site label
      * \param[in] OrbitalSize Number of Orbitals for current site 
      * \param[in] SpinSize Number of spins for current site 
      * */
     Site(const std::string& Label, unsigned short OrbitalSize, unsigned short SpinSize );
-    inline const unsigned short getOrbitalSize () const { return OrbitalSize; } 
-    inline const unsigned short getSpinSize () const { return OrbitalSize; } 
-    inline const std::string& getLabel () const { return Label; } 
 /** Make the object printable. */
 friend std::ostream& operator<<(std::ostream& output, const Site& out);
 };

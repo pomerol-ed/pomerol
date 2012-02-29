@@ -42,12 +42,55 @@ bool IndexClassification::IndexInfo::operator<(const IndexClassification::IndexI
     return (Spin < rhs.Spin);
 }
 
+std::ostream& operator<<(std::ostream& output, const IndexClassification::IndexInfo& out){
+    output << "(" << out.SiteLabel << "," << out.Orbital << "," << out.Spin << ")" ;
+    return output;
+};
+
 //
 //IndexClassification
 //
 
-IndexClassification::IndexClassification ( Lattice *L ) : L(L)
+IndexClassification::IndexClassification ( const Lattice::SiteMap &Sites ) : Sites(Sites), IndexSize(0)
 {
 };
+
+const ParticleIndex IndexClassification::getIndexSize()
+{
+    return IndexSize;
+}
+
+void IndexClassification::prepare()
+{
+    Log.setDebugging(true);
+    unsigned int MaxSpinSize=0;
+    for (Lattice::SiteMap::const_iterator it1 = Sites.begin(); it1!=Sites.end();++it1) { // first run : determine IndexSpace size & calculate number of spins on each site.
+        IndexSize+= (*(it1->second)).OrbitalSize*(*(it1->second)).SpinSize;
+        MaxSpinSize=((*(it1->second)).SpinSize>MaxSpinSize)?(*(it1->second)).SpinSize:MaxSpinSize;
+        };
+
+    // Split different spins in one group - useful for spin-symmetric cases
+
+    ParticleIndex currentIndex=0;
+    IndicesToInfo.resize(IndexSize);
+
+    for (unsigned int z=0; z<MaxSpinSize; ++z) {
+        for (Lattice::SiteMap::const_iterator it1 = Sites.begin(); it1!=Sites.end();++it1) {
+            if (z>=(*(it1->second)).SpinSize) break;
+            for (unsigned int i=0; i<(*(it1->second)).OrbitalSize; ++i) {
+                    IndicesToInfo[currentIndex] = new IndexInfo( it1->first, i, z);
+                    currentIndex++;
+                    }; // end of orbital loop
+                }; // end of Lattice::SiteMap loop
+            }; // end of spin loop
+
+    for (ParticleIndex i=0; i<IndexSize; ++i) InfoToIndices[(*(IndicesToInfo[i]))]=i;
+}
+
+void IndexClassification::printIndices()
+{
+    for (ParticleIndex i=0; i<IndexSize; ++i) INFO("Index " << i << " = " << *(IndicesToInfo[i]));
+}
+
 
 } // end of namespace Pomerol

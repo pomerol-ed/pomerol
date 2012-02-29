@@ -23,10 +23,10 @@
 #include "HDF5Storage.h"
 #include "Lattice.h"
 #include "LatticePresets.h"
+#include "IndexClassification.h"
 /*
 #include "LatticeAnalysis.h"
 #include "Term.h"
-#include "IndexClassification.h"
 #include "StatesClassification.h"
 #include "Hamiltonian.h"
 #include "FieldOperator.h"
@@ -87,10 +87,19 @@ int main(int argc, char *argv[])
   Lattice::Presets::addCoulombP(L, "B",4, 0.5, 0.0);
   Lattice::Presets::addHopping(L,"A","C",0.612);
   */
+  printFramed("Lattice");
+  INFO("Sites");
+  L->printSites();
   INFO("Terms with 2 operators");
   L->printTerms(2);
   INFO("Terms with 4 operators");
   L->printTerms(4);
+
+  IndexClassification Indices(L->getSiteMap());
+  Indices.prepare();
+  printFramed("Indices");
+  Indices.printIndices();
+
   return 0;
 };
 
