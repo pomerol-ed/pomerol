@@ -39,7 +39,6 @@ namespace Pomerol{
  *  It also returns the information about current ParticleIndex on request. */
 class IndexClassification {
 public:
-    template <int N> class InteractionMatrix;
     /** A structure, which holds the site label, orbital and spin of a ParticleIndex. */
     struct IndexInfo;
 private:
@@ -53,20 +52,25 @@ private:
     std::vector<IndexInfo*> IndicesToInfo;
 public:
     /** Returns total number of ParticleIndices. */
-    const ParticleIndex getIndexSize();
+    const ParticleIndex getIndexSize() const;
 
     /** Returns a list of indices, which belong to a current site. 
      * \param[in] SiteLabel Label of the Site. 
      */
-    std::list<ParticleIndex>& findIndices(const std::string &SiteLabel);
-
+   // std::list<ParticleIndex>& findIndices(const std::string &SiteLabel);
     /** Returns a list of indices, which belong to a current site. 
      * \param[in] A Lattice::Site to match.
      */
-    std::list<ParticleIndex>& findIndices(const Lattice::Site &Site);
+    //std::list<ParticleIndex>& findIndices(const Lattice::Site &Site);
 
-    /** Returns a ParticleIndex, which corresponds to a given site, orbital and spin */ 
-    ParticleIndex findIndex(const std::string &Site, const unsigned short &Orbital, const unsigned short &Spin); 
+    /** Returns a ParticleIndex, which corresponds to a given site, orbital and spin. */ 
+    ParticleIndex getIndex(const IndexClassification::IndexInfo& ) const;
+    /** Returns a ParticleIndex, which corresponds to a IndexClassification::IndexInfo. */
+    ParticleIndex getIndex(const std::string &Site, const unsigned short &Orbital, const unsigned short &Spin) const; 
+
+    /** Checks if the index belongs to the space of indices
+     * \param[in] in Index to check. */
+    bool checkIndex(ParticleIndex in);
 
     /** Constructor 
      * \param[in] L A pointer to a Lattice Object. 
@@ -101,8 +105,6 @@ public:
 friend std::ostream& operator<<(std::ostream& output, const IndexClassification::IndexInfo& out);
 };
 
-typedef IndexClassification::InteractionMatrix<2> hMatrix;
-typedef IndexClassification::InteractionMatrix<4> UMatrix;
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef #__INCLUDE_INDEXCLASSIFICATION_H

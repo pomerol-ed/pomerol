@@ -81,7 +81,9 @@ libpomerol_a_LIBADD =
 am_libpomerol_a_OBJECTS = libpomerol_a-Lattice.$(OBJEXT) \
 	libpomerol_a-LatticePresets.$(OBJEXT) \
 	libpomerol_a-Logger.$(OBJEXT) \
-	libpomerol_a-IndexClassification.$(OBJEXT)
+	libpomerol_a-IndexClassification.$(OBJEXT) \
+	libpomerol_a-IndexHamiltonian.$(OBJEXT) \
+	libpomerol_a-hMatrix.$(OBJEXT)
 libpomerol_a_OBJECTS = $(am_libpomerol_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -252,7 +254,9 @@ libpomerol_a_CPPFLAGS = -Wall -g
 libpomerol_a_SOURCES = \
 	Lattice.h Lattice.cpp LatticePresets.h LatticePresets.cpp \
 	Logger.cpp Logger.h \
-	IndexClassification.h IndexClassification.cpp
+	IndexClassification.h IndexClassification.cpp \
+	IndexHamiltonian.h IndexHamiltonian.cpp \
+	hMatrix.h hMatrix.cpp
 
 #HDF5Storage.cpp Thermal.cpp Lattice.cpp \
 #StatesClassification.cpp Term.cpp IndexClassification.cpp \
@@ -343,9 +347,11 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-IndexClassification.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-IndexHamiltonian.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Lattice.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-LatticePresets.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Logger.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-hMatrix.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -426,6 +432,38 @@ libpomerol_a-IndexClassification.obj: IndexClassification.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='IndexClassification.cpp' object='libpomerol_a-IndexClassification.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-IndexClassification.obj `if test -f 'IndexClassification.cpp'; then $(CYGPATH_W) 'IndexClassification.cpp'; else $(CYGPATH_W) '$(srcdir)/IndexClassification.cpp'; fi`
+
+libpomerol_a-IndexHamiltonian.o: IndexHamiltonian.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-IndexHamiltonian.o -MD -MP -MF $(DEPDIR)/libpomerol_a-IndexHamiltonian.Tpo -c -o libpomerol_a-IndexHamiltonian.o `test -f 'IndexHamiltonian.cpp' || echo '$(srcdir)/'`IndexHamiltonian.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-IndexHamiltonian.Tpo $(DEPDIR)/libpomerol_a-IndexHamiltonian.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='IndexHamiltonian.cpp' object='libpomerol_a-IndexHamiltonian.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-IndexHamiltonian.o `test -f 'IndexHamiltonian.cpp' || echo '$(srcdir)/'`IndexHamiltonian.cpp
+
+libpomerol_a-IndexHamiltonian.obj: IndexHamiltonian.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-IndexHamiltonian.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-IndexHamiltonian.Tpo -c -o libpomerol_a-IndexHamiltonian.obj `if test -f 'IndexHamiltonian.cpp'; then $(CYGPATH_W) 'IndexHamiltonian.cpp'; else $(CYGPATH_W) '$(srcdir)/IndexHamiltonian.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-IndexHamiltonian.Tpo $(DEPDIR)/libpomerol_a-IndexHamiltonian.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='IndexHamiltonian.cpp' object='libpomerol_a-IndexHamiltonian.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-IndexHamiltonian.obj `if test -f 'IndexHamiltonian.cpp'; then $(CYGPATH_W) 'IndexHamiltonian.cpp'; else $(CYGPATH_W) '$(srcdir)/IndexHamiltonian.cpp'; fi`
+
+libpomerol_a-hMatrix.o: hMatrix.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-hMatrix.o -MD -MP -MF $(DEPDIR)/libpomerol_a-hMatrix.Tpo -c -o libpomerol_a-hMatrix.o `test -f 'hMatrix.cpp' || echo '$(srcdir)/'`hMatrix.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-hMatrix.Tpo $(DEPDIR)/libpomerol_a-hMatrix.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='hMatrix.cpp' object='libpomerol_a-hMatrix.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-hMatrix.o `test -f 'hMatrix.cpp' || echo '$(srcdir)/'`hMatrix.cpp
+
+libpomerol_a-hMatrix.obj: hMatrix.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-hMatrix.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-hMatrix.Tpo -c -o libpomerol_a-hMatrix.obj `if test -f 'hMatrix.cpp'; then $(CYGPATH_W) 'hMatrix.cpp'; else $(CYGPATH_W) '$(srcdir)/hMatrix.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-hMatrix.Tpo $(DEPDIR)/libpomerol_a-hMatrix.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='hMatrix.cpp' object='libpomerol_a-hMatrix.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-hMatrix.obj `if test -f 'hMatrix.cpp'; then $(CYGPATH_W) 'hMatrix.cpp'; else $(CYGPATH_W) '$(srcdir)/hMatrix.cpp'; fi`
 install-libpomerol_a_pkgincludeHEADERS: $(libpomerol_a_pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(libpomerol_a_pkgincludedir)" || $(MKDIR_P) "$(DESTDIR)$(libpomerol_a_pkgincludedir)"

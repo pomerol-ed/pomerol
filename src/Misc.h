@@ -54,8 +54,9 @@ namespace Pomerol{
 
 /** Real floating point type. */
 typedef double RealType;
+//typedef std::complex<double> RealType;
 /** Complex type. */
-typedef std::complex<RealType> ComplexType;
+typedef std::complex<double> ComplexType;
 
 /** Dense complex matrix. */
 typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> MatrixType;

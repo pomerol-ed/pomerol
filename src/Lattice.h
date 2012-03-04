@@ -87,9 +87,11 @@ public:
     /** Destructor. */
     ~Lattice();
     /** Returns a Lattice::Site for a given Label. */
-    const Lattice::Site& getSite(const std::string& Label);
+    const Lattice::Site& getSite(const std::string& Label) const;
     /** Returns the map of Sites*/
-    const Lattice::SiteMap& getSiteMap();
+    const Lattice::SiteMap& getSiteMap() const;
+    /** Returns all stored terms */
+    const Lattice::TermStorage& getTermStorage() const;
     /** An exception, which is thrown when a wrong Term added. */
     class exWrongLabel : public std::exception { 
         virtual const char* what() const throw();
@@ -129,7 +131,7 @@ public:
     /** A set of presets to simplify term generation */
     class Presets;
     /** The order of the creation/annihilation operator in the Lattice::Term. */
-    std::vector<bool> Order; 
+    std::vector<bool> OperatorSequence; 
     /** An array with labels of sites, connected by this Lattice::Term. */
     std::vector<std::string> SiteLabels;
     /** An array of spins on the sites, which are connected by this Lattice::Term. */
@@ -144,7 +146,7 @@ public:
     Term(unsigned int N);
 
     /** Full constructor */
-    Term(unsigned int N, bool Order[ ], RealType Value, std::string SiteLabels[ ], unsigned short Orbitals[ ], unsigned short Spins[ ]);
+    Term(unsigned int N, bool OperatorSequence[ ], RealType Value, std::string SiteLabels[ ], unsigned short Orbitals[ ], unsigned short Spins[ ]);
 
     /** Copy-constuctor 
      * \param[in] in A Lattice::Term to copy.
@@ -161,6 +163,8 @@ friend class Lattice;
 protected:
     /** A storage for the TermLists for the corresponding order */
     std::map<unsigned int, Lattice::TermList> Terms;
+    /** Stores the maximum total number of operators in all Terms */
+    unsigned int MaxTermOrder;
 public:
     /** Add a Term to the storage.
      * \param[in] T The Term to add.
@@ -168,7 +172,10 @@ public:
     int addTerm(const Term* T);
     /** Get a List of Terms of a given order.
      * \param[in] N The required order of Terms. */
-    const Lattice::TermList &getTermList (unsigned int N);
+    const Lattice::TermList &getTerms (unsigned int N) const;
+    
+    /** Returns largest the number of operators in all stored Terms */
+    const unsigned int getMaxTermOrder() const;
     /** Empty constructor */
     TermStorage();
 };

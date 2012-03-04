@@ -55,14 +55,13 @@ IndexClassification::IndexClassification ( const Lattice::SiteMap &Sites ) : Sit
 {
 };
 
-const ParticleIndex IndexClassification::getIndexSize()
+const ParticleIndex IndexClassification::getIndexSize() const
 {
     return IndexSize;
 }
 
 void IndexClassification::prepare()
 {
-    Log.setDebugging(true);
     unsigned int MaxSpinSize=0;
     for (Lattice::SiteMap::const_iterator it1 = Sites.begin(); it1!=Sites.end();++it1) { // first run : determine IndexSpace size & calculate number of spins on each site.
         IndexSize+= (*(it1->second)).OrbitalSize*(*(it1->second)).SpinSize;
@@ -92,5 +91,21 @@ void IndexClassification::printIndices()
     for (ParticleIndex i=0; i<IndexSize; ++i) INFO("Index " << i << " = " << *(IndicesToInfo[i]));
 }
 
+ParticleIndex IndexClassification::getIndex(const std::string &Site, const unsigned short &Orbital, const unsigned short &Spin) const
+{
+    return getIndex(IndexInfo(Site,Orbital,Spin));
+}
+
+ParticleIndex IndexClassification::getIndex(const IndexClassification::IndexInfo &in) const
+{
+    std::map<IndexInfo, ParticleIndex>::const_iterator it=InfoToIndices.find(in); 
+    if (it!=InfoToIndices.end()) return (*it).second;
+    else return IndexSize;
+}
+
+bool IndexClassification::checkIndex(ParticleIndex in)
+{
+    return (in<IndexSize);
+}
 
 } // end of namespace Pomerol

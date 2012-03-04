@@ -39,11 +39,11 @@ Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, cons
 {
     if (Label1 == Label2) { ERROR("Hopping terms should connect different sites. Use Level terms for local quantities"); throw(exWrongIndices()); };
     Lattice::Term *T = new Term(2);
-    bool Order[2] = { 1, 0 };
+    bool OperatorSequence[2] = { 1, 0 };
     std::string Labels[2] = { Label1, Label2 };
     unsigned short Orbitals[2] = {orbital1, orbital2 };
     unsigned short Spins[2] = { spin1, spin2 };
-    T->Order.assign(Order,Order+2);
+    T->OperatorSequence.assign(OperatorSequence,OperatorSequence+2);
     T->SiteLabels.assign(Labels,Labels+2); 
     T->Orbitals.assign(Orbitals,Orbitals+2);
     T->Spins.assign(Spins,Spins+2); 
@@ -59,11 +59,11 @@ Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, cons
 Lattice::Term* Lattice::Term::Presets::Level ( const std::string& Label, RealType Value, unsigned short orbital, unsigned short spin)
 {
     Lattice::Term *T = new Term(2);
-    bool Order[2] = { 1, 0 };
+    bool OperatorSequence[2] = { 1, 0 };
     std::string Labels[2] = { Label, Label };
     unsigned short Orbitals[2] = {orbital, orbital };
     unsigned short Spins[2] = { spin, spin };
-    T->Order.assign(Order,Order+2);
+    T->OperatorSequence.assign(OperatorSequence,OperatorSequence+2);
     T->SiteLabels.assign(Labels,Labels+2); 
     T->Orbitals.assign(Orbitals,Orbitals+2);
     T->Spins.assign(Spins,Spins+2); 
@@ -84,7 +84,7 @@ Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label1, con
     unsigned short Spins[4]    =      { spin1, spin1, spin2, spin2  };
     std::string Labels[4]      =      { Label1, Label1, Label2, Label2 };
     unsigned short Orbitals[4] =      { orbital1, orbital1, orbital2, orbital2 }; 
-    T->Order.assign(order,order+4);
+    T->OperatorSequence.assign(order,order+4);
     T->SiteLabels.assign(Labels,Labels+4); 
     T->Orbitals.assign(Orbitals,Orbitals+4);
     T->Spins.assign(Spins,Spins+4); 
@@ -115,7 +115,7 @@ Lattice::Term* Lattice::Term::Presets::Spinflip ( const std::string& Label, Real
     unsigned short Spins[4]    =      { spin1, spin2, spin1, spin2  };
     std::string Labels[4]      =      { Label, Label, Label, Label };
     unsigned short Orbitals[4] =      { orbital1, orbital2, orbital2, orbital1 }; 
-    T->Order.assign(order,order+4);
+    T->OperatorSequence.assign(order,order+4);
     T->Spins.assign(Spins,Spins+4); 
     T->SiteLabels.assign(Labels,Labels+4); 
     T->Orbitals.assign(Orbitals,Orbitals+4);
@@ -131,7 +131,7 @@ Lattice::Term* Lattice::Term::Presets::PairHopping ( const std::string& Label, R
     unsigned short Spins[4]    =      { spin1, spin2, spin1, spin2  };
     std::string Labels[4]      =      { Label, Label, Label, Label };
     unsigned short Orbitals[4] =      { orbital1, orbital1, orbital2, orbital2 }; 
-    T->Order.assign(order,order+4);
+    T->OperatorSequence.assign(order,order+4);
     T->Spins.assign(Spins,Spins+4); 
     T->SiteLabels.assign(Labels,Labels+4); 
     T->Orbitals.assign(Orbitals,Orbitals+4);
@@ -146,7 +146,7 @@ Lattice::Term* Lattice::Term::Presets::SplusSminus ( const std::string& Label1, 
     unsigned short Spins[4]    =      { up, down, down, up  };
     std::string Labels[4]      =      { Label1, Label1, Label2, Label2 };
     unsigned short Orbitals[4] =      { orbital, orbital, orbital, orbital }; 
-    T->Order.assign(order,order+4);
+    T->OperatorSequence.assign(order,order+4);
     T->Spins.assign(Spins,Spins+4); 
     T->SiteLabels.assign(Labels,Labels+4); 
     T->Orbitals.assign(Orbitals,Orbitals+4);
@@ -179,9 +179,9 @@ void Lattice::Presets::addCoulombS(Lattice *L, const std::string& Label, RealTyp
     unsigned short Spins = L->Sites[Label]->SpinSize;
     for (unsigned short i=0; i<Orbitals; ++i) 
         for (unsigned short z1=0; z1<Spins; ++z1){
-            if (Level) L->Terms->addTerm(Lattice::Term::Presets::Level(Label, Level, i, z1 ));
+            if (std::abs(Level)) L->Terms->addTerm(Lattice::Term::Presets::Level(Label, Level, i, z1 ));
             for (unsigned short z2=0; z2<z1; ++z2) {
-                if (U) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label, U, i, i, z1, z2));
+                if (std::abs(U)) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label, U, i, i, z1, z2));
                 };
        };
 };
@@ -194,14 +194,14 @@ void Lattice::Presets::addCoulombP(Lattice *L, const std::string& Label, RealTyp
     if (Orbitals<=1 || Spins<=1) { ERROR("Cannot add multiorbital interaction to a site with 1 orbital or 1 spin"); throw (Lattice::Term::Presets::exWrongIndices()); };
     for (unsigned short i=0; i<Orbitals; ++i){
         for (unsigned short z1=0; z1<Spins; ++z1){
-            if (Level) L->Terms->addTerm(Lattice::Term::Presets::Level(Label, Level, i, z1 ));
+            if (std::abs(Level)) L->Terms->addTerm(Lattice::Term::Presets::Level(Label, Level, i, z1 ));
             for (unsigned short j=0; j<Orbitals; ++j) if (i!=j) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label, (U_p-J)/2., i, j, z1, z1));
             for (unsigned short z2=0; z2<z1; ++z2){
-                if (U) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label, U, i, i, z1, z2));
+                if (std::abs(U)) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label, U, i, i, z1, z2));
                 for (unsigned short j=0; j<Orbitals; ++j){
                         if (i!=j) {
-                            if (U_p) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label, U_p, i, j, z1, z2));
-                            if (J) { 
+                            if (std::abs(U_p)) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label, U_p, i, j, z1, z2));
+                            if (std::abs(J)) { 
                                 L->Terms->addTerm(Lattice::Term::Presets::Spinflip(Label, -J, i, j, z1, z2)); 
                                 L->Terms->addTerm(Lattice::Term::Presets::PairHopping(Label, -J, i, j, z1, z2)); 
                                 };
@@ -224,7 +224,7 @@ void Lattice::Presets::addLevel(Lattice *L, const std::string& Label, RealType L
     unsigned short Spins = L->Sites[Label]->SpinSize;
     for (unsigned short i=0; i<Orbitals; ++i) 
         for (unsigned short z=0; z<Spins; ++z) {
-            if (Level) L->Terms->addTerm(Lattice::Term::Presets::Level(Label, Level, i, z ));
+            if (std::abs(Level)) L->Terms->addTerm(Lattice::Term::Presets::Level(Label, Level, i, z ));
             };
 }
 
@@ -342,7 +342,7 @@ void JSONLattice::JSONPresets::readSSite(Lattice *L, const std::string& Label, J
     RealType U = in["U"].asDouble();
     int Orbitals=1; 
     if (in["Orbitals"]!=Json::nullValue) Orbitals = in["Orbitals"].asInt();
-    RealType Level=U/2; // set default Level to half-filled value
+    RealType Level=U/2.0; // set default Level to half-filled value
     if (in["Level"]!=Json::nullValue) Level=in["Level"].asDouble();
     int Spins=2;
     if (in["Spins"]!=Json::nullValue) Spins=in["Spins"].asInt();

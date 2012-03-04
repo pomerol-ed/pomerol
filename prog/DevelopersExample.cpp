@@ -24,6 +24,7 @@
 #include "Lattice.h"
 #include "LatticePresets.h"
 #include "IndexClassification.h"
+#include "IndexHamiltonian.h"
 /*
 #include "LatticeAnalysis.h"
 #include "Term.h"
@@ -74,6 +75,8 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+  Log.setDebugging(true);
+
   JSONLattice JL;
   Lattice *L=&JL;
   JL.readin(opt.LatticeFile);
@@ -95,11 +98,30 @@ int main(int argc, char *argv[])
   INFO("Terms with 4 operators");
   L->printTerms(4);
 
+  DEBUG(L->getTermStorage().getMaxTermOrder());
   IndexClassification Indices(L->getSiteMap());
   Indices.prepare();
   printFramed("Indices");
   Indices.printIndices();
 
+  DEBUG(Indices.getIndex("B",0,1));
+  DEBUG(Indices.checkIndex(Indices.getIndex("B",0,3)));
+
+  IndexHamiltonian Storage(L,Indices);
+  Storage.prepare();
+
+  bool Seq[4] = {1,1,0,0}; 
+  ParticleIndex Ind[] = {1,2,2,1};
+  std::vector<bool> seq_v(Seq, Seq+4);
+  std::vector<ParticleIndex> ind_v(Ind, Ind+4);
+  IndexHamiltonian::Term IT1(4, seq_v, ind_v, 1.0);
+  DEBUG(IT1);
+  Seq[0]=0; Seq[1]=0; Seq[2]=1; Seq[3]=1;
+  seq_v.assign(Seq,Seq+4);
+  std::list<IndexHamiltonian::Term*> Hterms = IT1.rearrange(seq_v); 
+  DEBUG(IT1);
+  DEBUG(Hterms.size());
+  for (std::list<IndexHamiltonian::Term*>::const_iterator it1=Hterms.begin(); it1!=Hterms.end(); ++it1) DEBUG(**it1);
   return 0;
 };
 
