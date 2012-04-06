@@ -7,9 +7,11 @@ libpomerol_a_CPPFLAGS=-Wall -g
 libpomerol_a_SOURCES= \
 	Lattice.h Lattice.cpp LatticePresets.h LatticePresets.cpp \
 	Logger.cpp Logger.h \
+	Index.h Index.cpp \
 	IndexClassification.h IndexClassification.cpp \
 	IndexHamiltonian.h IndexHamiltonian.cpp \
-	hMatrix.h hMatrix.cpp
+	hMatrix.h hMatrix.cpp \
+	Symmetrizer.h Symmetrizer.cpp 
 #HDF5Storage.cpp Thermal.cpp Lattice.cpp \
 #StatesClassification.cpp Term.cpp IndexClassification.cpp \
 #HamiltonianPart.cpp Hamiltonian.cpp FieldOperatorPart.cpp FieldOperator.cpp \

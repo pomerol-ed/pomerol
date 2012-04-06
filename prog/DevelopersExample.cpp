@@ -25,6 +25,7 @@
 #include "LatticePresets.h"
 #include "IndexClassification.h"
 #include "IndexHamiltonian.h"
+#include "Symmetrizer.h"
 /*
 #include "LatticeAnalysis.h"
 #include "Term.h"
@@ -46,7 +47,7 @@ using std::string; using std::cout; using std::endl;
 /* ======================================================================== */
 // To be removed
 
-void printFramed (const std::string& str)
+void print_section (const std::string& str)
 {
   std::cout << std::string(str.size(),'=') << std::endl;
   std::cout << str << std::endl;
@@ -81,6 +82,23 @@ int main(int argc, char *argv[])
   Lattice *L=&JL;
   JL.readin(opt.LatticeFile);
 
+ // DynamicIndexCombination AA(3);
+  std::vector<ParticleIndex> a1(3);
+  a1[0]=1;
+  a1[1]=2;
+  a1[2]=0;
+  Symmetrizer::IndexPermutation AA2(a1);
+  DynamicIndexCombination AA(3);
+  AA[0]=3;
+  AA[1]=3;
+  AA[2]=3;
+  DynamicIndexCombination BB(3);
+  BB[0]=3;
+  BB[1]=3;
+  BB[2]=3;
+  DEBUG(AA<<"< " << BB << " = " << (AA<BB));
+  DEBUG(AA<<"==" << BB << " = " << (AA==BB));
+  DEBUG(AA<<"!=" << BB << " = " << (AA!=BB));
 /*
   L->addSite(new Lattice::Site("A",1,2));
   L->addSite(new Lattice::Site("B",2,2));
@@ -90,7 +108,7 @@ int main(int argc, char *argv[])
   Lattice::Presets::addCoulombP(L, "B",4, 0.5, 0.0);
   Lattice::Presets::addHopping(L,"A","C",0.612);
   */
-  printFramed("Lattice");
+  print_section("Lattice");
   INFO("Sites");
   L->printSites();
   INFO("Terms with 2 operators");
@@ -98,30 +116,22 @@ int main(int argc, char *argv[])
   INFO("Terms with 4 operators");
   L->printTerms(4);
 
-  DEBUG(L->getTermStorage().getMaxTermOrder());
+  //DEBUG(L->getTermStorage().getMaxTermOrder());
   IndexClassification Indices(L->getSiteMap());
+  IndexClassification *II = &Indices;
   Indices.prepare();
-  printFramed("Indices");
+  print_section("Indices");
   Indices.printIndices();
+  //DEBUG(Indices.getIndex("B",0,1));
+  //DEBUG(Indices.checkIndex(Indices.getIndex("B",0,3)));
 
-  DEBUG(Indices.getIndex("B",0,1));
-  DEBUG(Indices.checkIndex(Indices.getIndex("B",0,3)));
-
+  print_section("Matrix element storage");
   IndexHamiltonian Storage(L,Indices);
   Storage.prepare();
-
-  bool Seq[4] = {1,1,0,0}; 
-  ParticleIndex Ind[] = {1,2,2,1};
-  std::vector<bool> seq_v(Seq, Seq+4);
-  std::vector<ParticleIndex> ind_v(Ind, Ind+4);
-  IndexHamiltonian::Term IT1(4, seq_v, ind_v, 1.0);
-  DEBUG(IT1);
-  Seq[0]=0; Seq[1]=0; Seq[2]=1; Seq[3]=1;
-  seq_v.assign(Seq,Seq+4);
-  std::list<IndexHamiltonian::Term*> Hterms = IT1.rearrange(seq_v); 
-  DEBUG(IT1);
-  DEBUG(Hterms.size());
-  for (std::list<IndexHamiltonian::Term*>::const_iterator it1=Hterms.begin(); it1!=Hterms.end(); ++it1) DEBUG(**it1);
+  INFO("Terms with 2 operators");
+  Storage.printTerms(2);
+  INFO("Terms with 4 operators");
+  Storage.printTerms(4);
   return 0;
 };
 

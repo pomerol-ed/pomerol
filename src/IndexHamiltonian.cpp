@@ -65,7 +65,7 @@ std::list<IndexHamiltonian::Term*> IndexHamiltonian::Term::rearrange(const std::
                     OperatorSequence[j]=!OperatorSequence[j]; 
                     std::swap(Indices[i], Indices[j] );
                     }
-            else { // Operators do not commute - swap will construct additional term.
+            else { // Operators do not anticommute - swap will construct additional term.
                 for (unsigned int k=j-1; k>=i; k--) { // move an operator at position j to the left to the position i.
                     std::list<IndexHamiltonian::Term*> out_temp = elementary_swap(k); 
                     out.resize(out.size()+out_temp.size());
@@ -130,7 +130,6 @@ IndexHamiltonian::IndexHamiltonian(const Lattice *L, const IndexClassification &
 void IndexHamiltonian::prepare()
 {
     // Read terms.
-    DEBUG(L->getTermStorage().getMaxTermOrder());
     for (unsigned int N=L->getTermStorage().getMaxTermOrder(); N; --N ) {
         if ( L->getTermStorage().getTerms(N).size())
         for (Lattice::TermList::const_iterator current=L->getTermStorage().getTerms(N).begin(); current!=L->getTermStorage().getTerms(N).end(); ++current) {
@@ -154,7 +153,6 @@ void IndexHamiltonian::prepare()
                 IndexHamiltonian::Term *T1 = *it1;
                 // Rearrange it
                 std::list<IndexHamiltonian::Term*> out=T1->rearrange(TERM_DEFAULT_SEQUENCE(N));
-       //         DEBUG(*T1);
                 for (std::list<IndexHamiltonian::Term*>::iterator additional_terms = out.begin(); additional_terms != out.end(); additional_terms++) {
                         Terms[(**additional_terms).Order].push_back(*additional_terms);
                     } // end of list iteration
@@ -165,6 +163,15 @@ void IndexHamiltonian::prepare()
 const std::list<IndexHamiltonian::Term*> IndexHamiltonian::getTerms(unsigned int N) const
 {
     return Terms.find(N)->second;
+};
+
+void IndexHamiltonian::printTerms(unsigned int N) const
+{
+    std::list<IndexHamiltonian::Term*> Temp = (this)->getTerms(N);
+    for (std::list<IndexHamiltonian::Term*>::const_iterator it1=Temp.begin(); it1!=Temp.end(); ++it1) {
+    INFO(**it1 );
+    };
+
 };
 
 } // end of namespace Pomerol

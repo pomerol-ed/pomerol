@@ -19,8 +19,8 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-/** \file hMatrix.h
-**  \brief Declaration of hMatrix class - the single-particle part of Hamiltonian written in Index space.
+/** \file IndexHamiltonian.h
+**  \brief Declaration of the IndexHamiltonian class - the Hamiltonian written in Index space.
 ** 
 **  \author    Andrey Antipov (antipov@ct-qmc.org)
 */
@@ -35,8 +35,8 @@
 
 namespace Pomerol{
 
-/* This class stores all matrix elements of hamiltonian in it's index space. All terms have the \f$ c^{\dagger} c c^{\dagger} c ... \f$ ordering,
- * which can be specified in IndexHamiltonian::Term constructor. */
+/* This class stores all matrix elements of a Hamiltonian in the index space. All terms have the ordering, 
+ * defined at the TERM_DEFAULT_SEQUENCE, which is by default taken as \f$ c^{\dagger} c c^{\dagger} c ... \f$. */
 class IndexHamiltonian
 {
 public:
@@ -56,6 +56,8 @@ public:
     IndexHamiltonian(const Lattice *L, const IndexClassification &Info);
     /** Gets all Terms of desired order. */
     const std::list<Term*> getTerms(unsigned int N) const;
+    /** Print all IndexHamiltonian::Term s */
+    void printTerms(unsigned int order) const;
 };
 
 /** The Term in the ParticleIndex space is the same as the Lattice::Term, apart that it can be rearranged to the predefined sequence of operators
@@ -102,10 +104,12 @@ public:
 friend std::ostream& operator<< (std::ostream& output, const Term& out);
 };
 
-/** This is used in the IndexHamiltonian prepare method. This defines the default sequence of elements to be used. */
-inline std::vector<bool> TERM_DEFAULT_SEQUENCE(unsigned int N)
+/** This function is used in the IndexHamiltonian prepare method. 
+ * This defines the default sequence of elements to be used in IndexHamiltonian IndexHamiltonian::Term storage.. */
+inline std::vector<bool>& TERM_DEFAULT_SEQUENCE(unsigned int N)
 {
-    std::vector<bool> out(N, false);
+    static std::vector<bool> out;
+    out.assign(N, false);
     for (unsigned int i=0; i<N; ++i) out[i]=(i+1)%2;
     return out;
 }

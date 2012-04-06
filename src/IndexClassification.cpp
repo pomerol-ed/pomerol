@@ -51,14 +51,9 @@ std::ostream& operator<<(std::ostream& output, const IndexClassification::IndexI
 //IndexClassification
 //
 
-IndexClassification::IndexClassification ( const Lattice::SiteMap &Sites ) : Sites(Sites), IndexSize(0)
+IndexClassification::IndexClassification ( const Lattice::SiteMap &Sites ) : IndexSize(0),Sites(Sites)
 {
 };
-
-const ParticleIndex IndexClassification::getIndexSize() const
-{
-    return IndexSize;
-}
 
 void IndexClassification::prepare()
 {
@@ -86,6 +81,17 @@ void IndexClassification::prepare()
     for (ParticleIndex i=0; i<IndexSize; ++i) InfoToIndices[(*(IndicesToInfo[i]))]=i;
 }
 
+const ParticleIndex IndexClassification::getIndexSize() const
+{
+    return IndexSize;
+}
+
+bool IndexClassification::checkIndex(ParticleIndex in)
+{
+    return (in<IndexSize);
+}
+
+
 void IndexClassification::printIndices()
 {
     for (ParticleIndex i=0; i<IndexSize; ++i) INFO("Index " << i << " = " << *(IndicesToInfo[i]));
@@ -101,11 +107,6 @@ ParticleIndex IndexClassification::getIndex(const IndexClassification::IndexInfo
     std::map<IndexInfo, ParticleIndex>::const_iterator it=InfoToIndices.find(in); 
     if (it!=InfoToIndices.end()) return (*it).second;
     else return IndexSize;
-}
-
-bool IndexClassification::checkIndex(ParticleIndex in)
-{
-    return (in<IndexSize);
 }
 
 } // end of namespace Pomerol
