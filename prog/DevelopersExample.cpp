@@ -82,8 +82,7 @@ int main(int argc, char *argv[])
   Lattice *L=&JL;
   JL.readin(opt.LatticeFile);
 
- // DynamicIndexCombination AA(3);
-  std::vector<ParticleIndex> a1(3);
+  /* std::vector<ParticleIndex> a1(3);
   a1[0]=1;
   a1[1]=2;
   a1[2]=0;
@@ -96,10 +95,11 @@ int main(int argc, char *argv[])
   BB[0]=3;
   BB[1]=3;
   BB[2]=3;
-  DEBUG(AA<<"< " << BB << " = " << (AA<BB));
+  DEBUG(AA2<"< " << BB << " = " << (AA<BB));
   DEBUG(AA<<"==" << BB << " = " << (AA==BB));
   DEBUG(AA<<"!=" << BB << " = " << (AA!=BB));
-/*
+  exit(0);
+
   L->addSite(new Lattice::Site("A",1,2));
   L->addSite(new Lattice::Site("B",2,2));
   L->addSite(new Lattice::Site("C",1,2));
@@ -132,6 +132,15 @@ int main(int argc, char *argv[])
   Storage.printTerms(2);
   INFO("Terms with 4 operators");
   Storage.printTerms(4);
+
+  /* Make a check of the Symmetrizer::IndexPermutation. */
+  ParticleIndex tmp[]={1,2,3,0,4,5};
+  std::vector<ParticleIndex> tmp2(tmp, tmp+6);
+  DynamicIndexCombination A(tmp2);
+  Symmetrizer::IndexPermutation B(A);
+  cout << B.getCycleLength() << endl;
+
+  Symmetrizer S(Indices);
   return 0;
 };
 

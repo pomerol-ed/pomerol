@@ -33,19 +33,87 @@ namespace Pomerol {
 //Symmetrizer::IndexPermutation
 //
 
-Symmetrizer::IndexPermutation::IndexPermutation(const std::vector<ParticleIndex> &in):DynamicIndexCombination(in)
+Symmetrizer::IndexPermutation::IndexPermutation(const DynamicIndexCombination &in):N(in.getNumberOfIndices())
 {
-    for (ParticleIndex i=0; i<N; ++i) {
-        if (in[i]>=N) { ERROR("Indices in IndexPermutation should belong to the interval 0..N-1"); throw (exWrongIndices()); };
-        for (ParticleIndex j=i+1; j<N; ++j)
-            if (in[i]==in[j]) throw ( exEqualIndices());
-        };
-    CycleLength=0;
+    if ( checkConsistency(in) && checkIrreducibility(in) ) { 
+        Combinations.push_back(new DynamicIndexCombination(in));
+        CycleLength=0;
+        calculateCycleLength();    
+    }
+    else throw ( DynamicIndexCombination::exWrongIndices()) ;
 }
 
-const std::vector<ParticleIndex>& Symmetrizer::IndexPermutation::getIndices( unsigned int cycle_number ) const
+bool Symmetrizer::IndexPermutation::checkConsistency(const DynamicIndexCombination &in)
 {
-    return Indices;
+
+    for (ParticleIndex i=0; i<N; ++i) {
+        if (in.getIndex(i)>=N) { 
+            ERROR("Indices in IndexPermutation should belong to the interval 0..N-1"); 
+            return false;
+            };
+        for (ParticleIndex j=i+1; j<N; ++j)
+            if (in.getIndex(i)==in.getIndex(j)) { 
+            ERROR("Found equal indices in given combination");
+            return false;
+            }
+        };
+    return true;
+}
+
+bool Symmetrizer::IndexPermutation::checkIrreducibility(const DynamicIndexCombination &in)
+{
+    std::map<ParticleIndex, unsigned int> nontrivial_indices; // Here collected indices, which are changed
+    std::vector<ParticleIndex> trivial_indices;
+    ParticleIndex current_index=0;
+
+    while ((nontrivial_indices.size() + trivial_indices.size())!=N) {
+        //DEBUG("Current index : " << current_index << "-->" << in.getIndex(current_index));
+        if (current_index == in.getIndex(current_index)) { // Index is a trivial index - no loop for it is done
+            trivial_indices.push_back(current_index);
+            current_index++;
+            }
+        else if (nontrivial_indices.find(current_index)!=nontrivial_indices.end()) // Check that this index was found during previous iterations.
+            current_index++;
+            else if ( nontrivial_indices.size()==0 ) { // This is a first nontrivial index found - start a loop then.
+                nontrivial_indices[current_index]=1;
+                ParticleIndex result=in.getIndex(current_index);
+                //DEBUG("Begin with" << current_index);
+                //DEBUG("-->" << result);
+                while ( result!=current_index) { // make a small loop in indices to determine the length of found cycle
+                    nontrivial_indices[result]=1;
+                    result=in.getIndex(result);
+                    //DEBUG("-->" << result);
+                    };
+                current_index++;
+            }
+        else { 
+            ERROR("Permutation " << in << " is reducible"); 
+            return false; // Once an index which is not a part of previously checked loop is found means a permutation is reducible.
+            };
+    };
+    if ( trivial_indices.size() == N ) { ERROR("Identity permutation " << in << " is rejected."); return false; } // reject trivial identity permutation.
+    return true; 
+}
+
+void Symmetrizer::IndexPermutation::calculateCycleLength()
+{
+    DynamicIndexCombination initial(**(Combinations.begin()));
+    DynamicIndexCombination current(**(Combinations.begin()));
+    DynamicIndexCombination trivial (Symmetrizer::generateTrivialCombination(N)); // #warning think of better static implementation
+    DynamicIndexCombination next(N);
+    for (ParticleIndex i=0; i<N; ++i) trivial[i] = i;
+    bool exit_loop=false;
+    while (!exit_loop) { 
+        for (ParticleIndex i=0; i<N; ++i) next[i]=current[current[i]];
+        CycleLength++;
+        exit_loop = ( next == initial || next == trivial );
+        current = next;
+        }
+}
+
+const DynamicIndexCombination& Symmetrizer::IndexPermutation::getIndices( unsigned int cycle_number ) const
+{
+    return *Combinations[cycle_number];
 }
 
 const unsigned int Symmetrizer::IndexPermutation::getCycleLength() const
@@ -63,6 +131,13 @@ const char* Symmetrizer::IndexPermutation::exEqualIndices::what() const throw(){
 
 Symmetrizer::Symmetrizer(IndexClassification &IndexInfo):IndexInfo(IndexInfo)
 {
+}
+
+const DynamicIndexCombination& Symmetrizer::generateTrivialCombination(ParticleIndex N)
+{
+    static DynamicIndexCombination trivial(N);
+    for (ParticleIndex i=0; i<N; ++i) trivial[i] = i;
+    return trivial;
 }
 
 } // end of namespace Pomerol 

@@ -42,29 +42,51 @@ class Symmetrizer
 {
 public:
     struct IndexPermutation;
+    /** This generates a trivial combination of 0123...N-1 indices. */
+    static const DynamicIndexCombination& generateTrivialCombination(ParticleIndex N);
 private:
-    IndexClassification &IndexInfo;
+    /** A link to an IndexClassification object. */ 
+    const IndexClassification &IndexInfo;
+    /** A link to an IndexHamiltonian object. */
+    const IndexHamiltonian &Storage;
+
+    bool NSymmetry;
+    bool SzSzSymmetry;
+    /** A list of equivalent lattice sites permutations. */
+    std::list<IndexPermutation*> Permutations;
 public:
     Symmetrizer(IndexClassification &IndexInfo);
 };
 
-/** A combination of indices to which a permutation commutes with a Hamiltonian. */
-struct Symmetrizer::IndexPermutation : protected DynamicIndexCombination
+/** A combination of indices to which a permutation commutes with a Hamiltonian. 
+ * Only the combinations with all different indices can be accepted. Also, since it
+ * represents a permutation of indices a check for the irreducibility of the permutation is done, 
+ * i.e. it is checked that a permutation can not be split in at least two others. 
+ * It is assumed that a trivial identity permutation makes an error. */
+struct Symmetrizer::IndexPermutation 
 {
 private:
+    std::vector<DynamicIndexCombination*> Combinations;
     /** This defines how many permutations should be done to form a closed loop. */
     unsigned int CycleLength;
+    /** Calculates CycleLength. */
+    void calculateCycleLength();
+    /** Checks that all elements of permutation are different and belong to 0..N-1 interval. */
+    bool checkConsistency(const DynamicIndexCombination &in);
+    /** Checks that the permutation can not be splitted. */
+    bool checkIrreducibility(const DynamicIndexCombination &in); 
+    /** Total amount of indices. */
+    const ParticleIndex N;
 public:
     /** Constructor. 
      * \param[in] @in Equivalent index combination. 
-     * \param[in] @length The length of a cycle of permutations.
      */
-    IndexPermutation(const std::vector<ParticleIndex> &in);
+    IndexPermutation(const DynamicIndexCombination &in);
 
     /** Returns the permutation for a given number in cycle
      * \param[in] cycle Defines which permutation of indices to return. By default returns the first one.
      */
-    const std::vector<ParticleIndex>& getIndices( unsigned int cycle = 1) const;
+    const DynamicIndexCombination& getIndices( unsigned int cycle = 1) const;
 
     /** Returns the length of the permutation cycle. */
     const unsigned int getCycleLength() const;
