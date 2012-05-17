@@ -44,10 +44,16 @@ int main(int argc, char* argv[])
   IndexHamiltonian::Term IT1(4, seq_v, ind_v, 1.0);
   INFO("Created IndexHamiltonian::Term" << IT1);
   INFO("Rearranging it to normal order");
-  boost::shared_ptr<std::list<IndexHamiltonian::Term*> > out_terms=IT1.makeNormalOrder();
-  INFO("Received " << IT1);
-  INFO(out_terms->size() << " additional terms emerged : ");     
-  for (std::list<IndexHamiltonian::Term*>::const_iterator it1=out_terms->begin(); it1!=out_terms->end(); ++it1) DEBUG(**it1);
+  try {
+    boost::shared_ptr<std::list<IndexHamiltonian::Term*> > out_terms=IT1.makeNormalOrder();
+    INFO("Received " << IT1);
+    INFO(out_terms->size() << " additional terms emerged : ");     
+    for (std::list<IndexHamiltonian::Term*>::const_iterator it1=out_terms->begin(); it1!=out_terms->end(); ++it1) DEBUG(**it1);
+    }
+  catch (std::exception &e)
+    {
+        return EXIT_FAILURE;
+    }
   /* end of test of IndexHamiltonian::Term */
 
   return EXIT_SUCCESS;
