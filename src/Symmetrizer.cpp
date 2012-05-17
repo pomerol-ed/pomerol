@@ -129,7 +129,7 @@ const char* Symmetrizer::IndexPermutation::exEqualIndices::what() const throw(){
 // Symmetrizer
 //
 
-Symmetrizer::Symmetrizer(IndexClassification &IndexInfo):IndexInfo(IndexInfo)
+Symmetrizer::Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage):IndexInfo(IndexInfo), Storage(Storage)
 {
 }
 

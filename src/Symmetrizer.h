@@ -31,6 +31,7 @@
 #include "Misc.h"
 #include "Index.h"
 #include "IndexClassification.h"
+#include "IndexHamiltonian.h"
 #include <set>
 
 namespace Pomerol{
@@ -55,7 +56,13 @@ private:
     /** A list of equivalent lattice sites permutations. */
     std::list<IndexPermutation*> Permutations;
 public:
-    Symmetrizer(IndexClassification &IndexInfo);
+    Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage);
+    /** This method finds all lattice permutation operators, that commute with the hamiltonian. */
+    //void findLatticeSymmetry();
+    /** This method checks the conservation of number of particles. */
+    void checkNSymmetry();
+    /** This method checks that spin-projection on the z axis is conserved. */
+    void checkSzSymmetry();
 };
 
 /** A combination of indices to which a permutation commutes with a Hamiltonian. 

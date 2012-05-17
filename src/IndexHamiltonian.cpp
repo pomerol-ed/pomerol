@@ -26,6 +26,7 @@
 
 #include "IndexHamiltonian.h"
 #include <algorithm>
+#include <sstream>
 
 namespace Pomerol {
 
@@ -33,27 +34,32 @@ namespace Pomerol {
 //IndexHamiltonian::Term
 //
 
-IndexHamiltonian::Term::Term (const unsigned int Order, const std::vector<bool>&  Sequence, const std::vector<ParticleIndex> & Indices, RealType Value):
-    Order(Order), OperatorSequence(Sequence), Indices(Indices), Value(Value)
+IndexHamiltonian::Term::Term (const unsigned int N, const std::vector<bool>&  Sequence, const std::vector<ParticleIndex> & Indices, RealType Value):
+    N(N), OperatorSequence(Sequence), Indices(Indices), Value(Value)
 {
-    if (Sequence.size()!=Order || Indices.size()!=Order) throw(exWrongLabel());
-    for (unsigned int i=0; i<Order; ++i) 
-        for (unsigned int j=i+1; j<Order; ++j)
-            if (Indices[i]==Indices[j] && Sequence[i] == Sequence[j] ) { DEBUG(Sequence[i] << "," << Sequence[j]); ERROR("Cannot have two same operators in a term. "); throw (exWrongOpSequence()); }; 
+    if (Sequence.size()!=N || Indices.size()!=N) throw(exWrongLabel());
+    for (unsigned int i=0; i<N; ++i) {  
+        int count_index=2*Sequence[i]-1; // This determines how many times current index Indices[i] is found. c^+ gives +1, c gives -1.
+        for (unsigned int j=i+1; j<N; ++j)
+            if (Indices[i]==Indices[j] ) { 
+                count_index+=2*Sequence[j]-1; 
+                if ( count_index > 1 || count_index < -1 ) { ERROR("This term vanishes. "); throw (exWrongOpSequence()); }; 
+            } 
+        };    
 }
 
-std::list<IndexHamiltonian::Term*> IndexHamiltonian::Term::rearrange(const std::vector<bool> & DesiredSequence)
+boost::shared_ptr<std::list<IndexHamiltonian::Term*> > IndexHamiltonian::Term::rearrange(const std::vector<bool> & DesiredSequence)
 {
     if (DesiredSequence.size() != OperatorSequence.size() ) throw (exWrongOpSequence());
-    std::list<IndexHamiltonian::Term*> out;
+    boost::shared_ptr<std::list<IndexHamiltonian::Term*> > out ( new std::list<IndexHamiltonian::Term*> );
     if (OperatorSequence == DesiredSequence) { return out; } // Nothing is needed to do then.
 
-    for (unsigned int i=0; i<Order-1; ++i) { 
+    for (unsigned int i=0; i<N-1; ++i) { 
         if (OperatorSequence[i]!=DesiredSequence[i]) {
             unsigned int j=i+1;
-            for (; j<Order && ( OperatorSequence[j] == OperatorSequence[i] || OperatorSequence[j] == DesiredSequence[j]); ++j) {};  // finding element to change
-            if (j==Order) throw (exWrongOpSequence()); // exit if there is no way of doing the rearrangement.
-            if (Order==2) { elementary_swap(0,true); return out; }; // If there are only two operators - just swap them and go away.
+            for (; j<N && ( OperatorSequence[j] == OperatorSequence[i] || OperatorSequence[j] == DesiredSequence[j]); ++j) {};  // finding element to change
+            if (j==N) throw (exWrongOpSequence()); // exit if there is no way of doing the rearrangement.
+            if (N==2) { elementary_swap(0,true); return out; }; // If there are only two operators - just swap them and go away.
 
             // Now check if any operations with anticommutation relation is required.
             bool needNewTerms=false;
@@ -67,15 +73,15 @@ std::list<IndexHamiltonian::Term*> IndexHamiltonian::Term::rearrange(const std::
                     }
             else { // Operators do not anticommute - swap will construct additional term.
                 for (unsigned int k=j-1; k>=i; k--) { // move an operator at position j to the left to the position i.
-                    std::list<IndexHamiltonian::Term*> out_temp = elementary_swap(k); 
-                    out.resize(out.size()+out_temp.size());
-                    std::copy_backward(out_temp.begin(), out_temp.end(), out.end()); 
+                    std::list<IndexHamiltonian::Term*> out_temp = *(elementary_swap(k)); 
+                    out->resize(out->size()+out_temp.size());
+                    std::copy_backward(out_temp.begin(), out_temp.end(), out->end()); 
                     if (k==0) break; // exit, since unsigned int loop is done.
                     };
                 for (unsigned int k=i+1; k<j; k++) { // move the operator at position i+1 to the right to the position j.
-                    std::list<IndexHamiltonian::Term*> out_temp = elementary_swap(k); 
-                    out.resize(out.size()+out_temp.size());
-                    std::copy_backward(out_temp.begin(), out_temp.end(), out.end()); 
+                    std::list<IndexHamiltonian::Term*> out_temp = *(elementary_swap(k)); 
+                    out->resize(out->size()+out_temp.size());
+                    std::copy_backward(out_temp.begin(), out_temp.end(), out->end()); 
                     };
                 }; // end of else
             }; // end of element check
@@ -83,9 +89,21 @@ std::list<IndexHamiltonian::Term*> IndexHamiltonian::Term::rearrange(const std::
     return out;
 }
 
-std::list<IndexHamiltonian::Term*> IndexHamiltonian::Term::elementary_swap(unsigned int position, bool force_ignore_commutation)
+boost::shared_ptr<std::list<IndexHamiltonian::Term*> > IndexHamiltonian::Term::makeNormalOrder()
 {
-    std::list<IndexHamiltonian::Term*> out;
+    //boost::shared_ptr<std::list<IndexHamiltonian::Term*> > out ( new std::list<IndexHamiltonian::Term*> );
+    //return out;
+    std::vector<bool> normalOrderedSequence;
+    for (ParticleIndex i=0; i<N; ++i) {
+        if ( !OperatorSequence[i] ) normalOrderedSequence.push_back(0);
+        else normalOrderedSequence.insert(normalOrderedSequence.begin(),1);
+        }
+    return this->rearrange(normalOrderedSequence);
+}
+
+boost::shared_ptr<std::list<IndexHamiltonian::Term*> > IndexHamiltonian::Term::elementary_swap(unsigned int position, bool force_ignore_commutation)
+{
+    boost::shared_ptr<std::list<IndexHamiltonian::Term*> > out ( new std::list<IndexHamiltonian::Term*> );
     if ( Indices[position] != Indices[position+1] || force_ignore_commutation ) {
         Value*=(-1.); 
         bool tmp = OperatorSequence[position];
@@ -94,11 +112,11 @@ std::list<IndexHamiltonian::Term*> IndexHamiltonian::Term::elementary_swap(unsig
         std::swap(Indices[position], Indices[position+1] );
         }
     else {
-        std::vector<bool> Seq2(Order-2);
-        std::vector<unsigned int> Ind2(Order-2);
+        std::vector<bool> Seq2(N-2);
+        std::vector<unsigned int> Ind2(N-2);
         for (unsigned int i=0; i<position; ++i) { Seq2[i] = OperatorSequence[i]; Ind2[i] = Indices[i]; };
-        for (unsigned int i=position+2; i<Order; ++i) { Seq2[i-2] = OperatorSequence[i]; Ind2[i-2] = Indices[i]; };
-        out.push_back(new Term(Order-2, Seq2, Ind2, Value));
+        for (unsigned int i=position+2; i<N; ++i) { Seq2[i-2] = OperatorSequence[i]; Ind2[i-2] = Indices[i]; };
+        out->push_back(new Term(N-2, Seq2, Ind2, Value));
         elementary_swap(position, true);
          };
     return out;
@@ -109,13 +127,15 @@ const char* IndexHamiltonian::Term::exWrongLabel::what() const throw(){
 };
 
 const char* IndexHamiltonian::Term::exWrongOpSequence::what() const throw(){
-    return "The term can not be rearranged!";
+    std::stringstream s;
+    s << "The term has wrong operator sequence!";
+    return s.str().c_str();
 };
 
 std::ostream& operator<< (std::ostream& output, const IndexHamiltonian::Term& out)
 {
     output << out.Value << "*"; 
-    for (unsigned int i=0; i<out.Order; ++i) output << ((out.OperatorSequence[i])?"c^{+}":"c") << "_" << out.Indices[i];
+    for (unsigned int i=0; i<out.N; ++i) output << ((out.OperatorSequence[i])?"c^{+}":"c") << "_" << out.Indices[i];
     return output; 
 }
 
@@ -152,10 +172,16 @@ void IndexHamiltonian::prepare()
                 // get current term
                 IndexHamiltonian::Term *T1 = *it1;
                 // Rearrange it
-                std::list<IndexHamiltonian::Term*> out=T1->rearrange(TERM_DEFAULT_SEQUENCE(N));
-                for (std::list<IndexHamiltonian::Term*>::iterator additional_terms = out.begin(); additional_terms != out.end(); additional_terms++) {
-                        Terms[(**additional_terms).Order].push_back(*additional_terms);
-                    } // end of list iteration
+                try {
+                    boost::shared_ptr<std::list<IndexHamiltonian::Term*> > out=T1->rearrange(TERM_DEFAULT_SEQUENCE(N));
+                    for (std::list<IndexHamiltonian::Term*>::iterator additional_terms = out->begin(); additional_terms != out->end(); additional_terms++) {
+                        Terms[(**additional_terms).N].push_back(*additional_terms);
+                        } // end of list iteration
+                    }
+                catch (IndexHamiltonian::Term::exWrongOpSequence)
+                    {
+                       INFO("Term " << *T1 << " couldn't be rearranged. ");// << TERM_DEFAULT_SEQUENCE(N) << " sequence.");
+                    }
                 } // end of map_iterator loop
             }; // end of terms order loop
 };

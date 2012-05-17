@@ -32,6 +32,7 @@
 #include "Index.h"
 #include "IndexClassification.h"
 #include "Lattice.h"
+#include <boost/shared_ptr.hpp>
 
 namespace Pomerol{
 
@@ -67,7 +68,7 @@ struct IndexHamiltonian::Term
 friend class IndexHamiltonian;
 protected:
     /** Number of operators in term. */
-    const unsigned int Order;
+    const unsigned int N;
     /** Sequence of creation and annihilation operators. */
     std::vector<bool> OperatorSequence; 
     /** Array of ParticleIndices. */
@@ -82,19 +83,21 @@ private:
      * \param[in] force_ignore_commutation This forces to ignore all commutation relations and just to swap two operators and change the sign.
      * \param[out] Terms produced while swapping.
      */
-    std::list<IndexHamiltonian::Term*> elementary_swap(unsigned int position, bool force_ignore_commutation = false);
+    boost::shared_ptr<std::list<IndexHamiltonian::Term*> > elementary_swap(unsigned int position, bool force_ignore_commutation = false);
 public:
     /** Rearranges operators in the term to a desired sequence. 
      * \param[in] DesiredSequence A sequence of operators ( represented as a vector of bool ) to rearrange the term.
      */
-    std::list<IndexHamiltonian::Term*> rearrange(const std::vector<bool> & DesiredSequence); 
+    boost::shared_ptr<std::list<IndexHamiltonian::Term*> > rearrange(const std::vector<bool> & DesiredSequence); 
+    /** Rearranges a term to the normal order (с^+ to the left, c to the right). */
+    boost::shared_ptr<std::list<IndexHamiltonian::Term*> > makeNormalOrder();
 
     /** Constructor
-     * \param[in] Order Total amount of operators in the term.
+     * \param[in] N Total amount of operators in the term.
      * \param[in] Sequence Sequence of creation/annihilation operators in the term. True goes for creation, false - for annihilation.
      * \param[in] Indices Corresponding indices of the creation/annihilation operators.
      */
-    Term (const unsigned int Order, const std::vector<bool>&  Sequence, const std::vector<ParticleIndex>& Indices, RealType Value);
+    Term (const unsigned int N, const std::vector<bool>&  Sequence, const std::vector<ParticleIndex>& Indices, RealType Value);
     /** Exception - wrong operation with labels. */
     class exWrongLabel : public std::exception { virtual const char* what() const throw(); };
     /** Exception - wrong operation with bool sequence. */
