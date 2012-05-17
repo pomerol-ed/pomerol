@@ -48,8 +48,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-check_PROGRAMS = IndexTerm$(EXEEXT)
-TESTS = IndexTerm$(EXEEXT)
+check_PROGRAMS = IndexTerm$(EXEEXT) IndexPermutation_test$(EXEEXT)
+TESTS = IndexTerm$(EXEEXT) IndexPermutation_test$(EXEEXT)
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -60,10 +60,15 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
+am_IndexPermutation_test_OBJECTS = IndexPermutation_test.$(OBJEXT)
+IndexPermutation_test_OBJECTS = $(am_IndexPermutation_test_OBJECTS)
+IndexPermutation_test_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
+IndexPermutation_test_DEPENDENCIES = ../src/libpomerol.a \
+	../jsoncpp/src/libjsoncpp.a $(am__DEPENDENCIES_1)
 am_IndexTerm_OBJECTS = IndexTerm.$(OBJEXT)
 IndexTerm_OBJECTS = $(am_IndexTerm_OBJECTS)
 IndexTerm_LDADD = $(LDADD)
-am__DEPENDENCIES_1 =
 IndexTerm_DEPENDENCIES = ../src/libpomerol.a \
 	../jsoncpp/src/libjsoncpp.a $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -87,8 +92,8 @@ am__v_CXXLD_0 = @echo "  CXXLD " $@;
 AM_V_GEN = $(am__v_GEN_@AM_V@)
 am__v_GEN_ = $(am__v_GEN_@AM_DEFAULT_V@)
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(IndexTerm_SOURCES)
-DIST_SOURCES = $(IndexTerm_SOURCES)
+SOURCES = $(IndexPermutation_test_SOURCES) $(IndexTerm_SOURCES)
+DIST_SOURCES = $(IndexPermutation_test_SOURCES) $(IndexTerm_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -231,6 +236,7 @@ LDADD = ../src/libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -lhdf5 -lhd
 #gamma4_SOURCES=gamma4.cpp
 #green_SOURCES=green.cpp
 IndexTerm_SOURCES = IndexTerm.cpp
+IndexPermutation_test_SOURCES = IndexPermutation_test.cpp
 
 #gamma4_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a $(top_builddir)/src/libpomerol.a
 #green_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a $(top_builddir)/src/libpomerol.a
@@ -272,6 +278,9 @@ $(am__aclocal_m4_deps):
 
 clean-checkPROGRAMS:
 	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+IndexPermutation_test$(EXEEXT): $(IndexPermutation_test_OBJECTS) $(IndexPermutation_test_DEPENDENCIES) $(EXTRA_IndexPermutation_test_DEPENDENCIES) 
+	@rm -f IndexPermutation_test$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(IndexPermutation_test_OBJECTS) $(IndexPermutation_test_LDADD) $(LIBS)
 IndexTerm$(EXEEXT): $(IndexTerm_OBJECTS) $(IndexTerm_DEPENDENCIES) $(EXTRA_IndexTerm_DEPENDENCIES) 
 	@rm -f IndexTerm$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(IndexTerm_OBJECTS) $(IndexTerm_LDADD) $(LIBS)
@@ -282,6 +291,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IndexPermutation_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IndexTerm.Po@am__quote@
 
 .cpp.o:

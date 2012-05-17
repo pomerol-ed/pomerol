@@ -116,20 +116,7 @@ int main(int argc, char *argv[])
   INFO("Terms with 4 operators");
   L->printTerms(4);
 
-  /* Test of IndexHamiltonian::Term - move it to tests*/
-  bool Seq[4] = {0,0,1,0};
-  ParticleIndex Ind[] = {1,2,2,4};
-  std::vector<bool> seq_v(Seq, Seq+4);
-  std::vector<ParticleIndex> ind_v(Ind, Ind+4);
-  IndexHamiltonian::Term IT1(4, seq_v, ind_v, 1.0);
-  DEBUG(IT1);
-  boost::shared_ptr<std::list<IndexHamiltonian::Term*> > out_terms=IT1.makeNormalOrder();
-  DEBUG(IT1);
-  DEBUG(out_terms->size());     
-  for (std::list<IndexHamiltonian::Term*>::const_iterator it1=out_terms->begin(); it1!=out_terms->end(); ++it1) DEBUG(**it1);
-  /* end of test of IndexHamiltonian::Term */
-
-  //DEBUG(L->getTermStorage().getMaxTermOrder());
+    //DEBUG(L->getTermStorage().getMaxTermOrder());
   IndexClassification Indices(L->getSiteMap());
   IndexClassification *II = &Indices;
   Indices.prepare();
@@ -145,14 +132,6 @@ int main(int argc, char *argv[])
   Storage.printTerms(2);
   INFO("Terms with 4 operators");
   Storage.printTerms(4);
-
-  /* Make a check of the Symmetrizer::IndexPermutation. */
-  ParticleIndex tmp[]={1,2,3,0,4,5};
-  std::vector<ParticleIndex> tmp2(tmp, tmp+6);
-  DynamicIndexCombination A(tmp2);
-  Symmetrizer::IndexPermutation B(A);
-  cout << B.getCycleLength() << endl;
-  /* end of test of Symmetrizer::IndexPermutation. */
 
   Symmetrizer S(Indices, Storage);
   return 0;
