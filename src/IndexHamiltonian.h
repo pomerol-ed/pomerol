@@ -32,79 +32,31 @@
 #include "Index.h"
 #include "IndexClassification.h"
 #include "Lattice.h"
+#include "Operator.h"
 #include <boost/shared_ptr.hpp>
 
 namespace Pomerol{
 
 /* This class stores all matrix elements of a Hamiltonian in the index space. All terms have the ordering, 
  * defined at the TERM_DEFAULT_SEQUENCE, which is by default taken as \f$ c^{\dagger} c c^{\dagger} c ... \f$. */
-class IndexHamiltonian
+class IndexHamiltonian : public Operator
 {
-public:
-    /** Declaration of a Term in the ParticleIndex space. */
-    struct Term;
 private:
     /** A pointer to the Lattice object. */
     const Lattice *L;
     /** A link to the IndexClassification object. */
     const IndexClassification &IndexInfo;
     /** A storage of Terms. Realized as a map of the order of the Term (number of operators) to the list of Terms. */
-    std::map <unsigned int, std::list<Term*> > Terms;
+    std::map <unsigned int, std::list<IndexHamiltonian::Term*> > Terms;
 public:
     /** Generates all Terms. */
     void prepare();
     /** Constructor. */
     IndexHamiltonian(const Lattice *L, const IndexClassification &Info);
     /** Gets all Terms of desired order. */
-    const std::list<Term*> getTerms(unsigned int N) const;
+    const std::list<Operator::Term*> getTerms(unsigned int N) const;
     /** Print all IndexHamiltonian::Term s */
     void printTerms(unsigned int order) const;
-};
-
-/** The Term in the ParticleIndex space is the same as the Lattice::Term, apart that it can be rearranged to the predefined sequence of operators
- * by using fermionic commutation relations. */
-struct IndexHamiltonian::Term
-{
-friend class IndexHamiltonian;
-protected:
-    /** Number of operators in term. */
-    const unsigned int N;
-    /** Sequence of creation and annihilation operators. */
-    std::vector<bool> OperatorSequence; 
-    /** Array of ParticleIndices. */
-    std::vector<ParticleIndex> Indices;
-    /** Matrix element of Term. */
-    RealType Value;
-private:
-
-    /** Makes a swap of two adjacent operators in the term taking into account the anticommutation relation.
-     * If operators anticommute, then a new term without these operators is returned.
-     * \param[in] position A position of the first operator to swap
-     * \param[in] force_ignore_commutation This forces to ignore all commutation relations and just to swap two operators and change the sign.
-     * \param[out] Terms produced while swapping.
-     */
-    boost::shared_ptr<std::list<IndexHamiltonian::Term*> > elementary_swap(unsigned int position, bool force_ignore_commutation = false);
-public:
-    /** Rearranges operators in the term to a desired sequence. 
-     * \param[in] DesiredSequence A sequence of operators ( represented as a vector of bool ) to rearrange the term.
-     */
-    boost::shared_ptr<std::list<IndexHamiltonian::Term*> > rearrange(const std::vector<bool> & DesiredSequence); 
-    /** Rearranges a term to the normal order (с^+ to the left, c to the right). */
-    boost::shared_ptr<std::list<IndexHamiltonian::Term*> > makeNormalOrder();
-
-    /** Constructor
-     * \param[in] N Total amount of operators in the term.
-     * \param[in] Sequence Sequence of creation/annihilation operators in the term. True goes for creation, false - for annihilation.
-     * \param[in] Indices Corresponding indices of the creation/annihilation operators.
-     */
-    Term (const unsigned int N, const std::vector<bool>&  Sequence, const std::vector<ParticleIndex>& Indices, RealType Value);
-    /** Exception - wrong operation with labels. */
-    class exWrongLabel : public std::exception { virtual const char* what() const throw(); };
-    /** Exception - wrong operation with bool sequence. */
-    class exWrongOpSequence : public std::exception { virtual const char* what() const throw(); };
-
-/** Make the Term printable */
-friend std::ostream& operator<< (std::ostream& output, const Term& out);
 };
 
 /** This function is used in the IndexHamiltonian prepare method. 

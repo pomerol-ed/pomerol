@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 /** \file tests/IndexTerm.cpp
-** \brief Test of the IndexHamiltonian::Term.
+** \brief Test of the Operator::Term.
 **
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
@@ -28,33 +28,38 @@
 #include "Logger.h"
 #include "Index.h"
 #include "IndexClassification.h"
-#include "IndexHamiltonian.h"
+#include "Operator.h"
 #include <boost/shared_ptr.hpp>
 
 using namespace Pomerol;
 
 int main(int argc, char* argv[])
 {
-  /* Test of IndexHamiltonian::Term*/
+  /* Test of Operator::Term*/
   Log.setDebugging(true);
-  bool Seq[4] = {0,0,1,0};
-  ParticleIndex Ind[] = {1,2,2,4};
+  bool Seq[4] = {1,0,1,0};
+  ParticleIndex Ind[] = {0,0,1,1};
   std::vector<bool> seq_v(Seq, Seq+4);
   std::vector<ParticleIndex> ind_v(Ind, Ind+4);
-  IndexHamiltonian::Term IT1(4, seq_v, ind_v, 1.0);
-  INFO("Created IndexHamiltonian::Term" << IT1);
+  Operator::Term IT1(4, seq_v, ind_v, 1.0);
+  INFO("Created Operator::Term" << IT1);
   INFO("Rearranging it to normal order");
   try {
-    boost::shared_ptr<std::list<IndexHamiltonian::Term*> > out_terms=IT1.makeNormalOrder();
+    boost::shared_ptr<std::list<Operator::Term*> > out_terms=IT1.makeNormalOrder();
     INFO("Received " << IT1);
     INFO(out_terms->size() << " additional terms emerged : ");     
-    for (std::list<IndexHamiltonian::Term*>::const_iterator it1=out_terms->begin(); it1!=out_terms->end(); ++it1) DEBUG(**it1);
+    for (std::list<Operator::Term*>::const_iterator it1=out_terms->begin(); it1!=out_terms->end(); ++it1) DEBUG(**it1);
     }
   catch (std::exception &e)
     {
         return EXIT_FAILURE;
     }
-  /* end of test of IndexHamiltonian::Term */
+
+   FockState a1(4);
+   a1[0]=1;
+   DEBUG(a1);
+   //IT1.getMatrixElement(
+  /* end of test of Operator::Term */
 
   return EXIT_SUCCESS;
 }

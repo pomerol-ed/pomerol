@@ -9,6 +9,7 @@ libpomerol_a_SOURCES= \
 	Logger.cpp Logger.h \
 	Index.h Index.cpp \
 	IndexClassification.h IndexClassification.cpp \
+	Operator.h Operator.cpp \
 	IndexHamiltonian.h IndexHamiltonian.cpp \
 	hMatrix.h hMatrix.cpp \
 	Symmetrizer.h Symmetrizer.cpp 

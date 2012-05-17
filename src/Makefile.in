@@ -105,6 +105,7 @@ am_libpomerol_a_OBJECTS = libpomerol_a-Lattice.$(OBJEXT) \
 	libpomerol_a-LatticePresets.$(OBJEXT) \
 	libpomerol_a-Logger.$(OBJEXT) libpomerol_a-Index.$(OBJEXT) \
 	libpomerol_a-IndexClassification.$(OBJEXT) \
+	libpomerol_a-Operator.$(OBJEXT) \
 	libpomerol_a-IndexHamiltonian.$(OBJEXT) \
 	libpomerol_a-hMatrix.$(OBJEXT) \
 	libpomerol_a-Symmetrizer.$(OBJEXT)
@@ -285,6 +286,7 @@ libpomerol_a_SOURCES = \
 	Logger.cpp Logger.h \
 	Index.h Index.cpp \
 	IndexClassification.h IndexClassification.cpp \
+	Operator.h Operator.cpp \
 	IndexHamiltonian.h IndexHamiltonian.cpp \
 	hMatrix.h hMatrix.cpp \
 	Symmetrizer.h Symmetrizer.cpp 
@@ -382,6 +384,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Lattice.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-LatticePresets.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Logger.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Operator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-Symmetrizer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpomerol_a-hMatrix.Po@am__quote@
 
@@ -468,6 +471,20 @@ libpomerol_a-IndexClassification.obj: IndexClassification.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='IndexClassification.cpp' object='libpomerol_a-IndexClassification.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-IndexClassification.obj `if test -f 'IndexClassification.cpp'; then $(CYGPATH_W) 'IndexClassification.cpp'; else $(CYGPATH_W) '$(srcdir)/IndexClassification.cpp'; fi`
+
+libpomerol_a-Operator.o: Operator.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Operator.o -MD -MP -MF $(DEPDIR)/libpomerol_a-Operator.Tpo -c -o libpomerol_a-Operator.o `test -f 'Operator.cpp' || echo '$(srcdir)/'`Operator.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Operator.Tpo $(DEPDIR)/libpomerol_a-Operator.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Operator.cpp' object='libpomerol_a-Operator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Operator.o `test -f 'Operator.cpp' || echo '$(srcdir)/'`Operator.cpp
+
+libpomerol_a-Operator.obj: Operator.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-Operator.obj -MD -MP -MF $(DEPDIR)/libpomerol_a-Operator.Tpo -c -o libpomerol_a-Operator.obj `if test -f 'Operator.cpp'; then $(CYGPATH_W) 'Operator.cpp'; else $(CYGPATH_W) '$(srcdir)/Operator.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpomerol_a-Operator.Tpo $(DEPDIR)/libpomerol_a-Operator.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Operator.cpp' object='libpomerol_a-Operator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libpomerol_a-Operator.obj `if test -f 'Operator.cpp'; then $(CYGPATH_W) 'Operator.cpp'; else $(CYGPATH_W) '$(srcdir)/Operator.cpp'; fi`
 
 libpomerol_a-IndexHamiltonian.o: IndexHamiltonian.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpomerol_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libpomerol_a-IndexHamiltonian.o -MD -MP -MF $(DEPDIR)/libpomerol_a-IndexHamiltonian.Tpo -c -o libpomerol_a-IndexHamiltonian.o `test -f 'IndexHamiltonian.cpp' || echo '$(srcdir)/'`IndexHamiltonian.cpp
