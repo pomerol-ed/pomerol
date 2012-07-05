@@ -11,10 +11,10 @@ libpomerol_a_SOURCES= \
 	IndexClassification.h IndexClassification.cpp \
 	Operator.h Operator.cpp \
 	IndexHamiltonian.h IndexHamiltonian.cpp \
-	hMatrix.h hMatrix.cpp \
 	Symmetrizer.h Symmetrizer.cpp 
+#StatesClassification.h StatesClassification.cpp 
+#IndexClassification.cpp \
 #HDF5Storage.cpp Thermal.cpp Lattice.cpp \
-#StatesClassification.cpp Term.cpp IndexClassification.cpp \
 #HamiltonianPart.cpp Hamiltonian.cpp FieldOperatorPart.cpp FieldOperator.cpp \
 #DensityMatrixPart.cpp DensityMatrix.cpp \
 #GreensFunctionPart.cpp GreensFunction.cpp \

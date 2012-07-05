@@ -34,7 +34,7 @@ namespace Pomerol {
 //IndexHamiltonian
 //
 
-IndexHamiltonian::IndexHamiltonian(const Lattice *L, const IndexClassification &IndexInfo):L(L), IndexInfo(IndexInfo)
+IndexHamiltonian::IndexHamiltonian(const Lattice *L, const IndexClassification &IndexInfo):Operator(),L(L), IndexInfo(IndexInfo)
 {
 }
 
@@ -51,14 +51,15 @@ void IndexHamiltonian::prepare()
                 };
             // Create a term out of the term in the lattice
             Operator::Term *T1 = new Operator::Term(N,(**current).OperatorSequence, ind, (**current).Value);
-            Terms[N].push_back(T1);
+            mapTerms[N].push_back(T1);
+            Terms->push_back(T1);
             } // end of Term loop
         } // end of for N
     //DEBUG("----------------------"); 
     // We now need to rearrange the terms to a given order for the easy access afterwards.
     for (unsigned int N=L->getTermStorage().getMaxTermOrder(); N; --N ) {
-        std::map <unsigned int, std::list<Operator::Term*> >::iterator map_iterator = Terms.find(N);
-        if (map_iterator!=Terms.end()) 
+        std::map <unsigned int, std::list<Operator::Term*> >::iterator map_iterator = mapTerms.find(N);
+        if (map_iterator!=mapTerms.end()) 
             for (std::list<Operator::Term*>::iterator it1=(map_iterator->second).begin(); it1!=(map_iterator->second).end(); it1++) {
                 // get current term
                 Operator::Term *T1 = *it1;
@@ -66,7 +67,8 @@ void IndexHamiltonian::prepare()
                 try {
                     boost::shared_ptr<std::list<Operator::Term*> > out=T1->rearrange(TERM_DEFAULT_SEQUENCE(N));
                     for (std::list<Operator::Term*>::iterator additional_terms = out->begin(); additional_terms != out->end(); additional_terms++) {
-                        Terms[(**additional_terms).getN()].push_back(*additional_terms);
+                        mapTerms[(**additional_terms).getN()].push_back(*additional_terms);
+                        Terms->push_back(*additional_terms);
                         } // end of list iteration
                     }
                 catch (Operator::Term::exWrongOpSequence)
@@ -79,7 +81,7 @@ void IndexHamiltonian::prepare()
 
 const std::list<Operator::Term*> IndexHamiltonian::getTerms(unsigned int N) const
 {
-    return Terms.find(N)->second;
+    return mapTerms.find(N)->second;
 };
 
 void IndexHamiltonian::printTerms(unsigned int N) const

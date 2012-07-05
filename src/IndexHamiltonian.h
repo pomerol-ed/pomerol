@@ -47,7 +47,7 @@ private:
     /** A link to the IndexClassification object. */
     const IndexClassification &IndexInfo;
     /** A storage of Terms. Realized as a map of the order of the Term (number of operators) to the list of Terms. */
-    std::map <unsigned int, std::list<IndexHamiltonian::Term*> > Terms;
+    std::map <unsigned int, std::list<Operator::Term*> > mapTerms;
 public:
     /** Generates all Terms. */
     void prepare();
@@ -55,12 +55,12 @@ public:
     IndexHamiltonian(const Lattice *L, const IndexClassification &Info);
     /** Gets all Terms of desired order. */
     const std::list<Operator::Term*> getTerms(unsigned int N) const;
-    /** Print all IndexHamiltonian::Term s */
+    /** Print all Operator::Term s */
     void printTerms(unsigned int order) const;
 };
 
 /** This function is used in the IndexHamiltonian prepare method. 
- * This defines the default sequence of elements to be used in IndexHamiltonian IndexHamiltonian::Term storage.. */
+ * This defines the default sequence of elements to be used in IndexHamiltonian Operator::Term storage.. */
 inline std::vector<bool>& TERM_DEFAULT_SEQUENCE(unsigned int N)
 {
     static std::vector<bool> out;

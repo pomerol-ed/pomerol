@@ -63,6 +63,8 @@ public:
     void checkNSymmetry();
     /** This method checks that spin-projection on the z axis is conserved. */
     void checkSzSymmetry();
+    /** Returns a list of equivalent permutations. */
+    const std::list<IndexPermutation*>& getPermutations() const;
 };
 
 /** A combination of indices to which a permutation commutes with a Hamiltonian. 
