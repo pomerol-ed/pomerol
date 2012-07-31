@@ -57,8 +57,23 @@ int main(int argc, char* argv[])
 
    FockState a1(4);
    a1[0]=1;
-   DEBUG(a1);
-   //IT1.getMatrixElement(
+   a1[1]=0;
+
+   seq_v.resize(1); ind_v.resize(1);
+   seq_v[0]=1; ind_v[0]=1;
+   Operator::Term IT2(1, seq_v, ind_v, 1.0);
+   INFO("Acting with operator " << IT2 << " on a state " << a1 );
+   std::pair<FockState, RealType> result = IT2.act(a1);
+   if (result.second != -1) return EXIT_FAILURE;
+   else DEBUG ( "State: " << result.first << " Matrix element: " << result.second);
+
+   seq_v[0]=0; ind_v[0]=0;
+   Operator::Term IT3 (1, seq_v, ind_v, 1.0);
+   INFO("Acting with operator " << IT3 << " on a state " << a1 );
+   result = IT3.act(a1);
+   if (result.second != 1) return EXIT_FAILURE;
+   if (result.first == ERROR_FOCK_STATE) DEBUG("Term vanishes")
+   else DEBUG ( "State: " << result.first << " Matrix element: " << result.second);
   /* end of test of Operator::Term */
 
   return EXIT_SUCCESS;

@@ -24,6 +24,7 @@
 #include "Lattice.h"
 #include "LatticePresets.h"
 #include "IndexClassification.h"
+#include "Operator.h"
 #include "IndexHamiltonian.h"
 #include "Symmetrizer.h"
 /*
@@ -133,7 +134,10 @@ int main(int argc, char *argv[])
   INFO("Terms with 4 operators");
   Storage.printTerms(4);
 
+  //DEBUG("Check - all terms");
+  //Storage.printAllTerms();
   Symmetrizer S(Indices, Storage);
+
   return 0;
 };
 
