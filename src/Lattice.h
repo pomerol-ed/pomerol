@@ -75,7 +75,6 @@ public:
     /** Print all Sites */
     void printSites();
 
-    virtual void do_nothing()=0;
 protected:
     /** A map between the particular Lattice::Site and it's label. */
     SiteMap Sites; 
@@ -194,7 +193,6 @@ class JSONLattice : public Lattice
      * \param[in] JSONTerm A "Terms" section of the dictionary from the JSON file.
      */
     void readTerms(Json::Value &JSONTerms);
-    virtual void do_nothing(){};
     public:
     /** Read the contents of a dictionary from an external JSON file. */
     int readin (const std::string &filename);

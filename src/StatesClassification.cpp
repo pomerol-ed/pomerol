@@ -30,15 +30,34 @@ bool BlockNumber::operator==(const BlockNumber& rhs) const {return number==rhs.n
 // StatesClassification
 //
 
-
-const InnerQuantumState StatesClassification::getInnerState(QuantumState state) const
+StatesClassification::StatesClassification(const IndexClassification& IndexInfo, const Symmetrizer &Symm):IndexInfo(IndexInfo),Symm(Symm)
 {
-  InnerQuantumState ST=N_state;                // "state" in part of Hamilt            
-  for (unsigned int n=0; n<(*this).getQuantumStates((*this).getStateInfo(state)).size(); n++ )
-    {    
-        if ( (*this).getQuantumState((*this).getStateInfo(state),n)== state) ST=n;    //get ST
+    IndexSize = IndexInfo.getIndexSize();
+    StateSize = 1<<IndexSize;
+}
+
+void StatesClassification::compute()             
+{
+    std::list<boost::shared_ptr<Operator> > symmetric_operations_list = Symm.getOperations();
+    DEBUG(symmetric_operations_list.size());
+    for (unsigned long FockStateIndex=0; FockStateIndex<StateSize; ++FockStateIndex) {
+        FockState current_state(IndexSize,FockStateIndex);
+        DEBUG(current_state);
+        for (std::list<boost::shared_ptr<Operator> >::const_iterator operations_it=symmetric_operations_list.begin(); operations_it!=symmetric_operations_list.end(); operations_it++) { 
+            DEBUG((*operations_it)->getMatrixElement(current_state, current_state));   
+        }
     }
- return ST;
+}
+
+/*
+const InnerFockState StatesClassification::getInnerState(FockState state) const
+{
+  if ( state.to_ulong() > StateSize ) { throw exWrongState(); return StateSize; };
+  for (InnerFockState n=0; n<(*this).getFockStates((*this).getStateInfo(state)).size(); n++ )
+    {    
+        if ( (*this).getFockState((*this).getStateInfo(state),n)== state) { return n; }   //get ST
+    }
+ return StateSize;
 }
 
 BlockNumber StatesClassification::getBlockNumber(QuantumNumbers in) const
@@ -54,23 +73,25 @@ QuantumNumbers StatesClassification::getBlockInfo(BlockNumber in) const
 BlockNumber StatesClassification::NumberOfBlocks() const
 {
 }
-const QuantumState StatesClassification::getNumberOfStates() const
+const FockState StatesClassification::getNumberOfStates() const
 {
     return StateSize;
 }
 
-void StatesClassification::compute()             
+
+QuantumNumbers StatesClassification::getStateInfo(FockState in) const             
 {
 }
 
-QuantumNumbers StatesClassification::getStateInfo(QuantumState in) const             
-{
-}
-
-BlockNumber StatesClassification::getBlockNumber(QuantumState in) const
+BlockNumber StatesClassification::getBlockNumber(FockState in) const
 {
 //    return (*this).getBlockNumber((*this).getStateInfo(in));
 }
+
+const char* StatesClassification::exWrongState::what() const throw(){
+    return "Wrong state";
+};
+*/
 
 } // end of namespace Pomerol
 

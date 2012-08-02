@@ -35,19 +35,20 @@
 #include "HDF5Storage.h"
 #include "Index.h"
 #include "IndexClassification.h"
+#include "Operator.h"
 #include "Symmetrizer.h"
 
 namespace Pomerol{
 
-extern struct QuantumNumbers;
+//extern struct QuantumNumbers;
 /** All blocks with current QuantumNumber are treated as non-existent */
-extern const QuantumNumbers ERROR_QUANTUM_NUMBERS;
+//extern const QuantumNumbers ERROR_QUANTUM_NUMBERS;
 
+/** A small wrapper to hold a number of block. A Block is a sub-matrix of Hamiltonian which is separated from the others ( i.e. the Hamiltonian is block-diagonal). */
 struct BlockNumber;
 
-
-/** InnerFockState labels the states inside of the block. Has no physical meaning. */
-typedef unsigned long int InnerFockState;
+/** InnerFockState labels the states inside of the block of Fock States. Has no physical meaning. */
+typedef unsigned long InnerFockState;
 
 /** This class handles all information about Fock states. 
  *  It makes a classification of Fock states into blocks.
@@ -55,14 +56,14 @@ typedef unsigned long int InnerFockState;
 class StatesClassification {
     
     /** Total number of states = 2^(IndexInfo.size()) */
-    FockState StateSize;            
+    unsigned long StateSize;            
     /** Total number of modes of the system. Equal to IndexInfo.size() */
     ParticleIndex IndexSize;                
 
     /** A map between all BlockNumbers and QuantumNumbers */
-    std::map<BlockNumber,QuantumNumbers> BlockToQuantum;
+    //std::map<BlockNumber,QuantumNumbers> BlockToQuantum;
     /** A map between all QuantumNumbers and BlockNumbers */
-    std::map<QuantumNumbers,BlockNumber> QuantumToBlock;
+    //std::map<QuantumNumbers,BlockNumber> QuantumToBlock;
 
     /** A reference to an IndexClassification object */
     const IndexClassification &IndexInfo;
@@ -72,55 +73,59 @@ public:
     /** Constructor
      * \param[in] IndexInfo A reference to an IndexClassification object
      */
-    StatesClassification(const IndexClassification& IndexInfo, const Symmetrizer &Symm):IndexInfo(IndexInfo) {};
+    StatesClassification(const IndexClassification& IndexInfo, const Symmetrizer &Symm);
 
     /** Perform a classification of all FockStates */
     void compute();
 
-    /** get total number of Quantum States ( 2^IndexInfo.size() ) */
-    const FockState getNumberOfStates() const;
+   /** get total number of Quantum States ( 2^IndexInfo.size() ) */
+    //const FockState getNumberOfStates() const;
 
     /** get a vector of all FockStates with a given set of QuantumNumbers
      * \param[in] in A set of quantum numbers to get a vector of FockStates 
      */
-    const std::vector<FockState>& getFockStates( QuantumNumbers in ) const;
+    //const std::vector<FockState>& getFockStates( QuantumNumbers in ) const;
 
     /** get a FockState, corresponding to an internal InnerFockState
      * \param[in] QuantumNumbers of block in which the InnerFockState is located
      * \param[in] m InnerFockState for which the correspondence is required
      */
-    const FockState getFockState( QuantumNumbers in, InnerFockState m) const;
+    //const FockState getFockState( QuantumNumbers in, InnerFockState m) const;
     /** get InnerFockState of a given FockState. Since FockState is associated with
      * the Block number no explicit BlockNumber or QuantumNumbers is required 
      * \param[in] state FockState for which the correspondence is required
      */
-    const InnerFockState getInnerState( FockState state) const;
+    //const InnerFockState getInnerState( FockState state) const;
 
     /** Returns a number of Block which corresponds to given Quantum Numbers 
      * \param[in] in A set of QuantumNumbers to find corresponding BlockNumber
      */
-    BlockNumber getBlockNumber(QuantumNumbers in) const;
+    //BlockNumber getBlockNumber(QuantumNumbers in) const;
 
     /** Returns QuantumNumbers for a given BlockNumber
      * \param[in] in A BlockNumber to find a set of corresponding QuantumNumbers
      */
-    QuantumNumbers getBlockInfo(BlockNumber in) const;
+    //QuantumNumbers getBlockInfo(BlockNumber in) const;
     /** Returns total amount of non-vanishing blocks */
-    BlockNumber NumberOfBlocks() const;
+    //BlockNumber NumberOfBlocks() const;
 
     /** Returns QuantumNumbers of a given FockState 
      * \param[in] in A FockState for which the QuantumNumbers are requested
      */
-    QuantumNumbers getStateInfo(FockState in) const;
+    //QuantumNumbers getStateInfo(FockState in) const;
     /** Returns BlockNumber of a given FockState 
      * \param[in] in A FockState for which the BlockNumber is requested
      */
-    BlockNumber getBlockNumber(FockState in) const;
+    //BlockNumber getBlockNumber(FockState in) const;
 
     /** Checks that a block with a given QuantumNumbers does not vanish 
      * \param[in] in A set of QuantumNumbers to check
      */
-    bool checkQuantumNumbers(QuantumNumbers in) const;
+    //bool checkQuantumNumbers(QuantumNumbers in) const;
+    
+
+    /** Exception - wrong state. */
+    class exWrongState : public std::exception { virtual const char* what() const throw(); };
 };
 
 

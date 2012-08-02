@@ -68,6 +68,8 @@ public:
     ParticleIndex getIndex(const IndexClassification::IndexInfo& ) const;
     /** Returns a ParticleIndex, which corresponds to a IndexClassification::IndexInfo. */
     ParticleIndex getIndex(const std::string &Site, const unsigned short &Orbital, const unsigned short &Spin) const; 
+    /** Return all information about the given index. */
+    boost::tuple<std::string, unsigned short, unsigned short> getInfo(ParticleIndex in) const;
     /** Returns total number of ParticleIndices. */
     const ParticleIndex getIndexSize() const;
 
@@ -81,6 +83,10 @@ public:
 
     /** Print all Indices to the information stream */
     void printIndices();
+
+    /** Exception - wrong index. */
+    class exWrongIndex : public std::exception { virtual const char* what() const throw(); };
+
 };
 
 /** This structure holds the site label, the orbital and spin of a ParticleIndex */

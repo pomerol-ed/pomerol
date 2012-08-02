@@ -26,6 +26,7 @@
 */
 
 #include "Operator.h"
+#include "boost/tuple/tuple.hpp"
 
 namespace Pomerol{
 
@@ -123,25 +124,27 @@ boost::shared_ptr<std::list<Operator::Term*> > Operator::Term::elementary_swap(u
 }
 
 RealType Operator::Term::getMatrixElement( const FockState & bra, const FockState &ket){
-    std::pair<FockState, RealType> result = this->act(ket);
-    return (this->act(ket).first == bra)?result.second:0;
+    RealType result;
+    FockState bra2;
+    boost::tie(bra2, result) = this->actRight(ket);
+    return (bra2 == bra)?result:0;
 }
 
-std::pair<FockState, RealType> Operator::Term::act ( const FockState &ket )
+boost::tuple<FockState, RealType> Operator::Term::actRight ( const FockState &ket )
 {
     ParticleIndex prev_pos_ = 0; // Here we'll store the index of the last operator to speed up sign counting
     int sign=1;
     FockState bra = ket;
     for (int i=N-1; i>=0; i--) // Is the number of operator in OperatorSequence. Now we need to count them from back.
         {
-            if (OperatorSequence[i] == bra[Indices[i]] ) return std::make_pair(ERROR_FOCK_STATE, 0); // This is Pauli principle.
+            if (OperatorSequence[i] == bra[Indices[i]] ) return boost::make_tuple(ERROR_FOCK_STATE, 0); // This is Pauli principle.
             bra[Indices[i]] = OperatorSequence[i]; // This is c or c^+ acting
             if (Indices[i] > prev_pos_) 
-                for (ParticleIndex j=prev_pos_; j<Indices[i]; ++j) sign*=-ket[j];
+                for (ParticleIndex j=prev_pos_; j<Indices[i]; ++j) { if (ket[j]) sign*=-1; } 
             else
-                for (ParticleIndex j=prev_pos_; j>Indices[i]; j--) sign*=-ket[j];
+                for (ParticleIndex j=prev_pos_; j>Indices[i]; j--) { if (ket[j]) sign*=-1; }
         }
-    return std::make_pair(bra, this->Value*sign );
+    return boost::make_tuple(bra, this->Value*sign);
 }
 
 unsigned int Operator::Term::getN(){
@@ -180,6 +183,31 @@ void Operator::printAllTerms() const
         {
             INFO(**it);
         }
+}
+
+RealType Operator::getMatrixElement( const FockState & bra, const FockState &ket) const
+{
+    std::map<FockState, RealType> output = this->actRight(ket);
+    if (output.find(bra)==output.end()) 
+        return 0;
+    else { 
+        return output[bra];
+        }
+}
+
+std::map<FockState, RealType> Operator::actRight(const FockState &ket) const
+{
+    std::list<boost::tuple<FockState, RealType> > output;
+    std::map<FockState, RealType> result1;
+    for (std::list<Operator::Term*>::const_iterator it = Terms->begin(); it!=Terms->end(); it++)
+        {
+            FockState bra; 
+            RealType melem;
+            boost::tie(bra,melem) = (*it)->actRight(ket);
+            if (bra!=ERROR_FOCK_STATE && melem!=0) 
+                result1[bra]+=melem;
+        }
+    return result1;
 }
 
 } // end of namespace Pomerol

@@ -50,6 +50,7 @@ public:
 protected:
     /** A set of Terms in the Operator. */
     boost::scoped_ptr<std::list<Operator::Term*> > Terms; // This will be inherited and used by classes
+    virtual void do_nothing(){};
 public:
     /** Empty constructor. */
     Operator();
@@ -57,12 +58,18 @@ public:
     void printAllTerms() const;
 
     /** Returns a matrix element of the operator. */
-    RealType getMatrixElement(const FockState &bra, const FockState &ket);
+    virtual RealType getMatrixElement(const FockState &bra, const FockState &ket) const;
+
+    /** Returns a result of acting of an operator on a state
+     * \param[in] ket A state to act on.
+     * \param[out] A list of pairs of states and corresponding matrix elements, which are the result of an action.
+     */
+    virtual std::map<FockState, RealType> actRight(const FockState &ket) const;
 
     /** Returns an operator that is a commutator of current operator and another one
      * \param[in] rhs An operator to calculate a commutator with.
      * \param[out] Resulting operator. */
-    Operator& getCommutator(const Operator &rhs);
+    //Operator& getCommutator(const Operator &rhs);
 };
 
 /** The Term in the ParticleIndex space is the same as the Lattice::Term, apart that it can be rearranged to the predefined sequence of operators
@@ -106,7 +113,7 @@ public:
      * \param[in] ket A state to act on. 
      * \param[out] A pair of Resulting state and matrix element.
      */
-    std::pair<FockState, RealType> act(const FockState &ket);
+    boost::tuple<FockState, RealType> actRight(const FockState &ket);
 
     /** Constructor
      * \param[in] N Total amount of operators in the term.

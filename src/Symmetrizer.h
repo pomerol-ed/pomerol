@@ -36,20 +36,27 @@
 
 namespace Pomerol{
 
+
 /** This class stores the information about operations, which commute with the Hamiltonian.
  * It tries to find Lattice symmetries, checks for some common symmetries 
  * and also checks given symmetries. */
 class Symmetrizer
 {
+//typedef void (Symmetrizer::*OperatorPtr)(Operator *, Json::Value&);
 public:
     struct IndexPermutation;
     /** This generates a trivial combination of 0123...N-1 indices. */
     static const DynamicIndexCombination& generateTrivialCombination(ParticleIndex N);
+    /** This class represents a set of conserved quantum numbers. It is accompanied by a list of operators which should act on the state. */
+    struct QuantumNumbers;
 private:
     /** A link to an IndexClassification object. */ 
     const IndexClassification &IndexInfo;
     /** A link to an IndexHamiltonian object. */
     const IndexHamiltonian &Storage;
+
+    /** Total amount of indices in the system. */
+    const ParticleIndex IndexSize;
 
     bool NSymmetry;
     bool SzSzSymmetry;
@@ -64,7 +71,8 @@ public:
     /** This method checks that spin-projection on the z axis is conserved. */
     void checkSzSymmetry();
     /** Returns a list of equivalent permutations. */
-    const std::list<IndexPermutation*>& getPermutations() const;
+    //const std::list<IndexPermutation*>& getPermutations() const;
+    const std::list<boost::shared_ptr<Operator> > getOperations() const;
 };
 
 /** A combination of indices to which a permutation commutes with a Hamiltonian. 
@@ -102,6 +110,10 @@ public:
     /** Exception - equal indices. */
     class exEqualIndices : public std::exception { virtual const char* what() const throw(); };
 
+};
+
+/** This class represents a set of quantum numbers obtained by the Symmetrizer. */
+struct Symmetrizer::QuantumNumbers { 
 };
 
 }; // end of namespace Pomerol

@@ -26,6 +26,7 @@
 */
 
 #include "Symmetrizer.h"
+#include "OperatorPresets.h"
 
 namespace Pomerol { 
 
@@ -129,7 +130,7 @@ const char* Symmetrizer::IndexPermutation::exEqualIndices::what() const throw(){
 // Symmetrizer
 //
 
-Symmetrizer::Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage):IndexInfo(IndexInfo), Storage(Storage)
+Symmetrizer::Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage):IndexInfo(IndexInfo), Storage(Storage), IndexSize(IndexInfo.getIndexSize())
 {
 }
 
@@ -138,6 +139,27 @@ const DynamicIndexCombination& Symmetrizer::generateTrivialCombination(ParticleI
     static DynamicIndexCombination trivial(N);
     for (ParticleIndex i=0; i<N; ++i) trivial[i] = i;
     return trivial;
+}
+
+const std::list<boost::shared_ptr<Operator> > Symmetrizer::getOperations() const
+{
+    std::list<boost::shared_ptr<Operator> > out;
+    #warning fix it
+    boost::shared_ptr<Operator> OP1 ( new Pomerol::OperatorPresets::N(IndexSize));
+    out.push_back(OP1);
+    std::vector<ParticleIndex> SpinUpIndices;
+    std::vector<ParticleIndex> SpinDownIndices;
+    for (ParticleIndex i=0; i<IndexSize; ++i) { 
+            std::string label;
+            unsigned short Orbital;
+            unsigned short Spin;
+            boost::tie(label, Orbital, Spin)=IndexInfo.getInfo(i);
+            if ( Spin == 1 ) SpinUpIndices.push_back(i);
+            else if (Spin == 0 ) SpinDownIndices.push_back(i);
+        } 
+    boost::shared_ptr<Operator> OP2 ( new Pomerol::OperatorPresets::Sz(SpinUpIndices, SpinDownIndices));
+    out.push_back(OP2);
+    return out;
 }
 
 } // end of namespace Pomerol 

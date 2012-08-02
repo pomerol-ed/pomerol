@@ -27,10 +27,8 @@
 #include "Operator.h"
 #include "IndexHamiltonian.h"
 #include "Symmetrizer.h"
-/*
-#include "LatticeAnalysis.h"
-#include "Term.h"
 #include "StatesClassification.h"
+/*
 #include "Hamiltonian.h"
 #include "FieldOperator.h"
 #include "GFContainer.h"
@@ -136,7 +134,10 @@ int main(int argc, char *argv[])
 
   //DEBUG("Check - all terms");
   //Storage.printAllTerms();
-  Symmetrizer S(Indices, Storage);
+  Symmetrizer Symm(Indices, Storage);
+  StatesClassification S(Indices,Symm);
+
+  S.compute();
 
   return 0;
 };
