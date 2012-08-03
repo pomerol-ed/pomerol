@@ -32,6 +32,8 @@
 #include "Index.h"
 #include "IndexClassification.h"
 #include "IndexHamiltonian.h"
+#include "ComputableObject.h"
+#include <boost/functional/hash.hpp>
 #include <set>
 
 namespace Pomerol{
@@ -40,7 +42,7 @@ namespace Pomerol{
 /** This class stores the information about operations, which commute with the Hamiltonian.
  * It tries to find Lattice symmetries, checks for some common symmetries 
  * and also checks given symmetries. */
-class Symmetrizer
+class Symmetrizer : public ComputableObject
 {
 //typedef void (Symmetrizer::*OperatorPtr)(Operator *, Json::Value&);
 public:
@@ -49,6 +51,8 @@ public:
     static const DynamicIndexCombination& generateTrivialCombination(ParticleIndex N);
     /** This class represents a set of conserved quantum numbers. It is accompanied by a list of operators which should act on the state. */
     struct QuantumNumbers;
+    /** Statuses of the object */
+    enum {Constructed,Computed};
 private:
     /** A link to an IndexClassification object. */ 
     const IndexClassification &IndexInfo;
@@ -58,21 +62,29 @@ private:
     /** Total amount of indices in the system. */
     const ParticleIndex IndexSize;
 
-    bool NSymmetry;
-    bool SzSzSymmetry;
     /** A list of equivalent lattice sites permutations. */
     std::list<IndexPermutation*> Permutations;
-public:
-    Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage);
-    /** This method finds all lattice permutation operators, that commute with the hamiltonian. */
-    //void findLatticeSymmetry();
+    /** Total amount of symmetries found. */
+    int NSymmetries;
+    /** A vector of operators that commute with the Hamiltonian. */
+    std::vector<boost::shared_ptr<Operator> > Operations;
+
     /** This method checks the conservation of number of particles. */
     void checkNSymmetry();
     /** This method checks that spin-projection on the z axis is conserved. */
     void checkSzSymmetry();
-    /** Returns a list of equivalent permutations. */
-    //const std::list<IndexPermutation*>& getPermutations() const;
-    const std::list<boost::shared_ptr<Operator> > getOperations() const;
+
+    /** This method finds all possible symmetry operations. */ /** lattice permutation operators, that commute with the hamiltonian. */
+    //void findLatticeSymmetry();
+public:
+    Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage);
+    /** This method finds all possible symmetry operations. */
+    void compute();
+
+    /** Get a vector of operators that commute with the Hamiltonian. */
+    const std::vector<boost::shared_ptr<Operator> >& getOperations() const;
+    /** Get a sample QuantumNumbers. Their amount is set. */
+    QuantumNumbers getQuantumNumbers() const;
 };
 
 /** A combination of indices to which a permutation commutes with a Hamiltonian. 
@@ -114,6 +126,31 @@ public:
 
 /** This class represents a set of quantum numbers obtained by the Symmetrizer. */
 struct Symmetrizer::QuantumNumbers { 
+friend class Symmetrizer;
+private:
+    /** Total number of quantum numbers. */
+    int amount;
+    /** A vector of numbers. For now set as RealType. */
+    std::vector<RealType> numbers;
+    /** Private constuctor - can be called only inside Symmetrizer. */
+    QuantumNumbers(int amount);
+    /** A hash of the quantum numbers - used for comparison. */
+    std::size_t NumbersHash;
+    /** Hash generator. */
+    boost::hash<std::vector<RealType> > numbers_hash_generator;
+public:
+    /** Set a quantum number at the given position to a value
+     * \param[in] pos Position of QuantumNumber, e.g. the number of operation in Symmetrizer::Operations.
+     * \param[in] val Value of QuantumNumber.
+     */
+    bool set ( int pos, RealType val );
+
+    /* Comparison operators. */
+    bool operator< (const QuantumNumbers& rhs) const ;
+    bool operator== (const QuantumNumbers& rhs) const ;
+    bool operator!= (const QuantumNumbers& rhs) const ;
+    /** Output to external stream */
+    friend std::ostream& operator<<(std::ostream& output, const QuantumNumbers& out);
 };
 
 }; // end of namespace Pomerol

@@ -126,11 +126,47 @@ const char* Symmetrizer::IndexPermutation::exEqualIndices::what() const throw(){
     return "Cannot have equal indices in the Symmetrizer index combination";
 };
 
+// 
+// Symmetrizer::QuantumNumbers
+//
+
+Symmetrizer::QuantumNumbers::QuantumNumbers(int amount):amount(amount),numbers( std::vector<RealType>(amount) ),NumbersHash(numbers_hash_generator(numbers)) 
+{
+};
+
+bool Symmetrizer::QuantumNumbers::set ( int pos, RealType val )
+{ 
+    if (pos<amount) { 
+        numbers[pos] = val; 
+        NumbersHash = numbers_hash_generator(numbers); 
+        }
+    else { 
+        ERROR("Tried to insert element " << val << " to wrong position " << pos << " in " << __PRETTY_FUNCTION__ );
+        return false; 
+        };
+    return true; 
+}
+
+bool Symmetrizer::QuantumNumbers::operator< (const Symmetrizer::QuantumNumbers& rhs) const 
+{
+    return (NumbersHash<rhs.NumbersHash);
+}
+
+bool Symmetrizer::QuantumNumbers::operator== (const Symmetrizer::QuantumNumbers& rhs) const 
+{
+    return (NumbersHash==rhs.NumbersHash);
+}
+
+bool Symmetrizer::QuantumNumbers::operator!= (const Symmetrizer::QuantumNumbers& rhs) const 
+{
+    return (NumbersHash!=rhs.NumbersHash);
+}
+
 //
 // Symmetrizer
 //
 
-Symmetrizer::Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage):IndexInfo(IndexInfo), Storage(Storage), IndexSize(IndexInfo.getIndexSize())
+Symmetrizer::Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage):ComputableObject(Constructed), IndexInfo(IndexInfo), Storage(Storage), IndexSize(IndexInfo.getIndexSize()), NSymmetries(0)
 {
 }
 
@@ -141,12 +177,21 @@ const DynamicIndexCombination& Symmetrizer::generateTrivialCombination(ParticleI
     return trivial;
 }
 
-const std::list<boost::shared_ptr<Operator> > Symmetrizer::getOperations() const
+const std::vector<boost::shared_ptr<Operator> >& Symmetrizer::getOperations() const
 {
-    std::list<boost::shared_ptr<Operator> > out;
+    return Operations;
+}
+
+void Symmetrizer::compute()
+{
+    if (Status>=Computed) return;
     #warning fix it
+    // Force number of particles conservation
     boost::shared_ptr<Operator> OP1 ( new Pomerol::OperatorPresets::N(IndexSize));
-    out.push_back(OP1);
+    Operations.push_back(OP1);
+    NSymmetries++;
+
+    // Force Sz conservation
     std::vector<ParticleIndex> SpinUpIndices;
     std::vector<ParticleIndex> SpinDownIndices;
     for (ParticleIndex i=0; i<IndexSize; ++i) { 
@@ -158,8 +203,24 @@ const std::list<boost::shared_ptr<Operator> > Symmetrizer::getOperations() const
             else if (Spin == 0 ) SpinDownIndices.push_back(i);
         } 
     boost::shared_ptr<Operator> OP2 ( new Pomerol::OperatorPresets::Sz(SpinUpIndices, SpinDownIndices));
-    out.push_back(OP2);
-    return out;
+    Operations.push_back(OP2);
+    NSymmetries++;
+
+    Status = Computed;
+}
+
+Symmetrizer::QuantumNumbers Symmetrizer::getQuantumNumbers() const
+{
+    return Symmetrizer::QuantumNumbers(NSymmetries);
+}
+
+std::ostream& operator<<(std::ostream& output, const Symmetrizer::QuantumNumbers& out)
+{
+    output << "[";
+    for (int i=0 ;i<out.amount-1; ++i) output << out.numbers[i] << ",";
+    if ( out.amount ) output << out.numbers[out.amount-1];
+    output << "]";
+    return output;
 }
 
 } // end of namespace Pomerol 

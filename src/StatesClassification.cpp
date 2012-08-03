@@ -38,26 +38,32 @@ StatesClassification::StatesClassification(const IndexClassification& IndexInfo,
 
 void StatesClassification::compute()             
 {
-    std::list<boost::shared_ptr<Operator> > symmetric_operations_list = Symm.getOperations();
-    DEBUG(symmetric_operations_list.size());
+    std::vector<boost::shared_ptr<Operator> > sym_op = Symm.getOperations();
+    int NOperations=sym_op.size();
+    BlockNumber block_index=0;
     for (unsigned long FockStateIndex=0; FockStateIndex<StateSize; ++FockStateIndex) {
         FockState current_state(IndexSize,FockStateIndex);
-        DEBUG(current_state);
-        for (std::list<boost::shared_ptr<Operator> >::const_iterator operations_it=symmetric_operations_list.begin(); operations_it!=symmetric_operations_list.end(); operations_it++) { 
-            DEBUG((*operations_it)->getMatrixElement(current_state, current_state));   
+        QuantumNumbers QNumbers(Symm.getQuantumNumbers());
+        for (int n=0; n<NOperations; ++n) {
+            RealType Value=sym_op[n]->getMatrixElement(current_state, current_state);
+            QNumbers.set(n,Value);
         }
-    }
-}
-
-/*
-const InnerFockState StatesClassification::getInnerState(FockState state) const
-{
-  if ( state.to_ulong() > StateSize ) { throw exWrongState(); return StateSize; };
-  for (InnerFockState n=0; n<(*this).getFockStates((*this).getStateInfo(state)).size(); n++ )
-    {    
-        if ( (*this).getFockState((*this).getStateInfo(state),n)== state) { return n; }   //get ST
-    }
- return StateSize;
+        std::map<QuantumNumbers, BlockNumber>::iterator map_pos=QuantumToBlock.find(QNumbers);
+        if (map_pos==QuantumToBlock.end()) {
+            DEBUG("Adding " << current_state << " to block " << block_index << " with QuantumNumbers " << QNumbers << ".");
+            QuantumToBlock[QNumbers]=block_index;
+            BlockToQuantum.insert(std::make_pair(block_index, QNumbers)); // Needed not to invoke an empty constructor.
+            StatesContainer.push_back(std::vector<FockState>(0));
+            StatesContainer[block_index].push_back(current_state);
+            StateBlockIndex.push_back(block_index);
+            block_index++;
+            }
+         else {
+            DEBUG("Adding " << current_state << " to block " << map_pos->second << " with QuantumNumbers " << QNumbers << ".");
+            StatesContainer[map_pos->second].push_back(current_state);
+            StateBlockIndex.push_back(map_pos->second);
+            };
+        }
 }
 
 BlockNumber StatesClassification::getBlockNumber(QuantumNumbers in) const
@@ -65,33 +71,80 @@ BlockNumber StatesClassification::getBlockNumber(QuantumNumbers in) const
     return (QuantumToBlock.count(in))?QuantumToBlock.find(in)->second:ERROR_BLOCK_NUMBER;
 }
 
-QuantumNumbers StatesClassification::getBlockInfo(BlockNumber in) const
-{
-      return (BlockToQuantum.count(in))?BlockToQuantum.find(in)->second:ERROR_QUANTUM_NUMBERS;
-}
-
-BlockNumber StatesClassification::NumberOfBlocks() const
-{
-}
-const FockState StatesClassification::getNumberOfStates() const
+const unsigned long StatesClassification::getNumberOfStates() const
 {
     return StateSize;
 }
 
-
-QuantumNumbers StatesClassification::getStateInfo(FockState in) const             
-{
-}
-
 BlockNumber StatesClassification::getBlockNumber(FockState in) const
 {
-//    return (*this).getBlockNumber((*this).getStateInfo(in));
+    if ( in.to_ulong() > StateSize ) { throw exWrongState(); };
+    return StateBlockIndex[in.to_ulong()];
+}
+
+const InnerQuantumState StatesClassification::getInnerState(FockState state) const
+{
+  if ( state.to_ulong() > StateSize ) { throw (exWrongState()); return StateSize; };
+  BlockNumber block = this->getBlockNumber(state);
+  for (InnerQuantumState n=0; n<StatesContainer[block].size(); n++ )
+    {    
+        if ( StatesContainer[block][n]== state) { return n; } 
+    }
+ throw (exWrongState());
+ return StateSize;
+}
+
+const std::vector<FockState>& StatesClassification::getFockStates( BlockNumber in ) const
+{
+    return StatesContainer[in];
+}
+
+const std::vector<FockState>& StatesClassification::getFockStates( QuantumNumbers in ) const
+{
+    std::map<QuantumNumbers,BlockNumber>::const_iterator it=QuantumToBlock.find(in);
+    if (it != QuantumToBlock.end())
+        return this->getFockStates(it->second);
+    else
+        throw (exWrongState());
+}
+
+const FockState StatesClassification::getFockState( BlockNumber in, InnerQuantumState m) const
+{  
+    if (int(in) < StatesContainer.size()) 
+        if ( m < StatesContainer[in].size())
+            return StatesContainer[in][m];
+    ERROR("Couldn't find state numbered " << m << " in block " << in);
+    throw (exWrongState());
+    return ERROR_FOCK_STATE;
+}
+
+const FockState StatesClassification::getFockState( QuantumNumbers in, InnerQuantumState m) const
+{
+    return getFockState(getBlockNumber(in),m);
+}
+
+
+Symmetrizer::QuantumNumbers StatesClassification::getBlockInfo(BlockNumber in) const
+{
+    if (BlockToQuantum.count(in))
+        return BlockToQuantum.find(in)->second;
+    throw (exWrongState());
+    return BlockToQuantum.find(0)->second;
+}
+
+BlockNumber StatesClassification::NumberOfBlocks() const
+{
+    return StatesContainer.size();
+}
+
+Symmetrizer::QuantumNumbers StatesClassification::getStateInfo(FockState in) const             
+{
+    return BlockToQuantum.find(getBlockNumber(in))->second;
 }
 
 const char* StatesClassification::exWrongState::what() const throw(){
     return "Wrong state";
 };
-*/
 
 } // end of namespace Pomerol
 

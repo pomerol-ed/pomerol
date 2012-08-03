@@ -210,4 +210,9 @@ std::map<FockState, RealType> Operator::actRight(const FockState &ket) const
     return result1;
 }
 
+Operator::~Operator()
+{
+    Terms.reset();
+}
+
 } // end of namespace Pomerol

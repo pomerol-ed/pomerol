@@ -50,7 +50,6 @@ public:
 protected:
     /** A set of Terms in the Operator. */
     boost::scoped_ptr<std::list<Operator::Term*> > Terms; // This will be inherited and used by classes
-    virtual void do_nothing(){};
 public:
     /** Empty constructor. */
     Operator();
@@ -70,6 +69,7 @@ public:
      * \param[in] rhs An operator to calculate a commutator with.
      * \param[out] Resulting operator. */
     //Operator& getCommutator(const Operator &rhs);
+    virtual ~Operator();
 };
 
 /** The Term in the ParticleIndex space is the same as the Lattice::Term, apart that it can be rearranged to the predefined sequence of operators

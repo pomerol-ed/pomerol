@@ -135,6 +135,7 @@ int main(int argc, char *argv[])
   //DEBUG("Check - all terms");
   //Storage.printAllTerms();
   Symmetrizer Symm(Indices, Storage);
+  Symm.compute();
   StatesClassification S(Indices,Symm);
 
   S.compute();
