@@ -41,6 +41,7 @@
 #include<map>
 
 #include<boost/shared_ptr.hpp>
+#include<boost/make_shared.hpp>
 #include<boost/scoped_ptr.hpp>
 #include<boost/dynamic_bitset.hpp>
 #include<boost/tuple/tuple.hpp>
@@ -53,6 +54,10 @@
 #include <omp.h>
 #endif
 
+#ifdef POMEROL_USE_PLAIN_SAVE
+#include <boost/filesystem.hpp>
+#endif
+
 #define REALTYPE_DOUBLE
 
 namespace Pomerol{
@@ -62,6 +67,16 @@ typedef double RealType;
 //typedef std::complex<double> RealType;
 /** Complex type. */
 typedef std::complex<double> ComplexType;
+
+/** Fock State representation. */ 
+typedef boost::dynamic_bitset<> FockState;
+const FockState ERROR_FOCK_STATE = FockState(); // A state with the size==0 is an error state
+
+/** Each Quantum State in the finite system is associated with a number. 
+ * This works for any basis, including Fock and Hamiltonian eigenbasis. 
+ * The Fock States are converted naturally from bitsets to ints. 
+ **/
+typedef unsigned long QuantumState;
 
 /** Dense complex matrix. */
 typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> MatrixType;
@@ -81,6 +96,8 @@ typedef Eigen::Matrix<int,Eigen::Dynamic,1,Eigen::AutoAlign> IntVectorType;
 typedef Eigen::SparseMatrix<RealType,Eigen::ColMajor> ColMajorMatrixType;
 typedef Eigen::SparseMatrix<RealType,Eigen::RowMajor> RowMajorMatrixType;
 typedef Eigen::DynamicSparseMatrix<RealType,Eigen::ColMajor> DynamicSparseMatrixType;
+//typedef Eigen::Triplet<RealType> RealTypeTriplet;
+//typedef Eigen::Triplet<ComplexType> ComplexTypeTriplet;
 
 /** Possible spin projections are \b down and \b up */
 enum spin {down, up};

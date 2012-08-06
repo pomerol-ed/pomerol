@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([pomerol],[0.6],[pomerol@googlecode.com])
+AC_INIT([pomerol],[0.7],[pomerol@googlecode.com])
 AM_SILENT_RULES([yes])
 AC_COPYRIGHT(GNU General Public License v3)
 AC_CONFIG_SRCDIR([src/Misc.h])
@@ -14,6 +14,7 @@ AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
 #check openmp request
 AC_ARG_ENABLE([openmp], AS_HELP_STRING([--disable-openmp], [turn off openMP support]))
+AC_ARG_ENABLE([savetxt], AS_HELP_STRING([--enable-plain-txt], [(optionally) compile methods to save data to plain files. Uses boost::filesystem. ]))
 
 AS_IF([test "x$enable_openmp" != "xno"], 
       [
@@ -21,6 +22,15 @@ AS_IF([test "x$enable_openmp" != "xno"],
     AC_SUBST([AM_CXXFLAGS])
     AC_MSG_RESULT([openMP support enabled])
       ])
+AS_IF([test "x$enable_savetxt" == "xyes"], 
+      [
+    AM_CXXFLAGS="-DPOMEROL_USE_PLAIN_SAVE"
+    LIBS="-lboost_filesystem"
+    AC_SUBST([AM_CXXFLAGS])
+    AC_SUBST([LIBS])
+    AC_MSG_RESULT([Compiling methods to save data in plain format. Using boost::filesystem])
+      ])
+
 # Checks for libraries.
 # start: Check for HDF5 support
 AC_ARG_WITH([hdf5],

@@ -22,52 +22,63 @@
 #include "FieldOperator.h"
 
 namespace Pomerol{
-FieldOperator::FieldOperator(const IndexClassification &IndexInfo, const StatesClassification &System, const Hamiltonian &H, ParticleIndex Index) :
-    IndexInfo(IndexInfo), System(System), H(H), Index(Index)
+FieldOperator::FieldOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index) :
+    ComputableObject(Constructed), IndexInfo(IndexInfo), S(S), H(H), Index(Index)
 {}
 
-CreationOperator::CreationOperator(const IndexClassification &IndexInfo, const StatesClassification &System, const Hamiltonian &H, ParticleIndex Index) :
-    FieldOperator(IndexInfo,System,H,Index)
-{}
+CreationOperator::CreationOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index) :
+    FieldOperator(IndexInfo,S,H,Index)
+{
+    O = new Pomerol::OperatorPresets::Cdag(Index);
+}
 
-AnnihilationOperator::AnnihilationOperator(const IndexClassification &IndexInfo, const StatesClassification &System, const Hamiltonian &H, ParticleIndex Index) :
-    FieldOperator(IndexInfo,System,H,Index)
-{}
+AnnihilationOperator::AnnihilationOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index) :
+    FieldOperator(IndexInfo,S,H,Index)
+{
+    O = new Pomerol::OperatorPresets::C(Index);
+}
 
 const std::list<BlockMapping>& FieldOperator::getNonTrivialIndices() const
 {
+    if (Status < Computed) { ERROR("FieldOperator is not computed yet."); throw (exStatusMismatch()); }
     return LeftRightIndices;
 }
  
 const FieldOperatorPart& FieldOperator::getPartFromRightIndex(BlockNumber in) const
 {
+    if (Status < Computed) { ERROR("FieldOperator is not computed yet."); throw (exStatusMismatch()); }
     return *parts[mapPartsFromRight.find(in)->second];
 }
 
 const FieldOperatorPart& FieldOperator::getPartFromRightIndex(const QuantumNumbers& in) const
 {
-    return *parts[mapPartsFromRight.find(System.getBlockNumber(in))->second];
+    if (Status < Computed) { ERROR("FieldOperator is not computed yet."); throw (exStatusMismatch()); }
+    return *parts[mapPartsFromRight.find(S.getBlockNumber(in))->second];
 }
 
 const FieldOperatorPart& FieldOperator::getPartFromLeftIndex(BlockNumber in) const
 {
+    if (Status < Computed) { ERROR("FieldOperator is not computed yet."); throw (exStatusMismatch()); }
     return *parts[mapPartsFromLeft.find(in)->second];
 }
 
 const FieldOperatorPart& FieldOperator::getPartFromLeftIndex(const QuantumNumbers& in) const
 {
-    return *parts[mapPartsFromLeft.find(System.getBlockNumber(in))->second];
+    if (Status < Computed) { ERROR("FieldOperator is not computed yet."); throw (exStatusMismatch()); }
+    return *parts[mapPartsFromLeft.find(S.getBlockNumber(in))->second];
 }
 
 void FieldOperator::compute(void)
 {
+    if (Status >= Computed) return;
     size_t Size = parts.size();
-    INFO_NONEWLINE("FieldOperator_" << Index << ", computing: ")
+    INFO_NONEWLINE("Computing " << *O << " in eigenbasis of the Hamiltonian: ")
     for (size_t BlockIn = 0; BlockIn < Size; BlockIn++){
         INFO_NONEWLINE( (int) ((1.0*BlockIn/Size) * 100 ) << "  " << std::flush);
         parts[BlockIn]->compute();
     };
     INFO("");
+    Status = Computed;
 }
 
 ParticleIndex FieldOperator::getIndex(void) const
@@ -77,11 +88,12 @@ ParticleIndex FieldOperator::getIndex(void) const
 
 void CreationOperator::prepare(void)
 {
+    if (Status >= Prepared) return;
     size_t Size = parts.size();
-    for (BlockNumber RightIndex=0; RightIndex<System.NumberOfBlocks(); RightIndex++){
+    for (BlockNumber RightIndex=0; RightIndex<S.NumberOfBlocks(); RightIndex++){
         BlockNumber LeftIndex = mapsTo(RightIndex);
         if (LeftIndex.isCorrect()){
-            FieldOperatorPart *Part = new CreationOperatorPart(IndexInfo, System,
+            FieldOperatorPart *Part = new CreationOperatorPart(IndexInfo, S,
                                     H.getPart(RightIndex),H.getPart(LeftIndex),Index);
             parts.push_back(Part);
             mapPartsFromRight[RightIndex]=Size;
@@ -93,15 +105,17 @@ void CreationOperator::prepare(void)
         }
     }
     INFO("CreationOperator_" << Index <<": " << Size << " parts will be computed");
+    Status = Prepared;
 }
 
 void AnnihilationOperator::prepare()
 {
+    if (Status >= Prepared) return;
     size_t Size = parts.size();
-    for (BlockNumber RightIndex=0;RightIndex<System.NumberOfBlocks();RightIndex++){
+    for (BlockNumber RightIndex=0;RightIndex<S.NumberOfBlocks();RightIndex++){
         BlockNumber LeftIndex = mapsTo(RightIndex);
         if (LeftIndex.isCorrect()){
-            FieldOperatorPart *Part = new AnnihilationOperatorPart(IndexInfo, System,
+            FieldOperatorPart *Part = new AnnihilationOperatorPart(IndexInfo, S,
                                     H.getPart(RightIndex),H.getPart(LeftIndex), Index);
             parts.push_back(Part);
             mapPartsFromRight[RightIndex]=Size;
@@ -113,58 +127,34 @@ void AnnihilationOperator::prepare()
         }
     }
     INFO("AnnihilationOperator_" << Index <<": " << Size << " parts will be computed");
+    Status = Prepared;
 }
 
 BlockNumber FieldOperator::getRightIndex(BlockNumber LeftIndex) const
 {
+    if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
     return mapLeftToRightIndex.count(LeftIndex) ?
         mapLeftToRightIndex.find(LeftIndex)->second : ERROR_BLOCK_NUMBER;
 }
 
 BlockNumber FieldOperator::getLeftIndex(BlockNumber RightIndex) const
 {
+    if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
     return mapRightToLeftIndex.count(RightIndex) ? 
         mapRightToLeftIndex.find(RightIndex)->second : ERROR_BLOCK_NUMBER;
 }
 
-QuantumNumbers CreationOperator::mapsTo(const QuantumNumbers& in) const // Require explicit knowledge of QuantumNumbers structure - Not very good
+BlockNumber FieldOperator::mapsTo(BlockNumber RightIndex) const
 {
-    int lz, spin;
-    System.getSiteInfo(Index,lz,spin);
-    QuantumNumbers q_out;
-    if (spin == 1) 
-        q_out = QuantumNumbers(in[0] + lz,in[1]+1,in[2]);
-    else 
-        q_out = QuantumNumbers(in[0] + lz,in[1],in[2]+1);
-    return System.checkQuantumNumbers(q_out) ? q_out : ERROR_QUANTUM_NUMBERS;
+    std::map<FockState, RealType> result1=O->actRight(S.getFockState(RightIndex,0));
+    return (result1.size())?S.getBlockNumber(result1.begin()->first):ERROR_BLOCK_NUMBER;
 }
 
-BlockNumber CreationOperator::mapsTo(BlockNumber RightIndex) const
+QuantumNumbers FieldOperator::mapsTo(const QuantumNumbers& in) const 
 {
-    QuantumNumbers q_right = System.getBlockInfo(RightIndex);	
-    QuantumNumbers q_left = mapsTo(q_right);
-    BlockNumber out = System.getBlockNumber(q_left);
-    return out;
-}
-
-QuantumNumbers AnnihilationOperator::mapsTo(const QuantumNumbers& in) const // Require explicit knowledge of QuantumNumbers structure - Not very good
-{
-    int lz, spin;
-    System.getSiteInfo(Index,lz,spin);
-    QuantumNumbers q_out;
-    if (spin == 1) 
-        q_out = QuantumNumbers(in[0] - lz,in[1]-1,in[2]);
-    else 
-        q_out = QuantumNumbers(in[0] - lz,in[1],in[2]-1);
-    return System.checkQuantumNumbers(q_out) ? q_out : ERROR_QUANTUM_NUMBERS;
-}
-
-BlockNumber AnnihilationOperator::mapsTo(BlockNumber in) const
-{
-    QuantumNumbers q_in = System.getBlockInfo(in);	
-    QuantumNumbers q_out = mapsTo(q_in);
-    BlockNumber out = System.getBlockNumber(q_out);
-    return out;
+    BlockNumber out = this->mapsTo(S.getBlockNumber(in));
+    if ( out == ERROR_BLOCK_NUMBER) throw (QuantumNumbers::exWrongNumbers());
+    return S.getQuantumNumbers(out);
 }
 
 } // end of namespace Pomerol

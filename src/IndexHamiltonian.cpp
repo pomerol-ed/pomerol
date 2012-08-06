@@ -79,14 +79,14 @@ void IndexHamiltonian::prepare()
             }; // end of terms order loop
 };
 
-const std::list<Operator::Term*> IndexHamiltonian::getTerms(unsigned int N) const
+const std::list<Operator::Term*> IndexHamiltonian::getTermsByOrder(unsigned int N) const
 {
     return mapTerms.find(N)->second;
 };
 
 void IndexHamiltonian::printTerms(unsigned int N) const
 {
-    std::list<Operator::Term*> Temp = (this)->getTerms(N);
+    std::list<Operator::Term*> Temp = (this)->getTermsByOrder(N);
     for (std::list<Operator::Term*>::const_iterator it1=Temp.begin(); it1!=Temp.end(); ++it1) {
     INFO(**it1 );
     };

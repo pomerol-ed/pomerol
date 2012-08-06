@@ -54,7 +54,7 @@ public:
     /** Constructor. */
     IndexHamiltonian(const Lattice *L, const IndexClassification &Info);
     /** Gets all Terms of desired order. */
-    const std::list<Operator::Term*> getTerms(unsigned int N) const;
+    const std::list<Operator::Term*> getTermsByOrder(unsigned int N) const;
     /** Print all Operator::Term s */
     void printTerms(unsigned int order) const;
 };

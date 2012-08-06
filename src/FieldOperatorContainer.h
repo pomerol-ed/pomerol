@@ -40,17 +40,20 @@ namespace Pomerol{
  * rotated to eigenvector basis of Hamiltonian H ) for a given Index.
  * If no field operator is yet initialized then calculation of the field operator is done.
  */
-class FieldOperatorContainer
+class FieldOperatorContainer : public ComputableObject
 {
 private:
+    /** Computation statuses of the object. */
+    enum {Constructed, Prepared};
+    /** A reference to a IndexClassification object in order to check the input indices. */
+    IndexClassification &IndexInfo;
     /** A reference to a states classification object. */
     StatesClassification &S;
     /** A reference to a Hamiltonian. */
     const Hamiltonian &H;
-    /** A reference to a IndexClassification object in order to check the input indices. */
-    IndexClassification &IndexInfo;
-    // WARNING! In contrast to other classes this one is designed to follow the "computation-on-demand" semantics.
-    // Do we really want it to work in this way?
+    /** A flag which determines, whether the Annihilation operators should be used from a 
+     * Hermite conjugate of Creation ones, or whether the direct calc should be made. */
+    bool use_transpose;
     /** A map which gives a link to the CreationOperator for a given index */
     mutable std::map <ParticleIndex, CreationOperator*> mapCreationOperators;
     /** A map which gives a link to the AnnihilationOperator for a given index */
@@ -61,12 +64,14 @@ public:
      * \param[in] H A reference to a Hamiltonian.
      * \param[in] IndexInfo A reference to a IndexClassification
      */
-    FieldOperatorContainer(StatesClassification &S, 
-        const Hamiltonian &H, IndexClassification &IndexInfo);
+    FieldOperatorContainer(IndexClassification &IndexInfo, StatesClassification &S, 
+        const Hamiltonian &H, bool use_transpose = false);
 
-    /** Returns the CreationOperator for a given Index */
+    void prepare();
+
+    /** Returns the CreationOperator for a given Index. Makes on-demand computation. */
     const CreationOperator& getCreationOperator(ParticleIndex in) const;
-    /** Returns the AnnihilationOperator for a given Index */
+    /** Returns the AnnihilationOperator for a given Index. Makes on-demand computation */
     const AnnihilationOperator& getAnnihilationOperator(ParticleIndex in) const;
 };
 

@@ -30,23 +30,34 @@
 
 namespace Pomerol{
 
-FieldOperatorContainer::FieldOperatorContainer(StatesClassification &S, const Hamiltonian &H, IndexClassification &IndexInfo) : 
-    S(S), H(H), IndexInfo(IndexInfo)
+FieldOperatorContainer::FieldOperatorContainer(IndexClassification &IndexInfo, StatesClassification &S, const Hamiltonian &H, bool use_transpose) : 
+    ComputableObject(Constructed), IndexInfo(IndexInfo), S(S), H(H), use_transpose(use_transpose)
 {}
+
+void FieldOperatorContainer::prepare()
+{
+    if ( Status >= Prepared ) return;
+    for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); ++i)
+        {
+            CreationOperator *CX = new CreationOperator(IndexInfo, S,H,i);
+            CX->prepare();
+            mapCreationOperators[i] = CX;
+            //if (!use_transpose) {
+            AnnihilationOperator *C = new AnnihilationOperator(IndexInfo, S,H,i);
+            C->prepare();
+            mapAnnihilationOperators[i] = C;
+           //     }
+        }
+
+    Status = Prepared;
+}
 
 const CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleIndex in) const
 {
     if (IndexInfo.checkIndex(in)){
-        if (mapCreationOperators.count(in)==0){
-            CreationOperator *CX = new CreationOperator(IndexInfo, S,H,in);
-            INFO("FieldOperatorContainer: Making Creation Operator_"<<in);
-            CX->prepare();
-            CX->compute();
-            mapCreationOperators[in] = CX;
-        };
-        //else INFO("FieldOperatorContainer: Using already computed Creation Operator_"<< in);
+        mapCreationOperators[in]->compute();
         return *mapCreationOperators[in];
-    }
+        }
     else
         assert(0);
 }
@@ -54,16 +65,9 @@ const CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleInde
 const AnnihilationOperator& FieldOperatorContainer::getAnnihilationOperator(ParticleIndex in) const
 {
     if (IndexInfo.checkIndex(in)){
-        if (mapAnnihilationOperators.count(in)==0){
-            AnnihilationOperator *C = new AnnihilationOperator(IndexInfo, S,H,in);
-            INFO("FieldOperatorContainer: Making Annihilation Operator_"<<in);
-            C->prepare();
-            C->compute();
-            mapAnnihilationOperators[in] = C;
-        };
-        // else INFO("FieldOperatorContainer: Using already computed Annihilation Operator_"<< in);
+        mapAnnihilationOperators[in]->compute();
         return *mapAnnihilationOperators[in];
-    }
+        }
     else
         assert(0);
 }

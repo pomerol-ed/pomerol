@@ -169,10 +169,10 @@ const char* Lattice::Term::Presets::exWrongIndices::what() const throw(){
 };
 
 //
-// Lattice::Presets
+// LatticePresets
 //
 
-void Lattice::Presets::addCoulombS(Lattice *L, const std::string& Label, RealType U, RealType Level)
+void LatticePresets::addCoulombS(Lattice *L, const std::string& Label, RealType U, RealType Level)
 {
     if (L->Sites.find(Label)==L->Sites.end()) throw (Lattice::exWrongLabel()); 
     unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
@@ -186,7 +186,7 @@ void Lattice::Presets::addCoulombS(Lattice *L, const std::string& Label, RealTyp
        };
 };
 
-void Lattice::Presets::addCoulombP(Lattice *L, const std::string& Label, RealType U, RealType U_p, RealType J, RealType Level)
+void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, RealType U, RealType U_p, RealType J, RealType Level)
 {
     if (L->Sites.find(Label)==L->Sites.end()) throw (Lattice::exWrongLabel()); 
     unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
@@ -212,12 +212,12 @@ void Lattice::Presets::addCoulombP(Lattice *L, const std::string& Label, RealTyp
         };
 };
 
-void Lattice::Presets::addCoulombP(Lattice *L, const std::string& Label, RealType U, RealType J, RealType Level)
+void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, RealType U, RealType J, RealType Level)
 {
     addCoulombP(L, Label, U, U-2.0*J, J, Level);
 }
 
-void Lattice::Presets::addLevel(Lattice *L, const std::string& Label, RealType Level)
+void LatticePresets::addLevel(Lattice *L, const std::string& Label, RealType Level)
 {
     if (L->Sites.find(Label)==L->Sites.end()) throw (Lattice::exWrongLabel()); 
     unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
@@ -228,7 +228,7 @@ void Lattice::Presets::addLevel(Lattice *L, const std::string& Label, RealType L
             };
 }
 
-void Lattice::Presets::addMagnetization(Lattice *L, const std::string& Label, RealType Magnetization)
+void LatticePresets::addMagnetization(Lattice *L, const std::string& Label, RealType Magnetization)
 {
     if (L->Sites.find(Label)==L->Sites.end()) { ERROR("No site" << Label << "found."); throw (Lattice::exWrongLabel()); };
     unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
@@ -240,7 +240,7 @@ void Lattice::Presets::addMagnetization(Lattice *L, const std::string& Label, Re
         };
 }
 
-void Lattice::Presets::addSzSz ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType ExchJ)
+void LatticePresets::addSzSz ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType ExchJ)
 {
 
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
@@ -248,12 +248,13 @@ void Lattice::Presets::addSzSz ( Lattice *L, const std::string& Label1, const st
     unsigned short Orbitals = L->Sites[Label1]->OrbitalSize;
     unsigned short Spins = L->Sites[Label1]->SpinSize;
     if ( Orbitals != L->Sites[Label2]->OrbitalSize || Spins != L->Sites[Label1]->SpinSize ) { ERROR("Adjacent sites spin and orbital sizes do not match. Use Lattice::addTerm for specific interaction."); throw (Lattice::Term::Presets::exWrongIndices()); };
-    if (Spins!=2) { ERROR("addSzSz doesn't work not for 2 spins."); throw (exWrongLabel()); };
+    if (Spins!=2) { ERROR("addSzSz doesn't work not for 2 spins."); throw (Lattice::exWrongLabel()); };
     for (unsigned short i=0; i<Orbitals; ++i) {
-            L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label1, Label2, -ExchJ/2., i, i, up, down));
+            L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label1, Label2, -ExchJ/4., i, i, up, down));
+            L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label1, Label2, -ExchJ/4., i, i, down, up));
             if ( Label1 != Label2) {
                 L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label1, Label2, ExchJ/4., i, i, up, up));
-                L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label1, Label2, ExchJ/4., i, i, up, up));
+                L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label1, Label2, ExchJ/4., i, i, down, down));
                 }
             else {
                 L->Terms->addTerm(Lattice::Term::Presets::Level(Label1, ExchJ/4., i, up));
@@ -262,23 +263,23 @@ void Lattice::Presets::addSzSz ( Lattice *L, const std::string& Label1, const st
         };
 }
 
-void Lattice::Presets::addSS ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType ExchJ)
+void LatticePresets::addSS ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType ExchJ)
 {
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
     if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
     unsigned short Orbitals = L->Sites[Label1]->OrbitalSize;
     unsigned short Spins = L->Sites[Label1]->SpinSize;
     if ( Orbitals != L->Sites[Label2]->OrbitalSize || Spins != L->Sites[Label1]->SpinSize ) { ERROR("Adjacent sites spin and orbital sizes do not match. Use Lattice::addTerm for specific interaction."); throw (Lattice::Term::Presets::exWrongIndices()); };
-    if (Spins!=2) { ERROR("addSS doesn't work not for 2 spins."); throw (exWrongLabel()); };
+    if (Spins!=2) { ERROR("addSS doesn't work not for 2 spins."); throw (Lattice::exWrongLabel()); };
 
     addSzSz(L, Label1, Label2, ExchJ);
     for (unsigned short i=0; i<Orbitals; ++i) {
-        L->Terms->addTerm(Lattice::Term::Presets::SplusSminus(Label1, Label2, -ExchJ, i));
-        L->Terms->addTerm(Lattice::Term::Presets::SminusSplus(Label1, Label2, -ExchJ, i));
+        L->Terms->addTerm(Lattice::Term::Presets::SplusSminus(Label1, Label2, -ExchJ/2., i));
+        L->Terms->addTerm(Lattice::Term::Presets::SminusSplus(Label1, Label2, -ExchJ/2., i));
         };
 }
 
-void Lattice::Presets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin1, unsigned short Spin2)
+void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin1, unsigned short Spin2)
 {
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
     if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
@@ -286,14 +287,15 @@ void Lattice::Presets::addHopping ( Lattice *L, const std::string& Label1, const
         ERROR("Orbital or Spin index mismatch"); throw ( Lattice::Term::Presets::exWrongIndices() ); 
         };
     L->addTerm(Lattice::Term::Presets::Hopping(Label1, Label2, t, Orbital1, Orbital2, Spin1, Spin2));
+    L->addTerm(Lattice::Term::Presets::Hopping(Label2, Label1, -t, Orbital1, Orbital2, Spin1, Spin2)); // Hermite conjugate
 }
 
-void Lattice::Presets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin)
+void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin)
 {
     addHopping(L,Label1, Label2, t, Orbital1, Orbital2, Spin, Spin);
 }
 
-void Lattice::Presets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2)
+void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2)
 {
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site " << Label1 << " found."); throw (Lattice::exWrongLabel()); };
     if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site " << Label2 << " found."); throw (Lattice::exWrongLabel()); };
@@ -302,10 +304,10 @@ void Lattice::Presets::addHopping ( Lattice *L, const std::string& Label1, const
         };
     unsigned short Spins = L->Sites[Label1]->SpinSize;
     if ( Spins != L->Sites[Label1]->SpinSize ) { ERROR("Adjacent sites spin sizes do not match. Use Lattice::addTerm for specific interaction."); throw (Lattice::Term::Presets::exWrongIndices()); };
-    for (int z=0; z<Spins; ++z) L->addTerm(Lattice::Term::Presets::Hopping(Label1, Label2, t, Orbital1, Orbital2, z, z));
+    for (int z=0; z<Spins; ++z) addHopping(L, Label1, Label2, t, Orbital1, Orbital2, z, z);
 }
 
-void Lattice::Presets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t)
+void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t)
 {
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
     if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
@@ -317,7 +319,7 @@ void Lattice::Presets::addHopping ( Lattice *L, const std::string& Label1, const
 
     for (unsigned short z=0; z<Spins; ++z) 
         for (unsigned short i=0; i<Orbitals; ++i)
-            L->addTerm(Lattice::Term::Presets::Hopping(Label1, Label2, t, i, i, z, z));
+            addHopping(L, Label1, Label2, t, i, i, z, z);
   
 }
 
@@ -347,10 +349,10 @@ void JSONLattice::JSONPresets::readSSite(Lattice *L, const std::string& Label, J
     int Spins=2;
     if (in["Spins"]!=Json::nullValue) Spins=in["Spins"].asInt();
     L->addSite(Label, Orbitals, Spins);
-    Lattice::Presets::addCoulombS(L, Label, U, Level);
+    LatticePresets::addCoulombS(L, Label, U, Level);
     if (in["Field"]!=Json::nullValue) 
         if (in["Field"].asDouble()!=0)
-            Lattice::Presets::addMagnetization(L, Label, in["Field"].asDouble());
+            LatticePresets::addMagnetization(L, Label, in["Field"].asDouble());
 }
 
 void JSONLattice::JSONPresets::readPSite(Lattice *L, const std::string& Label, Json::Value& in)
@@ -370,10 +372,10 @@ void JSONLattice::JSONPresets::readPSite(Lattice *L, const std::string& Label, J
     if (in["Spins"]!=Json::nullValue) Spins=in["Spins"].asInt();
 
     L->addSite(Label, Orbitals, Spins);
-    Lattice::Presets::addCoulombP(L, Label, U, U_p, J, Level);
+    LatticePresets::addCoulombP(L, Label, U, U_p, J, Level);
     if (in["Field"]!=Json::nullValue) 
         if (in["Field"].asDouble()!=0)
-            Lattice::Presets::addMagnetization(L, Label, in["Field"].asDouble());
+            LatticePresets::addMagnetization(L, Label, in["Field"].asDouble());
 
 }
 
@@ -386,17 +388,17 @@ void JSONLattice::JSONPresets::readHoppingTerm(Lattice *L, Json::Value& in)
     bool foundOrbitals = ( in["Orbitals"] != Json::nullValue ); 
 
     if ( foundSpins && foundOrbitals ) {
-        Lattice::Presets::addHopping(L,site1, site2, t, (*(in["Orbitals"].begin())).asInt(), (*(in["Orbitals"].end())).asInt(), (*(in["Spins"].begin())).asInt(), (*(in["Spins"].end())).asInt() );
+        LatticePresets::addHopping(L,site1, site2, t, (*(in["Orbitals"].begin())).asInt(), (*(in["Orbitals"].end())).asInt(), (*(in["Spins"].begin())).asInt(), (*(in["Spins"].end())).asInt() );
         return;
         }
 
     if ( !foundSpins && foundOrbitals ) {
-        Lattice::Presets::addHopping(L,site1, site2, t, (*(in["Orbitals"].begin())).asInt(), (*(in["Orbitals"].end())).asInt() );
+        LatticePresets::addHopping(L,site1, site2, t, (*(in["Orbitals"].begin())).asInt(), (*(in["Orbitals"].end())).asInt() );
         return;
         };
 
     if (!foundSpins && !foundOrbitals ) {
-        Lattice::Presets::addHopping(L,site1, site2, t );
+        LatticePresets::addHopping(L,site1, site2, t );
         return;
         }
     
@@ -407,7 +409,7 @@ void JSONLattice::JSONPresets::readLevelTerm(Lattice *L, Json::Value& in)
 {
     RealType eps = in["Value"].asDouble();
     std::string label = in["Site"].asString();
-    Lattice::Presets::addLevel(L,label,eps);
+    LatticePresets::addLevel(L,label,eps);
 }
 
 /*
@@ -418,7 +420,7 @@ void JSONLattice::JSONPresets::readNNTerm(Lattice *L, Json::Value& in)
    std::string label2 = in["Sites"][Json::Value::UInt (1)].asString();
    int orbital1 = in["Orbitals"][Json::Value::UInt (0)].asInt();
    int orbital2 = in["Orbitals"][Json::Value::UInt (1)].asInt();
-   Lattice::Presets::addNupNdown(L, label1, label2, U);
+   LatticePresets::addNupNdown(L, label1, label2, U);
 } */
 
 void JSONLattice::JSONPresets::readSzSzTerm(Lattice *L, Json::Value& in)
@@ -426,7 +428,7 @@ void JSONLattice::JSONPresets::readSzSzTerm(Lattice *L, Json::Value& in)
     RealType J = in["Value"].asDouble(); 
     std::string label1 = in["Sites"][Json::Value::UInt (0)].asString();
     std::string label2 = in["Sites"][Json::Value::UInt (1)].asString();
-    Lattice::Presets::addSzSz(L, label1, label2, J);
+    LatticePresets::addSzSz(L, label1, label2, J);
 }
 
 void JSONLattice::JSONPresets::readSSTerm(Lattice *L, Json::Value& in)
@@ -434,7 +436,7 @@ void JSONLattice::JSONPresets::readSSTerm(Lattice *L, Json::Value& in)
     RealType J = in["Value"].asDouble(); 
     std::string label1 = in["Sites"][Json::Value::UInt (0)].asString();
     std::string label2 = in["Sites"][Json::Value::UInt (1)].asString();
-    Lattice::Presets::addSS(L, label1, label2, J);
+    LatticePresets::addSS(L, label1, label2, J);
 }
 
 const char* JSONLattice::JSONPresets::exWrongSpins::what() const throw(){

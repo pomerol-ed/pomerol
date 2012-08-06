@@ -28,14 +28,16 @@
 #include "IndexHamiltonian.h"
 #include "Symmetrizer.h"
 #include "StatesClassification.h"
-/*
+#include "HamiltonianPart.h"
 #include "Hamiltonian.h"
+#include "FieldOperatorPart.h"
 #include "FieldOperator.h"
+#include "FieldOperatorContainer.h"
+#include "DensityMatrixPart.h"
+#include "DensityMatrix.h"
 #include "GFContainer.h"
 #include "TwoParticleGFContainer.h"
-#include "Vertex4.h"
-#include "Logger.h"
-*/
+
 #include "OptionParser.h"
 
 #include <fstream>
@@ -81,32 +83,6 @@ int main(int argc, char *argv[])
   Lattice *L=&JL;
   JL.readin(opt.LatticeFile);
 
-  /* std::vector<ParticleIndex> a1(3);
-  a1[0]=1;
-  a1[1]=2;
-  a1[2]=0;
-  Symmetrizer::IndexPermutation AA2(a1);
-  DynamicIndexCombination AA(3);
-  AA[0]=3;
-  AA[1]=3;
-  AA[2]=3;
-  DynamicIndexCombination BB(3);
-  BB[0]=3;
-  BB[1]=3;
-  BB[2]=3;
-  DEBUG(AA2<"< " << BB << " = " << (AA<BB));
-  DEBUG(AA<<"==" << BB << " = " << (AA==BB));
-  DEBUG(AA<<"!=" << BB << " = " << (AA!=BB));
-  exit(0);
-
-  L->addSite(new Lattice::Site("A",1,2));
-  L->addSite(new Lattice::Site("B",2,2));
-  L->addSite(new Lattice::Site("C",1,2));
-  Lattice::Presets::addHopping(L,"A","B",1.37,0,1);
-  Lattice::Presets::addHopping(L,"B","C",1.0,1,0);
-  Lattice::Presets::addCoulombP(L, "B",4, 0.5, 0.0);
-  Lattice::Presets::addHopping(L,"A","C",0.612);
-  */
   print_section("Lattice");
   INFO("Sites");
   L->printSites();
@@ -115,30 +91,65 @@ int main(int argc, char *argv[])
   INFO("Terms with 4 operators");
   L->printTerms(4);
 
-    //DEBUG(L->getTermStorage().getMaxTermOrder());
-  IndexClassification Indices(L->getSiteMap());
-  IndexClassification *II = &Indices;
-  Indices.prepare();
+  IndexClassification IndexInfo(L->getSiteMap());
+  IndexClassification *II = &IndexInfo;
+  IndexInfo.prepare();
   print_section("Indices");
-  Indices.printIndices();
-  //DEBUG(Indices.getIndex("B",0,1));
-  //DEBUG(Indices.checkIndex(Indices.getIndex("B",0,3)));
+  IndexInfo.printIndices();
 
   print_section("Matrix element storage");
-  IndexHamiltonian Storage(L,Indices);
+  IndexHamiltonian Storage(L,IndexInfo);
   Storage.prepare();
   INFO("Terms with 2 operators");
   Storage.printTerms(2);
   INFO("Terms with 4 operators");
-  Storage.printTerms(4);
+//  Storage.printTerms(4);
 
   //DEBUG("Check - all terms");
   //Storage.printAllTerms();
-  Symmetrizer Symm(Indices, Storage);
+  Symmetrizer Symm(IndexInfo, Storage);
   Symm.compute();
-  StatesClassification S(Indices,Symm);
+  StatesClassification S(IndexInfo,Symm);
 
   S.compute();
+
+  Hamiltonian H(IndexInfo, Storage, S);
+  H.prepare();
+  H.diagonalize();
+  INFO("The value of ground energy is " << H.getGroundEnergy());
+  
+  FieldOperatorContainer Operators(IndexInfo, S, H);
+  Operators.prepare();
+
+  RealType beta=opt.beta;
+  DensityMatrix rho(S,H,beta);
+
+  rho.prepare();
+  rho.compute();
+  INFO("<H> = " << rho.getAverageEnergy() << std::endl)
+  GFContainer G(IndexInfo,S,H,rho,Operators);
+  long wn = opt.NumberOfMatsubaras;
+
+
+  if (1==1) {
+
+      print_section("Green's function calculation");
+      std::set<IndexCombination2> v2;
+      v2.insert(IndexCombination2(0,0));
+      v2.insert(IndexCombination2(IndexInfo.getIndexSize()/2,IndexInfo.getIndexSize()/2));
+      G.prepareAll(v2);
+      G.computeAll();
+       }
+
+  if (1==1) {   
+      print_section("Two Particle Green's function calculation");
+      std::set<IndexCombination4> v1;
+      v1.insert(IndexCombination4(0,IndexInfo.getIndexSize()/2,0,IndexInfo.getIndexSize()/2));
+      v1.insert(IndexCombination4(0,0,0,0));
+      TwoParticleGFContainer Chi4(IndexInfo,S,H,rho,Operators);
+      Chi4.prepareAll(v1);
+      Chi4.computeAll(wn);
+      }
 
   return 0;
 };

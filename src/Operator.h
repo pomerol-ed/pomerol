@@ -34,12 +34,8 @@
 #include "Lattice.h"
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <boost/dynamic_bitset.hpp>
 
 namespace Pomerol{
-
-typedef boost::dynamic_bitset<> FockState;
-const FockState ERROR_FOCK_STATE = FockState(); // A state with the size==0 is an error state
 
 /** This class represents an operator which is stored as a list of Terms */
 class Operator
@@ -49,12 +45,14 @@ public:
     struct Term;
 protected:
     /** A set of Terms in the Operator. */
-    boost::scoped_ptr<std::list<Operator::Term*> > Terms; // This will be inherited and used by classes
+    boost::shared_ptr<std::list<Operator::Term*> > Terms; // This will be inherited and used by classes
 public:
     /** Empty constructor. */
     Operator();
     /** Print all of the Terms. */
     void printAllTerms() const;
+    /** Returns all Terms. */
+    boost::shared_ptr<std::list<Operator::Term*> > getTerms() const;
 
     /** Returns a matrix element of the operator. */
     virtual RealType getMatrixElement(const FockState &bra, const FockState &ket) const;
@@ -70,6 +68,7 @@ public:
      * \param[out] Resulting operator. */
     //Operator& getCommutator(const Operator &rhs);
     virtual ~Operator();
+    friend std::ostream& operator<< (std::ostream& output, const Operator& out);
 };
 
 /** The Term in the ParticleIndex space is the same as the Lattice::Term, apart that it can be rearranged to the predefined sequence of operators

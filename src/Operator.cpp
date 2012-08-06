@@ -143,6 +143,8 @@ boost::tuple<FockState, RealType> Operator::Term::actRight ( const FockState &ke
                 for (ParticleIndex j=prev_pos_; j<Indices[i]; ++j) { if (ket[j]) sign*=-1; } 
             else
                 for (ParticleIndex j=prev_pos_; j>Indices[i]; j--) { if (ket[j]) sign*=-1; }
+            
+            //for (ParticleIndex j=0; j<Indices[i]; ++j) { if (ket[j]) sign*=-1; } 
         }
     return boost::make_tuple(bra, this->Value*sign);
 }
@@ -185,6 +187,11 @@ void Operator::printAllTerms() const
         }
 }
 
+boost::shared_ptr<std::list<Operator::Term*> > Operator::getTerms() const
+{
+    return Terms;
+}
+
 RealType Operator::getMatrixElement( const FockState & bra, const FockState &ket) const
 {
     std::map<FockState, RealType> output = this->actRight(ket);
@@ -197,22 +204,31 @@ RealType Operator::getMatrixElement( const FockState & bra, const FockState &ket
 
 std::map<FockState, RealType> Operator::actRight(const FockState &ket) const
 {
-    std::list<boost::tuple<FockState, RealType> > output;
     std::map<FockState, RealType> result1;
     for (std::list<Operator::Term*>::const_iterator it = Terms->begin(); it!=Terms->end(); it++)
         {
             FockState bra; 
             RealType melem;
             boost::tie(bra,melem) = (*it)->actRight(ket);
-            if (bra!=ERROR_FOCK_STATE && melem!=0) 
+            if (bra!=ERROR_FOCK_STATE && std::abs(melem)>std::numeric_limits<RealType>::epsilon()) 
                 result1[bra]+=melem;
         }
+    for (std::map<FockState, RealType>::iterator it1 = result1.begin(); it1!=result1.end(); it1++) 
+        if ( std::abs(it1->second)<std::numeric_limits<RealType>::epsilon() ) result1.erase(it1); 
     return result1;
 }
 
 Operator::~Operator()
 {
     Terms.reset();
+}
+
+std::ostream& operator<< (std::ostream& output, const Operator& out)
+{
+    for (std::list<Operator::Term*>::const_iterator it = out.Terms->begin(); it!=out.Terms->end(); it++) {
+        output << **it << " ";
+        };
+    return output;
 }
 
 } // end of namespace Pomerol

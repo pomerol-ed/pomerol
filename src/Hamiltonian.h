@@ -32,6 +32,7 @@
 #include "Logger.h"
 #include "HDF5Storage.h"
 #include "IndexClassification.h"
+#include "IndexHamiltonian.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
 
@@ -40,21 +41,27 @@ namespace Pomerol{
 /** This class represents a Hamiltonian, written as a matrix of matrix elements in a Fock basis.
  * It is a container for several hamiltonian parts, each for single defined QuantumNumbers and a corresponding BlockNumber. 
  * It provides eigenvalues and eigenfunctions of any of its parts once they are obtained within its parts. 
- * The diagonalization and entering routines are done inside Hamiltonian Parts
+ * The diagonalization and entering routines are done inside of HamiltonianPart instances.
  */
-class Hamiltonian : public HDF5Storable
+class Hamiltonian : public HDF5Storable, public ComputableObject
 {
+    /** Statuses of the object */
+    enum {Constructed, Prepared, Diagonalized};
     /** Array of pointers to the Hamiltonian Parts */
-    std::vector<HamiltonianPart*> parts;
-    /** A reference to the object, which contains all info about how sites and spins of the lattice are defined as bits */
-    IndexClassification &Formula;
-    /** Reference to a states classification object. */
-    StatesClassification& S;
+    std::vector<boost::shared_ptr<HamiltonianPart> > parts;
+    /** A reference to the IndexClassification object. */
+    const IndexClassification &IndexInfo;
+    /** A reference to the IndexHamiltonian object. */
+    const IndexHamiltonian &F;
+    /** A reference to the StatesClassification object. */
+    const StatesClassification& S;
     /** A value of the ground energy - needed for further renormalization */
     RealType GroundEnergy;
 public:
 
-    Hamiltonian(IndexClassification &F_, StatesClassification &S_);
+    /** Constructor. */
+    Hamiltonian(const IndexClassification &IndexInfo, const IndexHamiltonian& F, const StatesClassification &S);
+    /** Destructor. */
     ~Hamiltonian();
 
     void prepare();
@@ -63,7 +70,7 @@ public:
 
     const HamiltonianPart& getPart(const QuantumNumbers &in) const;
     const HamiltonianPart& getPart(BlockNumber in) const;
-    RealType getEigenValue(QuantumState state) const;
+    RealType getEigenValue(unsigned long state) const;
     RealType getGroundEnergy() const;
 
     void save(H5::CommonFG* RootGroup) const;

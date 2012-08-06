@@ -218,7 +218,7 @@ void JSONLattice::readSites(Json::Value &JSONSites)
             Lattice::Site *S = new Lattice::Site(Label, Orbitals, Spins);
             this->Sites[Label]=S;
             if ((*it)["Level"]!=Json::nullValue) { 
-                Lattice::Presets::addLevel(this, Label, (*it)["Level"].asDouble());
+                LatticePresets::addLevel(this, Label, (*it)["Level"].asDouble());
                 };
             };
         }

@@ -115,7 +115,8 @@ public:
     };
 };
 
-class Lattice::Presets {
+/** A set of presets to fill the Lattice::TermStorage and Lattice::Sites for some commonly used examples. */
+class LatticePresets {
 public:
 
     /** Adds an interaction with the hamiltonian \f[ \sum\limits_{\alpha, \sigma > \sigma'} Un_{i\alpha\sigma}Un_{i\alpha\sigma'} + \sum\limits_{\alpha,\sigma} \varepsilon n_{i\alpha\sigma} to a specified site. \f] 

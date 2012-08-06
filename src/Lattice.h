@@ -38,6 +38,7 @@ namespace Pomerol{
  */
 class Lattice
 {
+friend class LatticePresets;
 public:
     /** This holds the information about a given site of the lattice, namely it's label, number of spins and orbitals. */ 
     struct Site;
@@ -49,8 +50,6 @@ public:
     typedef std::map<std::string, Site*> SiteMap;
     /** A storage for all the terms. Realized as a map between the order of the Lattice::Terms and the corresponding Lattice::TermList. */
     class TermStorage;
-    /** A set of presets to fill the TermStorage and Sites for some commonly used examples. Look at the LatticePresets.h . */
-    class Presets;
     
     /** Add a Site to list of Sites 
      * \param[in] S A site to add.

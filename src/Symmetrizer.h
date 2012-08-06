@@ -151,7 +151,12 @@ public:
     bool operator!= (const QuantumNumbers& rhs) const ;
     /** Output to external stream */
     friend std::ostream& operator<<(std::ostream& output, const QuantumNumbers& out);
+    /** Exception for bad quantum numbers. */
+    class exWrongNumbers : public std::exception { virtual const char* what() const throw() { return "Wrong QuantumNumbers."; } };
 };
+
+/** A typedef for QuantumNumbers since it is often used. */ 
+typedef Symmetrizer::QuantumNumbers QuantumNumbers;
 
 }; // end of namespace Pomerol
 

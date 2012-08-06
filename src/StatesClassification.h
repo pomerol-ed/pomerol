@@ -20,10 +20,9 @@
 
 
 /** \file src/StatesClassification.h
-** \brief Declaration of BlockNumber, QuantumNumbers and StatesClassification classes
+** \brief Declaration of BlockNumber and StatesClassification classes
 **
 ** \author Andrey Antipov (antipov@ct-qmc.org)
-** \author Mikhail Aleynikov (alejnikov89@mail.ru)
 ** \author Igor Krivenko (igor@shg.ru)
 */
 
@@ -40,11 +39,8 @@
 
 namespace Pomerol{
 
-//extern struct QuantumNumbers;
-/** All blocks with current QuantumNumber are treated as non-existent */
-//extern const QuantumNumbers ERROR_QUANTUM_NUMBERS;
-
-/** A small wrapper to hold a number of block. A Block is a sub-matrix of Hamiltonian which is separated from the others ( i.e. the Hamiltonian is block-diagonal). */
+/** A small wrapper around int to hold a number of block. 
+ *  A Block is a sub-matrix of Hamiltonian which is separated from the others ( i.e. the Hamiltonian is block-diagonal). */
 struct BlockNumber;
 
 /** InnerQuantumState labels the states inside of the block of Fock States. Has no physical meaning. */
@@ -53,9 +49,9 @@ typedef unsigned long InnerQuantumState;
 /** This class handles all information about Fock states. 
  *  It makes a classification of Fock states into blocks.
  */
-class StatesClassification {
-    /** A typedef for QuantumNumbers since it is often used. */ 
-    typedef Symmetrizer::QuantumNumbers QuantumNumbers;
+class StatesClassification : public ComputableObject {
+    /** Computation statuses of the object. */
+    enum {Constructed, Computed};
 
     /** Total number of states = 2^(IndexInfo.size()) */
     unsigned long StateSize;            
@@ -92,6 +88,7 @@ public:
      */
     const std::vector<FockState>& getFockStates( QuantumNumbers in ) const;
     const std::vector<FockState>& getFockStates( BlockNumber in ) const;
+    const size_t getBlockSize( BlockNumber in ) const;
 
     /** get a FockState, corresponding to an internal InnerQuantumState
      * \param[in] QuantumNumbers of block in which the InnerQuantumState is located
@@ -104,6 +101,7 @@ public:
      * \param[in] state FockState for which the correspondence is required
      */
     const InnerQuantumState getInnerState( FockState state) const;
+    const InnerQuantumState getInnerState( QuantumState state) const;
 
     /** Returns a number of Block which corresponds to given Quantum Numbers 
      * \param[in] in A set of QuantumNumbers to find corresponding BlockNumber
@@ -113,18 +111,20 @@ public:
     /** Returns QuantumNumbers for a given BlockNumber
      * \param[in] in A BlockNumber to find a set of corresponding QuantumNumbers
      */
-    QuantumNumbers getBlockInfo(BlockNumber in) const;
+    QuantumNumbers getQuantumNumbers(BlockNumber in) const;
     /** Returns total amount of non-vanishing blocks */
     BlockNumber NumberOfBlocks() const;
 
     /** Returns QuantumNumbers of a given FockState 
      * \param[in] in A FockState for which the QuantumNumbers are requested
      */
-    QuantumNumbers getStateInfo(FockState in) const;
+    QuantumNumbers getQuantumNumbers(FockState in) const;
+    QuantumNumbers getQuantumNumbers(QuantumState in) const;
     /** Returns BlockNumber of a given FockState 
      * \param[in] in A FockState for which the BlockNumber is requested
      */
     BlockNumber getBlockNumber(FockState in) const;
+    BlockNumber getBlockNumber(QuantumState in) const;
 
     /** Checks that a block with a given QuantumNumbers does not vanish 
      * \param[in] in A set of QuantumNumbers to check
