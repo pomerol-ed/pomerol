@@ -27,49 +27,54 @@ namespace Pomerol{
 
 FieldOperatorPart::FieldOperatorPart(
         const IndexClassification &IndexInfo, const StatesClassification &S, const HamiltonianPart &HFrom,  const HamiltonianPart &HTo, ParticleIndex PIndex) : 
-        IndexInfo(IndexInfo), S(S), HFrom(HFrom), HTo(HTo), PIndex(PIndex)
+        ComputableObject(Constructed), IndexInfo(IndexInfo), S(S), HFrom(HFrom), HTo(HTo), PIndex(PIndex)
 {}
 
 void FieldOperatorPart::compute()
 {
-    QuantumNumbers to = HTo.getQuantumNumbers();
-    QuantumNumbers from = HFrom.getQuantumNumbers();
+    if ( Status >= Computed ) return;
+    BlockNumber to = HTo.getBlockNumber();
+    BlockNumber from = HFrom.getBlockNumber();
  
-    const std::vector<QuantumState>& toStates = S.getQuantumStates(to);
-    const std::vector<QuantumState>& fromStates = S.getQuantumStates(from);
+    //DynamicSparseMatrixType tempElements(toStates.size(),fromStates.size());
 
-    DynamicSparseMatrixType tempElements(toStates.size(),fromStates.size());
+    const std::vector<FockState>& toStates = S.getFockStates(to);
+    const std::vector<FockState>& fromStates = S.getFockStates(from);
+    std::vector<Eigen::Triplet<RealType> > tempElements;
 
-    for (std::vector<QuantumState>::const_iterator CurrentState = toStates.begin();
-                                                   CurrentState < toStates.end(); CurrentState++)
-    {
-	QuantumState L=*CurrentState;
-	if (checkL(L))
-	{
-	    int K = retK(L);
-	    if( (mFunc(L,K,PIndex)!= 0) )
-	    {
-		int l=S.getInnerState(L), k=S.getInnerState(K);                             // l,k in part of Hamilt                        
-		for (size_t n=0; n<toStates.size(); n++)
-		{
-		    if(HTo.getMatrixElement(l,n)!=0)
-		    {
-			for (size_t m=0; m<fromStates.size(); m++)
-			{
-			    RealType C_nm = HTo.getMatrixElement(l,n)*mFunc(L,K,PIndex)*HFrom.getMatrixElement(k,m);
-			    if (fabs(C_nm)>MatrixElementTolerance)
-			    {
-				tempElements.coeffRef(n,m) += C_nm;
-			    }
-			}
-		    }
-		}
-	    }
-	}
+    /* Rotation is done in the following way:
+     * C_{mn} = \sum_{lk} U^{+}_{nl} C_{lk} U_{km} = \sum_{lk} U^{*}_{ln}O_{lk}U_{km},
+     * where the actual sum starts from k state. Big letters denote global states, smaller - InnerQuantumStates. */
+    for (std::vector<FockState>::const_iterator CurrentState = fromStates.begin();
+                                                CurrentState < fromStates.end(); CurrentState++) {
+	    FockState K=*CurrentState;
+        std::map<FockState, RealType> result1 = O->actRight(K);
+        if (result1.size()) {
+            FockState L=result1.begin()->first; 
+            int sign = result1.begin()->second;
+	        if ( L!=ERROR_FOCK_STATE && std::abs(sign)>std::numeric_limits<RealType>::epsilon() ) {
+		        InnerQuantumState l=S.getInnerState(L), k=S.getInnerState(K);  
+		        for (InnerQuantumState n=0; n<toStates.size(); n++) { // Not the best solution, but no major overhead for dense matrices.
+		            if(HTo.getMatrixElement(l,n)!=0) {
+			            for (InnerQuantumState m=0; m<fromStates.size(); m++) {
+			                RealType C_nm = HTo.getMatrixElement(l,n)*sign*HFrom.getMatrixElement(k,m);
+			                if (std::abs(C_nm)>MatrixElementTolerance) {
+				                tempElements.push_back( Eigen::Triplet<RealType> ( n,m, C_nm));
+			                }
+			            }
+		            }
+		        }
+	        }
+        }
     }
-    tempElements.prune(MatrixElementTolerance);
-    elementsRowMajor = tempElements;
-    elementsColMajor = tempElements;
+
+//    for (std::vector<QuantumState>::const_iterator CurrentState = toStates.begin();
+//                                                   CurrentState < toStates.end(); CurrentState++)
+    elementsRowMajor = RowMajorMatrixType(toStates.size(),fromStates.size()); 
+    elementsRowMajor.setFromTriplets( tempElements.begin(), tempElements.end());
+    elementsRowMajor.prune(MatrixElementTolerance);
+    elementsColMajor = elementsRowMajor;
+    Status = Computed;
 }
 
 const ColMajorMatrixType& FieldOperatorPart::getColMajorValue(void) const
@@ -84,14 +89,14 @@ const RowMajorMatrixType& FieldOperatorPart::getRowMajorValue(void) const
 
 void FieldOperatorPart::print_to_screen()  //print to screen C and CX
 {
-    QuantumNumbers to   = HTo.getQuantumNumbers();
-    QuantumNumbers from = HFrom.getQuantumNumbers();
+    BlockNumber to   = HTo.getBlockNumber();
+    BlockNumber from = HFrom.getBlockNumber();
+    INFO(S.getQuantumNumbers(from) << "->" << S.getQuantumNumbers(to));
     for (size_t P=0; P<elementsColMajor.outerSize(); ++P)
-	for (ColMajorMatrixType::InnerIterator it(elementsColMajor,P); it; ++it)
-        {
-	    QuantumState N = S.getQuantumStates(to)[it.row()];
-	    QuantumState M = S.getQuantumStates(from)[it.col()];
-	    std::cout << N <<" " << M << " : " << it.value() << std::endl;
+	for (ColMajorMatrixType::InnerIterator it(elementsColMajor,P); it; ++it) {
+	    FockState N = S.getFockState(to, it.row());
+	    FockState M = S.getFockState(from, it.col());
+	    INFO(N <<" " << M << " : " << it.value());
         }
 }
 
@@ -105,78 +110,20 @@ BlockNumber FieldOperatorPart::getRightIndex(void) const
     return HFrom.getBlockNumber();
 }
 
-// Functions of specialized classes
+// Specialized methods
 
 AnnihilationOperatorPart::AnnihilationOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S, 
                                                   const HamiltonianPart &HFrom, const HamiltonianPart &HTo, ParticleIndex PIndex) :
     FieldOperatorPart(IndexInfo,S,HFrom,HTo,PIndex)
-{}
+{
+    O = new Pomerol::OperatorPresets::C(PIndex);
+}
 
 CreationOperatorPart::CreationOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S, 
                                                   const HamiltonianPart &HFrom, const HamiltonianPart &HTo, ParticleIndex PIndex) :
     FieldOperatorPart(IndexInfo,S,HFrom,HTo,PIndex)
-{}
-
-QuantumState AnnihilationOperatorPart::retK(QuantumState L) const //return K for C
 {
-    return(L + (1<<PIndex));
-}
-
-QuantumState CreationOperatorPart::retK(QuantumState L) const	//return K for CX
-{
-    return( L - (1<<PIndex) );
-}
-
-int AnnihilationOperatorPart::mFunc(QuantumState state1, QuantumState state2, ParticleIndex PIndex) const
-{
-    int flag=1, p=0;
-    for (int m=0; m<IndexInfo.getIndexSize(); m++)
-    {
-	if( m == PIndex )
-	{
-	    if ((S.n_i(state2,PIndex)==0) || (S.n_i(state1,PIndex)==1) ) {flag=0;break;} else flag=1;
-	}
-	else
-	{
-	    if (S.n_i(state1,m)==S.n_i(state2,m) ) flag=1; else {flag=0;break;}
-	}
-    }
-    if (flag==1)
-    {
-	for (int m=0;m<PIndex;m++) p+=S.n_i(state2,m);
-    }
-    return (flag*(1-2*(p%2)));
-}
-
-int CreationOperatorPart::mFunc(QuantumState state1, QuantumState state2, ParticleIndex PIndex) const
-{
-    int flag=1, p=0;
-    for (int m=0; m<IndexInfo.getIndexSize(); m++)
-    {
-	if( m == PIndex )
-	{
-	    if ((S.n_i(state2,PIndex)==1) || (S.n_i(state1,PIndex)==0) ) {flag=0;break;} else flag=1;
-	}
-	else
-	{
-	    if (S.n_i(state1,m)==S.n_i(state2,m) ) flag=1; else {flag=0;break;}
-	}
-    }
-    if (flag==1)
-    {
-	for (int m=0;m<PIndex;m++) p+=S.n_i(state2,m);
-    }
-    return (flag*(1-2*(p%2)));
-}
-
-bool AnnihilationOperatorPart::checkL(QuantumState L) const
-{
-    return (S.n_i(L,PIndex)==0);
-}
-
-bool CreationOperatorPart::checkL(QuantumState L) const
-{
-    return (S.n_i(L,PIndex)==1);
+    O = new Pomerol::OperatorPresets::Cdag(PIndex);
 }
 
 const CreationOperatorPart& AnnihilationOperatorPart::transpose() const

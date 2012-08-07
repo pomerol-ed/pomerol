@@ -33,13 +33,73 @@
 namespace Pomerol {
 
 /** Index represents a combination of spin, orbital, and lattice indices **/
-typedef unsigned short ParticleIndex;
-
-/** Possible spin projections are \b down and \b up */
-enum spin {down, up};
+typedef unsigned int ParticleIndex;
 
 /** Easy enumeration for orbital names. */
 enum OrbitalValue {s=0, p=1, d=2, f=3};             //!< The enum for s,p,d,f - orbitals
+
+template <int N> struct StaticIndexCombination
+{
+/** A structure to handle a combination of 2 Particle Indices. */
+    const ParticleIndex Indices[N];
+
+    /** Constructor 
+     * \param[in] in 1d array with N ParticleIndex numbers.
+     */
+    StaticIndexCombination (ParticleIndex in [][1][N]);
+    /** Operator < - comparison method for IndexCombination */
+    bool operator < (const StaticIndexCombination<N>& rhs) const ;
+    /** Operator == */
+    bool operator==(const StaticIndexCombination<N>& rhs) const ;
+    /** Operator != */
+    bool operator!=(const StaticIndexCombination<N>& rhs) const ;
+
+    /** Output to external stream */
+    template <int M>
+    friend std::ostream& operator<< (std::ostream& output, const StaticIndexCombination<M>& out);
+
+};
+
+/** A structure to hold a combination of several indices. This is an implementation for a dynamic number of Indices. Slower than a static one. */
+struct DynamicIndexCombination 
+{
+protected:
+    /** Total number of ParticleIndices. */
+    ParticleIndex N;
+    /** Indices. */
+    std::vector<ParticleIndex> Indices;
+public:
+    /** Operator < - comparison method for IndexCombination */
+    bool operator < (const DynamicIndexCombination& rhs) const ;
+    /** Operator == */
+    bool operator==(const DynamicIndexCombination& rhs) const ;
+    /** Operator != */
+    bool operator!=(const DynamicIndexCombination& rhs) const ;
+    /** Operator = */
+    DynamicIndexCombination& operator=(const DynamicIndexCombination& rhs);
+
+    /** Output to external stream */
+    friend std::ostream& operator<< (std::ostream& output, const DynamicIndexCombination& out);
+
+    /** Returns total number of indices in current combination. */
+    const ParticleIndex getNumberOfIndices() const;
+    /** Returns index at given position. Safe. */
+    const ParticleIndex getIndex(const ParticleIndex position) const;
+    /** Returns index at given position. It can be changed. Unsafe. */
+    ParticleIndex& operator[](const ParticleIndex position);
+
+    /** Constructor. Sets all indices to 0.
+     * \param[in] N Number of indices. 
+     */
+    DynamicIndexCombination(ParticleIndex N);
+
+    /** Constructor. Sets all indices to provided values.
+     * \param[in] in A vector of indices. 
+     */
+    DynamicIndexCombination(const std::vector<ParticleIndex>& in);
+
+    class exWrongIndices : public std::exception { virtual const char* what() const throw(); };
+};
 
 /** A structure to handle a combination of 2 Particle Indices. */
 struct IndexCombination2

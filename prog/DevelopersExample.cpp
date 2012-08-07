@@ -21,28 +21,34 @@
 
 #include "Misc.h"
 #include "HDF5Storage.h"
-#include "LatticeAnalysis.h"
-#include "Term.h"
+#include "Lattice.h"
+#include "LatticePresets.h"
 #include "IndexClassification.h"
+#include "Operator.h"
+#include "IndexHamiltonian.h"
+#include "Symmetrizer.h"
 #include "StatesClassification.h"
+#include "HamiltonianPart.h"
 #include "Hamiltonian.h"
+#include "FieldOperatorPart.h"
 #include "FieldOperator.h"
+#include "FieldOperatorContainer.h"
+#include "DensityMatrixPart.h"
+#include "DensityMatrix.h"
 #include "GFContainer.h"
 #include "TwoParticleGFContainer.h"
-//#include "Vertex4.h"
-#include "Logger.h"
 
 #include "OptionParser.h"
 
 #include <fstream>
 
 using namespace Pomerol;
-
+using std::string; using std::cout; using std::endl;
 
 /* ======================================================================== */
 // To be removed
 
-void printFramed (const std::string& str)
+void print_section (const std::string& str)
 {
   std::cout << std::string(str.size(),'=') << std::endl;
   std::cout << str << std::endl;
@@ -55,8 +61,7 @@ enum AmpStyle{UnAmputated, Amputated};
 
 int main(int argc, char *argv[])
 {
-
-   pomerolOptionParser opt;
+  pomerolOptionParser opt;
    try {
 		opt.parse(&argv[1], argc-1); // Skip argv[0].
 
@@ -72,155 +77,79 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-  LatticeAnalysis Lattice;
-  IndexClassification IndexInfo(Lattice);
-  StatesClassification S(IndexInfo); 
-  Hamiltonian H(IndexInfo,S);
-  printFramed("Lattice Info");
-  Lattice.readin(opt.LatticeFile);
-  std::cout << Lattice.printSitesList().str() << std::flush;
+  Log.setDebugging(true);
+
+  JSONLattice JL;
+  Lattice *L=&JL;
+  JL.readin(opt.LatticeFile);
+
+  print_section("Lattice");
+  INFO("Sites");
+  L->printSites();
+  INFO("Terms with 2 operators");
+  L->printTerms(2);
+  INFO("Terms with 4 operators");
+  L->printTerms(4);
+
+  IndexClassification IndexInfo(L->getSiteMap());
+  IndexClassification *II = &IndexInfo;
   IndexInfo.prepare();
-  printFramed("System Info");
-  IndexInfo.printIndexList();
-  printFramed("Hopping Matrix");
-  IndexInfo.printHoppingMatrix();
-  printFramed("Terms check");
-  IndexInfo.printTerms();
-  printFramed("Equivalent Permutations");
-  IndexInfo.printEquivalentPermutations();
+  print_section("Indices");
+  IndexInfo.printIndices();
+
+  print_section("Matrix element storage");
+  IndexHamiltonian Storage(L,IndexInfo);
+  Storage.prepare();
+  INFO("Terms with 2 operators");
+  Storage.printTerms(2);
+  INFO("Terms with 4 operators");
+//  Storage.printTerms(4);
+
+  //DEBUG("Check - all terms");
+  //Storage.printAllTerms();
+  Symmetrizer Symm(IndexInfo, Storage);
+  Symm.compute();
+  StatesClassification S(IndexInfo,Symm);
 
   S.compute();
 
-  //end of determination    
-
-  printFramed("System is determined");
-  printFramed("Process of creation and diagonalization all parts of Hamiltonian has started");
-  
-  //HDF5Storage storage("test.h5"); 
-  
-  //begining of creation all part of Hammiltonian
-
+  Hamiltonian H(IndexInfo, Storage, S);
   H.prepare();
   H.diagonalize();
-  RealType beta = opt.beta;
-  //H.dump();
-  //storage.save(H);
+  INFO("The value of ground energy is " << H.getGroundEnergy());
+  
+  FieldOperatorContainer Operators(IndexInfo, S, H);
+  Operators.prepare();
 
-   INFO("The value of ground energy is " << H.getGroundEnergy());
-
- //   GFContainer G(S,H,rho,IndexInfo,Operators);
- //   G.prepare();
- //   G.compute();
- //   cout << std::setprecision(9) << G(0) << endl;
- //   cout << std::setprecision(9) << G(1) << endl;
-
+  RealType beta=opt.beta;
   DensityMatrix rho(S,H,beta);
-  //    DensityMatrix.reduce();
+
   rho.prepare();
   rho.compute();
   INFO("<H> = " << rho.getAverageEnergy() << std::endl)
-
-  /*   for (QuantumState i=0; i < S.N_st(); ++i) 
-       cout << std::setw(20) << "E:" << H.eigenval(i) << "\t E-E0 " << H.eigenval(i) - rho.getAverageEnergy() << "\t weight: " << rho(i) << "  " << exp(-beta*(H.eigenval(i) - H.getGroundEnergy()))/1.000 << endl; 
-       */
-  std::ofstream out;
-  out.open("output/Stat.En.dat");
-  out << rho.getAverageEnergy() << std::endl;
-  out.close();
-
-  out.open("output/Stat.NN.dat");
-  out << rho.getAverageDoubleOccupancy(0,IndexInfo.getIndexSize()/2.) << std::endl;
-  out.close();
-
-  //finishing of creation
-  std::cout << std::endl;
-  std::cout << "All parts are created!" << std::endl;
-  std::cout << std::endl;
-
-  FieldOperatorContainer Operators(S,H,IndexInfo);
   GFContainer G(IndexInfo,S,H,rho,Operators);
   long wn = opt.NumberOfMatsubaras;
 
-  if (1==1){
-    printFramed("Two Particle Green's function calculation");
 
-    std::set<IndexCombination2> v2;
-    v2.insert(IndexCombination2(0,0));
-    v2.insert(IndexCombination2(IndexInfo.getIndexSize()/2,IndexInfo.getIndexSize()/2));
-    G.prepareAll(v2);
-    G.computeAll();
-    //G.dumpToPlainText(8*wn);
+  if (1==1) {
 
-    std::set<IndexCombination4> v1;
-    v1.insert(IndexCombination4(0,IndexInfo.getIndexSize()/2,0,IndexInfo.getIndexSize()/2));
-    v1.insert(IndexCombination4(0,0,0,0));
-    TwoParticleGFContainer Chi4(IndexInfo,S,H,rho,Operators);
-    Chi4.prepareAll(v1);
-    Chi4.computeAll(wn);
-    //saveChi("Chi4.dat",Chi4,wn);
-    
-//    Vertex4 Gamma4(IndexInfo,Chi4,G);
-//    Gamma4.prepareUnAmputated();
-//    Gamma4.computeUnAmputated();
-//    Gamma4.prepareAmputated(v1);
-//    Gamma4.computeAmputated();
+      print_section("Green's function calculation");
+      std::set<IndexCombination2> v2;
+      v2.insert(IndexCombination2(0,0));
+      v2.insert(IndexCombination2(IndexInfo.getIndexSize()/2,IndexInfo.getIndexSize()/2));
+      G.prepareAll(v2);
+      G.computeAll();
+       }
 
-/*
-    for (unsigned short i=0;i<v1.size();i++){
-      std::cout << "Chi4" << *v1[i] << std::endl;
-      std::cout << Chi4(*v1[i],3,2,0) << std::endl;
-      std::cout << Chi4(*v1[i],2,5,2) << std::endl;
-      std::cout << Chi4(*v1[i],5,2,5) << std::endl;
-      std::cout << Chi4(*v1[i],5,2,2) << std::endl;
-      std::cout << Chi4(*v1[i],1,7,1) << std::endl;
-      std::cout << Chi4(*v1[i],2,-2,4) << std::endl;
-      std::cout << Chi4(*v1[i],29,-29,29) << std::endl << std::endl;
-    };
-
-    for (unsigned short i=0;i<v1.size();i++){
-      std::cout << "Gamma4" << *v1[i] << std::endl;
-      std::cout << Gamma4(*v1[i],3,2,0) << std::endl;
-      std::cout << Gamma4(*v1[i],2,5,2) << std::endl;
-      std::cout << Gamma4(*v1[i],5,2,5) << std::endl;
-      std::cout << Gamma4(*v1[i],5,2,2) << std::endl;
-      std::cout << Gamma4(*v1[i],1,7,1) << std::endl;
-      std::cout << Gamma4(*v1[i],2,-2,4) << std::endl;
-      std::cout << Gamma4(*v1[i],29,-29,29) << std::endl << std::endl;
- 
-    };
-*/
-    //   comb1 = new TwoParticleGFContainer::IndexCombination(0,2,0,1);
-    //   cout << Chi4.vanishes(*comb1) << endl;
-    //DEBUG(Chi4.getNumNonResonantTerms() << " non-resonant terms");
-    //DEBUG(Chi4.getNumResonantTerms() << " resonant terms");    
-
-  };
- // DEBUG HDF5 save/load
-  //storage.close();
-  //HDF5Storage storage_load("test.h5");
-  //Hamiltonian H2(IndexInfo,S,OUT,input);
-  //storage_load.load(H2);
-  //HDF5Storage storage2("test2.h5");
-  //storage2.save(H2);
-  //exit(0);
-  //RowMajorMatrixType SP1(2,3);
-  //SP1.startVec(0);
-  //SP1.insertBack(0,0) = 1;
-  //SP1.insertBack(0,1) = 2;
-  //SP1.insertBack(0,2) = 3;
-  //SP1.startVec(1);
-  //SP1.insertBack(1,0) = 4;
-  //SP1.insertBack(1,1) = 5;
-  //SP1.insertBack(1,2) = 6;
-  //SP1.finalize();
-  
-  //DEBUG("SP1" << SP1)
-  //HDF5Storage::saveRowMajorMatrix(&storage,"SP",SP1);
-  //RowMajorMatrixType SP2;
-  //HDF5Storage::loadRowMajorMatrix(&storage,"SP",SP2);
-  //DEBUG("SP2" << SP2)
-  //exit(0);
-
+  if (1==1) {   
+      print_section("Two Particle Green's function calculation");
+      std::set<IndexCombination4> v1;
+      v1.insert(IndexCombination4(0,IndexInfo.getIndexSize()/2,0,IndexInfo.getIndexSize()/2));
+      v1.insert(IndexCombination4(0,0,0,0));
+      TwoParticleGFContainer Chi4(IndexInfo,S,H,rho,Operators);
+      Chi4.prepareAll(v1);
+      Chi4.computeAll(wn);
+      }
 
   return 0;
 };

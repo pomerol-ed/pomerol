@@ -33,7 +33,7 @@ TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H
                 const AnnihilationOperator& C1, const AnnihilationOperator& C2, 
                 const CreationOperator& CX3, const CreationOperator& CX4,
                 const DensityMatrix& DM) :
-    Thermal(DM), ComputableObject(Constructed),
+    Thermal(beta), ComputableObject(Constructed),
     S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM),
     parts(0), Vanishing(true)
 {}

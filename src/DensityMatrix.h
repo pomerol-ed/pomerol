@@ -43,8 +43,10 @@ namespace Pomerol{
  * the Hamiltonian and the parts of the density matrix itself, since the density matrix
  * is a function of \f$ \hat H \f$.
  */
-class DensityMatrix : public Thermal, public HDF5Storable
+class DensityMatrix : public Thermal, public HDF5Storable, public ComputableObject
 {
+    /** Computation statuses of the object. */
+    enum {Constructed, Prepared, Computed};
     /** A reference to a states classification object. */
     const StatesClassification& S;
     /** A reference to a Hamiltonian defining the grand canonical ensemble. */

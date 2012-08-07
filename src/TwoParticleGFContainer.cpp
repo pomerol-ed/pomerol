@@ -54,16 +54,4 @@ TwoParticleGF* TwoParticleGFContainer::createElement(const IndexCombination4& In
     return new TwoParticleGF(S,H,C1,C2,CX3,CX4,DM);
 }
 
-std::set<IndexCombination4> TwoParticleGFContainer::getNonVanishingElements(void) const
-{
-    std::set<IndexCombination4> NonVanishingElements;
-
-    for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::const_iterator iter = ElementsMap.begin();
-        iter != ElementsMap.end(); iter++){
-        if(!static_cast<const TwoParticleGF&>(iter->second).isVanishing())
-            NonVanishingElements.insert(iter->first);
-    }
-    return NonVanishingElements;
-}
-
 } // end of namespace Pomerol

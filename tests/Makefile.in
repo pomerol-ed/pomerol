@@ -47,8 +47,12 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-check_PROGRAMS = gamma4$(EXEEXT) green$(EXEEXT)
-TESTS = gamma4$(EXEEXT) green$(EXEEXT)
+check_PROGRAMS = IndexTerm$(EXEEXT) IndexPermutation_test$(EXEEXT) \
+	CCdagOperatorTest$(EXEEXT) NOperatorTest$(EXEEXT) \
+	SzOperatorTest$(EXEEXT) HamiltonianPartTest$(EXEEXT) \
+	HamiltonianTest$(EXEEXT) FieldOperatorPartTest$(EXEEXT) \
+	FieldOperatorTest$(EXEEXT)
+TESTS = $(check_PROGRAMS)
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/depcomp
@@ -60,13 +64,52 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am_gamma4_OBJECTS = gamma4.$(OBJEXT)
-gamma4_OBJECTS = $(am_gamma4_OBJECTS)
-gamma4_LDADD = $(LDADD)
+am_CCdagOperatorTest_OBJECTS = CCdagOperatorTest.$(OBJEXT)
+CCdagOperatorTest_OBJECTS = $(am_CCdagOperatorTest_OBJECTS)
+CCdagOperatorTest_LDADD = $(LDADD)
 am__DEPENDENCIES_1 =
-am_green_OBJECTS = green.$(OBJEXT)
-green_OBJECTS = $(am_green_OBJECTS)
-green_LDADD = $(LDADD)
+CCdagOperatorTest_DEPENDENCIES = ../src/libpomerol.a \
+	../jsoncpp/src/libjsoncpp.a $(am__DEPENDENCIES_1)
+am_FieldOperatorPartTest_OBJECTS = FieldOperatorPartTest.$(OBJEXT)
+FieldOperatorPartTest_OBJECTS = $(am_FieldOperatorPartTest_OBJECTS)
+FieldOperatorPartTest_LDADD = $(LDADD)
+FieldOperatorPartTest_DEPENDENCIES = ../src/libpomerol.a \
+	../jsoncpp/src/libjsoncpp.a $(am__DEPENDENCIES_1)
+am_FieldOperatorTest_OBJECTS = FieldOperatorTest.$(OBJEXT)
+FieldOperatorTest_OBJECTS = $(am_FieldOperatorTest_OBJECTS)
+FieldOperatorTest_LDADD = $(LDADD)
+FieldOperatorTest_DEPENDENCIES = ../src/libpomerol.a \
+	../jsoncpp/src/libjsoncpp.a $(am__DEPENDENCIES_1)
+am_HamiltonianPartTest_OBJECTS = HamiltonianPartTest.$(OBJEXT)
+HamiltonianPartTest_OBJECTS = $(am_HamiltonianPartTest_OBJECTS)
+HamiltonianPartTest_LDADD = $(LDADD)
+HamiltonianPartTest_DEPENDENCIES = ../src/libpomerol.a \
+	../jsoncpp/src/libjsoncpp.a $(am__DEPENDENCIES_1)
+am_HamiltonianTest_OBJECTS = HamiltonianTest.$(OBJEXT)
+HamiltonianTest_OBJECTS = $(am_HamiltonianTest_OBJECTS)
+HamiltonianTest_LDADD = $(LDADD)
+HamiltonianTest_DEPENDENCIES = ../src/libpomerol.a \
+	../jsoncpp/src/libjsoncpp.a $(am__DEPENDENCIES_1)
+am_IndexPermutation_test_OBJECTS = IndexPermutation_test.$(OBJEXT)
+IndexPermutation_test_OBJECTS = $(am_IndexPermutation_test_OBJECTS)
+IndexPermutation_test_LDADD = $(LDADD)
+IndexPermutation_test_DEPENDENCIES = ../src/libpomerol.a \
+	../jsoncpp/src/libjsoncpp.a $(am__DEPENDENCIES_1)
+am_IndexTerm_OBJECTS = IndexTerm.$(OBJEXT)
+IndexTerm_OBJECTS = $(am_IndexTerm_OBJECTS)
+IndexTerm_LDADD = $(LDADD)
+IndexTerm_DEPENDENCIES = ../src/libpomerol.a \
+	../jsoncpp/src/libjsoncpp.a $(am__DEPENDENCIES_1)
+am_NOperatorTest_OBJECTS = NOperatorTest.$(OBJEXT)
+NOperatorTest_OBJECTS = $(am_NOperatorTest_OBJECTS)
+NOperatorTest_LDADD = $(LDADD)
+NOperatorTest_DEPENDENCIES = ../src/libpomerol.a \
+	../jsoncpp/src/libjsoncpp.a $(am__DEPENDENCIES_1)
+am_SzOperatorTest_OBJECTS = SzOperatorTest.$(OBJEXT)
+SzOperatorTest_OBJECTS = $(am_SzOperatorTest_OBJECTS)
+SzOperatorTest_LDADD = $(LDADD)
+SzOperatorTest_DEPENDENCIES = ../src/libpomerol.a \
+	../jsoncpp/src/libjsoncpp.a $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -96,8 +139,16 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(gamma4_SOURCES) $(green_SOURCES)
-DIST_SOURCES = $(gamma4_SOURCES) $(green_SOURCES)
+SOURCES = $(CCdagOperatorTest_SOURCES) \
+	$(FieldOperatorPartTest_SOURCES) $(FieldOperatorTest_SOURCES) \
+	$(HamiltonianPartTest_SOURCES) $(HamiltonianTest_SOURCES) \
+	$(IndexPermutation_test_SOURCES) $(IndexTerm_SOURCES) \
+	$(NOperatorTest_SOURCES) $(SzOperatorTest_SOURCES)
+DIST_SOURCES = $(CCdagOperatorTest_SOURCES) \
+	$(FieldOperatorPartTest_SOURCES) $(FieldOperatorTest_SOURCES) \
+	$(HamiltonianPartTest_SOURCES) $(HamiltonianTest_SOURCES) \
+	$(IndexPermutation_test_SOURCES) $(IndexTerm_SOURCES) \
+	$(NOperatorTest_SOURCES) $(SzOperatorTest_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -238,10 +289,22 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAINTAINERCLEANFILES = Makefile.in
 LDADD = ../src/libpomerol.a ../jsoncpp/src/libjsoncpp.a ${hdf5_LIBS} -lhdf5 -lhdf5_cpp
-gamma4_SOURCES = gamma4.cpp
-green_SOURCES = green.cpp
-gamma4_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a $(top_builddir)/src/libpomerol.a
-green_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a $(top_builddir)/src/libpomerol.a
+
+#gamma4_SOURCES=gamma4.cpp
+#green_SOURCES=green.cpp
+IndexTerm_SOURCES = IndexTerm.cpp
+IndexPermutation_test_SOURCES = IndexPermutation_test.cpp
+CCdagOperatorTest_SOURCES = CCdagOperatorTest.cpp
+NOperatorTest_SOURCES = NOperatorTest.cpp
+SzOperatorTest_SOURCES = SzOperatorTest.cpp
+HamiltonianPartTest_SOURCES = HamiltonianPartTest.cpp
+HamiltonianTest_SOURCES = HamiltonianTest.cpp
+FieldOperatorPartTest_SOURCES = FieldOperatorPartTest.cpp
+FieldOperatorTest_SOURCES = FieldOperatorTest.cpp
+
+#gamma4_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a $(top_builddir)/src/libpomerol.a
+#green_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a $(top_builddir)/src/libpomerol.a
+TESTS_DEPENDENCIES = $(top_builddir)/jsoncpp/src/libjsoncpp.a $(top_builddir)/src/libpomerol.a
 all: all-am
 
 .SUFFIXES:
@@ -279,12 +342,33 @@ $(am__aclocal_m4_deps):
 
 clean-checkPROGRAMS:
 	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
-gamma4$(EXEEXT): $(gamma4_OBJECTS) $(gamma4_DEPENDENCIES) $(EXTRA_gamma4_DEPENDENCIES) 
-	@rm -f gamma4$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(gamma4_OBJECTS) $(gamma4_LDADD) $(LIBS)
-green$(EXEEXT): $(green_OBJECTS) $(green_DEPENDENCIES) $(EXTRA_green_DEPENDENCIES) 
-	@rm -f green$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(green_OBJECTS) $(green_LDADD) $(LIBS)
+CCdagOperatorTest$(EXEEXT): $(CCdagOperatorTest_OBJECTS) $(CCdagOperatorTest_DEPENDENCIES) $(EXTRA_CCdagOperatorTest_DEPENDENCIES) 
+	@rm -f CCdagOperatorTest$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(CCdagOperatorTest_OBJECTS) $(CCdagOperatorTest_LDADD) $(LIBS)
+FieldOperatorPartTest$(EXEEXT): $(FieldOperatorPartTest_OBJECTS) $(FieldOperatorPartTest_DEPENDENCIES) $(EXTRA_FieldOperatorPartTest_DEPENDENCIES) 
+	@rm -f FieldOperatorPartTest$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(FieldOperatorPartTest_OBJECTS) $(FieldOperatorPartTest_LDADD) $(LIBS)
+FieldOperatorTest$(EXEEXT): $(FieldOperatorTest_OBJECTS) $(FieldOperatorTest_DEPENDENCIES) $(EXTRA_FieldOperatorTest_DEPENDENCIES) 
+	@rm -f FieldOperatorTest$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(FieldOperatorTest_OBJECTS) $(FieldOperatorTest_LDADD) $(LIBS)
+HamiltonianPartTest$(EXEEXT): $(HamiltonianPartTest_OBJECTS) $(HamiltonianPartTest_DEPENDENCIES) $(EXTRA_HamiltonianPartTest_DEPENDENCIES) 
+	@rm -f HamiltonianPartTest$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(HamiltonianPartTest_OBJECTS) $(HamiltonianPartTest_LDADD) $(LIBS)
+HamiltonianTest$(EXEEXT): $(HamiltonianTest_OBJECTS) $(HamiltonianTest_DEPENDENCIES) $(EXTRA_HamiltonianTest_DEPENDENCIES) 
+	@rm -f HamiltonianTest$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(HamiltonianTest_OBJECTS) $(HamiltonianTest_LDADD) $(LIBS)
+IndexPermutation_test$(EXEEXT): $(IndexPermutation_test_OBJECTS) $(IndexPermutation_test_DEPENDENCIES) $(EXTRA_IndexPermutation_test_DEPENDENCIES) 
+	@rm -f IndexPermutation_test$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(IndexPermutation_test_OBJECTS) $(IndexPermutation_test_LDADD) $(LIBS)
+IndexTerm$(EXEEXT): $(IndexTerm_OBJECTS) $(IndexTerm_DEPENDENCIES) $(EXTRA_IndexTerm_DEPENDENCIES) 
+	@rm -f IndexTerm$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(IndexTerm_OBJECTS) $(IndexTerm_LDADD) $(LIBS)
+NOperatorTest$(EXEEXT): $(NOperatorTest_OBJECTS) $(NOperatorTest_DEPENDENCIES) $(EXTRA_NOperatorTest_DEPENDENCIES) 
+	@rm -f NOperatorTest$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(NOperatorTest_OBJECTS) $(NOperatorTest_LDADD) $(LIBS)
+SzOperatorTest$(EXEEXT): $(SzOperatorTest_OBJECTS) $(SzOperatorTest_DEPENDENCIES) $(EXTRA_SzOperatorTest_DEPENDENCIES) 
+	@rm -f SzOperatorTest$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(SzOperatorTest_OBJECTS) $(SzOperatorTest_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -292,8 +376,15 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gamma4.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/green.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CCdagOperatorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FieldOperatorPartTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FieldOperatorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HamiltonianPartTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HamiltonianTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IndexPermutation_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IndexTerm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NOperatorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SzOperatorTest.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

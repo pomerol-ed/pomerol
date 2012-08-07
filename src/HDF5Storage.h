@@ -57,6 +57,7 @@ public:
     void save(const HDF5Storable& Object);
     void load(HDF5Storable& Object) const;
 
+    static void saveInt(H5::CommonFG* FG, const std::string& Name, int x);
     static void saveReal(H5::CommonFG* FG, const std::string& Name, RealType x);
     static void saveComplex(H5::CommonFG* FG, const std::string& Name, ComplexType C);
     static void saveRealVector(H5::CommonFG* FG, const std::string& Name, const RealVectorType& V);
@@ -65,6 +66,7 @@ public:
     static void saveColMajorMatrix(H5::CommonFG* FG, const std::string& Name, const ColMajorMatrixType& CMSM);
     static void saveRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, const RowMajorMatrixType& RMSM);
 
+    static int loadInt(const H5::CommonFG* FG, const std::string& Name);
     static RealType loadReal(const H5::CommonFG* FG, const std::string& Name);
     static ComplexType loadComplex(const H5::CommonFG* FG, const std::string& Name);
     static void loadRealVector(const H5::CommonFG* FG, const std::string& Name, RealVectorType& V);

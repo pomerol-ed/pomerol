@@ -42,6 +42,7 @@ public:
 
     /** Constructor - set status to Constructed */
     ComputableObject(unsigned int InitialStatus) : Status(InitialStatus){};
+    class exStatusMismatch : public std::exception { virtual const char* what() const throw() { return "Object status mismatch"; } };
 };
 
 } // end of namespace Pomerol

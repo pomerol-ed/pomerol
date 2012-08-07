@@ -4,19 +4,21 @@ AM_CXXFLAGS+= ${hdf5_CFLAGS} ${eigen3_CFLAGS} -I../jsoncpp/include/
 lib_LIBRARIES=libpomerol.a
 
 libpomerol_a_CPPFLAGS=-Wall -g
-libpomerol_a_SOURCES= Misc.cpp Misc.h \
-	HDF5Storage.cpp HDF5Storage.h \
+libpomerol_a_SOURCES= \
+	Misc.cpp \
+	Lattice.h Lattice.cpp LatticePresets.h LatticePresets.cpp \
 	Logger.cpp Logger.h \
-	Thermal.cpp Thermal.h ComputableObject.h \
-	Index.cpp Index.h \
-	LatticeReader.cpp LatticeReader.h \
-	LatticeAnalysis.cpp LatticeAnalysis.h \
-	Term.cpp Term.h \
-	IndexClassification.cpp IndexClassification.h \
-	StatesClassification.cpp StatesClassification.h \
-	HamiltonianPart.cpp HamiltonianPart.h Hamiltonian.cpp Hamiltonian.h \
-	FieldOperatorPart.cpp FieldOperatorPart.h FieldOperator.cpp FieldOperator.h \
-	FieldOperatorContainer.cpp FieldOperatorContainer.h \
+	Index.h Index.cpp \
+	IndexClassification.h IndexClassification.cpp \
+	Operator.h Operator.cpp OperatorPresets.h OperatorPresets.cpp \
+	IndexHamiltonian.h IndexHamiltonian.cpp \
+	Symmetrizer.h Symmetrizer.cpp \
+	StatesClassification.h StatesClassification.cpp \
+	HDF5Storage.h HDF5Storage.cpp \
+	HamiltonianPart.cpp \
+ 	Hamiltonian.cpp \
+	Thermal.cpp Thermal.h \
+	FieldOperatorPart.cpp FieldOperator.cpp FieldOperatorContainer.cpp \
 	DensityMatrixPart.cpp DensityMatrixPart.h DensityMatrix.cpp DensityMatrix.h \
 	IndexContainer2.h \
 	GreensFunctionPart.cpp GreensFunctionPart.h GreensFunction.cpp GreensFunction.h \
@@ -26,10 +28,10 @@ libpomerol_a_SOURCES= Misc.cpp Misc.h \
 	TwoParticleGFContainer.cpp TwoParticleGFContainer.h \
 	Vertex4.cpp Vertex4.h \
 	Vertex4Container.cpp Vertex4Container.h
-#	AmputatedVertex4.cpp AmputatedVertex4.h \
-#	AmputatedVertex4Container.cpp AmputatedVertex4Container.h
+#	AmputatedVertex4.h AmputatedVertex4.cpp
+#	AmputatedVertex4Container.h	AmputatedVertex4Container.cpp
 
-libpomerol_a_pkginclude_HEADERS=*.h
+libpomerol_a_pkginclude_HEADERS=*.h 
 libpomerol_a_pkgincludedir=$(includedir)/pomerol
 
 all-clean:

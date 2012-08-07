@@ -107,6 +107,22 @@ void HDF5Storage::load(HDF5Storable& Object) const
     Object.load(this);
 }
 
+void HDF5Storage::saveInt(H5::CommonFG* FG, const std::string& Name, int x)
+{
+    H5::DataSet DataSet = FG->createDataSet(Name.c_str(),H5::PredType::NATIVE_INT,H5::DataSpace());
+    DataSet.write(&x,H5::PredType::NATIVE_INT);
+}
+
+int HDF5Storage::loadInt(const H5::CommonFG* FG, const std::string& Name)
+{
+    H5::DataSet DataSet = FG->openDataSet(Name.c_str());
+    int x;
+    DataSet.read(&x,H5::PredType::NATIVE_INT);
+    return x;
+}
+
+
+
 // Save/load RealType
 void HDF5Storage::saveReal(H5::CommonFG* FG, const std::string& Name, RealType x)
 {
@@ -224,7 +240,7 @@ void HDF5Storage::saveColMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
     hsize_t outerDim[1] = {outerSize};
     H5::DataSpace outerDataSpace(1,outerDim);
     Group.createDataSet("outerIndex",H5::PredType::NATIVE_INT,outerDataSpace)
-	.write(CMSM._outerIndexPtr(),H5::PredType::NATIVE_INT);
+	.write(CMSM.outerIndexPtr(),H5::PredType::NATIVE_INT);
 
     // Save inner size
     int innerSize = CMSM.innerSize();
@@ -235,9 +251,9 @@ void HDF5Storage::saveColMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
     hsize_t innerDim[1] = {CMSM.nonZeros()};
     H5::DataSpace innerDataSpace(1,innerDim);
     Group.createDataSet("innerIndex",H5::PredType::NATIVE_INT,innerDataSpace)
-	.write(CMSM._innerIndexPtr(),H5::PredType::NATIVE_INT);
+	.write(CMSM.innerIndexPtr(),H5::PredType::NATIVE_INT);
     Group.createDataSet("values",H5_REAL_TYPE,innerDataSpace)
-	.write(CMSM._valuePtr(),H5_REAL_TYPE);
+	.write(CMSM.valuePtr(),H5_REAL_TYPE);
 }
 
 void HDF5Storage::loadColMajorMatrix(H5::CommonFG* FG, const std::string& Name, ColMajorMatrixType& CMSM)
@@ -257,7 +273,7 @@ void HDF5Storage::loadColMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
 
     CMSM.resize(innerSize,outerSize);
 
-    outerIndexDataSet.read(CMSM._outerIndexPtr(),H5::PredType::NATIVE_INT);
+    outerIndexDataSet.read(CMSM.outerIndexPtr(),H5::PredType::NATIVE_INT);
 
     H5::DataSet innerIndexDataSet = Group.openDataSet("innerIndex");
     H5::DataSet valuesDataSet = Group.openDataSet("values");
@@ -278,8 +294,8 @@ void HDF5Storage::loadColMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
 				      "innerSize*outerSize."));
 
     CMSM.resizeNonZeros(valuesPoints);
-    innerIndexDataSet.read(CMSM._innerIndexPtr(),H5::PredType::NATIVE_INT);
-    valuesDataSet.read(CMSM._valuePtr(),H5_REAL_TYPE);
+    innerIndexDataSet.read(CMSM.innerIndexPtr(),H5::PredType::NATIVE_INT);
+    valuesDataSet.read(CMSM.valuePtr(),H5_REAL_TYPE);
     CMSM.finalize();
 }
 
@@ -294,7 +310,7 @@ void HDF5Storage::saveRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
     hsize_t outerDim[1] = {outerSize};
     H5::DataSpace outerDataSpace(1,outerDim);
     Group.createDataSet("outerIndex",H5::PredType::NATIVE_INT,outerDataSpace)
-	.write(RMSM._outerIndexPtr(),H5::PredType::NATIVE_INT);
+	.write(RMSM.outerIndexPtr(),H5::PredType::NATIVE_INT);
 
     // Save inner size
     int innerSize = RMSM.innerSize();
@@ -305,9 +321,9 @@ void HDF5Storage::saveRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
     hsize_t innerDim[1] = {RMSM.nonZeros()};
     H5::DataSpace innerDataSpace(1,innerDim);
     Group.createDataSet("innerIndex",H5::PredType::NATIVE_INT,innerDataSpace)
-	.write(RMSM._innerIndexPtr(),H5::PredType::NATIVE_INT);
+	.write(RMSM.innerIndexPtr(),H5::PredType::NATIVE_INT);
     Group.createDataSet("values",H5_REAL_TYPE,innerDataSpace)
-	.write(RMSM._valuePtr(),H5_REAL_TYPE);
+	.write(RMSM.valuePtr(),H5_REAL_TYPE);
 }
 
 void HDF5Storage::loadRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, RowMajorMatrixType& RMSM)
@@ -327,7 +343,7 @@ void HDF5Storage::loadRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
 
     RMSM.resize(outerSize,innerSize);
 
-    outerIndexDataSet.read(RMSM._outerIndexPtr(),H5::PredType::NATIVE_INT);
+    outerIndexDataSet.read(RMSM.outerIndexPtr(),H5::PredType::NATIVE_INT);
 
     H5::DataSet innerIndexDataSet = Group.openDataSet("innerIndex");
     H5::DataSet valuesDataSet = Group.openDataSet("values");
@@ -348,8 +364,8 @@ void HDF5Storage::loadRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
 				      "innerSize*outerSize."));
 
     RMSM.resizeNonZeros(valuesPoints);
-    innerIndexDataSet.read(RMSM._innerIndexPtr(),H5::PredType::NATIVE_INT);
-    valuesDataSet.read(RMSM._valuePtr(),H5_REAL_TYPE);
+    innerIndexDataSet.read(RMSM.innerIndexPtr(),H5::PredType::NATIVE_INT);
+    valuesDataSet.read(RMSM.valuePtr(),H5_REAL_TYPE);
     RMSM.finalize();
 }
 

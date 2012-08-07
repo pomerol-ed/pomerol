@@ -44,7 +44,7 @@ struct ElementWithPermFreq
     ElementWithPermFreq(boost::shared_ptr<ElementType> pElement, Permutation4 FrequenciesPermutation);
 
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
-    operator ElementType&() const;
+    operator ElementType&();
 };
 
 /** A container to store components of a function with 4 indices. */
@@ -96,7 +96,7 @@ ComplexType ElementWithPermFreq<ElementType>::operator()(
 }
 
 template<typename ElementType> inline
-ElementWithPermFreq<ElementType>::operator ElementType&() const
+ElementWithPermFreq<ElementType>::operator ElementType&()
 {
     return *pElement;
 }
