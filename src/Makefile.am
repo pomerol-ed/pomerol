@@ -28,6 +28,8 @@ libpomerol_a_SOURCES= \
 	TwoParticleGFContainer.cpp TwoParticleGFContainer.h \
 	Vertex4.cpp Vertex4.h \
 	Vertex4Container.cpp Vertex4Container.h
+#	AmputatedVertex4.h AmputatedVertex4.cpp
+#	AmputatedVertex4Container.h	AmputatedVertex4Container.cpp
 
 libpomerol_a_pkginclude_HEADERS=*.h 
 libpomerol_a_pkgincludedir=$(includedir)/pomerol
