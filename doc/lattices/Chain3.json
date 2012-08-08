@@ -1,0 +1,30 @@
+// Sample configuration of the model. Case sensitive.
+{
+"General" : {
+    },
+
+"Sites" : {
+    "1" : {
+        "Orbitals"          : 1,
+        "Level"             : 0
+          },
+    "2" : {
+        "Orbitals"          : 1,
+        "Level"             : 0
+          },
+    "3" : {
+        "Orbitals"          : 1,
+        "Level"             : 0
+          }
+    },
+
+"Terms" : [ // A list of all terms. If no spin or orbital specified a term is applied to all spin and orbital components.
+            // All terms are summed up, this also applies to A_{0,1} and A{1,0} (they are summed) since all descriped operators are Hermitian.
+
+    {"Type" : "Hopping", "Sites" : ["1","2"], "Orbitals" : [0,0], "Value" : -1.0 },
+    {"Type" : "Hopping", "Sites" : ["2","3"], "Orbitals" : [0,0], "Value" : -1.0 },
+    {"Type" : "Hopping", "Sites" : ["1","3"], "Orbitals" : [0,0], "Value" : -1.0 }
+    ]
+}
+    
+

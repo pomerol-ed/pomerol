@@ -79,9 +79,12 @@ int main(int argc, char* argv[])
     Hpart.print_to_screen();
     Hpart.diagonalize();
     Hpart.print_to_screen();
+    RealVectorType E_calc = Hpart.getEigenValues();
+    RealVectorType E_real(4);
+    E_real << -2.886, -1.5, 0, 1.386;
+    INFO(Hpart.getEigenValues());
 
-    RealMatrixType hmatrix2(Hpart.getMatrix());
-    if (std::abs((hmatrix2.sum()-hmatrix.sum())) > 1e-5) return EXIT_FAILURE;
+    if (std::abs((E_calc.sum()-E_real.sum())) > 1e-5) return EXIT_FAILURE;
     return EXIT_SUCCESS;
 }
 
