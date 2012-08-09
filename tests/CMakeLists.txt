@@ -11,8 +11,8 @@ link_libraries(
 enable_testing()
 
 set (tests 
-IndexTerm 
-IndexPermutation_test 
+IndexTermTest
+IndexPermutationTest 
 CCdagOperatorTest 
 NOperatorTest 
 SzOperatorTest 
