@@ -34,7 +34,8 @@ GreensFunction::GreensFunction(const StatesClassification& S, const Hamiltonian&
                                const DensityMatrix& DM) :
     Thermal(DM), ComputableObject(Constructed), S(S), H(H), C(C), CX(CX), DM(DM), Vanishing(true),
     parts(0), Storage(this)
-{}
+{
+}
 
 GreensFunction::~GreensFunction()
 {

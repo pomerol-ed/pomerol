@@ -25,10 +25,19 @@
 */
 
 #include "Misc.h"
-#include "LatticeAnalysis.h"
+#include "Logger.h"
+#include "Lattice.h"
+#include "LatticePresets.h"
+#include "Index.h"
 #include "IndexClassification.h"
+#include "Operator.h"
+#include "OperatorPresets.h"
+#include "IndexHamiltonian.h"
+#include "Symmetrizer.h"
 #include "StatesClassification.h"
+#include "HamiltonianPart.h"
 #include "Hamiltonian.h"
+#include "FieldOperatorContainer.h"
 #include "GFContainer.h"
 #include "TwoParticleGFContainer.h"
 #include "Vertex4Container.h"
@@ -100,19 +109,23 @@ ComplexType gamma4ref_udud(int n1, int n2, int n3)
 int main(int argc, char* argv[])
 {
     Log.setDebugging(true);
-    LatticeAnalysis Lattice;
+    Lattice L;
+    L.addSite(new Lattice::Site("A",1,2));
+    LatticePresets::addCoulombS(&L, "A", 1.0, -0.4);
 
-    IndexClassification IndexInfo(Lattice);
-    StatesClassification S(IndexInfo); 
-
-    Hamiltonian H(IndexInfo,S);
-
-    std::string LatticeFileName("gamma4.json");
-
-    Lattice.readin(LatticeFileName);
+    IndexClassification IndexInfo(L.getSiteMap());
     IndexInfo.prepare();
+
+    IndexHamiltonian Storage(&L,IndexInfo);
+    Storage.prepare();
+
+    Symmetrizer Symm(IndexInfo, Storage);
+    Symm.compute();
+
+    StatesClassification S(IndexInfo,Symm);
     S.compute();
 
+    Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
     H.diagonalize();
 
@@ -123,34 +136,25 @@ int main(int argc, char* argv[])
     rho.prepare();
     rho.compute();
 
-    FieldOperatorContainer Operators(S,H,IndexInfo);
+    FieldOperatorContainer Operators(IndexInfo, S, H);
+    Operators.prepare();
 
-    GFContainer G(IndexInfo,S,H,rho,Operators);
 
-    std::set<IndexCombination2> GFindices;
-    GFindices.insert(IndexCombination2(0,0));
-    GFindices.insert(IndexCombination2(0,1));
-    GFindices.insert(IndexCombination2(1,0));
-    GFindices.insert(IndexCombination2(1,1));
+    GreensFunction GF(S,H,Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), rho);
+    GF.prepare();
+    GF.compute(7);
 
-    G.prepareAll(GFindices);
-    G.computeAll(30);
-
-    std::set<IndexCombination4> GF2indices;
-    for(int i1=0; i1<=1; ++i1)
-    for(int i2=0; i2<=1; ++i2)
-    for(int i3=0; i3<=1; ++i3)
-    for(int i4=0; i4<=1; ++i4)
-        GF2indices.insert(IndexCombination4(i1,i2,i3,i4));
-
-    TwoParticleGFContainer Chi4(IndexInfo,S,H,rho,Operators);
-    Chi4.prepareAll(GF2indices);
-    Chi4.computeAll(7);
+    TwoParticleGF Chi(S,H,Operators.getAnnihilationOperator(0), Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), 
+                      Operators.getCreationOperator(0), rho);
+    Chi.prepare();
+    Chi.compute(7);
     
-    Vertex4Container Gamma4(Chi4,G);
-    Gamma4.computeAll(7);
+    INFO(Chi(0,0,0));
+    INFO(gamma4ref_uuuu(0,0,0)*GF(0)*GF(0));
+    INFO(Chi(2,5,2));
+    INFO(gamma4ref_uuuu(2,5,2)*GF(2)*GF(5)*GF(2));
 
-    std::cout << Gamma4(0,0,0,0)(3,2,0) << std::endl;
+
 //     std::cout << Chi4(0,0,0,0)(2,5,2) << std::endl;
 //     std::cout << Chi4(0,0,0,0)(5,2,5) << std::endl;
 //     std::cout << Chi4(0,0,0,0)(5,2,2) << std::endl;

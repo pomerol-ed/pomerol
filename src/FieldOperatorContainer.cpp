@@ -54,6 +54,7 @@ void FieldOperatorContainer::prepare()
 
 const CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleIndex in) const
 {
+    if (Status<Prepared) { ERROR("GFContainer needs to be prepared."); throw (exStatusMismatch()); }
     if (IndexInfo.checkIndex(in)){
         mapCreationOperators[in]->compute();
         return *mapCreationOperators[in];
@@ -64,6 +65,7 @@ const CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleInde
 
 const AnnihilationOperator& FieldOperatorContainer::getAnnihilationOperator(ParticleIndex in) const
 {
+    if (Status<Prepared) { ERROR("GFContainer needs to be prepared."); throw (exStatusMismatch()); }
     if (IndexInfo.checkIndex(in)){
         mapAnnihilationOperators[in]->compute();
         return *mapAnnihilationOperators[in];

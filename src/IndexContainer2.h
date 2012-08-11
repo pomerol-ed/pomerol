@@ -97,8 +97,9 @@ void IndexContainer2<ElementType,SourceObject>::fill(std::set<IndexCombination2>
 
     for(typename std::set<IndexCombination2>::iterator iter = InitialIndices.begin();
         iter != InitialIndices.end(); iter++){
-        if(!isInContainer(*iter))
+        if(!isInContainer(*iter)) {
             set(*iter);
+            }
     }
 }
 

@@ -126,7 +126,8 @@ bool TwoParticleGF::isVanishing(void) const
 
 void TwoParticleGF::compute(long NumberOfMatsubaras)
 {
-    if(Status<Prepared) prepare();
+    if (Status >= Computed) return;
+    if (Status < Prepared) { throw (exStatusMismatch()); };
 
     #warning Do we really need to merge caches with the new value caching scheme?
 //     unsigned short perm_num=0;
@@ -162,10 +163,13 @@ void TwoParticleGF::compute(long NumberOfMatsubaras)
         if(Status<Computed){
             for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
                 (*iter)->compute();
-        }
+        DEBUG("Here");
+        };
         if(NumberOfMatsubaras != Storage.getNumberOfMatsubaras())
             Storage.fill(this,NumberOfMatsubaras);
+        DEBUG("Here II");
     }
+    DEBUG("Here II");
     Status = Computed;
 }
 
@@ -173,6 +177,7 @@ ComplexType TwoParticleGF::value(long MatsubaraNumber1, long MatsubaraNumber2, l
 {
     ComplexType Value = 0;
     for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){
+        //if ((*iter)->getStatus() < (*iter)->Computed) { ERROR("TwoParticleGF must be computed to get value."); throw (exStatusMismatch()); };
         Value += (**iter)(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3);
     }
     return Value;

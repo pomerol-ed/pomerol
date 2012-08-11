@@ -40,6 +40,7 @@ void Vertex4::compute(long NumberOfMatsubaras)
 ComplexType Vertex4::value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
     ComplexType Value = Chi4(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    DEBUG("Here.");
 
     if(MatsubaraNumber1 == MatsubaraNumber3)
         Value += beta*  G13(MatsubaraNumber1)*G24(MatsubaraNumber2);

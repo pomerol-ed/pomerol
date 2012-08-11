@@ -25,10 +25,19 @@
 */
 
 #include "Misc.h"
-#include "LatticeAnalysis.h"
+#include "Logger.h"
+#include "Lattice.h"
+#include "LatticePresets.h"
+#include "Index.h"
 #include "IndexClassification.h"
+#include "Operator.h"
+#include "OperatorPresets.h"
+#include "IndexHamiltonian.h"
+#include "Symmetrizer.h"
 #include "StatesClassification.h"
+#include "HamiltonianPart.h"
 #include "Hamiltonian.h"
+#include "FieldOperatorContainer.h"
 #include "GFContainer.h"
 
 #include<cstdlib>
@@ -59,22 +68,27 @@ ComplexType Gref(int n, RealType beta)
 
 int main(int argc, char* argv[])
 {
-    LatticeAnalysis Lattice;
+    Log.setDebugging(true);
+    Lattice L;
+    L.addSite(new Lattice::Site("A",1,2));
+    LatticePresets::addCoulombS(&L, "A", 1.0, -0.4);
 
-    IndexClassification IndexInfo(Lattice);
-    StatesClassification S(IndexInfo); 
-
-    Hamiltonian H(IndexInfo,S);
-
-    std::string LatticeFileName("green.json");
-
-    Lattice.readin(LatticeFileName);
+    IndexClassification IndexInfo(L.getSiteMap());
     IndexInfo.prepare();
+
+    IndexHamiltonian Storage(&L,IndexInfo);
+    Storage.prepare();
+
+    Symmetrizer Symm(IndexInfo, Storage);
+    Symm.compute();
+
+    StatesClassification S(IndexInfo,Symm);
     S.compute();
 
+    Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
     H.diagonalize();
-
+ 
     srand (time(NULL));
     RealType beta = 10.0 + 10.0*RealType(rand())/RAND_MAX;
 
@@ -82,25 +96,16 @@ int main(int argc, char* argv[])
     rho.prepare();
     rho.compute();
 
-    FieldOperatorContainer Operators(S,H,IndexInfo);
+    FieldOperatorContainer Operators(IndexInfo, S, H);
+    Operators.prepare();
 
-    GFContainer G(IndexInfo,S,H,rho,Operators);
+    GreensFunction GF(S,H,Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), rho);
 
-    std::set<IndexCombination2> indices;
-    indices.insert(IndexCombination2(0,0));
-    indices.insert(IndexCombination2(0,1));
-    indices.insert(IndexCombination2(1,0));
-    indices.insert(IndexCombination2(1,1));
-
-    G.prepareAll(indices);
-    G.computeAll(100);
+    GF.prepare();
+    GF.compute(100);
 
     for(int n = -100; n<100; ++n)
-        if( !compare(G(0,0)(n),Gref(n,beta)) ||
-            !compare(G(0,1)(n),0.0) ||
-            !compare(G(1,0)(n),0.0) ||
-            !compare(G(1,1)(n),Gref(n,beta))
-            )
+        if( !compare(GF(n),Gref(n,beta)))
             return EXIT_FAILURE;
 
     return EXIT_SUCCESS;

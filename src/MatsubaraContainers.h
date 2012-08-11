@@ -53,7 +53,8 @@ template<typename SourceObject> inline
 MatsubaraContainer1<SourceObject>::MatsubaraContainer1(const SourceObject* pSource) :
     pSource(pSource),
     NumberOfMatsubaras(0)
-{}
+{
+}
 
 template<typename SourceObject> inline
 ComplexType MatsubaraContainer1<SourceObject>::operator()(long MatsubaraNumber) const
@@ -137,7 +138,7 @@ void MatsubaraContainer4<SourceObject>::fill(const SourceObject* pSource, long N
         for(long NupIndexM=0; NupIndexM<FermionicMatrixSize; ++NupIndexM){
             long MatsubaraNumber1 = NuIndexM+FermionicIndexOffset[BosonicIndexV];
             long MatsubaraNumber2 = BosonicIndex - MatsubaraNumber1;
-            long MatsubaraNumber3 = NupIndexM+FermionicIndexOffset[BosonicIndexV];;
+            long MatsubaraNumber3 = NupIndexM+FermionicIndexOffset[BosonicIndexV];
             Values[BosonicIndexV](NuIndexM,NupIndexM) =
                 pSource->value(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
         }
