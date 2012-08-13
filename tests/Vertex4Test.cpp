@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
     INFO(Chi(0,0,0));
     INFO(gamma4ref_uuuu(0,0,0)*GF(0)*GF(0));
     INFO(Chi(2,5,2));
-    INFO(gamma4ref_uuuu(2,5,2)*GF(2)*GF(5)*GF(2));
+    INFO(gamma4ref_uuuu(2,5,2)*GF(2)*GF(5)*GF(5)*GF(2) + GF(2)*GF(5));
 
 
 //     std::cout << Chi4(0,0,0,0)(2,5,2) << std::endl;
