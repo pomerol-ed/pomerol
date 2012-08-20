@@ -20,6 +20,7 @@ message(STATUS "HDF5 libs: " ${HDF5_LIBRARIES} )
 
 include_directories(
     ${Boost_INCLUDE_DIRS}
+    ${HDF5_INCLUDE_DIR}
     ${EIGEN3_INCLUDE_DIR}
     ${PYTHON_INCLUDE_DIRS}
     ./jsoncpp/include
