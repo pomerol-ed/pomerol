@@ -21,7 +21,8 @@ HamiltonianPartTest
 HamiltonianTest 
 FieldOperatorPartTest
 FieldOperatorTest 
-GreensFunctionTest
+GF1siteTest
+GF2siteTest
 GFContainerTest
 Vertex4Test
 )

@@ -92,6 +92,7 @@ void CreationOperator::prepare(void)
     size_t Size = parts.size();
     for (BlockNumber RightIndex=0; RightIndex<S.NumberOfBlocks(); RightIndex++){
         BlockNumber LeftIndex = mapsTo(RightIndex);
+        //DEBUG(RightIndex << "->" << LeftIndex);
         if (LeftIndex.isCorrect()){
             FieldOperatorPart *Part = new CreationOperatorPart(IndexInfo, S,
                                     H.getPart(RightIndex),H.getPart(LeftIndex),Index);
@@ -146,8 +147,14 @@ BlockNumber FieldOperator::getLeftIndex(BlockNumber RightIndex) const
 
 BlockNumber FieldOperator::mapsTo(BlockNumber RightIndex) const
 {
-    std::map<FockState, RealType> result1=O->actRight(S.getFockState(RightIndex,0));
-    return (result1.size())?S.getBlockNumber(result1.begin()->first):ERROR_BLOCK_NUMBER;
+    bool found=false;
+    std::map<FockState, RealType> result;
+    const std::vector<FockState> &states=S.getFockStates(RightIndex);
+    for (std::vector<FockState>::const_iterator state_it=states.begin(); state_it!=states.end() && !found; state_it++) {
+        result = O->actRight(*state_it);
+        found = (result.size()>0);
+        }
+    return (found)?S.getBlockNumber(result.begin()->first):ERROR_BLOCK_NUMBER;
 }
 
 QuantumNumbers FieldOperator::mapsTo(const QuantumNumbers& in) const 
