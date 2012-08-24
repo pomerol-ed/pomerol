@@ -23,6 +23,7 @@ FieldOperatorPartTest
 FieldOperatorTest 
 GF1siteTest
 GF2siteTest
+GF4siteTest
 GFContainerTest
 Vertex4Test
 )
