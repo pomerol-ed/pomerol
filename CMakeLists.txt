@@ -2,7 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 project (pomerol)
 
-OPTION( INSTALL_DOC "Set to OFF to skip build/install Documentation" ON )
+set(DOXYFILE_SOURCE_DIR ./src)
+include(UseDoxygen)
 
 find_package (Boost COMPONENTS python)
 find_package (HDF5 COMPONENTS CXX)
@@ -31,5 +32,4 @@ add_subdirectory(jsoncpp)
 add_subdirectory(src)
 add_subdirectory(tests)
 enable_testing()
-
 

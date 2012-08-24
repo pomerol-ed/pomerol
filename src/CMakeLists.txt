@@ -33,4 +33,9 @@ target_link_libraries(pomerol
     jsoncpp
 )
 
+install(TARGETS pomerol
+    LIBRARY DESTINATION lib
+    )
 
+install(DIRECTORY . DESTINATION include/pomerol
+          FILES_MATCHING PATTERN "*.h")
