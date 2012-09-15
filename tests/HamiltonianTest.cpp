@@ -68,7 +68,9 @@ int main(int argc, char* argv[])
 
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
+    H.getPart(BlockNumber(4)).print_to_screen();
     H.diagonalize();
+    H.getPart(BlockNumber(4)).print_to_screen();
     RealType E = -2.8860009; 
     RealType E_calc = H.getGroundEnergy();
     INFO("Lowest energy level is " << E_calc);

@@ -64,16 +64,16 @@ int main(int argc, char* argv[])
    Operator::Term IT2(1, seq_v, ind_v, 1.0);
    INFO("Acting with operator " << IT2 << " on a state " << a1 );
    FockState bra;
-   RealType result;
+   MelemType result;
    boost::tie(bra, result) = IT2.actRight(a1);
-   if (result != -1) return EXIT_FAILURE;
+   if (result != MelemType(-1)) return EXIT_FAILURE;
    else DEBUG ( "State: " << bra << " Matrix element: " << result);
 
    seq_v[0]=0; ind_v[0]=0;
    Operator::Term IT3 (1, seq_v, ind_v, 1.0);
    INFO("Acting with operator " << IT3 << " on a state " << a1 );
    boost::tie(bra, result) = IT3.actRight(a1);
-   if (result != 1) return EXIT_FAILURE;
+   if (result != MelemType(1)) return EXIT_FAILURE;
    if (bra == ERROR_FOCK_STATE) DEBUG("Term vanishes")
    else DEBUG ( "State: " << bra << " Matrix element: " << result);
   /* end of test of Operator::Term */

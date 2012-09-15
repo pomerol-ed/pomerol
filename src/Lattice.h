@@ -137,14 +137,14 @@ public:
     /** An array of orbitals on the sites, which are connected by this Lattice::Term. */
     std::vector<unsigned short> Orbitals;
     /** The matrix element of the Lattice::Term. */
-    RealType Value;
+    MelemType Value;
     /** This returns the order of Term. Also the inheritance from TermPointer is provided by this method. */
     unsigned int getOrder() const;
     /** Constructor */
     Term(unsigned int N);
 
     /** Full constructor */
-    Term(unsigned int N, bool OperatorSequence[ ], RealType Value, std::string SiteLabels[ ], unsigned short Orbitals[ ], unsigned short Spins[ ]);
+    Term(unsigned int N, bool OperatorSequence[ ], MelemType Value, std::string SiteLabels[ ], unsigned short Orbitals[ ], unsigned short Spins[ ]);
 
     /** Copy-constuctor 
      * \param[in] in A Lattice::Term to copy.

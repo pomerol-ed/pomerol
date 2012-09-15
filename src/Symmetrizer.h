@@ -130,20 +130,20 @@ friend class Symmetrizer;
 private:
     /** Total number of quantum numbers. */
     int amount;
-    /** A vector of numbers. For now set as RealType. */
-    std::vector<RealType> numbers;
+    /** A vector of numbers. For now set as MelemType. */
+    std::vector<MelemType> numbers;
     /** Private constuctor - can be called only inside Symmetrizer. */
     QuantumNumbers(int amount);
     /** A hash of the quantum numbers - used for comparison. */
     std::size_t NumbersHash;
     /** Hash generator. */
-    boost::hash<std::vector<RealType> > numbers_hash_generator;
+    boost::hash<std::vector<MelemType> > numbers_hash_generator;
 public:
     /** Set a quantum number at the given position to a value
      * \param[in] pos Position of QuantumNumber, e.g. the number of operation in Symmetrizer::Operations.
      * \param[in] val Value of QuantumNumber.
      */
-    bool set ( int pos, RealType val );
+    bool set ( int pos, MelemType val );
 
     /* Comparison operators. */
     bool operator< (const QuantumNumbers& rhs) const ;

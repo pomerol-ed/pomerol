@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
     auto map1=Cdag_op.actRight(ket);
     for ( auto it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
-        RealType Value= it1->second; 
+        MelemType Value= it1->second; 
         INFO("<" << bra << "| c^+_3 |" << ket << "> = " << Value ); 
         ket2=bra;
         }
@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
     map1=O->actRight(ket);
     for ( auto it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
-        RealType Value= it1->second; 
+        MelemType Value= it1->second; 
         INFO("<" << bra << "| c^+_3 |" << ket << "> = " << Value ); 
         ket2=bra;
         }
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
     map1=C_op.actRight(ket);
     for ( auto it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
-        RealType Value= it1->second; 
+        MelemType Value= it1->second; 
         INFO("<" << bra << "| c_1 |" << ket << "> = " << Value ); 
         }
 

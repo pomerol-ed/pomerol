@@ -20,6 +20,7 @@ message(STATUS "HDF5 libs: " ${HDF5_LIBRARIES} )
 
 option(use_complex "Use complex matrix elements" OFF)
 if (use_complex)
+    message(STATUS "Using complex matrix elements")
     add_definitions("-DPOMEROL_COMPLEX_MATRIX_ELEMENS")
 endif (use_complex)
 

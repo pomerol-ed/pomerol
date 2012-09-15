@@ -36,7 +36,7 @@ namespace Pomerol{
 template<typename SourceObject>
 class MatsubaraContainer1 {
     const SourceObject* pSource;
-    VectorType Values;
+    ComplexVectorType Values;
     long NumberOfMatsubaras;
 
 public:
@@ -91,7 +91,7 @@ template<typename SourceObject>
 class MatsubaraContainer4 {
     const SourceObject* pSource;
     long NumberOfMatsubaras;
-    std::vector<MatrixType> Values;
+    std::vector<ComplexMatrixType> Values;
     std::vector<long> FermionicIndexOffset;
 
 public:

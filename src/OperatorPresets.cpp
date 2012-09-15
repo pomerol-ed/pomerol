@@ -50,19 +50,19 @@ N::N(ParticleIndex Nmodes):Operator(),Nmodes(Nmodes)
     };
 };
     
-std::map<FockState,RealType> N::actRight(const FockState &ket) const
+std::map<FockState,MelemType> N::actRight(const FockState &ket) const
 {
-    std::map<FockState,RealType> output;
+    std::map<FockState,MelemType> output;
     output[ket]=this->getMatrixElement(ket);
     return output;
 }
 
-RealType N::getMatrixElement(const FockState &bra, const FockState &ket) const
+MelemType N::getMatrixElement(const FockState &bra, const FockState &ket) const
 {
     return (bra!=ket)?0:getMatrixElement(ket);
 }
 
-RealType N::getMatrixElement(const FockState &ket) const
+MelemType N::getMatrixElement(const FockState &ket) const
 {
     return ket.count();
 }
@@ -87,7 +87,7 @@ Sz::Sz(const std::vector<ParticleIndex> & SpinUpIndices, const std::vector<Parti
     if (SpinUpIndices.size() != SpinDownIndices.size() ) { throw ( Pomerol::Operator::Term::exWrongLabel() ); ERROR("Sz operator requires even number of indices"); }; 
 }
 
-RealType Sz::getMatrixElement(const FockState &ket) const
+MelemType Sz::getMatrixElement(const FockState &ket) const
 {
     int up_value=0, down_value=0;
     std::vector<ParticleIndex>::const_iterator it_up=SpinUpIndices.begin(), it_down=SpinDownIndices.begin();
@@ -96,14 +96,14 @@ RealType Sz::getMatrixElement(const FockState &ket) const
     return 0.5*(up_value-down_value);
 }
 
-RealType Sz::getMatrixElement(const FockState &bra, const FockState &ket) const
+MelemType Sz::getMatrixElement(const FockState &bra, const FockState &ket) const
 {
     return (bra!=ket)?0:getMatrixElement(ket);
 }
 
-std::map<FockState,RealType> Sz::actRight(const FockState &ket) const
+std::map<FockState,MelemType> Sz::actRight(const FockState &ket) const
 {
-    std::map<FockState,RealType> output;
+    std::map<FockState,MelemType> output;
     output[ket]=this->getMatrixElement(ket);
     return output;
 }

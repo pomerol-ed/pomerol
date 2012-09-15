@@ -35,7 +35,7 @@ namespace Pomerol {
 
 // 2-index presets
 
-Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, const std::string& Label2, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     if (Label1 == Label2) { ERROR("Hopping terms should connect different sites. Use Level terms for local quantities"); throw(exWrongIndices()); };
     Lattice::Term *T = new Term(2);
@@ -51,12 +51,12 @@ Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, cons
     return T;
 };
 
-Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, const std::string& Label2, RealType Value, unsigned short orbital, unsigned short spin)
+Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital, unsigned short spin)
 {
     return Hopping(Label1, Label2, Value, orbital, orbital, spin, spin);
 }
 
-Lattice::Term* Lattice::Term::Presets::Level ( const std::string& Label, RealType Value, unsigned short orbital, unsigned short spin)
+Lattice::Term* Lattice::Term::Presets::Level ( const std::string& Label, MelemType Value, unsigned short orbital, unsigned short spin)
 {
     Lattice::Term *T = new Term(2);
     bool OperatorSequence[2] = { 1, 0 };
@@ -73,7 +73,7 @@ Lattice::Term* Lattice::Term::Presets::Level ( const std::string& Label, RealTyp
 
 // 4-index presets
 
-Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label1, const std::string& Label2,  RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label1, const std::string& Label2,  MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     if (Label1 == Label2 && spin1 == spin2 && orbital1 == orbital2) { 
         ERROR("NupNdown terms should have different sites or spin or orbital components. Returning simple Level term.");
@@ -92,22 +92,22 @@ Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label1, con
     return T;
 }
 
-Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     return NupNdown(Label, Label, Value, orbital1, orbital2, spin1, spin2);
 }
 
-Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2 )
+Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2 )
 { 
     return NupNdown(Label, Label, Value, orbital1, orbital2, up, down);
 };
 
-Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, RealType Value, unsigned short Orbital, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, MelemType Value, unsigned short Orbital, unsigned short spin1, unsigned short spin2 )
 {
     return NupNdown(Label, Label, Value, Orbital, Orbital, spin1, spin2);
 };
 
-Lattice::Term* Lattice::Term::Presets::Spinflip ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::Spinflip ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     if (orbital1 == orbital2 || spin1 == spin2) { ERROR("Spinflips should have different spins and orbitals"); throw (exWrongIndices()); }
     Lattice::Term *T = new Term(4); 
@@ -123,7 +123,7 @@ Lattice::Term* Lattice::Term::Presets::Spinflip ( const std::string& Label, Real
     return T;
 }
 
-Lattice::Term* Lattice::Term::Presets::PairHopping ( const std::string& Label, RealType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::PairHopping ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     if (orbital1 == orbital2 || spin1 == spin2) { ERROR("Pair hopping terms should have different spins and orbitals"); throw (exWrongIndices()); }
     Lattice::Term *T = new Term(4); 
@@ -139,7 +139,7 @@ Lattice::Term* Lattice::Term::Presets::PairHopping ( const std::string& Label, R
     return T;
 }
 
-Lattice::Term* Lattice::Term::Presets::SplusSminus ( const std::string& Label1, const std::string& Label2, RealType Value, unsigned short orbital) 
+Lattice::Term* Lattice::Term::Presets::SplusSminus ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital) 
 {
     Term *T = new Term(4); 
     bool order[4]              =      { 1,     0,     1,     0 };       
@@ -154,7 +154,7 @@ Lattice::Term* Lattice::Term::Presets::SplusSminus ( const std::string& Label1, 
     return T;
 }
 
-Lattice::Term* Lattice::Term::Presets::SminusSplus ( const std::string& Label1, const std::string& Label2, RealType Value, unsigned short orbital) 
+Lattice::Term* Lattice::Term::Presets::SminusSplus ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital) 
 {
     Term *T = SplusSminus(Label1, Label2, Value, orbital); 
     unsigned short Spins[4]    =      { down, up, up, down  };
@@ -172,7 +172,7 @@ const char* Lattice::Term::Presets::exWrongIndices::what() const throw(){
 // LatticePresets
 //
 
-void LatticePresets::addCoulombS(Lattice *L, const std::string& Label, RealType U, RealType Level)
+void LatticePresets::addCoulombS(Lattice *L, const std::string& Label, MelemType U, MelemType Level)
 {
     if (L->Sites.find(Label)==L->Sites.end()) throw (Lattice::exWrongLabel()); 
     unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
@@ -186,7 +186,7 @@ void LatticePresets::addCoulombS(Lattice *L, const std::string& Label, RealType 
        };
 };
 
-void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, RealType U, RealType U_p, RealType J, RealType Level)
+void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, MelemType U, MelemType U_p, MelemType J, MelemType Level)
 {
     if (L->Sites.find(Label)==L->Sites.end()) throw (Lattice::exWrongLabel()); 
     unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
@@ -212,12 +212,12 @@ void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, RealType 
         };
 };
 
-void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, RealType U, RealType J, RealType Level)
+void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, MelemType U, MelemType J, MelemType Level)
 {
     addCoulombP(L, Label, U, U-2.0*J, J, Level);
 }
 
-void LatticePresets::addLevel(Lattice *L, const std::string& Label, RealType Level)
+void LatticePresets::addLevel(Lattice *L, const std::string& Label, MelemType Level)
 {
     if (L->Sites.find(Label)==L->Sites.end()) throw (Lattice::exWrongLabel()); 
     unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
@@ -228,7 +228,7 @@ void LatticePresets::addLevel(Lattice *L, const std::string& Label, RealType Lev
             };
 }
 
-void LatticePresets::addMagnetization(Lattice *L, const std::string& Label, RealType Magnetization)
+void LatticePresets::addMagnetization(Lattice *L, const std::string& Label, MelemType Magnetization)
 {
     if (L->Sites.find(Label)==L->Sites.end()) { ERROR("No site" << Label << "found."); throw (Lattice::exWrongLabel()); };
     unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
@@ -240,7 +240,7 @@ void LatticePresets::addMagnetization(Lattice *L, const std::string& Label, Real
         };
 }
 
-void LatticePresets::addSzSz ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType ExchJ)
+void LatticePresets::addSzSz ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType ExchJ)
 {
 
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
@@ -263,7 +263,7 @@ void LatticePresets::addSzSz ( Lattice *L, const std::string& Label1, const std:
         };
 }
 
-void LatticePresets::addSS ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType ExchJ)
+void LatticePresets::addSS ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType ExchJ)
 {
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
     if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
@@ -279,7 +279,7 @@ void LatticePresets::addSS ( Lattice *L, const std::string& Label1, const std::s
         };
 }
 
-void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin1, unsigned short Spin2)
+void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin1, unsigned short Spin2)
 {
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
     if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
@@ -290,12 +290,12 @@ void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const s
     L->addTerm(Lattice::Term::Presets::Hopping(Label2, Label1, -t, Orbital1, Orbital2, Spin1, Spin2)); // Hermite conjugate
 }
 
-void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin)
+void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin)
 {
     addHopping(L,Label1, Label2, t, Orbital1, Orbital2, Spin, Spin);
 }
 
-void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2)
+void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType t, unsigned short Orbital1, unsigned short Orbital2)
 {
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site " << Label1 << " found."); throw (Lattice::exWrongLabel()); };
     if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site " << Label2 << " found."); throw (Lattice::exWrongLabel()); };
@@ -307,7 +307,7 @@ void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const s
     for (int z=0; z<Spins; ++z) addHopping(L, Label1, Label2, t, Orbital1, Orbital2, z, z);
 }
 
-void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, RealType t)
+void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType t)
 {
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
     if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
@@ -341,10 +341,10 @@ JSONLattice::JSONPresets::JSONPresets()
 
 void JSONLattice::JSONPresets::readSSite(Lattice *L, const std::string& Label, Json::Value& in)
 {
-    RealType U = in["U"].asDouble();
+    MelemType U = in["U"].asDouble();
     int Orbitals=1; 
     if (in["Orbitals"]!=Json::nullValue) Orbitals = in["Orbitals"].asInt();
-    RealType Level=U/2.0; // set default Level to half-filled value
+    MelemType Level=U/2.0; // set default Level to half-filled value
     if (in["Level"]!=Json::nullValue) Level=in["Level"].asDouble();
     int Spins=2;
     if (in["Spins"]!=Json::nullValue) Spins=in["Spins"].asInt();
@@ -357,15 +357,15 @@ void JSONLattice::JSONPresets::readSSite(Lattice *L, const std::string& Label, J
 
 void JSONLattice::JSONPresets::readPSite(Lattice *L, const std::string& Label, Json::Value& in)
 {
-    RealType U = in["U"].asDouble();
-    RealType J = in["J"].asDouble();
-    RealType U_p = U-2.0*J;
+    MelemType U = in["U"].asDouble();
+    MelemType J = in["J"].asDouble();
+    MelemType U_p = U-2.0*J;
     if (in["U'"]!=Json::nullValue) U_p = in["U'"].asDouble(); 
 
     int Orbitals=3; 
     if (in["Orbitals"]!=Json::nullValue) Orbitals = in["Orbitals"].asInt();
 
-    RealType Level=(Orbitals-0.5)*U-2.5*(Orbitals-1)*J; // set default Level to half-filled value
+    MelemType Level=(Orbitals-0.5)*U-2.5*(Orbitals-1)*J; // set default Level to half-filled value
     if (in["Level"]!=Json::nullValue) Level=in["Level"].asDouble();
 
     int Spins=2;
@@ -381,7 +381,7 @@ void JSONLattice::JSONPresets::readPSite(Lattice *L, const std::string& Label, J
 
 void JSONLattice::JSONPresets::readHoppingTerm(Lattice *L, Json::Value& in)
 {
-    RealType t = in["Value"].asDouble();
+    MelemType t = in["Value"].asDouble();
     std::string site1 = in["Sites"][Json::Value::UInt (0)].asString();
     std::string site2 = in["Sites"][Json::Value::UInt (1)].asString();
     bool foundSpins = ( in["Spins"] != Json::nullValue );
@@ -407,7 +407,7 @@ void JSONLattice::JSONPresets::readHoppingTerm(Lattice *L, Json::Value& in)
 
 void JSONLattice::JSONPresets::readLevelTerm(Lattice *L, Json::Value& in)
 {
-    RealType eps = in["Value"].asDouble();
+    MelemType eps = in["Value"].asDouble();
     std::string label = in["Site"].asString();
     LatticePresets::addLevel(L,label,eps);
 }
@@ -415,7 +415,7 @@ void JSONLattice::JSONPresets::readLevelTerm(Lattice *L, Json::Value& in)
 /*
 void JSONLattice::JSONPresets::readNNTerm(Lattice *L, Json::Value& in)
 {
-   RealType U = in["Value"].asDouble(); 
+   MelemType U = in["Value"].asDouble(); 
    std::string label1 = in["Sites"][Json::Value::UInt (0)].asString();
    std::string label2 = in["Sites"][Json::Value::UInt (1)].asString();
    int orbital1 = in["Orbitals"][Json::Value::UInt (0)].asInt();
@@ -425,7 +425,7 @@ void JSONLattice::JSONPresets::readNNTerm(Lattice *L, Json::Value& in)
 
 void JSONLattice::JSONPresets::readSzSzTerm(Lattice *L, Json::Value& in)
 {
-    RealType J = in["Value"].asDouble(); 
+    MelemType J = in["Value"].asDouble(); 
     std::string label1 = in["Sites"][Json::Value::UInt (0)].asString();
     std::string label2 = in["Sites"][Json::Value::UInt (1)].asString();
     LatticePresets::addSzSz(L, label1, label2, J);
@@ -433,7 +433,7 @@ void JSONLattice::JSONPresets::readSzSzTerm(Lattice *L, Json::Value& in)
 
 void JSONLattice::JSONPresets::readSSTerm(Lattice *L, Json::Value& in)
 {
-    RealType J = in["Value"].asDouble(); 
+    MelemType J = in["Value"].asDouble(); 
     std::string label1 = in["Sites"][Json::Value::UInt (0)].asString();
     std::string label2 = in["Sites"][Json::Value::UInt (1)].asString();
     LatticePresets::addSS(L, label1, label2, J);

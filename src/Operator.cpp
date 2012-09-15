@@ -34,7 +34,7 @@ namespace Pomerol{
 //Operator::Term
 //
 
-Operator::Term::Term (const unsigned int N, const std::vector<bool>&  Sequence, const std::vector<ParticleIndex> & Indices, RealType Value):
+Operator::Term::Term (const unsigned int N, const std::vector<bool>&  Sequence, const std::vector<ParticleIndex> & Indices, MelemType Value):
     N(N), OperatorSequence(Sequence), Indices(Indices), Value(Value)
 {
     if (Sequence.size()!=N || Indices.size()!=N) throw(exWrongLabel());
@@ -123,14 +123,14 @@ boost::shared_ptr<std::list<Operator::Term*> > Operator::Term::elementary_swap(u
     return out;
 }
 
-RealType Operator::Term::getMatrixElement( const FockState & bra, const FockState &ket){
-    RealType result;
+MelemType Operator::Term::getMatrixElement( const FockState & bra, const FockState &ket){
+    MelemType result;
     FockState bra2;
     boost::tie(bra2, result) = this->actRight(ket);
     return (bra2 == bra)?result:0;
 }
 
-boost::tuple<FockState, RealType> Operator::Term::actRight ( const FockState &ket )
+boost::tuple<FockState, MelemType> Operator::Term::actRight ( const FockState &ket )
 {
     ParticleIndex prev_pos_ = 0; // Here we'll store the index of the last operator to speed up sign counting
     int sign=1;
@@ -146,7 +146,7 @@ boost::tuple<FockState, RealType> Operator::Term::actRight ( const FockState &ke
             
             //for (ParticleIndex j=0; j<Indices[i]; ++j) { if (ket[j]) sign*=-1; } 
         }
-    return boost::make_tuple(bra, this->Value*sign);
+    return boost::make_tuple(bra, this->Value*MelemType(sign));
 }
 
 unsigned int Operator::Term::getN(){
@@ -192,9 +192,9 @@ boost::shared_ptr<std::list<Operator::Term*> > Operator::getTerms() const
     return Terms;
 }
 
-RealType Operator::getMatrixElement( const FockState & bra, const FockState &ket) const
+MelemType Operator::getMatrixElement( const FockState & bra, const FockState &ket) const
 {
-    std::map<FockState, RealType> output = this->actRight(ket);
+    std::map<FockState, MelemType> output = this->actRight(ket);
     if (output.find(bra)==output.end()) 
         return 0;
     else { 
@@ -202,18 +202,18 @@ RealType Operator::getMatrixElement( const FockState & bra, const FockState &ket
         }
 }
 
-std::map<FockState, RealType> Operator::actRight(const FockState &ket) const
+std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
 {
-    std::map<FockState, RealType> result1;
+    std::map<FockState, MelemType> result1;
     for (std::list<Operator::Term*>::const_iterator it = Terms->begin(); it!=Terms->end(); it++)
         {
             FockState bra; 
-            RealType melem;
+            MelemType melem;
             boost::tie(bra,melem) = (*it)->actRight(ket);
             if (bra!=ERROR_FOCK_STATE && std::abs(melem)>std::numeric_limits<RealType>::epsilon()) 
                 result1[bra]+=melem;
         }
-    for (std::map<FockState, RealType>::iterator it1 = result1.begin(); it1!=result1.end(); it1++) 
+    for (std::map<FockState, MelemType>::iterator it1 = result1.begin(); it1!=result1.end(); it1++) 
         if ( std::abs(it1->second)<std::numeric_limits<RealType>::epsilon() ) result1.erase(it1); 
     return result1;
 }

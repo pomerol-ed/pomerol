@@ -148,7 +148,7 @@ BlockNumber FieldOperator::getLeftIndex(BlockNumber RightIndex) const
 BlockNumber FieldOperator::mapsTo(BlockNumber RightIndex) const
 {
     bool found=false;
-    std::map<FockState, RealType> result;
+    std::map<FockState, MelemType> result;
     const std::vector<FockState> &states=S.getFockStates(RightIndex);
     for (std::vector<FockState>::const_iterator state_it=states.begin(); state_it!=states.end() && !found; state_it++) {
         result = O->actRight(*state_it);

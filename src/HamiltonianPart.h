@@ -54,7 +54,7 @@ class HamiltonianPart : public HDF5Storable, public ComputableObject {
 
     /** A matrix filled with matrix elements of HamiltonianPart in the space of FockState's.
      *  After diagonalization it stores the eigenfunctions of the problem in a rows of H. */
-    RealMatrixType H;                
+    MatrixType H;                
     /** A vector of eigenvalues of the HamiltonianPart. */
     RealVectorType Eigenvalues;      
 
@@ -78,9 +78,9 @@ public:
     InnerQuantumState getSize(void) const;
 
     /** Get the matrix element of the HamiltonianPart by the number of states inside the part. */ 
-    RealType getMatrixElement(InnerQuantumState m, InnerQuantumState n) const; //return H(m,n)
+    MelemType getMatrixElement(InnerQuantumState m, InnerQuantumState n) const; //return H(m,n)
     /** Get the matrix element of the Hamiltonian within two given FockStates. */
-    RealType getMatrixElement(FockState m, FockState n) const; //return H(m,n)
+    MelemType getMatrixElement(FockState m, FockState n) const; //return H(m,n)
 
     /** Get the eigenvalue of the H matrix.
      * \param[in] Number of eigenvalue. */
@@ -90,13 +90,13 @@ public:
     const RealVectorType& getEigenValues() const; 
 
     /** Return the hamiltonian part matrix. */
-    const RealMatrixType& getMatrix() const;
+    const MatrixType& getMatrix() const;
 
     /** Return the lowest Eigenvalue of the current part. */
     RealType getMinimumEigenvalue() const;        
     /** Return the eigenstate of the H matrix.
      * \param[in] Number of eigenvalue. */
-    RealVectorType getEigenState(InnerQuantumState state) const;
+    VectorType getEigenState(InnerQuantumState state) const;
 
     /** Return the QuantumNumbers associated with the Hamiltonian part. */
     QuantumNumbers getQuantumNumbers() const; 

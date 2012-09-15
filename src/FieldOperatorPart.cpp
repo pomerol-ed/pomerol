@@ -40,7 +40,7 @@ void FieldOperatorPart::compute()
 
     const std::vector<FockState>& toStates = S.getFockStates(to);
     const std::vector<FockState>& fromStates = S.getFockStates(from);
-    std::vector<Eigen::Triplet<RealType> > tempElements;
+    std::vector<Eigen::Triplet<MelemType> > tempElements;
 
     /* Rotation is done in the following way:
      * C_{mn} = \sum_{lk} U^{+}_{nl} C_{lk} U_{km} = \sum_{lk} U^{*}_{ln}O_{lk}U_{km},
@@ -48,18 +48,22 @@ void FieldOperatorPart::compute()
     for (std::vector<FockState>::const_iterator CurrentState = fromStates.begin();
                                                 CurrentState < fromStates.end(); CurrentState++) {
 	    FockState K=*CurrentState;
-        std::map<FockState, RealType> result1 = O->actRight(K);
+        std::map<FockState, MelemType> result1 = O->actRight(K);
         if (result1.size()) {
             FockState L=result1.begin()->first; 
+            #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+            int sign = int(std::real(result1.begin()->second));
+            #else
             int sign = result1.begin()->second;
+            #endif
 	        if ( L!=ERROR_FOCK_STATE && std::abs(sign)>std::numeric_limits<RealType>::epsilon() ) {
 		        InnerQuantumState l=S.getInnerState(L), k=S.getInnerState(K);  
 		        for (InnerQuantumState n=0; n<toStates.size(); n++) { // Not the best solution, but no major overhead for dense matrices.
-		            if(HTo.getMatrixElement(l,n)!=0) {
+		            if(std::abs(HTo.getMatrixElement(l,n)) > std::numeric_limits<RealType>::epsilon()) {
 			            for (InnerQuantumState m=0; m<fromStates.size(); m++) {
-			                RealType C_nm = HTo.getMatrixElement(l,n)*sign*HFrom.getMatrixElement(k,m);
+			                MelemType C_nm = HTo.getMatrixElement(l,n)*RealType(sign)*HFrom.getMatrixElement(k,m);
 			                if (std::abs(C_nm)>MatrixElementTolerance) {
-				                tempElements.push_back( Eigen::Triplet<RealType> ( n,m, C_nm));
+				                tempElements.push_back( Eigen::Triplet<MelemType> ( n,m, C_nm));
 			                }
 			            }
 		            }
@@ -72,7 +76,9 @@ void FieldOperatorPart::compute()
 //                                                   CurrentState < toStates.end(); CurrentState++)
     elementsRowMajor = RowMajorMatrixType(toStates.size(),fromStates.size()); 
     elementsRowMajor.setFromTriplets( tempElements.begin(), tempElements.end());
+    #ifndef POMEROL_COMPLEX_MATRIX_ELEMENS
     elementsRowMajor.prune(MatrixElementTolerance);
+    #endif
     elementsColMajor = elementsRowMajor;
     Status = Computed;
 }

@@ -55,16 +55,16 @@ int main(int argc, char* argv[])
     auto map1=NN->actRight(ket);
     for ( auto it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
-        RealType Value= it1->second; 
+        MelemType Value= it1->second; 
         INFO("<" << bra << "| N |" << ket << "> = " << Value ); 
         }
-    if ( map1.size()!=1 && N.getMatrixElement(ket,ket)!=2) return EXIT_FAILURE;
+    if ( map1.size()!=1 && N.getMatrixElement(ket,ket)!=MelemType(2)) return EXIT_FAILURE;
     ket = FockState(IndexSize, 7);
     INFO ( "<" << ket << "| N |" << ket << "> = " << N.getMatrixElement(ket));
-    if ( std::abs(N.getMatrixElement(ket) - 3) >std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;
+    if ( std::abs(N.getMatrixElement(ket) - MelemType(3)) >std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;
     ket = FockState(IndexSize, 8);
     INFO ( "<" << ket << "| N |" << ket << "> = " << N.getMatrixElement(ket));
-    if ( std::abs(N.getMatrixElement(ket) - 1) >std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;
+    if ( std::abs(N.getMatrixElement(ket) - MelemType(1)) >std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;
     ket = FockState(IndexSize, 10);
     INFO ( "<" << ket << "| N |" << ket << "> = " << N.getMatrixElement(ket));
     INFO ( "<" << ket << "| N |" << ket << "> = " << NN->getMatrixElement(ket,ket));

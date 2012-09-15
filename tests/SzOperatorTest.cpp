@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
     auto map1=Sz.actRight(ket);
     for ( auto it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
-        RealType Value= it1->second; 
+        MelemType Value= it1->second; 
         INFO("<" << bra << "| Sz |" << ket << "> = " << Value ); 
         }
     if ( map1.size()!=1 && std::abs(Sz.getMatrixElement(ket,ket)+1.0)>std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;

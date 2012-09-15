@@ -70,12 +70,12 @@ RealType DensityMatrixPart::getAverageDoubleOccupancy(ParticleIndex i, ParticleI
     RealType NN=0.;
     QuantumState partSize = weights.size();
     for(InnerQuantumState s = 0; s < partSize; ++s){ // s is an EigenState number
-        RealVectorType CurrentEigenState = hpart.getEigenState(s);
+        VectorType CurrentEigenState = hpart.getEigenState(s);
         for (InnerQuantumState fi=0; (long) fi < CurrentEigenState.size(); ++fi)
             NN += weights(s)*
 		    S.getFockState(hpart.getBlockNumber(),fi)[i]*
 		    S.getFockState(hpart.getBlockNumber(),fi)[j]*
-		CurrentEigenState(fi)*CurrentEigenState(fi);
+		std::abs(CurrentEigenState(fi)*CurrentEigenState(fi));
     }
     return NN;
 };

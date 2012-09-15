@@ -55,13 +55,13 @@ public:
     boost::shared_ptr<std::list<Operator::Term*> > getTerms() const;
 
     /** Returns a matrix element of the operator. */
-    virtual RealType getMatrixElement(const FockState &bra, const FockState &ket) const;
+    virtual MelemType getMatrixElement(const FockState &bra, const FockState &ket) const;
 
     /** Returns a result of acting of an operator on a state
      * \param[in] ket A state to act on.
      * \param[out] A list of pairs of states and corresponding matrix elements, which are the result of an action.
      */
-    virtual std::map<FockState, RealType> actRight(const FockState &ket) const;
+    virtual std::map<FockState, MelemType> actRight(const FockState &ket) const;
 
     /** Returns an operator that is a commutator of current operator and another one
      * \param[in] rhs An operator to calculate a commutator with.
@@ -84,7 +84,7 @@ protected:
     /** Array of ParticleIndices. */
     std::vector<ParticleIndex> Indices;
     /** Matrix element of Term. */
-    RealType Value;
+    MelemType Value;
 private:
 
     /** Makes a swap of two adjacent operators in the term taking into account the anticommutation relation.
@@ -104,7 +104,7 @@ public:
     /** Return amount of operators in Term. */
     unsigned int getN();
     /** Returns a matrix element of the Operator::Term. */
-    RealType getMatrixElement(const FockState &bra, const FockState &ket);
+    MelemType getMatrixElement(const FockState &bra, const FockState &ket);
     /** Check if the Term commutes with the other Term. */
     bool commutes(const Term &rhs);
 
@@ -112,14 +112,14 @@ public:
      * \param[in] ket A state to act on. 
      * \param[out] A pair of Resulting state and matrix element.
      */
-    boost::tuple<FockState, RealType> actRight(const FockState &ket);
+    boost::tuple<FockState, MelemType> actRight(const FockState &ket);
 
     /** Constructor
      * \param[in] N Total amount of operators in the term.
      * \param[in] Sequence Sequence of creation/annihilation operators in the term. True goes for creation, false - for annihilation.
      * \param[in] Indices Corresponding indices of the creation/annihilation operators.
      */
-    Term (const unsigned int N, const std::vector<bool>&  Sequence, const std::vector<ParticleIndex>& Indices, RealType Value);
+    Term (const unsigned int N, const std::vector<bool>&  Sequence, const std::vector<ParticleIndex>& Indices, MelemType Value);
     /** Exception - wrong operation with labels. */
     class exWrongLabel : public std::exception { virtual const char* what() const throw(); };
     /** Exception - wrong operation with bool sequence. */

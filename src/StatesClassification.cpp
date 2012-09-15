@@ -46,7 +46,7 @@ void StatesClassification::compute()
         FockState current_state(IndexSize,FockStateIndex);
         QuantumNumbers QNumbers(Symm.getQuantumNumbers());
         for (int n=0; n<NOperations; ++n) {
-            RealType Value=sym_op[n]->getMatrixElement(current_state, current_state);
+            MelemType Value=sym_op[n]->getMatrixElement(current_state, current_state);
             QNumbers.set(n,Value);
         }
         std::map<QuantumNumbers, BlockNumber>::iterator map_pos=QuantumToBlock.find(QNumbers);

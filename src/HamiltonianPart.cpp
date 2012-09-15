@@ -39,15 +39,15 @@ void HamiltonianPart::prepare()
 
     H.resize(BlockSize,BlockSize);		
     H.setZero();
-    std::map<FockState,RealType>::const_iterator melem_it;
+    std::map<FockState,MelemType>::const_iterator melem_it;
 
     for(InnerQuantumState right_st=0; right_st<BlockSize; right_st++)
     {
         FockState ket = S.getFockState(Block,right_st);
-        std::map<FockState,RealType> mapStates = F.actRight(ket);
+        std::map<FockState,MelemType> mapStates = F.actRight(ket);
         for (melem_it=mapStates.begin(); melem_it!=mapStates.end(); melem_it++) {
             FockState bra = melem_it -> first;
-            RealType melem = melem_it -> second;
+            MelemType melem = melem_it -> second;
             InnerQuantumState left_st = S.getInnerState(bra);
 //            if (left_st > right_st) { ERROR("!"); exit(1); };
             H(left_st,right_st) = melem;
@@ -55,7 +55,7 @@ void HamiltonianPart::prepare()
     }
 		
 //    H.triangularView<Eigen::Lower>() = H.triangularView<Eigen::Upper>().transpose();
-    assert(RealMatrixType(H.triangularView<Eigen::Lower>()) == RealMatrixType(H.triangularView<Eigen::Upper>().transpose()));
+    assert(MatrixType(H.triangularView<Eigen::Lower>()) == MatrixType(H.triangularView<Eigen::Upper>().transpose()));
     Status = Prepared;
 }
 
@@ -63,11 +63,19 @@ void HamiltonianPart::diagonalize()		//method of diagonalization classificated p
 {
     if (Status >= Diagonalized) return;
     if (H.rows() == 1) {
-	    Eigenvalues = H;
+        #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+        assert (std::abs(H(0,0) - std::real(H(0,0))) < std::numeric_limits<RealType>::epsilon());
+        #endif
+        Eigenvalues.resize(1);
+        #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+	    Eigenvalues << std::real(H(0,0));
+        #else 
+	    Eigenvalues << H(0,0);
+        #endif
 	    H(0,0) = 1;
         }
     else {
-	    Eigen::SelfAdjointEigenSolver<RealMatrixType> Solver(H,Eigen::ComputeEigenvectors);
+	    Eigen::SelfAdjointEigenSolver<MatrixType> Solver(H,Eigen::ComputeEigenvectors);
 	    H = Solver.eigenvectors();
 	    Eigenvalues = Solver.eigenvalues();	// eigenvectors are ready
     }
@@ -75,7 +83,7 @@ void HamiltonianPart::diagonalize()		//method of diagonalization classificated p
 }
 
 
-RealType HamiltonianPart::getMatrixElement(InnerQuantumState m, InnerQuantumState n) const	//return  H(m,n)
+MelemType HamiltonianPart::getMatrixElement(InnerQuantumState m, InnerQuantumState n) const	//return  H(m,n)
 {
     return H(m,n);
 }
@@ -107,12 +115,12 @@ void HamiltonianPart::print_to_screen() const
     INFO(H << std::endl);
 }
 
-const RealMatrixType& HamiltonianPart::getMatrix() const
+const MatrixType& HamiltonianPart::getMatrix() const
 {
     return H;
 }
 
-RealVectorType HamiltonianPart::getEigenState(InnerQuantumState state) const
+VectorType HamiltonianPart::getEigenState(InnerQuantumState state) const
 {
     if ( Status < Diagonalized ) throw (exStatusMismatch());
     return H.col(state);
@@ -143,7 +151,11 @@ void HamiltonianPart::save(H5::CommonFG* RootGroup) const
 {
     HDF5Storage::saveInt(RootGroup,"Block",Block);
     HDF5Storage::saveRealVector(RootGroup,"V",Eigenvalues);
+    #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+    HDF5Storage::saveMatrix(RootGroup,"H",H);
+    #else
     HDF5Storage::saveRealMatrix(RootGroup,"H",H);
+    #endif
 }
  
 void HamiltonianPart::load(const H5::CommonFG* RootGroup)
@@ -153,7 +165,11 @@ void HamiltonianPart::load(const H5::CommonFG* RootGroup)
 	    throw(H5::DataSetIException("HamiltonianPart::load()",
 				    "Data in the storage is for another set of quantum numbers."));
     HDF5Storage::loadRealVector(RootGroup,"V",Eigenvalues);
+    #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+    HDF5Storage::loadMatrix(RootGroup,"H",H);
+    #else
     HDF5Storage::loadRealMatrix(RootGroup,"H",H);
+    #endif
 
     Status = Diagonalized;
 }
