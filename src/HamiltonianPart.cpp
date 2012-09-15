@@ -55,7 +55,8 @@ void HamiltonianPart::prepare()
     }
 		
 //    H.triangularView<Eigen::Lower>() = H.triangularView<Eigen::Upper>().transpose();
-    assert(MatrixType(H.triangularView<Eigen::Lower>()) == MatrixType(H.triangularView<Eigen::Upper>().transpose()));
+//    assert(MatrixType(H.triangularView<Eigen::Lower>()) == MatrixType(H.triangularView<Eigen::Upper>().transpose()));
+    assert(H.adjoint() == H);
     Status = Prepared;
 }
 
