@@ -4,7 +4,7 @@ link_libraries(
     ${Boost_LIBRARIES}
     ${PYTHON_LIBRARIES}
     ${HDF5_LIBRARIES}
-    jsoncpp
+    pomerol_jsoncpp
     pomerol
 )
 
