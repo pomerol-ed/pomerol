@@ -18,6 +18,10 @@ message(STATUS "HDF5 libs: " ${HDF5_LIBRARIES} )
 #message("Include dirs of Python: " ${PYTHON_INCLUDE_DIRS} )
 #message("Libs of Python: " ${PYTHON_LIBRARIES} )
 
+option(use_complex "Use complex matrix elements" OFF)
+if (use_complex)
+    add_definitions("-DPOMEROL_COMPLEX_MATRIX_ELEMENS")
+endif (use_complex)
 
 include_directories(
     ${Boost_INCLUDE_DIRS}

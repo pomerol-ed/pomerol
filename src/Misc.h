@@ -64,9 +64,15 @@ namespace Pomerol{
 
 /** Real floating point type. */
 typedef double RealType;
-//typedef std::complex<double> RealType;
 /** Complex type. */
 typedef std::complex<double> ComplexType;
+
+/** Matrix element type. */
+#ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
+typedef ComplexType MelemType;
+#else
+typedef RealType MelemType;
+#endif
 
 /** Fock State representation. */ 
 typedef boost::dynamic_bitset<> FockState;
