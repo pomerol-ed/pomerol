@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2011 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2010-2011 Andrey Antipov <Andrey.E.Antipov@gmail.com>
+// Copyright (C) 2010-2011 Igor Krivenko <Igor.S.Krivenko@gmail.com>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 /** \file Symmetrizer.h
 **  \brief Declaration of the Symmetrizer class - a class to store and get the information about the symmetries of the system.
 ** 
-**  \author    Andrey Antipov (antipov@ct-qmc.org)
+**  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
 #ifndef __INCLUDE_SYMMETRIZER_H
