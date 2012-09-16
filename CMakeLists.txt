@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.6)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 project (pomerol)
 
-set(DOXYFILE_SOURCE_DIR ./src)
+set(DOXYFILE_SOURCE_DIR "./src")
 include(UseDoxygen)
 
 find_package (Boost COMPONENTS python)
