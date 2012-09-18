@@ -69,6 +69,7 @@ int main(int argc, char *argv[])
 		std::cout << "Lattice File         : " << opt.LatticeFile << std::endl;
 		std::cout << "Number Of Matsubaras : " << opt.NumberOfMatsubaras << std::endl;
 		std::cout << "beta:                : " << opt.beta << std::endl;
+		std::cout << "Calculation of vertex: " << opt.calc_vertex << std::endl;
 	} catch (const optparse::unrecognized_option& e) {
 		std::cout << "unrecognized option: " << e.what() << std::endl;
 		return 1;
@@ -141,7 +142,7 @@ int main(int argc, char *argv[])
       G.computeAll();
        }
 
-  if (1==1) {   
+  if (opt.calc_vertex) {   
       print_section("Two Particle Green's function calculation");
       std::set<IndexCombination4> v1;
       v1.insert(IndexCombination4(0,IndexInfo.getIndexSize()/2,0,IndexInfo.getIndexSize()/2));

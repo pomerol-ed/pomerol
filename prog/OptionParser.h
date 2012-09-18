@@ -233,8 +233,9 @@ public:
 	unsigned long NumberOfMatsubaras;
 	std::string LatticeFile;
 	std::string help;
+    bool calc_vertex;
 
-	pomerolOptionParser() : beta(10), NumberOfMatsubaras(60), LatticeFile("Lattice.json"), help("") {}
+	pomerolOptionParser() : beta(10), NumberOfMatsubaras(60), LatticeFile("Lattice.json"), help(""), calc_vertex(false) {}
 
 	BEGIN_OPTION_MAP_INLINE()
 		ON_OPTION(SHORTOPT('b') || LONGOPT("beta"))
@@ -250,6 +251,10 @@ public:
 		ON_OPTION(SHORTOPT('l') || LONGOPT("lattice") || LONGOPT("Lattice"))
 			LatticeFile = arg;
 			used_args = 1;	// Notify the parser of a consumption of argument.
+		ON_OPTION(LONGOPT("calc_vertex") || LONGOPT("calc_vertex"))
+            calc_vertex=true;
+			used_args = 1;	// Notify the parser of a consumption of argument.
+
 
         ON_OPTION(SHORTOPT('h') || LONGOPT("help"))
             std::cout << "pomerolDiag - an ED code, which provides one- and two- particle Greens functions and irreducible vertex part in Matsubara domain" << std::endl;
@@ -259,6 +264,7 @@ public:
             std::cout << "-m     --matsubaras  : Amount of Matsubara frequencies. Default: " << NumberOfMatsubaras<< std::endl;
             std::cout << "-l     --lattice     : A file with the lattice. Default : " << LatticeFile << std::endl;
             std::cout << "-h     --help        : Show this help message" << std::endl;
+            std::cout << "--calc_vertex        : Defines whether the program will calculate a vertex or not. Default: false." << std::endl;
             exit(0);
 
 	END_OPTION_MAP()

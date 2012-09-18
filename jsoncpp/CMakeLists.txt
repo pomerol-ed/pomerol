@@ -6,3 +6,6 @@ add_library(pomerol_jsoncpp SHARED ${json_sources})
 install(TARGETS pomerol_jsoncpp
     LIBRARY DESTINATION lib
     )
+
+install(DIRECTORY include/json DESTINATION include/pomerol
+          FILES_MATCHING PATTERN "*.h")
