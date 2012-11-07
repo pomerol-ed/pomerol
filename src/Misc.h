@@ -40,11 +40,11 @@
 #include<list>
 #include<map>
 
-#include<boost/shared_ptr.hpp>
-#include<boost/make_shared.hpp>
-#include<boost/scoped_ptr.hpp>
+#include<memory>
+#include<tuple>
+
 #include<boost/dynamic_bitset.hpp>
-#include<boost/tuple/tuple.hpp>
+//#include<boost/tuple/tuple.hpp>
 
 #define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 #include<Eigen/Core>
@@ -91,9 +91,8 @@ typedef unsigned int ParticleIndex;
 enum class OperatorStatistics : bool {fermion, boson}; 
 /** A creation and annihilation operators */
 //typedef boost::tuple<bool,OperatorStatistics,ModeIndex,ParticleIndex> ElementaryOperator; 
-typedef boost::tuple<bool,OperatorStatistics,ParticleIndex> ElementaryOperator; 
-template<typename ParticleIndex> 
-using ElemCreatOpFermion = typename ElementaryOperator<1,0,ParticleIndex>;
+typedef std::tuple<bool,OperatorStatistics,ParticleIndex> ElementaryOperator; 
+template<ParticleIndex P> using ElemCreatOpFermion = typename ElementaryOperator<1,0,P>;
 //template<ParticleIndex> typedef boost::tuple<0,0,ParticleIndex> ElemAnnihOpFermion; 
 
 /** Dense complex matrix. */
