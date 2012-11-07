@@ -78,8 +78,8 @@ typedef RealType MelemType;
 /** Index represents a combination of spin, orbital, and lattice indices **/
 typedef unsigned int ParticleIndex;
 
-enum Statistics { fermion, boson };
-typedef boost::tuple<bool,Statistics,ParticleIndex> AtomicOp;
+//enum Statistics { fermion, boson };
+//typedef boost::tuple<bool,Statistics,ParticleIndex> AtomicOp;
 //typedef AtomicOp<1,fermion,ParticleIndex> AtomicCdag;
 
 /** Fock State representation. */ 
