@@ -75,6 +75,13 @@ typedef ComplexType MelemType;
 typedef RealType MelemType;
 #endif
 
+/** Index represents a combination of spin, orbital, and lattice indices **/
+typedef unsigned int ParticleIndex;
+
+enum Statistics { fermion, boson };
+typedef boost::tuple<bool,Statistics,ParticleIndex> AtomicOp;
+//typedef AtomicOp<1,fermion,ParticleIndex> AtomicCdag;
+
 /** Fock State representation. */ 
 typedef boost::dynamic_bitset<> FockState;
 const FockState ERROR_FOCK_STATE = FockState(); // A state with the size==0 is an error state
