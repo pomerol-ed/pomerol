@@ -26,7 +26,10 @@
 */
 
 #include "Operator.h"
-#include "boost/tuple/tuple.hpp"
+#include <boost/tuple/tuple.hpp>
+#include <boost/utility.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <boost/lambda/bind.hpp>
 
 namespace Pomerol{
 
@@ -40,9 +43,11 @@ Operator::Term::Term (const unsigned int N, const std::vector<bool>&  Sequence, 
     if (Sequence.size()!=N || Indices.size()!=N) throw(exWrongLabel());
     for (unsigned int i=0; i<N; ++i) {  
         int count_index=2*Sequence[i]-1; // This determines how many times current index Indices[i] is found. c^+ gives +1, c gives -1.
+        //DEBUG(i << " " << Indices[i] << " " << count_index);
         for (unsigned int j=i+1; j<N; ++j)
             if (Indices[i]==Indices[j] ) { 
                 count_index+=2*Sequence[j]-1; 
+                //DEBUG(j << " " << Indices[j] << " " << count_index);
                 if ( count_index > 1 || count_index < -1 ) { ERROR("This term vanishes. "); throw (exWrongOpSequence()); }; 
             } 
         };    
@@ -86,7 +91,27 @@ boost::shared_ptr<std::list<Operator::Term*> > Operator::Term::rearrange(const s
                 }; // end of else
             }; // end of element check
         } // end of i loop
+    // Now we have the right order of booleans - what about indices? Indices should be rearranged prior to this
     return out;
+}
+
+void Operator::Term::reorder(bool ascend)
+{
+    //DEBUG("reordering " << *this);
+    if (!N) return;
+    assert ( OperatorSequence[0]==1 && OperatorSequence[N-1]==0);
+    for (unsigned int i=0; i<N/2; ++i)
+        for (unsigned int j=i*(!ascend); j<N/2-i*ascend-1; ++j)
+        {
+            if (ascend) {
+                if (Indices[j+1] < Indices[j]) elementary_swap(j,true);
+                if (Indices[j+1+N/2] < Indices[j+N/2]) elementary_swap(j+N/2,true);
+                }
+            else {
+                if (Indices[j+1] > Indices[j]) elementary_swap(j,true);
+                if (Indices[j+1+N/2] > Indices[j+N/2]) elementary_swap(j+N/2,true); // indices are unsigned int, so this is stable
+            }
+        }
 }
 
 boost::shared_ptr<std::list<Operator::Term*> > Operator::Term::makeNormalOrder()
@@ -99,7 +124,15 @@ boost::shared_ptr<std::list<Operator::Term*> > Operator::Term::makeNormalOrder()
         else normalOrderedSequence.insert(normalOrderedSequence.begin(),1);
         //else normalOrderedSequence.resize(normalOrderedSequence.size()+1,1); // for a bitset
         }
-    return this->rearrange(normalOrderedSequence);
+    boost::shared_ptr<std::list<Operator::Term*> > out = this->rearrange(normalOrderedSequence);
+    //DEBUG("Main: " << *this);
+    this->reorder();
+    for (std::list<Operator::Term*>::iterator iter_it = out->begin(); iter_it!=out->end(); ++iter_it) {
+            //DEBUG("Additional: " << **iter_it);
+            boost::shared_ptr<std::list<Operator::Term*> > out2 = (*iter_it)->makeNormalOrder();
+            out->splice(boost::prior(out->end()),*out2);
+        }
+    return out;
 }
 
 boost::shared_ptr<std::list<Operator::Term*> > Operator::Term::elementary_swap(unsigned int position, bool force_ignore_commutation)
@@ -170,6 +203,108 @@ std::ostream& operator<< (std::ostream& output, const Operator::Term& out)
     return output; 
 }
 
+bool Operator::Term::isExactlyEqual(const Operator::Term &rhs) const
+{
+    bool out=(N==rhs.N && Value==rhs.Value);
+    if (!out) return false;
+    for (unsigned int i=0; i<N; ++i) { out = (out && OperatorSequence[i] == rhs.OperatorSequence[i] && Indices[i] == rhs.Indices[i]); };
+    return out;
+}
+
+bool Operator::Term::operator==(const Operator::Term &rhs) const
+{
+    bool out=(rhs.isExactlyEqual(*this));
+    if (out) return true;
+    Operator::Term this_copy(*this);
+    Operator::Term rhs_copy(rhs);
+    boost::shared_ptr<std::list<Operator::Term*> > list_lhs = this_copy.makeNormalOrder();
+    boost::shared_ptr<std::list<Operator::Term*> > list_rhs = rhs_copy.makeNormalOrder();
+    reduce(list_lhs);
+    reduce(list_rhs);
+//    DEBUG(this_copy << "," << rhs_copy);
+//    DEBUG(list_lhs->size());
+    if (!(this_copy.isExactlyEqual(rhs_copy)) || list_lhs->size() != list_rhs->size() ) return false;
+    out = true;
+    for ( std::pair<std::list<Operator::Term*>::iterator, std::list<Operator::Term*>::iterator> pair_it = std::make_pair(list_lhs->begin(), list_rhs->begin()); 
+          pair_it.first!=list_lhs->end() && pair_it.second!=list_rhs->end(); ) { 
+//        DEBUG(**pair_it.first);
+//        DEBUG(**pair_it.second);
+        out = (out && (**pair_it.first).isExactlyEqual(**pair_it.second));
+        pair_it.first++; pair_it.second++;
+        }
+    return out;
+}
+
+
+
+boost::shared_ptr<std::list<Operator::Term*> > Operator::Term::getCommutator(const Operator::Term &rhs) const
+{
+    boost::shared_ptr<std::list<Operator::Term*> > out ( new std::list<Operator::Term*> );
+    int Ntotal = N+rhs.N;
+    
+    std::vector<bool> Seq2(Ntotal);
+    std::vector<unsigned int> Ind2(Ntotal);
+
+    for (unsigned int i=0; i<N; ++i)      { Seq2[i] = OperatorSequence[i]; Ind2[i] = Indices[i]; };
+    for (unsigned int i=N; i<Ntotal; ++i) { Seq2[i] = rhs.OperatorSequence[i-N]; Ind2[i] = rhs.Indices[i-N]; };
+    try {
+            out->push_back(new Term(Ntotal, Seq2, Ind2, Value));
+        }
+    catch (Operator::Term::exWrongOpSequence &e)
+        {
+            ERROR("Commutator [" << *this << "," << rhs << "] creates a vanishing term");
+        }
+
+    for (unsigned int i=0; i<rhs.N; ++i)      { Seq2[i] = rhs.OperatorSequence[i]; Ind2[i] = rhs.Indices[i]; };
+    for (unsigned int i=rhs.N; i<Ntotal; ++i) { Seq2[i] = OperatorSequence[i-rhs.N]; Ind2[i] = Indices[i-rhs.N]; };
+    try {
+            out->push_back(new Term(Ntotal, Seq2, Ind2, -Value));
+        }
+    catch (Operator::Term::exWrongOpSequence &e)
+        {
+            ERROR("Commutator [" << *this << "," << rhs << "] creates a vanishing term");
+        };
+
+    return out;
+}
+
+bool Operator::Term::commutes(const Operator::Term &rhs) const
+{
+    boost::shared_ptr<std::list<Operator::Term*> > out_terms = this->getCommutator(rhs);
+    if (out_terms->size() == 0) return true;
+    if (out_terms->size() == 1) return false;
+    assert (out_terms->size() == 2);
+    Operator::Term* term1 = (*out_terms->begin());
+    Operator::Term* term2 = (*out_terms->begin()++);
+    return (*term1 == *term2);
+}
+
+void Operator::Term::reduce(boost::shared_ptr<std::list<Operator::Term*> > Terms)
+{
+    int it1_pos=0;
+    for (std::list<Operator::Term*>::iterator it1 = Terms->begin(); it1!=Terms->end(); it1++) {
+        for (std::list<Operator::Term*>::iterator it2 = boost::next(it1); it2!=Terms->end();) {
+            if (it2!=Terms->end()) {
+                if ((**it2).OperatorSequence == (**it1).OperatorSequence && (**it2).Indices == (**it1).Indices) {
+                    (**it1).Value+=(**it2).Value;
+                    it2 = Terms->erase(it2);
+                    it1 = Terms->begin();
+                    std::advance(it1,it1_pos);
+                    }
+                else it2++;
+                }
+            }
+        it1_pos++;
+    }
+}
+
+void Operator::Term::prune(boost::shared_ptr<std::list<Operator::Term*> > Terms, const RealType &Precision)
+{
+    //std::remove_if (Terms->begin(), Terms->end(), std::abs(boost::bind(boost::lambda::_1)->Value) < Precision);
+    for (std::list<Operator::Term*>::iterator it1 = Terms->begin(); it1!=Terms->end(); it1++)
+        if (std::abs((**it1).Value) < Precision) it1=Terms->erase(it1);
+}
+
 //
 // Operator
 //
@@ -178,6 +313,11 @@ Operator::Operator()
 {
     Terms.reset( new std::list<Operator::Term*> );
 }
+
+Operator::Operator(boost::shared_ptr<std::list<Operator::Term*> > Terms) : Terms(Terms)
+{
+}
+
 
 void Operator::printAllTerms() const
 {
@@ -223,6 +363,28 @@ Operator::~Operator()
     Terms.reset();
 }
 
+void Operator::makeNormalOrder()
+{
+    std::list<Operator::Term*> output; // Here we will store the normal ordered output terms.
+    for (std::list<Operator::Term*>::const_iterator it = Terms->begin(); it!=Terms->end(); it++) {
+        boost::shared_ptr<std::list<Operator::Term* > > out = (**it).makeNormalOrder();
+        output.splice(boost::prior(output.end()),*out);
+    }
+    Terms->splice(boost::prior(Terms->end()),output);
+    this->reduce();
+    this->prune();
+}
+
+void Operator::reduce()
+{
+    Operator::Term::reduce(Terms);
+}
+
+void Operator::prune(const RealType &Precision)
+{
+    Operator::Term::prune(Terms,Precision);
+}
+
 std::ostream& operator<< (std::ostream& output, const Operator& out)
 {
     for (std::list<Operator::Term*>::const_iterator it = out.Terms->begin(); it!=out.Terms->end(); it++) {
@@ -230,5 +392,39 @@ std::ostream& operator<< (std::ostream& output, const Operator& out)
         };
     return output;
 }
+
+Operator Operator::getCommutator(const Operator &rhs) const
+{
+   // DEBUG("!!" << rhs.Terms->size());
+    boost::shared_ptr<std::list<Operator::Term*> > output ( new std::list<Operator::Term*>);
+    for (std::list<Operator::Term*>::const_iterator it = Terms->begin(); it!=Terms->end(); it++)
+        for (std::list<Operator::Term*>::const_iterator it2 = rhs.Terms->begin(); it2!=rhs.Terms->end(); it2++) {
+   //         DEBUG("Commuting" << **it << " and " << **it2);
+            boost::shared_ptr<std::list<Operator::Term* > > out2 = (**it).getCommutator(**it2); 
+    //        DEBUG(out2->size() << " terms generated.");
+            output->splice(boost::prior(output->end()),*out2);
+    //        DEBUG(output->size() << " in output.");
+    }
+    Operator out(output);
+    return out;
+}
+
+bool Operator::commutes(const Operator &rhs) const
+{
+    bool out;
+    Operator out_return(this->getCommutator(rhs));
+    INFO("+++++++");
+    out_return.printAllTerms();
+    INFO("+++++++");
+    out_return.makeNormalOrder();
+    out_return.printAllTerms();
+    INFO("+++++++");
+    out_return.reduce();
+    out_return.prune();
+    out_return.printAllTerms();
+//    DEBUG(out_return.Terms->size());
+    return out;
+}
+
 
 } // end of namespace Pomerol

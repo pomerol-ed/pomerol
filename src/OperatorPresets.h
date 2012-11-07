@@ -50,6 +50,7 @@ private:
     bool SimpleOrdering; // If true, spins up are in the beginning, spins down are in the end.
     std::vector<ParticleIndex> SpinUpIndices; 
     std::vector<ParticleIndex> SpinDownIndices; 
+    void generateTerms();
 public:
     Sz(ParticleIndex Nmodes);
     Sz(const std::vector<ParticleIndex> & SpinUpIndices, const std::vector<ParticleIndex> & SpinDownIndices);

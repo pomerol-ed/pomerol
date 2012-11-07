@@ -32,11 +32,7 @@
 
 namespace Pomerol {
 
-/** Index represents a combination of spin, orbital, and lattice indices **/
-typedef unsigned int ParticleIndex;
 
-/** Easy enumeration for orbital names. */
-enum OrbitalValue {s=0, p=1, d=2, f=3};             //!< The enum for s,p,d,f - orbitals
 
 template <int N> struct StaticIndexCombination
 {

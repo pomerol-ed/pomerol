@@ -85,6 +85,17 @@ const FockState ERROR_FOCK_STATE = FockState(); // A state with the size==0 is a
  **/
 typedef unsigned long QuantumState;
 
+/** Index represents a combination of spin, orbital, and lattice indices **/
+typedef unsigned int ParticleIndex;
+
+enum class OperatorStatistics : bool {fermion, boson}; 
+/** A creation and annihilation operators */
+//typedef boost::tuple<bool,OperatorStatistics,ModeIndex,ParticleIndex> ElementaryOperator; 
+typedef boost::tuple<bool,OperatorStatistics,ParticleIndex> ElementaryOperator; 
+template<typename ParticleIndex> 
+using ElemCreatOpFermion = typename ElementaryOperator<1,0,ParticleIndex>;
+//template<ParticleIndex> typedef boost::tuple<0,0,ParticleIndex> ElemAnnihOpFermion; 
+
 /** Dense complex matrix. */
 typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> ComplexMatrixType;
 /** Dense real matrix. */

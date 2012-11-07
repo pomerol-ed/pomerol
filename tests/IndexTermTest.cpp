@@ -54,6 +54,7 @@ int main(int argc, char* argv[])
     {
         return EXIT_FAILURE;
     }
+    
 
    FockState a1(4);
    a1[0]=1;
@@ -76,6 +77,82 @@ int main(int argc, char* argv[])
    if (result != MelemType(1)) return EXIT_FAILURE;
    if (bra == ERROR_FOCK_STATE) DEBUG("Term vanishes")
    else DEBUG ( "State: " << bra << " Matrix element: " << result);
+
+   seq_v.resize(2); ind_v.resize(2);
+   seq_v[0]=1; seq_v[1]=0;
+   ind_v[0]=1; ind_v[1]=1;
+   Operator::Term IT4(2, seq_v, ind_v, 1.0);
+   INFO("Checking term " << IT4);
+   boost::shared_ptr<std::list<Operator::Term*> > out_terms=IT4.makeNormalOrder();
+   INFO(out_terms->size() << " additional terms emerged : ");     
+   for (std::list<Operator::Term*>::const_iterator it1=out_terms->begin(); it1!=out_terms->end(); ++it1) DEBUG(**it1);
+   
+   INFO("( " << IT4 << "==" << IT4 << " ) =" << (IT4==IT4));
+   INFO("( " << IT4 << "==" << IT1 << " ) =" << (IT4==IT1));
+   //DEBUG(IT4.commutes(IT4));
+
+   seq_v[0]=1; seq_v[1]=0;
+   ind_v[0]=0; ind_v[1]=1;
+   Operator::Term IT5(2, seq_v, ind_v, 1.0);
+   seq_v[0]=0; seq_v[1]=1;
+   ind_v[0]=1; ind_v[1]=0;
+   Operator::Term IT6(2, seq_v, ind_v, -1.0);
+   Operator::Term IT7(2, seq_v, ind_v,  1.0);
+   
+   INFO("( " << IT5 << "==" << IT6 <<" ) = " << (IT5 == IT6));
+   if (!(IT5 == IT6)) return EXIT_FAILURE;
+   INFO("( " << IT5 << "==" << IT7 <<" ) = " << (IT5 == IT7));
+   if ((IT5 == IT7)) return EXIT_FAILURE;
+   
+   seq_v.resize(4); ind_v.resize(4);
+   seq_v[0]=1; seq_v[1]=0; seq_v[2]=1; seq_v[3]=0;
+   ind_v[0]=0; ind_v[1]=1; ind_v[2]=2; ind_v[3]=3;
+   Operator::Term IT8(4, seq_v, ind_v, 1.0);
+   seq_v[0]=1; seq_v[1]=0; seq_v[2]=0; seq_v[3]=1;
+   ind_v[0]=0; ind_v[1]=1; ind_v[2]=3; ind_v[3]=2;
+   Operator::Term IT9(4, seq_v, ind_v, -1.0);
+   INFO("( " << IT8 << "==" << IT9 <<" ) = " << (IT8 == IT9));
+   if (!(IT8==IT9)) return EXIT_FAILURE;
+   
+   seq_v[0]=1; seq_v[1]=0; seq_v[2]=0; seq_v[3]=1;
+   ind_v[0]=0; ind_v[1]=1; ind_v[2]=2; ind_v[3]=2;
+   Operator::Term IT10(4, seq_v, ind_v, 1.0);
+   seq_v[0]=0; seq_v[1]=1; seq_v[2]=0; seq_v[3]=1;
+   ind_v[0]=1; ind_v[1]=0; ind_v[2]=2; ind_v[3]=2;
+   Operator::Term IT11(4, seq_v, ind_v, -1.0);
+   INFO("( " << IT10 << "==" << IT11 <<" ) = " << (IT10 == IT11));
+   if (!(IT10==IT11)) return EXIT_FAILURE;
+   
+   INFO(IT4 << " commutes with " << IT4 << " = " << IT4.commutes(IT4));
+   INFO(IT10 << " commutes with " << IT11 << " = " << IT10.commutes(IT11));
+
+   // test reduce
+   boost::shared_ptr<std::list<Operator::Term*> > list1(new std::list<Operator::Term*>);
+   list1->push_back(new Operator::Term(IT10));
+   list1->push_back(new Operator::Term(IT10));
+   list1->push_back(new Operator::Term(IT11));
+   list1->push_back(new Operator::Term(IT11));
+   list1->push_back(new Operator::Term(IT10));
+   list1->push_back(new Operator::Term(IT9));
+   seq_v[0]=1; seq_v[1]=0; seq_v[2]=0; seq_v[3]=1;
+   ind_v[0]=1; ind_v[1]=1; ind_v[2]=0; ind_v[3]=0;
+   Operator::Term IT12 (4, seq_v, ind_v, 13.0);
+   list1->push_back(new Operator::Term(IT12));
+   Operator::Term IT12_2 (4, seq_v, ind_v, -5.0);
+   Operator::Term IT12_3 (4, seq_v, ind_v, -8.0);
+   list1->push_back(new Operator::Term(IT12_2));
+   list1->push_back(new Operator::Term(IT12_3));
+   INFO("Put 8 elements to list");
+
+   Operator::Term::reduce(list1);
+   INFO("Reduced to " << list1->size() << " elements.");
+   if (list1->size()!=4) return EXIT_FAILURE;
+   Operator::Term::prune(list1);
+   INFO("Pruned to " << list1->size() << " elements.");
+   if (list1->size()!=3) return EXIT_FAILURE;
+   Operator A1(list1);
+   A1.printAllTerms();
+
   /* end of test of Operator::Term */
 
   return EXIT_SUCCESS;

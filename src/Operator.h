@@ -49,10 +49,20 @@ protected:
 public:
     /** Empty constructor. */
     Operator();
+    /** Constructor from the list of Terms. */
+    Operator(boost::shared_ptr<std::list<Operator::Term*> > Terms);
     /** Print all of the Terms. */
     void printAllTerms() const;
     /** Returns all Terms. */
     boost::shared_ptr<std::list<Operator::Term*> > getTerms() const;
+
+    /** Makes all Terms in the operator normal-ordered. */
+    void makeNormalOrder();
+    /** Reduces all terms with the same indices and order. */
+    void reduce();
+    /** Removes all terms from the list of terms with a given precision. */
+    void prune(const RealType &Precision = std::numeric_limits<RealType>::epsilon());
+
 
     /** Returns a matrix element of the operator. */
     virtual MelemType getMatrixElement(const FockState &bra, const FockState &ket) const;
@@ -66,7 +76,14 @@ public:
     /** Returns an operator that is a commutator of current operator and another one
      * \param[in] rhs An operator to calculate a commutator with.
      * \param[out] Resulting operator. */
-    //Operator& getCommutator(const Operator &rhs);
+    Operator getCommutator(const Operator &rhs) const;
+
+    /** Checks if current operator commutes with a given one. 
+     * \param[in] rhs An operator to calculate a commutator with.
+    */
+    bool commutes(const Operator &rhs) const;
+    
+    /** Destructor. */
     virtual ~Operator();
     friend std::ostream& operator<< (std::ostream& output, const Operator& out);
 };
@@ -94,20 +111,42 @@ private:
      * \param[out] Terms produced while swapping.
      */
     boost::shared_ptr<std::list<Operator::Term*> > elementary_swap(unsigned int position, bool force_ignore_commutation = false);
+
+    /** Check if the Term is exactly the same as the other Term. */
+    bool isExactlyEqual (const Term &rhs) const;
+
+    /** Orders the indices in ascending/descending order. Works only for the term with the normal-ordered sequence of operators. */
+    void reorder(bool ascend=true);
 public:
-    /** Rearranges operators in the term to a desired sequence. 
+    /** Reduces all terms with the same indices and order.
+     *  \param[in] Terms A pointer to the list of pointers to Terms.
+     */
+    static void reduce(boost::shared_ptr<std::list<Operator::Term*> > Terms);
+    /** Removes all terms from the list of terms with a given precision.
+     *  \param[in] Terms A pointer to the list of pointers to Terms.
+     */
+    static void prune(boost::shared_ptr<std::list<Operator::Term*> > Terms, const RealType &Precision = std::numeric_limits<RealType>::epsilon());
+
+    /** Rearranges operators in the term to a desired sequence. Warning! This operation is not unique
      * \param[in] DesiredSequence A sequence of operators ( represented as a vector of bool ) to rearrange the term.
      */
     boost::shared_ptr<std::list<Operator::Term*> > rearrange(const std::vector<bool> & DesiredSequence); 
-    /** Rearranges a term to the normal order (с^+ to the left, c to the right). */
+    /** Rearranges a term to the normal order (с^+ to the left, c to the right). Makes ascending order of the indices. */
     boost::shared_ptr<std::list<Operator::Term*> > makeNormalOrder();
     /** Return amount of operators in Term. */
     unsigned int getN();
     /** Returns a matrix element of the Operator::Term. */
     MelemType getMatrixElement(const FockState &bra, const FockState &ket);
+    /** Check if the Term is the same as the other Term. */
+    bool operator==(const Term &rhs) const;
     /** Check if the Term commutes with the other Term. */
-    bool commutes(const Term &rhs);
+    bool commutes(const Term &rhs) const;
 
+    /** Calculate a commutator with another Operator::Term.
+     * \param[in] rhs An operator to calculate the commutator.
+     * \param[out] A resulting list of two terms. 
+     */
+    boost::shared_ptr<std::list<Operator::Term*> > getCommutator(const Operator::Term &rhs) const;
     /** Returns a result of acting on a state by a Term
      * \param[in] ket A state to act on. 
      * \param[out] A pair of Resulting state and matrix element.

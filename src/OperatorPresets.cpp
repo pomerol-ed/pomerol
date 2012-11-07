@@ -79,12 +79,35 @@ Sz::Sz(ParticleIndex Nmodes):Operator(),Nmodes(Nmodes)
 
     SpinDownIndices=std::vector<ParticleIndex>(0);
     for (ParticleIndex i=0; i<Nmodes/2; i++) SpinDownIndices.push_back(i);
+    generateTerms();
 }
 
 Sz::Sz(const std::vector<ParticleIndex> & SpinUpIndices, const std::vector<ParticleIndex> & SpinDownIndices) 
     : Operator(),Nmodes(SpinUpIndices.size() + SpinDownIndices.size()),SpinUpIndices(SpinUpIndices), SpinDownIndices(SpinDownIndices)
 {
     if (SpinUpIndices.size() != SpinDownIndices.size() ) { throw ( Pomerol::Operator::Term::exWrongLabel() ); ERROR("Sz operator requires even number of indices"); }; 
+    generateTerms();
+}
+
+void Sz::generateTerms()
+{
+    std::vector<ParticleIndex> ind;
+    ind.resize(2);
+    std::vector<bool> order;
+    order.resize(2);
+    order[0]=1;
+    order[1]=0;
+    for (ParticleIndex i=0; i<SpinUpIndices.size(); ++i) {
+        ind[0]=SpinUpIndices[i];
+        ind[1]=SpinUpIndices[i];
+        Operator::Term *T1 = new Operator::Term(2, order, ind, 0.5);
+        Terms->push_back(T1);
+
+        ind[0]=SpinDownIndices[i];
+        ind[1]=SpinDownIndices[i];
+        Operator::Term *T2 = new Operator::Term(2, order, ind, -0.5);
+        Terms->push_back(T2);
+    }
 }
 
 MelemType Sz::getMatrixElement(const FockState &ket) const

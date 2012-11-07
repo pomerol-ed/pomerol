@@ -92,7 +92,30 @@ int main(int argc, char* argv[])
     Storage.printTerms(2);
     INFO("Terms with 4 operators");
     Storage.printTerms(4);
+    
+    print_section("Making hamiltonian normal ordered");
+    Storage.printAllTerms();
+    INFO("==");
+    Storage.makeNormalOrder();
+    INFO("==");
+    Storage.printAllTerms();
 
+
+    ParticleIndex IndexSize = IndexInfo.getIndexSize();
+    OperatorPresets::Sz Sz(IndexSize);
+    INFO("Sz terms");
+    Sz.printAllTerms();
+    OperatorPresets::N N(IndexSize);
+    INFO("N terms");
+    N.printAllTerms();
+    INFO(Sz.commutes(N));
+    exit(0);
+
+    DEBUG(N);
+    if (!(Storage.commutes(N))) return EXIT_FAILURE;
+    INFO("H commutes with N");
+    if (!(Storage.commutes(Sz))) return EXIT_FAILURE;
+    INFO("H commutes with Sz");
     Symmetrizer Symm(IndexInfo, Storage);
     Symm.compute();
 
