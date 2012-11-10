@@ -37,18 +37,17 @@ int main(int argc, char* argv[])
 {
   /* Test of Operator::Term*/
   Log.setDebugging(true);
-  bool Seq[4] = {1,0,1,0};
-  ParticleIndex Ind[] = {0,0,1,1};
-  std::vector<bool> seq_v(Seq, Seq+4);
-  std::vector<ParticleIndex> ind_v(Ind, Ind+4);
-  Operator::Term IT1(4, seq_v, ind_v, 1.0);
-  INFO("Created Operator::Term" << IT1);
+  std::vector<ElemOp> ops;
+  ops.push_back(boost::make_tuple(1,0));
+  ops.push_back(boost::make_tuple(0,0));
+  ops.push_back(boost::make_tuple(1,1));
+  ops.push_back(boost::make_tuple(0,1));
+  Operator IT1(boost::make_tuple(1.0, ops)); 
+  INFO("Created Operator " << IT1);
   INFO("Rearranging it to normal order");
   try {
-    boost::shared_ptr<std::list<Operator::Term*> > out_terms=IT1.makeNormalOrder();
-    INFO("Received " << IT1);
-    INFO(out_terms->size() << " additional terms emerged : ");     
-    for (std::list<Operator::Term*>::const_iterator it1=out_terms->begin(); it1!=out_terms->end(); ++it1) DEBUG(**it1);
+        IT1.makeNormalOrder();
+        INFO(IT1);
     }
   catch (std::exception &e)
     {
@@ -59,38 +58,41 @@ int main(int argc, char* argv[])
    FockState a1(4);
    a1[0]=1;
    a1[1]=0;
-
-   seq_v.resize(1); ind_v.resize(1);
-   seq_v[0]=1; ind_v[0]=1;
-   Operator::Term IT2(1, seq_v, ind_v, 1.0);
-   INFO("Acting with operator " << IT2 << " on a state " << a1 );
-   FockState bra;
+   FockState res_state;
    MelemType result;
-   boost::tie(bra, result) = IT2.actRight(a1);
+   std::map<FockState, MelemType> out;
+
+   ops.resize(1);
+   ops[0]=boost::make_tuple(1,1);
+   Operator IT2(boost::make_tuple(1.0, ops));
+   out=IT2.actRight(a1);
+   res_state = out.begin()->first;
+   result = out.begin()->second;
+   INFO ( IT2 << "|" << a1 << "> =" << result << "|" << res_state << ">");
    if (result != MelemType(-1)) return EXIT_FAILURE;
-   else DEBUG ( "State: " << bra << " Matrix element: " << result);
 
-   seq_v[0]=0; ind_v[0]=0;
-   Operator::Term IT3 (1, seq_v, ind_v, 1.0);
+   ops[0]=boost::make_tuple(0,0);
+   Operator IT3(boost::make_tuple(1.0, ops));
    INFO("Acting with operator " << IT3 << " on a state " << a1 );
-   boost::tie(bra, result) = IT3.actRight(a1);
+   out=IT3.actRight(a1);
+   res_state = out.begin()->first;
+   result = out.begin()->second;
+   INFO ( IT3 << "|" << a1 << "> =" << result << "|" << res_state << ">");
    if (result != MelemType(1)) return EXIT_FAILURE;
-   if (bra == ERROR_FOCK_STATE) DEBUG("Term vanishes")
-   else DEBUG ( "State: " << bra << " Matrix element: " << result);
+   if (res_state == ERROR_FOCK_STATE) DEBUG("Term vanishes")
 
-   seq_v.resize(2); ind_v.resize(2);
-   seq_v[0]=1; seq_v[1]=0;
-   ind_v[0]=1; ind_v[1]=1;
-   Operator::Term IT4(2, seq_v, ind_v, 1.0);
-   INFO("Checking term " << IT4);
-   boost::shared_ptr<std::list<Operator::Term*> > out_terms=IT4.makeNormalOrder();
-   INFO(out_terms->size() << " additional terms emerged : ");     
-   for (std::list<Operator::Term*>::const_iterator it1=out_terms->begin(); it1!=out_terms->end(); ++it1) DEBUG(**it1);
+   ops.resize(2);
+   ops[0]=boost::make_tuple(1,1);
+   ops[1]=boost::make_tuple(0,1);
+   Operator IT4(boost::make_tuple(1.0, ops));
+   INFO("Checking " << IT4);
+   IT4.makeNormalOrder();
+   INFO(IT4);
    
-   INFO("( " << IT4 << "==" << IT4 << " ) =" << (IT4==IT4));
-   INFO("( " << IT4 << "==" << IT1 << " ) =" << (IT4==IT1));
+//   INFO("( " << IT4 << "==" << IT4 << " ) =" << (IT4==IT4));
+//   INFO("( " << IT4 << "==" << IT1 << " ) =" << (IT4==IT1));
    //DEBUG(IT4.commutes(IT4));
-
+/*
    seq_v[0]=1; seq_v[1]=0;
    ind_v[0]=0; ind_v[1]=1;
    Operator::Term IT5(2, seq_v, ind_v, 1.0);
@@ -152,7 +154,7 @@ int main(int argc, char* argv[])
    if (list1->size()!=3) return EXIT_FAILURE;
    Operator A1(list1);
    A1.printAllTerms();
-
+*/
   /* end of test of Operator::Term */
 
   return EXIT_SUCCESS;

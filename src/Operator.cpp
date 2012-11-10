@@ -37,6 +37,26 @@
 
 namespace Pomerol{
 
+std::ostream& operator<< (std::ostream& output, const ElemOp& out)
+{
+    output << (out.get<0>()?"c^{+}":"c") << "_" << out.get<1>();
+    return output;
+}
+
+std::ostream& operator<< (std::ostream& output, const std::vector<ElemOp>& out)
+{
+    for (unsigned int i=0; i<out.size(); ++i)  output << out[i]; 
+    return output;
+}
+
+std::ostream& operator<< (std::ostream& output, const OpTerm& out)
+{
+    output << out.get<0>();
+    const std::vector<ElemOp> &elems = out.get<1>();
+    for (unsigned int i=0; i<elems.size(); ++i)  output << elems[i]; 
+    return output;
+}
+
 bool Operator::checkTerm(const OpTerm &in)
 {
     if (std::abs(in.get<0>()) < std::numeric_limits<RealType>::epsilon()) return false;
@@ -74,11 +94,21 @@ Operator::Operator(boost::shared_ptr<std::list<OpTerm> > Terms) : Terms(Terms)
     Terms->remove_if(this->checkTerm);
 }
 
+Operator::Operator(const OpTerm& term)
+{
+    Terms.reset( new std::list<OpTerm> );
+    if (checkTerm(term)) Terms->push_back(term);
+}
+
 boost::shared_ptr<std::list<OpTerm> > Operator::getTerms() const
 {
     return Terms;
 }
 
+Operator::~Operator()
+{
+    Terms.reset();
+}
 bool Operator::isEmpty() const
 {
     return (Terms->size()==0);
@@ -87,10 +117,9 @@ bool Operator::isEmpty() const
 std::ostream& operator<< (std::ostream& output, const Operator& out)
 {
     for (std::list<OpTerm>::const_iterator it = out.Terms->begin(); it!=out.Terms->end(); it++) {
-        output << it->get<0>();
-        const std::vector<ElemOp> &elems = it->get<1>();
-        for (unsigned int i=0; i<elems.size(); ++i)  output << ((elems[i].get<0>())?"c^{+}":"c") << "_" << elems[i].get<1>();
-        output << std::endl;
+        if (it!=out.Terms->begin())  output << " + ";
+        output << *it;
+        //output << it->get<0>();
         };
     return output;
 }
@@ -127,8 +156,7 @@ const Operator Operator::operator+(const Operator &rhs) const
 Operator Operator::elementary_swap_adjacent(OpTerm &in, unsigned int position, bool force_ignore_commutation)
 {
     Operator out;
-    std::vector<ElemOp> in_ops;  MelemType Value;
-    boost::tie(Value,in_ops)=in;
+    std::vector<ElemOp>& in_ops = in.get<1>();  MelemType Value=in.get<0>();
     if ( in_ops[position].get<1>() != in_ops[position+1].get<1>() || force_ignore_commutation ) {
         in.get<0>()*=(-1.); 
         boost::swap(in_ops[position], in_ops[position+1]);
@@ -159,10 +187,10 @@ Operator Operator::elementary_swap(OpTerm &in, unsigned int position1, unsigned 
 
 void Operator::rearrange(boost::function<std::vector<ElemOp>( const std::vector<ElemOp> &in_f)> f)
 {
+    if (!Terms->size()) return;
     Operator out;
     for ( std::list<OpTerm>::iterator term_it = Terms->begin(); term_it != Terms->end(); term_it++) {
-        std::vector<ElemOp> in_ops;  MelemType Value;
-        boost::tie(Value,in_ops)=*term_it;
+        std::vector<ElemOp>& in_ops = term_it->get<1>();  
         std::vector<ElemOp> out_ops = f(in_ops);
         if (in_ops.size() != out_ops.size()) throw (exWrongOpSequence()); 
         unsigned int N=in_ops.size();
@@ -178,11 +206,13 @@ void Operator::rearrange(boost::function<std::vector<ElemOp>( const std::vector<
             // Finds an iterator to the element corresponding to the one in out_it.
             std::vector<ElemOp>::iterator in_it = std::find(in_ops.begin()+index_out, in_ops.end(), out_ops[index_out]);
             unsigned int index_in = std::distance(in_ops.begin(), in_it); 
-            for (unsigned int index2 = index_in-1; index2>=index_out; index2--) out+=elementary_swap_adjacent(*term_it,index2);
+            if (index_in - index_out > 0) for (unsigned int index2 = index_in-1; index2>=index_out; index2--) out+=elementary_swap_adjacent(*term_it,index2);
         }
     }
     out.rearrange(f);
     (*this)+=out;
+    this->reduce();
+    this->prune();
 }
 
 void Operator::makeNormalOrder()
@@ -265,6 +295,17 @@ void Operator::prune(const RealType &Precision)
     for (std::list<OpTerm>::iterator it1 = Terms->begin(); it1!=Terms->end(); it1++)
         if (std::abs(it1->get<0>()) < Precision) it1=Terms->erase(it1);
 }
+
+const char* Operator::exWrongLabel::what() const throw(){
+    return "Wrong labels";
+};
+
+const char* Operator::exWrongOpSequence::what() const throw(){
+    std::stringstream s;
+    s << "The term has wrong operator sequence!";
+    return s.str().c_str();
+};
+
 
 /*
 void Operator::makeNormalOrder()
@@ -418,16 +459,6 @@ MelemType Operator::Term::getMatrixElement( const FockState & bra, const FockSta
 unsigned int Operator::Term::getN(){
     return N;
 }
-
-const char* Operator::Term::exWrongLabel::what() const throw(){
-    return "Wrong labels";
-};
-
-const char* Operator::Term::exWrongOpSequence::what() const throw(){
-    std::stringstream s;
-    s << "The term has wrong operator sequence!";
-    return s.str().c_str();
-};
 
 std::ostream& operator<< (std::ostream& output, const Operator::Term& out)
 {

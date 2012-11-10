@@ -42,8 +42,11 @@ namespace Pomerol{
 /** A typedef for a generic single field operator. 
  * First bool = true, if it is a creation operator. Last argument is the index of the operator. */
 typedef boost::tuple<bool, ParticleIndex> ElemOp;
+std::ostream& operator<< (std::ostream& output, const ElemOp& out);
+std::ostream& operator<< (std::ostream& output, const std::vector<ElemOp>& out);
 /** A vector of elementary operators generate a term with a given matrix element. */
 typedef boost::tuple<MelemType, std::vector<ElemOp> > OpTerm;
+std::ostream& operator<< (std::ostream& output, const OpTerm& out);
 
 /** This class represents an operator which is stored as a list of Terms */
 class Operator
@@ -83,6 +86,8 @@ protected:
 public:
     /** Empty constructor. */
     Operator();
+    /** Constructor from the single term. */
+    Operator(const OpTerm& term);
     /** Constructor from the list of Terms. */
     Operator(boost::shared_ptr<std::list<OpTerm> > Terms);
     /** Print all of the Terms. */
@@ -143,6 +148,7 @@ public:
     virtual ~Operator();
     friend std::ostream& operator<< (std::ostream& output, const Operator& out);
 };
+
 
 inline bool __isCdag(const ElemOp &in) { return in.get<0>() == 1; }
 inline bool __descendIndex(const ElemOp &in1, const ElemOp &in2) { return in1.get<1>()<in2.get<1>(); };
