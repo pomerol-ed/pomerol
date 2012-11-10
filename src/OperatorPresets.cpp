@@ -36,17 +36,12 @@ namespace OperatorPresets {
 
 N::N(ParticleIndex Nmodes):Operator(),Nmodes(Nmodes)
 {
-    std::vector<ParticleIndex> ind;
-    ind.resize(2);
-    std::vector<bool> order;
-    order.resize(2);
-    order[0]=1;
-    order[1]=0;
-    for (ParticleIndex index=0; index<Nmodes; ++index){
-        ind[0]=index;
-        ind[1]=index;
-        Operator::Term *T1 = new Operator::Term(2, order, ind, 1.0);
-        Terms->push_back(T1);
+    std::vector<ElemOp> ops;
+    ops.resize(2);
+    for (ParticleIndex index=0; index<Nmodes; ++index) {
+        ops[0]=boost::make_tuple(true,index);
+        ops[1]=boost::make_tuple(false,index);
+        Terms->push_back(boost::make_tuple(1.0, ops));
     };
 };
     
@@ -73,7 +68,7 @@ MelemType N::getMatrixElement(const FockState &ket) const
 
 Sz::Sz(ParticleIndex Nmodes):Operator(),Nmodes(Nmodes)
 {
-    if (Nmodes%2 == 1 ) { throw ( Pomerol::Operator::Term::exWrongLabel() ); ERROR("Sz operator requires even number of indices"); }; 
+    if (Nmodes%2 == 1 ) { throw ( Pomerol::Operator::exWrongLabel() ); ERROR("Sz operator requires even number of indices"); }; 
     SpinUpIndices=std::vector<ParticleIndex>(0);
     for (ParticleIndex i=Nmodes/2; i<Nmodes; i++) SpinUpIndices.push_back(i);
 
@@ -85,28 +80,23 @@ Sz::Sz(ParticleIndex Nmodes):Operator(),Nmodes(Nmodes)
 Sz::Sz(const std::vector<ParticleIndex> & SpinUpIndices, const std::vector<ParticleIndex> & SpinDownIndices) 
     : Operator(),Nmodes(SpinUpIndices.size() + SpinDownIndices.size()),SpinUpIndices(SpinUpIndices), SpinDownIndices(SpinDownIndices)
 {
-    if (SpinUpIndices.size() != SpinDownIndices.size() ) { throw ( Pomerol::Operator::Term::exWrongLabel() ); ERROR("Sz operator requires even number of indices"); }; 
+    if (SpinUpIndices.size() != SpinDownIndices.size() ) { throw ( Pomerol::Operator::exWrongLabel() ); ERROR("Sz operator requires even number of indices"); }; 
     generateTerms();
 }
 
 void Sz::generateTerms()
 {
-    std::vector<ParticleIndex> ind;
-    ind.resize(2);
-    std::vector<bool> order;
-    order.resize(2);
-    order[0]=1;
-    order[1]=0;
-    for (ParticleIndex i=0; i<SpinUpIndices.size(); ++i) {
-        ind[0]=SpinUpIndices[i];
-        ind[1]=SpinUpIndices[i];
-        Operator::Term *T1 = new Operator::Term(2, order, ind, 0.5);
-        Terms->push_back(T1);
+    std::vector<ElemOp> ops;
+    ops.resize(2);
 
-        ind[0]=SpinDownIndices[i];
-        ind[1]=SpinDownIndices[i];
-        Operator::Term *T2 = new Operator::Term(2, order, ind, -0.5);
-        Terms->push_back(T2);
+    for (ParticleIndex i=0; i<SpinUpIndices.size(); ++i) {
+        ops[0]=boost::make_tuple(1,SpinUpIndices[i]);
+        ops[1]=boost::make_tuple(0,SpinUpIndices[i]);
+        Terms->push_back(boost::make_tuple(0.5, ops));
+
+        ops[0]=boost::make_tuple(1,SpinDownIndices[i]);
+        ops[1]=boost::make_tuple(0,SpinDownIndices[i]);
+        Terms->push_back(boost::make_tuple(-0.5, ops));
     }
 }
 
@@ -137,14 +127,9 @@ std::map<FockState,MelemType> Sz::actRight(const FockState &ket) const
 
 Cdag::Cdag(ParticleIndex index):Operator(),index(index)
 {
-    std::vector<ParticleIndex> ind;
-    ind.resize(1);
-    std::vector<bool> order;
-    order.resize(1);
-    order[0]=1;
-    ind[0]=index;
-    Operator::Term *T1 = new Operator::Term(1, order, ind, 1.0);
-    Terms->push_back(T1);
+    std::vector<ElemOp> ops;
+    ops.push_back(boost::make_tuple(1,index));
+    Terms->push_back(boost::make_tuple(1,ops));
 }
 
 //
@@ -153,14 +138,9 @@ Cdag::Cdag(ParticleIndex index):Operator(),index(index)
 
 C::C(ParticleIndex index):Operator(),index(index)
 {
-    std::vector<ParticleIndex> ind;
-    ind.resize(1);
-    std::vector<bool> order;
-    order.resize(1);
-    order[0]=0;
-    ind[0]=index;
-    Operator::Term *T1 = new Operator::Term(1, order, ind, 1.0);
-    Terms->push_back(T1);
+    std::vector<ElemOp> ops;
+    ops.push_back(boost::make_tuple(0,index));
+    Terms->push_back(boost::make_tuple(1,ops));
 }
 
 } // end of namespace OperatorPresets

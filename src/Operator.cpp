@@ -26,33 +26,305 @@
 */
 
 #include "Operator.h"
+#include <algorithm>
+#include <iterator>
 #include <boost/tuple/tuple.hpp>
-#include <boost/utility.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
+//#include <boost/lambda/lambda.hpp>
+//#include <boost/lambda/bind.hpp>
+#include "boost/tuple/tuple_comparison.hpp"
+#include "boost/utility/swap.hpp"
+#include <boost/functional/hash.hpp>
 
 namespace Pomerol{
+
+bool Operator::checkTerm(const OpTerm &in)
+{
+    if (std::abs(in.get<0>()) < std::numeric_limits<RealType>::epsilon()) return false;
+    const std::vector<ElemOp> &ops = in.get<1>(); 
+    unsigned int N=ops.size();
+    for (unsigned int i=0; i<N; ++i) {  
+        bool c; ParticleIndex ind;
+        boost::tie(c,ind) = ops[i]; 
+        int count_index=2*c-1; // This determines how many times current index Indices[i] is found. c^+ gives +1, c gives -1.
+        //DEBUG(i << " " << Indices[i] << " " << count_index);
+        for (unsigned int j=i+1; j<N; ++j) {
+            bool c2; ParticleIndex ind2;
+            boost::tie(c2,ind2)=ops[j];
+            if (ind2 == ind ) {  //same indices
+                count_index+=2*c2-1; 
+                //DEBUG(j << " " << Indices[j] << " " << count_index);
+                if ( count_index > 1 || count_index < -1 ) { ERROR("This term vanishes. "); return false; }; 
+                } 
+            }
+        };    
+    return true;
+}
+
+//
+// Operator
+//
+
+Operator::Operator()
+{
+    Terms.reset( new std::list<OpTerm> );
+}
+
+Operator::Operator(boost::shared_ptr<std::list<OpTerm> > Terms) : Terms(Terms)
+{
+    Terms->remove_if(this->checkTerm);
+}
+
+boost::shared_ptr<std::list<OpTerm> > Operator::getTerms() const
+{
+    return Terms;
+}
+
+bool Operator::isEmpty() const
+{
+    return (Terms->size()==0);
+}
+
+std::ostream& operator<< (std::ostream& output, const Operator& out)
+{
+    for (std::list<OpTerm>::const_iterator it = out.Terms->begin(); it!=out.Terms->end(); it++) {
+        output << it->get<0>();
+        const std::vector<ElemOp> &elems = it->get<1>();
+        for (unsigned int i=0; i<elems.size(); ++i)  output << ((elems[i].get<0>())?"c^{+}":"c") << "_" << elems[i].get<1>();
+        output << std::endl;
+        };
+    return output;
+}
+
+void Operator::printAllTerms() const
+{
+    INFO(*this);
+}
+
+Operator& Operator::operator+=(const Operator &rhs)
+{
+    if ( rhs.Terms->size() ) std::copy_backward(rhs.Terms->begin(), rhs.Terms->end(), Terms->end()); 
+    return *this;
+}
+
+void Operator::add(const OpTerm &rhs)
+{
+    if (checkTerm(rhs)) Terms->push_back(rhs);
+}
+
+Operator& Operator::operator+=(const OpTerm &rhs)
+{
+    if (checkTerm(rhs)) Terms->push_back(rhs);
+    return *this;
+}
+
+const Operator Operator::operator+(const Operator &rhs) const
+{
+    Operator out(*this);
+    out+=rhs;
+    return out;
+}
+
+Operator Operator::elementary_swap_adjacent(OpTerm &in, unsigned int position, bool force_ignore_commutation)
+{
+    Operator out;
+    std::vector<ElemOp> in_ops;  MelemType Value;
+    boost::tie(Value,in_ops)=in;
+    if ( in_ops[position].get<1>() != in_ops[position+1].get<1>() || force_ignore_commutation ) {
+        in.get<0>()*=(-1.); 
+        boost::swap(in_ops[position], in_ops[position+1]);
+        }
+    else {
+        if (in_ops[position].get<0>() == in_ops[position+1].get<0>()) throw (exWrongOpSequence()); 
+        OpTerm term;
+        std::copy_backward(in_ops.begin(), in_ops.begin()+position, term.get<1>().end());
+        std::copy_backward(in_ops.begin()+position+1, in_ops.end(), term.get<1>().end());
+        term.get<0>() = Value;
+        out+=term;
+        elementary_swap(in, position, true);
+         };
+    return out;
+}
+
+Operator Operator::elementary_swap(OpTerm &in, unsigned int position1, unsigned int position2, bool force_ignore_commutation)
+{
+    Operator out;
+    std::vector<ElemOp> in_ops;  MelemType Value;
+    boost::tie(Value,in_ops)=in;
+    if (position2 == position1) return out;
+    if (position2 < position1) std::swap(position2, position1);
+    for (unsigned int i=position1; i<position2; i++) out+=elementary_swap_adjacent(in, i);
+    for (unsigned int i=position2-2; i>=position1; i++) out+=elementary_swap_adjacent(in, i);
+    return out;
+}
+
+void Operator::rearrange(boost::function<std::vector<ElemOp>( const std::vector<ElemOp> &in_f)> f)
+{
+    Operator out;
+    for ( std::list<OpTerm>::iterator term_it = Terms->begin(); term_it != Terms->end(); term_it++) {
+        std::vector<ElemOp> in_ops;  MelemType Value;
+        boost::tie(Value,in_ops)=*term_it;
+        std::vector<ElemOp> out_ops = f(in_ops);
+        if (in_ops.size() != out_ops.size()) throw (exWrongOpSequence()); 
+        unsigned int N=in_ops.size();
+        // Here a hash check is done to check, that the result can be obtained by rearranging the operators
+        std::size_t hash_in=0, hash_out=0;
+        for (unsigned int i=0; i<N; ++i) {
+            hash_in+=ElemOphash_value(in_ops[i]);
+            hash_out+=ElemOphash_value(out_ops[i]);
+            }
+        assert (hash_in == hash_out );
+        // Now time for moving the terms 
+        for (unsigned int index_out = 0; index_out < out_ops.size(); index_out++) { // out_it loops over elements in resulting sequence in out_ops
+            // Finds an iterator to the element corresponding to the one in out_it.
+            std::vector<ElemOp>::iterator in_it = std::find(in_ops.begin()+index_out, in_ops.end(), out_ops[index_out]);
+            unsigned int index_in = std::distance(in_ops.begin(), in_it); 
+            for (unsigned int index2 = index_in-1; index2>=index_out; index2--) out+=elementary_swap_adjacent(*term_it,index2);
+        }
+    }
+    out.rearrange(f);
+    (*this)+=out;
+}
+
+void Operator::makeNormalOrder()
+{
+    return rearrange(NORMAL_ORDER);
+}
+
+boost::tuple<FockState,MelemType> Operator::actRight(const OpTerm &in, const FockState &ket)
+{
+    ParticleIndex prev_pos_ = 0; // Here we'll store the index of the last operator to speed up sign counting
+    int sign=1;
+    FockState bra = ket;
+    MelemType Value; std::vector<ElemOp> in_ops;
+    boost::tie(Value,in_ops)=in;
+    unsigned int N=in_ops.size();
+    for (int i=N-1; i>=0; i--) // Is the number of operator in OperatorSequence. Now we need to count them from back.
+        {
+            bool op; ParticleIndex ind;
+            boost::tie(op,ind)=in_ops[i];
+            if (op == bra[ind] ) return boost::make_tuple(ERROR_FOCK_STATE, 0); // This is Pauli principle.
+            bra[ind] = op; // This is c or c^+ acting
+            if (ind > prev_pos_) 
+                for (ParticleIndex j=prev_pos_; j<ind; ++j) { if (ket[j]) sign*=-1; } 
+            else
+                for (ParticleIndex j=prev_pos_; j>ind; j--) { if (ket[j]) sign*=-1; }
+            
+        }
+    return boost::make_tuple(bra, Value*MelemType(sign));
+}
+
+std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
+{
+    std::map<FockState, MelemType> result1;
+    for (std::list<OpTerm>::const_iterator it = Terms->begin(); it!=Terms->end(); it++)
+        {
+            FockState bra; 
+            MelemType melem;
+            boost::tie(bra,melem) = actRight(*it,ket);
+            if (bra!=ERROR_FOCK_STATE && std::abs(melem)>std::numeric_limits<RealType>::epsilon()) 
+                result1[bra]+=melem;
+        }
+    for (std::map<FockState, MelemType>::iterator it1 = result1.begin(); it1!=result1.end(); it1++) 
+        if ( std::abs(it1->second)<std::numeric_limits<RealType>::epsilon() ) result1.erase(it1); 
+    return result1;
+}
+
+
+MelemType Operator::getMatrixElement( const FockState & bra, const FockState &ket) const
+{
+    std::map<FockState, MelemType> output = this->actRight(ket);
+    if (output.find(bra)==output.end()) 
+        return 0;
+    else { 
+        return output[bra];
+        }
+}
+
+
+void Operator::reduce()
+{
+    int it1_pos=0;
+    for (std::list<OpTerm>::iterator it1 = Terms->begin(); it1!=Terms->end(); it1++) {
+        for (std::list<OpTerm>::iterator it2 = boost::next(it1); it2!=Terms->end();) {
+            if (it2!=Terms->end()) {
+                if (it2->get<1>() == it1->get<1>()) {
+                    it1->get<0>()+=it2->get<0>();
+                    it2 = Terms->erase(it2);
+                    it1 = Terms->begin();
+                    std::advance(it1,it1_pos);
+                    }
+                else it2++;
+                }
+            }
+        it1_pos++;
+    }
+}
+
+void Operator::prune(const RealType &Precision)
+{
+    for (std::list<OpTerm>::iterator it1 = Terms->begin(); it1!=Terms->end(); it1++)
+        if (std::abs(it1->get<0>()) < Precision) it1=Terms->erase(it1);
+}
+
+/*
+void Operator::makeNormalOrder()
+{
+    std::list<OpTerm*> output; // Here we will store the normal ordered output terms.
+    for (std::list<OpTerm*>::const_iterator it = Terms->begin(); it!=Terms->end(); it++) {
+        boost::shared_ptr<std::list<OpTerm* > > out = (**it).makeNormalOrder();
+        output.splice(boost::prior(output.end()),*out);
+    }
+    Terms->splice(boost::prior(Terms->end()),output);
+    this->reduce();
+    this->prune();
+}
+
+
+
+*/
+
+
+/*
+Operator Operator::getCommutator(const Operator &rhs) const
+{
+   // DEBUG("!!" << rhs.Terms->size());
+    boost::shared_ptr<std::list<OpTerm*> > output ( new std::list<OpTerm*>);
+    for (std::list<OpTerm*>::const_iterator it = Terms->begin(); it!=Terms->end(); it++)
+        for (std::list<OpTerm*>::const_iterator it2 = rhs.Terms->begin(); it2!=rhs.Terms->end(); it2++) {
+   //         DEBUG("Commuting" << **it << " and " << **it2);
+            boost::shared_ptr<std::list<OpTerm* > > out2 = (**it).getCommutator(**it2); 
+    //        DEBUG(out2->size() << " terms generated.");
+            output->splice(boost::prior(output->end()),*out2);
+    //        DEBUG(output->size() << " in output.");
+    }
+    Operator out(output);
+    return out;
+}
+
+bool Operator::commutes(const Operator &rhs) const
+{
+    bool out;
+    Operator out_return(this->getCommutator(rhs));
+    INFO("+++++++");
+    out_return.printAllTerms();
+    INFO("+++++++");
+    out_return.makeNormalOrder();
+    out_return.printAllTerms();
+    INFO("+++++++");
+    out_return.reduce();
+    out_return.prune();
+    out_return.printAllTerms();
+//    DEBUG(out_return.Terms->size());
+    return out;
+}
+
+*/
 
 //
 //Operator::Term
 //
 
-Operator::Term::Term (const unsigned int N, const std::vector<bool>&  Sequence, const std::vector<ParticleIndex> & Indices, MelemType Value):
-    N(N), OperatorSequence(Sequence), Indices(Indices), Value(Value)
-{
-    if (Sequence.size()!=N || Indices.size()!=N) throw(exWrongLabel());
-    for (unsigned int i=0; i<N; ++i) {  
-        int count_index=2*Sequence[i]-1; // This determines how many times current index Indices[i] is found. c^+ gives +1, c gives -1.
-        //DEBUG(i << " " << Indices[i] << " " << count_index);
-        for (unsigned int j=i+1; j<N; ++j)
-            if (Indices[i]==Indices[j] ) { 
-                count_index+=2*Sequence[j]-1; 
-                //DEBUG(j << " " << Indices[j] << " " << count_index);
-                if ( count_index > 1 || count_index < -1 ) { ERROR("This term vanishes. "); throw (exWrongOpSequence()); }; 
-            } 
-        };    
-}
-
+/*
 boost::shared_ptr<std::list<Operator::Term*> > Operator::Term::rearrange(const std::vector<bool> & DesiredSequence)
 {
     if (DesiredSequence.size() != OperatorSequence.size() ) throw (exWrongOpSequence());
@@ -135,27 +407,6 @@ boost::shared_ptr<std::list<Operator::Term*> > Operator::Term::makeNormalOrder()
     return out;
 }
 
-boost::shared_ptr<std::list<Operator::Term*> > Operator::Term::elementary_swap(unsigned int position, bool force_ignore_commutation)
-{
-    boost::shared_ptr<std::list<Operator::Term*> > out ( new std::list<Operator::Term*> );
-    if ( Indices[position] != Indices[position+1] || force_ignore_commutation ) {
-        Value*=(-1.); 
-        bool tmp = OperatorSequence[position];
-        OperatorSequence[position]=OperatorSequence[position+1];
-        OperatorSequence[position+1]=tmp;
-        std::swap(Indices[position], Indices[position+1] );
-        }
-    else {
-        std::vector<bool> Seq2(N-2);
-        std::vector<unsigned int> Ind2(N-2);
-        for (unsigned int i=0; i<position; ++i) { Seq2[i] = OperatorSequence[i]; Ind2[i] = Indices[i]; };
-        for (unsigned int i=position+2; i<N; ++i) { Seq2[i-2] = OperatorSequence[i]; Ind2[i-2] = Indices[i]; };
-        out->push_back(new Term(N-2, Seq2, Ind2, Value));
-        elementary_swap(position, true);
-         };
-    return out;
-}
-
 MelemType Operator::Term::getMatrixElement( const FockState & bra, const FockState &ket){
     MelemType result;
     FockState bra2;
@@ -163,24 +414,6 @@ MelemType Operator::Term::getMatrixElement( const FockState & bra, const FockSta
     return (bra2 == bra)?result:0;
 }
 
-boost::tuple<FockState, MelemType> Operator::Term::actRight ( const FockState &ket )
-{
-    ParticleIndex prev_pos_ = 0; // Here we'll store the index of the last operator to speed up sign counting
-    int sign=1;
-    FockState bra = ket;
-    for (int i=N-1; i>=0; i--) // Is the number of operator in OperatorSequence. Now we need to count them from back.
-        {
-            if (OperatorSequence[i] == bra[Indices[i]] ) return boost::make_tuple(ERROR_FOCK_STATE, 0); // This is Pauli principle.
-            bra[Indices[i]] = OperatorSequence[i]; // This is c or c^+ acting
-            if (Indices[i] > prev_pos_) 
-                for (ParticleIndex j=prev_pos_; j<Indices[i]; ++j) { if (ket[j]) sign*=-1; } 
-            else
-                for (ParticleIndex j=prev_pos_; j>Indices[i]; j--) { if (ket[j]) sign*=-1; }
-            
-            //for (ParticleIndex j=0; j<Indices[i]; ++j) { if (ket[j]) sign*=-1; } 
-        }
-    return boost::make_tuple(bra, this->Value*MelemType(sign));
-}
 
 unsigned int Operator::Term::getN(){
     return N;
@@ -279,152 +512,12 @@ bool Operator::Term::commutes(const Operator::Term &rhs) const
     return (*term1 == *term2);
 }
 
-void Operator::Term::reduce(boost::shared_ptr<std::list<Operator::Term*> > Terms)
-{
-    int it1_pos=0;
-    for (std::list<Operator::Term*>::iterator it1 = Terms->begin(); it1!=Terms->end(); it1++) {
-        for (std::list<Operator::Term*>::iterator it2 = boost::next(it1); it2!=Terms->end();) {
-            if (it2!=Terms->end()) {
-                if ((**it2).OperatorSequence == (**it1).OperatorSequence && (**it2).Indices == (**it1).Indices) {
-                    (**it1).Value+=(**it2).Value;
-                    it2 = Terms->erase(it2);
-                    it1 = Terms->begin();
-                    std::advance(it1,it1_pos);
-                    }
-                else it2++;
-                }
-            }
-        it1_pos++;
-    }
-}
-
 void Operator::Term::prune(boost::shared_ptr<std::list<Operator::Term*> > Terms, const RealType &Precision)
 {
     //std::remove_if (Terms->begin(), Terms->end(), std::abs(boost::bind(boost::lambda::_1)->Value) < Precision);
     for (std::list<Operator::Term*>::iterator it1 = Terms->begin(); it1!=Terms->end(); it1++)
         if (std::abs((**it1).Value) < Precision) it1=Terms->erase(it1);
 }
-
-//
-// Operator
-//
-
-Operator::Operator()
-{
-    Terms.reset( new std::list<Operator::Term*> );
-}
-
-Operator::Operator(boost::shared_ptr<std::list<Operator::Term*> > Terms) : Terms(Terms)
-{
-}
-
-
-void Operator::printAllTerms() const
-{
-    for (std::list<Operator::Term*>::const_iterator it = Terms->begin(); it!=Terms->end(); it++)
-        {
-            INFO(**it);
-        }
-}
-
-boost::shared_ptr<std::list<Operator::Term*> > Operator::getTerms() const
-{
-    return Terms;
-}
-
-MelemType Operator::getMatrixElement( const FockState & bra, const FockState &ket) const
-{
-    std::map<FockState, MelemType> output = this->actRight(ket);
-    if (output.find(bra)==output.end()) 
-        return 0;
-    else { 
-        return output[bra];
-        }
-}
-
-std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
-{
-    std::map<FockState, MelemType> result1;
-    for (std::list<Operator::Term*>::const_iterator it = Terms->begin(); it!=Terms->end(); it++)
-        {
-            FockState bra; 
-            MelemType melem;
-            boost::tie(bra,melem) = (*it)->actRight(ket);
-            if (bra!=ERROR_FOCK_STATE && std::abs(melem)>std::numeric_limits<RealType>::epsilon()) 
-                result1[bra]+=melem;
-        }
-    for (std::map<FockState, MelemType>::iterator it1 = result1.begin(); it1!=result1.end(); it1++) 
-        if ( std::abs(it1->second)<std::numeric_limits<RealType>::epsilon() ) result1.erase(it1); 
-    return result1;
-}
-
-Operator::~Operator()
-{
-    Terms.reset();
-}
-
-void Operator::makeNormalOrder()
-{
-    std::list<Operator::Term*> output; // Here we will store the normal ordered output terms.
-    for (std::list<Operator::Term*>::const_iterator it = Terms->begin(); it!=Terms->end(); it++) {
-        boost::shared_ptr<std::list<Operator::Term* > > out = (**it).makeNormalOrder();
-        output.splice(boost::prior(output.end()),*out);
-    }
-    Terms->splice(boost::prior(Terms->end()),output);
-    this->reduce();
-    this->prune();
-}
-
-void Operator::reduce()
-{
-    Operator::Term::reduce(Terms);
-}
-
-void Operator::prune(const RealType &Precision)
-{
-    Operator::Term::prune(Terms,Precision);
-}
-
-std::ostream& operator<< (std::ostream& output, const Operator& out)
-{
-    for (std::list<Operator::Term*>::const_iterator it = out.Terms->begin(); it!=out.Terms->end(); it++) {
-        output << **it << " ";
-        };
-    return output;
-}
-
-Operator Operator::getCommutator(const Operator &rhs) const
-{
-   // DEBUG("!!" << rhs.Terms->size());
-    boost::shared_ptr<std::list<Operator::Term*> > output ( new std::list<Operator::Term*>);
-    for (std::list<Operator::Term*>::const_iterator it = Terms->begin(); it!=Terms->end(); it++)
-        for (std::list<Operator::Term*>::const_iterator it2 = rhs.Terms->begin(); it2!=rhs.Terms->end(); it2++) {
-   //         DEBUG("Commuting" << **it << " and " << **it2);
-            boost::shared_ptr<std::list<Operator::Term* > > out2 = (**it).getCommutator(**it2); 
-    //        DEBUG(out2->size() << " terms generated.");
-            output->splice(boost::prior(output->end()),*out2);
-    //        DEBUG(output->size() << " in output.");
-    }
-    Operator out(output);
-    return out;
-}
-
-bool Operator::commutes(const Operator &rhs) const
-{
-    bool out;
-    Operator out_return(this->getCommutator(rhs));
-    INFO("+++++++");
-    out_return.printAllTerms();
-    INFO("+++++++");
-    out_return.makeNormalOrder();
-    out_return.printAllTerms();
-    INFO("+++++++");
-    out_return.reduce();
-    out_return.prune();
-    out_return.printAllTerms();
-//    DEBUG(out_return.Terms->size());
-    return out;
-}
-
+*/
 
 } // end of namespace Pomerol
