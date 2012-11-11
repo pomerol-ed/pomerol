@@ -37,45 +37,144 @@ int main(int argc, char* argv[])
 {
   /* Test of Operator::Term*/
   Log.setDebugging(true);
-  bool Seq[4] = {1,0,1,0};
-  ParticleIndex Ind[] = {0,0,1,1};
-  std::vector<bool> seq_v(Seq, Seq+4);
-  std::vector<ParticleIndex> ind_v(Ind, Ind+4);
-  Operator::Term IT1(4, seq_v, ind_v, 1.0);
-  INFO("Created Operator::Term" << IT1);
+  std::vector<ElemOp> ops;
+  ops.push_back(boost::make_tuple(1,0));
+  ops.push_back(boost::make_tuple(0,0));
+  ops.push_back(boost::make_tuple(1,1));
+  ops.push_back(boost::make_tuple(0,1));
+  Operator IT1(boost::make_tuple(1.0, ops)); 
+  INFO("Created Operator " << IT1);
   INFO("Rearranging it to normal order");
   try {
-    boost::shared_ptr<std::list<Operator::Term*> > out_terms=IT1.makeNormalOrder();
-    INFO("Received " << IT1);
-    INFO(out_terms->size() << " additional terms emerged : ");     
-    for (std::list<Operator::Term*>::const_iterator it1=out_terms->begin(); it1!=out_terms->end(); ++it1) DEBUG(**it1);
+        IT1 = IT1.getNormalOrdered();
+        INFO(IT1);
     }
   catch (std::exception &e)
     {
         return EXIT_FAILURE;
     }
+    
 
    FockState a1(4);
    a1[0]=1;
    a1[1]=0;
-
-   seq_v.resize(1); ind_v.resize(1);
-   seq_v[0]=1; ind_v[0]=1;
-   Operator::Term IT2(1, seq_v, ind_v, 1.0);
-   INFO("Acting with operator " << IT2 << " on a state " << a1 );
-   FockState bra;
+   FockState res_state;
    MelemType result;
-   boost::tie(bra, result) = IT2.actRight(a1);
-   if (result != MelemType(-1)) return EXIT_FAILURE;
-   else DEBUG ( "State: " << bra << " Matrix element: " << result);
+   std::map<FockState, MelemType> out;
 
-   seq_v[0]=0; ind_v[0]=0;
-   Operator::Term IT3 (1, seq_v, ind_v, 1.0);
-   INFO("Acting with operator " << IT3 << " on a state " << a1 );
-   boost::tie(bra, result) = IT3.actRight(a1);
+   ops.resize(1);
+   ops[0]=boost::make_tuple(1,1);
+   Operator IT2(boost::make_tuple(1.0, ops));
+   out=IT2.actRight(a1);
+   res_state = out.begin()->first;
+   result = out.begin()->second;
+   INFO ( IT2 << "|" << a1 << "> =" << result << "|" << res_state << ">");
+   if (result != MelemType(-1)) return EXIT_FAILURE;
+
+   ops[0]=boost::make_tuple(0,0);
+   Operator IT3(boost::make_tuple(1.0, ops));
+   out=IT3.actRight(a1);
+   res_state = out.begin()->first;
+   result = out.begin()->second;
+   INFO ( IT3 << "|" << a1 << "> =" << result << "|" << res_state << ">");
    if (result != MelemType(1)) return EXIT_FAILURE;
-   if (bra == ERROR_FOCK_STATE) DEBUG("Term vanishes")
-   else DEBUG ( "State: " << bra << " Matrix element: " << result);
+   if (res_state == ERROR_FOCK_STATE) DEBUG("Term vanishes")
+
+   INFO(IT3 << "*" << IT2 << " = " << IT3*IT2);
+   INFO(IT2 << "*" << IT3 << " = " << IT2*IT3);
+   INFO("(" << IT2 << "*" << IT3 << "==" << IT3 << "*" << IT2 << " ) = " << (IT2*IT3 == IT3*IT2));
+   INFO(IT2 << " commutes with " << IT3 << " = " << IT2.commutes(IT3));
+   if (IT2.commutes(IT3)) return EXIT_FAILURE;
+
+   ops.resize(2);
+   ops[0]=boost::make_tuple(1,1);
+   ops[1]=boost::make_tuple(0,1);
+
+   Operator IT4(boost::make_tuple(1.0, ops));
+   INFO("( " << IT4 << "==" << IT4 << " ) = " << (IT4==IT4));
+   INFO("( " << IT4 << "==" << IT1 << " ) = " << (IT4==IT1));
+   if (IT1 == IT4) return EXIT_FAILURE;
+   INFO(IT4 << " commutes with " << IT4 << " = " << IT4.commutes(IT4));
+   if (!(IT4.commutes(IT4))) return EXIT_FAILURE;
+
+   ops[0]=boost::make_tuple(1,0);
+   ops[1]=boost::make_tuple(0,1);
+   Operator IT5(boost::make_tuple(1.0, ops));
+
+   ops[0]=boost::make_tuple(0,1);
+   ops[1]=boost::make_tuple(1,0);
+   Operator IT6(boost::make_tuple(-1.0, ops));
+   Operator IT7(boost::make_tuple(1.0, ops));
+   
+   INFO("( " << IT5 << "==" << IT6 <<" ) = " << (IT5 == IT6));
+   if (!(IT5 == IT6)) return EXIT_FAILURE;
+   INFO("( " << IT5 << "==" << IT7 <<" ) = " << (IT5 == IT7));
+   if ((IT5 == IT7)) return EXIT_FAILURE;
+   
+   ops[0]=boost::make_tuple(1,2);
+   ops[1]=boost::make_tuple(0,2);
+   Operator IT7_2(boost::make_tuple(1.0, ops));
+   INFO(IT4 << " commutes with " << IT7_2 << " = " << IT4.commutes(IT7_2));
+   
+
+   ops.resize(4);
+   ops[0]=boost::make_tuple(1,0);
+   ops[1]=boost::make_tuple(0,1);
+   ops[2]=boost::make_tuple(1,2);
+   ops[3]=boost::make_tuple(0,3);
+   Operator IT8(boost::make_tuple(1.0, ops));
+
+   ops[0]=boost::make_tuple(1,0);
+   ops[1]=boost::make_tuple(0,1);
+   ops[2]=boost::make_tuple(0,3);
+   ops[3]=boost::make_tuple(1,2);
+   Operator IT9(boost::make_tuple(-1.0, ops));
+   INFO("( " << IT8 << "==" << IT9 <<" ) = " << (IT8 == IT9));
+   if (!(IT8==IT9)) return EXIT_FAILURE;
+   
+   ops[0]=boost::make_tuple(1,0);
+   ops[1]=boost::make_tuple(0,1);
+   ops[2]=boost::make_tuple(0,2);
+   ops[3]=boost::make_tuple(1,2);
+   Operator IT10(boost::make_tuple(1.0, ops));
+
+   ops[0]=boost::make_tuple(0,1);
+   ops[1]=boost::make_tuple(1,0);
+   ops[2]=boost::make_tuple(0,2);
+   ops[3]=boost::make_tuple(1,2);
+   Operator IT11(boost::make_tuple(-1.0, ops));
+   INFO("( " << IT10 << "==" << IT11 <<" ) = " << (IT10 == IT11));
+   if (!(IT10==IT11)) return EXIT_FAILURE;
+   
+   INFO(IT10 << " commutes with " << IT11 << " = " << IT10.commutes(IT11));
+
+   // test reduce
+   ops[0]=boost::make_tuple(1,1);
+   ops[1]=boost::make_tuple(0,1);
+   ops[2]=boost::make_tuple(0,0);
+   ops[3]=boost::make_tuple(1,0);
+   Operator IT12(boost::make_tuple(13.0, ops));
+   Operator IT12_2(boost::make_tuple(-5.0, ops));
+   Operator IT12_3(boost::make_tuple(-8.0, ops));
+
+   Operator ITsum;
+   ITsum+=IT10+IT10;
+   ITsum+=IT11+IT11+IT10;
+   ITsum+=IT9;
+   ITsum+=IT12;
+   ITsum+=IT12_2;
+   ITsum+=IT12_3;
+   
+
+   INFO("Put 9 terms to " << ITsum);
+
+   ITsum.reduce();
+   INFO("Reduced to " << ITsum.getNTerms() << " terms.");
+   if (ITsum.getNTerms()!=4) return EXIT_FAILURE;
+   ITsum.prune();
+   INFO("Pruned to " << ITsum.getNTerms() << " elements.");
+   if (ITsum.getNTerms()!=3) return EXIT_FAILURE;
+   INFO(ITsum);
   /* end of test of Operator::Term */
 
   return EXIT_SUCCESS;

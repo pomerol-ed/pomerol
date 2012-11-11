@@ -44,41 +44,23 @@ void IndexHamiltonian::prepare()
     for (unsigned int N=L->getTermStorage().getMaxTermOrder(); N; --N ) {
         if ( L->getTermStorage().getTerms(N).size())
         for (Lattice::TermList::const_iterator current=L->getTermStorage().getTerms(N).begin(); current!=L->getTermStorage().getTerms(N).end(); ++current) {
-            std::vector<ParticleIndex> ind;
-            ind.resize(N);
+            std::vector<ElemOp> ops;
+            ops.resize(N);
             for (unsigned int i=0; i<N; ++i) { 
-                ind[i]=IndexInfo.getIndex((**current).SiteLabels[i], (**current).Orbitals[i], (**current).Spins[i]);
+                ops[i]=boost::make_tuple((**current).OperatorSequence[i], IndexInfo.getIndex((**current).SiteLabels[i], (**current).Orbitals[i], (**current).Spins[i]));
                 };
             // Create a term out of the term in the lattice
-            Operator::Term *T1 = new Operator::Term(N,(**current).OperatorSequence, ind, (**current).Value);
-            mapTerms[N].push_back(T1);
+            
+            OpTerm T1 = boost::tie((**current).Value, ops);
+            //Operator::Term *T1 = new Operator::Term(N,(**current).OperatorSequence, ind, (**current).Value);
             Terms->push_back(T1);
+            //mapTerms[N].push_back(boost::prior(Terms.end()));
             } // end of Term loop
         } // end of for N
     //DEBUG("----------------------"); 
-    // We now need to rearrange the terms to a given order for the easy access afterwards.
-    for (unsigned int N=L->getTermStorage().getMaxTermOrder(); N; --N ) {
-        std::map <unsigned int, std::list<Operator::Term*> >::iterator map_iterator = mapTerms.find(N);
-        if (map_iterator!=mapTerms.end()) 
-            for (std::list<Operator::Term*>::iterator it1=(map_iterator->second).begin(); it1!=(map_iterator->second).end(); it1++) {
-                // get current term
-                Operator::Term *T1 = *it1;
-                // Rearrange it
-                try {
-                    boost::shared_ptr<std::list<Operator::Term*> > out=T1->rearrange(TERM_DEFAULT_SEQUENCE(N));
-                    for (std::list<Operator::Term*>::iterator additional_terms = out->begin(); additional_terms != out->end(); additional_terms++) {
-                        mapTerms[(**additional_terms).getN()].push_back(*additional_terms);
-                        Terms->push_back(*additional_terms);
-                        } // end of list iteration
-                    }
-                catch (Operator::Term::exWrongOpSequence)
-                    {
-                       INFO("Term " << *T1 << " couldn't be rearranged. ");// << TERM_DEFAULT_SEQUENCE(N) << " sequence.");
-                    }
-                } // end of map_iterator loop
-            }; // end of terms order loop
 };
 
+/*
 const std::list<Operator::Term*> IndexHamiltonian::getTermsByOrder(unsigned int N) const
 {
     return mapTerms.find(N)->second;
@@ -92,5 +74,6 @@ void IndexHamiltonian::printTerms(unsigned int N) const
     };
 
 };
+*/
 
 } // end of namespace Pomerol

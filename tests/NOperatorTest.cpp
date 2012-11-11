@@ -51,6 +51,8 @@ int main(int argc, char* argv[])
     OperatorPresets::N N(IndexSize);
     Operator *NN = &N;
 
+    DEBUG(N.commutes(N));
+
     FockState ket(IndexSize,3);
     auto map1=NN->actRight(ket);
     for ( auto it1=map1.begin(); it1!=map1.end(); it1++) {

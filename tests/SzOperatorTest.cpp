@@ -67,6 +67,9 @@ int main(int argc, char* argv[])
     ket = FockState(IndexSize, 10);
     INFO ( "<" << ket << "| Sz |" << ket << "> = " << Sz.getMatrixElement(ket));
     if ( std::abs(Sz.getMatrixElement(ket) - 0.0) >std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;
+    
+    INFO(Sz.commutes(Sz));
+    if (!(Sz.commutes(Sz))) return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }

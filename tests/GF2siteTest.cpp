@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
     LatticePresets::addHopping(&L, "A","B", -1.0);
     INFO("Sites");
     L.printSites();
-    INFO("Terms with 2 operators");
+    INFO("Terms");
     L.printTerms(2);
     INFO("Terms with 4 operators");
     L.printTerms(4);
@@ -88,11 +88,31 @@ int main(int argc, char* argv[])
     print_section("Matrix element storage");
     IndexHamiltonian Storage(&L,IndexInfo);
     Storage.prepare();
-    INFO("Terms with 2 operators");
-    Storage.printTerms(2);
-    INFO("Terms with 4 operators");
-    Storage.printTerms(4);
+    INFO("Terms");
+    INFO(Storage)
+    
+    print_section("Making hamiltonian normal ordered");
+    Storage.printAllTerms();
+    INFO("==");
+    Storage.getNormalOrdered().printAllTerms();
+    INFO("==");
 
+
+    ParticleIndex IndexSize = IndexInfo.getIndexSize();
+    OperatorPresets::Sz Sz(IndexSize);
+    INFO("Sz terms");
+    Sz.printAllTerms();
+    OperatorPresets::N N(IndexSize);
+    INFO("N terms");
+    N.printAllTerms();
+    //INFO(Sz.commutes(N));
+    exit(0);
+
+    DEBUG(N);
+    if (!(Storage.commutes(N))) return EXIT_FAILURE;
+    INFO("H commutes with N");
+    if (!(Storage.commutes(Sz))) return EXIT_FAILURE;
+    INFO("H commutes with Sz");
     Symmetrizer Symm(IndexInfo, Storage);
     Symm.compute();
 

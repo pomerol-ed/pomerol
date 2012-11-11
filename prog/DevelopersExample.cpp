@@ -93,7 +93,6 @@ int main(int argc, char *argv[])
   L->printTerms(4);
 
   IndexClassification IndexInfo(L->getSiteMap());
-  IndexClassification *II = &IndexInfo;
   IndexInfo.prepare();
   print_section("Indices");
   IndexInfo.printIndices();
@@ -101,13 +100,9 @@ int main(int argc, char *argv[])
   print_section("Matrix element storage");
   IndexHamiltonian Storage(L,IndexInfo);
   Storage.prepare();
-  INFO("Terms with 2 operators");
-  Storage.printTerms(2);
-  INFO("Terms with 4 operators");
-//  Storage.printTerms(4);
+  INFO("Terms");
+  INFO(Storage);
 
-  //DEBUG("Check - all terms");
-  //Storage.printAllTerms();
   Symmetrizer Symm(IndexInfo, Storage);
   Symm.compute();
   StatesClassification S(IndexInfo,Symm);

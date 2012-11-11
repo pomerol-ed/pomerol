@@ -88,10 +88,8 @@ int main(int argc, char* argv[])
     print_section("Matrix element storage");
     IndexHamiltonian Storage(&L,IndexInfo);
     Storage.prepare();
-    INFO("Terms with 2 operators");
-    Storage.printTerms(2);
-    INFO("Terms with 4 operators");
-    Storage.printTerms(4);
+    INFO("Terms");
+    INFO(Storage);
 
     Symmetrizer Symm(IndexInfo, Storage);
     Symm.compute();
