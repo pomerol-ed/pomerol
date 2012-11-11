@@ -124,7 +124,8 @@ public:
     /** Reduces all terms with the same indices and order.
      *  \param[in] Terms A pointer to the list of pointers to Terms.
      */
-
+    void sortTerms();
+    
     /** Returns a matrix element of the operator. */
     virtual MelemType getMatrixElement(const FockState &bra, const FockState &ket) const;
 

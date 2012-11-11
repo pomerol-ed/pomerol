@@ -315,6 +315,7 @@ Operator Operator::rearrange(boost::function<std::vector<ElemOp>( const std::vec
     out_orig+=out_extra;
     out_orig.reduce();
     out_orig.prune();
+    out_orig.sortTerms();
     return out_orig;
 }
 
@@ -325,8 +326,6 @@ Operator Operator::getNormalOrdered() const
 
 bool Operator::operator==(const Operator &rhs)
 {
-    DEBUG((this->getNormalOrdered()));
-    DEBUG(rhs.getNormalOrdered());
     return (*(this->getNormalOrdered().Terms) == *(rhs.getNormalOrdered().Terms));
 }
 
@@ -410,6 +409,11 @@ void Operator::prune(const RealType &Precision)
         if (std::abs(it1->get<0>()) < Precision) it1=Terms->erase(it1);
         else it1++;
         }
+}
+
+void Operator::sortTerms()
+{
+    Terms->sort();
 }
 
 const char* Operator::exWrongLabel::what() const throw(){
