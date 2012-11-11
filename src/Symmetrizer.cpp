@@ -188,8 +188,10 @@ void Symmetrizer::compute()
     #warning fix it
     // Force number of particles conservation
     boost::shared_ptr<Operator> OP1 ( new Pomerol::OperatorPresets::N(IndexSize));
-    Operations.push_back(OP1);
-    NSymmetries++;
+    if (Storage.commutes(*OP1)) { 
+        Operations.push_back(OP1);
+        NSymmetries++;
+    }
 
     // Force Sz conservation
     std::vector<ParticleIndex> SpinUpIndices;
@@ -203,8 +205,10 @@ void Symmetrizer::compute()
             else if (Spin == 0 ) SpinDownIndices.push_back(i);
         } 
     boost::shared_ptr<Operator> OP2 ( new Pomerol::OperatorPresets::Sz(SpinUpIndices, SpinDownIndices));
-    Operations.push_back(OP2);
-    NSymmetries++;
+    if (Storage.commutes(*OP2)) { 
+        Operations.push_back(OP2);
+        NSymmetries++;
+        };
 
     Status = Computed;
 }
