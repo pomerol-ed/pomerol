@@ -47,6 +47,8 @@ std::ostream& operator<< (std::ostream& output, const std::vector<ElemOp>& out);
 /** A vector of elementary operators generate a term with a given matrix element. */
 typedef boost::tuple<MelemType, std::vector<ElemOp> > OpTerm;
 std::ostream& operator<< (std::ostream& output, const OpTerm& out);
+bool operator== (const OpTerm& lhs, const OpTerm& rhs);
+OpTerm operator*(const OpTerm& lhs, const OpTerm &rhs);
 
 /** This class represents an operator which is stored as a list of Terms */
 class Operator
@@ -65,8 +67,8 @@ protected:
      * \param[in] force_ignore_commutation This forces to ignore all commutation relations and just to swap two operators and change the sign.
      * \param[out] Terms produced while swapping.
      */
-    static Operator elementary_swap(OpTerm &in, unsigned int position1, unsigned position2, bool force_ignore_commutation = false);
-    static Operator elementary_swap_adjacent(OpTerm &in, unsigned int position, bool force_ignore_commutation = false);
+    static std::pair<OpTerm,Operator> elementary_swap(const OpTerm &in, unsigned int position1, unsigned position2, bool force_ignore_commutation = false);
+    static std::pair<OpTerm,Operator> elementary_swap_adjacent(const OpTerm &in, unsigned int position, bool force_ignore_commutation = false);
 
     /** Returns a result of acting on a state by an OpTerm
      * \param[in] ket A state to act on. 
@@ -96,14 +98,17 @@ public:
     boost::shared_ptr<std::list<OpTerm> > getTerms() const;
 
     void add (const OpTerm &rhs);
-    Operator& operator+=(const OpTerm &rhs);
-    Operator& operator+=(const Operator &rhs);
+    Operator& operator+= (const OpTerm &rhs);
+    Operator& operator+= (const Operator &rhs);
     const Operator operator+(const Operator &rhs) const;
+    Operator operator*= (const Operator &rhs);
+    Operator operator* (const Operator &rhs) const;
+    bool operator==(const Operator &rhs);
     bool isEmpty() const;
 
-    void rearrange(boost::function<std::vector<ElemOp> ( const std::vector<ElemOp> &in_f )> f );
+    Operator rearrange(boost::function<std::vector<ElemOp> ( const std::vector<ElemOp> &in_f )> f ) const;
     /** Makes all Terms in the operator normal-ordered. */
-    void makeNormalOrder();
+    Operator getNormalOrdered() const;
     /** Reduces all terms with the same indices and order. */
     void reduce();
     /** Removes all terms from the list of terms with a given precision.
@@ -113,7 +118,6 @@ public:
     /** Reduces all terms with the same indices and order.
      *  \param[in] Terms A pointer to the list of pointers to Terms.
      */
-    void reduceTerms();
 
     /** Returns a matrix element of the operator. */
     virtual MelemType getMatrixElement(const FockState &bra, const FockState &ket) const;
@@ -134,6 +138,7 @@ public:
     */
     bool commutes(const Operator &rhs) const;
     
+    const unsigned int getNTerms() const;
     /** Make the Operator printable */
     friend std::ostream& operator<< (std::ostream& output, const Operator& out);
 

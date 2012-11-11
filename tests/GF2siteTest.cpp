@@ -94,9 +94,8 @@ int main(int argc, char* argv[])
     print_section("Making hamiltonian normal ordered");
     Storage.printAllTerms();
     INFO("==");
-    Storage.makeNormalOrder();
+    Storage.getNormalOrdered().printAllTerms();
     INFO("==");
-    Storage.printAllTerms();
 
 
     ParticleIndex IndexSize = IndexInfo.getIndexSize();
