@@ -115,9 +115,20 @@ int main(int argc, char* argv[])
    ops[1]=boost::make_tuple(0,2);
    Operator IT7_2(boost::make_tuple(1.0, ops));
    INFO(IT4 << " commutes with " << IT7_2 << " = " << IT4.commutes(IT7_2));
-   
+
+   ops[0]=boost::make_tuple(1,1); 
+   ops[1]=boost::make_tuple(0,1); 
+   Operator IT101((boost::make_tuple(1.0, ops)));
 
    ops.resize(4);
+   ops[0]=boost::make_tuple(1,2);
+   ops[1]=boost::make_tuple(0,2);
+   ops[2]=boost::make_tuple(1,0);
+   ops[3]=boost::make_tuple(0,0);
+   Operator IT102((boost::make_tuple(1.0, ops)));
+   if (!(IT102.commutes(IT101))) return EXIT_FAILURE;
+
+   exit(0);
    ops[0]=boost::make_tuple(1,0);
    ops[1]=boost::make_tuple(0,1);
    ops[2]=boost::make_tuple(1,2);

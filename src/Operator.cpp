@@ -70,6 +70,18 @@ OpTerm operator*(const OpTerm& lhs, const OpTerm &rhs)
     return out;
 }
 
+OpTerm operator*(const OpTerm& lhs, const MelemType &rhs)
+{
+    OpTerm out(lhs);
+    out.get<0>() = lhs.get<0>()*rhs;
+    return out;
+}
+
+OpTerm operator*(const MelemType& lhs, const OpTerm &rhs)
+{
+    return rhs*lhs;
+}
+
 bool Operator::checkTerm(const OpTerm &in)
 {
     if (std::abs(in.get<0>()) < std::numeric_limits<RealType>::epsilon()) return false;
@@ -153,14 +165,21 @@ Operator& Operator::operator+=(const Operator &rhs)
     return *this;
 }
 
-void Operator::add(const OpTerm &rhs)
-{
-    if (checkTerm(rhs)) Terms->push_back(rhs);
-}
-
 Operator& Operator::operator+=(const OpTerm &rhs)
 {
     if (checkTerm(rhs)) Terms->push_back(rhs);
+    return *this;
+}
+
+Operator& Operator::operator-=(const OpTerm &rhs)
+{
+    if (checkTerm(rhs)) Terms->push_back((-1.0)*rhs);
+    return *this;
+}
+
+Operator& Operator::operator-=(const Operator &rhs)
+{
+    (*this)+=rhs*(-1.);
     return *this;
 }
 
@@ -168,6 +187,47 @@ const Operator Operator::operator+(const Operator &rhs) const
 {
     Operator out(*this);
     out+=rhs;
+    return out;
+}
+
+const Operator Operator::operator-(const Operator &rhs) const
+{
+    Operator out(*this);
+    out-=rhs;
+    return out;
+}
+
+Operator Operator::operator*=(const Operator &rhs)
+{
+    Operator out;
+    for ( std::list<OpTerm>::iterator term_lhs_it = Terms->begin(); term_lhs_it != Terms->end(); term_lhs_it++) {
+        for ( std::list<OpTerm>::iterator term_rhs_it = rhs.Terms->begin(); term_rhs_it != rhs.Terms->end(); term_rhs_it++) {
+            out+=((*term_lhs_it)*(*term_rhs_it));
+        }
+    }
+    *this = out;
+    return *this;
+}
+
+Operator Operator::operator*(const Operator &rhs) const
+{
+    Operator out=(*this);
+    out*=rhs;
+    return out;
+}
+
+Operator Operator::operator*=(const MelemType &rhs)
+{
+    for ( std::list<OpTerm>::iterator term_lhs_it = Terms->begin(); term_lhs_it != Terms->end(); term_lhs_it++) {
+            *term_lhs_it=(*term_lhs_it)*rhs;
+        }
+    return *this;
+}
+
+Operator Operator::operator*(const MelemType &rhs) const
+{
+    Operator out=(*this);
+    out*=rhs;
     return out;
 }
 
@@ -265,26 +325,9 @@ Operator Operator::getNormalOrdered() const
 
 bool Operator::operator==(const Operator &rhs)
 {
+    DEBUG((this->getNormalOrdered()));
+    DEBUG(rhs.getNormalOrdered());
     return (*(this->getNormalOrdered().Terms) == *(rhs.getNormalOrdered().Terms));
-}
-
-Operator Operator::operator*=(const Operator &rhs)
-{
-    Operator out;
-    for ( std::list<OpTerm>::iterator term_lhs_it = Terms->begin(); term_lhs_it != Terms->end(); term_lhs_it++) {
-        for ( std::list<OpTerm>::iterator term_rhs_it = rhs.Terms->begin(); term_rhs_it != rhs.Terms->end(); term_rhs_it++) {
-            out+=((*term_lhs_it)*(*term_rhs_it));
-        }
-    }
-    *this = out;
-    return *this;
-}
-
-Operator Operator::operator*(const Operator &rhs) const
-{
-    Operator out=(*this);
-    out*=rhs;
-    return out;
 }
 
 bool Operator::commutes(const Operator &rhs) const
@@ -363,8 +406,10 @@ void Operator::reduce()
 
 void Operator::prune(const RealType &Precision)
 {
-    for (std::list<OpTerm>::iterator it1 = Terms->begin(); it1!=Terms->end(); it1++)
+    for (std::list<OpTerm>::iterator it1 = Terms->begin(); it1!=Terms->end();) {
         if (std::abs(it1->get<0>()) < Precision) it1=Terms->erase(it1);
+        else it1++;
+        }
 }
 
 const char* Operator::exWrongLabel::what() const throw(){
@@ -379,7 +424,13 @@ const char* Operator::exWrongOpSequence::what() const throw(){
 
 Operator Operator::getCommutator(const Operator &rhs) const
 {
+    return (*this)*rhs - rhs*(*this);
+}
+
+Operator Operator::getAntiCommutator(const Operator &rhs) const
+{
     return (*this)*rhs + rhs*(*this);
 }
+
 
 } // end of namespace Pomerol

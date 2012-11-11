@@ -45,7 +45,7 @@ using namespace Pomerol;
 int main(int argc, char* argv[])
 {
 
-    Log.setDebugging(false);
+    Log.setDebugging(true);
 
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));

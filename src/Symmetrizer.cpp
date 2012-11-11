@@ -188,11 +188,17 @@ void Symmetrizer::compute()
     #warning fix it
     // Force number of particles conservation
     boost::shared_ptr<Operator> OP1 ( new Pomerol::OperatorPresets::N(IndexSize));
+    DEBUG(*OP1);
+    DEBUG(Storage);
+    Operator tmp(Storage.getCommutator(*(OP1)).getNormalOrdered());
+    tmp.reduce();
+    tmp.prune();
+    DEBUG(tmp.getNTerms());
     if (Storage.commutes(*OP1)) { 
         Operations.push_back(OP1);
         NSymmetries++;
     }
-
+    exit(0);
     // Force Sz conservation
     std::vector<ParticleIndex> SpinUpIndices;
     std::vector<ParticleIndex> SpinDownIndices;

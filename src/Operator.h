@@ -49,6 +49,8 @@ typedef boost::tuple<MelemType, std::vector<ElemOp> > OpTerm;
 std::ostream& operator<< (std::ostream& output, const OpTerm& out);
 bool operator== (const OpTerm& lhs, const OpTerm& rhs);
 OpTerm operator*(const OpTerm& lhs, const OpTerm &rhs);
+OpTerm operator*(const MelemType& lhs, const OpTerm &rhs);
+OpTerm operator*(const OpTerm& lhs, const MelemType &rhs);
 
 /** This class represents an operator which is stored as a list of Terms */
 class Operator
@@ -97,12 +99,16 @@ public:
     /** Returns all Terms. */
     boost::shared_ptr<std::list<OpTerm> > getTerms() const;
 
-    void add (const OpTerm &rhs);
     Operator& operator+= (const OpTerm &rhs);
+    Operator& operator-= (const OpTerm &rhs);
     Operator& operator+= (const Operator &rhs);
+    Operator& operator-= (const Operator &rhs);
     const Operator operator+(const Operator &rhs) const;
+    const Operator operator-(const Operator &rhs) const;
     Operator operator*= (const Operator &rhs);
     Operator operator* (const Operator &rhs) const;
+    Operator operator*= (const MelemType &rhs);
+    Operator operator* (const MelemType &rhs) const;
     bool operator==(const Operator &rhs);
     bool isEmpty() const;
 
@@ -132,6 +138,7 @@ public:
      * \param[in] rhs An operator to calculate a commutator with.
      * \param[out] Resulting operator. */
     Operator getCommutator(const Operator &rhs) const;
+    Operator getAntiCommutator(const Operator &rhs) const;
 
     /** Checks if current operator commutes with a given one. 
      * \param[in] rhs An operator to calculate a commutator with.
