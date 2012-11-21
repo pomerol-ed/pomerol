@@ -250,5 +250,49 @@ inline std::size_t ElemOphash_value(const ElemOp& in)
     return seed;
 }
 
+#ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+/** Comparison routines for two ElemOp. */
+inline bool operator== (const ElemOp& lhs, const ElemOp& rhs){return (lhs.get<0>() == rhs.get<0>() && lhs.get<1>() == rhs.get<1>() );};
+inline bool operator!= (const ElemOp& lhs, const ElemOp& rhs){return !(lhs==rhs);};
+inline bool operator< (const ElemOp& lhs, const ElemOp& rhs)
+{ 
+    if (lhs.get<0>() == rhs.get<0>()) return (lhs.get<1>() < rhs.get<1>());
+    return (lhs.get<0>() < rhs.get<0>());
+};
+
+inline bool operator> (const ElemOp& lhs, const ElemOp& rhs)
+{
+    return (lhs!=rhs && !(lhs<rhs));
+}
+
+inline bool operator< (const std::vector<ElemOp>& lhs, const std::vector<ElemOp>& rhs)
+{
+    if (lhs.size() < rhs.size()) return true;
+    if (lhs.size() > rhs.size()) return false;
+    for (int i=0; i<lhs.size(); ++i) if (lhs[i]<rhs[i]) return true; else if (lhs[i]>rhs[i]) return false;
+    return false;
+};
+
+inline bool operator== (const std::vector<ElemOp>& lhs, const std::vector<ElemOp>& rhs)
+{
+    if (lhs.size() != rhs.size()) return false;
+    for (int i=0; i<lhs.size(); ++i) if (lhs[i]!=rhs[i]) return false;
+    return true;
+};
+
+/** A comparison routine for two OpTerms for complex valued matrix elements. */
+inline
+bool __compareOpTerms(const OpTerm& lhs, const OpTerm&rhs)
+{
+    const std::vector<ElemOp>& lv = lhs.get<1>();
+    const std::vector<ElemOp>& rv = rhs.get<1>();
+    if (lv == rv) return (std::abs(lhs.get<0>()) < std::abs(rhs.get<0>()));
+    else return (lv < rv);
+    //if (isEqual(lv,rv)) return (std::abs(lhs.get<0>()) < std::abs(rhs.get<0>()));
+    //else return isLesser(lv, rv);
+}
+#endif
+
+
 }; // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_OPERATOR_H

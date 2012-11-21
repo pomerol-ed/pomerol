@@ -413,7 +413,11 @@ void Operator::prune(const RealType &Precision)
 
 void Operator::sortTerms()
 {
+#ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+    Terms->sort(__compareOpTerms);
+#else
     Terms->sort();
+#endif
 }
 
 const char* Operator::exWrongLabel::what() const throw(){
