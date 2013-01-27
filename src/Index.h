@@ -99,7 +99,7 @@ public:
 struct IndexCombination2
 {
     /** Actual indices */
-    const ParticleIndex Index1, Index2;
+    ParticleIndex Index1, Index2;
 
     /** Constructor
      * \param[in] Index1 - Index of a 1st operator (C)
@@ -122,7 +122,7 @@ struct IndexCombination2
 struct IndexCombination4
 {
     /** Actual indices */
-    const ParticleIndex Index1, Index2, Index3, Index4;
+    ParticleIndex Index1, Index2, Index3, Index4;
 
     /** Constructor
      * \param[in] Index1 - Index of a 1st operator (C)

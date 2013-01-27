@@ -39,6 +39,7 @@ void Hamiltonian::prepare()
     BlockNumber NumberOfBlocks = S.NumberOfBlocks();
     parts.resize(NumberOfBlocks);
 
+
     for (BlockNumber CurrentBlock = 0; CurrentBlock < NumberOfBlocks; CurrentBlock++)
     {
 	    parts[CurrentBlock] =  boost::make_shared<HamiltonianPart>(HamiltonianPart(IndexInfo,F, S, CurrentBlock));

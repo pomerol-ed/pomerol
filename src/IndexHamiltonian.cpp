@@ -57,7 +57,6 @@ void IndexHamiltonian::prepare()
             //mapTerms[N].push_back(boost::prior(Terms.end()));
             } // end of Term loop
         } // end of for N
-    //DEBUG("----------------------"); 
 };
 
 /*

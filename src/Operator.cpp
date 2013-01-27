@@ -356,6 +356,9 @@ boost::tuple<FockState,MelemType> Operator::actRight(const OpTerm &in, const Foc
     return boost::make_tuple(bra, Value*MelemType(sign));
 }
 
+template <class R>
+inline bool __is_zero(std::pair<FockState,R> in){return (std::abs(in.second)<std::numeric_limits<RealType>::epsilon());};
+
 std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
 {
     std::map<FockState, MelemType> result1;
@@ -366,10 +369,11 @@ std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
             boost::tie(bra,melem) = actRight(*it,ket);
             if (bra!=ERROR_FOCK_STATE && std::abs(melem)>std::numeric_limits<RealType>::epsilon()) 
                 result1[bra]+=melem;
-        }
-    for (std::map<FockState, MelemType>::iterator it1 = result1.begin(); it1!=result1.end(); it1++) 
-        if ( std::abs(it1->second)<std::numeric_limits<RealType>::epsilon() ) result1.erase(it1); 
-    return result1;
+        };
+    // C++11 remove_if has a different behaviour, so this is a hck around. */
+    std::map<FockState, MelemType> result2;
+    std::remove_copy_if(result1.begin(), result1.end(), std::inserter(result2, result2.end()), __is_zero<MelemType> );//__is_zero<MelemType>);
+    return result2;
 }
 
 

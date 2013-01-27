@@ -175,6 +175,10 @@ struct Permutation4 {
 };
 extern const Permutation4 permutations4[24];
 
+/*template <class T> 
+inline bool __is_zero(const T& in, RealType threshold = std::numeric_limits<RealType>::epsilon()){return (std::abs(in)<threshold);};
+*/
+
 } // end of namespace Pomerol
 
 /**
