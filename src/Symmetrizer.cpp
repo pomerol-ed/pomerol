@@ -185,7 +185,6 @@ const std::vector<boost::shared_ptr<Operator> >& Symmetrizer::getOperations() co
 void Symmetrizer::compute()
 {
     if (Status>=Computed) return;
-    #warning fix it
     // Force number of particles conservation
     boost::shared_ptr<Operator> OP1 ( new Pomerol::OperatorPresets::N(IndexSize));
     if (Storage.commutes(*OP1)) { 
