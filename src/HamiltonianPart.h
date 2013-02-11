@@ -106,12 +106,10 @@ public:
     /** Print the part of hamiltonian to screen. */
     void print_to_screen() const; 
 
-    #ifdef POMEROL_USE_PLAIN_SAVE
     /** Save the data to the file.
      * \param[in] path Path to the file.
      */
     bool savetxt(const boost::filesystem::path &path);
-    #endif
     
     /** Save the HamiltonianPart to the HDF5 group. */
     void save(H5::CommonFG* RootGroup) const;

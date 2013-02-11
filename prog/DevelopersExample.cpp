@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 		std::cout << "Lattice File         : " << opt.LatticeFile << std::endl;
 		std::cout << "Number Of Matsubaras : " << opt.NumberOfMatsubaras << std::endl;
 		std::cout << "beta:                : " << opt.beta << std::endl;
-		std::cout << "Calculation of vertex: " << opt.calc_vertex << std::endl;
+		std::cout << "Calculation of vertex: " << opt.calculate2PGF << std::endl;
 	} catch (const optparse::unrecognized_option& e) {
 		std::cout << "unrecognized option: " << e.what() << std::endl;
 		return 1;
@@ -111,7 +111,9 @@ int main(int argc, char *argv[])
 
   Hamiltonian H(IndexInfo, Storage, S);
   H.prepare();
+  if (opt.savePlaintext) H.savetxt(boost::filesystem::path("hdata_nodiag"));
   H.diagonalize();
+  if (opt.savePlaintext) H.savetxt(boost::filesystem::path("hdata"));
   INFO("The value of ground energy is " << H.getGroundEnergy());
   
   FieldOperatorContainer Operators(IndexInfo, S, H);
@@ -127,7 +129,7 @@ int main(int argc, char *argv[])
   long wn = opt.NumberOfMatsubaras;
 
 
-  if (1==1) {
+  if (opt.calculateGF) {
 
       print_section("Green's function calculation");
       std::set<IndexCombination2> v2;
@@ -137,7 +139,7 @@ int main(int argc, char *argv[])
       G.computeAll();
        }
 
-  if (opt.calc_vertex) {   
+  if (opt.calculate2PGF) {   
       print_section("Two Particle Green's function calculation");
       std::set<IndexCombination4> v1;
       v1.insert(IndexCombination4(0,IndexInfo.getIndexSize()/2,0,IndexInfo.getIndexSize()/2));

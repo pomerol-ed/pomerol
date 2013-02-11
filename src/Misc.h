@@ -39,6 +39,7 @@
 #include<vector>
 #include<list>
 #include<map>
+#include<iomanip>
 
 #include<boost/shared_ptr.hpp>
 #include<boost/scoped_ptr.hpp>
@@ -174,6 +175,34 @@ struct Permutation4 {
     friend std::ostream& operator<<(std::ostream& out, const Permutation4 &p);
 };
 extern const Permutation4 permutations4[24];
+
+/** A tool to wrap the input and output of values. */
+template <typename T> struct __num_format;
+template <typename T> std::ostream& operator<<(std::ostream& lhs, const __num_format<T> &in);
+template <typename T> std::istream& operator>>(std::istream& lhs, __num_format<T> &out);
+template <typename T>  
+struct __num_format {
+    static const int _prec = 12; 
+    T _v; 
+    __num_format(T v):_v(v){};
+    operator T(){return _v;};
+/*    void savetxt(const std::string& filename) { 
+        std::cout << "Saving " << typeid(*this).name() << " to " << filename << std::endl;
+        std::ofstream out; out.open(filename.c_str()); out << *this << std::endl; out.close(); 
+    };  
+*/
+    friend std::ostream& operator<< <>(std::ostream& lhs, const __num_format<T> &in);
+    friend std::istream& operator>> <>(std::istream& lhs, __num_format<T> &out);
+};
+
+template <typename T>  
+inline std::ostream& operator<<(std::ostream& lhs, const __num_format<T> &in) {lhs << std::setprecision(in._prec) << in._v; return lhs;};
+template <typename T>  
+inline std::istream& operator>>(std::istream& lhs, __num_format<T> &out) {lhs >> out._v; return lhs;};
+template <>
+inline std::ostream& operator<<(std::ostream& lhs, const __num_format<ComplexType> &in){lhs << std::setprecision(in._prec) << real(in._v) << " " << imag(in._v); return lhs;};
+template <>
+inline std::istream& operator>>(std::istream& lhs, __num_format<ComplexType> &out){RealType re,im; lhs >> re; lhs >> im; out._v = re+I*im; return lhs;};
 
 /*template <class T> 
 inline bool __is_zero(const T& in, RealType threshold = std::numeric_limits<RealType>::epsilon()){return (std::abs(in)<threshold);};

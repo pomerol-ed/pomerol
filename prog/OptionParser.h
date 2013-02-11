@@ -232,10 +232,20 @@ public:
 	Pomerol::RealType beta ;
 	unsigned long NumberOfMatsubaras;
 	std::string LatticeFile;
+    bool calculateGF;
+    bool calculate2PGF;
+    bool savePlaintext;
 	std::string help;
-    bool calc_vertex;
 
-	pomerolOptionParser() : beta(10), NumberOfMatsubaras(60), LatticeFile("Lattice.json"), help(""), calc_vertex(false) {}
+	pomerolOptionParser() : 
+        beta(10), 
+        NumberOfMatsubaras(60), 
+        LatticeFile("Lattice.json"), 
+        calculateGF(false), 
+        calculate2PGF(false),
+        savePlaintext(false),
+        help("") 
+     {}
 
 	BEGIN_OPTION_MAP_INLINE()
 		ON_OPTION(SHORTOPT('b') || LONGOPT("beta"))
@@ -248,13 +258,19 @@ public:
 			used_args = 1;	// Notify the parser of a consumption of argument.
 			// no need of the notification: used_args variable will be set to 1.
 
-		ON_OPTION(SHORTOPT('l') || LONGOPT("lattice") || LONGOPT("Lattice"))
+		ON_OPTION_WITH_ARG(SHORTOPT('l') || LONGOPT("lattice") || LONGOPT("Lattice"))
 			LatticeFile = arg;
 			used_args = 1;	// Notify the parser of a consumption of argument.
-		ON_OPTION(LONGOPT("calc_vertex") || LONGOPT("calc_vertex"))
-            calc_vertex=true;
-			used_args = 1;	// Notify the parser of a consumption of argument.
 
+		ON_OPTION(LONGOPT("calcgf") || LONGOPT("calculategf"))
+            calculateGF=true;
+
+		ON_OPTION(LONGOPT("calc2pgf") || LONGOPT("calculate2pgf"))
+            calculate2PGF = true;
+            calculateGF = true;
+
+        ON_OPTION(LONGOPT("plaintext"))
+            savePlaintext = true;
 
         ON_OPTION(SHORTOPT('h') || LONGOPT("help"))
             std::cout << "pomerolDiag - an ED code, which provides one- and two- particle Greens functions and irreducible vertex part in Matsubara domain" << std::endl;
@@ -264,7 +280,8 @@ public:
             std::cout << "-m     --matsubaras  : Amount of Matsubara frequencies. Default: " << NumberOfMatsubaras<< std::endl;
             std::cout << "-l     --lattice     : A file with the lattice. Default : " << LatticeFile << std::endl;
             std::cout << "-h     --help        : Show this help message" << std::endl;
-            std::cout << "--calc_vertex        : Defines whether the program will calculate a vertex or not. Default: false." << std::endl;
+            std::cout << "--calculategf        : Defines whether the program will calculate a Green's function. Default: false." << std::endl;
+            std::cout << "--calculate2pgf      : Defines whether the program will calculate a vertex. Default: false." << std::endl;
             exit(0);
 
 	END_OPTION_MAP()

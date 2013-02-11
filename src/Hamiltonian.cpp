@@ -121,6 +121,19 @@ void Hamiltonian::save(H5::CommonFG* RootGroup) const
     }
 }
 
+bool Hamiltonian::savetxt(const boost::filesystem::path &path)
+{
+    BlockNumber NumberOfBlocks = parts.size();
+    boost::filesystem::create_directory(path);
+    for (BlockNumber CurrentBlock=0; CurrentBlock<NumberOfBlocks; CurrentBlock++) {
+        std::stringstream tmp;
+        tmp << "part" << S.getQuantumNumbers(CurrentBlock);
+        boost::filesystem::path out = path / boost::filesystem::path (tmp.str()); 
+	    parts[CurrentBlock]->savetxt(out);
+        }
+    return true;
+}
+
 void Hamiltonian::load(const H5::CommonFG* RootGroup)
 {
     H5::Group HRootGroup(RootGroup->openGroup("Hamiltonian"));  

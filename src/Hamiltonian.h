@@ -76,6 +76,11 @@ public:
     void save(H5::CommonFG* RootGroup) const;
     void load(const H5::CommonFG* RootGroup);
 
+    /** Save the data to the directory.
+     * \param[in] path Path to the directory.
+     */
+    bool savetxt(const boost::filesystem::path &path);
+
 private:
     void computeGroundEnergy();
 };

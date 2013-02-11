@@ -9,11 +9,20 @@ ELSE()
    SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
 ENDIF()
 
+#Use complex Matrix elements
+option(use_complex "Use complex matrix elements" OFF)
+if (use_complex)
+    message(STATUS "Using complex matrix elements")
+    add_definitions("-DPOMEROL_COMPLEX_MATRIX_ELEMENS")
+endif (use_complex)
+
 # Documentation
 set(DOXYFILE_SOURCE_DIR "./src")
 include(UseDoxygen)
 
-find_package (Boost COMPONENTS python)
+set(Boost_USE_STATIC_LIBS        ON)
+set(Boost_USE_STATIC_RUNTIME    OFF)
+find_package (Boost COMPONENTS system filesystem)
 find_package (HDF5 COMPONENTS CXX)
 find_package (Eigen3 3.1)
 
@@ -25,12 +34,6 @@ message(STATUS "HDF5 libs: " ${HDF5_LIBRARIES} )
 #find_package (PythonLibs REQUIRED)
 #message("Include dirs of Python: " ${PYTHON_INCLUDE_DIRS} )
 #message("Libs of Python: " ${PYTHON_LIBRARIES} )
-
-option(use_complex "Use complex matrix elements" OFF)
-if (use_complex)
-    message(STATUS "Using complex matrix elements")
-    add_definitions("-DPOMEROL_COMPLEX_MATRIX_ELEMENS")
-endif (use_complex)
 
 include_directories(
     ${Boost_INCLUDE_DIRS}
