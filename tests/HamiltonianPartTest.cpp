@@ -55,8 +55,10 @@ int main(int argc, char* argv[])
 
     IndexClassification Indices(L.getSiteMap());
     Indices.prepare();
+    Indices.printIndices();
 
     ParticleIndex IndexSize = Indices.getIndexSize();
+    INFO(IndexSize);
 
     IndexHamiltonian Storage(&L,Indices);
     Storage.prepare();
@@ -67,7 +69,9 @@ int main(int argc, char* argv[])
     StatesClassification S(Indices,Symm);
     S.compute();
 
-    HamiltonianPart Hpart(Indices, Storage, S, 4);
+    QuantumNumbers Q = Symm.getQuantumNumbers();
+    Q.set(0,2); Q.set(1,0);
+    HamiltonianPart Hpart(Indices, Storage, S, S.getBlockNumber(Q));
     RealMatrixType hmatrix(4,4);
     hmatrix << -0.402764, 0        , -0.707107, -0.581189,
                -0.581189, 0.707107 , 0        , 0.402764,
