@@ -364,12 +364,15 @@ inline bool __is_zero(std::pair<FockState,R> in){return (std::abs(in.second)<std
 
 std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
 {
+    DEBUG("!");
     std::map<FockState, MelemType> result1;
     for (std::list<OpTerm>::const_iterator it = Terms.begin(); it!=Terms.end(); it++)
         {
+            DEBUG(*it);
             FockState bra; 
             MelemType melem;
             boost::tie(bra,melem) = actRight(*it,ket);
+            if (std::abs(melem)>1e-8) DEBUG(bra);
             if (bra!=ERROR_FOCK_STATE && std::abs(melem)>std::numeric_limits<RealType>::epsilon()) 
                 result1[bra]+=melem;
         };
@@ -390,6 +393,39 @@ MelemType Operator::getMatrixElement( const FockState & bra, const FockState &ke
         }
 }
 
+MelemType Operator::getMatrixElement( const VectorType & bra, const VectorType &ket, const std::vector<FockState> &states) const
+{
+    if (bra.size()!=ket.size() || bra.size()!=states.size()) throw (exMelemVanishes()); 
+    MelemType melem = 0.0;
+    for (int i=0; i<ket.size(); ++i) {
+        FockState current_state = states[i];
+        MelemType overlap = ket[i];
+        if (std::abs(overlap)>std::numeric_limits<RealType>::epsilon()) { 
+            DEBUG(overlap << "," << current_state);
+            std::map<FockState, MelemType> map1 = this->actRight(current_state);
+            for (std::map<FockState, MelemType>::const_iterator it = map1.begin(); it!= map1.end(); it++) {
+                FockState result_state = it->first;
+                MelemType melem2 = it->second;
+                DEBUG("\t<" << result_state << "|" << melem2);
+                std::vector<FockState>::const_iterator it1 = std::find(states.begin(), states.end(), result_state);
+                MelemType overlap2;
+                if (it1 != states.end() ) { 
+                    size_t j = std::distance(states.begin(), it1);
+                #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+                    overlap2 = std::conj(bra(j);
+                #else
+                    overlap2 = bra(j);
+                #endif
+                    }
+                else overlap2 = 0.0;
+                //DEBUG(overlap2);
+                //DEBUG("<" << result_state << "|" << overlap2 << "*" << melem << "*" << overlap << "|" << current_state << ">");
+                melem += overlap2 * melem2 * overlap; 
+                }   
+            };  
+        }; 
+    return melem;
+}
 
 void Operator::reduce()
 {
@@ -436,6 +472,12 @@ const char* Operator::exWrongOpSequence::what() const throw(){
     s << "The term has wrong operator sequence!";
     return s.str().c_str();
 };
+
+const char* Operator::exMelemVanishes::what() const throw(){
+    return "Matrix element vanishes"; 
+};
+
+
 
 Operator Operator::getCommutator(const Operator &rhs) const
 {

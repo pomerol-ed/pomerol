@@ -274,8 +274,8 @@ void LatticePresets::addSS ( Lattice *L, const std::string& Label1, const std::s
 
     addSzSz(L, Label1, Label2, ExchJ);
     for (unsigned short i=0; i<Orbitals; ++i) {
-        L->Terms->addTerm(Lattice::Term::Presets::SplusSminus(Label1, Label2, -ExchJ/2., i));
-        L->Terms->addTerm(Lattice::Term::Presets::SminusSplus(Label1, Label2, -ExchJ/2., i));
+        L->Terms->addTerm(Lattice::Term::Presets::SplusSminus(Label1, Label2, ExchJ/2., i));
+        L->Terms->addTerm(Lattice::Term::Presets::SminusSplus(Label1, Label2, ExchJ/2., i));
         };
 }
 

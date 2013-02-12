@@ -162,6 +162,9 @@ public:
      * \param[out] Resulting matrix element.
      */
     virtual MelemType getMatrixElement(const FockState &bra, const FockState &ket) const;
+    
+    /** Returns the matrix element of an operator between two states represented by a linear combination of FockState's. */
+    virtual MelemType getMatrixElement( const VectorType & bra, const VectorType &ket, const std::vector<FockState> &states) const;
 
     /** Returns a result of acting of an operator on a state to the right of the operator.
      * \param[in] ket A state to act on.
