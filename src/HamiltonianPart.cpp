@@ -23,6 +23,7 @@
 #include"StatesClassification.h"
 #include<sstream>
 #include<Eigen/Eigenvalues>
+#include<boost/filesystem.hpp>
 #include<boost/filesystem/fstream.hpp>
 
 // class HamiltonianPart
@@ -176,24 +177,24 @@ void HamiltonianPart::load(const H5::CommonFG* RootGroup)
     Status = Diagonalized;
 }
 
-bool HamiltonianPart::savetxt(const boost::filesystem::path &path)
+bool HamiltonianPart::savetxt(const boost::filesystem::path &path1)
 {
-    boost::filesystem::create_directory(path);
+    boost::filesystem::create_directory(path1);
     boost::filesystem::fstream out;
     if (Status >= Diagonalized) {
-        out.open(path / boost::filesystem::path("evals.dat"),std::ios_base::out);
+        out.open(path1 / boost::filesystem::path("evals.dat"),std::ios_base::out);
         out << Eigenvalues << std::endl;
         out.close();
-        out.open(path / boost::filesystem::path("evals_shift.dat"),std::ios_base::out);
+        out.open(path1 / boost::filesystem::path("evals_shift.dat"),std::ios_base::out);
         out << __num_format<RealVectorType>(Eigenvalues - RealMatrixType::Identity(Eigenvalues.size(),Eigenvalues.size()).diagonal()*getMinimumEigenvalue()) << std::endl;
         out.close();
         };
     if (Status >= Prepared) {
-        out.open(path / boost::filesystem::path("evecs.dat"),std::ios_base::out);
+        out.open(path1 / boost::filesystem::path("evecs.dat"),std::ios_base::out);
         out << H << std::endl;
         out.close();
         };
-    out.open(path / boost::filesystem::path("info.dat"),std::ios_base::out);
+    out.open(path1 / boost::filesystem::path("info.dat"),std::ios_base::out);
     out << "Quantum numbers: " << QN << std::endl;
     out << "Block number:    " << Block << std::endl;
     out.close();

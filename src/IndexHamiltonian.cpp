@@ -53,7 +53,7 @@ void IndexHamiltonian::prepare()
             
             OpTerm T1 = boost::tie((**current).Value, ops);
             //Operator::Term *T1 = new Operator::Term(N,(**current).OperatorSequence, ind, (**current).Value);
-            Terms->push_back(T1);
+            Terms.push_back(T1);
             //mapTerms[N].push_back(boost::prior(Terms.end()));
             } // end of Term loop
         } // end of for N

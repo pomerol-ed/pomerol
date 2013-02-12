@@ -41,7 +41,7 @@ N::N(ParticleIndex Nmodes):Operator(),Nmodes(Nmodes)
     for (ParticleIndex index=0; index<Nmodes; ++index) {
         ops[0]=boost::make_tuple(true,index);
         ops[1]=boost::make_tuple(false,index);
-        Terms->push_back(boost::make_tuple(1.0, ops));
+        Terms.push_back(boost::make_tuple(1.0, ops));
     };
 };
     
@@ -92,11 +92,11 @@ void Sz::generateTerms()
     for (ParticleIndex i=0; i<SpinUpIndices.size(); ++i) {
         ops[0]=boost::make_tuple(1,SpinUpIndices[i]);
         ops[1]=boost::make_tuple(0,SpinUpIndices[i]);
-        Terms->push_back(boost::make_tuple(0.5, ops));
+        Terms.push_back(boost::make_tuple(0.5, ops));
 
         ops[0]=boost::make_tuple(1,SpinDownIndices[i]);
         ops[1]=boost::make_tuple(0,SpinDownIndices[i]);
-        Terms->push_back(boost::make_tuple(-0.5, ops));
+        Terms.push_back(boost::make_tuple(-0.5, ops));
     }
 }
 
@@ -129,7 +129,7 @@ Cdag::Cdag(ParticleIndex index):Operator(),index(index)
 {
     std::vector<ElemOp> ops;
     ops.push_back(boost::make_tuple(1,index));
-    Terms->push_back(boost::make_tuple(1,ops));
+    Terms.push_back(boost::make_tuple(1,ops));
 }
 
 //
@@ -140,7 +140,7 @@ C::C(ParticleIndex index):Operator(),index(index)
 {
     std::vector<ElemOp> ops;
     ops.push_back(boost::make_tuple(0,index));
-    Terms->push_back(boost::make_tuple(1,ops));
+    Terms.push_back(boost::make_tuple(1,ops));
 }
 
 } // end of namespace OperatorPresets

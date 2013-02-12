@@ -112,43 +112,43 @@ bool Operator::checkTerm(const OpTerm &in)
 
 Operator::Operator()
 {
-    Terms.reset( new std::list<OpTerm> );
+    //Terms.reset( new std::list<OpTerm> );
 }
 
-Operator::Operator(boost::shared_ptr<std::list<OpTerm> > Terms) : Terms(Terms)
+Operator::Operator(const std::list<OpTerm>& Terms2) : Terms(Terms2)
 {
-    Terms->remove_if(this->checkTerm);
+    Terms.remove_if(this->checkTerm);
 }
 
 Operator::Operator(const OpTerm& term)
 {
-    Terms.reset( new std::list<OpTerm> );
-    if (checkTerm(term)) Terms->push_back(term);
+    if (checkTerm(term)) Terms.push_back(term);
 }
 
-boost::shared_ptr<std::list<OpTerm> > Operator::getTerms() const
+const std::list<OpTerm>& Operator::getTerms() const
 {
     return Terms;
 }
 
 const unsigned int Operator::getNTerms() const
 {
-    return Terms->size();
+    return Terms.size();
 }
 
 Operator::~Operator()
 {
-    Terms.reset();
+    //~Terms();
 }
+
 bool Operator::isEmpty() const
 {
-    return (Terms->size()==0);
+    return (Terms.size()==0);
 }
 
 std::ostream& operator<< (std::ostream& output, const Operator& out)
 {
-    for (std::list<OpTerm>::const_iterator it = out.Terms->begin(); it!=out.Terms->end(); it++) {
-        if (it!=out.Terms->begin())  output << " + ";
+    for (std::list<OpTerm>::const_iterator it = out.Terms.begin(); it!=out.Terms.end(); it++) {
+        if (it!=out.Terms.begin())  output << " + ";
         output << *it;
         };
     return output;
@@ -161,19 +161,19 @@ void Operator::printAllTerms() const
 
 Operator& Operator::operator+=(const Operator &rhs)
 {
-    if ( rhs.Terms->size() ) Terms->insert(Terms->end(), rhs.Terms->begin(), rhs.Terms->end()); 
+    if ( rhs.Terms.size() ) Terms.insert(Terms.end(), rhs.Terms.begin(), rhs.Terms.end()); 
     return *this;
 }
 
 Operator& Operator::operator+=(const OpTerm &rhs)
 {
-    if (checkTerm(rhs)) Terms->push_back(rhs);
+    if (checkTerm(rhs)) Terms.push_back(rhs);
     return *this;
 }
 
 Operator& Operator::operator-=(const OpTerm &rhs)
 {
-    if (checkTerm(rhs)) Terms->push_back((-1.0)*rhs);
+    if (checkTerm(rhs)) Terms.push_back((-1.0)*rhs);
     return *this;
 }
 
@@ -200,8 +200,10 @@ const Operator Operator::operator-(const Operator &rhs) const
 Operator Operator::operator*=(const Operator &rhs)
 {
     Operator out;
-    for ( std::list<OpTerm>::iterator term_lhs_it = Terms->begin(); term_lhs_it != Terms->end(); term_lhs_it++) {
-        for ( std::list<OpTerm>::iterator term_rhs_it = rhs.Terms->begin(); term_rhs_it != rhs.Terms->end(); term_rhs_it++) {
+    for ( std::list<OpTerm>::iterator term_lhs_it = Terms.begin(); term_lhs_it != Terms.end(); term_lhs_it++) {
+        for ( std::list<OpTerm>::const_iterator term_rhs_it = rhs.Terms.begin(); term_rhs_it != rhs.Terms.end(); term_rhs_it++) {
+            //DEBUG(*term_lhs_it);
+            //DEBUG(*term_rhs_it);
             out+=((*term_lhs_it)*(*term_rhs_it));
         }
     }
@@ -218,7 +220,7 @@ Operator Operator::operator*(const Operator &rhs) const
 
 Operator Operator::operator*=(const MelemType &rhs)
 {
-    for ( std::list<OpTerm>::iterator term_lhs_it = Terms->begin(); term_lhs_it != Terms->end(); term_lhs_it++) {
+    for ( std::list<OpTerm>::iterator term_lhs_it = Terms.begin(); term_lhs_it != Terms.end(); term_lhs_it++) {
             *term_lhs_it=(*term_lhs_it)*rhs;
         }
     return *this;
@@ -279,10 +281,11 @@ std::pair<OpTerm,Operator> Operator::elementary_swap(const OpTerm &in, unsigned 
 
 Operator Operator::rearrange(boost::function<std::vector<ElemOp>( const std::vector<ElemOp> &in_f)> f) const
 {
-    if (!Terms->size()) return *this;
+    if (!Terms.size()) return *this;
     Operator out_extra;
     Operator out_orig;
-    for ( std::list<OpTerm>::iterator term_it = Terms->begin(); term_it != Terms->end(); term_it++) {
+    Operator out(*this);
+    for ( std::list<OpTerm>::iterator term_it = out.Terms.begin(); term_it != out.Terms.end(); term_it++) {
         OpTerm cur_term = *term_it;
         std::vector<ElemOp>& in_ops = cur_term.get<1>();  
         std::vector<ElemOp> out_ops = f(in_ops);
@@ -326,7 +329,7 @@ Operator Operator::getNormalOrdered() const
 
 bool Operator::operator==(const Operator &rhs)
 {
-    return (*(this->getNormalOrdered().Terms) == *(rhs.getNormalOrdered().Terms));
+    return ((this->getNormalOrdered().Terms) == (rhs.getNormalOrdered().Terms));
 }
 
 bool Operator::commutes(const Operator &rhs) const
@@ -362,7 +365,7 @@ inline bool __is_zero(std::pair<FockState,R> in){return (std::abs(in.second)<std
 std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
 {
     std::map<FockState, MelemType> result1;
-    for (std::list<OpTerm>::const_iterator it = Terms->begin(); it!=Terms->end(); it++)
+    for (std::list<OpTerm>::const_iterator it = Terms.begin(); it!=Terms.end(); it++)
         {
             FockState bra; 
             MelemType melem;
@@ -391,13 +394,13 @@ MelemType Operator::getMatrixElement( const FockState & bra, const FockState &ke
 void Operator::reduce()
 {
     int it1_pos=0;
-    for (std::list<OpTerm>::iterator it1 = Terms->begin(); it1!=Terms->end(); it1++) {
-        for (std::list<OpTerm>::iterator it2 = boost::next(it1); it2!=Terms->end();) {
-            if (it2!=Terms->end()) {
+    for (std::list<OpTerm>::iterator it1 = Terms.begin(); it1!=Terms.end(); it1++) {
+        for (std::list<OpTerm>::iterator it2 = boost::next(it1); it2!=Terms.end();) {
+            if (it2!=Terms.end()) {
                 if (it2->get<1>() == it1->get<1>()) {
                     it1->get<0>()+=it2->get<0>();
-                    it2 = Terms->erase(it2);
-                    it1 = Terms->begin();
+                    it2 = Terms.erase(it2);
+                    it1 = Terms.begin();
                     std::advance(it1,it1_pos);
                     }
                 else it2++;
@@ -409,8 +412,8 @@ void Operator::reduce()
 
 void Operator::prune(const RealType &Precision)
 {
-    for (std::list<OpTerm>::iterator it1 = Terms->begin(); it1!=Terms->end();) {
-        if (std::abs(it1->get<0>()) < Precision) it1=Terms->erase(it1);
+    for (std::list<OpTerm>::iterator it1 = Terms.begin(); it1!=Terms.end();) {
+        if (std::abs(it1->get<0>()) < Precision) it1=Terms.erase(it1);
         else it1++;
         }
 }
@@ -418,9 +421,9 @@ void Operator::prune(const RealType &Precision)
 void Operator::sortTerms()
 {
 #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
-    Terms->sort(__compareOpTerms);
+    Terms.sort(__compareOpTerms);
 #else
-    Terms->sort();
+    Terms.sort();
 #endif
 }
 

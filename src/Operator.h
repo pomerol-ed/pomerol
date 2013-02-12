@@ -32,8 +32,6 @@
 #include "Index.h"
 #include "IndexClassification.h"
 #include "Lattice.h"
-#include <boost/shared_ptr.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/functional/hash.hpp>
 
@@ -67,7 +65,7 @@ public:
     static bool checkTerm(const OpTerm& in);
 protected:
     /** A set of Terms in the Operator. */
-    boost::shared_ptr<std::list<OpTerm> > Terms; // This will be inherited and used by classes
+    std::list<OpTerm> Terms; // This will be inherited and used by classes
 
     /** Makes a swap of two adjacent operators in the term taking into account the anticommutation relation.
      * If operators anticommute, then a new term is generated and returned.
@@ -104,11 +102,11 @@ public:
     /** Constructor from the single term. */
     Operator(const OpTerm& term);
     /** Constructor from the list of Terms. */
-    Operator(boost::shared_ptr<std::list<OpTerm> > Terms);
+    Operator(const std::list<OpTerm> &Terms);
     /** Print all of the Terms. */
     void printAllTerms() const;
     /** Returns all Terms. */
-    boost::shared_ptr<std::list<OpTerm> > getTerms() const;
+    const std::list<OpTerm>& getTerms() const;
 
     /** Adds a term to the Operator. Done by checking (checkTerm) and push_back to the Terms list. 
       * \param[in] rhs A term to add.

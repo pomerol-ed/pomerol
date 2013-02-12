@@ -21,6 +21,8 @@
 
 #include "Hamiltonian.h"
 
+#include<boost/filesystem.hpp>
+
 namespace Pomerol{
 
 Hamiltonian::Hamiltonian(const IndexClassification &IndexInfo, const IndexHamiltonian& F, const StatesClassification &S):
