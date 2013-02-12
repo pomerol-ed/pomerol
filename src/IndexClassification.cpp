@@ -55,7 +55,7 @@ IndexClassification::IndexClassification ( const Lattice::SiteMap &Sites ) : Ind
 {
 };
 
-void IndexClassification::prepare()
+void IndexClassification::prepare(bool order_spins)
 {
     unsigned int MaxSpinSize=0;
     for (Lattice::SiteMap::const_iterator it1 = Sites.begin(); it1!=Sites.end();++it1) { // first run : determine IndexSpace size & calculate number of spins on each site.
@@ -68,15 +68,27 @@ void IndexClassification::prepare()
     ParticleIndex currentIndex=0;
     IndicesToInfo.resize(IndexSize);
 
-    for (unsigned int z=0; z<MaxSpinSize; ++z) {
+    if (order_spins) {
+        for (unsigned int z=0; z<MaxSpinSize; ++z) {
+            for (Lattice::SiteMap::const_iterator it1 = Sites.begin(); it1!=Sites.end();++it1) {
+                if (z>=(*(it1->second)).SpinSize) break;
+                for (unsigned int i=0; i<(*(it1->second)).OrbitalSize; ++i) {
+                        IndicesToInfo[currentIndex] = new IndexInfo( it1->first, i, z);
+                        currentIndex++;
+                        }; // end of orbital loop
+                    }; // end of Lattice::SiteMap loop
+                }; // end of spin loop
+        } // end of order_spins == true
+    else {
         for (Lattice::SiteMap::const_iterator it1 = Sites.begin(); it1!=Sites.end();++it1) {
-            if (z>=(*(it1->second)).SpinSize) break;
             for (unsigned int i=0; i<(*(it1->second)).OrbitalSize; ++i) {
-                    IndicesToInfo[currentIndex] = new IndexInfo( it1->first, i, z);
-                    currentIndex++;
+                for (size_t z=0; z<(*(it1->second)).SpinSize; ++z) {
+                        IndicesToInfo[currentIndex] = new IndexInfo( it1->first, i, z);
+                        currentIndex++;
+                        }; // end of spin loop
                     }; // end of orbital loop
                 }; // end of Lattice::SiteMap loop
-            }; // end of spin loop
+        }; // end of order_spins == false
 
     for (ParticleIndex i=0; i<IndexSize; ++i) InfoToIndices[(*(IndicesToInfo[i]))]=i;
 }

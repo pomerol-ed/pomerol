@@ -338,6 +338,7 @@ bool Operator::commutes(const Operator &rhs) const
 }
 boost::tuple<FockState,MelemType> Operator::actRight(const OpTerm &in, const FockState &ket)
 {
+    DEBUG(in << "|" << ket << ">");
     ParticleIndex prev_pos_ = 0; // Here we'll store the index of the last operator to speed up sign counting
     int sign=1;
     FockState bra = ket;
@@ -348,12 +349,14 @@ boost::tuple<FockState,MelemType> Operator::actRight(const OpTerm &in, const Foc
         {
             bool op; ParticleIndex ind;
             boost::tie(op,ind)=in_ops[i];
+            DEBUG(op << "_" << ind);
             if (op == bra[ind] ) return boost::make_tuple(ERROR_FOCK_STATE, 0); // This is Pauli principle.
-            bra[ind] = op; // This is c or c^+ acting
             if (ind > prev_pos_) 
-                for (ParticleIndex j=prev_pos_; j<ind; ++j) { if (ket[j]) sign*=-1; } 
+                for (ParticleIndex j=prev_pos_; j<ind; ++j) { if (bra[j]) sign*=-1; } 
             else
-                for (ParticleIndex j=prev_pos_; j>ind; j--) { if (ket[j]) sign*=-1; }
+                for (ParticleIndex j=prev_pos_; j>ind; j--) { if (bra[j]) sign*=-1; ERROR("!!!!!!"); }
+            bra[ind] = op; // This is c or c^+ acting
+            //prev_pos_ = 0;
             
         }
     return boost::make_tuple(bra, Value*MelemType(sign));
@@ -368,11 +371,10 @@ std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
     std::map<FockState, MelemType> result1;
     for (std::list<OpTerm>::const_iterator it = Terms.begin(); it!=Terms.end(); it++)
         {
-            DEBUG(*it);
             FockState bra; 
             MelemType melem;
             boost::tie(bra,melem) = actRight(*it,ket);
-            if (std::abs(melem)>1e-8) DEBUG(bra);
+            if (std::abs(melem)>1e-8) DEBUG(bra << "|*" << melem);
             if (bra!=ERROR_FOCK_STATE && std::abs(melem)>std::numeric_limits<RealType>::epsilon()) 
                 result1[bra]+=melem;
         };
@@ -412,7 +414,7 @@ MelemType Operator::getMatrixElement( const VectorType & bra, const VectorType &
                 if (it1 != states.end() ) { 
                     size_t j = std::distance(states.begin(), it1);
                 #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
-                    overlap2 = std::conj(bra(j);
+                    overlap2 = std::conj(bra(j));
                 #else
                     overlap2 = bra(j);
                 #endif

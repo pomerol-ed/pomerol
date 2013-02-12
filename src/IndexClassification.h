@@ -78,8 +78,10 @@ public:
      */
     IndexClassification (const Lattice::SiteMap &Sites);
     
-    /** Define the index space */
-    void prepare();
+    /** Define the index space 
+     * \param[in] order_spins Group indices by spins
+    */
+    void prepare(bool order_spins = false);
 
     /** Print all Indices to the information stream */
     void printIndices();

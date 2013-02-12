@@ -66,7 +66,7 @@ void print_section (const std::string& str)
 template <typename F1, typename F2>
 bool is_equal ( F1 x, F2 y, RealType tolerance = 1e-7)
 {
-    return (std::abs(x-y)<tolerance);
+    return (std::abs(x-F1(y))<tolerance);
 }
 
 
@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
     L.printTerms(4);
 
     IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
+    IndexInfo.prepare(false);
     print_section("Indices");
     IndexInfo.printIndices();
 
@@ -134,26 +134,35 @@ int main(int argc, char* argv[])
     INFO("Looking block " << B << " with quantum numbers " << Q);
     HamiltonianPart Hpart(IndexInfo, Storage, S, B);
     Hpart.prepare();
-    Hpart.savetxt(boost::filesystem::path("hpart_nondiag"));
     INFO_NONEWLINE("Diagonalizing...");
     Hpart.diagonalize();
     INFO("done.");
-    Hpart.savetxt(boost::filesystem::path("hpart"));
     size_t IndexSize = IndexInfo.getIndexSize();
     
-    Operator Sz = OperatorPresets::Sz(IndexSize);
-    Operator SzSz = Sz*Sz;
     Operator Splus;
     Operator Sminus;
-    for (size_t index=0; index<IndexSize/2; ++index) {
-        Sminus  += OperatorPresets::Cdag(index)*OperatorPresets::C(index+IndexSize/2);
-        Splus += OperatorPresets::Cdag(index+IndexSize/2)*OperatorPresets::C(index);
+    std::vector<ParticleIndex> up_indices, down_indices;
+    for (auto site_pairs : L.getSiteMap()) {  
+        auto site_name = site_pairs.first;
+        ParticleIndex up = IndexInfo.getIndex(site_name, 0, 0);
+        ParticleIndex down = IndexInfo.getIndex(site_name, 0, 1);
+        up_indices.push_back(up);
+        down_indices.push_back(down);
+        Splus += OperatorPresets::Cdag(up)*OperatorPresets::C(down);
+        Sminus  += OperatorPresets::Cdag(down)*OperatorPresets::C(up);
         }
+    Operator Sz = OperatorPresets::Sz(up_indices,down_indices);
+    Operator SzSz = Sz*Sz;
     Operator SplusSminus = Splus*Sminus;
     Operator SminusSplus = Sminus*Splus;
     Operator S2 = SzSz + (SplusSminus + SminusSplus)*0.5;
     Operator S2_2 = SzSz + SplusSminus - Sz;
     Operator S2_3 = SzSz + SminusSplus + Sz;
+
+    Operator Sc = Splus.getCommutator(Sz);
+    DEBUG((Sc == Splus *(-1.0)));
+    Operator Sc2 = Sminus.getCommutator(Sz);
+    DEBUG((Sc2 == Sminus ));
     DEBUG((S2 == S2_2));
     DEBUG((S2 == S2_3));
     DEBUG(S2.commutes(Sz));
@@ -163,10 +172,11 @@ int main(int argc, char* argv[])
     
     for (size_t state_index = 0; state_index < 1; ++state_index) {
         auto State = Hpart.getEigenState(state_index);
-        for (size_t i=0; i<State.size(); ++i) { if (!is_equal(State(i),0,1e-3)) INFO_NONEWLINE(State(i) << "*|" << blockstates[i] << "> + "); }; INFO("");
+
+        for (size_t i=0; i<State.size(); ++i) { if (!is_equal(State(i),0.0,1e-3)) INFO_NONEWLINE(State(i) << "*|" << blockstates[i] << "> + "); }; INFO("");
         //RealType s2val = S2.getMatrixElement(State,State,blockstates);
         //RealType szszval = SzSz.getMatrixElement(State,State,blockstates); 
-        RealType splussminusval = SplusSminus.getMatrixElement(State,State,blockstates);
+        MelemType splussminusval = SplusSminus.getMatrixElement(State,State,blockstates);
 
         //INFO("<S^2> = " << s2val);
         //INFO("<SzSz> = " << szszval);
