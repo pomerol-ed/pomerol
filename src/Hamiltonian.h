@@ -36,6 +36,8 @@
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
 
+#include <boost/filesystem/path.hpp>
+
 namespace Pomerol{
 
 /** This class represents a Hamiltonian, written as a matrix of matrix elements in a Fock basis.

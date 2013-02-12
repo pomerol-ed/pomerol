@@ -32,6 +32,7 @@
 #include "HDF5Storage.h"
 #include "IndexClassification.h"
 #include "StatesClassification.h"
+#include <boost/filesystem/path.hpp>
 
 namespace Pomerol{
 
