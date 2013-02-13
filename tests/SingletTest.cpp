@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
     L.printTerms(4);
 
     IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare(true);
+    IndexInfo.prepare(false);
     print_section("Indices");
     IndexInfo.printIndices();
 
