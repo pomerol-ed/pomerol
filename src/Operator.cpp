@@ -339,7 +339,8 @@ bool Operator::commutes(const Operator &rhs) const
 boost::tuple<FockState,MelemType> Operator::actRight(const OpTerm &in, const FockState &ket)
 {
     DEBUG(in << "|" << ket << ">");
-    ParticleIndex prev_pos_ = ket.size(); // Here we'll store the index of the last operator to speed up sign counting
+    //ParticleIndex prev_pos_ = ket.size(); // Here we'll store the index of the last operator to speed up sign counting
+    ParticleIndex prev_pos_ = 0;
     DEBUG(prev_pos_ <<"|" << ket);
     int sign=1;
     FockState bra = ket;
