@@ -36,7 +36,9 @@
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
 
+#ifdef ENABLE_SAVE_PLAINTEXT
 #include <boost/filesystem/path.hpp>
+#endif
 
 namespace Pomerol{
 
@@ -81,7 +83,9 @@ public:
     /** Save the data to the directory.
      * \param[in] path Path to the directory.
      */
+    #ifdef ENABLE_SAVE_PLAINTEXT
     bool savetxt(const boost::filesystem::path &path);
+    #endif
 
 private:
     void computeGroundEnergy();

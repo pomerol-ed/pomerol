@@ -42,8 +42,6 @@
 #include <iostream>
 #include <algorithm>
 #include <tclap/CmdLine.h>
-#include <boost/filesystem/path.hpp>
-
 #include<cstdlib>
 #include <fstream>
 

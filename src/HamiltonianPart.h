@@ -32,7 +32,10 @@
 #include "HDF5Storage.h"
 #include "IndexClassification.h"
 #include "StatesClassification.h"
+
+#ifdef ENABLE_SAVE_PLAINTEXT
 #include <boost/filesystem/path.hpp>
+#endif
 
 namespace Pomerol{
 
@@ -110,7 +113,9 @@ public:
     /** Save the data to the file.
      * \param[in] path Path to the file.
      */
+    #ifdef ENABLE_SAVE_PLAINTEXT
     bool savetxt(const boost::filesystem::path &path1);
+    #endif
     
     /** Save the HamiltonianPart to the HDF5 group. */
     void save(H5::CommonFG* RootGroup) const;

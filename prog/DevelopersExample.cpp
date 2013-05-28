@@ -111,9 +111,13 @@ int main(int argc, char *argv[])
 
   Hamiltonian H(IndexInfo, Storage, S);
   H.prepare();
+  #ifdef ENABLE_SAVE_PLAINTEXT
   if (opt.savePlaintext) H.savetxt(boost::filesystem::path("hdata_nodiag"));
+  #endif
   H.diagonalize();
+  #ifdef ENABLE_SAVE_PLAINTEXT
   if (opt.savePlaintext) H.savetxt(boost::filesystem::path("hdata"));
+  #endif
   INFO("The value of ground energy is " << H.getGroundEnergy());
   
   FieldOperatorContainer Operators(IndexInfo, S, H);

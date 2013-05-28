@@ -21,7 +21,9 @@
 
 #include "Hamiltonian.h"
 
+#ifdef ENABLE_SAVE_PLAINTEXT
 #include<boost/filesystem.hpp>
+#endif
 
 namespace Pomerol{
 
@@ -123,6 +125,7 @@ void Hamiltonian::save(H5::CommonFG* RootGroup) const
     }
 }
 
+#ifdef ENABLE_SAVE_PLAINTEXT
 bool Hamiltonian::savetxt(const boost::filesystem::path &path)
 {
     BlockNumber NumberOfBlocks = parts.size();
@@ -135,6 +138,7 @@ bool Hamiltonian::savetxt(const boost::filesystem::path &path)
         }
     return true;
 }
+#endif
 
 void Hamiltonian::load(const H5::CommonFG* RootGroup)
 {

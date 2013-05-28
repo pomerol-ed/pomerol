@@ -56,7 +56,7 @@
 #include <omp.h>
 #endif
 
-#ifdef POMEROL_USE_PLAIN_SAVE
+#ifdef ENABLE_SAVE_PLAINTEXT
 #include <boost/filesystem.hpp>
 #endif
 

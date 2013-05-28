@@ -23,8 +23,11 @@
 #include"StatesClassification.h"
 #include<sstream>
 #include<Eigen/Eigenvalues>
+
+#ifdef ENABLE_SAVE_PLAINTEXT
 #include<boost/filesystem.hpp>
 #include<boost/filesystem/fstream.hpp>
+#endif
 
 // class HamiltonianPart
 
@@ -177,6 +180,7 @@ void HamiltonianPart::load(const H5::CommonFG* RootGroup)
     Status = Diagonalized;
 }
 
+#ifdef ENABLE_SAVE_PLAINTEXT
 bool HamiltonianPart::savetxt(const boost::filesystem::path &path1)
 {
     boost::filesystem::create_directory(path1);
@@ -200,6 +204,7 @@ bool HamiltonianPart::savetxt(const boost::filesystem::path &path1)
     out.close();
     return true;
 }
+#endif
 
 } // end of namespace Pomerol
 
