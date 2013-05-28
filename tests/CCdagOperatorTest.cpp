@@ -53,8 +53,8 @@ int main(int argc, char* argv[])
 
     FockState ket(IndexSize,2);
     FockState ket2(IndexSize,2);
-    auto map1=Cdag_op.actRight(ket);
-    for ( auto it1=map1.begin(); it1!=map1.end(); it1++) {
+    std::map<FockState, MelemType> map1=Cdag_op.actRight(ket);
+    for ( std::map<FockState, MelemType>::iterator it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
         MelemType Value= it1->second; 
         INFO("<" << bra << "| c^+_3 |" << ket << "> = " << Value ); 
@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
         }
 
     map1=O->actRight(ket);
-    for ( auto it1=map1.begin(); it1!=map1.end(); it1++) {
+    for ( std::map<FockState, MelemType>::iterator it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
         MelemType Value= it1->second; 
         INFO("<" << bra << "| c^+_3 |" << ket << "> = " << Value ); 
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
     ket=ket2;
     OperatorPresets::C C_op(1);
     map1=C_op.actRight(ket);
-    for ( auto it1=map1.begin(); it1!=map1.end(); it1++) {
+    for ( std::map<FockState, MelemType>::iterator it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
         MelemType Value= it1->second; 
         INFO("<" << bra << "| c_1 |" << ket << "> = " << Value ); 
