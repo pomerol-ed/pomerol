@@ -34,7 +34,7 @@ target_link_libraries(pomerol
 )
 
 install(TARGETS pomerol
-    LIBRARY DESTINATION lib
+    DESTINATION lib
     )
 
 install(DIRECTORY . DESTINATION include/pomerol
