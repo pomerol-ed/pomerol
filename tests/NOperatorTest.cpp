@@ -54,8 +54,8 @@ int main(int argc, char* argv[])
     DEBUG(N.commutes(N));
 
     FockState ket(IndexSize,3);
-    auto map1=NN->actRight(ket);
-    for ( auto it1=map1.begin(); it1!=map1.end(); it1++) {
+    std::map<FockState, MelemType> map1=NN->actRight(ket);
+    for ( std::map<FockState, MelemType>::iterator it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
         MelemType Value= it1->second; 
         INFO("<" << bra << "| N |" << ket << "> = " << Value ); 
