@@ -22,13 +22,13 @@ include(UseDoxygen)
 
 set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
-find_package (Boost COMPONENTS system filesystem)
+find_package (Boost)# COMPONENTS system filesystem)
 find_package (HDF5 COMPONENTS CXX)
 find_package (Eigen3 3.1)
 
 message(STATUS "Boost includes: " ${Boost_INCLUDE_DIRS} )
 message(STATUS "Eigen3 includes: " ${EIGEN3_INCLUDE_DIR} )
-message(STATUS "Boost libs: " ${Boost_LIBRARIES} )
+#message(STATUS "Boost libs: " ${Boost_LIBRARIES} )
 message(STATUS "HDF5 libs: " ${HDF5_LIBRARIES} )
 
 #find_package (PythonLibs REQUIRED)
