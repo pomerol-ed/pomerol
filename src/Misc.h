@@ -282,29 +282,6 @@ inline bool __is_zero(const T& in, RealType threshold = std::numeric_limits<Real
  *
  * We acknowledge <em>RRC Kurchatov Institute</em> for providing computing resources.
  *
- * \page ref_lattice Lattice JSON-file syntax
- * \section ref_json_generic Generic Information
- * Several examples for json Lattice files are provided in \b doc/lattices subdirectory. A python script, generating such 
- * file is also provided in \b scripts subdirectory: \a VLALatticeGenerator.py .
- *
- * For a generic information about JSON config files, refer to a <a href="http://en.wikipedia.org/wiki/JSON"> wiki page</a>.
- *
- * \section ref_json_examples Examples
- * \subsection ref_json_2site An example of a Hubbard model on a 2-site cluster 
- *
- * \warning at this point no other models are supported.
- *
- * A lattice file should contain information about each site of the lattice, they are named by their numbers
- * \param type Orbital complexity of current site. A support of "p"-orbital sites is experimental and subject to strong testing. For this reason no multiorbital example is provided.
- * \param U A coulomb repulsion between electrons on a site.
- * \param LocalMu A chemical potential.
- * \param hopping A list of hoppings to the other sites.
- * \par Hopping parameters
- * \param "to" A site which is connected by a hopping integral.
- * \param "value" Value of hopping integral.
- * \param "orbital_from" Orbital index at local site, where hopping occurs from. For s-orbital case this parameter is always 0.
- * \param "orbital_to" Orbital index at remote site, where hopping occurs to. For s-orbital case this parameter is always 0.
- * \verbinclude lattices/Lattice2.json
  */
 
 #endif // #ifndef __INCLUDE_MISC_H
