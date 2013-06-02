@@ -327,7 +327,7 @@ Operator Operator::getNormalOrdered() const
     return rearrange(NORMAL_ORDER);
 }
 
-bool Operator::operator==(const Operator &rhs)
+bool Operator::operator==(const Operator &rhs) const
 {
     return ((this->getNormalOrdered().Terms) == (rhs.getNormalOrdered().Terms));
 }

@@ -136,7 +136,7 @@ public:
     /** Checks that two terms are equal. This is done, by rearranging all OpTerms in the Operators to the normal order,
       * sorting and comparing the resulting OpTerms. 
       */
-    bool operator==(const Operator &rhs);
+    bool operator==(const Operator &rhs) const;
     /** Returns true if there are no OpTerms in this operator. */
     bool isEmpty() const;
 
