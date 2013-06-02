@@ -288,9 +288,9 @@ void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const s
         };
     L->addTerm(Lattice::Term::Presets::Hopping(Label1, Label2, t, Orbital1, Orbital2, Spin1, Spin2));
     #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS 
-    L->addTerm(Lattice::Term::Presets::Hopping(Label2, Label1, -conj(t), Orbital1, Orbital2, Spin1, Spin2)); // Hermite conjugate
+    L->addTerm(Lattice::Term::Presets::Hopping(Label2, Label1, conj(t), Orbital1, Orbital2, Spin1, Spin2)); // Hermite conjugate
     #else
-    L->addTerm(Lattice::Term::Presets::Hopping(Label2, Label1, -t, Orbital1, Orbital2, Spin1, Spin2)); 
+    L->addTerm(Lattice::Term::Presets::Hopping(Label2, Label1, t, Orbital1, Orbital2, Spin1, Spin2)); 
     #endif
 }
 
