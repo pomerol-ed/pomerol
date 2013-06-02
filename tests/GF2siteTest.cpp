@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
     INFO("N terms");
     N.printAllTerms();
     //INFO(Sz.commutes(N));
-    exit(0);
+    //exit(0);
 
     DEBUG(N);
     if (!(Storage.commutes(N))) return EXIT_FAILURE;
