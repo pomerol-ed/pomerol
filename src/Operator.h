@@ -2,8 +2,8 @@
 // This file is a part of pomerol - a scientific ED code for obtaining 
 // properties of a Hubbard model on a finite-size lattice 
 //
-// Copyright (C) 2010-2011 Andrey Antipov <Andrey.E.Antipov@gmail.com>
-// Copyright (C) 2010-2011 Igor Krivenko <Igor.S.Krivenko@gmail.com>
+// Copyright (C) 2010-2013 Andrey Antipov <Andrey.E.Antipov@gmail.com>
+// Copyright (C) 2010-2013 Igor Krivenko <Igor.S.Krivenko@gmail.com>
 //
 // pomerol is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,144 +19,231 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-/** \file Operator.h
-**  \brief Declarations of the Operator and OpTerm classes.
+/** \file Operator.cpp
+**  \brief Implementation of the Operator, Operator::Term classes
 ** 
-**  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
+**  \author    Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
 
-#ifndef __INCLUDE_OPERATOR_H
-#define __INCLUDE_OPERATOR_H
+
+#ifndef POMEROL_OPERATOR_H_uie67d
+#define POMEROL_OPERATOR_H_uie67d
+
+#include <ostream>
+#include <istream>
+#include <vector>
+#include <map>
+#include <limits>
+#include <cmath>
+#include <iterator>
+#include <boost/foreach.hpp>
+#include <boost/operators.hpp>
+#include <boost/type_traits/has_less.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 
 #include "Misc.h"
 #include "Index.h"
 #include "IndexClassification.h"
 #include "Lattice.h"
-#include <boost/function.hpp>
-#include <boost/functional/hash.hpp>
 
-namespace Pomerol{
+namespace Pomerol { 
 
-/** A typedef for a generic single field operator. 
- * First bool = true, if it is a creation operator. Last argument is the index of the operator. */
-typedef boost::tuple<bool, ParticleIndex> ElemOp;
-/** Make an ElemOp and a vector<ElemOp> streamable. */
-std::ostream& operator<< (std::ostream& output, const ElemOp& out);
-std::ostream& operator<< (std::ostream& output, const std::vector<ElemOp>& out);
+class Operator;
 
-/** OpTerm is a sequence of elementary operators (std::vector) with a given matrix element. */
-typedef boost::tuple<MelemType, std::vector<ElemOp> > OpTerm;
-/** Make an OpTerm streamable. */
-std::ostream& operator<< (std::ostream& output, const OpTerm& out);
-/** Comparison operator. */
-bool operator== (const OpTerm& lhs, const OpTerm& rhs);
-/** A multiplication operator generates a term with a multiplication of matrix elements and 
- * a combined sequence of elementary operators, with first being the left hand side term. */
-OpTerm operator*(const OpTerm& lhs, const OpTerm &rhs);
-OpTerm operator*(const MelemType& lhs, const OpTerm &rhs);
-OpTerm operator*(const OpTerm& lhs, const MelemType &rhs);
+namespace OperatorPresets {
+    Operator c(ParticleIndex);
+    Operator c_dag(ParticleIndex);
+    Operator n(ParticleIndex);
+};
 
-/** Operator represents a fermionic operator which is stored as a list of OpTerm's.
-    This class is intended to store all operations, which are independent of the basis. */
-class Operator
+class Operator :
+    boost::addable<Operator,
+    boost::subtractable<Operator,
+    boost::multipliable<Operator,
+    boost::addable2<Operator, MelemType,
+    boost::subtractable2<Operator, MelemType,
+    boost::multipliable2<Operator, MelemType
+    > > > > > >
 {
+    
 public:
-    /** Checks the term for the consistency, e.g. Pauli principle and non-zero matrix element. */
-    static bool checkTerm(const OpTerm& in);
-protected:
-    /** A set of Terms in the Operator. */
-    std::list<OpTerm> Terms; // This will be inherited and used by classes
-
-    /** Makes a swap of two adjacent operators in the term taking into account the anticommutation relation.
-     * If operators anticommute, then a new term is generated and returned.
-     * \param[in] position1 A position of the first operator to swap.
-     * \param[in] position2 A position of the second operator to swap.
-     * \param[in] force_ignore_commutation This forces to ignore all commutation relations and just to swap two operators and change the sign.
-     * \param[out] A pair, which first argument is a result of the swap and the second is an operator, which
-     * contains additional term, that may be produced while swapping.
-     */
-    static std::pair<OpTerm,Operator> elementary_swap_adjacent(const OpTerm &in, unsigned int position, bool force_ignore_commutation = false);
-    /** A swap of two elements in the term. Has the same meaning as Operator::elementary_swap_adjacent, 
-     * but can change any two operators in the term. 
-     */
-    static std::pair<OpTerm,Operator> elementary_swap(const OpTerm &in, unsigned int position1, unsigned position2, bool force_ignore_commutation = false);
     
-    /** Returns a result of acting on a state to the right of an OpTerm
-     * \param[in] ket A state to act on. 
-     * \param[out] A pair of the resulting state and matrix element.
-     */
-    static boost::tuple<FockState,MelemType> actRight(const OpTerm &in, const FockState &ket);
-    //static boost::tuple<FockState,MelemType> actLeft(const OpTerm &in, const FockState &bra);
-
-
-    /** Rearranges the term according to a function f, which takes the vector of operators and returns a desired vector of operators.
-     *  Warning! This operation might not be unique.
-     * \param[in] f A Boost::function that rearranges the operators in the term.
-     * \param[in] in An OpTerm to rearrange.
-     */
-
-
-public:
-    /** Empty constructor. */
-    Operator();
-    /** Constructor from the single term. */
-    Operator(const OpTerm& term);
-    /** Constructor from the list of Terms. */
-    Operator(const std::list<OpTerm> &Terms);
-    /** Print all of the Terms. */
-    void printAllTerms() const;
-    /** Returns all Terms. */
-    const std::list<OpTerm>& getTerms() const;
-
-    /** Adds a term to the Operator. Done by checking (checkTerm) and push_back to the Terms list. 
-      * \param[in] rhs A term to add.
-      */
-    Operator& operator+= (const OpTerm &rhs);
-    /** Adds a term to the Operator with a matrix element multiplied by -1. */
-    Operator& operator-= (const OpTerm &rhs);
-    /** Adds all terms from the Operator rhs to the current Operator. */
-    Operator& operator+= (const Operator &rhs);
-    /** Adds all terms from the Operator rhs with the flipped sign of their matrix elements to the current Operator. */
-    Operator& operator-= (const Operator &rhs);
-    /** Returns a sum of current and rhs operator. */
-    const Operator operator+(const Operator &rhs) const;
-    /** Returns a sum of current and rhs operator with all matrix elements having a sign flipped. */
-    const Operator operator-(const Operator &rhs) const;
+    Operator(){};
+    Operator(Operator const& in):monomials(in.monomials){};
+    //Operator(Operator &&);
+    Operator& operator=(Operator const & in){monomials = in.monomials; return *this;};
+/*
+#ifndef TRIQS_WORKAROUND_INTEL_COMPILER_BUGS
+    Operator& operator=(Operator && o);
+#else
+    Operator& operator=(Operator && o) noexcept
+        { std::swap(monomials,o.monomials); return *this; }
+#endif
+*/       
+    // Type of a fundamental operator
+    enum op_type  {creation, annihilation };
+    static const int create_annihilate = 0;  // to use boost::get<create_annihilate>(...)
     
-    /** Returns an Operator, which has a list of Terms constructed by multiplying all of the terms of the current operator
-     * to the ones in rhs. 
-     */
-    Operator operator*= (const Operator &rhs);
-    /** Same as operator*=, but doesn't affect current Operator. */
-    Operator operator* (const Operator &rhs) const;
-    /** Multiplies all OpTerms of the operator by rhs. */
-    Operator operator*= (const MelemType &rhs);
-    /** Same as operator*=, but doesn't affect current Operator. */
-    Operator operator* (const MelemType &rhs) const;
-    /** Checks that two terms are equal. This is done, by rearranging all OpTerms in the Operators to the normal order,
-      * sorting and comparing the resulting OpTerms. 
-      */
-    bool operator==(const Operator &rhs) const;
-    /** Returns true if there are no OpTerms in this operator. */
-    bool isEmpty() const;
-
-    /** Returns an operator that contain the result of rearranging the OpTerms in this Operator according to a given rule.
-     * \param[in] f A boost::function, that takes an OpTerm and returns the desired OpTerm.
-     * \param[out] A resulting Operator. The original Operator is not changed. 
-     */
-    Operator rearrange(boost::function<std::vector<ElemOp> ( const std::vector<ElemOp> &in_f )> f ) const;
-    /** Makes all Terms in the operator normal-ordered. */
-    Operator getNormalOrdered() const;
-    /** Reduces all terms with the same indices and order. */
-    void reduce();
-    /** Removes all terms from the list of terms with a given precision.
-     *  \param[in] Terms A pointer to the list of pointers to Terms.
-     */
-    void prune(const RealType &Precision = std::numeric_limits<RealType>::epsilon());
-    /** Sorts the list of the Term for comparison. */
-    void sortTerms();
+    // A composite index labels one fundamental operator. It is LessThanComparable.
+    typedef boost::tuple<op_type, ParticleIndex> composite_index_t;
     
-    /** Returns a matrix element of the operator.
+    friend std::ostream& operator<<(std::ostream &os, composite_index_t i)
+    {
+        if(boost::get<create_annihilate>(i) == creation) os << "^+";
+        os << "(";
+        os << boost::get<1>(i);
+        os << ")";
+        return os;
+    }
+    
+    // Monomial: an ordered set of creation/annihilation operators
+    // NB: std::vector supports lexicographical less-than comparison using std::lexicographical_compare
+    typedef std::vector<composite_index_t> monomial_t;
+    
+    friend std::ostream& operator<<(std::ostream &os, monomial_t const& m)
+    {
+        BOOST_FOREACH(const composite_index_t & c, m){ 
+            os << "C" << c;
+        }
+        return os;
+    }
+    
+    friend
+    bool operator<(monomial_t const& m1, monomial_t const& m2)
+    {
+        return m1.size() != m2.size() ? m1.size() < m2.size() :
+               std::lexicographical_compare(m1.begin(),m1.end(),m2.begin(),m2.end());
+    }
+
+    friend
+    bool operator==(monomial_t const& m1, monomial_t const& m2);
+
+    // Map of all monomials with coefficients
+    typedef std::map<monomial_t,MelemType> monomials_map_t;
+    // Print Operator itself
+    friend std::ostream& operator<<(std::ostream& os, Operator const& op)
+    {
+        if(op.monomials.size() != 0){
+            bool print_plus = false;
+            BOOST_FOREACH(const monomials_map_t::value_type& m, op.monomials){ 
+                os << (print_plus ? " + " : "" ) << m.second;
+                if(m.first.size()) os << "*";
+                os << m.first;
+                print_plus = true;
+            }
+        } else
+            os << "0";
+        return os;
+    }
+    
+    // Iterators (only const!)
+    typedef monomials_map_t::const_iterator const_iterator;
+    const_iterator begin() const { return monomials.begin(); }
+    const_iterator end() const { return monomials.end(); }
+    //const_iterator cbegin() const { return monomials.cbegin(); }
+    //const_iterator cend() const { return monomials.cend(); }
+    
+    // Algebraic operations involving MelemType constants
+    Operator operator-() const
+    {
+        Operator tmp(*this);
+        BOOST_FOREACH( monomials_map_t::value_type& m, tmp.monomials) { 
+            m.second = -m.second; };
+        return tmp;
+    }
+    
+    Operator& operator+=(const MelemType alpha)
+    {
+        bool is_new_monomial;
+        monomials_map_t::iterator it;
+        boost::tie(it,is_new_monomial) = monomials.insert(std::make_pair(monomial_t(0),alpha));
+        if(!is_new_monomial){
+            it->second += alpha;
+            erase_zero_monomial(monomials,it);
+        }
+        return *this;
+    }
+    
+    Operator& operator-=(const MelemType alpha)
+    {
+        bool is_new_monomial;
+        monomials_map_t::iterator it;
+        boost::tie(it,is_new_monomial) = monomials.insert(std::make_pair(monomial_t(0),-alpha));
+        if(!is_new_monomial){
+            it->second -= alpha;
+            erase_zero_monomial(monomials,it);
+        }
+        return *this;
+    }
+    
+    friend
+    Operator operator-(const MelemType alpha, Operator const& op)
+    {
+        return -op + alpha;
+    }
+    
+    Operator& operator*= (const MelemType alpha)
+    {
+        if(std::abs(alpha) < 2*std::numeric_limits<MelemType>::epsilon()){
+            monomials.clear(); 
+        } else {
+            BOOST_FOREACH(monomials_map_t::value_type& m, monomials) { 
+                m.second *= alpha;
+            };
+        }
+        return *this;
+    }
+    
+    // Algebraic operations
+    Operator& operator+=(Operator const& op)
+    {
+        bool is_new_monomial;
+        monomials_map_t::iterator it;
+        BOOST_FOREACH(const monomials_map_t::value_type& m, op.monomials) { 
+            boost::tie(it,is_new_monomial) = monomials.insert(m);
+            if(!is_new_monomial){
+                it->second += m.second;
+                erase_zero_monomial(monomials,it);
+            }
+        }
+        return *this;
+    }
+    
+    Operator& operator-=(Operator const& op)
+    {
+        bool is_new_monomial;
+        monomials_map_t::iterator it;
+        BOOST_FOREACH(const monomials_map_t::value_type& m, op.monomials) { 
+            boost::tie(it,is_new_monomial) = monomials.insert(std::make_pair(m.first,-m.second));
+            if(!is_new_monomial){
+                it->second -= m.second;
+                erase_zero_monomial(monomials,it);
+            }
+        }
+        return *this;
+    }
+    
+    Operator& operator*=(Operator const& op)
+    {
+        monomials_map_t tmp_map; // product will be stored here
+        BOOST_FOREACH(const monomials_map_t::value_type& m, monomials)  
+            BOOST_FOREACH(const monomials_map_t::value_type& op_m, op.monomials) { 
+                // prepare an unnormalized product
+                monomial_t product_m;
+                product_m.reserve(m.first.size() + op_m.first.size());
+                std::copy(m.first.begin(), m.first.end(), std::back_inserter(product_m));
+                std::copy(op_m.first.begin(), op_m.first.end(), std::back_inserter(product_m));
+                
+                normalize_and_insert(product_m, m.second*op_m.second, tmp_map);
+            }
+            
+        std::swap(monomials, tmp_map);
+        return *this;
+    }
+
+    bool isEmpty() const {return (monomials.size()==0);};
+
+      /** Returns a matrix element of the operator.
      * \param[in] bra A state to the left of the operator.
      * \param[in] ket A state to the right of the operator.     
      * \param[out] Resulting matrix element.
@@ -170,6 +257,7 @@ public:
      * \param[in] ket A state to act on.
      * \param[out] A map of states and corresponding matrix elements, which are the result of an action.
      */
+    static boost::tuple<FockState,MelemType> actRight(const monomial_t &in, const FockState &ket);
     virtual std::map<FockState, MelemType> actRight(const FockState &ket) const;
 
     /** Returns an operator that is a commutator of the current operator and another one
@@ -188,112 +276,120 @@ public:
      * \param[in] rhs An operator to calculate a commutator with.
     */
     bool commutes(const Operator &rhs) const;
-    
-    /** Returns the total amount of Terms in the Operator. */
-    const unsigned int getNTerms() const;
-    /** Make the Operator printable */
-    friend std::ostream& operator<< (std::ostream& output, const Operator& out);
 
+
+    friend
+    bool operator==(const Operator &lhs, const Operator &rhs);
+ 
+      
+    // Free factory functions
+    friend Operator Pomerol::OperatorPresets::c(ParticleIndex);
+    friend Operator Pomerol::OperatorPresets::c_dag(ParticleIndex);
+    friend Operator Pomerol::OperatorPresets::n(ParticleIndex);
+    
+protected:
+    
+    // Use a template parameter instead of std::complex<double>
+    monomials_map_t monomials;
+    
+    // Normalize a monomial and insert into a map
+    static void normalize_and_insert(monomial_t & m, MelemType coeff, monomials_map_t & target)
+    {
+        // The normalization is done by employing a simple bubble sort algorithms.
+        // Apart from sorting elements this function keeps track of the sign and
+        // recursively calls itself if a permutation of two operators produces a new
+        // monomial
+        if(m.size() >= 2){
+            bool is_swapped;
+            do {
+                is_swapped = false;
+                for (std::size_t n = 1; n < m.size(); ++n){
+                    composite_index_t & prev_index = m[n-1];
+                    composite_index_t & cur_index = m[n];
+                    if(prev_index == cur_index) return;   // The monomial is effectively zero
+                    if(prev_index > cur_index){
+                        // Are we swapping C and C^+ with the same indices?
+                        // A bit ugly ...
+                        composite_index_t cur_index_flipped_type(cur_index);
+                        boost::get<create_annihilate>(cur_index_flipped_type) =
+                            op_type(!bool(boost::get<create_annihilate>(cur_index_flipped_type)));
+                        if(prev_index == cur_index_flipped_type){
+                            monomial_t new_m;
+                            new_m.reserve(m.size() - 2);
+                            std::copy(m.begin(), m.begin() + n-1, std::back_inserter(new_m));
+                            std::copy(m.begin() + n+1, m.end(), std::back_inserter(new_m));
+                            
+                            normalize_and_insert(new_m, coeff, target);
+                        }
+                        coeff = -coeff;
+                        std::swap(prev_index, cur_index);
+                        is_swapped = true;
+                    }
+                }
+            } while(is_swapped);
+        }
+        
+        // Insert the result
+        bool is_new_monomial;
+        monomials_map_t::iterator it;
+        boost::tie(it,is_new_monomial) = target.insert(std::make_pair(m, coeff));
+        if(!is_new_monomial){
+            it->second += coeff;
+            erase_zero_monomial(target,it);
+        }
+    }
+    
+    // Erase a monomial with a close-to-zero coefficient.
+    static void erase_zero_monomial(monomials_map_t & m,
+                                    monomials_map_t::iterator & it)
+    {
+        if(std::abs(it->second) < 2*std::numeric_limits<MelemType>::epsilon())
+            m.erase(it);
+    }
+
+    public:
+    void printAllTerms() const { std::cout << (*this) << std::endl; };
     /** Exception - wrong operation with labels. */
     class exWrongLabel : public std::exception { virtual const char* what() const throw(); };
-    /** Exception - wrong operation with bool sequence. */
-    class exWrongOpSequence : public std::exception { virtual const char* what() const throw(); };
     /** Exception - Matrix element of term vanishes. */
     class exMelemVanishes : public std::exception { virtual const char* what() const throw(); };
 
-    /** Destructor. */
-    virtual ~Operator();
 };
 
-/** A small routine that returns bool, if the ElemOp contains a creation operator. Needed for STL algorithms. */
-inline bool __isCdag(const ElemOp &in) { return in.get<0>() == 1; }
-/** A comparison routine between two ElemOp's. */
-inline bool __descendIndex(const ElemOp &in1, const ElemOp &in2) { return in1.get<1>()<in2.get<1>(); };
-
-/** A routine that returns the normal ordered sequence of the ElemOp's in the current OpTerm. */
-inline std::vector<ElemOp> NORMAL_ORDER ( const std::vector<ElemOp> &in_f)
-{
-    std::vector<ElemOp> out(in_f);
-    std::vector<ElemOp>::iterator bound = std::partition(out.begin(), out.end(), __isCdag); 
-    unsigned int index = std::distance(out.begin(), bound);
-    std::sort(out.begin(), bound, __descendIndex); 
-    std::sort(out.begin()+index, out.end(), __descendIndex); 
-    return out;
+// Free functions to make creation/annihilation operators
+namespace OperatorPresets {
+inline Operator c(ParticleIndex index) {
+    typedef Operator c_t;
+    
+    c_t tmp;
+    c_t::monomial_t m; m.push_back(boost::make_tuple(c_t::annihilation, index));
+    tmp.monomials.insert(std::make_pair(m,1.0));
+    return tmp;
 }
 
-/** A routine that returns the c^+c sequence of the ElemOp's in the current OpTerm. */
-inline std::vector<ElemOp> CDAG_C ( const std::vector<ElemOp> &in_f)
-{
-    std::vector<ElemOp> out(in_f);
-    unsigned int N = in_f.size();
-    std::vector<ElemOp>::iterator bound = std::partition(out.begin(), out.end(), __isCdag); 
-    unsigned int index = std::distance(out.begin(), bound);
-    std::sort(out.begin(), bound, __descendIndex); 
-    std::sort(out.begin()+index, out.end(), __descendIndex); 
-    std::vector<ElemOp> out2(out);
-    unsigned int j1=0, j2=index, out2_index=0;
-    for (out2_index=0; out2_index<N; out2_index++) {
-        if (j1<index && j2 < N) 
-            if (out2_index%2==0) { out2[out2_index]=out[j1]; j1++; }
-            else { out2[out2_index]=out[j2]; j2++; }
-        else if (j1 < index) { out2[out2_index]=out[j1]; j1++; }
-             else { out2[out2_index]=out[j2]; j2++; };
-    }
-    return out;
+inline Operator c_dag(ParticleIndex index) {
+    typedef Operator c_dag_t;
+    
+    c_dag_t tmp;
+    c_dag_t::monomial_t m;
+    m.push_back(boost::make_tuple(c_dag_t::creation, index));
+    tmp.monomials.insert(std::make_pair(m,1.0));
+    return tmp;    
 }
 
-/** Generates a hash for an ElemOp. */
-inline std::size_t ElemOphash_value(const ElemOp& in)
-{
-    std::size_t seed = 0;
-    boost::hash_combine( seed, in.get<0>() );
-    boost::hash_combine( seed, in.get<1>() );
-    return seed;
+inline Operator n(ParticleIndex index) {
+    typedef Operator n_t;
+    
+    n_t tmp;
+    n_t::monomial_t m;
+    m.push_back(boost::make_tuple(n_t::creation, index));
+    m.push_back(boost::make_tuple(n_t::annihilation, index));
+    tmp.monomials.insert(std::make_pair(m,1.0));
+    
+    return tmp;
 }
+} // end of namespace Pomerol::OperatorPresets
 
-#ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
-/** Comparison routines for two ElemOp. */
-inline bool operator== (const ElemOp& lhs, const ElemOp& rhs){return (lhs.get<0>() == rhs.get<0>() && lhs.get<1>() == rhs.get<1>() );};
-inline bool operator!= (const ElemOp& lhs, const ElemOp& rhs){return !(lhs==rhs);};
-inline bool operator< (const ElemOp& lhs, const ElemOp& rhs)
-{ 
-    if (lhs.get<0>() == rhs.get<0>()) return (lhs.get<1>() < rhs.get<1>());
-    return (lhs.get<0>() < rhs.get<0>());
-};
+} // end of namespace Pomerol
 
-inline bool operator> (const ElemOp& lhs, const ElemOp& rhs)
-{
-    return (lhs!=rhs && !(lhs<rhs));
-}
-
-inline bool operator< (const std::vector<ElemOp>& lhs, const std::vector<ElemOp>& rhs)
-{
-    if (lhs.size() < rhs.size()) return true;
-    if (lhs.size() > rhs.size()) return false;
-    for (int i=0; i<lhs.size(); ++i) if (lhs[i]<rhs[i]) return true; else if (lhs[i]>rhs[i]) return false;
-    return false;
-};
-
-inline bool operator== (const std::vector<ElemOp>& lhs, const std::vector<ElemOp>& rhs)
-{
-    if (lhs.size() != rhs.size()) return false;
-    for (int i=0; i<lhs.size(); ++i) if (lhs[i]!=rhs[i]) return false;
-    return true;
-};
-
-/** A comparison routine for two OpTerms for complex valued matrix elements. */
-inline
-bool __compareOpTerms(const OpTerm& lhs, const OpTerm&rhs)
-{
-    const std::vector<ElemOp>& lv = lhs.get<1>();
-    const std::vector<ElemOp>& rv = rhs.get<1>();
-    if (lv == rv) return (std::abs(lhs.get<0>()) < std::abs(rhs.get<0>()));
-    else return (lv < rv);
-    //if (isEqual(lv,rv)) return (std::abs(lhs.get<0>()) < std::abs(rhs.get<0>()));
-    //else return isLesser(lv, rv);
-}
 #endif
-
-
-}; // end of namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_OPERATOR_H
