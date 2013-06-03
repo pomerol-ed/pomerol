@@ -66,15 +66,31 @@ ComplexType Gref(int n, RealType beta)
     return (w0+w1)/(I*omega+mu) + (w1+w2)/(I*omega+mu-U);
 }
 
+void print_section (const std::string& str)
+{
+  std::cout << std::string(str.size(),'=') << std::endl;
+  std::cout << str << std::endl;
+  std::cout << std::string(str.size(),'=') << std::endl;
+}
+
 int main(int argc, char* argv[])
 {
     Log.setDebugging(true);
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
-    LatticePresets::addCoulombS(&L, "A", 1.0, -0.4);
+    LatticePresets::addCoulombS(&L, "A", U, -mu);
+    print_section("Sites");
+    L.printSites();
+    print_section("Terms");
+    L.printTerms(2);
+    INFO("Terms with 4 operators");
+    L.printTerms(4);
+
 
     IndexClassification IndexInfo(L.getSiteMap());
     IndexInfo.prepare();
+    print_section("Indices");
+    IndexInfo.printIndices();
 
     IndexHamiltonian Storage(&L,IndexInfo);
     Storage.prepare();
@@ -104,9 +120,11 @@ int main(int argc, char* argv[])
     GF.prepare();
     GF.compute(100);
 
-    for(int n = -100; n<100; ++n)
+    for(int n = -100; n<100; ++n) {
+        INFO(GF(n) << "==" << Gref(n,beta));
         if( !compare(GF(n),Gref(n,beta)))
             return EXIT_FAILURE;
+        }
 
     return EXIT_SUCCESS;
 }

@@ -45,7 +45,7 @@
 using namespace Pomerol;
 
 RealType U = 1.0;
-RealType mu = 0.4;
+RealType mu = 0.5;
 
 bool compare(ComplexType a, ComplexType b)
 {
@@ -68,9 +68,9 @@ int main(int argc, char* argv[])
     Log.setDebugging(true);
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
-    LatticePresets::addCoulombS(&L, "A", 1.0, -0.5);
+    LatticePresets::addCoulombS(&L, "A", U, -mu);
     L.addSite(new Lattice::Site("B",1,2));
-    LatticePresets::addCoulombS(&L, "B", 1.0, -0.5);
+    LatticePresets::addCoulombS(&L, "B", U, -mu);
 
     LatticePresets::addHopping(&L, "A","B", -1.0);
     INFO("Sites");
