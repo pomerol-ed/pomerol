@@ -84,6 +84,10 @@ int main(int argc, char* argv[])
     IndexInfo.prepare();
     print_section("Indices");
     IndexInfo.printIndices();
+    ParticleIndex NModes = IndexInfo.getIndexSize();
+
+    std::vector<ParticleIndex> SpinUpIndices;
+    for (ParticleIndex i=0; i<NModes; i++) if (boost::get<2>(IndexInfo.getInfo(i))) SpinUpIndices.push_back(i);
 
     print_section("Matrix element storage");
     IndexHamiltonian Storage(&L,IndexInfo);
@@ -92,7 +96,7 @@ int main(int argc, char* argv[])
     INFO(Storage)
     
     ParticleIndex IndexSize = IndexInfo.getIndexSize();
-    OperatorPresets::Sz Sz(IndexSize);
+    OperatorPresets::Sz Sz(IndexSize, SpinUpIndices);
     INFO("Sz terms");
     Sz.printAllTerms();
     OperatorPresets::N N(IndexSize);
