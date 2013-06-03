@@ -44,17 +44,16 @@ void IndexHamiltonian::prepare()
     for (unsigned int N=L->getTermStorage().getMaxTermOrder(); N; --N ) {
         if ( L->getTermStorage().getTerms(N).size())
         for (Lattice::TermList::const_iterator current=L->getTermStorage().getTerms(N).begin(); current!=L->getTermStorage().getTerms(N).end(); ++current) {
-            std::vector<ElemOp> ops;
-            ops.resize(N);
+            Operator tmp; 
             for (unsigned int i=0; i<N; ++i) { 
-                ops[i]=boost::make_tuple((**current).OperatorSequence[i], IndexInfo.getIndex((**current).SiteLabels[i], (**current).Orbitals[i], (**current).Spins[i]));
+                ParticleIndex i1 = IndexInfo.getIndex((**current).SiteLabels[i], (**current).Orbitals[i], (**current).Spins[i]);
+                Operator t1 = ((**current).OperatorSequence[i]==Operator::creation)?OperatorPresets::c_dag(i1):OperatorPresets::c(i1);
+                if (tmp.isEmpty()) tmp=t1;
+                else tmp*=t1; 
                 };
             // Create a term out of the term in the lattice
             
-            OpTerm T1 = boost::tie((**current).Value, ops);
-            //Operator::Term *T1 = new Operator::Term(N,(**current).OperatorSequence, ind, (**current).Value);
-            Terms.push_back(T1);
-            //mapTerms[N].push_back(boost::prior(Terms.end()));
+            (*this)+=(**current).Value*tmp;
             } // end of Term loop
         } // end of for N
 };

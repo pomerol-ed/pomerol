@@ -91,13 +91,6 @@ int main(int argc, char* argv[])
     INFO("Terms");
     INFO(Storage)
     
-    print_section("Making hamiltonian normal ordered");
-    Storage.printAllTerms();
-    INFO("==");
-    Storage.getNormalOrdered().printAllTerms();
-    INFO("==");
-
-
     ParticleIndex IndexSize = IndexInfo.getIndexSize();
     OperatorPresets::Sz Sz(IndexSize);
     INFO("Sz terms");
@@ -105,12 +98,14 @@ int main(int argc, char* argv[])
     OperatorPresets::N N(IndexSize);
     INFO("N terms");
     N.printAllTerms();
-    //INFO(Sz.commutes(N));
+    if (!(Sz.commutes(N))) return EXIT_FAILURE;
     //exit(0);
 
     DEBUG(N);
     if (!(Storage.commutes(N))) return EXIT_FAILURE;
     INFO("H commutes with N");
+    DEBUG(Storage*Sz);
+    DEBUG(Sz*Storage);
     if (!(Storage.commutes(Sz))) return EXIT_FAILURE;
     INFO("H commutes with Sz");
     Symmetrizer Symm(IndexInfo, Storage);

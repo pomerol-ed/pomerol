@@ -36,12 +36,8 @@ namespace OperatorPresets {
 
 N::N(ParticleIndex Nmodes):Operator(),Nmodes(Nmodes)
 {
-    std::vector<ElemOp> ops;
-    ops.resize(2);
     for (ParticleIndex index=0; index<Nmodes; ++index) {
-        ops[0]=boost::make_tuple(true,index);
-        ops[1]=boost::make_tuple(false,index);
-        Terms.push_back(boost::make_tuple(1.0, ops));
+        (*this)+=n(index);
     };
 };
     
@@ -86,17 +82,9 @@ Sz::Sz(const std::vector<ParticleIndex> & SpinUpIndices, const std::vector<Parti
 
 void Sz::generateTerms()
 {
-    std::vector<ElemOp> ops;
-    ops.resize(2);
-
     for (ParticleIndex i=0; i<SpinUpIndices.size(); ++i) {
-        ops[0]=boost::make_tuple(1,SpinUpIndices[i]);
-        ops[1]=boost::make_tuple(0,SpinUpIndices[i]);
-        Terms.push_back(boost::make_tuple(0.5, ops));
-
-        ops[0]=boost::make_tuple(1,SpinDownIndices[i]);
-        ops[1]=boost::make_tuple(0,SpinDownIndices[i]);
-        Terms.push_back(boost::make_tuple(-0.5, ops));
+        (*this)+=n(SpinUpIndices[i])*0.5;
+        (*this)-=n(SpinDownIndices[i])*0.5;
     }
 }
 
@@ -119,28 +107,6 @@ std::map<FockState,MelemType> Sz::actRight(const FockState &ket) const
     std::map<FockState,MelemType> output;
     output[ket]=this->getMatrixElement(ket);
     return output;
-}
-
-//
-// Operator Cdag ( c^\dagger )
-//
-
-Cdag::Cdag(ParticleIndex index):Operator(),index(index)
-{
-    std::vector<ElemOp> ops;
-    ops.push_back(boost::make_tuple(1,index));
-    Terms.push_back(boost::make_tuple(1,ops));
-}
-
-//
-// Operator C
-//
-
-C::C(ParticleIndex index):Operator(),index(index)
-{
-    std::vector<ElemOp> ops;
-    ops.push_back(boost::make_tuple(0,index));
-    Terms.push_back(boost::make_tuple(1,ops));
 }
 
 } // end of namespace OperatorPresets

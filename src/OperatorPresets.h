@@ -59,21 +59,21 @@ public:
     MelemType getMatrixElement(const FockState &ket) const;
 };
 
+ 
 class Cdag : public Operator {
 private:
     ParticleIndex index;
 public:
-    Cdag(ParticleIndex index);
-    friend std::ostream& operator<< (std::ostream& output, const Cdag& out) { output << "C^+_" << out.index; return output; };
+    Cdag(ParticleIndex index):Operator(c_dag(index)){};
 };
 
 class C : public Operator {
 private:
     ParticleIndex index;
 public:
-    C(ParticleIndex index);
-    friend std::ostream& operator<< (std::ostream& output, const C& out) { output << "C_" << out.index; return output; };
+    C(ParticleIndex index):Operator(c(index)){};
 };
+
 
 
 } // end of namespace OperatorPresets
