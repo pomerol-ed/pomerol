@@ -62,10 +62,10 @@ Operator Operator::getAntiCommutator(const Operator &rhs) const
 
 boost::tuple<FockState,MelemType> Operator::actRight(const monomial_t &in, const FockState &ket)
 {
-    DEBUG(in << "|" << ket << ">");
+    //DEBUG(in << "|" << ket << ">");
     //ParticleIndex prev_pos_ = ket.size(); // Here we'll store the index of the last operator to speed up sign counting
     ParticleIndex prev_pos_ = 0;
-    DEBUG(prev_pos_ <<"|" << ket);
+    //DEBUG(prev_pos_ <<"|" << ket);
     int sign=1;
     FockState bra = ket;
     unsigned int N=in.size();
@@ -73,13 +73,13 @@ boost::tuple<FockState,MelemType> Operator::actRight(const monomial_t &in, const
         {
             bool op; ParticleIndex ind;
             boost::tie(op,ind)=in[i];
-            DEBUG(op << "_" << ind);
-            if (op == bra[ind] ) return boost::make_tuple(ERROR_FOCK_STATE, 0); // This is Pauli principle.
+            //DEBUG(op << "_" << ind);
+            if ((op == creation && bra[ind]) || (op == annihilation && !bra[ind]) ) return boost::make_tuple(ERROR_FOCK_STATE, 0); // This is Pauli principle.
             if (ind > prev_pos_) 
                 for (ParticleIndex j=prev_pos_; j<ind; ++j) { if (bra[j]) sign*=-1; } 
             else
                 for (ParticleIndex j=prev_pos_; j>ind; j--) { if (bra[j]) sign*=-1; }
-            bra[ind] = op; // This is c or c^+ acting
+            bra[ind] = (op == creation); // This is c or c^+ acting
             //prev_pos_ = 0;
             
         }
@@ -98,7 +98,7 @@ std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
             FockState bra; 
             MelemType melem;
             boost::tie(bra,melem) = actRight(it->first,ket);
-            if (std::abs(melem)>1e-8) DEBUG(bra << "|*" << melem);
+            //if (std::abs(melem)>1e-8) DEBUG(bra << "|*" << melem);
             if (bra!=ERROR_FOCK_STATE && std::abs(melem)>std::numeric_limits<RealType>::epsilon()) 
                 result1[bra]+=melem*(it->second);
         };
@@ -127,12 +127,12 @@ MelemType Operator::getMatrixElement( const VectorType & bra, const VectorType &
         FockState current_state = states[i];
         MelemType overlap = ket[i];
         if (std::abs(overlap)>std::numeric_limits<RealType>::epsilon()) { 
-            DEBUG(overlap << "," << current_state);
+            //DEBUG(overlap << "," << current_state);
             std::map<FockState, MelemType> map1 = this->actRight(current_state);
             for (std::map<FockState, MelemType>::const_iterator it = map1.begin(); it!= map1.end(); it++) {
                 FockState result_state = it->first;
                 MelemType melem2 = it->second;
-                DEBUG("\t<" << result_state << "|" << melem2);
+                //DEBUG("\t<" << result_state << "|" << melem2);
                 std::vector<FockState>::const_iterator it1 = std::find(states.begin(), states.end(), result_state);
                 MelemType overlap2;
                 if (it1 != states.end() ) { 
