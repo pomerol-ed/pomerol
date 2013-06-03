@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 project (pomerol)
+set(POMEROL_VERSION 0.6)
 
 # Select default build type
 IF(DEFINED CMAKE_BUILD_TYPE)
@@ -62,3 +63,6 @@ add_subdirectory(tests)
 add_subdirectory(prog)
 enable_testing()
 
+# Install pkg-config file
+configure_file(pomerol.pc.in pomerol.pc @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pomerol.pc DESTINATION lib/pkgconfig)
