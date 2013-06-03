@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
     L.addSite(new Lattice::Site("C",1,2));
 
     IndexClassification Indices(L.getSiteMap());
-    Indices.prepare();
+    Indices.prepare(true);
 
     ParticleIndex IndexSize = Indices.getIndexSize();
     INFO("Total amount of indices: " << IndexSize);
