@@ -29,31 +29,18 @@
 #include "Index.h"
 #include "IndexClassification.h"
 #include "Operator.h"
-#include <boost/shared_ptr.hpp>
+#include "OperatorPresets.h"
+
 
 using namespace Pomerol;
+using namespace Pomerol::OperatorPresets;
 
 int main(int argc, char* argv[])
 {
   /* Test of Operator::Term*/
   Log.setDebugging(true);
-  std::vector<ElemOp> ops;
-  ops.push_back(boost::make_tuple(1,0));
-  ops.push_back(boost::make_tuple(0,0));
-  ops.push_back(boost::make_tuple(1,1));
-  ops.push_back(boost::make_tuple(0,1));
-  Operator IT1(boost::make_tuple(1.0, ops)); 
+  Operator IT1 = Cdag(0)*C(0)*Cdag(1)*C(1); 
   INFO("Created Operator " << IT1);
-  INFO("Rearranging it to normal order");
-  try {
-        IT1 = IT1.getNormalOrdered();
-        INFO(IT1);
-    }
-  catch (std::exception &e)
-    {
-        return EXIT_FAILURE;
-    }
-    
 
    FockState a1(4);
    a1[0]=1;
@@ -62,17 +49,15 @@ int main(int argc, char* argv[])
    MelemType result;
    std::map<FockState, MelemType> out;
 
-   ops.resize(1);
-   ops[0]=boost::make_tuple(1,1);
-   Operator IT2(boost::make_tuple(1.0, ops));
+   Operator IT2 = Cdag(1); 
    out=IT2.actRight(a1);
    res_state = out.begin()->first;
    result = out.begin()->second;
    INFO ( IT2 << "|" << a1 << "> =" << result << "|" << res_state << ">");
    if (result != MelemType(-1)) return EXIT_FAILURE;
 
-   ops[0]=boost::make_tuple(0,0);
-   Operator IT3(boost::make_tuple(1.0, ops));
+   //ops[0]=boost::make_tuple(0,0);
+   Operator IT3 = C(0);
    out=IT3.actRight(a1);
    res_state = out.begin()->first;
    result = out.begin()->second;
@@ -86,49 +71,50 @@ int main(int argc, char* argv[])
    INFO(IT2 << " commutes with " << IT3 << " = " << IT2.commutes(IT3));
    if (IT2.commutes(IT3)) return EXIT_FAILURE;
 
-   ops.resize(2);
-   ops[0]=boost::make_tuple(1,1);
-   ops[1]=boost::make_tuple(0,1);
+   //ops.resize(2);
+   //ops[0]=boost::make_tuple(1,1);
+   //ops[1]=boost::make_tuple(0,1);
 
-   Operator IT4(boost::make_tuple(1.0, ops));
+   Operator IT4 = Cdag(1)*C(1);
    INFO("( " << IT4 << "==" << IT4 << " ) = " << (IT4==IT4));
    INFO("( " << IT4 << "==" << IT1 << " ) = " << (IT4==IT1));
    if (IT1 == IT4) return EXIT_FAILURE;
    INFO(IT4 << " commutes with " << IT4 << " = " << IT4.commutes(IT4));
    if (!(IT4.commutes(IT4))) return EXIT_FAILURE;
 
-   ops[0]=boost::make_tuple(1,0);
-   ops[1]=boost::make_tuple(0,1);
-   Operator IT5(boost::make_tuple(1.0, ops));
+   //ops[0]=boost::make_tuple(1,0);
+   //ops[1]=boost::make_tuple(0,1);
+   Operator IT5 = Cdag(0)*C(1);
 
-   ops[0]=boost::make_tuple(0,1);
-   ops[1]=boost::make_tuple(1,0);
-   Operator IT6(boost::make_tuple(-1.0, ops));
-   Operator IT7(boost::make_tuple(1.0, ops));
+   //ops[0]=boost::make_tuple(0,1);
+   //ops[1]=boost::make_tuple(1,0);
+   Operator IT6 = - C(1)*Cdag(0); //(boost::make_tuple(-1.0, ops));
+   Operator IT7 = C(1)*Cdag(0); //(boost::make_tuple(1.0, ops));
    
    INFO("( " << IT5 << "==" << IT6 <<" ) = " << (IT5 == IT6));
    if (!(IT5 == IT6)) return EXIT_FAILURE;
    INFO("( " << IT5 << "==" << IT7 <<" ) = " << (IT5 == IT7));
    if ((IT5 == IT7)) return EXIT_FAILURE;
    
-   ops[0]=boost::make_tuple(1,2);
-   ops[1]=boost::make_tuple(0,2);
-   Operator IT7_2(boost::make_tuple(1.0, ops));
+   //ops[0]=boost::make_tuple(1,2);
+   //ops[1]=boost::make_tuple(0,2);
+   Operator IT7_2 = Cdag(2)*C(2); //(boost::make_tuple(1.0, ops));
    INFO(IT4 << " commutes with " << IT7_2 << " = " << IT4.commutes(IT7_2));
 
-   ops[0]=boost::make_tuple(1,1); 
-   ops[1]=boost::make_tuple(0,1); 
-   Operator IT101((boost::make_tuple(1.0, ops)));
+   //ops[0]=boost::make_tuple(1,1); 
+   //ops[1]=boost::make_tuple(0,1); 
+   Operator IT101 = Cdag(1)*C(1); //((boost::make_tuple(1.0, ops)));
 
-   ops.resize(4);
-   ops[0]=boost::make_tuple(1,2);
-   ops[1]=boost::make_tuple(0,2);
-   ops[2]=boost::make_tuple(1,0);
-   ops[3]=boost::make_tuple(0,0);
-   Operator IT102((boost::make_tuple(1.0, ops)));
+   //ops.resize(4);
+   //ops[0]=boost::make_tuple(1,2);
+   //ops[1]=boost::make_tuple(0,2);
+   //ops[2]=boost::make_tuple(1,0);
+   //ops[3]=boost::make_tuple(0,0);
+   Operator IT102 = Cdag(2)*C(2)*Cdag(0)*C(0); //((boost::make_tuple(1.0, ops)));
    if (!(IT102.commutes(IT101))) return EXIT_FAILURE;
 
    exit(0);
+    /*
    ops[0]=boost::make_tuple(1,0);
    ops[1]=boost::make_tuple(0,1);
    ops[2]=boost::make_tuple(1,2);
@@ -186,6 +172,7 @@ int main(int argc, char* argv[])
    INFO("Pruned to " << ITsum.getNTerms() << " elements.");
    if (ITsum.getNTerms()!=3) return EXIT_FAILURE;
    INFO(ITsum);
+    */
   /* end of test of Operator::Term */
 
   return EXIT_SUCCESS;
