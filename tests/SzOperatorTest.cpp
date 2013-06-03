@@ -48,7 +48,10 @@ int main(int argc, char* argv[])
 
     ParticleIndex IndexSize = Indices.getIndexSize();
     INFO("Total amount of indices: " << IndexSize);
-    OperatorPresets::Sz Sz(IndexSize);
+
+    std::vector<ParticleIndex> SpinUpIndices;
+    for (ParticleIndex i=0; i<IndexSize; i++) if (boost::get<2>(Indices.getInfo(i))) SpinUpIndices.push_back(i);
+    OperatorPresets::Sz Sz(IndexSize,SpinUpIndices);
 
     FockState ket(IndexSize,3);
     std::map<FockState, MelemType> map1=Sz.actRight(ket);
