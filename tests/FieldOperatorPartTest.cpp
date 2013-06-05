@@ -55,6 +55,7 @@ int main(int argc, char* argv[])
 
     IndexClassification Indices(L.getSiteMap());
     Indices.prepare();
+    Indices.printIndices();
 
     IndexHamiltonian Storage(&L,Indices);
     Storage.prepare();
@@ -99,6 +100,8 @@ int main(int argc, char* argv[])
     cmatrix.coeffRef(1,3) = -0.67513198;
 
     ColMajorMatrixType cmatrix_result=Cdag1.getColMajorValue();
+    INFO(cmatrix_result);
+    INFO(cmatrix);
     # warning no good test condition for eigenfuctions defined with an arbitrary phase.
     //if ( std::abs(cmatrix_result.sum()) - std::abs(cmatrix.sum()) > 1e-6) return EXIT_FAILURE;
 

@@ -115,6 +115,14 @@ int main(int argc, char* argv[])
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepare();
 
+    std::list<BlockMapping> c_map=Operators.getCreationOperator(0).getNonTrivialIndices();
+    for (std::list<BlockMapping>::iterator c_map_it=c_map.begin(); c_map_it!=c_map.end(); c_map_it++)
+        {
+            INFO(c_map_it->second << "->" << c_map_it->first);
+        }
+
+
+
     GreensFunction GF(S,H,Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), rho);
 
     GF.prepare();

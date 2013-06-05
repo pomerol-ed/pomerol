@@ -126,6 +126,13 @@ int main(int argc, char* argv[])
    INFO(IT12 << "+" << IT12_2 << "+" << IT12_3 << "=" << ITsum);
    if (!ITsum.isEmpty()) return EXIT_FAILURE;
 
+   Operator Op1 = C(0)*Cdag(0)*C(1)*Cdag(1);
+   Operator Op2 = Cdag(0)*C(0)*Cdag(1)*C(1);
+   for (size_t i=0; i<=4; i++) {
+       INFO("<" << FockState(4,i) << "|" << Op1 << "|" << FockState(4,i) << "> = " << Op1.getMatrixElement(FockState(4,i),FockState(4,i)));
+       INFO("<" << FockState(4,i) << "|" << Op2 << "|" << FockState(4,i) << "> = " << Op2.getMatrixElement(FockState(4,i),FockState(4,i)));
+        };
+
   /* end of test of Operator::Term */
 
   return EXIT_SUCCESS;

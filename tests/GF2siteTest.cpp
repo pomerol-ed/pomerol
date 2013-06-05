@@ -127,7 +127,7 @@ int main(int argc, char* argv[])
     H.getPart(BlockNumber(5)).print_to_screen();
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
-    for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(H.getEigenValue(i)); 
+    //for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(H.getEigenValue(i)); 
  
     //srand (time(NULL));
     RealType beta = 10.0; // + 10.0*RealType(rand())/RAND_MAX;
