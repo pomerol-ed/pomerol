@@ -126,6 +126,7 @@ private:
     /** Total amount of operators in Lattice::Term. */
     unsigned int N;
 public:
+    enum op_type  {annihilation, creation };
     /** A set of presets to simplify term generation */
     class Presets;
     /** The order of the creation/annihilation operator in the Lattice::Term. */

@@ -47,7 +47,7 @@ void IndexHamiltonian::prepare()
             Operator tmp; 
             for (unsigned int i=0; i<N; ++i) { 
                 ParticleIndex i1 = IndexInfo.getIndex((**current).SiteLabels[i], (**current).Orbitals[i], (**current).Spins[i]);
-                Operator t1 = ((**current).OperatorSequence[i]==Operator::creation)?OperatorPresets::c_dag(i1):OperatorPresets::c(i1);
+                Operator t1 = ((**current).OperatorSequence[i]==Lattice::Term::creation)?OperatorPresets::c_dag(i1):OperatorPresets::c(i1);
                 if (tmp.isEmpty()) tmp=t1;
                 else tmp*=t1; 
                 };
