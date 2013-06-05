@@ -90,6 +90,7 @@ void GreensFunctionPart::compute(void)
                     // Create a new term and append it to the list.
                     RealType Pole = HpartInner.getEigenValue(C_index2) - HpartOuter.getEigenValue(index1);
                     Terms.push_back(Term(Residue,Pole));
+                    DEBUG(C_index2 << Residue << CX_index2);
                 };
                 ++Cinner;   // The next non-zero element
                 ++CXinner;  // The next non-zero element

@@ -80,10 +80,6 @@ class GreensFunction : public Thermal, public ComputableObject {
     mutable MatsubaraContainer1<GreensFunction> Storage;
     friend class MatsubaraContainer1<GreensFunction>;
 
-    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
-    * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
-    */
-    ComplexType value(long MatsubaraNum) const;
 
 public:
      /** Constructor.
@@ -114,6 +110,11 @@ public:
      * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
      */
     ComplexType operator()(long MatsubaraNum) const;
+
+    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
+    * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
+    */
+    ComplexType value(long MatsubaraNum) const;
 
     bool isVanishing(void) const;
 };

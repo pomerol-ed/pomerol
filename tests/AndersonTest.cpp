@@ -50,7 +50,8 @@ int main(int argc, char* argv[])
     HStorage.prepare();
 
     Symmetrizer Symm(IndexInfo, HStorage);
-    Symm.compute();
+    Symm.compute(true);
+    //Symm.compute(false);
 
     StatesClassification S(IndexInfo,Symm);
     S.compute();
@@ -58,17 +59,15 @@ int main(int argc, char* argv[])
     Hamiltonian H(IndexInfo, HStorage, S);
     H.prepare();
     for (BlockNumber i=0; i<S.NumberOfBlocks(); i++) {
-        auto st = S.getFockStates(i);
         INFO(S.getQuantumNumbers(i));
+        std::vector<FockState> st = S.getFockStates(i);
         for (int i=0; i<st.size(); ++i) INFO(st[i]);
-        INFO(H.getPart(i).getBlockNumber() << "|" << H.getPart(i).getQuantumNumbers());
-        INFO(H.getPart(i).getMatrix());
+//        INFO(H.getPart(i).getBlockNumber() << "|" << H.getPart(i).getQuantumNumbers());
+//        INFO(H.getPart(i).getMatrix());
         INFO("");
     };
 
     H.diagonalize();
-    DEBUG(H.getPart(BlockNumber(2)).getEigenValues());
-    DEBUG(H.getEigenValues());
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
@@ -82,6 +81,26 @@ int main(int argc, char* argv[])
 
     DEBUG(down_index);
     DEBUG(up_index);
+    
+    IndexInfo.printIndices();
+    for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {
+    INFO("C^+_"<<i);
+    std::list<BlockMapping> c_map=Operators.getCreationOperator(i).getNonTrivialIndices();
+    for (std::list<BlockMapping>::iterator c_map_it=c_map.begin(); c_map_it!=c_map.end(); c_map_it++)
+        {
+            //INFO(c_map_it->second << "->" << c_map_it->first);
+            //INFO(S.getQuantumNumbers(c_map_it->second) << "->" << S.getQuantumNumbers(c_map_it->first));
+            Operators.getCreationOperator(i).getPartFromRightIndex(c_map_it->second).print_to_screen();
+        }
+    c_map=Operators.getAnnihilationOperator(i).getNonTrivialIndices();
+    for (std::list<BlockMapping>::iterator c_map_it=c_map.begin(); c_map_it!=c_map.end(); c_map_it++)
+        {
+            //INFO(c_map_it->second << "->" << c_map_it->first);
+            //INFO(S.getQuantumNumbers(c_map_it->second) << "->" << S.getQuantumNumbers(c_map_it->first));
+            Operators.getAnnihilationOperator(i).getPartFromRightIndex(c_map_it->second).print_to_screen();
+        }
+
+    };
 
     GreensFunction GF_down(S,H,
     	Operators.getAnnihilationOperator(down_index),
@@ -97,7 +116,7 @@ int main(int argc, char* argv[])
     GF_down.compute(1000); GF_up.compute(1000);
 
     for (size_t i=0; i<10; i++) {
-        INFO(GF_down(i) << " " << GF_up(i));
+        INFO(GF_down.value(i) << " " << GF_up.value(i));
         };
 
     return EXIT_SUCCESS;

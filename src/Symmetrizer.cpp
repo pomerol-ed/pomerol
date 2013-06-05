@@ -182,31 +182,33 @@ const std::vector<boost::shared_ptr<Operator> >& Symmetrizer::getOperations() co
     return Operations;
 }
 
-void Symmetrizer::compute()
+void Symmetrizer::compute(bool ignore_symmetries)
 {
     if (Status>=Computed) return;
-    // Force number of particles conservation
-    boost::shared_ptr<Operator> OP1 ( new Pomerol::OperatorPresets::N(IndexSize));
-    if (Storage.commutes(*OP1)) { 
-        Operations.push_back(OP1);
-        NSymmetries++;
-    }
-    // Force Sz conservation
-    std::vector<ParticleIndex> SpinUpIndices;
-    std::vector<ParticleIndex> SpinDownIndices;
-    for (ParticleIndex i=0; i<IndexSize; ++i) { 
-            std::string label;
-            unsigned short Orbital;
-            unsigned short Spin;
-            boost::tie(label, Orbital, Spin)=IndexInfo.getInfo(i);
-            if ( Spin == 1 ) SpinUpIndices.push_back(i);
-            else if (Spin == 0 ) SpinDownIndices.push_back(i);
-        } 
-    boost::shared_ptr<Operator> OP2 ( new Pomerol::OperatorPresets::Sz(SpinUpIndices, SpinDownIndices));
-    if (Storage.commutes(*OP2)) { 
-        Operations.push_back(OP2);
-        NSymmetries++;
-        };
+    if (!ignore_symmetries) {
+        // Force number of particles conservation
+        boost::shared_ptr<Operator> OP1 ( new Pomerol::OperatorPresets::N(IndexSize));
+        if (Storage.commutes(*OP1)) { 
+            Operations.push_back(OP1);
+            NSymmetries++;
+        }
+        // Force Sz conservation
+        std::vector<ParticleIndex> SpinUpIndices;
+        std::vector<ParticleIndex> SpinDownIndices;
+        for (ParticleIndex i=0; i<IndexSize; ++i) { 
+                std::string label;
+                unsigned short Orbital;
+                unsigned short Spin;
+                boost::tie(label, Orbital, Spin)=IndexInfo.getInfo(i);
+                if ( Spin == 1 ) SpinUpIndices.push_back(i);
+                else if (Spin == 0 ) SpinDownIndices.push_back(i);
+            } 
+        boost::shared_ptr<Operator> OP2 ( new Pomerol::OperatorPresets::Sz(SpinUpIndices, SpinDownIndices));
+        if (Storage.commutes(*OP2)) { 
+            Operations.push_back(OP2);
+            NSymmetries++;
+            };
+    };
 
     Status = Computed;
 }

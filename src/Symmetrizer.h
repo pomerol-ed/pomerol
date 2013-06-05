@@ -79,7 +79,7 @@ private:
 public:
     Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage);
     /** This method finds all possible symmetry operations. */
-    void compute();
+    void compute(bool ignore_symmetries = false);
 
     /** Get a vector of operators that commute with the Hamiltonian. */
     const std::vector<boost::shared_ptr<Operator> >& getOperations() const;

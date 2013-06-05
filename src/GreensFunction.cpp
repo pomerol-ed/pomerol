@@ -61,8 +61,10 @@ void GreensFunction::prepare(void)
         BlockNumber CXleft = CXiter->first;
         BlockNumber CXright = CXiter->second;
 
+
         // Select a relevant 'world stripe' (sequence of blocks).
         if(Cleft == CXright && Cright == CXleft){
+        DEBUG(S.getQuantumNumbers(Cleft) << "|" << S.getQuantumNumbers(Cright) << "||" << S.getQuantumNumbers(CXleft) << "|" << S.getQuantumNumbers(CXright) );
         parts.push_back(new GreensFunctionPart(
                               (AnnihilationOperatorPart&)C.getPartFromLeftIndex(Cleft),
                               (CreationOperatorPart&)CX.getPartFromRightIndex(CXright),
@@ -95,7 +97,6 @@ void GreensFunction::compute(long NumberOfMatsubaras)
     Status = Computed;
 }
 
-inline
 ComplexType GreensFunction::value(long int MatsubaraNum) const
 {
     ComplexType Value = 0;

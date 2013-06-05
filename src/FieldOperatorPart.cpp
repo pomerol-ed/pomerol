@@ -93,7 +93,7 @@ const RowMajorMatrixType& FieldOperatorPart::getRowMajorValue(void) const
     return elementsRowMajor;
 }
 
-void FieldOperatorPart::print_to_screen()  //print to screen C and CX
+void FieldOperatorPart::print_to_screen() const  //print to screen C and CX
 {
     BlockNumber to   = HTo.getBlockNumber();
     BlockNumber from = HFrom.getBlockNumber();

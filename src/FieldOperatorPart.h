@@ -83,7 +83,7 @@ public:
     /** Compute all the matrix elements. Changes the Status of the object to Computed. */
     void compute();
     /** Print all matrix elements of the operator to screen. */
-    void print_to_screen();
+    void print_to_screen() const;
 
     /** Returns the row ordered sparse matrix of matrix elements. */
     const RowMajorMatrixType& getRowMajorValue(void) const;
