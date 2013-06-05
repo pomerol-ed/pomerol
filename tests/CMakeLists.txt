@@ -17,13 +17,15 @@ IndexPermutationTest
 CCdagOperatorTest 
 NOperatorTest 
 SzOperatorTest 
-HamiltonianPartTest 
+HamiltonianPartTest01 
+HamiltonianPartTest02 
 #SingletTest
 HamiltonianTest 
 FieldOperatorPartTest
 FieldOperatorTest 
 GF1siteTest
 GF2siteTest
+AndersonTest
 GF4siteTest
 GFContainerTest
 Vertex4Test
