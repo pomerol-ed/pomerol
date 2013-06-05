@@ -75,6 +75,7 @@ public:
     const HamiltonianPart& getPart(const QuantumNumbers &in) const;
     const HamiltonianPart& getPart(BlockNumber in) const;
     RealType getEigenValue(unsigned long state) const;
+    RealVectorType getEigenValues() const;
     RealType getGroundEnergy() const;
 
     void save(H5::CommonFG* RootGroup) const;

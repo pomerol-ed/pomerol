@@ -103,6 +103,19 @@ RealType Hamiltonian::getEigenValue(QuantumState state) const
     return getPart(S.getBlockNumber(state)).getEigenValue(InnerState);
 }
 
+RealVectorType Hamiltonian::getEigenValues() const
+{
+    RealVectorType out(S.getNumberOfStates());
+    size_t i=0;
+    for (BlockNumber CurrentBlock=0; CurrentBlock<S.NumberOfBlocks(); CurrentBlock++) {
+        const RealVectorType& tmp = parts[CurrentBlock]->getEigenValues();
+        std::copy(tmp.data(), tmp.data() + tmp.size(), out.data()+i);
+        i+=tmp.size(); 
+        }
+    return out;
+}
+
+
 RealType Hamiltonian::getGroundEnergy() const
 {
     return GroundEnergy;

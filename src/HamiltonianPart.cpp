@@ -49,10 +49,12 @@ void HamiltonianPart::prepare()
     for(InnerQuantumState right_st=0; right_st<BlockSize; right_st++)
     {
         FockState ket = S.getFockState(Block,right_st);
+        DEBUG(ket);
         std::map<FockState,MelemType> mapStates = F.actRight(ket);
         for (melem_it=mapStates.begin(); melem_it!=mapStates.end(); melem_it++) {
             FockState bra = melem_it -> first;
             MelemType melem = melem_it -> second;
+            DEBUG("<" << bra << "|" << melem << "|" << F << "|" << ket << ">");
             InnerQuantumState left_st = S.getInnerState(bra);
 //            if (left_st > right_st) { ERROR("!"); exit(1); };
             H(left_st,right_st) = melem;
@@ -115,6 +117,13 @@ BlockNumber HamiltonianPart::getBlockNumber(void) const
 {
     return S.getBlockNumber(QN);
 }
+
+QuantumNumbers HamiltonianPart::getQuantumNumbers(void) const
+{
+    return QN;
+}
+
+
 
 void HamiltonianPart::print_to_screen() const	
 {
