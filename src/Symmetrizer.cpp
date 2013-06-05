@@ -200,8 +200,8 @@ void Symmetrizer::compute(bool ignore_symmetries)
                 unsigned short Orbital;
                 unsigned short Spin;
                 boost::tie(label, Orbital, Spin)=IndexInfo.getInfo(i);
-                if ( Spin == 1 ) SpinUpIndices.push_back(i);
-                else if (Spin == 0 ) SpinDownIndices.push_back(i);
+                if ( Spin == up ) SpinUpIndices.push_back(i);
+                else if (Spin == down ) SpinDownIndices.push_back(i);
             } 
         boost::shared_ptr<Operator> OP2 ( new Pomerol::OperatorPresets::Sz(SpinUpIndices, SpinDownIndices));
         if (Storage.commutes(*OP2)) { 
