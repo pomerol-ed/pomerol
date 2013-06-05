@@ -62,6 +62,7 @@ Operator Operator::getAntiCommutator(const Operator &rhs) const
 
 boost::tuple<FockState,MelemType> Operator::actRight(const monomial_t &in, const FockState &ket)
 {
+    if (in.size()==0) return boost::make_tuple(ket, MelemType(1));
     //DEBUG(in << "|" << ket << ">");
     //ParticleIndex prev_pos_ = ket.size(); // Here we'll store the index of the last operator to speed up sign counting
     ParticleIndex prev_pos_ = 0;
