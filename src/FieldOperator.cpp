@@ -106,6 +106,7 @@ void CreationOperator::prepare(void)
         }
     }
     INFO("CreationOperator_" << Index <<": " << Size << " parts will be computed");
+    LeftRightIndices.sort(); 
     Status = Prepared;
 }
 
@@ -128,6 +129,7 @@ void AnnihilationOperator::prepare()
         }
     }
     INFO("AnnihilationOperator_" << Index <<": " << Size << " parts will be computed");
+    //LeftRightIndices.sort(); 
     Status = Prepared;
 }
 

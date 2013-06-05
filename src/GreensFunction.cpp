@@ -54,7 +54,8 @@ void GreensFunction::prepare(void)
     std::list<BlockMapping>::const_iterator Citer = CNontrivialBlocks.begin();
     std::list<BlockMapping>::const_iterator CXiter = CXNontrivialBlocks.begin();
 
-    while(Citer != CNontrivialBlocks.end() && CXiter != CXNontrivialBlocks.end()){
+    for (Citer=CNontrivialBlocks.begin();Citer!=CNontrivialBlocks.end(); Citer++) {
+        for (CXiter=CXNontrivialBlocks.begin();CXiter!=CXNontrivialBlocks.end(); CXiter++) {
         // <Cleft|C|Cright><CXleft|CX|CXright>
         BlockNumber Cleft = Citer->first;
         BlockNumber Cright = Citer->second;
@@ -71,13 +72,15 @@ void GreensFunction::prepare(void)
                               H.getPart(Cright), H.getPart(Cleft),
                               DM.getPart(Cright), DM.getPart(Cleft)));
         }
+        }
+        };
 
-        unsigned long CleftInt = Cleft;
+       /* unsigned long CleftInt = Cleft;
         unsigned long CXrightInt = CXright;
 
         if(CleftInt <= CXrightInt) Citer++;
         if(CleftInt >= CXrightInt) CXiter++;
-    }
+    }*/
     if (parts.size() > 0) Vanishing = false;
 
     Status = Prepared;

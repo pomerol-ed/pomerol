@@ -45,8 +45,7 @@ namespace Pomerol{
 class FieldOperatorPart : public ComputableObject {
     /** Computation statuses of the object. */
     enum {Constructed, Computed};
-protected:
-
+public:
     /** A reference to the IndexClassification object. */
     const IndexClassification &IndexInfo;
     /** A reference to the StateClassification object. */
@@ -55,6 +54,7 @@ protected:
     const HamiltonianPart &HFrom;
     /** A reference to the HamiltonianPart on the left hand side. */
     const HamiltonianPart &HTo;
+protected:
     /** A pointer to the Operator object ( Pomerol::OperatorPresets::C or Cdag ). */
     Operator *O;
 

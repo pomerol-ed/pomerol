@@ -50,8 +50,8 @@ int main(int argc, char* argv[])
     HStorage.prepare();
 
     Symmetrizer Symm(IndexInfo, HStorage);
-    Symm.compute(true);
-    //Symm.compute(false);
+    //Symm.compute(true);
+    Symm.compute(false);
 
     StatesClassification S(IndexInfo,Symm);
     S.compute();
@@ -112,8 +112,8 @@ int main(int argc, char* argv[])
     	Operators.getCreationOperator(up_index),
 	rho);
 
-    GF_down.prepare(); GF_up.prepare();
-    GF_down.compute(1000); GF_up.compute(1000);
+    GF_down.prepare(); DEBUG(""); GF_up.prepare();
+    GF_down.compute(1000); DEBUG(""); GF_up.compute(1000);
 
     for (size_t i=0; i<10; i++) {
         INFO(GF_down.value(i) << " " << GF_up.value(i));
