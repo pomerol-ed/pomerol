@@ -18,7 +18,7 @@ CCdagOperatorTest
 NOperatorTest 
 SzOperatorTest 
 HamiltonianPartTest01 
-HamiltonianPartTest02 
+#HamiltonianPartTest02 
 #SingletTest
 HamiltonianTest 
 FieldOperatorPartTest

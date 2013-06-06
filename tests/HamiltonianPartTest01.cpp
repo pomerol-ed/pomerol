@@ -48,7 +48,10 @@ int main(int argc, char* argv[])
 
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
-    LatticePresets::addCoulombS(&L, "A", 4.0, -1.0);
+    L.addSite(new Lattice::Site("B",1,2));
+    LatticePresets::addCoulombS(&L, "A", 1.0, -0.5);
+    LatticePresets::addCoulombS(&L, "B", 2.0, -1.0);
+    LatticePresets::addHopping(&L, "A", "B", -1.0);
 
     IndexClassification Indices(L.getSiteMap());
     Indices.prepare();

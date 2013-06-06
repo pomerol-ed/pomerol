@@ -65,7 +65,7 @@ void GreensFunction::prepare(void)
 
         // Select a relevant 'world stripe' (sequence of blocks).
         if(Cleft == CXright && Cright == CXleft){
-        DEBUG(S.getQuantumNumbers(Cleft) << "|" << S.getQuantumNumbers(Cright) << "||" << S.getQuantumNumbers(CXleft) << "|" << S.getQuantumNumbers(CXright) );
+        //DEBUG(S.getQuantumNumbers(Cleft) << "|" << S.getQuantumNumbers(Cright) << "||" << S.getQuantumNumbers(CXleft) << "|" << S.getQuantumNumbers(CXright) );
         parts.push_back(new GreensFunctionPart(
                               (AnnihilationOperatorPart&)C.getPartFromLeftIndex(Cleft),
                               (CreationOperatorPart&)CX.getPartFromRightIndex(CXright),
