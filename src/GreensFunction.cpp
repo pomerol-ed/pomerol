@@ -48,39 +48,36 @@ void GreensFunction::prepare(void)
     if(Status>=Prepared) return;
 
     // Find out non-trivial blocks of C and CX.
-    const std::list<BlockMapping> &CNontrivialBlocks = C.getNonTrivialIndices();
-    const std::list<BlockMapping> &CXNontrivialBlocks = CX.getNonTrivialIndices();
+    FieldOperator::BlocksBimap const& CNontrivialBlocks = C.getBlockMapping();
+    FieldOperator::BlocksBimap const& CXNontrivialBlocks = CX.getBlockMapping();
 
-    std::list<BlockMapping>::const_iterator Citer = CNontrivialBlocks.begin();
-    std::list<BlockMapping>::const_iterator CXiter = CXNontrivialBlocks.begin();
+    FieldOperator::BlocksBimap::left_const_iterator Citer = CNontrivialBlocks.left.begin();
+    FieldOperator::BlocksBimap::right_const_iterator CXiter = CXNontrivialBlocks.right.begin();
 
-    for (Citer=CNontrivialBlocks.begin();Citer!=CNontrivialBlocks.end(); Citer++) {
-        for (CXiter=CXNontrivialBlocks.begin();CXiter!=CXNontrivialBlocks.end(); CXiter++) {
+    while(Citer != CNontrivialBlocks.left.end() && CXiter != CXNontrivialBlocks.right.end()){
         // <Cleft|C|Cright><CXleft|CX|CXright>
         BlockNumber Cleft = Citer->first;
         BlockNumber Cright = Citer->second;
-        BlockNumber CXleft = CXiter->first;
-        BlockNumber CXright = CXiter->second;
+        BlockNumber CXleft = CXiter->second;
+        BlockNumber CXright = CXiter->first;
 
 
         // Select a relevant 'world stripe' (sequence of blocks).
         if(Cleft == CXright && Cright == CXleft){
         //DEBUG(S.getQuantumNumbers(Cleft) << "|" << S.getQuantumNumbers(Cright) << "||" << S.getQuantumNumbers(CXleft) << "|" << S.getQuantumNumbers(CXright) );
-        parts.push_back(new GreensFunctionPart(
+            parts.push_back(new GreensFunctionPart(
                               (AnnihilationOperatorPart&)C.getPartFromLeftIndex(Cleft),
                               (CreationOperatorPart&)CX.getPartFromRightIndex(CXright),
                               H.getPart(Cright), H.getPart(Cleft),
                               DM.getPart(Cright), DM.getPart(Cleft)));
         }
-        }
-        };
 
-       /* unsigned long CleftInt = Cleft;
+        unsigned long CleftInt = Cleft;
         unsigned long CXrightInt = CXright;
 
         if(CleftInt <= CXrightInt) Citer++;
         if(CleftInt >= CXrightInt) CXiter++;
-    }*/
+    }
     if (parts.size() > 0) Vanishing = false;
 
     Status = Prepared;

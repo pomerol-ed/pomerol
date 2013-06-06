@@ -102,8 +102,7 @@ int main(int argc, char* argv[])
     H.diagonalize();
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
-    //srand (time(NULL));
-    RealType beta = 10.0; // + 10.0*RealType(rand())/RAND_MAX;
+    RealType beta = 10.0;
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
@@ -113,12 +112,12 @@ int main(int argc, char* argv[])
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepare();
 
-    /*std::list<BlockMapping> c_map=Operators.getCreationOperator(0).getNonTrivialIndices();
-    for (std::list<BlockMapping>::iterator c_map_it=c_map.begin(); c_map_it!=c_map.end(); c_map_it++)
+    FieldOperator::BlocksBimap c_map = Operators.getCreationOperator(0).getBlockMapping();
+    for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
         {
-            INFO(c_map_it->second << "->" << c_map_it->first);
+            INFO(c_map_it->first << "->" << c_map_it->second);
         }
-    */
+        
     ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
     //ParticleIndex up_index = IndexInfo.getIndex("A",0,up);
     GreensFunction GF(S,H,Operators.getAnnihilationOperator(down_index), Operators.getCreationOperator(down_index), rho);

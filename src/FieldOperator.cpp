@@ -38,10 +38,10 @@ AnnihilationOperator::AnnihilationOperator(const IndexClassification &IndexInfo,
     O = new Pomerol::OperatorPresets::C(Index);
 }
 
-const std::list<BlockMapping>& FieldOperator::getNonTrivialIndices() const
+FieldOperator::BlocksBimap const& FieldOperator::getBlockMapping() const
 {
     if (Status < Computed) { ERROR("FieldOperator is not computed yet."); throw (exStatusMismatch()); }
-    return LeftRightIndices;
+    return LeftRightBlocks;
 }
  
 const FieldOperatorPart& FieldOperator::getPartFromRightIndex(BlockNumber in) const
@@ -99,14 +99,11 @@ void CreationOperator::prepare(void)
             parts.push_back(Part);
             mapPartsFromRight[RightIndex]=Size;
             mapPartsFromLeft[LeftIndex]=Size;
-            LeftRightIndices.push_back(BlockMapping(LeftIndex,RightIndex));
-            mapRightToLeftIndex[RightIndex]=LeftIndex;
-            mapLeftToRightIndex[LeftIndex]=RightIndex;
+            LeftRightBlocks.insert(BlockMapping(LeftIndex,RightIndex));
             Size++;
         }
     }
     INFO("CreationOperator_" << Index <<": " << Size << " parts will be computed");
-    LeftRightIndices.sort(); 
     Status = Prepared;
 }
 
@@ -122,29 +119,28 @@ void AnnihilationOperator::prepare()
             parts.push_back(Part);
             mapPartsFromRight[RightIndex]=Size;
             mapPartsFromLeft[LeftIndex]=Size;
-            mapRightToLeftIndex[RightIndex]=LeftIndex;
-            mapLeftToRightIndex[LeftIndex]=RightIndex;
-            LeftRightIndices.push_back(BlockMapping(LeftIndex,RightIndex));
+            LeftRightBlocks.insert(BlockMapping(LeftIndex,RightIndex));
             Size++;
         }
     }
     INFO("AnnihilationOperator_" << Index <<": " << Size << " parts will be computed");
-    //LeftRightIndices.sort(); 
     Status = Prepared;
 }
 
 BlockNumber FieldOperator::getRightIndex(BlockNumber LeftIndex) const
 {
     if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
-    return mapLeftToRightIndex.count(LeftIndex) ?
-        mapLeftToRightIndex.find(LeftIndex)->second : ERROR_BLOCK_NUMBER;
+    
+    BlocksBimap::left_const_iterator it =  LeftRightBlocks.left.find(LeftIndex);
+    return (it != LeftRightBlocks.left.end()) ? it->second : ERROR_BLOCK_NUMBER;
 }
 
 BlockNumber FieldOperator::getLeftIndex(BlockNumber RightIndex) const
 {
     if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
-    return mapRightToLeftIndex.count(RightIndex) ? 
-        mapRightToLeftIndex.find(RightIndex)->second : ERROR_BLOCK_NUMBER;
+    
+    BlocksBimap::right_const_iterator it =  LeftRightBlocks.right.find(RightIndex);
+    return (it != LeftRightBlocks.right.end()) ? it->second : ERROR_BLOCK_NUMBER;
 }
 
 BlockNumber FieldOperator::mapsTo(BlockNumber RightIndex) const

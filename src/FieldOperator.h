@@ -29,6 +29,8 @@
 #ifndef __INCLUDE_FIELDOPERATOR_H
 #define __INCLUDE_FIELDOPERATOR_H
 
+#include<boost/bimap.hpp>
+
 #include"Misc.h"
 #include"StatesClassification.h"
 #include"Hamiltonian.h" 
@@ -45,6 +47,14 @@ typedef std::pair<BlockNumber,BlockNumber> BlockMapping;
  * on all blocks of quantum states */ 
 class FieldOperator : public ComputableObject 
 {
+public:
+    
+    typedef boost::bimaps::bimap<
+        boost::bimaps::set_of<BlockNumber>,
+        boost::bimaps::set_of<BlockNumber>
+    > BlocksBimap;
+    typedef BlocksBimap::value_type BlockMapping;
+    
 protected:
     /** Computation statuses of the object. */
     enum {Constructed, Prepared, Computed};
@@ -65,12 +75,8 @@ protected:
     std::map<size_t,BlockNumber> mapPartsFromRight;
     /** A map between non-vanishing parts (internal numbering) and their L.H.S. BlockNumbers  */
     std::map<size_t,BlockNumber> mapPartsFromLeft;
-    /** A map from right to left BlockNumbers of non-vanishing parts */
-    std::map<BlockNumber,BlockNumber> mapRightToLeftIndex;
-    /** A map from left to right BlockNumbers of non-vanishing parts */
-    std::map<BlockNumber,BlockNumber> mapLeftToRightIndex;
-    /** A list of indices of non-vanishing part */
-    std::list<BlockMapping> LeftRightIndices;
+        
+    BlocksBimap LeftRightBlocks;
 
     /** Return the resulting BlockNumber of states obtained by this operator, acting on states from another block. 
      * If no BlockNumber found returns ERROR_BLOCK_NUMBER.
@@ -105,8 +111,8 @@ public:
     BlockNumber getLeftIndex(BlockNumber RightIndex) const;
     /** Returns a right BlockNumber for a given left BlockNumber */
     BlockNumber getRightIndex(BlockNumber LeftIndex) const;
-    /** Returns a list of indices of non-vanishing parts */
-    const std::list<BlockMapping>& getNonTrivialIndices() const;
+    /** Returns a reference to BlockMapping */
+    BlocksBimap const& getBlockMapping() const;
 
     /** Returns acting ParticleIndex of current operator */
     ParticleIndex getIndex(void) const;

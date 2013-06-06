@@ -79,13 +79,13 @@ void TwoParticleGF::prepare(void)
     if(Status>=Prepared) return;
 
     // Find out non-trivial blocks of CX4.
-    std::list<BlockMapping> CX4NontrivialBlocks = CX4.getNonTrivialIndices();
-    for(std::list<BlockMapping>::const_iterator outer_iter = CX4NontrivialBlocks.begin();
-        outer_iter != CX4NontrivialBlocks.end(); outer_iter++){ // Iterate over the outermost index.
+    FieldOperator::BlocksBimap const& CX4NontrivialBlocks = CX4.getBlockMapping();
+    for(FieldOperator::BlocksBimap::right_const_iterator outer_iter = CX4NontrivialBlocks.right.begin();
+        outer_iter != CX4NontrivialBlocks.right.end(); outer_iter++){ // Iterate over the outermost index.
             for(size_t p=0; p<6; ++p){ // Choose a permutation
                   BlockNumber LeftIndices[4];
-                  LeftIndices[0] = outer_iter->second;
-                  LeftIndices[3] = outer_iter->first;
+                  LeftIndices[0] = outer_iter->first;
+                  LeftIndices[3] = outer_iter->second;
                   LeftIndices[2] = getLeftIndex(p,2,LeftIndices[3]);
                   LeftIndices[1] = getRightIndex(p,0,LeftIndices[0]);
                   // < LeftIndices[0] | O_1 | LeftIndices[1] >
@@ -111,7 +111,7 @@ void TwoParticleGF::prepare(void)
                       permutations3[p]));
                       }
             }
-    }  
+    } 
     if ( parts.size() > 0 ) { 
         Vanishing = false;
         INFO("TwoParticleGF(" << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << "): " << parts.size() << " parts will be calculated");

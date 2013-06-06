@@ -61,8 +61,6 @@ void print_section (const std::string& str)
   std::cout << std::string(str.size(),'=') << std::endl;
 }
 
-
-
 int main(int argc, char* argv[])
 {
     Log.setDebugging(true);
@@ -103,7 +101,6 @@ int main(int argc, char* argv[])
     INFO("N terms");
     N.printAllTerms();
     if (!(Sz.commutes(N))) return EXIT_FAILURE;
-    //exit(0);
 
     DEBUG(N);
     if (!(Storage.commutes(N))) return EXIT_FAILURE;
@@ -127,10 +124,7 @@ int main(int argc, char* argv[])
     H.getPart(BlockNumber(5)).print_to_screen();
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
-    //for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(H.getEigenValue(i)); 
- 
-    //srand (time(NULL));
-    RealType beta = 10.0; // + 10.0*RealType(rand())/RAND_MAX;
+    RealType beta = 10.0;
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
@@ -140,10 +134,10 @@ int main(int argc, char* argv[])
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepare();
 
-    std::list<BlockMapping> c_map=Operators.getCreationOperator(0).getNonTrivialIndices();
-    for (std::list<BlockMapping>::iterator c_map_it=c_map.begin(); c_map_it!=c_map.end(); c_map_it++)
+    FieldOperator::BlocksBimap c_map = Operators.getCreationOperator(0).getBlockMapping();
+    for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
         {
-            INFO(c_map_it->second << "->" << c_map_it->first);
+            INFO(c_map_it->first << "->" << c_map_it->second);
         }
 
     GreensFunction GF(S,H,Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), rho);
@@ -152,18 +146,22 @@ int main(int argc, char* argv[])
     GF.compute(10);
 
     RealVectorType GF_im(10);
-    GF_im<<-2.53021005e-01, -4.62090702e-01, -4.32482782e-01, -3.65598615e-01, -3.07785174e-01, -2.62894141e-01, 
-           -2.28274316e-01, -2.01170772e-01, -1.79539602e-01, -1.61950993e-01;
+    GF_im << -2.53021005e-01,
+             -4.62090702e-01,
+             -4.32482782e-01,
+             -3.65598615e-01,
+             -3.07785174e-01,
+             -2.62894141e-01, 
+             -2.28274316e-01,
+             -2.01170772e-01,
+             -1.79539602e-01,
+             -1.61950993e-01;
  
     for(int n = 0; n<10; ++n) {
         DEBUG(GF(n) << " " << GF_im(n)*I);
         if( !compare(GF(n),GF_im(n)*I))
             return EXIT_FAILURE;
         }
-
-//    for(int n = -100; n<100; ++n)
-//        if( !compare(GF(n),Gref(n,beta)))
-//            return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }
