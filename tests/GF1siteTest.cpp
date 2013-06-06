@@ -78,6 +78,7 @@ int main(int argc, char* argv[])
     Log.setDebugging(true);
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
+
     LatticePresets::addCoulombS(&L, "A", U, -mu);
     print_section("Sites");
     L.printSites();
@@ -114,22 +115,26 @@ int main(int argc, char* argv[])
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepare();
 
-    FieldOperator::BlocksBimap c_map = Operators.getCreationOperator(0).getBlockMapping();
+    ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
+    
+    FieldOperator::BlocksBimap c_map = Operators.getCreationOperator(down_index).getBlockMapping();
     for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
         {
             INFO(c_map_it->first << "->" << c_map_it->second);
         }
 
-    GreensFunction GF(S,H,Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), rho);
+    GreensFunction GF(S,H,Operators.getAnnihilationOperator(down_index), Operators.getCreationOperator(down_index), rho);
 
     GF.prepare();
     GF.compute(100);
 
-    for(int n = -100; n<100; ++n) {
-        INFO(GF(n) << "==" << Gref(n,beta));
-        if( !compare(GF(n),Gref(n,beta)))
-            return EXIT_FAILURE;
+    bool result = true;
+    for(int n = 0; n<100; ++n) {
+        INFO(GF(n) << " == " << Gref(n,beta));
+        result = (result && compare(GF(n),Gref(n,beta)));
         }
+    if (!result) return EXIT_FAILURE;
+    return EXIT_SUCCESS;
 
     return EXIT_SUCCESS;
 }

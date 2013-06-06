@@ -102,11 +102,8 @@ int main(int argc, char* argv[])
     N.printAllTerms();
     if (!(Sz.commutes(N))) return EXIT_FAILURE;
 
-    DEBUG(N);
     if (!(Storage.commutes(N))) return EXIT_FAILURE;
     INFO("H commutes with N");
-    DEBUG(Storage*Sz);
-    DEBUG(Sz*Storage);
     if (!(Storage.commutes(Sz))) return EXIT_FAILURE;
     INFO("H commutes with Sz");
     Symmetrizer Symm(IndexInfo, Storage);
@@ -133,6 +130,8 @@ int main(int argc, char* argv[])
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepare();
+    
+    ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
 
     FieldOperator::BlocksBimap c_map = Operators.getCreationOperator(0).getBlockMapping();
     for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
@@ -145,23 +144,24 @@ int main(int argc, char* argv[])
     GF.prepare();
     GF.compute(10);
 
-    RealVectorType GF_im(10);
-    GF_im << -2.53021005e-01,
-             -4.62090702e-01,
-             -4.32482782e-01,
-             -3.65598615e-01,
-             -3.07785174e-01,
-             -2.62894141e-01, 
-             -2.28274316e-01,
-             -2.01170772e-01,
-             -1.79539602e-01,
-             -1.61950993e-01;
+    ComplexVectorType G_ref(10);
+    G_ref << -2.53021005e-01*I,
+             -4.62090702e-01*I,
+             -4.32482782e-01*I,
+             -3.65598615e-01*I,
+             -3.07785174e-01*I,
+             -2.62894141e-01*I, 
+             -2.28274316e-01*I,
+             -2.01170772e-01*I,
+             -1.79539602e-01*I,
+             -1.61950993e-01*I;
  
+    bool result = true;
     for(int n = 0; n<10; ++n) {
-        DEBUG(GF(n) << " " << GF_im(n)*I);
-        if( !compare(GF(n),GF_im(n)*I))
-            return EXIT_FAILURE;
+        INFO(GF(n) << " == " << G_ref(n));
+        result = (result && compare(GF(n),G_ref(n)));
         }
+    if (!result) return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }
