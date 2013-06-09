@@ -182,31 +182,37 @@ const std::vector<boost::shared_ptr<Operator> >& Symmetrizer::getOperations() co
     return Operations;
 }
 
+bool Symmetrizer::checkSymmetry(const Operator &in)
+{
+    boost::shared_ptr<Operator> OP1 ( new Operator(in));
+    if (Storage.commutes(*OP1)) { 
+        Operations.push_back(OP1);
+        NSymmetries++;
+        return true;
+    }
+    else return false;
+}
+
 void Symmetrizer::compute(bool ignore_symmetries)
 {
     if (Status>=Computed) return;
     if (!ignore_symmetries) {
-        // Force number of particles conservation
-        boost::shared_ptr<Operator> OP1 ( new Pomerol::OperatorPresets::N(IndexSize));
-        if (Storage.commutes(*OP1)) { 
-            Operations.push_back(OP1);
-            NSymmetries++;
-        }
-        // Force Sz conservation
-        std::vector<ParticleIndex> SpinUpIndices;
-        std::vector<ParticleIndex> SpinDownIndices;
-        for (ParticleIndex i=0; i<IndexSize; ++i) { 
-                std::string label;
-                unsigned short Orbital;
-                unsigned short Spin;
-                boost::tie(label, Orbital, Spin)=IndexInfo.getInfo(i);
+        // Check particle number conservation
+        Operator op_n = Pomerol::OperatorPresets::N(IndexSize);
+        if (this->checkSymmetry(op_n)) INFO("[ H ,"<< op_n << " ]=0");
+
+        // Check Sz conservation
+        bool valid_sz = true;
+        for (ParticleIndex i=0; i<IndexSize && valid_sz; ++i) 
+            valid_sz = valid_sz && (boost::get<2>(IndexInfo.getInfo(i)) == up || boost::get<2>(IndexInfo.getInfo(i)) == down);
+        if (valid_sz) {
+            std::vector<ParticleIndex> SpinUpIndices;
+            for (ParticleIndex i=0; i<IndexSize; ++i) { 
+                unsigned short Spin = boost::get<2>(IndexInfo.getInfo(i));
                 if ( Spin == up ) SpinUpIndices.push_back(i);
-                else if (Spin == down ) SpinDownIndices.push_back(i);
-            } 
-        boost::shared_ptr<Operator> OP2 ( new Pomerol::OperatorPresets::Sz(SpinUpIndices, SpinDownIndices));
-        if (Storage.commutes(*OP2)) { 
-            Operations.push_back(OP2);
-            NSymmetries++;
+                } 
+            Operator op_sz = Pomerol::OperatorPresets::Sz(IndexSize, SpinUpIndices);
+            if (this->checkSymmetry(op_sz)) INFO("[ H ,"<< op_sz << " ]=0");
             };
     };
 

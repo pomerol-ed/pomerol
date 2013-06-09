@@ -69,18 +69,15 @@ private:
     /** A vector of operators that commute with the Hamiltonian. */
     std::vector<boost::shared_ptr<Operator> > Operations;
 
-    /** This method checks the conservation of number of particles. */
-    void checkNSymmetry();
-    /** This method checks that spin-projection on the z axis is conserved. */
-    void checkSzSymmetry();
 
     /** This method finds all possible symmetry operations. */ /** lattice permutation operators, that commute with the hamiltonian. */
     //void findLatticeSymmetry();
 public:
     Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage);
-    /** This method finds all possible symmetry operations. */
+    /** This method checks several possible symmetry operations to split the Hamiltonian into blocks. */
     void compute(bool ignore_symmetries = false);
 
+    bool checkSymmetry(const Operator &in);
     /** Get a vector of operators that commute with the Hamiltonian. */
     const std::vector<boost::shared_ptr<Operator> >& getOperations() const;
     /** Get a sample QuantumNumbers. Their amount is set. */
