@@ -40,18 +40,19 @@
 #include "FieldOperatorContainer.h"
 #include "GFContainer.h"
 #include "TwoParticleGFContainer.h"
-#include "Vertex4Container.h"
+#include "Vertex4.h"
 
 #include<cstdlib>
 
 using namespace Pomerol;
 
-RealType U = 1.0;
+RealType U;
 RealType beta;
 
-bool compare(ComplexType a, ComplexType b)
+bool compare(ComplexType a, ComplexType b, RealType tol = 1e-5)
 {
-    return abs(a-b) < 1e-10;
+    INFO("TEST: " << a << "?=" << b);
+    return abs(a-b) < tol;
 }
 
 RealType delta(int n1, int n2)
@@ -79,8 +80,8 @@ ComplexType gamma4ref_uuuu(int n1, int n2, int n3)
     RealType omega3 = w(n3);
 
     Value = -beta*(delta(n1,n3)-delta(n2,n3))*sqr(0.5*U)*
-            (1 + sqr(0.5*U/omega1))*
-            (1 + sqr(0.5*U/omega2));
+            (1. + sqr(0.5*U/omega1))*
+            (1. + sqr(0.5*U/omega2));
 
     return Value;
 }
@@ -108,19 +109,23 @@ ComplexType gamma4ref_udud(int n1, int n2, int n3)
 
 int main(int argc, char* argv[])
 {
+
+    U = 1.0;
+
     Log.setDebugging(true);
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
-    LatticePresets::addCoulombS(&L, "A", 1.0, -0.4);
+    LatticePresets::addCoulombS(&L, "A", U, -U/2.);
 
     IndexClassification IndexInfo(L.getSiteMap());
     IndexInfo.prepare();
+    IndexInfo.printIndices();
 
     IndexHamiltonian Storage(&L,IndexInfo);
     Storage.prepare();
 
     Symmetrizer Symm(IndexInfo, Storage);
-    Symm.compute();
+    Symm.compute(true);
 
     StatesClassification S(IndexInfo,Symm);
     S.compute();
@@ -142,61 +147,38 @@ int main(int argc, char* argv[])
 
     GreensFunction GF(S,H,Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), rho);
     GF.prepare();
-    GF.compute(7);
+    GF.compute(30);
 
-    TwoParticleGF Chi(S,H,Operators.getAnnihilationOperator(0), Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), 
+    TwoParticleGF Chi_uuuu(S,H,Operators.getAnnihilationOperator(0), Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), 
                       Operators.getCreationOperator(0), rho);
-    Chi.prepare();
-    Chi.compute(7);
+    Chi_uuuu.prepare();
+    Chi_uuuu.compute(30);
     
-    INFO(Chi(0,0,0));
-    INFO(gamma4ref_uuuu(0,0,0)*GF(0)*GF(0));
-    INFO(Chi(2,5,2));
-    INFO(gamma4ref_uuuu(2,5,2)*GF(2)*GF(5)*GF(5)*GF(2) + GF(2)*GF(5));
+    ComplexType l,r;
+    l = Chi_uuuu(0,0,0); r = gamma4ref_uuuu(0,0,0)*GF(0)*GF(0);
+    if (!compare(l,r)) return EXIT_FAILURE;
+    l = Chi_uuuu(2,5,2); r = gamma4ref_uuuu(2,5,2)*GF(2)*GF(5)*GF(5)*GF(2) - beta*GF(2)*GF(5);
+    if (!compare(l,r)) return EXIT_FAILURE;
+    l = Chi_uuuu(-10,-9,-10); r = gamma4ref_uuuu(-10,-9,-10)*GF(-10)*GF(-9)*GF(-10)*GF(-9) - beta*GF(-10)*GF(-9);
+    if (!compare(l,r)) return EXIT_FAILURE;
+    INFO("PASSED SUSC TEST");
+    
+    Vertex4 Gamma4_uuuu(Chi_uuuu,GF,GF,GF,GF);
+    l = Gamma4_uuuu.value(2,5,2); r = gamma4ref_uuuu(2,5,2)*GF(2)*GF(5)*GF(5)*GF(2);
+    if (!compare(l,r)) return EXIT_FAILURE;
+    l = Gamma4_uuuu.value(-10,-9,-10); r = gamma4ref_uuuu(-10,-9,-10)*GF(-10)*GF(-9)*GF(-9)*GF(-10);
+    if (!compare(l,r)) return EXIT_FAILURE;
 
-
-//     std::cout << Chi4(0,0,0,0)(2,5,2) << std::endl;
-//     std::cout << Chi4(0,0,0,0)(5,2,5) << std::endl;
-//     std::cout << Chi4(0,0,0,0)(5,2,2) << std::endl;
-//     std::cout << Chi4(0,0,0,0)(1,7,1) << std::endl;
-//     std::cout << Chi4(0,0,0,0)(2,-2,4) << std::endl;
-//     std::cout << Chi4(0,0,0,0)(29,-29,29) << std::endl;
-
-//     std::cout << Chi4(0,1,0,1)(3,2,0) << std::endl;
-//     std::cout << Chi4(0,1,0,1)(2,5,2) << std::endl;
-//     std::cout << Chi4(0,1,0,1)(5,2,5) << std::endl;
-//     std::cout << Chi4(0,1,0,1)(5,2,2) << std::endl;
-//     std::cout << Chi4(0,1,0,1)(1,7,1) << std::endl;
-//     std::cout << Chi4(0,1,0,1)(2,-2,4) << std::endl;
-//     std::cout << Chi4(0,1,0,1)(29,-29,29) << std::endl;
-
-//     Vertex4 Gamma4(IndexInfo,Chi4,G);
-//     Gamma4.prepareUnAmputated();
-//     Gamma4.computeUnAmputated();
-//     Gamma4.prepareAmputated(GF2indices);
-//     Gamma4.computeAmputated();
-// 
-//     for(int n1 = -10; n1<10; ++n1)
-//     for(int n2 = -10; n2<10; ++n2)
-//     for(int n3 = -10; n3<10; ++n3){
-//         if( !compare(Gamma4.getAmputatedValue(IC(0,0,0,0),n1,n2,n3),gamma4ref_uuuu(n1,n2,n3)) ||
-//             !compare(Gamma4.getAmputatedValue(IC(1,1,1,1),n1,n2,n3),gamma4ref_uuuu(n1,n2,n3)) ||
-//             !compare(Gamma4(IC(0,1,0,1),n1,n2,n3),gamma4ref_udud(n1,n2,n3)) ||
-//             !compare(Gamma4(IC(1,0,1,0),n1,n2,n3),gamma4ref_udud(n1,n2,n3)) ||
-//             !compare(Gamma4(IC(0,1,1,0),n1,n2,n3),-gamma4ref_udud(n2,n1,n3)) ||
-//             !compare(Gamma4(IC(1,0,0,1),n1,n2,n3),-gamma4ref_udud(n2,n1,n3)) ||
-//             !compare(Gamma4.getAmputatedValue(IC(1,1,0,0),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(0,0,1,1),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(1,0,0,0),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(0,1,0,0),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(0,0,1,0),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(0,0,0,1),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(0,1,1,1),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(1,0,1,1),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(1,1,0,1),n1,n2,n3),0) ||
-//             !compare(Gamma4.getAmputatedValue(IC(1,1,1,0),n1,n2,n3),0))
-//         return EXIT_FAILURE;
-//     }
+    bool success = true; 
+     for(int n1 = -10; n1<10; ++n1)
+     for(int n2 = -10; n2<10; ++n2)
+     for(int n3 = -10; n3<10; ++n3){
+         l = Gamma4_uuuu.value(n1,n2,n3);
+         r = gamma4ref_uuuu(n1,n2,n3)*GF(n1)*GF(n2)*GF(n3)*GF(n1+n2-n3);
+         INFO(n1 << " " << n2 << " " << n3 << " " << n1+n2-n3 << " : " << l << " == " << r);
+         success = success && compare(l,r);
+     }
+    if (!success) return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }
