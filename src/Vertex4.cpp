@@ -27,7 +27,7 @@ namespace Pomerol{
 Vertex4::Vertex4(TwoParticleGF& Chi4,
                  GreensFunction& G13, GreensFunction& G24,
                  GreensFunction& G14, GreensFunction& G23) :
-    Thermal(Chi4), ComputableObject(Constructed),
+    Thermal(Chi4.beta), ComputableObject(Constructed),
     Chi4(Chi4), G13(G13), G24(G24), G14(G14), G23(G23)
 {}
 
@@ -40,7 +40,6 @@ void Vertex4::compute(long NumberOfMatsubaras)
 ComplexType Vertex4::value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
     ComplexType Value = Chi4(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
-    DEBUG("Here.");
 
     if(MatsubaraNumber1 == MatsubaraNumber3)
         Value += beta*  G13(MatsubaraNumber1)*G24(MatsubaraNumber2);

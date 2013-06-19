@@ -33,7 +33,7 @@ TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H
                 const AnnihilationOperator& C1, const AnnihilationOperator& C2, 
                 const CreationOperator& CX3, const CreationOperator& CX4,
                 const DensityMatrix& DM) :
-    Thermal(beta), ComputableObject(Constructed),
+    Thermal(DM.beta), ComputableObject(Constructed),
     S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM),
     parts(0), Vanishing(true)
 {}
@@ -163,13 +163,10 @@ void TwoParticleGF::compute(long NumberOfMatsubaras)
         if(Status<Computed){
             for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
                 (*iter)->compute();
-        DEBUG("Here");
         };
         if(NumberOfMatsubaras != Storage.getNumberOfMatsubaras())
             Storage.fill(this,NumberOfMatsubaras);
-        DEBUG("Here II");
     }
-    DEBUG("Here II");
     Status = Computed;
 }
 

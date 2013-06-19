@@ -50,7 +50,6 @@ class Vertex4 : public Thermal, public ComputableObject {
     mutable MatsubaraContainer4<Vertex4> Storage;
     friend class MatsubaraContainer4<Vertex4>;
 
-    ComplexType value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
 public:
 
@@ -61,6 +60,7 @@ public:
     void compute(long NumberOfMatsubaras = 0);
 
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
+    ComplexType value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
     bool isVanishing(void) const;
 };
