@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
     Storage.prepare();
 
     Symmetrizer Symm(IndexInfo, Storage);
-    Symm.compute(true);
+    Symm.compute();
 
     StatesClassification S(IndexInfo,Symm);
     S.compute();
