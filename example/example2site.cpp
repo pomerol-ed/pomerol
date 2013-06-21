@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
     // Actually compute the density matrix.
     rho.compute();
     
-    /* Lehmans representation of the Green's function required creation and
+    /* Lehmanns representation of the Green's function required creation and
      * annihilation operators, calculated in the basis of eigenstates of the 
      * Hamiltonian. Creation/AnnihilationOperator are the classes that do it.
      */
