@@ -29,6 +29,7 @@ AndersonTest
 GF4siteTest
 GFContainerTest
 Vertex4Test
+#Vertex4ContainerTest
 )
 
 foreach (test ${tests})

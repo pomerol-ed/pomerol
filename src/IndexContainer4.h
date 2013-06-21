@@ -143,8 +143,8 @@ void IndexContainer4<ElementType,SourceObject>::fill(std::set<IndexCombination4>
     else
         II = InitialIndices;    // Otherwise use provided indices.
 
-    for(typename std::set<IndexCombination4>::iterator iter = InitialIndices.begin();
-        iter != InitialIndices.end(); iter++){
+    for(typename std::set<IndexCombination4>::iterator iter = II.begin();
+        iter != II.end(); iter++){
         if(!isInContainer(*iter))
             set(*iter);
     }

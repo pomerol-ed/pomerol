@@ -36,8 +36,10 @@ void Vertex4Container::prepareAll(const std::set<IndexCombination4>& InitialIndi
 void Vertex4Container::computeAll(long NumberOfMatsubaras)
 {
     for(std::map<IndexCombination4,ElementWithPermFreq<Vertex4> >::iterator iter = ElementsMap.begin();
-        iter != ElementsMap.end(); iter++)
+        iter != ElementsMap.end(); iter++) {
+        INFO("Computing Vertex4 for " << iter->first);
         static_cast<Vertex4&>(iter->second).compute(NumberOfMatsubaras);
+        };
 }
 
 Vertex4* Vertex4Container::createElement(const IndexCombination4& Indices) const
