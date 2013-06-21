@@ -59,9 +59,21 @@ include_directories(
 
 add_subdirectory(jsoncpp)
 add_subdirectory(src)
-add_subdirectory(tests)
+
+option(Testing "Enable testing" ON)
+if (Testing)
+    add_subdirectory(tests)
+    enable_testing()
+endif (Testing)
+
 add_subdirectory(prog)
-enable_testing()
+
+# Build example
+option(Examples "Build examples" OFF)
+if (Examples)
+    message(STATUS "Building examples")
+    add_subdirectory(example)
+endif (Examples)
 
 # Install pkg-config file
 configure_file(pomerol.pc.in pomerol.pc @ONLY)
