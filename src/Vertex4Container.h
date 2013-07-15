@@ -30,13 +30,11 @@
 
 namespace Pomerol{
 
-typedef boost::shared_ptr<Vertex4> V4Pointer;
-
 class Vertex4Container: public IndexContainer4<Vertex4,Vertex4Container>, public Thermal
 {
 public:
 
-    Vertex4Container(TwoParticleGFContainer& Chi4, GFContainer& G);
+    Vertex4Container(const IndexClassification& IndexInfo, TwoParticleGFContainer& Chi4, GFContainer& G);
 
     void prepareAll(const std::set<IndexCombination4>& InitialIndices = std::set<IndexCombination4>());
     void computeAll(long NumberOfMatsubaras = 0);

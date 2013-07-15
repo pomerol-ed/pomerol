@@ -153,10 +153,9 @@ int main(int argc, char* argv[])
     Chi.prepareAll();
     Chi.computeAll(nm);
 
-    Vertex4Container Gamma4(Chi,G);
+    Vertex4Container Gamma4(IndexInfo,Chi,G);
     Gamma4.prepareAll();
-    //Gamma4.computeAll(nm);
-  /* 
+    Gamma4.computeAll(nm);
 
  
      for(int n1 = -10; n1<10; ++n1)
