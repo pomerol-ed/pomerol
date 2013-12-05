@@ -65,7 +65,8 @@ protected:
     /** Copy of the Storage of the matrix elements of the operator. Column ordered sparse matrix. */
     ColMajorMatrixType elementsColMajor;
     /** The tolerance with which the matrix elements are evaluated. */
-    static const RealType MatrixElementTolerance = 1e-8;
+    //static
+    const RealType MatrixElementTolerance = 1e-8;
     /** Make this class purely abstract. */
     virtual void do_nothing(void) = 0;
 
