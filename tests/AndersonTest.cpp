@@ -85,6 +85,7 @@ int main(int argc, char* argv[])
     IndexInfo.printIndices();
     for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {
     INFO("C^+_"<<i);
+/*
     FieldOperator::BlocksBimap c_map=Operators.getCreationOperator(i).getBlockMapping();
     for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
         {
@@ -100,6 +101,7 @@ int main(int argc, char* argv[])
             Operators.getAnnihilationOperator(i).getPartFromRightIndex(c_map_it->second).print_to_screen();
         }
 
+*/
     };
 
     GreensFunction GF_down(S,H,
