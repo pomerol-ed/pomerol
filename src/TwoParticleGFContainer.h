@@ -34,6 +34,17 @@ typedef boost::shared_ptr<TwoParticleGF> GF2Pointer;
 class TwoParticleGFContainer: public IndexContainer4<TwoParticleGF,TwoParticleGFContainer>, public Thermal
 {
 public:
+    /** A difference in energies with magnitude less than this value is treated as zero. */
+    RealType KroneckerSymbolTolerance = 1e-16;//1e-16;
+    /** A difference in energies with magnitude less than this value is treated as zero. */
+    RealType ReduceResonanceTolerance = 1e-8;//1e-16;
+    /** Minimal magnitude of the coefficient of a term to take it into account. */
+    RealType CoefficientTolerance = 1e-16;//1e-16;
+    /** A maximum amount of terms put into a list at which the reduceTerms method should be called */
+    RealType ReduceInvocationThreshold = 1e5;
+    /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
+    RealType MultiTermCoefficientTolerance = 1e-5;//1e-5;
+
 
     TwoParticleGFContainer(const IndexClassification& IndexInfo, const StatesClassification &S,
                            const Hamiltonian &H, const DensityMatrix &DM, const FieldOperatorContainer& Operators);

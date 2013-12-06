@@ -132,15 +132,15 @@ private:
                       RealType Wi, RealType Wj, RealType Wk, RealType Wl);
 
     /** A difference in energies with magnitude less than this value is treated as zero. */
-    static const RealType KroneckerSymbolTolerance = 1e-16;//1e-16;
+    RealType KroneckerSymbolTolerance = 1e-16;//1e-16;
     /** A difference in energies with magnitude less than this value is treated as zero. */
-    static const RealType ReduceResonanceTolerance = 1e-8;//1e-16;
+    RealType ReduceResonanceTolerance = 1e-8;//1e-16;
     /** Minimal magnitude of the coefficient of a term to take it into account. */
-    static const RealType CoefficientTolerance = 1e-16;//1e-16;
+    RealType CoefficientTolerance = 1e-16;//1e-16;
     /** A maximum amount of terms put into a list at which the reduceTerms method should be called */
-    static const RealType ReduceInvocationThreshold = 1e5;
+    RealType ReduceInvocationThreshold = 1e5;
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
-    static const RealType MultiTermCoefficientTolerance = 1e-5;//1e-5;
+    RealType MultiTermCoefficientTolerance = 1e-5;//1e-5;
 
     /** Reduces the number of calculated terms 
     * \param[in] NonResonantTolerance The tolerance for the nonresonant terms cutoff.
@@ -224,6 +224,9 @@ struct TwoParticleGFPart::NonResonantTerm{
     /** A statistical weight of current term for averaging ( when averaging formula (*this.weight + other.weight)/(*this.weight+other.weight) is used */
     long Weight;
 
+    /** A difference in energies with magnitude less than this value is treated as zero. */
+    RealType ReduceResonanceTolerance;
+
     /** Constructor.
     * \param[in] Coeff Numerator of the term.
     * \param[in] P1 Pole P1.
@@ -231,7 +234,7 @@ struct TwoParticleGFPart::NonResonantTerm{
     * \param[in] P3 Pole P3.
     * \param[in] isz4 Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term?
     */
-    NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4);
+    NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4, RealType ReduceResonanceTolerance = 0.0);
 
     /** Returns a contribution to the two-particle Green's function made by this term.
     * \param[in] z1 Complex frequency \f$ z_1 \f$.
@@ -276,6 +279,11 @@ struct TwoParticleGFPart::ResonantTerm {
     /** A statistical weight of current term for averaging ( when averaging formula (*this.weight + other.weight)/(*this.weight+other.weight) is used */
     long Weight;
 
+    /** A difference in energies with magnitude less than this value is treated as zero. */
+    RealType KroneckerSymbolTolerance;
+    /** A difference in energies with magnitude less than this value is treated as zero. */
+    RealType ReduceResonanceTolerance;
+
     /** Constructor.
      * \param[in] ResCoeff Numerator of the term for a resonant case.
      * \param[in] NonResCoeff Numerator of the term for a non-resonant case.
@@ -284,7 +292,8 @@ struct TwoParticleGFPart::ResonantTerm {
      * \param[in] P3 Pole P3.
      * \param[in] isz1z2 Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
      */
-    ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff, RealType P1, RealType P2, RealType P3, bool isz1z2);
+    ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff, RealType P1, RealType P2, RealType P3, bool isz1z2, 
+                 RealType KroneckerSymbolTolerance, RealType ReduceResonanceTolerance);
 
     /** Returns a contribution to the two-particle Green's function made by this term.
     * \param[in] z1 Complex frequency \f$ z_1 \f$.

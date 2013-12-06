@@ -34,8 +34,13 @@ void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& Initi
     fill(InitialIndices);
     for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
         iter != ElementsMap.end(); iter++) {
+        static_cast<TwoParticleGF&>(iter->second).KroneckerSymbolTolerance = KroneckerSymbolTolerance;
+        static_cast<TwoParticleGF&>(iter->second).ReduceResonanceTolerance = ReduceResonanceTolerance;
+        static_cast<TwoParticleGF&>(iter->second).CoefficientTolerance = CoefficientTolerance;
+        static_cast<TwoParticleGF&>(iter->second).ReduceInvocationThreshold = ReduceInvocationThreshold;
+        static_cast<TwoParticleGF&>(iter->second).MultiTermCoefficientTolerance = MultiTermCoefficientTolerance;
         static_cast<TwoParticleGF&>(iter->second).prepare();
-        };
+       };
 }
 
 void TwoParticleGFContainer::computeAll(long NumberOfMatsubaras)

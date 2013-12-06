@@ -109,6 +109,12 @@ void TwoParticleGF::prepare(void)
                             H.getPart(LeftIndices[0]), H.getPart(LeftIndices[1]), H.getPart(LeftIndices[2]), H.getPart(LeftIndices[3]),
                             DM.getPart(LeftIndices[0]), DM.getPart(LeftIndices[1]), DM.getPart(LeftIndices[2]), DM.getPart(LeftIndices[3]),
                       permutations3[p]));
+
+                      (*parts.rbegin())->KroneckerSymbolTolerance = KroneckerSymbolTolerance;
+                      (*parts.rbegin())->ReduceResonanceTolerance = ReduceResonanceTolerance;
+                      (*parts.rbegin())->CoefficientTolerance = CoefficientTolerance;
+                      (*parts.rbegin())->ReduceInvocationThreshold = ReduceInvocationThreshold;
+                      (*parts.rbegin())->MultiTermCoefficientTolerance = MultiTermCoefficientTolerance;
                       }
             }
     } 
@@ -164,8 +170,10 @@ void TwoParticleGF::compute(long NumberOfMatsubaras)
             for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
                 (*iter)->compute();
         };
-        if(NumberOfMatsubaras != Storage.getNumberOfMatsubaras())
+        if(NumberOfMatsubaras != Storage.getNumberOfMatsubaras()) {
+            INFO("Filling container with Matsubara values");
             Storage.fill(this,NumberOfMatsubaras);
+            };
     }
     Status = Computed;
 }
