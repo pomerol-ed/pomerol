@@ -130,62 +130,18 @@ bool TwoParticleGF::isVanishing(void) const
     return Vanishing;
 }
 
-void TwoParticleGF::compute(long NumberOfMatsubaras)
+void TwoParticleGF::compute()
 {
     if (Status >= Computed) return;
     if (Status < Prepared) { throw (exStatusMismatch()); };
 
-    #warning Do we really need to merge caches with the new value caching scheme?
-//     unsigned short perm_num=0;
-//     #ifndef pomerolOpenMP
-//     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
-//     {
-//         // TODO: More elegant output.
-//         std::cout << static_cast<int>((distance(parts.begin(),iter)*100.0)/parts.size()) << "  " << std::flush;
-//         (*iter)->compute();
-//         perm_num = getPermutationNumber((*iter)->getPermutation());
-//         ResonantTerms[perm_num].insert(ResonantTerms[perm_num].end(),(*iter)->getResonantTerms().begin(), (*iter)->getResonantTerms().end());
-//         NonResonantTerms[perm_num].insert(NonResonantTerms[perm_num].end(),(*iter)->getNonResonantTerms().begin(), (*iter)->getNonResonantTerms().end());
-//         Storage.fill(this,NumberOfMatsubaras);
-//         (*iter)->clear();
-//     };
-//     #else
-//     std::vector<TwoParticleGFPart*> VectorOfParts;
-//     for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++) VectorOfParts.push_back(*iter);
-// 
-//     #pragma omp parallel for
-//     for(unsigned int i=0; i<VectorOfParts.size(); ++i)
-//     {
-//         std::cout << static_cast<int>((i*100.0)/parts.size()) << "  " << std::flush;
-//         VectorOfParts[i]->compute();
-//         perm_num = getPermutationNumber(VectorOfParts[i]->getPermutation());
-//         ResonantTerms[perm_num].insert(ResonantTerms[perm_num].end(),VectorOfParts[i]->getResonantTerms().begin(), VectorOfParts[i]->getResonantTerms().end());
-//         NonResonantTerms[perm_num].insert(NonResonantTerms[perm_num].end(),VectorOfParts[i]->getNonResonantTerms().begin(), VectorOfParts[i]->getNonResonantTerms().end());
-//         Storage.fill(this,NumberOfMatsubaras);
-//         VectorOfParts[i]->clear();
-//     }
-//     #endif
     if(!Vanishing){
         if(Status<Computed){
             for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
                 (*iter)->compute();
         };
-        if(NumberOfMatsubaras != Storage.getNumberOfMatsubaras()) {
-            INFO("Filling container with Matsubara values");
-            Storage.fill(this,NumberOfMatsubaras);
-            };
-    }
+        }
     Status = Computed;
-}
-
-ComplexType TwoParticleGF::value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
-{
-    ComplexType Value = 0;
-    for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){
-        //if ((*iter)->getStatus() < (*iter)->Computed) { ERROR("TwoParticleGF must be computed to get value."); throw (exStatusMismatch()); };
-        Value += (**iter)(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3);
-    }
-    return Value;
 }
 
 // size_t TwoParticleGF::getNumResonantTerms() const
@@ -204,12 +160,32 @@ ComplexType TwoParticleGF::value(long MatsubaraNumber1, long MatsubaraNumber2, l
 //     return num;
 // }
 
+ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
+{
+    if(Vanishing)
+        return 0.0;
+    else {
+        ComplexType Value = 0;
+        for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){
+        //if ((*iter)->getStatus() < (*iter)->Computed) { ERROR("TwoParticleGF must be computed to get value."); throw (exStatusMismatch()); };
+            Value += (**iter)(z1,z2,z3);
+            }
+        return Value;
+         };
+}
+
 ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
     if(Vanishing)
         return 0.0;
-    else
-        return Storage(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    else {
+        ComplexType Value = 0;
+        for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){
+        //if ((*iter)->getStatus() < (*iter)->Computed) { ERROR("TwoParticleGF must be computed to get value."); throw (exStatusMismatch()); };
+            Value += (**iter)(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3);
+            }
+        return Value;
+         };
 }
 
 ParticleIndex TwoParticleGF::getIndex(size_t Position) const

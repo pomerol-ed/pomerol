@@ -43,12 +43,12 @@ void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& Initi
        };
 }
 
-void TwoParticleGFContainer::computeAll(long NumberOfMatsubaras)
+void TwoParticleGFContainer::computeAll()
 {
     for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
         iter != ElementsMap.end(); iter++) {
         INFO("Computing 2PGF for " << iter->first);
-        static_cast<TwoParticleGF&>(iter->second).compute(NumberOfMatsubaras);
+        static_cast<TwoParticleGF&>(iter->second).compute();
         };
 }
 

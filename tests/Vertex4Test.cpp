@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
     TwoParticleGF Chi_uuuu(S,H,Operators.getAnnihilationOperator(0), Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), 
                       Operators.getCreationOperator(0), rho);
     Chi_uuuu.prepare();
-    Chi_uuuu.compute(30);
+    Chi_uuuu.compute();
     
     ComplexType l,r;
     l = Chi_uuuu(0,0,0); r = gamma4ref_uuuu(0,0,0)*GF(0)*GF(0);

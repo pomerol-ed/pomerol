@@ -38,7 +38,6 @@
 #include"FieldOperator.h"
 #include"DensityMatrix.h"
 #include"TwoParticleGFPart.h"
-#include"MatsubaraContainers.h"
 
 namespace Pomerol{
 
@@ -108,17 +107,6 @@ class TwoParticleGF : public Thermal, public ComputableObject {
      */
     BlockNumber getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const; //!< return right index of an operator at current position for a current permutation
 
-    /** Storage for precomputed values. */
-    MatsubaraContainer4<TwoParticleGF> Storage;
-    friend class MatsubaraContainer4<TwoParticleGF>;
-
-    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
-    * \param[in] MatsubaraNum Number of the Matsubara frequency 1.
-    * \param[in] MatsubaraNum Number of the Matsubara frequency 2.
-    * \param[in] MatsubaraNum Number of the Matsubara frequency 3.
-    */
-    ComplexType value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
-
 public:
     /** A tolerance to distinguish two identical numbers. */
     RealType KroneckerSymbolTolerance = std::numeric_limits<RealType>::epsilon();//1e-16;
@@ -152,14 +140,19 @@ public:
     /** Actually computes the parts and fill the internal cache of precomputed values.
      * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
      */
-    void compute(long NumberOfMatsubaras = 0);
-
+    void compute();
 
     /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
      * \param[in] Position Zero-based number of the operator to use.
      */
     ParticleIndex getIndex(size_t Position) const;
 
+    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
+    * \param[in] z1 Frequency 1
+    * \param[in] z2 Frequency 2
+    * \param[in] z3 Frequency 3
+    */
+    ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3) const;
     /** Returns the value of the two-particle Green's function calculated at given frequencies.
      * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
      * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.

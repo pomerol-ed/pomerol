@@ -328,13 +328,18 @@ ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraN
     long MatsubaraNumberOdd1 = 2*MatsubaraNumber1 + 1;
     long MatsubaraNumberOdd2 = 2*MatsubaraNumber2 + 1;
     long MatsubaraNumberOdd3 = 2*MatsubaraNumber3 + 1;
-    ComplexType Frequencies[3] = {  MatsubaraSpacing * RealType(MatsubaraNumberOdd1),
-                                    MatsubaraSpacing * RealType(MatsubaraNumberOdd2),
-                                   -MatsubaraSpacing * RealType(MatsubaraNumberOdd3)};
+    return (*this)(MatsubaraSpacing * RealType(MatsubaraNumberOdd1),
+                   MatsubaraSpacing * RealType(MatsubaraNumberOdd2),
+                   MatsubaraSpacing * RealType(MatsubaraNumberOdd3));
+}
 
-    ComplexType z1 = Frequencies[Permutation.perm[0]];
-    ComplexType z2 = Frequencies[Permutation.perm[1]];
-    ComplexType z3 = Frequencies[Permutation.perm[2]];
+ComplexType TwoParticleGFPart::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
+{
+    ComplexType Frequencies[3] = {  z1, z2, -z3 };
+
+    z1 = Frequencies[Permutation.perm[0]];
+    z2 = Frequencies[Permutation.perm[1]];
+    z3 = Frequencies[Permutation.perm[2]];
 
     ComplexType Value = 0;
     for(std::list<NonResonantTerm>::const_iterator pTerm = NonResonantTerms.begin(); pTerm != NonResonantTerms.end(); ++pTerm)

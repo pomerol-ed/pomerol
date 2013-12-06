@@ -180,6 +180,12 @@ public:
     /** Purges all terms. */
     void clear();
 
+    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
+    * \param[in] z1 Frequency 1
+    * \param[in] z2 Frequency 2
+    * \param[in] z3 Frequency 3
+    */
+    ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3) const;
     /** Returns a contribution to the two-particle Green's function made by this part.
     * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
     * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
