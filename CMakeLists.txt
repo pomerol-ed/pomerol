@@ -53,11 +53,9 @@ include_directories(
     ${HDF5_INCLUDE_DIR}
     ${EIGEN3_INCLUDE_DIR}
     ${PYTHON_INCLUDE_DIRS}
-    ./jsoncpp/include
     ./src
 )
 
-add_subdirectory(jsoncpp)
 add_subdirectory(src)
 
 option(Testing "Enable testing" ON)
@@ -65,8 +63,6 @@ if (Testing)
     add_subdirectory(tests)
     enable_testing()
 endif (Testing)
-
-add_subdirectory(prog)
 
 # Build example
 option(Examples "Build examples" OFF)

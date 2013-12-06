@@ -30,7 +30,6 @@
 
 #include "Misc.h"
 #include "Logger.h"
-#include "json/json.h"
 
 namespace Pomerol{
 
@@ -178,28 +177,6 @@ public:
     /** Empty constructor */
     TermStorage();
 };
-
-/** This class stores the information about a lattice and reads it from a provided JSON file. */
-class JSONLattice : public Lattice
-{
-    class JSONPresets;
-    //typedef void (addSite)(Lattice *L ) JSONPreset;
-    //std::map<std::string, JSONPreset> Meth; 
-    /** Read and store the information about the sites of the lattice. This also add some local Terms<2> to the Terms map.
-     * \param[in] JSONSites A "Sites" section of the dictionary from the JSON file.
-     */
-    void readSites(Json::Value &JSONSites);
-    /** Read and store the information about the Terms between the sites of the lattice.
-     * \param[in] JSONTerm A "Terms" section of the dictionary from the JSON file.
-     */
-    void readTerms(Json::Value &JSONTerms);
-    public:
-    /** Read the contents of a dictionary from an external JSON file. */
-    int readin (const std::string &filename);
-    /** Empty constructor. */
-    JSONLattice();
-};
-
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_LATTICE_H

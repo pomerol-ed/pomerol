@@ -30,7 +30,6 @@ target_link_libraries(pomerol
     ${Boost_LIBRARIES}
     ${PYTHON_LIBRARIES}
     ${HDF5_LIBRARIES}
-    pomerol_jsoncpp
 )
 
 install(TARGETS pomerol

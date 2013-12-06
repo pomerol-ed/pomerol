@@ -192,51 +192,6 @@ public:
     static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, MelemType t );
 };
 
-/** This class is a set of methods to read the Lattice information from a JSON file. */
-class JSONLattice::JSONPresets{
-friend class JSONLattice;
-private:
-    /** A typedef for all preset methods to read the Sites section in config. */
-    typedef void (JSONLattice::JSONPresets::*SiteCmdHandlerPtr)(Lattice *, const std::string &label, Json::Value&);
-    /** A typedef for a map to all Sites reading methods. */
-    typedef std::map<const std::string,SiteCmdHandlerPtr> JSONSitePresetMap;
-    
-    /** A typedef for all preset methods to read the Terms section in config. */
-    typedef void (JSONLattice::JSONPresets::*TermCmdHandlerPtr)(Lattice *, Json::Value&);
-    /** A typedef for a map to all Term reading methods. */
-    typedef std::map<const std::string,TermCmdHandlerPtr> JSONTermPresetMap;
-
-    /** Reads a a \f$U n_{\uparrow} n_{downarrow} + \varepilon n_{\uparrow} n_{\downarrow} \f$ site. Look at the Lattice::Presets::addCoulombS. */
-    void readSSite(Lattice *L, const std::string &label, Json::Value& in);
-    /** Reads a site with the multiorbital Coulomb interaction, look at the Lattice::Presets::addCoulombP */
-    void readPSite(Lattice *L, const std::string &label, Json::Value& in);
-
-    /** Reads a hopping term. See Lattice::Presets::addHopping. */
-    void readHoppingTerm(Lattice *L, Json::Value& in);
-    /** Reads a level term. See Lattice::Presets::addLevel. */
-    void readLevelTerm(Lattice *L, Json::Value& in);
-    /** Reads an SzSz spin component interaction term. See Lattice::Presets::addSzSz. */
-    void readSzSzTerm(Lattice *L, Json::Value& in);
-    /** Reads a spin-spin interaction term. See Lattice::Presets::addSS. */
-    void readSSTerm(Lattice *L, Json::Value& in);
-    //void readNNTerm(Lattice *L, Json::Value& in);
-
-    /** Exception: wrong indices. */
-    class exWrongSpins : public std::exception { 
-    public:
-        virtual const char* what() const throw();
-    };
-
-    /** A map with all Site presets. */
-    JSONSitePresetMap SiteActions;
-    /** A map with all Term presets. */
-    JSONTermPresetMap TermActions;
-public:
-    /** Empty constructor */
-    JSONPresets();
-};
-
-
 }; // end of namespace Pomerol
 
 #endif // endif : ifndef __INCLUDE_LATTICE_SITES_PRESETS_H
