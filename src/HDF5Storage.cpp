@@ -160,7 +160,7 @@ ComplexType HDF5Storage::loadComplex(const H5::CommonFG* FG, const std::string& 
 // Save/load RealVectorType
 void HDF5Storage::saveRealVector(H5::CommonFG* FG, const std::string& Name, const RealVectorType& V)
 {
-    hsize_t Dim[1] = {V.size()};
+    hsize_t Dim[1] = {hsize_t(V.size())};
     H5::DataSpace DataSpace(1,Dim);
     H5::DataSet DataSet = FG->createDataSet(Name.c_str(),H5_REAL_TYPE,DataSpace);
     DataSet.write(V.data(),H5_REAL_TYPE);
@@ -181,7 +181,7 @@ void HDF5Storage::loadRealVector(const H5::CommonFG* FG, const std::string& Name
 // Save/load RealMatrixType
 void HDF5Storage::saveRealMatrix(H5::CommonFG* FG, const std::string& Name, const RealMatrixType& M)
 {
-    hsize_t Dims[2] = {M.rows(),M.cols()};
+    hsize_t Dims[2] = {hsize_t(M.rows()),hsize_t(M.cols())};
     H5::DataSpace DataSpace(2,Dims);
     H5::DataSet DataSet = FG->createDataSet(Name.c_str(),H5_REAL_TYPE,DataSpace);
     DataSet.write(M.data(),H5_REAL_TYPE);
@@ -207,7 +207,7 @@ void HDF5Storage::loadRealMatrix(const H5::CommonFG* FG, const std::string& Name
 void HDF5Storage::saveMatrix(H5::CommonFG* FG, const std::string& Name, const MatrixType& M)
 {
     H5::CompType ComplexDataType = FG->openCompType("complex");
-    hsize_t Dims[2] = {M.rows(),M.cols()};
+    hsize_t Dims[2] = {hsize_t(M.rows()),hsize_t(M.cols())};
     H5::DataSpace DataSpace(2,Dims);
     H5::DataSet DataSet = FG->createDataSet(Name.c_str(),ComplexDataType,DataSpace);
     DataSet.write(M.data(),ComplexDataType);
@@ -237,7 +237,7 @@ void HDF5Storage::saveColMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
 
     // Save outer indices array
     int outerSize = CMSM.outerSize();
-    hsize_t outerDim[1] = {outerSize};
+    hsize_t outerDim[1] = {hsize_t(outerSize)};
     H5::DataSpace outerDataSpace(1,outerDim);
     Group.createDataSet("outerIndex",H5::PredType::NATIVE_INT,outerDataSpace)
 	.write(CMSM.outerIndexPtr(),H5::PredType::NATIVE_INT);
@@ -248,7 +248,7 @@ void HDF5Storage::saveColMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
 	.write(&innerSize,H5::PredType::NATIVE_INT);
 
     // Save data
-    hsize_t innerDim[1] = {CMSM.nonZeros()};
+    hsize_t innerDim[1] = {hsize_t(CMSM.nonZeros())};
     H5::DataSpace innerDataSpace(1,innerDim);
     Group.createDataSet("innerIndex",H5::PredType::NATIVE_INT,innerDataSpace)
 	.write(CMSM.innerIndexPtr(),H5::PredType::NATIVE_INT);
@@ -307,7 +307,7 @@ void HDF5Storage::saveRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
 
     // Save outer indices array
     int outerSize = RMSM.outerSize();
-    hsize_t outerDim[1] = {outerSize};
+    hsize_t outerDim[1] = {hsize_t(outerSize)};
     H5::DataSpace outerDataSpace(1,outerDim);
     Group.createDataSet("outerIndex",H5::PredType::NATIVE_INT,outerDataSpace)
 	.write(RMSM.outerIndexPtr(),H5::PredType::NATIVE_INT);
@@ -318,7 +318,7 @@ void HDF5Storage::saveRowMajorMatrix(H5::CommonFG* FG, const std::string& Name, 
 	.write(&innerSize,H5::PredType::NATIVE_INT);
 
     // Save data
-    hsize_t innerDim[1] = {RMSM.nonZeros()};
+    hsize_t innerDim[1] = {hsize_t(RMSM.nonZeros())};
     H5::DataSpace innerDataSpace(1,innerDim);
     Group.createDataSet("innerIndex",H5::PredType::NATIVE_INT,innerDataSpace)
 	.write(RMSM.innerIndexPtr(),H5::PredType::NATIVE_INT);

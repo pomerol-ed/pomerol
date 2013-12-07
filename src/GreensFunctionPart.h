@@ -70,7 +70,7 @@ class GreensFunctionPart : public Thermal
     std::list<Term> Terms;
 
     /** A matrix element with magnitude less than this value is treated as zero. */
-    static const RealType MatrixElementTolerance = 1e-8;
+    static constexpr RealType MatrixElementTolerance = 1e-8;
 
 public:
 
@@ -105,9 +105,9 @@ public:
     static void reduceTerms(const RealType Tolerance, std::list<Term>& Terms);
 
     /** A difference in energies with magnitude less than this value is treated as zero. */
-    static const RealType ReduceResonanceTolerance = 1e-8;//1e-16;
+    static constexpr RealType ReduceResonanceTolerance = 1e-8;//1e-16;
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
-    static const RealType ReduceTolerance = 1e-8;
+    static constexpr RealType ReduceTolerance = 1e-8;
 };
 
 /** Every term is a fraction \f$ \frac{R}{z - P} \f$. */
