@@ -39,9 +39,10 @@ namespace Pomerol{
 /** This class represents a part of a two-particle Green's function.
  * Every part describes one 'world stripe' of four operators.
  */
-class TwoParticleGFPart : public Thermal {
+class TwoParticleGFPart : public Thermal, ComputableObject {
 
 friend class TwoParticleGF;
+    enum {Constructed, Prepared, Computed};
 
 public:
 
@@ -233,9 +234,7 @@ struct TwoParticleGFPart::NonResonantTerm{
     /** A difference in energies with magnitude less than this value is treated as zero. */
     RealType ReduceResonanceTolerance;
 
-    private:
     NonResonantTerm(){};
-    public:
     /** Constructor.
     * \param[in] Coeff Numerator of the term.
     * \param[in] P1 Pole P1.
@@ -303,9 +302,7 @@ struct TwoParticleGFPart::ResonantTerm {
     /** A difference in energies with magnitude less than this value is treated as zero. */
     RealType ReduceResonanceTolerance;
 
-private:
     ResonantTerm(){};
-public:
     /** Constructor.
      * \param[in] ResCoeff Numerator of the term for a resonant case.
      * \param[in] NonResCoeff Numerator of the term for a non-resonant case.

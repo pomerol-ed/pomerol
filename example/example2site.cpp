@@ -35,6 +35,7 @@
 // calling of the objects would be required
 using namespace Pomerol;
 
+boost::mpi::communicator world;
 // Small routine to make fancy screen output for text.
 void print_section (const std::string& str);
 
@@ -51,7 +52,10 @@ void print_section (const std::string& str);
 
 int main(int argc, char* argv[])
 {
-    Log.setDebugging(false); // Auxiliary: provides debugging information
+    boost::mpi::environment MpiEnv(argc, argv);
+    world = boost::mpi::communicator();
+
+    Log.setDebugging(true); // Auxiliary: provides debugging information
     
     /* As pomerol is an ED code, it requires a finite-size lattice to be
      * provided. Here is an example of a lattice of 2 sites. */
@@ -80,14 +84,16 @@ int main(int argc, char* argv[])
     LatticePresets::addCoulombS(&L, "B", U, -mu);
 
     // Let us now print which sites and terms are defined.
-    INFO("Sites"); // equivalent to std::cout << "Sites" << std::endl;
-    L.printSites();
-    INFO("Terms");
-    L.printTerms(2);
-    INFO("Terms with 4 operators");
-    L.printTerms(4);
+    if (!world.rank()) {
+        INFO("Sites"); // equivalent to std::cout << "Sites" << std::endl;
+        L.printSites();
+        INFO("Terms");
+        L.printTerms(2);
+        INFO("Terms with 4 operators");
+        L.printTerms(4);
 
-    print_section("Indices");
+        print_section("Indices");
+    };
     /* In order to go further, we need to introduce the index space. An index
      * is a number that uniquely identifies a combination of (site,orbital,spin). 
      * The object that takes care of handling indices is called 
@@ -264,21 +270,21 @@ int main(int argc, char* argv[])
     Chi.MultiTermCoefficientTolerance = 1e-6;
 
     Chi.prepare();
-    Chi.compute();
-    
+    Chi.compute(world);
     int nm = 2;
     for(int n1 = -nm; n1<nm; ++n1)
         for(int n2 = -nm; n2<nm; ++n2)
             for(int n3 = -nm; n3<nm; ++n3){
                 INFO(n1 << " " << n2 << " " << n3 << "|" << Chi(n1,n2,n3));
                 };
-    
 }
 
 void print_section (const std::string& str)
 {
+  if (!world.rank()) {
   std::cout << std::string(str.size(),'=') << std::endl;
   std::cout << str << std::endl;
   std::cout << std::string(str.size(),'=') << std::endl;
+    };
 }
 

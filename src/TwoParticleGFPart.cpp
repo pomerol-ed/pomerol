@@ -115,6 +115,7 @@ TwoParticleGFPart::TwoParticleGFPart(
                 const DensityMatrixPart& DMpart3, const DensityMatrixPart& DMpart4,
                 Permutation3 Permutation) :
     Thermal(DMpart1),
+    ComputableObject(Constructed),
     O1(O1), O2(O2), O3(O3), CX4(CX4), 
     Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
     DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
@@ -227,8 +228,9 @@ void TwoParticleGFPart::compute()
         this->reduceTerms(MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1), MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1), NonResonantTerms, ResonantTerms);
         INFO_NONEWLINE(NonResonantTerms.size() << "+" << ResonantTerms.size() << " = ");
         INFO(NonResonantTerms.size() + ResonantTerms.size()  << " with tolerances: " << MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1) << ", " << MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1));
-
     };
+
+    Status = Computed;
 }
 
 

@@ -134,34 +134,26 @@ bool TwoParticleGF::isVanishing(void) const
 
 void TwoParticleGF::compute(const boost::mpi::communicator & comm)
 {
-/*
+    comm.barrier();
     int comm_size = comm.size(); 
-    DEBUG(comm_size);
-    if (comm.rank()==0) { INFO("Calculating using " << comm.size() << " procs."); };
+    int comm_rank = comm.rank();
     if (Status >= Computed) return;
     if (Status < Prepared) { throw (exStatusMismatch()); };
+    if (comm_rank==0) { INFO("Calculating using " << comm_size << " procs."); };
 
     if(!Vanishing){
-        if(Status<Computed){
-            int rank_counter = 0;
-            DEBUG("!" << rank_counter);
-            for(std::vector<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
-                if (comm.rank() == rank_counter) { 
-                    DEBUG("!" << rank_counter);
-                    (*iter)->compute(); 
-                    //std::vector<TwoParticleGFPart::NonResonantTerm> l1 = (*iter)->NonResonantTerms;
-                    if (comm.rank()) { 
-                        //comm.send(0, rank_counter, l1);
-                        };
-                    }
-                else {
-                    //std::vector<TwoParticleGFPart::NonResonantTerm> l1;
-                    //if (!comm.rank() && rank_counter) comm.recv(rank_counter, rank_counter, l1);
+        for (size_t p = 0; p<parts.size(); p++) {
+            if (comm_rank == p%comm_size) { 
+                std::cout << "Proc " << comm.rank() << " : " << std::flush;
+                parts[p]->compute(); 
+                boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, comm_rank);
+                }
+            else {
+                boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, p%comm_size);
+                parts[p]->Status = TwoParticleGFPart::Computed;
+                 };
                 };
-                rank_counter++; rank_counter%=comm_size;
         };
-        }
-*/
     Status = Computed;
 }
 

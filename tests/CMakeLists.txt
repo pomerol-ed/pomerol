@@ -4,7 +4,7 @@ link_libraries(
     ${Boost_LIBRARIES}
     ${HDF5_LIBRARIES}
     ${MPI_CXX_LIBRARIES}
-    #pomerol
+    pomerol
 )
 
 enable_testing()
