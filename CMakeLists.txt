@@ -23,14 +23,23 @@ include(UseDoxygen)
 
 #set(Boost_USE_STATIC_LIBS        ON)
 #set(Boost_USE_STATIC_RUNTIME    OFF)
-find_package (Boost)
-find_package (HDF5 COMPONENTS CXX)
-find_package (Eigen3 3.1)
+find_package (MPI)
+    message(STATUS "MPI includes: " ${MPI_INCLUDE_DIRS} )
+    message(STATUS "MPI CXX libs: " ${MPI_CXX_LIBRARIES} )
+    message(STATUS "MPI definitions : " ${MPI_CXX_COMPILE_FLAGS} ${MPI_C_COMPILE_FLAGS})
+    add_definitions(${MPI_CXX_COMPILE_FLAGS}  ${MPI_C_COMPILE_FLAGS})
 
-message(STATUS "Boost includes: " ${Boost_INCLUDE_DIRS} )
-message(STATUS "Eigen3 includes: " ${EIGEN3_INCLUDE_DIR} )
-message(STATUS "Boost libs: " ${Boost_LIBRARIES} )
-message(STATUS "HDF5 libs: " ${HDF5_LIBRARIES} )
+find_package (Boost COMPONENTS mpi serialization)
+    message(STATUS "Boost includes: " ${Boost_INCLUDE_DIRS} )
+    message(STATUS "Boost libs: " ${Boost_LIBRARIES} )
+
+find_package (HDF5 COMPONENTS CXX)
+    message(STATUS "HDF5 libs: " ${HDF5_LIBRARIES} )
+
+find_package (Eigen3 3.1)
+    message(STATUS "Eigen3 includes: " ${EIGEN3_INCLUDE_DIR} )
+
+
 
 #find_package (PythonLibs REQUIRED)
 #message("Include dirs of Python: " ${PYTHON_INCLUDE_DIRS} )
@@ -50,6 +59,7 @@ ENDIF("${isSystemDir}" STREQUAL "-1")
 
 include_directories(
     ${Boost_INCLUDE_DIRS}
+    ${MPI_CXX_INCLUDE_PATH}
     ${HDF5_INCLUDE_DIR}
     ${EIGEN3_INCLUDE_DIR}
     ${PYTHON_INCLUDE_DIRS}

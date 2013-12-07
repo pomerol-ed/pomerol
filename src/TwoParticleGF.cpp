@@ -26,6 +26,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 #include "TwoParticleGF.h"
+#include <boost/serialization/complex.hpp>
+#include <boost/serialization/vector.hpp>
 
 namespace Pomerol{
 
@@ -40,7 +42,7 @@ TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H
 
 TwoParticleGF::~TwoParticleGF()
 {
-      for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+      for(std::vector<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
           delete *iter;
 }
 
@@ -130,24 +132,43 @@ bool TwoParticleGF::isVanishing(void) const
     return Vanishing;
 }
 
-void TwoParticleGF::compute()
+void TwoParticleGF::compute(const boost::mpi::communicator & comm)
 {
+/*
+    int comm_size = comm.size(); 
+    DEBUG(comm_size);
+    if (comm.rank()==0) { INFO("Calculating using " << comm.size() << " procs."); };
     if (Status >= Computed) return;
     if (Status < Prepared) { throw (exStatusMismatch()); };
 
     if(!Vanishing){
         if(Status<Computed){
-            for(std::list<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
-                (*iter)->compute();
+            int rank_counter = 0;
+            DEBUG("!" << rank_counter);
+            for(std::vector<TwoParticleGFPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+                if (comm.rank() == rank_counter) { 
+                    DEBUG("!" << rank_counter);
+                    (*iter)->compute(); 
+                    //std::vector<TwoParticleGFPart::NonResonantTerm> l1 = (*iter)->NonResonantTerms;
+                    if (comm.rank()) { 
+                        //comm.send(0, rank_counter, l1);
+                        };
+                    }
+                else {
+                    //std::vector<TwoParticleGFPart::NonResonantTerm> l1;
+                    //if (!comm.rank() && rank_counter) comm.recv(rank_counter, rank_counter, l1);
+                };
+                rank_counter++; rank_counter%=comm_size;
         };
         }
+*/
     Status = Computed;
 }
 
 // size_t TwoParticleGF::getNumResonantTerms() const
 // {
 //     size_t num = 0;
-//     for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+//     for(std::vector<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
 //         num += (*iter)->getNumResonantTerms();
 //     return num;
 // }
@@ -155,7 +176,7 @@ void TwoParticleGF::compute()
 // size_t TwoParticleGF::getNumNonResonantTerms() const
 // {
 //     size_t num = 0;
-//     for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+//     for(std::vector<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
 //         num += (*iter)->getNumNonResonantTerms();
 //     return num;
 // }

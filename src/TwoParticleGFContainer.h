@@ -50,7 +50,7 @@ public:
                            const Hamiltonian &H, const DensityMatrix &DM, const FieldOperatorContainer& Operators);
 
     void prepareAll(const std::set<IndexCombination4>& InitialIndices = std::set<IndexCombination4>());
-    void computeAll();
+    void computeAll(const boost::mpi::communicator & comm);
 
 protected:
 

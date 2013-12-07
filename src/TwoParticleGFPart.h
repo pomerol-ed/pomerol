@@ -81,9 +81,9 @@ private:
     Permutation3 Permutation;
 
     /** A list of non-resonant terms. */
-    std::list<NonResonantTerm> NonResonantTerms;
+    std::vector<NonResonantTerm> NonResonantTerms;
     /** A list of resonant terms. */
-    std::list<ResonantTerm> ResonantTerms;
+    std::vector<ResonantTerm> ResonantTerms;
 
     /** Adds a multi-term that has the following form:
     * \f[
@@ -148,7 +148,7 @@ private:
     * \param[in] NonResonantTerms     The list of nonresonant terms.
     * \param[in] ResonantTerms        The list of resonant terms.
     */
-    static void reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance, std::list<NonResonantTerm>& NonResonantTerms, std::list<ResonantTerm>& ResonantTerms);
+    static void reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance, std::vector<NonResonantTerm>& NonResonantTerms, std::vector<ResonantTerm>& ResonantTerms);
 
 public:
     /** Constructor.
@@ -202,9 +202,9 @@ public:
     const Permutation3& getPermutation(void) const;
 
     /** Return the list of Resonant Terms */
-    const std::list<NonResonantTerm>& getNonResonantTerms(void) const;
+    const std::vector<NonResonantTerm>& getNonResonantTerms(void) const;
     /** Return the list of NonResonantTerms */
-    const std::list<ResonantTerm>& getResonantTerms(void) const;
+    const std::vector<ResonantTerm>& getResonantTerms(void) const;
 };
 
     /** A non-resonant term has the following form:
@@ -233,6 +233,9 @@ struct TwoParticleGFPart::NonResonantTerm{
     /** A difference in energies with magnitude less than this value is treated as zero. */
     RealType ReduceResonanceTolerance;
 
+    private:
+    NonResonantTerm(){};
+    public:
     /** Constructor.
     * \param[in] Coeff Numerator of the term.
     * \param[in] P1 Pole P1.
@@ -259,6 +262,15 @@ struct TwoParticleGFPart::NonResonantTerm{
      * (sum of the terms is again a correct non-resonant term).
     */
     bool isSimilarTo(const NonResonantTerm& AnotherTerm) const;
+
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & Coeff; ar & Poles; ar & isz4; ar & Weight;
+        ar & ReduceResonanceTolerance;
+    }
+
     };
        
 
@@ -268,6 +280,7 @@ struct TwoParticleGFPart::NonResonantTerm{
     *   \left( R \delta(z_1+z_2-P_1-P_2) + N \frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2} \right)
     * \f]
     */
+   
 struct TwoParticleGFPart::ResonantTerm {
 
     /** Coefficient \f$ R \f$. */
@@ -290,6 +303,9 @@ struct TwoParticleGFPart::ResonantTerm {
     /** A difference in energies with magnitude less than this value is treated as zero. */
     RealType ReduceResonanceTolerance;
 
+private:
+    ResonantTerm(){};
+public:
     /** Constructor.
      * \param[in] ResCoeff Numerator of the term for a resonant case.
      * \param[in] NonResCoeff Numerator of the term for a non-resonant case.
@@ -318,6 +334,15 @@ struct TwoParticleGFPart::ResonantTerm {
      * (sum of the terms is again a correct non-resonant term).
     */
     bool isSimilarTo(const ResonantTerm& AnotherTerm) const;
+
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & ResCoeff; ar & NonResCoeff; ar & Poles; ar & isz1z2; ar & Weight;
+        ar & KroneckerSymbolTolerance; ar & ReduceResonanceTolerance;
+    }
+
 };
 
 inline

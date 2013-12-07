@@ -33,6 +33,7 @@
 //#define NDEBUG
 /** \endcond */
 
+
 #include<iostream>
 #include<complex>
 #include<string>
@@ -41,12 +42,14 @@
 #include<map>
 #include<iomanip>
 
+
 #include<boost/shared_ptr.hpp>
 #include<boost/scoped_ptr.hpp>
 #include<boost/make_shared.hpp>
 #include<boost/dynamic_bitset.hpp>
 #include<boost/tuple/tuple.hpp>
 #include<boost/utility.hpp>
+
 
 #define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 #include<Eigen/Core>
@@ -59,6 +62,8 @@
 #ifdef ENABLE_SAVE_PLAINTEXT
 #include <boost/filesystem.hpp>
 #endif
+
+#include <boost/mpi.hpp>
 
 #define REALTYPE_DOUBLE
 

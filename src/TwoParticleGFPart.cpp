@@ -232,13 +232,13 @@ void TwoParticleGFPart::compute()
 }
 
 
-void TwoParticleGFPart::reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance, std::list<NonResonantTerm> &NonResonantTerms, std::list<ResonantTerm>& ResonantTerms)
+void TwoParticleGFPart::reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance, std::vector<NonResonantTerm> &NonResonantTerms, std::vector<ResonantTerm>& ResonantTerms)
 {
     #ifndef noReduction
     // Sieve reduction of the non-resonant terms
     //int i=0
-    for(std::list<NonResonantTerm>::iterator it1 = NonResonantTerms.begin(); it1 != NonResonantTerms.end();){
-        std::list<NonResonantTerm>::iterator it2 = it1;
+    for(std::vector<NonResonantTerm>::iterator it1 = NonResonantTerms.begin(); it1 != NonResonantTerms.end();){
+        std::vector<NonResonantTerm>::iterator it2 = it1;
     //    DEBUG(++i << "/" << NonResonantTerms.size());
         for(it2++; it2 != NonResonantTerms.end();){
             if(it1->isSimilarTo(*it2)){
@@ -255,8 +255,8 @@ void TwoParticleGFPart::reduceTerms(const RealType NonResonantTolerance, const R
     }
     
     // Sieve reduction of the resonant terms
-    for(std::list<ResonantTerm>::iterator it1 = ResonantTerms.begin(); it1 != ResonantTerms.end();){
-        std::list<ResonantTerm>::iterator it2 = it1;
+    for(std::vector<ResonantTerm>::iterator it1 = ResonantTerms.begin(); it1 != ResonantTerms.end();){
+        std::vector<ResonantTerm>::iterator it2 = it1;
         for(it2++; it2 != ResonantTerms.end();){
             if(it1->isSimilarTo(*it2)){
                 *it1 += *it2;
@@ -342,20 +342,20 @@ ComplexType TwoParticleGFPart::operator()(ComplexType z1, ComplexType z2, Comple
     z3 = Frequencies[Permutation.perm[2]];
 
     ComplexType Value = 0;
-    for(std::list<NonResonantTerm>::const_iterator pTerm = NonResonantTerms.begin(); pTerm != NonResonantTerms.end(); ++pTerm)
+    for(std::vector<NonResonantTerm>::const_iterator pTerm = NonResonantTerms.begin(); pTerm != NonResonantTerms.end(); ++pTerm)
         Value += (*pTerm)(z1,z2,z3);
-    for(std::list<ResonantTerm>::const_iterator pTerm = ResonantTerms.begin(); pTerm != ResonantTerms.end(); ++pTerm)
+    for(std::vector<ResonantTerm>::const_iterator pTerm = ResonantTerms.begin(); pTerm != ResonantTerms.end(); ++pTerm)
         Value += (*pTerm)(z1,z2,z3);
 
     return Value;
 }
 
-const std::list<TwoParticleGFPart::NonResonantTerm>& TwoParticleGFPart::getNonResonantTerms() const
+const std::vector<TwoParticleGFPart::NonResonantTerm>& TwoParticleGFPart::getNonResonantTerms() const
 {
     return NonResonantTerms;
 }
 
-const std::list<TwoParticleGFPart::ResonantTerm>& TwoParticleGFPart::getResonantTerms() const
+const std::vector<TwoParticleGFPart::ResonantTerm>& TwoParticleGFPart::getResonantTerms() const
 {
     return ResonantTerms;
 }

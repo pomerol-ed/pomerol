@@ -76,7 +76,7 @@ class TwoParticleGF : public Thermal, public ComputableObject {
     const DensityMatrix& DM;
 
     /** A list of pointers to parts. */
-    std::list<TwoParticleGFPart*> parts;
+    std::vector<TwoParticleGFPart*> parts;
 
     std::list<TwoParticleGFPart::ResonantTerm> ResonantTerms[6];
     std::list<TwoParticleGFPart::NonResonantTerm> NonResonantTerms[6];
@@ -140,7 +140,7 @@ public:
     /** Actually computes the parts and fill the internal cache of precomputed values.
      * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
      */
-    void compute();
+    void compute(const boost::mpi::communicator & comm);
 
     /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
      * \param[in] Position Zero-based number of the operator to use.
@@ -177,7 +177,7 @@ inline ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, Com
         return 0.0;
     else {
         ComplexType Value = 0;
-        for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){
+        for(std::vector<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){
         //if ((*iter)->getStatus() < (*iter)->Computed) { ERROR("TwoParticleGF must be computed to get value."); throw (exStatusMismatch()); };
             Value += (**iter)(z1,z2,z3);
             }

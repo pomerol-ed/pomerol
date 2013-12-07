@@ -29,6 +29,7 @@ add_library(pomerol SHARED ${pomerol_src})
 target_link_libraries(pomerol
     ${Boost_LIBRARIES}
     ${PYTHON_LIBRARIES}
+    ${MPI_CXX_LIBRARIES}
     ${HDF5_LIBRARIES}
 )
 
