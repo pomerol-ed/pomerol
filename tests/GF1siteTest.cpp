@@ -126,7 +126,7 @@ int main(int argc, char* argv[])
     GreensFunction GF(S,H,Operators.getAnnihilationOperator(down_index), Operators.getCreationOperator(down_index), rho);
 
     GF.prepare();
-    GF.compute(100);
+    GF.compute();
 
     bool result = true;
     for(int n = 0; n<100; ++n) {

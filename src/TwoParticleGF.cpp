@@ -160,34 +160,6 @@ void TwoParticleGF::compute()
 //     return num;
 // }
 
-ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
-{
-    if(Vanishing)
-        return 0.0;
-    else {
-        ComplexType Value = 0;
-        for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){
-        //if ((*iter)->getStatus() < (*iter)->Computed) { ERROR("TwoParticleGF must be computed to get value."); throw (exStatusMismatch()); };
-            Value += (**iter)(z1,z2,z3);
-            }
-        return Value;
-         };
-}
-
-ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
-{
-    if(Vanishing)
-        return 0.0;
-    else {
-        ComplexType Value = 0;
-        for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){
-        //if ((*iter)->getStatus() < (*iter)->Computed) { ERROR("TwoParticleGF must be computed to get value."); throw (exStatusMismatch()); };
-            Value += (**iter)(MatsubaraNumber1, MatsubaraNumber2, MatsubaraNumber3);
-            }
-        return Value;
-         };
-}
-
 ParticleIndex TwoParticleGF::getIndex(size_t Position) const
 {
     switch(Position){

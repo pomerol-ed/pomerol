@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
 
     GreensFunction GF(S,H,Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), rho);
     GF.prepare();
-    GF.compute(30);
+    GF.compute();
 
     TwoParticleGF Chi_uuuu(S,H,Operators.getAnnihilationOperator(0), Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), 
                       Operators.getCreationOperator(0), rho);

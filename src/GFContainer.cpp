@@ -39,11 +39,11 @@ void GFContainer::prepareAll(const std::set<IndexCombination2>& InitialIndices)
         (iter->second)->prepare();
 }
 
-void GFContainer::computeAll(long NumberOfMatsubaras)
+void GFContainer::computeAll()
 {
     for(std::map<IndexCombination2,GFPointer>::iterator iter = ElementsMap.begin();
         iter != ElementsMap.end(); iter++)
-        (iter->second)->compute(NumberOfMatsubaras);
+        (iter->second)->compute();
 }
 
 GreensFunction* GFContainer::createElement(const IndexCombination2& Indices) const

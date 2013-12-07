@@ -88,10 +88,15 @@ public:
 
     /** Iterates over all matrix elements and fills the list of terms. */
     void compute(void);
+
+    /** Returns a sum of all the terms with a substituted frequency.
+    * \param[in] z Input frequency
+    */
+    ComplexType operator()(ComplexType z) const;
     /** Returns a sum of all the terms with a substituted Matsubara frequency.
     * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi*(2*n+1)/\beta \f$).
     */
-    ComplexType operator()(long MatsubaraNum) const;
+    ComplexType operator()(long MatsubaraNumber) const;
 
     /** Reduces the number of calculated terms 
     * \param[in] Tolerance The tolerance for the terms cutoff.
@@ -135,6 +140,16 @@ struct GreensFunctionPart::Term {
 };
 
 std::ostream& operator<< (std::ostream& out, const GreensFunctionPart::Term& T);
+
+// Inline call operators
+inline ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const {
+    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1)); }
+
+inline ComplexType GreensFunctionPart::operator()(ComplexType z) const {
+    ComplexType G = 0; 
+    for(std::list<Term>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm) G += (*pTerm)(z);
+    return G;
+}
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_GREENSFUNCTIONPART_H

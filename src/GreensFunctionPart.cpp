@@ -105,15 +105,6 @@ void GreensFunctionPart::compute(void)
     reduceTerms(ReduceTolerance/Terms.size(),Terms);
 }
 
-ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const
-{
-    ComplexType G = 0;
-    for(std::list<Term>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm)
-        G += (*pTerm)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1));
-
-    return G;
-}
-
 void GreensFunctionPart::reduceTerms(const RealType Tolerance, std::list<Term> &Terms)
 {
     // Sieve reduction of the terms

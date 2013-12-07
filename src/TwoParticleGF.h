@@ -172,5 +172,24 @@ public:
     unsigned short getPermutationNumber(const Permutation3& in);
 };
 
+inline ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const {
+    if(Vanishing)
+        return 0.0;
+    else {
+        ComplexType Value = 0;
+        for(std::list<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){
+        //if ((*iter)->getStatus() < (*iter)->Computed) { ERROR("TwoParticleGF must be computed to get value."); throw (exStatusMismatch()); };
+            Value += (**iter)(z1,z2,z3);
+            }
+        return Value;
+         };
+}
+
+inline ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const {
+    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber1+1),
+                   MatsubaraSpacing*RealType(2*MatsubaraNumber2+1),
+                   MatsubaraSpacing*RealType(2*MatsubaraNumber3+1));
+}
+
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGF_H

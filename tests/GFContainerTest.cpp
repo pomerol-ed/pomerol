@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
     indices.insert(IndexCombination2(1,1));
 
     G.prepareAll(indices);
-    G.computeAll(100);
+    G.computeAll();
 
     for(int n = -100; n<100; ++n)
         if( !compare(G(0,0)(n),Gref(n,beta)) ||

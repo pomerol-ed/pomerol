@@ -48,7 +48,7 @@ public:
 
 
     void prepareAll(const std::set<IndexCombination2>& InitialIndices = std::set<IndexCombination2>());
-    void computeAll(long NumberOfMatsubaras = 0);
+    void computeAll();
 
 protected:
 

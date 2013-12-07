@@ -33,7 +33,7 @@ GreensFunction::GreensFunction(const StatesClassification& S, const Hamiltonian&
                                const AnnihilationOperator& C, const CreationOperator& CX,
                                const DensityMatrix& DM) :
     Thermal(DM.beta), ComputableObject(Constructed), S(S), H(H), C(C), CX(CX), DM(DM), Vanishing(true),
-    parts(0), Storage(this)
+    parts(0)
 {
 }
 
@@ -83,7 +83,7 @@ void GreensFunction::prepare(void)
     Status = Prepared;
 }
 
-void GreensFunction::compute(long NumberOfMatsubaras)
+void GreensFunction::compute()
 {
     if(Status>=Computed) return;
     if(Status<Prepared) prepare();
@@ -92,25 +92,7 @@ void GreensFunction::compute(long NumberOfMatsubaras)
         for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
             (*iter)->compute();
     }
-    if(NumberOfMatsubaras != Storage.getNumberOfMatsubaras())
-        Storage.fill(NumberOfMatsubaras);
     Status = Computed;
-}
-
-ComplexType GreensFunction::value(long int MatsubaraNum) const
-{
-    ComplexType Value = 0;
-    for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
-        Value += (**iter)(MatsubaraNum);
-    return Value;
-}
-
-ComplexType GreensFunction::operator()(long MatsubaraNum) const
-{
-    if(Vanishing)
-        return 0;
-    else
-        return Storage(MatsubaraNum);
 }
 
 unsigned short GreensFunction::getIndex(size_t Position) const

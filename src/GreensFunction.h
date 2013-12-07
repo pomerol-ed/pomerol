@@ -37,7 +37,6 @@
 #include"FieldOperator.h"
 #include"DensityMatrix.h"
 #include"GreensFunctionPart.h"
-#include"MatsubaraContainers.h"
 
 namespace Pomerol{
 
@@ -76,11 +75,6 @@ class GreensFunction : public Thermal, public ComputableObject {
      */
     std::list<GreensFunctionPart*> parts;
 
-    /** Storage for precomputed values. */
-    mutable MatsubaraContainer1<GreensFunction> Storage;
-    friend class MatsubaraContainer1<GreensFunction>;
-
-
 public:
      /** Constructor.
      * \param[in] S A reference to a states classification object.
@@ -99,7 +93,7 @@ public:
     /** Actually computes the parts and fills the internal cache of precomputed values.
      * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
      */
-    void compute(long NumberOfMatsubaras = 0);
+    void compute();
 
     /** Returns the 'bit' (index) of the operator C or CX.
      * \param[in] Position Use C for Position==0 and CX for Position==1.
@@ -109,15 +103,28 @@ public:
      /** Returns the value of the Green's function calculated at a given frequency.
      * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
      */
-    ComplexType operator()(long MatsubaraNum) const;
+    ComplexType operator()(long MatsubaraNumber) const;
 
-    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
-    * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
-    */
-    ComplexType value(long MatsubaraNum) const;
+     /** Returns the value of the Green's function calculated at a given frequency.
+     * \param[in] z Input frequency
+     */
+    ComplexType operator()(ComplexType z) const;
 
     bool isVanishing(void) const;
 };
+
+inline ComplexType GreensFunction::operator()(long int MatsubaraNumber) const {
+    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1)); }
+
+inline ComplexType GreensFunction::operator()(ComplexType z) const {
+    if(Vanishing) return 0;
+    else {
+        ComplexType Value = 0;
+        for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+            Value += (**iter)(z);
+        return Value;
+    };
+}
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_GREENSFUNCTION_H

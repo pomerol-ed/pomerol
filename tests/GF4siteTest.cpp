@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
     GreensFunction GF(S,H,Operators.getAnnihilationOperator(down_index), Operators.getCreationOperator(down_index), rho);
 
     GF.prepare();
-    GF.compute(10);
+    GF.compute();
 
     ComplexVectorType GF_ref(10);
 

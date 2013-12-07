@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
     GreensFunction GF(S,H,Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), rho);
 
     GF.prepare();
-    GF.compute(10);
+    GF.compute();
 
     ComplexVectorType G_ref(10);
     G_ref << -2.53021005e-01*I,

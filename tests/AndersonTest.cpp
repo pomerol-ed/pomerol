@@ -115,10 +115,10 @@ int main(int argc, char* argv[])
 	rho);
 
     GF_down.prepare(); DEBUG(""); GF_up.prepare();
-    GF_down.compute(1000); DEBUG(""); GF_up.compute(1000);
+    GF_down.compute(); DEBUG(""); GF_up.compute();
 
     for (size_t i=0; i<10; i++) {
-        INFO(GF_down.value(i) << " " << GF_up.value(i));
+        INFO(GF_down(i) << " " << GF_up(i));
         };
 
     return EXIT_SUCCESS;
