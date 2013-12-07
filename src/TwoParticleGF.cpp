@@ -144,12 +144,14 @@ void TwoParticleGF::compute(const boost::mpi::communicator & comm)
     if(!Vanishing){
         for (size_t p = 0; p<parts.size(); p++) {
             if (comm_rank == p%comm_size) { 
-                std::cout << "Proc " << comm.rank() << " : " << std::flush;
+                std::cout << "["<<p+1<<"/"<<parts.size()<< "] Proc " << comm.rank() << " : " << std::flush;
                 parts[p]->compute(); 
                 boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, comm_rank);
+                boost::mpi::broadcast(comm, parts[p]->ResonantTerms, comm_rank);
                 }
             else {
                 boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, p%comm_size);
+                boost::mpi::broadcast(comm, parts[p]->ResonantTerms, p%comm_size);
                 parts[p]->Status = TwoParticleGFPart::Computed;
                  };
                 };

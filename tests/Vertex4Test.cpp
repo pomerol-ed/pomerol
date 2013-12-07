@@ -110,6 +110,9 @@ ComplexType gamma4ref_udud(int n1, int n2, int n3)
 int main(int argc, char* argv[])
 {
 
+    boost::mpi::environment env;
+    boost::mpi::communicator comm;
+
     U = 1.0;
 
     Log.setDebugging(true);

@@ -201,9 +201,9 @@ void TwoParticleGFPart::compute()
         };
     }
     if (ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize > ReduceInvocationThreshold ){ 
-        INFO_NONEWLINE(NonResonantTerms.size()-NonResonantTermsPreviousSize << " nonresonant + " << ResonantTerms.size() - ResonantTermsPreviousSize << " resonant = ");
+        INFO_NONEWLINE(NonResonantTerms.size()-NonResonantTermsPreviousSize << "+" << ResonantTerms.size() - ResonantTermsPreviousSize << "=");
         INFO_NONEWLINE(ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize);
-        INFO_NONEWLINE(" terms reduced to ");
+        INFO_NONEWLINE(" terms -> ");
 
         NonResonantTermsUnreducedSize+=NonResonantTerms.size();
         ResonantTermsUnreducedSize+= ResonantTerms.size();
@@ -215,19 +215,21 @@ void TwoParticleGFPart::compute()
         NonResonantTermsPreviousSize = NonResonantTerms.size();
         ResonantTermsPreviousSize = ResonantTerms.size(); 
 
-        INFO_NONEWLINE(NonResonantTermsPreviousSize << "+" << ResonantTermsPreviousSize << " = ");
-        INFO(NonResonantTermsPreviousSize + ResonantTermsPreviousSize << " with tolerances: " << NonResonantTolerance << ", " << ResonantTolerance);
+        INFO_NONEWLINE(NonResonantTermsPreviousSize << "+" << ResonantTermsPreviousSize << "=");
+        INFO(NonResonantTermsPreviousSize + ResonantTermsPreviousSize << " , tol = " << std::max(NonResonantTolerance,ResonantTolerance));
         };
     };
 
     NonResonantTermsUnreducedSize=(NonResonantTermsUnreducedSize>0)?NonResonantTermsUnreducedSize:NonResonantTerms.size();
     ResonantTermsUnreducedSize=(ResonantTermsUnreducedSize>0)?ResonantTermsUnreducedSize:ResonantTerms.size();
     if (ResonantTermsUnreducedSize + NonResonantTermsUnreducedSize > 0){
-        INFO_NONEWLINE("Total " << NonResonantTermsUnreducedSize << " nonresonant + " << ResonantTermsUnreducedSize << " resonant = ");
-        INFO_NONEWLINE(NonResonantTermsUnreducedSize+ResonantTermsUnreducedSize << " terms reduced to ");
+        INFO_NONEWLINE("Total " << NonResonantTermsUnreducedSize << "+" << ResonantTermsUnreducedSize << "=");
+        INFO_NONEWLINE(NonResonantTermsUnreducedSize+ResonantTermsUnreducedSize << " terms -> ");
         this->reduceTerms(MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1), MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1), NonResonantTerms, ResonantTerms);
-        INFO_NONEWLINE(NonResonantTerms.size() << "+" << ResonantTerms.size() << " = ");
-        INFO(NonResonantTerms.size() + ResonantTerms.size()  << " with tolerances: " << MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1) << ", " << MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1));
+        INFO_NONEWLINE(NonResonantTerms.size() << "+" << ResonantTerms.size() << "=");
+        INFO(NonResonantTerms.size() + ResonantTerms.size()  << ", \ttols = " << std::setw(4)  
+             << std::max(MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1), MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1))
+             << " (coeff), " << ReduceResonanceTolerance << " (res)" );
     };
 
     Status = Computed;

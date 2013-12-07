@@ -35,5 +35,6 @@ Vertex4Test
 foreach (test ${tests})
     set(test_src ${test}.cpp)
     add_executable(${test} ${test_src})
-    add_test(${test} ${test})
+    set (test_parameters -np 1 "./${test}")
+    add_test(NAME ${test} COMMAND "mpirun" ${test_parameters})
 endforeach(test)
