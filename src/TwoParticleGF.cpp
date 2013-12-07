@@ -139,19 +139,27 @@ void TwoParticleGF::compute(const boost::mpi::communicator & comm)
     int comm_rank = comm.rank();
     if (Status >= Computed) return;
     if (Status < Prepared) { throw (exStatusMismatch()); };
-    if (comm_rank==0) { INFO("Calculating using " << comm_size << " procs."); };
+
+    std::map<size_t,int> jobs_dispatcher;
 
     if(!Vanishing){
+        if (comm_rank==0) { INFO("Calculating using " << comm_size << " procs."); };
         for (size_t p = 0; p<parts.size(); p++) {
+            jobs_dispatcher[p] = p%comm_size;
             if (comm_rank == p%comm_size) { 
                 std::cout << "["<<p+1<<"/"<<parts.size()<< "] Proc " << comm.rank() << " : " << std::flush;
                 parts[p]->compute(); 
+            };
+        };
+        
+        for (size_t p = 0; p<parts.size(); p++) {
+            if (comm_rank == jobs_dispatcher[p]) { 
                 boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, comm_rank);
                 boost::mpi::broadcast(comm, parts[p]->ResonantTerms, comm_rank);
                 }
             else {
-                boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, p%comm_size);
-                boost::mpi::broadcast(comm, parts[p]->ResonantTerms, p%comm_size);
+                boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, jobs_dispatcher[p]);
+                boost::mpi::broadcast(comm, parts[p]->ResonantTerms, jobs_dispatcher[p]);
                 parts[p]->Status = TwoParticleGFPart::Computed;
                  };
                 };
