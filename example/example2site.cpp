@@ -240,7 +240,7 @@ int main(int argc, char* argv[])
      * These values will be fast to retrieve. The other values are also 
      * accessible, but will require a short calculation to be done.
      */
-    GF.compute(10);
+    GF.compute();
 
     for(int n = 0; n<10; ++n) {
         INFO(n << " | " << GF(n));
@@ -250,8 +250,22 @@ int main(int argc, char* argv[])
      * it requires 4 operators to be provided though.
      */
     TwoParticleGF Chi(S,H,C,C,CX,CX,rho);
+    /* Some knobs to make calc faster - the larger the values of tolerances, the faster is calc, but rounding errors may show.
+       Typically these errors are less then 10^{-3} of the value. 
+       Here are some knobs that give very high-precision. If you want to make things faster, and when many values on 
+       different frequencies required - change ReduceResonanceTolerance to something like 10^-4. */
+    /** A difference in energies with magnitude less than this value is treated as zero. */
+    Chi.ReduceResonanceTolerance = 1e-8;
+    /** Minimal magnitude of the coefficient of a term to take it into account. */
+    Chi.CoefficientTolerance = 1e-16;
+    /** Knob that controls the caching frequency. */
+    Chi.ReduceInvocationThreshold = 1e5;
+    /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
+    Chi.MultiTermCoefficientTolerance = 1e-6;
+
     Chi.prepare();
-    Chi.compute(10);
+    Chi.compute();
+    
     int nm = 2;
     for(int n1 = -nm; n1<nm; ++n1)
         for(int n2 = -nm; n2<nm; ++n2)
