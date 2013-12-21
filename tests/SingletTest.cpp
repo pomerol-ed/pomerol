@@ -71,6 +71,8 @@ bool is_equal ( F1 x, F2 y, RealType tolerance = 1e-7)
 
 int main(int argc, char* argv[])
 {
+    boost::mpi::environment env(argc,argv);
+    boost::mpi::communicator world;
     Log.setDebugging(true);
     Lattice L;
     print_section("Kondo chain diagonalization");
@@ -133,7 +135,7 @@ int main(int argc, char* argv[])
     HamiltonianPart Hpart(IndexInfo, Storage, S, B);
     Hpart.prepare();
     INFO_NONEWLINE("Diagonalizing...");
-    Hpart.diagonalize();
+    Hpart.diagonalize(world);
     INFO("done.");
     size_t IndexSize = IndexInfo.getIndexSize();
     
@@ -184,7 +186,7 @@ int main(int argc, char* argv[])
 /*
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
-    H.diagonalize();
+    H.diagonalize(world);
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
     for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(H.getEigenValue(i)); 

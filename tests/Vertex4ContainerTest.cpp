@@ -108,6 +108,8 @@ ComplexType gamma4ref_udud(int n1, int n2, int n3)
 
 int main(int argc, char* argv[])
 {
+    boost::mpi::environment env(argc,argv);
+    boost::mpi::communicator world;
 
     U = 1.0;
 
@@ -131,7 +133,7 @@ int main(int argc, char* argv[])
 
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
-    H.diagonalize();
+    H.diagonalize(world);
 
     srand(time(NULL));
     beta = 40.0 ;//+ 10.0*RealType(rand())/RAND_MAX;

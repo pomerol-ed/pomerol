@@ -186,7 +186,7 @@ int main(int argc, char* argv[])
     // Enter all blocks of the Hamiltonian.
     H.prepare();
     // Diagonalize them.
-    H.diagonalize();
+    H.diagonalize(world);
     // Get ground energy.
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
@@ -271,12 +271,15 @@ int main(int argc, char* argv[])
 
     Chi.prepare();
     Chi.compute(world);
+
+    if (world.rank()==0) {
     int nm = 2;
     for(int n1 = -nm; n1<nm; ++n1)
         for(int n2 = -nm; n2<nm; ++n2)
             for(int n3 = -nm; n3<nm; ++n3){
                 INFO(n1 << " " << n2 << " " << n3 << "|" << Chi(n1,n2,n3));
                 };
+    };
 }
 
 void print_section (const std::string& str)

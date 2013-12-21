@@ -58,6 +58,9 @@ void print_section (const std::string& str)
 
 int main(int argc, char* argv[])
 {
+    boost::mpi::environment env(argc,argv);
+    boost::mpi::communicator world;
+
     Log.setDebugging(true);
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
@@ -99,7 +102,7 @@ int main(int argc, char* argv[])
 
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
-    H.diagonalize();
+    H.diagonalize(world);
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
     RealType beta = 10.0;

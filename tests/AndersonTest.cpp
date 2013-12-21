@@ -25,6 +25,9 @@ RealType epsilon = 2.3;
 
 int main(int argc, char* argv[])
 {
+    boost::mpi::environment env(argc,argv);
+    boost::mpi::communicator world;
+
     Log.setDebugging(true);
     Lattice L;
     // Correlated site
@@ -67,7 +70,7 @@ int main(int argc, char* argv[])
         INFO("");
     };
 
-    H.diagonalize();
+    H.diagonalize(world);
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();

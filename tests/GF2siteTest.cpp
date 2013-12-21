@@ -63,6 +63,9 @@ void print_section (const std::string& str)
 
 int main(int argc, char* argv[])
 {
+    boost::mpi::environment env(argc,argv);
+    boost::mpi::communicator world;
+
     Log.setDebugging(true);
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
@@ -116,7 +119,7 @@ int main(int argc, char* argv[])
     H.prepare();
     H.getPart(BlockNumber(4)).print_to_screen();
     H.getPart(BlockNumber(5)).print_to_screen();
-    H.diagonalize();
+    H.diagonalize(world);
     H.getPart(BlockNumber(4)).print_to_screen();
     H.getPart(BlockNumber(5)).print_to_screen();
     INFO("The value of ground energy is " << H.getGroundEnergy());

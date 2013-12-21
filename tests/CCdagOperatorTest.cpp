@@ -37,6 +37,8 @@ using namespace Pomerol;
 
 int main(int argc, char* argv[])
 {
+    boost::mpi::environment env(argc,argv);
+    boost::mpi::communicator world;
 
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));

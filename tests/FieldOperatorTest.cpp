@@ -42,6 +42,8 @@ using namespace Pomerol;
 
 int main(int argc, char* argv[])
 {
+    boost::mpi::environment env(argc,argv);
+    boost::mpi::communicator world;
 
     Log.setDebugging(false);
 
@@ -66,7 +68,7 @@ int main(int argc, char* argv[])
 
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
-    H.diagonalize();
+    H.diagonalize(world);
 
     ParticleIndex op_index=3;
     CreationOperator Cdag(IndexInfo, S, H, op_index);

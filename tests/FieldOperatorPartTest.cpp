@@ -43,6 +43,8 @@ using namespace Pomerol;
 
 int main(int argc, char* argv[])
 {
+    boost::mpi::environment env(argc,argv);
+    boost::mpi::communicator world;
 
     Log.setDebugging(true);
 

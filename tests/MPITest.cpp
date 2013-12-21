@@ -1,8 +1,8 @@
 #include <boost/mpi.hpp>
 
-int main()
+int main(int argc, char* argv[])
 {
-    boost::mpi::environment MpiEnv;
+    boost::mpi::environment env(argc,argv);
     boost::mpi::communicator world;
     return 0;
 } 
