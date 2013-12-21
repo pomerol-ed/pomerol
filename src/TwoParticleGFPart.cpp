@@ -44,8 +44,8 @@ inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter,
 // TwoParticleGFPart::NonResonantTerm
 //
 inline
-TwoParticleGFPart::NonResonantTerm::NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4, RealType ReduceResonanceTolerance) :
-Coeff(Coeff), isz4(isz4), ReduceResonanceTolerance(ReduceResonanceTolerance)
+TwoParticleGFPart::NonResonantTerm::NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4) :
+Coeff(Coeff), isz4(isz4)
 {
     Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight=1;
 }
@@ -62,7 +62,7 @@ TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator
 }
 
 inline
-bool TwoParticleGFPart::NonResonantTerm::isSimilarTo(const NonResonantTerm& AnotherTerm) const
+bool TwoParticleGFPart::NonResonantTerm::isSimilarTo(const NonResonantTerm& AnotherTerm, RealType ReduceResonanceTolerance) const
 {   
     return isz4 == AnotherTerm.isz4 && 
            (fabs(Poles[0] - AnotherTerm.Poles[0]) < ReduceResonanceTolerance) &&
@@ -75,9 +75,8 @@ bool TwoParticleGFPart::NonResonantTerm::isSimilarTo(const NonResonantTerm& Anot
 //
 inline
 TwoParticleGFPart::ResonantTerm::ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff,
-                                              RealType P1, RealType P2, RealType P3, bool isz1z2,
-                                              RealType KroneckerSymbolTolerance, RealType ReduceResonanceTolerance) : 
-ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), isz1z2(isz1z2), KroneckerSymbolTolerance(KroneckerSymbolTolerance), ReduceResonanceTolerance(ReduceResonanceTolerance)
+                                              RealType P1, RealType P2, RealType P3, bool isz1z2):
+ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), isz1z2(isz1z2)
 {
     Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight=1;
 }
@@ -95,7 +94,7 @@ TwoParticleGFPart::ResonantTerm& TwoParticleGFPart::ResonantTerm::operator+=(
 }
 
 inline
-bool TwoParticleGFPart::ResonantTerm::isSimilarTo(const ResonantTerm& AnotherTerm) const
+bool TwoParticleGFPart::ResonantTerm::isSimilarTo(const ResonantTerm& AnotherTerm, RealType ReduceResonanceTolerance) const
 {   
     return isz1z2 == AnotherTerm.isz1z2 &&
            (fabs(Poles[0] - AnotherTerm.Poles[0]) < ReduceResonanceTolerance) &&
@@ -245,7 +244,7 @@ void TwoParticleGFPart::reduceTerms(const RealType NonResonantTolerance, const R
         std::vector<NonResonantTerm>::iterator it2 = it1;
     //    DEBUG(++i << "/" << NonResonantTerms.size());
         for(it2++; it2 != NonResonantTerms.end();){
-            if(it1->isSimilarTo(*it2)){
+            if(it1->isSimilarTo(*it2, ReduceResonanceTolerance)){
                 *it1 += *it2;
                 it2 = NonResonantTerms.erase(it2);
             }else
@@ -262,7 +261,7 @@ void TwoParticleGFPart::reduceTerms(const RealType NonResonantTolerance, const R
     for(std::vector<ResonantTerm>::iterator it1 = ResonantTerms.begin(); it1 != ResonantTerms.end();){
         std::vector<ResonantTerm>::iterator it2 = it1;
         for(it2++; it2 != ResonantTerms.end();){
-            if(it1->isSimilarTo(*it2)){
+            if(it1->isSimilarTo(*it2, ReduceResonanceTolerance)){
                 *it1 += *it2;
                 it2 = ResonantTerms.erase(it2);
             }else
@@ -293,23 +292,23 @@ void TwoParticleGFPart::addMultiterm(ComplexType Coeff, RealType beta,
     ComplexType CoeffZ2 = -Coeff*(Wj + Wk);
     if(abs(CoeffZ2) > CoefficientTolerance)
         NonResonantTerms.push_back(
-            NonResonantTerm(CoeffZ2,P1,P2,P3,false,ReduceResonanceTolerance));
+            NonResonantTerm(CoeffZ2,P1,P2,P3,false));
     ComplexType CoeffZ4 = Coeff*(Wi + Wl);
     if(abs(CoeffZ4) > CoefficientTolerance)
         NonResonantTerms.push_back(
-            NonResonantTerm(CoeffZ4,P1,P2,P3,true,ReduceResonanceTolerance));
+            NonResonantTerm(CoeffZ4,P1,P2,P3,true));
 
     // Resonant part of the multiterm
     ComplexType CoeffZ1Z2Res = Coeff*beta*Wi;
     ComplexType CoeffZ1Z2NonRes = Coeff*(Wk - Wi);
     if(abs(CoeffZ1Z2Res) > CoefficientTolerance || abs(CoeffZ1Z2NonRes) > CoefficientTolerance)
         ResonantTerms.push_back(
-            ResonantTerm(CoeffZ1Z2Res,CoeffZ1Z2NonRes,P1,P2,P3,true,KroneckerSymbolTolerance,ReduceResonanceTolerance));   
+            ResonantTerm(CoeffZ1Z2Res,CoeffZ1Z2NonRes,P1,P2,P3,true));
     ComplexType CoeffZ2Z3Res = -Coeff*beta*Wj;
     ComplexType CoeffZ2Z3NonRes = Coeff*(Wj - Wl);
     if(abs(CoeffZ2Z3Res) > CoefficientTolerance || abs(CoeffZ2Z3NonRes) > CoefficientTolerance)
         ResonantTerms.push_back(
-            ResonantTerm(CoeffZ2Z3Res,CoeffZ2Z3NonRes,P1,P2,P3,false,KroneckerSymbolTolerance,ReduceResonanceTolerance));   
+            ResonantTerm(CoeffZ2Z3Res,CoeffZ2Z3NonRes,P1,P2,P3,false));
 }
 
 size_t TwoParticleGFPart::getNumNonResonantTerms() const
@@ -349,7 +348,7 @@ ComplexType TwoParticleGFPart::operator()(ComplexType z1, ComplexType z2, Comple
     for(std::vector<NonResonantTerm>::const_iterator pTerm = NonResonantTerms.begin(); pTerm != NonResonantTerms.end(); ++pTerm)
         Value += (*pTerm)(z1,z2,z3);
     for(std::vector<ResonantTerm>::const_iterator pTerm = ResonantTerms.begin(); pTerm != ResonantTerms.end(); ++pTerm)
-        Value += (*pTerm)(z1,z2,z3);
+        Value += (*pTerm)(z1,z2,z3,KroneckerSymbolTolerance);
 
     return Value;
 }
