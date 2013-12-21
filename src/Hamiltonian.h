@@ -69,7 +69,7 @@ public:
     ~Hamiltonian();
 
     void prepare();
-    void diagonalize(void);
+    void diagonalize(const boost::mpi::communicator & comm);
     void reduce(const RealType Cutoff);
 
     const HamiltonianPart& getPart(const QuantumNumbers &in) const;

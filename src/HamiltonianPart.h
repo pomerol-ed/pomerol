@@ -62,6 +62,8 @@ class HamiltonianPart : public HDF5Storable, public ComputableObject {
     /** A vector of eigenvalues of the HamiltonianPart. */
     RealVectorType Eigenvalues;      
 
+    friend class Hamiltonian;
+
 public:
 
     /** Constructor.

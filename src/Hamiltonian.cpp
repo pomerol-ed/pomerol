@@ -54,15 +54,44 @@ void Hamiltonian::prepare()
     Status = Prepared;
 }
 
-void Hamiltonian::diagonalize()
+void Hamiltonian::diagonalize(const boost::mpi::communicator & comm)
 {
     if (Status >= Diagonalized) return;
     BlockNumber NumberOfBlocks = parts.size();
+    comm.barrier();
+    int comm_size = comm.size(); 
+    int comm_rank = comm.rank();
+
+    std::map<size_t,int> jobs_dispatcher;
+    if (comm_rank==0) { INFO("Calculating using " << comm_size << " procs."); };
+    for (size_t p = 0; p<parts.size(); p++) {
+            jobs_dispatcher[p] = p%comm_size;
+            if (comm_rank == jobs_dispatcher[p]) { 
+                std::cout << "["<<p+1<<"/"<<parts.size()<< "] Proc " << comm.rank() << " : " << std::flush;
+                parts[p]->diagonalize(); 
+            };
+        };
+
+    for (size_t p = 0; p<parts.size(); p++) {
+            if (comm_rank == jobs_dispatcher[p]) { 
+                boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->H.rows()*parts[p]->H.cols(), comm_rank);
+                boost::mpi::broadcast(comm, parts[p]->Eigenvalues.data(), parts[p]->H.rows(), comm_rank);
+                }
+            else {
+                parts[p]->Eigenvalues.resize(parts[p]->H.rows());
+                boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->H.rows()*parts[p]->H.cols(), jobs_dispatcher[p]);
+                boost::mpi::broadcast(comm, parts[p]->Eigenvalues.data(), parts[p]->H.rows(), jobs_dispatcher[p]);
+                parts[p]->Status = HamiltonianPart::Diagonalized;
+                 };
+            };
+
+/*
     for (BlockNumber CurrentBlock=0; CurrentBlock<NumberOfBlocks; CurrentBlock++)
     {
 	    parts[CurrentBlock]->diagonalize();
 	    INFO("Hpart " << CurrentBlock << " (" << S.getQuantumNumbers(CurrentBlock) << ") is diagonalized.");
     }
+*/
     computeGroundEnergy();
     Status = Diagonalized;
 }
