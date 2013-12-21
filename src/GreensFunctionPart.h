@@ -70,7 +70,7 @@ class GreensFunctionPart : public Thermal
     std::list<Term> Terms;
 
     /** A matrix element with magnitude less than this value is treated as zero. */
-    static constexpr RealType MatrixElementTolerance = 1e-8;
+    const RealType MatrixElementTolerance = 1e-8;
 
 public:
 
@@ -102,12 +102,12 @@ public:
     * \param[in] Tolerance The tolerance for the terms cutoff.
     * \param[in] ResonantTerms The list of terms.
     */
-    static void reduceTerms(const RealType Tolerance, std::list<Term>& Terms);
+    void reduceTerms(const RealType Tolerance, std::list<Term>& Terms);
 
     /** A difference in energies with magnitude less than this value is treated as zero. */
-    static constexpr RealType ReduceResonanceTolerance = 1e-8;//1e-16;
+    const RealType ReduceResonanceTolerance = 1e-8;//1e-16;
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
-    static constexpr RealType ReduceTolerance = 1e-8;
+    const RealType ReduceTolerance = 1e-8;
 };
 
 /** Every term is a fraction \f$ \frac{R}{z - P} \f$. */
@@ -136,7 +136,7 @@ struct GreensFunctionPart::Term {
     /** Returns true if another term is similar to this
      * (sum of the terms is again a correct term).
     */
-    bool isSimilarTo(const Term& T) const;
+    bool isSimilarTo(const Term& T, RealType ReduceResonanceTolerance) const;
 };
 
 std::ostream& operator<< (std::ostream& out, const GreensFunctionPart::Term& T);

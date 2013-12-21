@@ -29,7 +29,8 @@
 
 namespace Pomerol{
 
-GreensFunctionPart::Term::Term(ComplexType Residue, RealType Pole) : Residue(Residue), Pole(Pole) {};
+GreensFunctionPart::Term::Term(ComplexType Residue, RealType Pole) : 
+    Residue(Residue), Pole(Pole) {};
 ComplexType GreensFunctionPart::Term::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
 
 inline
@@ -40,7 +41,7 @@ GreensFunctionPart::Term& GreensFunctionPart::Term::operator+=(const Term& Anoth
 }
 
 inline
-bool GreensFunctionPart::Term::isSimilarTo(const Term& AnotherTerm) const
+bool GreensFunctionPart::Term::isSimilarTo(const Term& AnotherTerm, RealType ReduceResonanceTolerance) const
 {
     return (fabs(Pole - AnotherTerm.Pole) < ReduceResonanceTolerance);
 }
@@ -111,7 +112,7 @@ void GreensFunctionPart::reduceTerms(const RealType Tolerance, std::list<Term> &
     for(std::list<Term>::iterator it1 = Terms.begin(); it1 != Terms.end();){
         std::list<Term>::iterator it2 = it1;
         for(it2++; it2 != Terms.end();){
-            if(it1->isSimilarTo(*it2)){
+            if(it1->isSimilarTo(*it2, ReduceResonanceTolerance)){
                 *it1 += *it2;
                 it2 = Terms.erase(it2);
             }else
