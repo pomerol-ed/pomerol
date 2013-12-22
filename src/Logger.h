@@ -60,7 +60,11 @@ std::ostream& info(void);
 std::ostream& error(void);
 
 #define MSG_PREFIX            __FILE__ << ":" << __LINE__ << ": "
+#ifndef NDEBUG
 #define DEBUG(MSG)            debug() << MSG_PREFIX << MSG << std::endl;
+#else
+#define DEBUG(MSG)            
+#endif
 #define INFO(MSG)             info() << MSG << std::endl;
 #define INFO_NONEWLINE(MSG)   info() << MSG << std::flush;
 #define ERROR(MSG)            error() << MSG_PREFIX << MSG << std::endl;
