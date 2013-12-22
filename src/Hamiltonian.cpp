@@ -20,6 +20,7 @@
 
 
 #include "Hamiltonian.h"
+#include "MPIDispatcher.h"
 
 #ifdef ENABLE_SAVE_PLAINTEXT
 #include<boost/filesystem.hpp>
@@ -61,6 +62,7 @@ void Hamiltonian::diagonalize(const boost::mpi::communicator & comm)
     comm.barrier();
     int comm_size = comm.size(); 
     int comm_rank = comm.rank();
+    enum class calc_status : int { free, busy };
 
     std::map<size_t,int> jobs_dispatcher;
     if (comm_rank==0) { INFO("Calculating using " << comm_size << " procs."); };
@@ -69,6 +71,7 @@ void Hamiltonian::diagonalize(const boost::mpi::communicator & comm)
             if (comm_rank == jobs_dispatcher[p]) { 
                 std::cout << "["<<p+1<<"/"<<parts.size()<< "] Proc " << comm.rank() << " : " << std::flush;
                 parts[p]->diagonalize(); 
+	            INFO("Hpart " << p << " (" << S.getQuantumNumbers(BlockNumber(p)) << ") is diagonalized.");
             };
         };
 
@@ -150,23 +153,6 @@ RealType Hamiltonian::getGroundEnergy() const
     return GroundEnergy;
 }
 
-void Hamiltonian::save(H5::CommonFG* RootGroup) const
-{
-    H5::Group HRootGroup(RootGroup->createGroup("Hamiltonian"));
-
-    HDF5Storage::saveReal(&HRootGroup,"GroundEnergy",GroundEnergy);
-
-    // Save parts
-    BlockNumber NumberOfBlocks = parts.size();
-    H5::Group PartsGroup = HRootGroup.createGroup("parts");
-    for(BlockNumber n = 0; n < NumberOfBlocks; n++){
-	std::stringstream nStr;
-	nStr << n;
-	H5::Group PartGroup = PartsGroup.createGroup(nStr.str().c_str());
-	parts[n]->save(&PartGroup);
-    }
-}
-
 #ifdef ENABLE_SAVE_PLAINTEXT
 bool Hamiltonian::savetxt(const boost::filesystem::path &path)
 {
@@ -181,24 +167,5 @@ bool Hamiltonian::savetxt(const boost::filesystem::path &path)
     return true;
 }
 #endif
-
-void Hamiltonian::load(const H5::CommonFG* RootGroup)
-{
-    H5::Group HRootGroup(RootGroup->openGroup("Hamiltonian"));  
-
-    GroundEnergy = HDF5Storage::loadReal(&HRootGroup,"GroundEnergy");
-
-    H5::Group PartsGroup = HRootGroup.openGroup("parts");
-    BlockNumber NumberOfBlocks = parts.size();
-    if(NumberOfBlocks != PartsGroup.getNumObjs())
-	throw(H5::GroupIException("Hamiltonian::load()","Inconsistent number of stored parts."));
-
-    for(BlockNumber n = 0; n < NumberOfBlocks; n++){
-	std::stringstream nStr;
-	nStr << n;
-	H5::Group PartGroup = PartsGroup.openGroup(nStr.str().c_str());
-	parts[n]->load(&PartGroup);
-    }
-}
 
 } // end of namespace Pomerol

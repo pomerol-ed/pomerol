@@ -161,33 +161,6 @@ bool HamiltonianPart::reduce(RealType ActualCutoff)
     else return false;
 }
 
-void HamiltonianPart::save(H5::CommonFG* RootGroup) const
-{
-    HDF5Storage::saveInt(RootGroup,"Block",Block);
-    HDF5Storage::saveRealVector(RootGroup,"V",Eigenvalues);
-    #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
-    HDF5Storage::saveMatrix(RootGroup,"H",H);
-    #else
-    HDF5Storage::saveRealMatrix(RootGroup,"H",H);
-    #endif
-}
- 
-void HamiltonianPart::load(const H5::CommonFG* RootGroup)
-{
-    int Block_temp = HDF5Storage::loadInt(RootGroup,"Block");
-    if(! (Block_temp == (int) Block))
-	    throw(H5::DataSetIException("HamiltonianPart::load()",
-				    "Data in the storage is for another set of quantum numbers."));
-    HDF5Storage::loadRealVector(RootGroup,"V",Eigenvalues);
-    #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
-    HDF5Storage::loadMatrix(RootGroup,"H",H);
-    #else
-    HDF5Storage::loadRealMatrix(RootGroup,"H",H);
-    #endif
-
-    Status = Diagonalized;
-}
-
 #ifdef ENABLE_SAVE_PLAINTEXT
 bool HamiltonianPart::savetxt(const boost::filesystem::path &path1)
 {

@@ -29,7 +29,6 @@
 #ifndef __INCLUDE_DENSITYMATRIX_H
 #define __INCLUDE_DENSITYMATRIX_H
 
-#include "HDF5Storage.h"
 #include "StatesClassification.h"
 #include "IndexClassification.h"
 #include "Hamiltonian.h"
@@ -43,7 +42,7 @@ namespace Pomerol{
  * the Hamiltonian and the parts of the density matrix itself, since the density matrix
  * is a function of \f$ \hat H \f$.
  */
-class DensityMatrix : public Thermal, public HDF5Storable, public ComputableObject
+class DensityMatrix : public Thermal, public ComputableObject
 {
     /** Computation statuses of the object. */
     enum {Constructed, Prepared, Computed};
@@ -91,9 +90,6 @@ public:
 
     /** Returns an averaged value of the double occupancy. */
     RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const;
-
-    void save(H5::CommonFG* RootGroup) const;
-    void load(const H5::CommonFG* RootGroup);
 };
 
 }; // end of namespace Pomerol

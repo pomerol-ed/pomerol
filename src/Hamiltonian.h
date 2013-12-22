@@ -30,7 +30,6 @@
 #define __INCLUDE_HAMILTONIAN_H
 #include "Misc.h"
 #include "Logger.h"
-#include "HDF5Storage.h"
 #include "IndexClassification.h"
 #include "IndexHamiltonian.h"
 #include "StatesClassification.h"
@@ -47,7 +46,7 @@ namespace Pomerol{
  * It provides eigenvalues and eigenfunctions of any of its parts once they are obtained within its parts. 
  * The diagonalization and entering routines are done inside of HamiltonianPart instances.
  */
-class Hamiltonian : public HDF5Storable, public ComputableObject
+class Hamiltonian : public ComputableObject
 {
     /** Statuses of the object */
     enum {Constructed, Prepared, Diagonalized};
@@ -77,9 +76,6 @@ public:
     RealType getEigenValue(unsigned long state) const;
     RealVectorType getEigenValues() const;
     RealType getGroundEnergy() const;
-
-    void save(H5::CommonFG* RootGroup) const;
-    void load(const H5::CommonFG* RootGroup);
 
     /** Save the data to the directory.
      * \param[in] path Path to the directory.

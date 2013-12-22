@@ -3,13 +3,14 @@ include_directories (.)
 set (pomerol_src Misc.cpp 
 	Lattice.h Lattice.cpp LatticePresets.h LatticePresets.cpp 
 	Logger.cpp Logger.h 
+    MPIDispatcher.h MPIDispatcher.cpp
 	Index.h Index.cpp 
 	IndexClassification.h IndexClassification.cpp 
 	Operator.h Operator.cpp OperatorPresets.h OperatorPresets.cpp 
 	IndexHamiltonian.h IndexHamiltonian.cpp 
 	Symmetrizer.h Symmetrizer.cpp 
 	StatesClassification.h StatesClassification.cpp 
-	HDF5Storage.h HDF5Storage.cpp 
+	#HDF5Storage.h HDF5Storage.cpp 
 	HamiltonianPart.cpp 
  	Hamiltonian.cpp 
 	Thermal.cpp Thermal.h 
@@ -30,7 +31,7 @@ target_link_libraries(pomerol
     ${Boost_LIBRARIES}
     ${PYTHON_LIBRARIES}
     ${MPI_CXX_LIBRARIES}
-    ${HDF5_LIBRARIES}
+    #${HDF5_LIBRARIES}
 )
 
 install(TARGETS pomerol

@@ -100,24 +100,4 @@ RealType DensityMatrixPart::getWeight(InnerQuantumState s) const
     return weights(s);
 }
 
-void DensityMatrixPart::save(H5::CommonFG* RootGroup) const
-{
-    HDF5Storage::saveReal(RootGroup,"beta",beta);
-    HDF5Storage::saveReal(RootGroup,"GroundEnergy",GroundEnergy);
-    HDF5Storage::saveReal(RootGroup,"Z_part",Z_part);
-    HDF5Storage::saveRealVector(RootGroup,"weights",weights);
-}
-
-void DensityMatrixPart::load(const H5::CommonFG* RootGroup)
-{
-    RealType newBeta = HDF5Storage::loadReal(RootGroup,"beta");
-    if(newBeta != beta)
-	throw(H5::DataSetIException("DensityMatrixPart::load()",
- 				     "Data in the storage is for another value of the temperature."));
-    
-    GroundEnergy = HDF5Storage::loadReal(RootGroup,"GroundEnergy");
-    Z_part = HDF5Storage::loadReal(RootGroup,"Z_part");
-    HDF5Storage::loadRealVector(RootGroup,"weights",weights);
-}
-
 } // end of namespace Pomerol

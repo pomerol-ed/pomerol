@@ -40,8 +40,8 @@ find_package (Boost COMPONENTS mpi serialization)
     message(STATUS "Boost includes: " ${Boost_INCLUDE_DIRS} )
     message(STATUS "Boost libs: " ${Boost_LIBRARIES} )
 
-find_package (HDF5 COMPONENTS CXX)
-    message(STATUS "HDF5 libs: " ${HDF5_LIBRARIES} )
+#find_package (HDF5 COMPONENTS CXX)
+#    message(STATUS "HDF5 libs: " ${HDF5_LIBRARIES} )
 
 find_package (Eigen3 3.1)
     message(STATUS "Eigen3 includes: " ${EIGEN3_INCLUDE_DIR} )
@@ -55,7 +55,7 @@ find_package (Eigen3 3.1)
 include_directories(
     ${Boost_INCLUDE_DIRS}
     ${MPI_CXX_INCLUDE_PATH}
-    ${HDF5_INCLUDE_DIR}
+    #${HDF5_INCLUDE_DIR}
     ${EIGEN3_INCLUDE_DIR}
     ${PYTHON_INCLUDE_DIRS}
     ./src

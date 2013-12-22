@@ -29,7 +29,6 @@
 #define __INCLUDE_HAMILTONIANPART_H
 
 #include "Misc.h"
-#include "HDF5Storage.h"
 #include "IndexClassification.h"
 #include "StatesClassification.h"
 
@@ -40,7 +39,7 @@
 namespace Pomerol{
 
 /** HamiltonianPart is a class, which stores and diagonalizes the block of the Hamiltonian, which corresponds to a set of given quantum numbers. */
-class HamiltonianPart : public HDF5Storable, public ComputableObject {
+class HamiltonianPart : public ComputableObject {
     /** Computation statuses of the object. */
     enum {Constructed, Prepared, Diagonalized};
 
@@ -118,11 +117,6 @@ public:
     #ifdef ENABLE_SAVE_PLAINTEXT
     bool savetxt(const boost::filesystem::path &path1);
     #endif
-    
-    /** Save the HamiltonianPart to the HDF5 group. */
-    void save(H5::CommonFG* RootGroup) const;
-    /** Load the HamiltonianPart from the HDF5 group. */
-    void load(const H5::CommonFG* RootGroup);
 };
 
 } // end of namespace Pomerol

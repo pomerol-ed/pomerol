@@ -28,7 +28,6 @@
 #ifndef __INCLUDE_DENSITYMATRIXPART_H
 #define __INCLUDE_DENSITYMATRIXPART_H
 
-#include "HDF5Storage.h"
 #include "Thermal.h"
 #include "HamiltonianPart.h"
 
@@ -40,7 +39,7 @@ namespace Pomerol{
  * block of the Hamiltonian.
  */
 
-class DensityMatrixPart : public HDF5Storable, public Thermal
+class DensityMatrixPart : public Thermal
 {
     /** A reference to a states classification object. */
     const StatesClassification& S;
@@ -93,9 +92,6 @@ public:
 
     /** Returns the partition function of this part. */
     RealType getPartialZ(void) const;
-
-    void save(H5::CommonFG* RootGroup) const;
-    void load(const H5::CommonFG* RootGroup);
 };
 
 } // end of namespace Pomerol
