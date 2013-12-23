@@ -34,10 +34,11 @@ FieldOperatorContainer::FieldOperatorContainer(IndexClassification &IndexInfo, S
     ComputableObject(), IndexInfo(IndexInfo), S(S), H(H), use_transpose(use_transpose)
 {}
 
-void FieldOperatorContainer::prepare()
+void FieldOperatorContainer::prepare(std::set<ParticleIndex> in)
 {
     if ( Status >= Prepared ) return;
-    for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); ++i)
+    if (in.size() == 0) for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); ++i) in.insert(i);
+    for (auto i : in)
         {
             CreationOperator *CX = new CreationOperator(IndexInfo, S,H,i);
             CX->prepare();

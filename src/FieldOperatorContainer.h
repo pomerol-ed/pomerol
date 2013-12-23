@@ -65,7 +65,7 @@ public:
     FieldOperatorContainer(IndexClassification &IndexInfo, StatesClassification &S, 
         const Hamiltonian &H, bool use_transpose = false);
 
-    void prepare();
+    void prepare(std::set<ParticleIndex> in = std::set<ParticleIndex>());
     void compute();
 
     /** Returns the CreationOperator for a given Index. Makes on-demand computation. */
