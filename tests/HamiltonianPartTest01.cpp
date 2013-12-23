@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
 
     Hpart.prepare();
     Hpart.print_to_screen();
-    Hpart.diagonalize();
+    Hpart.compute();
     Hpart.print_to_screen();
     RealVectorType E_calc = Hpart.getEigenValues();
     RealVectorType E_real(4);

@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
         INFO("");
     };
 
-    H.diagonalize(world);
+    H.compute(world);
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();

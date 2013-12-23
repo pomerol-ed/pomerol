@@ -66,9 +66,9 @@ void HamiltonianPart::prepare()
     Status = Prepared;
 }
 
-void HamiltonianPart::diagonalize()		//method of diagonalization classificated part of Hamiltonian
+void HamiltonianPart::compute()		//method of diagonalization classificated part of Hamiltonian
 {
-    if (Status >= Diagonalized) return;
+    if (Status >= Computed) return;
     if (H.rows() == 1) {
         #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
         assert (std::abs(H(0,0) - std::real(H(0,0))) < std::numeric_limits<RealType>::epsilon());
@@ -86,7 +86,7 @@ void HamiltonianPart::diagonalize()		//method of diagonalization classificated p
 	    H = Solver.eigenvectors();
 	    Eigenvalues = Solver.eigenvalues();	// eigenvectors are ready
     }
-    Status = Diagonalized;
+    Status = Computed;
 }
 
 
@@ -97,13 +97,13 @@ MelemType HamiltonianPart::getMatrixElement(InnerQuantumState m, InnerQuantumSta
 
 RealType HamiltonianPart::getEigenValue(InnerQuantumState state) const // return Eigenvalues(state)
 {
-    if ( Status < Diagonalized ) throw (exStatusMismatch());
+    if ( Status < Computed ) throw (exStatusMismatch());
     return Eigenvalues(state);
 }
 
 const RealVectorType& HamiltonianPart::getEigenValues() const
 {
-    if ( Status < Diagonalized ) throw (exStatusMismatch());
+    if ( Status < Computed ) throw (exStatusMismatch());
     return Eigenvalues;
 }
 
@@ -136,19 +136,19 @@ const MatrixType& HamiltonianPart::getMatrix() const
 
 VectorType HamiltonianPart::getEigenState(InnerQuantumState state) const
 {
-    if ( Status < Diagonalized ) throw (exStatusMismatch());
+    if ( Status < Computed ) throw (exStatusMismatch());
     return H.col(state);
 }
 
 RealType HamiltonianPart::getMinimumEigenvalue() const
 {
-    if ( Status < Diagonalized ) throw (exStatusMismatch());
+    if ( Status < Computed ) throw (exStatusMismatch());
     return Eigenvalues.minCoeff();
 }
 
 bool HamiltonianPart::reduce(RealType ActualCutoff)
 {
-    if ( Status < Diagonalized ) throw (exStatusMismatch());
+    if ( Status < Computed ) throw (exStatusMismatch());
     InnerQuantumState counter=0;
     for (counter=0; (counter< (unsigned int)Eigenvalues.size() && Eigenvalues[counter]<=ActualCutoff); ++counter){};
     std::cout << "Left " << counter << " eigenvalues : " << std::endl;
@@ -166,7 +166,7 @@ bool HamiltonianPart::savetxt(const boost::filesystem::path &path1)
 {
     boost::filesystem::create_directory(path1);
     boost::filesystem::fstream out;
-    if (Status >= Diagonalized) {
+    if (Status >= Computed) {
         out.open(path1 / boost::filesystem::path("evals.dat"),std::ios_base::out);
         out << Eigenvalues << std::endl;
         out.close();

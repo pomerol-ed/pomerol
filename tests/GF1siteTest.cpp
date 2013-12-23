@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
 
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
-    H.diagonalize(world);
+    H.compute(world);
  
     RealType beta = 10.0;
 

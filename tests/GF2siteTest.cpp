@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
     H.prepare();
     H.getPart(BlockNumber(4)).print_to_screen();
     H.getPart(BlockNumber(5)).print_to_screen();
-    H.diagonalize(world);
+    H.compute(world);
     H.getPart(BlockNumber(4)).print_to_screen();
     H.getPart(BlockNumber(5)).print_to_screen();
     INFO("The value of ground energy is " << H.getGroundEnergy());

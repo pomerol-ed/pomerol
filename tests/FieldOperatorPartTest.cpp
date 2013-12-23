@@ -77,12 +77,12 @@ int main(int argc, char* argv[])
 
     HamiltonianPart HpartRHS(Indices, Storage, S, test_block);
     HpartRHS.prepare();
-    HpartRHS.diagonalize();
+    HpartRHS.compute();
     HpartRHS.print_to_screen();
 
     HamiltonianPart HpartLHS(Indices, Storage, S, result_block);
     HpartLHS.prepare();
-    HpartLHS.diagonalize();
+    HpartLHS.compute();
     HpartLHS.print_to_screen();
 
     CreationOperatorPart Cdag1 (Indices, S, HpartRHS, HpartLHS, op_index); 

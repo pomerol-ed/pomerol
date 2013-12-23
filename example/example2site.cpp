@@ -184,7 +184,7 @@ int main(int argc, char* argv[])
     // Enter all blocks of the Hamiltonian.
     H.prepare();
     // Diagonalize them.
-    H.diagonalize(world);
+    H.compute(world);
     // Get ground energy.
     INFO("The value of ground energy is " << H.getGroundEnergy());
 

@@ -48,7 +48,7 @@ namespace Pomerol{
 class Hamiltonian : public ComputableObject
 {
     /** Statuses of the object */
-    enum {Constructed, Prepared, Diagonalized};
+    enum {Constructed, Prepared, Computed};
     /** Array of pointers to the Hamiltonian Parts */
     std::vector<std::unique_ptr<HamiltonianPart> > parts;
     /** A reference to the IndexClassification object. */
@@ -67,7 +67,7 @@ public:
     ~Hamiltonian();
 
     void prepare();
-    void diagonalize(const boost::mpi::communicator & comm);
+    void compute(const boost::mpi::communicator & comm);
     void reduce(const RealType Cutoff);
 
     const HamiltonianPart& getPart(const QuantumNumbers &in) const;

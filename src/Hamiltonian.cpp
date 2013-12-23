@@ -55,9 +55,9 @@ void Hamiltonian::prepare()
     Status = Prepared;
 }
 
-void Hamiltonian::diagonalize(const boost::mpi::communicator & comm)
+void Hamiltonian::compute(const boost::mpi::communicator & comm)
 {
-    if (Status >= Diagonalized) return;
+    if (Status >= Computed) return;
     BlockNumber NumberOfBlocks = parts.size();
     int rank = comm.rank();
     comm.barrier();
@@ -88,7 +88,7 @@ void Hamiltonian::diagonalize(const boost::mpi::communicator & comm)
             auto p = worker.current_job;
             std::cout << "["<<p+1<<"/"<<parts.size()<< "] P " << comm.rank() << " : Hpart " << p << " [" << parts[p]->getSize()
                       << "x" << parts[p]->getSize() << "] diag ... " << std::flush;
-            parts[p]->diagonalize(); 
+            parts[p]->compute(); 
             worker.report_job_done(); 
 	        INFO("done.");
         };
@@ -122,7 +122,7 @@ void Hamiltonian::diagonalize(const boost::mpi::communicator & comm)
     comm.barrier();
     for (size_t p = 0; p<parts.size(); p++) {
             if (rank == job_map[p]){
-                if (parts[p]->Status != HamiltonianPart::Diagonalized) { 
+                if (parts[p]->Status != HamiltonianPart::Computed) { 
                     ERROR ("Worker" << rank << " didn't calculate part" << p); 
                     throw (std::logic_error("Worker didn't calculate this part."));
                     };
@@ -133,18 +133,18 @@ void Hamiltonian::diagonalize(const boost::mpi::communicator & comm)
                 parts[p]->Eigenvalues.resize(parts[p]->H.rows());
                 boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->H.rows()*parts[p]->H.cols(), job_map[p]);
                 boost::mpi::broadcast(comm, parts[p]->Eigenvalues.data(), parts[p]->H.rows(), job_map[p]);
-                parts[p]->Status = HamiltonianPart::Diagonalized;
+                parts[p]->Status = HamiltonianPart::Computed;
                  };
             };
 /*
     for (BlockNumber CurrentBlock=0; CurrentBlock<NumberOfBlocks; CurrentBlock++)
     {
-	    parts[CurrentBlock]->diagonalize();
+	    parts[CurrentBlock]->compute();
 	    INFO("Hpart " << CurrentBlock << " (" << S.getQuantumNumbers(CurrentBlock) << ") is diagonalized.");
     }
 */
     computeGroundEnergy();
-    Status = Diagonalized;
+    Status = Computed;
 }
 
 void Hamiltonian::reduce(const RealType Cutoff)

@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
-    H.diagonalize(world);
+    H.compute(world);
 
     ParticleIndex op_index=3;
     CreationOperator Cdag(IndexInfo, S, H, op_index);

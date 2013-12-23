@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
     HamiltonianPart Hpart(IndexInfo, Storage, S, B);
     Hpart.prepare();
     INFO_NONEWLINE("Diagonalizing...");
-    Hpart.diagonalize(world);
+    Hpart.compute(world);
     INFO("done.");
     size_t IndexSize = IndexInfo.getIndexSize();
     
@@ -185,7 +185,7 @@ int main(int argc, char* argv[])
 /*
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
-    H.diagonalize(world);
+    H.compute(world);
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
     for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(H.getEigenValue(i)); 

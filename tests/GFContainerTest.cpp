@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
 
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
-    H.diagonalize(world);
+    H.compute(world);
  
     srand (time(NULL));
     RealType beta = 10.0 + 10.0*RealType(rand())/RAND_MAX;
