@@ -1,7 +1,30 @@
 include_directories (. ../src)
 enable_testing()
 
-# Here all the tests are set. The source is file is assumed to be ${test}.cpp
+# MPI tests. Do not link to pomerol
+set (mpi_tests
+MPIBasicTest
+MPIDispatcherTest
+)
+
+foreach (test ${mpi_tests})
+    set(test_src ${test}.cpp)
+    add_executable(${test} ${test_src} ../src/MPIDispatcher.cpp)
+    target_link_libraries(${test} 
+        ${Boost_LIBRARIES}
+        ${MPI_CXX_LIBRARIES}
+    )
+endforeach(test)
+
+foreach (np 1 2 4 8 16)
+foreach (test ${mpi_tests})
+    set (test_parameters -np ${np} "./${test}")
+    add_test(NAME ${test}${np}cpu COMMAND "${MPIEXEC}" ${test_parameters})
+endforeach(test)
+endforeach(np)
+
+
+# Pomerol tests
 set (tests 
 OperatorTest
 IndexPermutationTest 
@@ -36,25 +59,4 @@ foreach (test ${tests})
     )
 endforeach(test)
 
-set (mpi_tests
-MPIBasicTest
-MPIDispatcherTest
-)
-
-foreach (test ${mpi_tests})
-    set(test_src ${test}.cpp)
-    add_executable(${test} ${test_src})
-    target_link_libraries(${test} 
-        ${Boost_LIBRARIES}
-        ${MPI_CXX_LIBRARIES}
-        pomerol
-    )
-endforeach(test)
-
-foreach (np 1 2 4 8 16)
-foreach (test ${mpi_tests})
-    set (test_parameters -np ${np} "./${test}")
-    add_test(NAME ${test}${np}cpu COMMAND "${MPIEXEC}" ${test_parameters})
-endforeach(test)
-endforeach(np)
 
