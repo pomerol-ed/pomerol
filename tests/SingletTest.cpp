@@ -198,7 +198,7 @@ int main(int argc, char* argv[])
     for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i)); 
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepare();
+    Operators.prepareAll();
 
     auto c_map=Operators.getCreationOperator(0).getNonTrivialIndices();
     for (auto c_map_it=c_map.begin(); c_map_it!=c_map.end(); c_map_it++)

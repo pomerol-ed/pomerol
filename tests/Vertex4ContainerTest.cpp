@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
     rho.compute();
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepare();
+    Operators.prepareAll();
 
     size_t nm = 10;
 

@@ -131,8 +131,8 @@ int main(int argc, char* argv[])
     for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i)); 
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepare();
-    Operators.compute();
+    Operators.prepareAll();
+    Operators.computeAll();
     
     ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
 

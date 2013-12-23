@@ -40,7 +40,7 @@ namespace Pomerol{
  * rotated to eigenvector basis of Hamiltonian H ) for a given Index.
  * If no field operator is yet initialized then calculation of the field operator is done.
  */
-class FieldOperatorContainer : public ComputableObject
+class FieldOperatorContainer 
 {
 private:
     /** A reference to a IndexClassification object in order to check the input indices. */
@@ -65,8 +65,8 @@ public:
     FieldOperatorContainer(IndexClassification &IndexInfo, StatesClassification &S, 
         const Hamiltonian &H, bool use_transpose = false);
 
-    void prepare(std::set<ParticleIndex> in = std::set<ParticleIndex>());
-    void compute();
+    void prepareAll(std::set<ParticleIndex> in = std::set<ParticleIndex>());
+    void computeAll();
 
     /** Returns the CreationOperator for a given Index. Makes on-demand computation. */
     const CreationOperator& getCreationOperator(ParticleIndex in) const;

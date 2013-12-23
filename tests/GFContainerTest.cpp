@@ -99,8 +99,8 @@ int main(int argc, char* argv[])
     rho.compute();
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepare();
-    Operators.compute();
+    Operators.prepareAll();
+    Operators.computeAll();
 
     GFContainer G(IndexInfo,S,H,rho,Operators);
 

@@ -144,8 +144,8 @@ int main(int argc, char* argv[])
     rho.compute();
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepare();
-    Operators.compute();
+    Operators.prepareAll();
+    Operators.computeAll();
 
 
     GreensFunction GF(S,H,Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), rho);

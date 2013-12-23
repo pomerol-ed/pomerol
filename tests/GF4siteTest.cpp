@@ -112,8 +112,8 @@ int main(int argc, char* argv[])
     for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i)); 
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepare();
-    Operators.compute();
+    Operators.prepareAll();
+    Operators.computeAll();
 
     FieldOperator::BlocksBimap c_map = Operators.getCreationOperator(0).getBlockMapping();
     for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)

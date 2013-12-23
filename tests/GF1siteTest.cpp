@@ -115,8 +115,8 @@ int main(int argc, char* argv[])
     rho.compute();
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepare();
-    Operators.compute();
+    Operators.prepareAll();
+    Operators.computeAll();
 
     ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
     

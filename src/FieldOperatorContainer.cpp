@@ -31,55 +31,45 @@
 namespace Pomerol{
 
 FieldOperatorContainer::FieldOperatorContainer(IndexClassification &IndexInfo, StatesClassification &S, const Hamiltonian &H, bool use_transpose) : 
-    ComputableObject(), IndexInfo(IndexInfo), S(S), H(H), use_transpose(use_transpose)
+    IndexInfo(IndexInfo), S(S), H(H), use_transpose(use_transpose)
 {}
 
-void FieldOperatorContainer::prepare(std::set<ParticleIndex> in)
+void FieldOperatorContainer::prepareAll(std::set<ParticleIndex> in)
 {
-    if ( Status >= Prepared ) return;
     if (in.size() == 0) for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); ++i) in.insert(i);
     for (auto i : in)
         {
             CreationOperator *CX = new CreationOperator(IndexInfo, S,H,i);
             CX->prepare();
             mapCreationOperators[i] = CX;
-            //if (!use_transpose) {
             AnnihilationOperator *C = new AnnihilationOperator(IndexInfo, S,H,i);
             C->prepare();
             mapAnnihilationOperators[i] = C;
-           //     }
         }
-
-    Status = Prepared;
 }
 
-void FieldOperatorContainer::compute()
+void FieldOperatorContainer::computeAll()
 {
-    if ( Status >= Computed ) return;
-    for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); ++i) { 
-        mapCreationOperators[i]->compute();
-        mapAnnihilationOperators[i]->compute();
-    };
+    for (auto cdag : mapCreationOperators) cdag.second->compute();
+    for (auto c : mapAnnihilationOperators) c.second->compute();
 }
 
 const CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleIndex in) const
 {
-    if (Status<Prepared) { ERROR("GFContainer needs to be prepared."); throw (exStatusMismatch()); }
     if (IndexInfo.checkIndex(in)){
         return *mapCreationOperators[in];
         }
     else
-        assert(0);
+        throw (std::logic_error("No creation operator found."));
 }
 
 const AnnihilationOperator& FieldOperatorContainer::getAnnihilationOperator(ParticleIndex in) const
 {
-    if (Status<Prepared) { ERROR("GFContainer needs to be prepared."); throw (exStatusMismatch()); }
     if (IndexInfo.checkIndex(in)){
         return *mapAnnihilationOperators[in];
         }
     else
-        assert(0);
+        throw (std::logic_error("No annihilation operator found."));
 }
 
 } // end of namespace Pomerol
