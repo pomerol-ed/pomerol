@@ -55,8 +55,6 @@ int main(int argc, char* argv[])
     boost::mpi::environment MpiEnv(argc, argv);
     world = boost::mpi::communicator();
 
-    Log.setDebugging(true); // Auxiliary: provides debugging information
-    
     /* As pomerol is an ED code, it requires a finite-size lattice to be
      * provided. Here is an example of a lattice of 2 sites. */
     // First, we construct an empty lattice

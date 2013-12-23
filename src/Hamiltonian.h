@@ -29,7 +29,6 @@
 #ifndef __INCLUDE_HAMILTONIAN_H
 #define __INCLUDE_HAMILTONIAN_H
 #include "Misc.h"
-#include "Logger.h"
 #include "IndexClassification.h"
 #include "IndexHamiltonian.h"
 #include "StatesClassification.h"

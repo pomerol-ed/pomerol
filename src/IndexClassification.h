@@ -29,7 +29,6 @@
 #define __INCLUDE_INDEXCLASSIFICATION_H
 
 #include"Misc.h"
-#include"Logger.h"
 #include"Lattice.h"
 #include"Index.h"
 

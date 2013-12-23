@@ -33,7 +33,6 @@
 
 #include"Misc.h"
 #include"ComputableObject.h"
-#include"Logger.h"
 #include"StatesClassification.h"
 #include"FieldOperator.h"
 #include"DensityMatrix.h"

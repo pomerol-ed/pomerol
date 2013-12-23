@@ -25,7 +25,6 @@
 */
 
 #include "Misc.h"
-#include "Logger.h"
 #include "Lattice.h"
 #include "LatticePresets.h"
 #include "Index.h"
@@ -36,7 +35,6 @@
 #include "Symmetrizer.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
-#include "Logger.h"
 #include <boost/shared_ptr.hpp>
 
 using namespace Pomerol;
@@ -46,7 +44,7 @@ int main(int argc, char* argv[])
     boost::mpi::environment env(argc,argv);
     boost::mpi::communicator world;
 
-    Log.setDebugging(false);
+    
 
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));

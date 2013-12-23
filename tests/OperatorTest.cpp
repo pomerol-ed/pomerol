@@ -25,7 +25,6 @@
 */
 
 #include "Misc.h"
-#include "Logger.h"
 #include "Index.h"
 #include "IndexClassification.h"
 #include "Operator.h"
@@ -38,7 +37,7 @@ using namespace Pomerol::OperatorPresets;
 int main(int argc, char* argv[])
 {
   /* Test of Operator::Term*/
-  Log.setDebugging(true);
+  
   Operator IT1 = Cdag(0)*C(0)*Cdag(1)*C(1); 
   INFO("Created Operator " << IT1);
 

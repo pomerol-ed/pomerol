@@ -25,7 +25,6 @@
 */
 
 #include "Misc.h"
-#include "Logger.h"
 #include "Lattice.h"
 #include "LatticePresets.h"
 #include "Index.h"
@@ -61,7 +60,7 @@ int main(int argc, char* argv[])
     boost::mpi::environment env(argc,argv);
     boost::mpi::communicator world;
 
-    Log.setDebugging(true);
+    
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
     LatticePresets::addCoulombS(&L, "A", 1.0, -0.5);

@@ -25,12 +25,10 @@
 */
 
 #include "Misc.h"
-#include "Logger.h"
 #include "Index.h"
 #include "IndexClassification.h"
 #include "Operator.h"
 #include "OperatorPresets.h"
-#include "Logger.h"
 #include <boost/shared_ptr.hpp>
 
 using namespace Pomerol;

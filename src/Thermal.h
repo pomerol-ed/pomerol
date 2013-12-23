@@ -28,7 +28,6 @@
 #define __INCLUDE_THERMAL_H
 
 #include "Misc.h"
-#include "HDF5Storage.h"
 
 namespace Pomerol{
 

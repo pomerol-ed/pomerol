@@ -31,7 +31,6 @@
 #define __INCLUDE_STATESCLASSIFICATION_H
 
 #include "Misc.h"
-#include "HDF5Storage.h"
 #include "Index.h"
 #include "IndexClassification.h"
 #include "Operator.h"

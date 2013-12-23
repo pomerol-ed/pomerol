@@ -15,7 +15,7 @@ void dumb_task(double seconds) {
 
 int main(int argc, char* argv[])
 {
-    Log.setDebugging(true);
+    
     boost::mpi::environment env(argc,argv);
     boost::mpi::communicator world;
 

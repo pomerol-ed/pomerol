@@ -29,7 +29,6 @@
 #define __INCLUDE_LATTICE_SITES_PRESETS_H
 
 #include "Misc.h"
-#include "Logger.h"
 #include "Lattice.h"
 
 namespace Pomerol{

@@ -29,7 +29,6 @@
 #define __INCLUDE_VERTEX4_H
 
 #include"Misc.h"
-#include"Logger.h"
 #include"GFContainer.h"
 #include"TwoParticleGFContainer.h"
 #include"MatsubaraContainers.h"

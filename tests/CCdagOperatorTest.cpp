@@ -25,12 +25,10 @@
 */
 
 #include "Misc.h"
-#include "Logger.h"
 #include "Index.h"
 #include "IndexClassification.h"
 #include "Operator.h"
 #include "OperatorPresets.h"
-#include "Logger.h"
 #include <boost/shared_ptr.hpp>
 
 using namespace Pomerol;
@@ -44,7 +42,7 @@ int main(int argc, char* argv[])
     L.addSite(new Lattice::Site("A",1,2));
     L.addSite(new Lattice::Site("B",1,2));
     L.addSite(new Lattice::Site("C",1,2));
-    Log.setDebugging(true);
+    
 
     IndexClassification Indices(L.getSiteMap());
     Indices.prepare();

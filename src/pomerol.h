@@ -30,7 +30,6 @@
 #define __INCLUDE_POMEROL_H_19f82k
 
 #include "Misc.h"
-#include "Logger.h"
 #include "Lattice.h"
 #include "LatticePresets.h"
 #include "Index.h"

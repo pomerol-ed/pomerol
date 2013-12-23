@@ -7,7 +7,7 @@ using namespace Pomerol::MPI;
 
 int main(int argc, char* argv[])
 {
-    Log.setDebugging(true);
+    
     boost::mpi::environment env(argc,argv);
     boost::mpi::communicator world;
 

@@ -33,7 +33,6 @@
 #include <stack>
 
 #include "Misc.h"
-#include "Logger.h"
 
 namespace Pomerol {
 

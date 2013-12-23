@@ -25,7 +25,6 @@
 */
 
 #include "Misc.h"
-#include "Logger.h"
 #include "Lattice.h"
 #include "LatticePresets.h"
 #include "Index.h"
@@ -113,7 +112,7 @@ int main(int argc, char* argv[])
 
     U = 1.0;
 
-    Log.setDebugging(true);
+    
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
     LatticePresets::addCoulombS(&L, "A", U, -U/2.);

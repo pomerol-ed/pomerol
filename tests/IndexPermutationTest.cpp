@@ -25,7 +25,6 @@
 */
 
 #include "Misc.h"
-#include "Logger.h"
 #include "Index.h"
 #include "IndexClassification.h"
 #include "IndexHamiltonian.h"

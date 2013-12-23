@@ -1,5 +1,4 @@
 #include <Misc.h>
-#include <Logger.h>
 #include <Lattice.h>
 #include <LatticePresets.h>
 #include <Index.h>
@@ -28,7 +27,7 @@ int main(int argc, char* argv[])
     boost::mpi::environment env(argc,argv);
     boost::mpi::communicator world;
 
-    Log.setDebugging(true);
+    
     Lattice L;
     // Correlated site
     L.addSite(new Lattice::Site("C",1,2));

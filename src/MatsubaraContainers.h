@@ -28,7 +28,6 @@
 #define __INCLUDE_MATSUBARACONTAINERS_H 
 
 #include"Misc.h"
-#include"Logger.h"
 
 namespace Pomerol{
 
