@@ -50,7 +50,7 @@ class Hamiltonian : public ComputableObject
     /** Statuses of the object */
     enum {Constructed, Prepared, Diagonalized};
     /** Array of pointers to the Hamiltonian Parts */
-    std::vector<boost::shared_ptr<HamiltonianPart> > parts;
+    std::vector<std::unique_ptr<HamiltonianPart> > parts;
     /** A reference to the IndexClassification object. */
     const IndexClassification &IndexInfo;
     /** A reference to the IndexHamiltonian object. */

@@ -34,7 +34,7 @@ Hamiltonian::Hamiltonian(const IndexClassification &IndexInfo, const IndexHamilt
 
 Hamiltonian::~Hamiltonian()
 {
-    for(std::vector<boost::shared_ptr<HamiltonianPart> >::iterator iter = parts.begin(); iter != parts.end(); iter++)
+    for(std::vector<std::unique_ptr<HamiltonianPart> >::iterator iter = parts.begin(); iter != parts.end(); iter++)
 	    iter->reset();
 }
 
@@ -47,7 +47,7 @@ void Hamiltonian::prepare()
 
     for (BlockNumber CurrentBlock = 0; CurrentBlock < NumberOfBlocks; CurrentBlock++)
     {
-	    parts[CurrentBlock] =  boost::make_shared<HamiltonianPart>(HamiltonianPart(IndexInfo,F, S, CurrentBlock));
+	    parts[CurrentBlock].reset(new HamiltonianPart(IndexInfo,F, S, CurrentBlock));
 	    parts[CurrentBlock]->prepare();
 	    INFO_NONEWLINE("Hpart " << CurrentBlock << " (" << S.getQuantumNumbers(CurrentBlock) << ") is entered. ");
         INFO("Size = " << S.getBlockSize(CurrentBlock));
@@ -72,7 +72,8 @@ void Hamiltonian::diagonalize(const boost::mpi::communicator & comm)
         std::vector<MPI::JobId> job_order(parts.size());
         for (size_t i=0; i<job_order.size(); i++) job_order[i] = i;
         //for (auto x : job_order) std::cout << x << " " << std::flush; std::cout << std::endl;
-        std::sort(job_order.begin(), job_order.end(), [&](MPI::JobId l, MPI::JobId r){return parts[l]->getSize() >= parts[r]->getSize();});
+        #warning fixme
+        //std::sort(job_order.begin(), job_order.end(), [&](MPI::JobId &l, const MPI::JobId &r){DEBUG(l << " " << r); return parts[l]->getSize() >= parts[r]->getSize();});
         //for (auto x : job_order) std::cout << x << " " << std::flush; std::cout << std::endl;
         disp.reset(new MPI::MPIMaster(comm,parts.size(),job_order,true)); 
         disp->order();
@@ -85,10 +86,11 @@ void Hamiltonian::diagonalize(const boost::mpi::communicator & comm)
         worker.receive_order(); 
         if (worker.is_working()) { // for a specific worker
             auto p = worker.current_job;
-            std::cout << "["<<p+1<<"/"<<parts.size()<< "] Proc " << comm.rank() << " : " << std::flush;
+            std::cout << "["<<p+1<<"/"<<parts.size()<< "] P " << comm.rank() << " : Hpart " << p << " [" << parts[p]->getSize()
+                      << "x" << parts[p]->getSize() << "] diag ... " << std::flush;
             parts[p]->diagonalize(); 
             worker.report_job_done(); 
-	        INFO("Hpart " << p << " (" << S.getQuantumNumbers(BlockNumber(p)) << ") is diagonalized.");
+	        INFO("done.");
         };
         if (rank == ROOT) disp->check_workers(); // check if there are free workers 
     };
