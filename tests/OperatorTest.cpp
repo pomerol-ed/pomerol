@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
    result = out.begin()->second;
    INFO ( IT3 << "|" << a1 << "> =" << result << "|" << res_state << ">");
    if (result != MelemType(1)) return EXIT_FAILURE;
-   if (res_state == ERROR_FOCK_STATE) DEBUG("Term vanishes")
+   if (res_state == ERROR_FOCK_STATE) DEBUG("Term vanishes");
 
    INFO(IT3 << "*" << IT2 << " = " << IT3*IT2);
    INFO(IT2 << "*" << IT3 << " = " << IT2*IT3);

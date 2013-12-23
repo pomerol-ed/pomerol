@@ -65,7 +65,7 @@ ComplexType MatsubaraContainer1<SourceObject>::operator()(long MatsubaraNumber) 
               "cache miss for n = " << MatsubaraNumber <<
               " (NumberOfMatsubaras = " << NumberOfMatsubaras <<
               "), fetching a raw value from " << pSource
-        )
+        );
         return pSource->value(MatsubaraNumber);
     }
 }
@@ -162,7 +162,7 @@ ComplexType MatsubaraContainer4<SourceObject>::operator()(long MatsubaraNumber1,
           "n3 = " << MatsubaraNumber3 <<
           " (NumberOfMatsubaras = " << NumberOfMatsubaras <<
           "), fetching a raw value from " << pSource
-        )
+        );
 
     return pSource->value(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
 }

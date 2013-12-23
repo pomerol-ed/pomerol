@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
     IndexHamiltonian Storage(&L,IndexInfo);
     Storage.prepare();
     INFO("Terms");
-    INFO(Storage)
+    INFO(Storage);
     
     ParticleIndex IndexSize = IndexInfo.getIndexSize();
     OperatorPresets::Sz Sz(IndexSize, SpinUpIndices);

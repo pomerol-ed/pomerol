@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
     Storage.prepare();
     // Print out the Hamiltonian.
     INFO("Terms");
-    INFO(Storage)
+    INFO(Storage);
 
     // Let us make a test, that our Hamiltonian commutes with an operator, that
     // represents the total number of particles. The preset for such operator is

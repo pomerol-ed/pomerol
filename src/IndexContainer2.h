@@ -126,7 +126,7 @@ ElementType& IndexContainer2<ElementType,SourceObject>::operator()(const IndexCo
               "cache miss for Index1=" << Indices.Index1 <<
               ", Index2=" << Indices.Index2 <<
               "; add a new element to the container using source " << pSource
-        )
+        );
         return set(Indices);
     }
     return *(iter->second);

@@ -227,7 +227,7 @@ ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::ope
               ", Index3=" << Indices.Index3 <<
               ", Index4=" << Indices.Index4 <<
               "; add a new element to the container using source " << pSource
-        )
+        );
         return set(Indices);
     }else
         return iter->second;

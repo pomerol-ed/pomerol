@@ -67,13 +67,13 @@ namespace Pomerol{
 
 #define MSG_PREFIX            __FILE__ << ":" << __LINE__ << ": "
 #ifndef NDEBUG
-#define DEBUG(MSG)            std::cout << MSG_PREFIX << MSG << std::endl;
+#define DEBUG(MSG)            std::cout << MSG_PREFIX << MSG << std::endl
 #else
-#define DEBUG(MSG)            NULL 
+#define DEBUG(MSG)            NULL; 
 #endif
-#define INFO(MSG)             std::cout << MSG << std::endl;
-#define INFO_NONEWLINE(MSG)   std::cout << MSG << std::flush;
-#define ERROR(MSG)            std::cerr << MSG_PREFIX << MSG << std::endl;
+#define INFO(MSG)             std::cout << MSG << std::endl
+#define INFO_NONEWLINE(MSG)   std::cout << MSG << std::flush
+#define ERROR(MSG)            std::cerr << MSG_PREFIX << MSG << std::endl
 
 /** Real floating point type. */
 typedef double RealType;

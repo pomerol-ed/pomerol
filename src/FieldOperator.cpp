@@ -72,7 +72,7 @@ void FieldOperator::compute(void)
 {
     if (Status >= Computed) return;
     size_t Size = parts.size();
-    INFO_NONEWLINE("Computing " << *O << " in eigenbasis of the Hamiltonian: ")
+    INFO_NONEWLINE("Computing " << *O << " in eigenbasis of the Hamiltonian: ");
     for (size_t BlockIn = 0; BlockIn < Size; BlockIn++){
         INFO_NONEWLINE( (int) ((1.0*BlockIn/Size) * 100 ) << "  " << std::flush);
         parts[BlockIn]->compute();
