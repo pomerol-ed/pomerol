@@ -29,7 +29,7 @@
 namespace Pomerol{
 
 Hamiltonian::Hamiltonian(const IndexClassification &IndexInfo, const IndexHamiltonian& F, const StatesClassification &S):
-    ComputableObject(Constructed), IndexInfo(IndexInfo), F(F), S(S)
+    ComputableObject(), IndexInfo(IndexInfo), F(F), S(S)
 {}
 
 Hamiltonian::~Hamiltonian()

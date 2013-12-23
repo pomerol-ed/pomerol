@@ -37,8 +37,6 @@ namespace Pomerol{
 
 class Vertex4 : public Thermal, public ComputableObject {
 
-    enum {Constructed,Computed};
-
     TwoParticleGF &Chi4;
     GreensFunction &G13;
     GreensFunction &G24;

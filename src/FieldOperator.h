@@ -56,8 +56,6 @@ public:
     typedef BlocksBimap::value_type BlockMapping;
     
 protected:
-    /** Computation statuses of the object. */
-    enum {Constructed, Prepared, Computed};
     /** A reference to a IndexClassification object */
     const IndexClassification &IndexInfo;
     /** A reference to a StatesClassification object */

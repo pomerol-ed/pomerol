@@ -51,8 +51,6 @@ public:
     static const DynamicIndexCombination& generateTrivialCombination(ParticleIndex N);
     /** This class represents a set of conserved quantum numbers. It is accompanied by a list of operators which should act on the state. */
     struct QuantumNumbers;
-    /** Statuses of the object */
-    enum {Constructed,Computed};
 private:
     /** A link to an IndexClassification object. */ 
     const IndexClassification &IndexInfo;

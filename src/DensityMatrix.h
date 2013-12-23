@@ -44,8 +44,6 @@ namespace Pomerol{
  */
 class DensityMatrix : public Thermal, public ComputableObject
 {
-    /** Computation statuses of the object. */
-    enum {Constructed, Prepared, Computed};
     /** A reference to a states classification object. */
     const StatesClassification& S;
     /** A reference to a Hamiltonian defining the grand canonical ensemble. */

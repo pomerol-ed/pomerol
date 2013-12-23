@@ -54,8 +54,6 @@ namespace Pomerol{
  */
 class GreensFunction : public Thermal, public ComputableObject {
 
-    enum {Constructed,Prepared,Computed};
-
     /** A reference to a states classification object. */
     const StatesClassification& S;
     /** A reference to a Hamiltonian. */

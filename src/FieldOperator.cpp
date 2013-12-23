@@ -23,7 +23,7 @@
 
 namespace Pomerol{
 FieldOperator::FieldOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index) :
-    ComputableObject(Constructed), IndexInfo(IndexInfo), S(S), H(H), Index(Index)
+    ComputableObject(), IndexInfo(IndexInfo), S(S), H(H), Index(Index)
 {}
 
 CreationOperator::CreationOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index) :

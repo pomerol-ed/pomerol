@@ -166,7 +166,12 @@ bool Symmetrizer::QuantumNumbers::operator!= (const Symmetrizer::QuantumNumbers&
 // Symmetrizer
 //
 
-Symmetrizer::Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage):ComputableObject(Constructed), IndexInfo(IndexInfo), Storage(Storage), IndexSize(IndexInfo.getIndexSize()), NSymmetries(0)
+Symmetrizer::Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage):
+    ComputableObject(), 
+    IndexInfo(IndexInfo), 
+    Storage(Storage), 
+    IndexSize(IndexInfo.getIndexSize()), 
+    NSymmetries(0)
 {
 }
 

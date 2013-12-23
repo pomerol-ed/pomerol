@@ -32,16 +32,15 @@
 
 namespace Pomerol{
 
-class ComputableObject {
+struct ComputableObject {
+    /** Computation statuses of the object. */
+    enum {Constructed, Prepared, Computed};
 protected:
     /** Current status of an object */
-    unsigned int Status;
+    unsigned int Status = Constructed;
 public:
     /** Returns the current status of an object */
     unsigned int getStatus(){return Status;};
-
-    /** Constructor - set status to Constructed */
-    ComputableObject(unsigned int InitialStatus) : Status(InitialStatus){};
     class exStatusMismatch : public std::exception { virtual const char* what() const throw() { return "Object status mismatch"; } };
 };
 

@@ -32,7 +32,7 @@ namespace Pomerol{
 GreensFunction::GreensFunction(const StatesClassification& S, const Hamiltonian& H, 
                                const AnnihilationOperator& C, const CreationOperator& CX,
                                const DensityMatrix& DM) :
-    Thermal(DM.beta), ComputableObject(Constructed), S(S), H(H), C(C), CX(CX), DM(DM), Vanishing(true),
+    Thermal(DM.beta), ComputableObject(), S(S), H(H), C(C), CX(CX), DM(DM), Vanishing(true),
     parts(0)
 {
 }

@@ -49,9 +49,6 @@ typedef unsigned long InnerQuantumState;
  *  It makes a classification of Fock states into blocks.
  */
 class StatesClassification : public ComputableObject {
-    /** Computation statuses of the object. */
-    enum {Constructed, Computed};
-
     /** Total number of states = 2^(IndexInfo.size()) */
     unsigned long StateSize;            
     /** Total number of modes of the system. Equal to IndexInfo.size() */

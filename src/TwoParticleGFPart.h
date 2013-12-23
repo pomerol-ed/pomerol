@@ -42,7 +42,6 @@ namespace Pomerol{
 class TwoParticleGFPart : public Thermal, ComputableObject {
 
 friend class TwoParticleGF;
-    enum {Constructed, Prepared, Computed};
 
 public:
 

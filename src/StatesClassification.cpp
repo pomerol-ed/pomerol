@@ -30,7 +30,10 @@ bool BlockNumber::operator==(const BlockNumber& rhs) const {return number==rhs.n
 // StatesClassification
 //
 
-StatesClassification::StatesClassification(const IndexClassification& IndexInfo, const Symmetrizer &Symm):ComputableObject(Constructed), IndexInfo(IndexInfo),Symm(Symm)
+StatesClassification::StatesClassification(const IndexClassification& IndexInfo, const Symmetrizer &Symm):
+    ComputableObject(), 
+    IndexInfo(IndexInfo),
+    Symm(Symm)
 {
     IndexSize = IndexInfo.getIndexSize();
     StateSize = 1<<IndexSize;

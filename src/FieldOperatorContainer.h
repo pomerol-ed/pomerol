@@ -43,8 +43,6 @@ namespace Pomerol{
 class FieldOperatorContainer : public ComputableObject
 {
 private:
-    /** Computation statuses of the object. */
-    enum {Constructed, Prepared, Computed};
     /** A reference to a IndexClassification object in order to check the input indices. */
     IndexClassification &IndexInfo;
     /** A reference to a states classification object. */

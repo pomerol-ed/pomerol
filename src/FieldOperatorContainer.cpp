@@ -31,7 +31,7 @@
 namespace Pomerol{
 
 FieldOperatorContainer::FieldOperatorContainer(IndexClassification &IndexInfo, StatesClassification &S, const Hamiltonian &H, bool use_transpose) : 
-    ComputableObject(Constructed), IndexInfo(IndexInfo), S(S), H(H), use_transpose(use_transpose)
+    ComputableObject(), IndexInfo(IndexInfo), S(S), H(H), use_transpose(use_transpose)
 {}
 
 void FieldOperatorContainer::prepare()

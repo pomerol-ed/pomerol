@@ -34,7 +34,10 @@
 namespace Pomerol{
 
 HamiltonianPart::HamiltonianPart(const IndexClassification& IndexInfo, const IndexHamiltonian &F, const StatesClassification &S, const BlockNumber& Block):
-    ComputableObject(Constructed),IndexInfo(IndexInfo), F(F), S(S), Block(Block), QN(S.getQuantumNumbers(Block))
+    ComputableObject(),
+    IndexInfo(IndexInfo), 
+    F(F), S(S), 
+    Block(Block), QN(S.getQuantumNumbers(Block))
 {
 }
 

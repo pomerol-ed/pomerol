@@ -30,7 +30,7 @@
 namespace Pomerol{
 
 DensityMatrix::DensityMatrix(const StatesClassification& S, const Hamiltonian& H, RealType beta) : 
-    Thermal(beta), ComputableObject(Constructed), S(S), H(H), parts(S.NumberOfBlocks())
+    Thermal(beta), ComputableObject(), S(S), H(H), parts(S.NumberOfBlocks())
 {}
 
 DensityMatrix::~DensityMatrix()

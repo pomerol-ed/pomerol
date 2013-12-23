@@ -40,8 +40,6 @@ namespace Pomerol{
 
 /** HamiltonianPart is a class, which stores and diagonalizes the block of the Hamiltonian, which corresponds to a set of given quantum numbers. */
 class HamiltonianPart : public ComputableObject {
-    /** Computation statuses of the object. */
-    enum {Constructed, Prepared, Computed};
 
     /** A reference to the IndexClassification object. */
     const IndexClassification &IndexInfo;

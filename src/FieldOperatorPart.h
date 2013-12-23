@@ -43,8 +43,6 @@ namespace Pomerol{
  * The actual creation and annihilation operators are inherited. 
  */
 class FieldOperatorPart : public ComputableObject {
-    /** Computation statuses of the object. */
-    enum {Constructed, Computed};
 public:
     /** A reference to the IndexClassification object. */
     const IndexClassification &IndexInfo;
