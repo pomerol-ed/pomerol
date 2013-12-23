@@ -43,15 +43,15 @@ void Hamiltonian::prepare()
     if (Status >= Prepared) return;
     BlockNumber NumberOfBlocks = S.NumberOfBlocks();
     parts.resize(NumberOfBlocks);
+    INFO_NONEWLINE("Preparing Hamiltonian parts...");
 
 
     for (BlockNumber CurrentBlock = 0; CurrentBlock < NumberOfBlocks; CurrentBlock++)
     {
 	    parts[CurrentBlock].reset(new HamiltonianPart(IndexInfo,F, S, CurrentBlock));
 	    parts[CurrentBlock]->prepare();
-	    INFO_NONEWLINE("Hpart " << CurrentBlock << " (" << S.getQuantumNumbers(CurrentBlock) << ") is entered. ");
-        INFO("Size = " << S.getBlockSize(CurrentBlock));
     }
+    INFO("done");
     Status = Prepared;
 }
 
