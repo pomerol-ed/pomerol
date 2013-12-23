@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 
     std::random_device rd;
     std::mt19937 gen(world.rank()*24);
-    std::uniform_real_distribution<double> dist(0,0.25);
+    std::uniform_real_distribution<double> dist(0,0.05);
 
     try {
 
