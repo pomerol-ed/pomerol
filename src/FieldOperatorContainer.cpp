@@ -50,8 +50,23 @@ void FieldOperatorContainer::prepareAll(std::set<ParticleIndex> in)
 
 void FieldOperatorContainer::computeAll()
 {
-    for (auto cdag : mapCreationOperators) cdag.second->compute();
-    for (auto c : mapAnnihilationOperators) c.second->compute();
+    for (auto cdag_it : mapCreationOperators) {
+        CreationOperator &cdag = *(cdag_it.second);
+        cdag.compute();
+        AnnihilationOperator &c = *mapAnnihilationOperators[cdag_it.first];
+
+        auto cdag_block_map = cdag.getBlockMapping();
+        // hack - copy transpose matrices into c
+        for (FieldOperator::BlocksBimap::right_const_iterator cdag_map_it=cdag_block_map.right.begin(); cdag_map_it!=cdag_block_map.right.end(); cdag_map_it++) {
+                c.getPartFromRightIndex(cdag_map_it->second).elementsRowMajor = cdag.getPartFromRightIndex(cdag_map_it->first).getColMajorValue().adjoint();
+                c.getPartFromRightIndex(cdag_map_it->second).elementsColMajor = cdag.getPartFromRightIndex(cdag_map_it->first).getRowMajorValue().adjoint();
+                c.getPartFromRightIndex(cdag_map_it->second).Status = ComputableObject::Computed;
+                c.Status = ComputableObject::Computed;
+            };
+        };
+
+// original
+    //for (auto c : mapAnnihilationOperators) c.second->compute();
 }
 
 const CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleIndex in) const

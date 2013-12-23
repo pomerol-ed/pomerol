@@ -98,19 +98,22 @@ public:
     FieldOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index);
 
     /** Returns a FieldOperatorPart based on its left BlockNumber */
-    const FieldOperatorPart& getPartFromLeftIndex(BlockNumber in) const;
+    FieldOperatorPart& getPartFromLeftIndex(BlockNumber in) const;
     /** Returns a FieldOperatorPart based on its left QuantumNumbers */
-    const FieldOperatorPart& getPartFromLeftIndex(const QuantumNumbers& in) const;
+    FieldOperatorPart& getPartFromLeftIndex(const QuantumNumbers& in) const;
     /** Returns a FieldOperatorPart based on its right BlockNumber */
-    const FieldOperatorPart& getPartFromRightIndex(BlockNumber out) const;
+    FieldOperatorPart& getPartFromRightIndex(BlockNumber out) const;
     /** Returns a FieldOperatorPart based on its right QuantumNumbers */
-    const FieldOperatorPart& getPartFromRightIndex(const QuantumNumbers& out) const;
+    FieldOperatorPart& getPartFromRightIndex(const QuantumNumbers& out) const;
     /** Returns a left BlockNumber for a given right BlockNumber */
     BlockNumber getLeftIndex(BlockNumber RightIndex) const;
     /** Returns a right BlockNumber for a given left BlockNumber */
     BlockNumber getRightIndex(BlockNumber LeftIndex) const;
     /** Returns a reference to BlockMapping */
     BlocksBimap const& getBlockMapping() const;
+
+    /** Returns a vector of all underlying parts. */
+    const std::vector<FieldOperatorPart*>& getParts();
 
     /** Returns acting ParticleIndex of current operator */
     ParticleIndex getIndex(void) const;
@@ -128,6 +131,7 @@ class AnnihilationOperator;
 class CreationOperator : public FieldOperator
 {
     friend class AnnihilationOperator;
+    friend class FieldOperatorContainer;
 public:
     /* Returns hermitian conjugate of current operator */
     AnnihilationOperator& transpose(void);
@@ -145,6 +149,7 @@ public:
 class AnnihilationOperator : public FieldOperator
 {
     friend class CreationOperator;
+    friend class FieldOperatorContainer;
 public:
     /* Returns hermitian conjugate of current operator */
     CreationOperator& transpose(void);

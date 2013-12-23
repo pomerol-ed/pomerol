@@ -43,6 +43,7 @@ namespace Pomerol{
  * The actual creation and annihilation operators are inherited. 
  */
 class FieldOperatorPart : public ComputableObject {
+    friend class FieldOperatorContainer;
 public:
     /** A reference to the IndexClassification object. */
     const IndexClassification &IndexInfo;
@@ -109,6 +110,8 @@ class CreationOperatorPart;
 class AnnihilationOperatorPart : public FieldOperatorPart
 { 
     friend class CreationOperatorPart;
+    friend class CreationOperator;
+    friend class AnnihilationOperator;
     /** Does nothing. Private. */
     void do_nothing(){};
 public :
@@ -122,6 +125,8 @@ public :
 class CreationOperatorPart : public FieldOperatorPart
 {
     friend class AnnihilationOperatorPart;
+    friend class AnnihilationOperator;
+    friend class CreationOperator;
     /** Does nothing. Private. */
     void do_nothing(){};
 public :

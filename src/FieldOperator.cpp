@@ -40,32 +40,37 @@ AnnihilationOperator::AnnihilationOperator(const IndexClassification &IndexInfo,
 
 FieldOperator::BlocksBimap const& FieldOperator::getBlockMapping() const
 {
-    if (Status < Computed) { ERROR("FieldOperator is not computed yet."); throw (exStatusMismatch()); }
+    if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
     return LeftRightBlocks;
 }
  
-const FieldOperatorPart& FieldOperator::getPartFromRightIndex(BlockNumber in) const
+FieldOperatorPart& FieldOperator::getPartFromRightIndex(BlockNumber in) const
 {
-    if (Status < Computed) { ERROR("FieldOperator is not computed yet."); throw (exStatusMismatch()); }
+    if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
     return *parts[mapPartsFromRight.find(in)->second];
 }
 
-const FieldOperatorPart& FieldOperator::getPartFromRightIndex(const QuantumNumbers& in) const
+FieldOperatorPart& FieldOperator::getPartFromRightIndex(const QuantumNumbers& in) const
 {
-    if (Status < Computed) { ERROR("FieldOperator is not computed yet."); throw (exStatusMismatch()); }
+    if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
     return *parts[mapPartsFromRight.find(S.getBlockNumber(in))->second];
 }
 
-const FieldOperatorPart& FieldOperator::getPartFromLeftIndex(BlockNumber in) const
+FieldOperatorPart& FieldOperator::getPartFromLeftIndex(BlockNumber in) const
 {
-    if (Status < Computed) { ERROR("FieldOperator is not computed yet."); throw (exStatusMismatch()); }
+    if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
     return *parts[mapPartsFromLeft.find(in)->second];
 }
 
-const FieldOperatorPart& FieldOperator::getPartFromLeftIndex(const QuantumNumbers& in) const
+FieldOperatorPart& FieldOperator::getPartFromLeftIndex(const QuantumNumbers& in) const
 {
-    if (Status < Computed) { ERROR("FieldOperator is not computed yet."); throw (exStatusMismatch()); }
+    if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
     return *parts[mapPartsFromLeft.find(S.getBlockNumber(in))->second];
+}
+
+const std::vector<FieldOperatorPart*>& FieldOperator::getParts()
+{
+    return parts;
 }
 
 void FieldOperator::compute(void)

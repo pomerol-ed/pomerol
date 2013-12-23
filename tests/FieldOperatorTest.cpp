@@ -73,6 +73,16 @@ int main(int argc, char* argv[])
     CreationOperator Cdag(IndexInfo, S, H, op_index);
     Cdag.prepare();
     Cdag.compute();
+
+    DEBUG(Cdag.getParts()[1]->getRowMajorValue());
+
+    AnnihilationOperator C(IndexInfo, S, H, op_index);
+    C.prepare();
+    C.compute();
+    
+    DEBUG(C.getParts()[1]->getColMajorValue());
+
+    DEBUG((C.getParts()[1]->getColMajorValue().transpose() - Cdag.getParts()[1]->getRowMajorValue()).norm());
     return EXIT_SUCCESS;
 }
 
