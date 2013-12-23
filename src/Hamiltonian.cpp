@@ -59,35 +59,81 @@ void Hamiltonian::diagonalize(const boost::mpi::communicator & comm)
 {
     if (Status >= Diagonalized) return;
     BlockNumber NumberOfBlocks = parts.size();
+    int rank = comm.rank();
     comm.barrier();
     int comm_size = comm.size(); 
-    int comm_rank = comm.rank();
-    enum class calc_status : int { free, busy };
+    if (rank==0) { INFO("Calculating using " << comm_size << " procs."); };
 
-    std::map<size_t,int> jobs_dispatcher;
-    if (comm_rank==0) { INFO("Calculating using " << comm_size << " procs."); };
-    for (size_t p = 0; p<parts.size(); p++) {
-            jobs_dispatcher[p] = p%comm_size;
-            if (comm_rank == jobs_dispatcher[p]) { 
-                std::cout << "["<<p+1<<"/"<<parts.size()<< "] Proc " << comm.rank() << " : " << std::flush;
-                parts[p]->diagonalize(); 
-	            INFO("Hpart " << p << " (" << S.getQuantumNumbers(BlockNumber(p)) << ") is diagonalized.");
-            };
+    size_t ROOT = 0;
+    std::unique_ptr<MPI::MPIMaster> disp;
+
+    if (comm.rank() == ROOT) { 
+        // prepare one Master on a root process for distributing parts.size() jobs
+        std::vector<MPI::JobId> job_order(parts.size());
+        for (size_t i=0; i<job_order.size(); i++) job_order[i] = i;
+        //for (auto x : job_order) std::cout << x << " " << std::flush; std::cout << std::endl;
+        std::sort(job_order.begin(), job_order.end(), [&](MPI::JobId l, MPI::JobId r){return parts[l]->getSize() >= parts[r]->getSize();});
+        //for (auto x : job_order) std::cout << x << " " << std::flush; std::cout << std::endl;
+        disp.reset(new MPI::MPIMaster(comm,parts.size(),job_order,true)); 
+        disp->order();
+    };
+    comm.barrier();
+
+    // Start calculating data
+    for (MPI::MPIWorker worker(comm,ROOT);!worker.is_finished();) {
+        if (rank == ROOT) disp->order(); 
+        worker.receive_order(); 
+        if (worker.is_working()) { // for a specific worker
+            auto p = worker.current_job;
+            std::cout << "["<<p+1<<"/"<<parts.size()<< "] Proc " << comm.rank() << " : " << std::flush;
+            parts[p]->diagonalize(); 
+            worker.report_job_done(); 
+	        INFO("Hpart " << p << " (" << S.getQuantumNumbers(BlockNumber(p)) << ") is diagonalized.");
         };
+        if (rank == ROOT) disp->check_workers(); // check if there are free workers 
+    };
+    // at this moment all communication is finished
+    // Now spread the information, who did what.
+    comm.barrier();
+    std::map<MPI::JobId, MPI::WorkerId> job_map;
+    if (rank == ROOT) { 
+        job_map = disp -> DispatchMap; 
+        std::vector<MPI::JobId> jobs(job_map.size());
+        std::vector<MPI::WorkerId> workers(job_map.size());
+        std::transform(job_map.begin(), job_map.end(), jobs.begin(), [](std::pair<MPI::JobId, MPI::WorkerId> x){return x.first;});
+        boost::mpi::broadcast(comm, jobs, ROOT);
+        std::transform(job_map.begin(), job_map.end(), workers.begin(), [](std::pair<MPI::JobId, MPI::WorkerId> x){return x.second;});
+        boost::mpi::broadcast(comm, workers, ROOT);
+        disp.release(); 
+    } 
+    else {
+        std::vector<MPI::JobId> jobs(parts.size());
+        boost::mpi::broadcast(comm, jobs, ROOT);
+        std::vector<MPI::WorkerId> workers(parts.size());
+        boost::mpi::broadcast(comm, workers, ROOT);
+        for (size_t i=0; i<jobs.size(); i++) job_map[jobs[i]] = workers[i]; 
+    }
 
+    //DEBUG for (auto x:job_map) std::cout << rank << ":" << x.first << "->" << x.second << std::endl;
+
+    // Start distributing data
+    comm.barrier();
     for (size_t p = 0; p<parts.size(); p++) {
-            if (comm_rank == jobs_dispatcher[p]) { 
-                boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->H.rows()*parts[p]->H.cols(), comm_rank);
-                boost::mpi::broadcast(comm, parts[p]->Eigenvalues.data(), parts[p]->H.rows(), comm_rank);
+            if (rank == job_map[p]){
+                if (parts[p]->Status != HamiltonianPart::Diagonalized) { 
+                    ERROR ("Worker" << rank << " didn't calculate part" << p); 
+                    throw (std::logic_error("Worker didn't calculate this part."));
+                    };
+                boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->H.rows()*parts[p]->H.cols(), rank);
+                boost::mpi::broadcast(comm, parts[p]->Eigenvalues.data(), parts[p]->H.rows(), rank);
                 }
             else {
                 parts[p]->Eigenvalues.resize(parts[p]->H.rows());
-                boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->H.rows()*parts[p]->H.cols(), jobs_dispatcher[p]);
-                boost::mpi::broadcast(comm, parts[p]->Eigenvalues.data(), parts[p]->H.rows(), jobs_dispatcher[p]);
+                boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->H.rows()*parts[p]->H.cols(), job_map[p]);
+                boost::mpi::broadcast(comm, parts[p]->Eigenvalues.data(), parts[p]->H.rows(), job_map[p]);
                 parts[p]->Status = HamiltonianPart::Diagonalized;
                  };
             };
-
 /*
     for (BlockNumber CurrentBlock=0; CurrentBlock<NumberOfBlocks; CurrentBlock++)
     {

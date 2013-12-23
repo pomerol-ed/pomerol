@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
             dumb_task(dist(gen));
             worker.report_job_done(); 
         };
-        if (rank == ROOT) disp->update(); 
+        if (rank == ROOT) disp->check_workers(); 
     };
     if (rank == ROOT) disp.release();
     } // end try

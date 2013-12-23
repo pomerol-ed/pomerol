@@ -41,13 +41,13 @@ namespace MPI {
 
 enum class WorkerTag : int { Pending, Work, Finish }; // tags for MPI communication
 typedef int JobId;
-typedef int ProcId;
+typedef int WorkerId;
 
 struct MPIWorker 
 {
     boost::mpi::communicator Comm;
-    const ProcId id;
-    const ProcId boss;
+    const WorkerId id;
+    const WorkerId boss;
 
     WorkerTag Status;
 
@@ -55,7 +55,7 @@ struct MPIWorker
 
     boost::mpi::request WorkReq, FinishReq;
 
-    MPIWorker(const boost::mpi::communicator &comm, ProcId boss);
+    MPIWorker(const boost::mpi::communicator &comm, WorkerId boss);
     void receive_order();
     void report_job_done();
     bool is_finished();
@@ -66,25 +66,26 @@ struct MPIMaster
 {
     boost::mpi::communicator Comm;
     size_t Ntasks, Nprocs;
-    const ProcId id;
+    const WorkerId id;
 
     std::stack<JobId> JobStack;
-    std::stack<ProcId> WorkerStack;
+    std::stack<WorkerId> WorkerStack;
 
-    //std::map<JobId, ProcId> DispatchMap;
+    std::map<JobId, WorkerId> DispatchMap;
     std::vector<JobId> task_numbers;
 
-    std::vector<ProcId> worker_pool;
-    std::map<size_t, ProcId> WorkerIndices;
+    std::vector<WorkerId> worker_pool;
+    std::map<size_t, WorkerId> WorkerIndices;
 
     std::vector<boost::mpi::request> wait_statuses;
 
+    MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers );
+    MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, std::vector<JobId> task_numbers, bool include_boss = true );
     MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, bool include_boss = true );
-    MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, std::vector<ProcId> worker_pool, std::vector<JobId> task_numbers );
 
-    void order_worker(ProcId worker_id, JobId job);
+    void order_worker(WorkerId worker_id, JobId job);
     void order();
-    void update();
+    void check_workers();
 };
 
 } // end of namespace MPI
