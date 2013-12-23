@@ -55,18 +55,11 @@ struct MPIWorker
 
     boost::mpi::request WorkReq, FinishReq;
 
-    MPIWorker(const boost::mpi::communicator &comm, ProcId boss):
-        Comm(comm),
-        id(Comm.rank()),
-        boss(boss),
-        WorkReq(Comm.irecv(boss, int(WorkerTag::Work), current_job)),
-        FinishReq(Comm.irecv(boss, int(WorkerTag::Finish))),
-        Status(WorkerTag::Pending)
-    {};
-
-    JobId get_job() { WorkReq.wait(); Status = WorkerTag::Work; return current_job;};
-    void report_job_done() { Comm.isend(boss,int(WorkerTag::Pending)); Status = WorkerTag::Pending; WorkReq = Comm.irecv(boss, int(WorkerTag::Work), current_job);};
+    MPIWorker(const boost::mpi::communicator &comm, ProcId boss);
+    void receive_order();
+    void report_job_done();
     bool is_finished();
+    bool is_working();
 };
 
 struct MPIMaster 
