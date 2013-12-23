@@ -100,6 +100,7 @@ int main(int argc, char* argv[])
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepare();
+    Operators.compute();
 
     GFContainer G(IndexInfo,S,H,rho,Operators);
 

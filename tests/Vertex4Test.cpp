@@ -145,6 +145,7 @@ int main(int argc, char* argv[])
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepare();
+    Operators.compute();
 
 
     GreensFunction GF(S,H,Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), rho);

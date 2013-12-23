@@ -44,7 +44,7 @@ class FieldOperatorContainer : public ComputableObject
 {
 private:
     /** Computation statuses of the object. */
-    enum {Constructed, Prepared};
+    enum {Constructed, Prepared, Computed};
     /** A reference to a IndexClassification object in order to check the input indices. */
     IndexClassification &IndexInfo;
     /** A reference to a states classification object. */
@@ -68,6 +68,7 @@ public:
         const Hamiltonian &H, bool use_transpose = false);
 
     void prepare();
+    void compute();
 
     /** Returns the CreationOperator for a given Index. Makes on-demand computation. */
     const CreationOperator& getCreationOperator(ParticleIndex in) const;

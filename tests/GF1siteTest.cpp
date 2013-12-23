@@ -116,6 +116,7 @@ int main(int argc, char* argv[])
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepare();
+    Operators.compute();
 
     ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
     

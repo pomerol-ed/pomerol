@@ -113,6 +113,7 @@ int main(int argc, char* argv[])
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepare();
+    Operators.compute();
 
     FieldOperator::BlocksBimap c_map = Operators.getCreationOperator(0).getBlockMapping();
     for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
