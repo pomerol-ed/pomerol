@@ -21,6 +21,7 @@
 
 #include "Hamiltonian.h"
 #include "MPIDispatcher.h"
+#include "MPISkel.h"
 
 #ifdef ENABLE_SAVE_PLAINTEXT
 #include<boost/filesystem.hpp>
@@ -34,11 +35,11 @@ Hamiltonian::Hamiltonian(const IndexClassification &IndexInfo, const IndexHamilt
 
 Hamiltonian::~Hamiltonian()
 {
-    for(std::vector<std::unique_ptr<HamiltonianPart> >::iterator iter = parts.begin(); iter != parts.end(); iter++)
+    for(auto iter = parts.begin(); iter != parts.end(); iter++)
 	    iter->reset();
 }
 
-void Hamiltonian::prepare()
+void Hamiltonian::prepare(const boost::mpi::communicator& comm)
 {
     if (Status >= Prepared) return;
     BlockNumber NumberOfBlocks = S.NumberOfBlocks();
@@ -49,75 +50,46 @@ void Hamiltonian::prepare()
     for (BlockNumber CurrentBlock = 0; CurrentBlock < NumberOfBlocks; CurrentBlock++)
     {
 	    parts[CurrentBlock].reset(new HamiltonianPart(IndexInfo,F, S, CurrentBlock));
-	    parts[CurrentBlock]->prepare();
+        parts[CurrentBlock]->prepare();
     }
-    INFO("done");
+    MPI::MPISkel<MPI::PrepareWrap<HamiltonianPart>> skel;
+    skel.parts.resize(parts.size());
+    for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = MPI::PrepareWrap<HamiltonianPart>(*parts[i]);};
+    std::map<MPI::JobId, MPI::WorkerId> job_map = skel.run(comm,false);
+    //parts[CurrentBlock]->prepare();
+    comm.barrier();
+    for (size_t p = 0; p<parts.size(); p++) {
+            if (comm.rank() == job_map[p]){
+                if (parts[p]->Status != HamiltonianPart::Prepared) { 
+                    ERROR ("Worker" << comm.rank() << " didn't calculate part" << p); 
+                    throw (std::logic_error("Worker didn't calculate this part."));
+                    };
+                boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->H.rows()*parts[p]->H.cols(), comm.rank());
+                }
+            else {
+                parts[p]->Eigenvalues.resize(parts[p]->H.rows());
+                boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->H.rows()*parts[p]->H.cols(), job_map[p]);
+                parts[p]->Status = HamiltonianPart::Prepared;
+                 };
+            };
     Status = Prepared;
 }
+
 
 void Hamiltonian::compute(const boost::mpi::communicator & comm)
 {
     if (Status >= Computed) return;
-    BlockNumber NumberOfBlocks = parts.size();
+    for (size_t p=0;p<parts.size();p++) { DEBUG(parts[p]->Status);};
+
+    // Create a "skeleton" class with pointers to part that can call a compute method
+    MPI::MPISkel<MPI::ComputeWrap<HamiltonianPart>> skel;
+    skel.parts.resize(parts.size());
+    for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = MPI::ComputeWrap<HamiltonianPart>(*parts[i]);};
+    std::map<MPI::JobId, MPI::WorkerId> job_map = skel.run(comm, true);
     int rank = comm.rank();
-    comm.barrier();
     int comm_size = comm.size(); 
-    if (rank==0) { INFO("Calculating using " << comm_size << " procs."); };
 
-    size_t ROOT = 0;
-    std::unique_ptr<MPI::MPIMaster> disp;
-
-    if (comm.rank() == ROOT) { 
-        // prepare one Master on a root process for distributing parts.size() jobs
-        std::vector<MPI::JobId> job_order(parts.size());
-        for (size_t i=0; i<job_order.size(); i++) job_order[i] = i;
-        //for (auto x : job_order) std::cout << x << " " << std::flush; std::cout << std::endl;
-        #warning fixme
-        //std::sort(job_order.begin(), job_order.end(), [&](MPI::JobId &l, const MPI::JobId &r){DEBUG(l << " " << r); return parts[l]->getSize() >= parts[r]->getSize();});
-        //for (auto x : job_order) std::cout << x << " " << std::flush; std::cout << std::endl;
-        disp.reset(new MPI::MPIMaster(comm,parts.size(),job_order,true)); 
-        disp->order();
-    };
-    comm.barrier();
-
-    // Start calculating data
-    for (MPI::MPIWorker worker(comm,ROOT);!worker.is_finished();) {
-        if (rank == ROOT) disp->order(); 
-        worker.receive_order(); 
-        if (worker.is_working()) { // for a specific worker
-            auto p = worker.current_job;
-            std::cout << "["<<p+1<<"/"<<parts.size()<< "] P " << comm.rank() << " : Hpart " << p << " [" << parts[p]->getSize()
-                      << "x" << parts[p]->getSize() << "] diag ... " << std::flush;
-            parts[p]->compute(); 
-            worker.report_job_done(); 
-	        INFO("done.");
-        };
-        if (rank == ROOT) disp->check_workers(); // check if there are free workers 
-    };
-    // at this moment all communication is finished
-    // Now spread the information, who did what.
-    comm.barrier();
-    std::map<MPI::JobId, MPI::WorkerId> job_map;
-    if (rank == ROOT) { 
-        job_map = disp -> DispatchMap; 
-        std::vector<MPI::JobId> jobs(job_map.size());
-        std::vector<MPI::WorkerId> workers(job_map.size());
-        std::transform(job_map.begin(), job_map.end(), jobs.begin(), [](std::pair<MPI::JobId, MPI::WorkerId> x){return x.first;});
-        boost::mpi::broadcast(comm, jobs, ROOT);
-        std::transform(job_map.begin(), job_map.end(), workers.begin(), [](std::pair<MPI::JobId, MPI::WorkerId> x){return x.second;});
-        boost::mpi::broadcast(comm, workers, ROOT);
-        disp.release(); 
-    } 
-    else {
-        std::vector<MPI::JobId> jobs(parts.size());
-        boost::mpi::broadcast(comm, jobs, ROOT);
-        std::vector<MPI::WorkerId> workers(parts.size());
-        boost::mpi::broadcast(comm, workers, ROOT);
-        for (size_t i=0; i<jobs.size(); i++) job_map[jobs[i]] = workers[i]; 
-    }
-
-    //DEBUG for (auto x:job_map) std::cout << rank << ":" << x.first << "->" << x.second << std::endl;
-
+    // for (auto x:job_map) std::cout << rank << ":" << x.first << "->" << x.second << std::endl; //DEBUG
     // Start distributing data
     comm.barrier();
     for (size_t p = 0; p<parts.size(); p++) {

@@ -9,7 +9,7 @@ MPIDispatcherTest
 
 foreach (test ${mpi_tests})
     set(test_src ${test}.cpp)
-    add_executable(${test} ${test_src} ../src/MPIDispatcher.cpp)
+    add_executable(${test} ${test_src} ${CMAKE_SOURCE_DIR}/src/MPIDispatcher.cpp)
     target_link_libraries(${test} 
         ${Boost_LIBRARIES}
         ${MPI_CXX_LIBRARIES}
@@ -53,10 +53,20 @@ foreach (test ${tests})
     add_test(NAME ${test} COMMAND "${MPIEXEC}" ${test_parameters})
     target_link_libraries(${test} 
         ${Boost_LIBRARIES}
-#        ${HDF5_LIBRARIES}
         ${MPI_CXX_LIBRARIES}
         pomerol
     )
 endforeach(test)
+
+
+set (tests_np 
+)
+
+foreach (np 1 4 16)
+foreach (test ${tests_np})
+    set (test_parameters -np ${np} "./${test}")
+    add_test(NAME ${test}${np}cpu COMMAND "${MPIEXEC}" ${test_parameters})
+endforeach(test)
+endforeach(np)
 
 
