@@ -30,7 +30,9 @@
 #define __INCLUDE_MPISKEL_H
 
 #include <boost/mpi.hpp>
+#include <type_traits>
 #include "Misc.h"
+#include "MPIDispatcher.h"
 
 namespace Pomerol {
 namespace pMPI {
@@ -38,27 +40,21 @@ namespace pMPI {
 template <typename PartType>
 struct ComputeWrap {
     PartType *x;
-    ComputeWrap(PartType &y):x(&y){};
+    int complexity;
+    ComputeWrap(PartType &y, int complexity = 1):x(&y),complexity(complexity){};
     ComputeWrap() = default;
     ~ComputeWrap() = default;
     void run(){x->compute();}; 
-    template <typename T = decltype(std::declval<PartType>().getSize()), typename std::enable_if<std::is_convertible<T,int>::value,bool>::type = 0> 
-        int getSize(){return x->getSize();};
-    template <typename T = decltype(std::declval<PartType>().getSize()), typename std::enable_if<!std::is_convertible<T,int>::value,bool>::type = 0> 
-        int getSize(){return 0;};
 };
 
 template <typename PartType>
 struct PrepareWrap {
     PartType *x;
-    PrepareWrap(PartType &y):x(&y){};
+    int complexity;
+    PrepareWrap(PartType &y, int complexity = 1):x(&y),complexity(complexity){};
     PrepareWrap() = default;
     ~PrepareWrap() = default;
     void run(){x->prepare();}; 
-    template <typename T = decltype(std::declval<PartType>().getSize()), typename std::enable_if<std::is_convertible<T,int>::value,bool>::type = 0> 
-        int getSize(){return x->getSize();};
-    template <typename T = decltype(std::declval<PartType>().getSize()), typename std::enable_if<!std::is_convertible<T,int>::value,bool>::type = 0> 
-        int getSize(){return 0;};
 };
 
 
@@ -85,7 +81,7 @@ std::map<Pomerol::pMPI::JobId, Pomerol::pMPI::WorkerId> MPISkel<WrapType>::run(c
         for (size_t i=0; i<job_order.size(); i++) job_order[i] = i;
     //    for (size_t i=0; i<job_order.size(); i++) std::cout << job_order[i] << " " << std::flush; std::cout << std::endl; // DEBUG
     //    for (size_t i=0; i<job_order.size(); i++) std::cout << parts[job_order[i]].getSize() << " " << std::flush; std::cout << std::endl; // DEBUG
-        std::sort(job_order.begin(), job_order.end(), [&](const int &l, const int &r){return (parts[l].getSize() > parts[r].getSize());});
+        std::sort(job_order.begin(), job_order.end(), [&](const int &l, const int &r){return (parts[l].complexity > parts[r].complexity);});
     //    for (size_t i=0; i<job_order.size(); i++) std::cout << job_order[i] << " " << std::flush; std::cout << std::endl; // DEBUG
     //    for (size_t i=0; i<job_order.size(); i++) std::cout << parts[job_order[i]].getSize() << " " << std::flush; std::cout << std::endl; // DEBUG
         disp.reset(new pMPI::MPIMaster(comm,job_order,true)); 
@@ -101,15 +97,15 @@ std::map<Pomerol::pMPI::JobId, Pomerol::pMPI::WorkerId> MPISkel<WrapType>::run(c
         if (worker.is_working()) { // for a specific worker
             auto p = worker.current_job;
             if (VerboseOutput) std::cout << "["<<p+1<<"/"<<parts.size()<< "] P" << comm.rank() 
-                                         << " : part " << p << " [" << parts[p].getSize() << "] run ... " << std::flush;
+                                         << " : part " << p << " [" << parts[p].complexity << "] run;" << std::endl;
             parts[p].run(); 
             worker.report_job_done(); 
-	        if (VerboseOutput) INFO("done.");
         };
         if (rank == ROOT) disp->check_workers(); // check if there are free workers 
     };
     // at this moment all communication is finished
     // Now spread the information, who did what.
+	if (VerboseOutput && rank==ROOT) INFO("done.");
     comm.barrier();
     std::map<pMPI::JobId, pMPI::WorkerId> job_map;
     if (rank == ROOT) { 

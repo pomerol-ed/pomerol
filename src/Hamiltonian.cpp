@@ -20,7 +20,6 @@
 
 
 #include "Hamiltonian.h"
-#include "MPIDispatcher.h"
 #include "MPISkel.h"
 
 #ifdef ENABLE_SAVE_PLAINTEXT
@@ -82,7 +81,7 @@ void Hamiltonian::compute(const boost::mpi::communicator & comm)
     // Create a "skeleton" class with pointers to part that can call a compute method
     pMPI::MPISkel<pMPI::ComputeWrap<HamiltonianPart>> skel;
     skel.parts.resize(parts.size());
-    for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::ComputeWrap<HamiltonianPart>(*parts[i]);};
+    for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::ComputeWrap<HamiltonianPart>(*parts[i],parts[i]->getSize());};
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true);
     int rank = comm.rank();
     int comm_size = comm.size(); 
