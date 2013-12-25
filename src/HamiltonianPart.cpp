@@ -112,7 +112,7 @@ const RealVectorType& HamiltonianPart::getEigenValues() const
 
 InnerQuantumState HamiltonianPart::getSize(void) const
 {
-    return H.rows();
+    return S.getBlockSize(Block);
 }
 
 BlockNumber HamiltonianPart::getBlockNumber(void) const

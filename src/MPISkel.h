@@ -42,7 +42,10 @@ struct ComputeWrap {
     ComputeWrap() = default;
     ~ComputeWrap() = default;
     void run(){x->compute();}; 
-    int size(){return 0;};
+    template <typename T = decltype(std::declval<PartType>().getSize()), typename std::enable_if<std::is_convertible<T,int>::value,bool>::type = 0> 
+        int getSize(){return x->getSize();};
+    template <typename T = decltype(std::declval<PartType>().getSize()), typename std::enable_if<!std::is_convertible<T,int>::value,bool>::type = 0> 
+        int getSize(){return 0;};
 };
 
 template <typename PartType>
@@ -52,7 +55,10 @@ struct PrepareWrap {
     PrepareWrap() = default;
     ~PrepareWrap() = default;
     void run(){x->prepare();}; 
-    int size(){return 0;};
+    template <typename T = decltype(std::declval<PartType>().getSize()), typename std::enable_if<std::is_convertible<T,int>::value,bool>::type = 0> 
+        int getSize(){return x->getSize();};
+    template <typename T = decltype(std::declval<PartType>().getSize()), typename std::enable_if<!std::is_convertible<T,int>::value,bool>::type = 0> 
+        int getSize(){return 0;};
 };
 
 
@@ -77,6 +83,11 @@ std::map<Pomerol::MPI::JobId, Pomerol::MPI::WorkerId> MPISkel<WrapType>::run(con
         // prepare one Master on a root process for distributing parts.size() jobs
         std::vector<MPI::JobId> job_order(parts.size());
         for (size_t i=0; i<job_order.size(); i++) job_order[i] = i;
+    //    for (size_t i=0; i<job_order.size(); i++) std::cout << job_order[i] << " " << std::flush; std::cout << std::endl; // DEBUG
+    //    for (size_t i=0; i<job_order.size(); i++) std::cout << parts[job_order[i]].getSize() << " " << std::flush; std::cout << std::endl; // DEBUG
+        std::sort(job_order.begin(), job_order.end(), [&](const int &l, const int &r){return (parts[l].getSize() > parts[r].getSize());});
+    //    for (size_t i=0; i<job_order.size(); i++) std::cout << job_order[i] << " " << std::flush; std::cout << std::endl; // DEBUG
+    //    for (size_t i=0; i<job_order.size(); i++) std::cout << parts[job_order[i]].getSize() << " " << std::flush; std::cout << std::endl; // DEBUG
         disp.reset(new MPI::MPIMaster(comm,job_order,true)); 
         disp->order();
     };
@@ -90,7 +101,7 @@ std::map<Pomerol::MPI::JobId, Pomerol::MPI::WorkerId> MPISkel<WrapType>::run(con
         if (worker.is_working()) { // for a specific worker
             auto p = worker.current_job;
             if (VerboseOutput) std::cout << "["<<p+1<<"/"<<parts.size()<< "] P" << comm.rank() 
-                                         << " : part " << p << " [" << parts[p].size() << "] run ... " << std::flush;
+                                         << " : part " << p << " [" << parts[p].getSize() << "] run ... " << std::flush;
             parts[p].run(); 
             worker.report_job_done(); 
 	        if (VerboseOutput) INFO("done.");
