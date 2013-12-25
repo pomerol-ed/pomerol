@@ -3,7 +3,7 @@
 #include "MPIDispatcher.h"
 
 using namespace Pomerol;
-using namespace Pomerol::MPI;
+using namespace Pomerol::pMPI;
 
 int main(int argc, char* argv[])
 {

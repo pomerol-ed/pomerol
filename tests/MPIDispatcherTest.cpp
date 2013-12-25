@@ -5,7 +5,7 @@
 #include <random>
 
 using namespace Pomerol;
-using namespace Pomerol::MPI;
+using namespace Pomerol::pMPI;
 
 void dumb_task(double seconds) {
     std::cout << "running " << seconds << " seconds..." << std::flush;

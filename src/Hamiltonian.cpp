@@ -52,10 +52,10 @@ void Hamiltonian::prepare(const boost::mpi::communicator& comm)
 	    parts[CurrentBlock].reset(new HamiltonianPart(IndexInfo,F, S, CurrentBlock));
         //parts[CurrentBlock]->prepare();
     }
-    MPI::MPISkel<MPI::PrepareWrap<HamiltonianPart>> skel;
+    pMPI::MPISkel<pMPI::PrepareWrap<HamiltonianPart>> skel;
     skel.parts.resize(parts.size());
-    for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = MPI::PrepareWrap<HamiltonianPart>(*parts[i]);};
-    std::map<MPI::JobId, MPI::WorkerId> job_map = skel.run(comm,false);
+    for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::PrepareWrap<HamiltonianPart>(*parts[i]);};
+    std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm,false);
     comm.barrier();
     for (size_t p = 0; p<parts.size(); p++) {
             if (comm.rank() == job_map[p]){
@@ -80,10 +80,10 @@ void Hamiltonian::compute(const boost::mpi::communicator & comm)
     if (Status >= Computed) return;
 
     // Create a "skeleton" class with pointers to part that can call a compute method
-    MPI::MPISkel<MPI::ComputeWrap<HamiltonianPart>> skel;
+    pMPI::MPISkel<pMPI::ComputeWrap<HamiltonianPart>> skel;
     skel.parts.resize(parts.size());
-    for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = MPI::ComputeWrap<HamiltonianPart>(*parts[i]);};
-    std::map<MPI::JobId, MPI::WorkerId> job_map = skel.run(comm, true);
+    for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::ComputeWrap<HamiltonianPart>(*parts[i]);};
+    std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true);
     int rank = comm.rank();
     int comm_size = comm.size(); 
 

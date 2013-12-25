@@ -33,7 +33,7 @@
 #include "Misc.h"
 
 namespace Pomerol {
-namespace MPI {
+namespace pMPI {
 
 template <typename PartType>
 struct ComputeWrap {
@@ -65,11 +65,11 @@ struct PrepareWrap {
 template <typename WrapType>
 struct MPISkel {
     std::vector<WrapType> parts;
-    std::map<MPI::JobId, MPI::WorkerId> run(const boost::mpi::communicator& comm, bool VerboseOutput = true);
+    std::map<pMPI::JobId, pMPI::WorkerId> run(const boost::mpi::communicator& comm, bool VerboseOutput = true);
 };
 
 template <typename WrapType>
-std::map<Pomerol::MPI::JobId, Pomerol::MPI::WorkerId> MPISkel<WrapType>::run(const boost::mpi::communicator& comm, bool VerboseOutput)
+std::map<Pomerol::pMPI::JobId, Pomerol::pMPI::WorkerId> MPISkel<WrapType>::run(const boost::mpi::communicator& comm, bool VerboseOutput)
 {
     int rank = comm.rank();
     int comm_size = comm.size(); 
@@ -77,24 +77,24 @@ std::map<Pomerol::MPI::JobId, Pomerol::MPI::WorkerId> MPISkel<WrapType>::run(con
     if (rank==0) { INFO("Calculating " << parts.size() << " jobs using " << comm_size << " procs."); };
 
     size_t ROOT = 0;
-    std::unique_ptr<MPI::MPIMaster> disp;
+    std::unique_ptr<pMPI::MPIMaster> disp;
 
     if (comm.rank() == ROOT) { 
         // prepare one Master on a root process for distributing parts.size() jobs
-        std::vector<MPI::JobId> job_order(parts.size());
+        std::vector<pMPI::JobId> job_order(parts.size());
         for (size_t i=0; i<job_order.size(); i++) job_order[i] = i;
     //    for (size_t i=0; i<job_order.size(); i++) std::cout << job_order[i] << " " << std::flush; std::cout << std::endl; // DEBUG
     //    for (size_t i=0; i<job_order.size(); i++) std::cout << parts[job_order[i]].getSize() << " " << std::flush; std::cout << std::endl; // DEBUG
         std::sort(job_order.begin(), job_order.end(), [&](const int &l, const int &r){return (parts[l].getSize() > parts[r].getSize());});
     //    for (size_t i=0; i<job_order.size(); i++) std::cout << job_order[i] << " " << std::flush; std::cout << std::endl; // DEBUG
     //    for (size_t i=0; i<job_order.size(); i++) std::cout << parts[job_order[i]].getSize() << " " << std::flush; std::cout << std::endl; // DEBUG
-        disp.reset(new MPI::MPIMaster(comm,job_order,true)); 
+        disp.reset(new pMPI::MPIMaster(comm,job_order,true)); 
         disp->order();
     };
     comm.barrier();
 
     // Start calculating data
-    for (MPI::MPIWorker worker(comm,ROOT);!worker.is_finished();) {
+    for (pMPI::MPIWorker worker(comm,ROOT);!worker.is_finished();) {
         if (rank == ROOT) disp->order(); 
         worker.receive_order(); 
         //DEBUG((worker.Status == WorkerTag::Pending));
@@ -111,21 +111,21 @@ std::map<Pomerol::MPI::JobId, Pomerol::MPI::WorkerId> MPISkel<WrapType>::run(con
     // at this moment all communication is finished
     // Now spread the information, who did what.
     comm.barrier();
-    std::map<MPI::JobId, MPI::WorkerId> job_map;
+    std::map<pMPI::JobId, pMPI::WorkerId> job_map;
     if (rank == ROOT) { 
         job_map = disp -> DispatchMap; 
-        std::vector<MPI::JobId> jobs(job_map.size());
-        std::vector<MPI::WorkerId> workers(job_map.size());
-        std::transform(job_map.begin(), job_map.end(), jobs.begin(), [](std::pair<MPI::JobId, MPI::WorkerId> x){return x.first;});
+        std::vector<pMPI::JobId> jobs(job_map.size());
+        std::vector<pMPI::WorkerId> workers(job_map.size());
+        std::transform(job_map.begin(), job_map.end(), jobs.begin(), [](std::pair<pMPI::JobId, pMPI::WorkerId> x){return x.first;});
         boost::mpi::broadcast(comm, jobs, ROOT);
-        std::transform(job_map.begin(), job_map.end(), workers.begin(), [](std::pair<MPI::JobId, MPI::WorkerId> x){return x.second;});
+        std::transform(job_map.begin(), job_map.end(), workers.begin(), [](std::pair<pMPI::JobId, pMPI::WorkerId> x){return x.second;});
         boost::mpi::broadcast(comm, workers, ROOT);
         disp.release(); 
     } 
     else {
-        std::vector<MPI::JobId> jobs(parts.size());
+        std::vector<pMPI::JobId> jobs(parts.size());
         boost::mpi::broadcast(comm, jobs, ROOT);
-        std::vector<MPI::WorkerId> workers(parts.size());
+        std::vector<pMPI::WorkerId> workers(parts.size());
         boost::mpi::broadcast(comm, workers, ROOT);
         for (size_t i=0; i<jobs.size(); i++) job_map[jobs[i]] = workers[i]; 
     }

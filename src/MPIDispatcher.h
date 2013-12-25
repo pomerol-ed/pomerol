@@ -36,7 +36,7 @@
 
 namespace Pomerol {
 
-namespace MPI {
+namespace pMPI {
 
 enum class WorkerTag : int { Pending, Work, Finish }; // tags for MPI communication
 typedef int JobId;

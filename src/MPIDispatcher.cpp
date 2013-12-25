@@ -2,7 +2,7 @@
 
 namespace Pomerol { 
 
-namespace MPI {
+namespace pMPI {
 
 //
 // Worker
