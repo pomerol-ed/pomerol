@@ -30,13 +30,14 @@ return (Status == WorkerTag::Work);
 
 void MPIWorker::receive_order() 
 {
-    if (Status == WorkerTag::Pending && WorkReq.test()) { Status = WorkerTag::Work; }; 
-    if (Status == WorkerTag::Pending && FinishReq.test()) { Status = WorkerTag::Finish; };
+    if (Status == WorkerTag::Pending && WorkReq.test()) { Status = WorkerTag::Work; return; }; 
+    if (Status == WorkerTag::Pending && FinishReq.test()) { Status = WorkerTag::Finish; WorkReq.cancel(); return; };
 }
 
 void MPIWorker::report_job_done()
 { 
-    Comm.isend(boss,int(WorkerTag::Pending)); 
+    auto send_req = Comm.isend(boss,int(WorkerTag::Pending)); 
+    //DEBUG(id << "->" << boss << " tag: pending");
     Status = WorkerTag::Pending; 
     WorkReq = Comm.irecv(boss, int(WorkerTag::Work), current_job);
 };
@@ -44,11 +45,12 @@ void MPIWorker::report_job_done()
 // Master
 //
 
-MPIMaster::MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers ):
-    Comm(comm), Ntasks(ntasks),
+MPIMaster::MPIMaster(const boost::mpi::communicator &comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers ):
+    Comm(comm), Ntasks(task_numbers.size()),
     Nprocs(worker_pool.size()), id(Comm.rank()),
     task_numbers(task_numbers), worker_pool(worker_pool), 
-    wait_statuses(Nprocs)
+    wait_statuses(Nprocs),
+    workers_finish(Nprocs,false)
 {
     for (int i=Ntasks-1; i>=0; i--) { JobStack.push(task_numbers[i]); };
     for (int p=Nprocs-1; p>=0; p--) { 
@@ -80,19 +82,20 @@ inline std::vector<JobId> _autorange_tasks(size_t ntasks)
 }
 
 MPIMaster::MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, bool include_boss):
-    MPIMaster(comm,ntasks,_autorange_workers(comm,include_boss), _autorange_tasks(ntasks))
+    MPIMaster(comm,_autorange_workers(comm,include_boss), _autorange_tasks(ntasks))
 {};
 
-MPIMaster::MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, std::vector<JobId> task_numbers, bool include_boss ):
-    MPIMaster(comm,ntasks,_autorange_workers(comm,include_boss), task_numbers)
+MPIMaster::MPIMaster(const boost::mpi::communicator &comm, std::vector<JobId> task_numbers, bool include_boss ):
+    MPIMaster(comm,_autorange_workers(comm,include_boss), task_numbers)
 {};
 
 
 
 void MPIMaster::order_worker(WorkerId worker, JobId job)
 {
-    DEBUG("Occupying worker " << worker << " with job = " << job);
-    Comm.isend(worker,int(WorkerTag::Work),job);
+    auto send_req = Comm.isend(worker,int(WorkerTag::Work),job);
+    //DEBUG(id << "->" << worker << " tag: work");
+    send_req.wait();
     DispatchMap[job]=worker;
     wait_statuses[WorkerIndices[worker]] = Comm.irecv(worker,int(WorkerTag::Pending));
 };
@@ -114,13 +117,16 @@ void MPIMaster::check_workers()
         for (size_t i=0; i<Nprocs && !JobStack.empty(); i++) {
             if (wait_statuses[i].test()) { 
                 WorkerStack.push(worker_pool[i]);
-        //        wait_statuses[i] = boost::mpi::request();
                 }; 
         };
     }
     else {
         for (size_t i=0; i<Nprocs; i++) {
-            Comm.isend(worker_pool[i],int(WorkerTag::Finish));
+            if (!workers_finish[i]) { 
+                //DEBUG(id << "->" << worker_pool[i] << " tag: finish");
+                Comm.isend(worker_pool[i],int(WorkerTag::Finish));
+                workers_finish[i] = true; // to prevent double sending of Finish command that could overlap with other communication
+            };
         };
     };
 }

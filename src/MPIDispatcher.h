@@ -77,9 +77,10 @@ struct MPIMaster
     std::map<size_t, WorkerId> WorkerIndices;
 
     std::vector<boost::mpi::request> wait_statuses;
+    std::vector<bool> workers_finish;
 
-    MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers );
-    MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, std::vector<JobId> task_numbers, bool include_boss = true );
+    MPIMaster(const boost::mpi::communicator &comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers );
+    MPIMaster(const boost::mpi::communicator &comm, std::vector<JobId> task_numbers, bool include_boss = true );
     MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, bool include_boss = true );
 
     void order_worker(WorkerId worker_id, JobId job);
