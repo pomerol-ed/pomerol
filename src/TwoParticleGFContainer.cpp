@@ -20,6 +20,8 @@
 
 
 #include "TwoParticleGFContainer.h"
+#include <boost/serialization/complex.hpp>
+#include <boost/serialization/vector.hpp>
 
 namespace Pomerol{
 
@@ -42,7 +44,6 @@ void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& Initi
         static_cast<TwoParticleGF&>(iter->second).prepare();
        };
 }
-
 void TwoParticleGFContainer::computeAll(const boost::mpi::communicator & comm)
 {
     for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
@@ -51,6 +52,58 @@ void TwoParticleGFContainer::computeAll(const boost::mpi::communicator & comm)
         static_cast<TwoParticleGF&>(iter->second).compute(comm);
         };
 }
+/*
+void TwoParticleGFContainer::computeAll(const boost::mpi::communicator & comm)
+{
+    // split communicator
+    size_t ncomponents = NonTrivialElements.size();
+    size_t ncolors = std::min(int(comm.size()), int(NonTrivialElements.size()));
+    RealType color_size = 1.0*comm.size()/ncolors;
+    std::map<int,int> proc_colors;
+    std::map<int,int> elem_colors;
+    std::map<int,int> color_roots;
+    bool calc = false;
+    for (size_t p=0; p<comm.size(); p++) {
+        int color = int (1.0*p / color_size);
+        proc_colors[p] = color;
+        color_roots[color]=p; 
+        DEBUG(p << " " << color);
+    }
+    for (size_t i=0; i<ncomponents; i++) {
+        int color = i*ncolors/ncomponents;
+        elem_colors[i] = color;
+        DEBUG(i << " " << color);
+    };
+
+    DEBUG(comm.rank() << "!");
+    int comp = 0;
+    for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
+        bool calc = (elem_colors[comp] == proc_colors[comm.rank()]); 
+        if (calc) { 
+            INFO("C" << elem_colors[comp] << "p" << comm.rank() << ": computing 2PGF for " << iter->first);
+            if (calc) static_cast<TwoParticleGF&>(*(iter->second)).compute(comm);
+            DEBUG(comm.rank() << " " << comp);
+            };
+        };
+    DEBUG(comm.rank() << " !!");
+    comm.barrier();
+    DEBUG(comm.rank() << " !!!");
+    // distribute data
+    if (!comm.rank()) INFO("Distributing 2PGF container");
+    comp = 0;
+    for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
+        TwoParticleGF& chi = *((iter)->second);
+        for (size_t p = 0; p<chi.parts.size(); p++) {
+            auto sender = color_roots[proc_colors[comp]];
+            boost::mpi::broadcast(comm, chi.parts[p]->NonResonantTerms, sender);
+            boost::mpi::broadcast(comm, chi.parts[p]->ResonantTerms, sender);
+            if (comm.rank() != sender) { 
+                chi.setStatus(TwoParticleGF::Computed);
+                 };
+            };
+    }
+}
+*/
 
 TwoParticleGF* TwoParticleGFContainer::createElement(const IndexCombination4& Indices) const
 {

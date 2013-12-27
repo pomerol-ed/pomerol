@@ -52,14 +52,14 @@ template<typename ElementType, typename SourceObject>
 class IndexContainer4 {
 protected:
     const IndexClassification& IndexInfo;
-    std::map<IndexCombination4,ElementWithPermFreq<ElementType> > ElementsMap;
 
     SourceObject* pSource;
 
     const std::set<IndexCombination4> enumerateInitialIndices(void) const;
 
 public:
-
+    std::map<IndexCombination4,ElementWithPermFreq<ElementType> > ElementsMap;
+    std::map<IndexCombination4, boost::shared_ptr<ElementType>  > NonTrivialElements;
     IndexContainer4<ElementType,SourceObject>(SourceObject* pSource, const IndexClassification& IndexInfo);
 
     void fill(std::set<IndexCombination4> InitialIndices = std::set<IndexCombination4>());
@@ -168,6 +168,8 @@ ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::set
 
     bool SameCIndices = (Indices.Index1==Indices.Index2);
     bool SameCXIndices = (Indices.Index3==Indices.Index4);
+    
+    NonTrivialElements.insert(std::make_pair(Indices,pElement)); 
 
     if(!SameCIndices){
         IndexCombination4 Indices2134(Indices.Index2,Indices.Index1,Indices.Index3,Indices.Index4);

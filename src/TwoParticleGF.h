@@ -72,11 +72,10 @@ class TwoParticleGF : public Thermal, public ComputableObject {
     /** A reference to a density matrix. */
     const DensityMatrix& DM;
 
+public:
     /** A list of pointers to parts. */
     std::vector<TwoParticleGFPart*> parts;
-
-    std::list<TwoParticleGFPart::ResonantTerm> ResonantTerms[6];
-    std::list<TwoParticleGFPart::NonResonantTerm> NonResonantTerms[6];
+protected:
 
     /** A flag to determine whether this GF is identical to zero */
     bool Vanishing;

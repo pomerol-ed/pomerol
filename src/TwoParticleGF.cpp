@@ -136,24 +136,30 @@ bool TwoParticleGF::isVanishing(void) const
 
 void TwoParticleGF::compute(const boost::mpi::communicator & comm)
 {
-    // Create a "skeleton" class with pointers to part that can call a compute method
-    pMPI::MPISkel<pMPI::ComputeWrap<TwoParticleGFPart>> skel;
-    skel.parts.resize(parts.size());
-    for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::ComputeWrap<TwoParticleGFPart>(*parts[i]);};
-    std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
-    int rank = comm.rank();
-    int comm_size = comm.size(); 
+    if (Status < Prepared) throw (exStatusMismatch());
+    if (Status >= Computed) return;
+    if (!Vanishing) {
+        // Create a "skeleton" class with pointers to part that can call a compute method
+        pMPI::MPISkel<pMPI::ComputeWrap<TwoParticleGFPart>> skel;
+        skel.parts.resize(parts.size());
+        for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::ComputeWrap<TwoParticleGFPart>(*parts[i]);};
+        std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
+        int rank = comm.rank();
+        int comm_size = comm.size(); 
 
-    // Start distributing data
-    comm.barrier();
-     
-    for (size_t p = 0; p<parts.size(); p++) {
-        boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, job_map[p]);
-        boost::mpi::broadcast(comm, parts[p]->ResonantTerms, job_map[p]);
-        if (rank == job_map[p]) { 
-            parts[p]->Status = TwoParticleGFPart::Computed;
-             };
-        };
+        // Start distributing data
+        //DEBUG(comm.rank() << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << " Start distributing data");
+        comm.barrier();
+         
+        for (size_t p = 0; p<parts.size(); p++) {
+            boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, job_map[p]);
+            boost::mpi::broadcast(comm, parts[p]->ResonantTerms, job_map[p]);
+            if (rank == job_map[p]) { 
+                parts[p]->Status = TwoParticleGFPart::Computed;
+                 };
+            };
+        comm.barrier();
+    };
     Status = Computed;
 }
 
