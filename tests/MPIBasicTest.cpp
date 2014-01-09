@@ -19,12 +19,14 @@ int main(int argc, char* argv[])
         INFO("i = " << i << ";" << "j = " << j);
         world.isend(0,0, i);
         world.isend(0,0, j);
+        int t1, t2;
         boost::mpi::request req[2];
-        req[0] = world.irecv(0,0,j);
-        req[1] = world.irecv(0,0,i);
+        req[0] = world.irecv(0,0,t1);
+        req[1] = world.irecv(0,0,t2);
         if (!world.rank()) boost::mpi::wait_all(req, req+2);
+        i = t2; j = t1;
         INFO("i = " << i << ";" << "j = " << j);
-        if (j!=4 || i!=5) return EXIT_FAILURE;
+        if (!world.rank() && (j!=4 || i!=5)) return EXIT_FAILURE;
         INFO("Success : isend to the same proc");
     };
 

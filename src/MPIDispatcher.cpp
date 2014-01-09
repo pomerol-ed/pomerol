@@ -37,7 +37,7 @@ void MPIWorker::receive_order()
 void MPIWorker::report_job_done()
 { 
     auto send_req = Comm.isend(boss,int(WorkerTag::Pending)); 
-    //DEBUG(id << "->" << boss << " tag: pending");
+    DEBUG(id << "->" << boss << " tag: pending");
     Status = WorkerTag::Pending; 
     WorkReq = Comm.irecv(boss, int(WorkerTag::Work), current_job);
 };
@@ -94,7 +94,7 @@ MPIMaster::MPIMaster(const boost::mpi::communicator &comm, std::vector<JobId> ta
 void MPIMaster::order_worker(WorkerId worker, JobId job)
 {
     auto send_req = Comm.isend(worker,int(WorkerTag::Work),job);
-    //DEBUG(id << "->" << worker << " tag: work");
+    DEBUG(id << "->" << worker << " tag: work");
     send_req.wait();
     DispatchMap[job]=worker;
     wait_statuses[WorkerIndices[worker]] = Comm.irecv(worker,int(WorkerTag::Pending));
@@ -123,7 +123,7 @@ void MPIMaster::check_workers()
     else {
         for (size_t i=0; i<Nprocs; i++) {
             if (!workers_finish[i]) { 
-                //DEBUG(id << "->" << worker_pool[i] << " tag: finish");
+                DEBUG(id << "->" << worker_pool[i] << " tag: finish");
                 Comm.isend(worker_pool[i],int(WorkerTag::Finish));
                 workers_finish[i] = true; // to prevent double sending of Finish command that could overlap with other communication
             };

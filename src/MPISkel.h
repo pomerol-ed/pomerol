@@ -79,14 +79,14 @@ std::map<Pomerol::pMPI::JobId, Pomerol::pMPI::WorkerId> MPISkel<WrapType>::run(c
         // prepare one Master on a root process for distributing parts.size() jobs
         std::vector<pMPI::JobId> job_order(parts.size());
         for (size_t i=0; i<job_order.size(); i++) job_order[i] = i;
-    //    for (size_t i=0; i<job_order.size(); i++) std::cout << job_order[i] << " " << std::flush; std::cout << std::endl; // DEBUG
-    //    for (size_t i=0; i<job_order.size(); i++) std::cout << parts[job_order[i]].getSize() << " " << std::flush; std::cout << std::endl; // DEBUG
+        for (size_t i=0; i<job_order.size(); i++) std::cout << job_order[i] << " " << std::flush; std::cout << std::endl; // DEBUG
+        for (size_t i=0; i<job_order.size(); i++) std::cout << parts[job_order[i]].complexity << " " << std::flush; std::cout << std::endl; // DEBUG
         std::sort(job_order.begin(), job_order.end(), [&](const int &l, const int &r){return (parts[l].complexity > parts[r].complexity);});
-    //    for (size_t i=0; i<job_order.size(); i++) std::cout << job_order[i] << " " << std::flush; std::cout << std::endl; // DEBUG
-    //    for (size_t i=0; i<job_order.size(); i++) std::cout << parts[job_order[i]].getSize() << " " << std::flush; std::cout << std::endl; // DEBUG
+        for (size_t i=0; i<job_order.size(); i++) std::cout << job_order[i] << " " << std::flush; std::cout << std::endl; // DEBUG
+        for (size_t i=0; i<job_order.size(); i++) std::cout << parts[job_order[i]].complexity << " " << std::flush; std::cout << std::endl; // DEBUG
         disp.reset(new pMPI::MPIMaster(comm,job_order,true)); 
-        disp->order();
     };
+
     comm.barrier();
 
     // Start calculating data
