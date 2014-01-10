@@ -25,6 +25,7 @@ set (pomerol_src Misc.cpp
 	Vertex4Container.cpp Vertex4Container.h
 )
 add_library(pomerol SHARED ${pomerol_src})
+set_target_properties(pomerol PROPERTIES VERSION ${POMEROL_VERSION})
 
 target_link_libraries(pomerol
     ${Boost_LIBRARIES}

@@ -224,16 +224,8 @@ inline bool __is_zero(const T& in, RealType threshold = std::numeric_limits<Real
 /**
  * \mainpage 
  * The source code and fetch instructions are located at <a href="http://pomerol.googlecode.com">project's Google code page</a>.
- * \section ref_exec pomerolDiag       
- * \verbatim pomerolDiag -b <beta> -m <Nm> -l <LatticeFile> \endverbatim
- * \param beta The value of inverse temperature for Thermal objects (i.e DensityMatrix, TwoParticleGF, GreensFunction etc).     
- * \param Nm A number of positive Matsubara frequencies, for which the computation of TwoParticleGF and Vertex4 should be performed. The GreensFunction is obtained with 8*Nm Matsubara Frequencies.      
- * \param LatticeFile A lattice .json file, see page \ref ref_lattice .
- *
- * Call "pomerolDiag -h" for this information
  * \section   ref_API libpomerol API
  * The general sequence of a calculation is:
- * -    Open a Lattice .json file ( by LatticeAnalysis ).
  * -    Define all indices of each mode of the system, i.e. site + spin indices ( by IndexClassification ).
  *      This is also a moment to discover symmetries against permutations of indices.
  * -    Define the Fock space - create QuantumStates and sort them into the blocks by their quantum numbers ( by StatesClassification ).
