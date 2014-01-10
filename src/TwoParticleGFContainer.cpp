@@ -103,7 +103,7 @@ void TwoParticleGFContainer::computeAll_split(const boost::mpi::communicator & c
 
     comm.barrier();
     // distribute data
-    if (!comm.rank()) INFO("Distributing 2PGF container");
+    if (!comm.rank()) INFO_NONEWLINE("Distributing 2PGF container...");
     comp = 0;
     for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
         TwoParticleGF& chi = *((iter)->second);
@@ -117,6 +117,8 @@ void TwoParticleGFContainer::computeAll_split(const boost::mpi::communicator & c
                  };
             };
     }
+    comm.barrier();
+    if (!comm.rank()) INFO("done.");
 }
 
 TwoParticleGF* TwoParticleGFContainer::createElement(const IndexCombination4& Indices) const
