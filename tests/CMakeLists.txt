@@ -42,8 +42,8 @@ GF2siteTest
 AndersonTest
 GF4siteTest
 GFContainerTest
+TwoParticleGFContainerTest
 Vertex4Test
-#Vertex4ContainerTest
 )
 
 foreach (test ${tests})

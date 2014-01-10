@@ -44,7 +44,16 @@ void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& Initi
         static_cast<TwoParticleGF&>(iter->second).prepare();
        };
 }
-void TwoParticleGFContainer::computeAll(const boost::mpi::communicator & comm)
+
+void TwoParticleGFContainer::computeAll(const boost::mpi::communicator & comm, bool split)
+{
+    if (split) 
+        computeAll_split(comm);
+    else 
+        computeAll_nosplit(comm);
+}
+
+void TwoParticleGFContainer::computeAll_nosplit(const boost::mpi::communicator & comm)
 {
     for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
         iter != ElementsMap.end(); iter++) {
@@ -52,8 +61,8 @@ void TwoParticleGFContainer::computeAll(const boost::mpi::communicator & comm)
         static_cast<TwoParticleGF&>(iter->second).compute(comm);
         };
 }
-/*
-void TwoParticleGFContainer::computeAll(const boost::mpi::communicator & comm)
+
+void TwoParticleGFContainer::computeAll_split(const boost::mpi::communicator & comm)
 {
     // split communicator
     size_t ncomponents = NonTrivialElements.size();
@@ -67,33 +76,39 @@ void TwoParticleGFContainer::computeAll(const boost::mpi::communicator & comm)
         int color = int (1.0*p / color_size);
         proc_colors[p] = color;
         color_roots[color]=p; 
-        DEBUG(p << " " << color);
     }
     for (size_t i=0; i<ncomponents; i++) {
         int color = i*ncolors/ncomponents;
         elem_colors[i] = color;
-        DEBUG(i << " " << color);
     };
 
-    DEBUG(comm.rank() << "!");
+    if (!comm.rank()) {
+        INFO("Splitting " << ncomponents << " components in " << ncolors << " communicators");
+        for (size_t i=0; i<ncomponents; i++) 
+        INFO("2pgf " << i << " color: " << elem_colors[i] << " color_root: " << color_roots[elem_colors[i]]); 
+        };
+    comm.barrier();
     int comp = 0;
+
+    boost::mpi::communicator comm_split = comm.split(proc_colors[comm.rank()]);
+
     for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
-        bool calc = (elem_colors[comp] == proc_colors[comm.rank()]); 
+        bool calc = (elem_colors[comp] == proc_colors[comm.rank()]);
         if (calc) { 
             INFO("C" << elem_colors[comp] << "p" << comm.rank() << ": computing 2PGF for " << iter->first);
-            if (calc) static_cast<TwoParticleGF&>(*(iter->second)).compute(comm);
             DEBUG(comm.rank() << " " << comp);
+            if (calc) static_cast<TwoParticleGF&>(*(iter->second)).compute(comm_split);
             };
         };
-    DEBUG(comm.rank() << " !!");
+
     comm.barrier();
-    DEBUG(comm.rank() << " !!!");
     // distribute data
     if (!comm.rank()) INFO("Distributing 2PGF container");
     comp = 0;
     for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
         TwoParticleGF& chi = *((iter)->second);
         for (size_t p = 0; p<chi.parts.size(); p++) {
+            //DEBUG(comm.rank() << " " << chi.parts[p]->NonResonantTerms.size());
             auto sender = color_roots[proc_colors[comp]];
             boost::mpi::broadcast(comm, chi.parts[p]->NonResonantTerms, sender);
             boost::mpi::broadcast(comm, chi.parts[p]->ResonantTerms, sender);
@@ -103,7 +118,6 @@ void TwoParticleGFContainer::computeAll(const boost::mpi::communicator & comm)
             };
     }
 }
-*/
 
 TwoParticleGF* TwoParticleGFContainer::createElement(const IndexCombination4& Indices) const
 {
