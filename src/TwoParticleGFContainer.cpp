@@ -96,20 +96,18 @@ void TwoParticleGFContainer::computeAll_split(const boost::mpi::communicator & c
         bool calc = (elem_colors[comp] == proc_colors[comm.rank()]);
         if (calc) { 
             INFO("C" << elem_colors[comp] << "p" << comm.rank() << ": computing 2PGF for " << iter->first);
-            DEBUG(comm.rank() << " " << comp);
             if (calc) static_cast<TwoParticleGF&>(*(iter->second)).compute(comm_split);
             };
         };
-
     comm.barrier();
     // distribute data
     if (!comm.rank()) INFO_NONEWLINE("Distributing 2PGF container...");
     comp = 0;
     for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
+        auto sender = color_roots[elem_colors[comp]];
         TwoParticleGF& chi = *((iter)->second);
         for (size_t p = 0; p<chi.parts.size(); p++) {
-            //DEBUG(comm.rank() << " " << chi.parts[p]->NonResonantTerms.size());
-            auto sender = color_roots[proc_colors[comp]];
+        //    if (comm.rank() == sender) INFO("P" << comm.rank() << " 2pgf " << p << " " << chi.parts[p]->NonResonantTerms.size());
             boost::mpi::broadcast(comm, chi.parts[p]->NonResonantTerms, sender);
             boost::mpi::broadcast(comm, chi.parts[p]->ResonantTerms, sender);
             if (comm.rank() != sender) { 

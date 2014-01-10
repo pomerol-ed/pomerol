@@ -153,11 +153,12 @@ int main(int argc, char* argv[])
     Chi.ReduceResonanceTolerance = 1e-4;
     Chi.prepareAll();
     Chi.computeAll();
+    world.barrier();
 
     bool success = true; 
     int wn = 4;
 
-    INFO("TEST: CHI_UPUPUPUP");
+    if (!world.rank()) INFO("TEST: CHI_UPUPUPUP");
     auto &GF = G(0,0);
     auto &Chi_uuuu = Chi(IndexCombination4(0,0,0,0));
     for(int n1 = -wn; n1<wn && success; ++n1)
@@ -170,12 +171,15 @@ int main(int argc, char* argv[])
          if (!success) INFO(n1 << " " << n2 << " " << n3 << " " << n1+n2-n3 << " : " << l << " == " << r);
      }
     world.barrier();
-    if (!success) return EXIT_FAILURE;
-    INFO("SUCCESS");
+    if (!success) { 
+        ERROR(world.rank() << ": FAIL");
+        return EXIT_FAILURE;
+        };
+    INFO(world.rank() << ": SUCCESS");
     world.barrier();
 
 
-    INFO("TEST: CHI_UPDOWNUPDOWN");
+    if (!world.rank()) INFO("TEST: CHI_UPDOWNUPDOWN");
     auto &Chi_udud = Chi(IndexCombination4(0,1,0,1));
     for(int n1 = -wn; n1<wn && success; ++n1)
     for(int n2 = -wn; n2<wn && success; ++n2)
@@ -184,11 +188,14 @@ int main(int argc, char* argv[])
          auto l = Chi_udud(n1,n2,n3); 
          auto r = gamma4ref_udud(n1,n2,n3)*GF(n1)*GF(n2)*GF(n3)*GF(n4) - beta*GF(n1)*GF(n2)*delta(n1,n3);
          success = success && compare(l,r,1e-6);
-         if (!success) INFO(n1 << " " << n2 << " " << n3 << " " << n1+n2-n3 << " : " << l << " == " << r);
+         if (!success) INFO("P" << world.rank() << ":" << n1 << " " << n2 << " " << n3 << " " << n1+n2-n3 << " : " << l << " == " << r);
      }
     world.barrier();
-    if (!success) return EXIT_FAILURE;
-    INFO("SUCCESS");
+    if (!success) { 
+        ERROR(world.rank() << ": FAIL");
+        return EXIT_FAILURE;
+        };
+    INFO(world.rank() << ": SUCCESS");
 
     return EXIT_SUCCESS;
 }
