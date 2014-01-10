@@ -120,7 +120,7 @@ public:
     /** Virtual method for assigning world-lines */
     virtual void prepare(void) = 0;
     /** Computes all world-lines */
-    void compute(void);
+    void compute(const boost::mpi::communicator& comm = boost::mpi::communicator());
 };
 
 /** A creation operator in the eigenspace of a Hamiltonian */

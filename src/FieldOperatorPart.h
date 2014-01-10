@@ -44,6 +44,7 @@ namespace Pomerol{
  */
 class FieldOperatorPart : public ComputableObject {
     friend class FieldOperatorContainer;
+    friend class FieldOperator;
 public:
     /** A reference to the IndexClassification object. */
     const IndexClassification &IndexInfo;
