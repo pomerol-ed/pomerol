@@ -17,6 +17,31 @@ ELSE()
    SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
 ENDIF()
 
+# begin :: C++11 check
+set(CMAKE_CXX_FLAGS "-std=c++11")
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+    execute_process(
+        COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs")
+    if (NOT (GCC_VERSION VERSION_GREATER 4.6 OR GCC_VERSION VERSION_EQUAL 4.6))
+        message(FATAL_ERROR "${PROJECT_NAME} requires g++ 4.6 or greater.")
+    endif ()
+elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")
+    if ("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
+    elseif ("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
+        message( STATUS "Adding -stdlib=libc++ flag")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+    else()
+        message(FATAL_ERROR "Platform undefined")
+    endif()
+else ()
+    message(FATAL_ERROR "Your C++ compiler does not support C++11.")
+endif ()
+#end :: C++11 check
+
+
+
 #Use complex Matrix elements
 option(use_complex "Use complex matrix elements" OFF)
 if (use_complex)
