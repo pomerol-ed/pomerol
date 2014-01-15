@@ -40,8 +40,6 @@ else ()
 endif ()
 #end :: C++11 check
 
-
-
 #Use complex Matrix elements
 option(use_complex "Use complex matrix elements" OFF)
 if (use_complex)
