@@ -184,7 +184,7 @@ public:
     
     Operator& operator*= (const MelemType alpha)
     {
-        if(std::abs(alpha) < 2.0*std::numeric_limits<RealType>::epsilon()){
+        if(std::abs(alpha) < 100*std::numeric_limits<RealType>::epsilon()){
             monomials.clear(); 
         } else {
             BOOST_FOREACH(monomials_map_t::value_type& m, monomials) { 
@@ -343,7 +343,7 @@ protected:
     static void erase_zero_monomial(monomials_map_t & m,
                                     monomials_map_t::iterator & it)
     {
-        if(std::abs(it->second) < 2.*std::numeric_limits<RealType>::epsilon())
+        if(std::abs(it->second) < 100*std::numeric_limits<RealType>::epsilon())
             m.erase(it);
     }
 

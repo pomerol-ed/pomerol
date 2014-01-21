@@ -156,7 +156,7 @@ MelemType Operator::getMatrixElement( const VectorType & bra, const VectorType &
 
 bool operator==(const Operator::monomials_map_t::value_type& lhs, const Operator::monomials_map_t::value_type& rhs)
 {
-    return (std::equal(lhs.first.begin(), lhs.first.end(), rhs.first.begin()) && std::abs(rhs.second - lhs.second)<std::numeric_limits<RealType>::epsilon());
+    return (std::equal(lhs.first.begin(), lhs.first.end(), rhs.first.begin()) && std::abs(rhs.second - lhs.second)<100*std::numeric_limits<RealType>::epsilon());
 }
 
 bool operator==(const Operator &lhs, const Operator &rhs)
