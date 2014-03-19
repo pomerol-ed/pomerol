@@ -137,12 +137,7 @@ void TwoParticleGFPart::compute()
     const ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
 
     InnerQuantumState index1;
-    InnerQuantumState index1Max = 0;
-    double energy_cutoff = CoefficientTolerance;
-    for (index1Max=0; index1Max<CX4matrix.outerSize() && DMpart1.getWeight(index1Max) >= energy_cutoff; ++index1Max) { DEBUG(DMpart1.getWeight(index1Max)); }
-    INFO("Cutoff with state = " << (index1Max) << " with weight = " << DMpart1.getWeight((index1Max>0?index1Max-1:index1Max)) 
-                                << " (cutoff = " << CoefficientTolerance << ")");
-    //index1Max = CX4matrix.outerSize();
+    InnerQuantumState index1Max = CX4matrix.outerSize(); // One can not make a cutoff in external index for evaluating 2PGF 
 
     InnerQuantumState index3;
     InnerQuantumState index3Max = O2matrix.outerSize();
@@ -188,6 +183,7 @@ void TwoParticleGFPart::compute()
                         InnerQuantumState index4 = *pIndex4;
                         RealType E4 = Hpart4.getEigenValue(index4);                       
                         RealType weight4 = DMpart4.getWeight(index4);
+                        if (weight1 + weight2 + weight3 + weight4 < CoefficientTolerance) break;  // optimization 
 
                         ComplexType MatrixElement = index2ket_iter.value()*
                                                     index2bra_iter.value()*
