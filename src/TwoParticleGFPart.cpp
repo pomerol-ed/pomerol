@@ -140,7 +140,8 @@ void TwoParticleGFPart::compute()
     InnerQuantumState index1Max = 0;
     double energy_cutoff = CoefficientTolerance;
     for (index1Max=0; index1Max<CX4matrix.outerSize() && DMpart1.getWeight(index1Max) >= energy_cutoff; ++index1Max) { DEBUG(DMpart1.getWeight(index1Max)); }
-    INFO("Cutoff with state = " << (index1Max) << " with weight = " << (index1Max>0?index1Max-1:index1Max) << " (cutoff = " << CoefficientTolerance << ")");
+    INFO("Cutoff with state = " << (index1Max) << " with weight = " << DMpart1.getWeight((index1Max>0?index1Max-1:index1Max)) 
+                                << " (cutoff = " << CoefficientTolerance << ")");
     //index1Max = CX4matrix.outerSize();
 
     InnerQuantumState index3;
