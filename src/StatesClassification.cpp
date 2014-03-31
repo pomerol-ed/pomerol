@@ -35,13 +35,13 @@ StatesClassification::StatesClassification(const IndexClassification& IndexInfo,
     IndexInfo(IndexInfo),
     Symm(Symm)
 {
-    IndexSize = IndexInfo.getIndexSize();
-    StateSize = 1<<IndexSize;
 }
 
 void StatesClassification::compute()             
 {
     if (Status>=Computed) return;
+    IndexSize = IndexInfo.getIndexSize();
+    StateSize = 1<<IndexSize;
     std::vector<boost::shared_ptr<Operator> > sym_op = Symm.getOperations();
     int NOperations=sym_op.size();
     BlockNumber block_index=0;

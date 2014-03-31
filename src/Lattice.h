@@ -70,7 +70,7 @@ public:
     void printTerms(unsigned int order);
 
     /** Print all Sites */
-    void printSites();
+    void printSites() const;
 
 protected:
     /** A map between the particular Lattice::Site and it's label. */

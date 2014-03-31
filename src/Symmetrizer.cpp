@@ -166,11 +166,10 @@ bool Symmetrizer::QuantumNumbers::operator!= (const Symmetrizer::QuantumNumbers&
 // Symmetrizer
 //
 
-Symmetrizer::Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage):
+Symmetrizer::Symmetrizer(const IndexClassification &IndexInfo, const IndexHamiltonian &Storage):
     ComputableObject(), 
     IndexInfo(IndexInfo), 
     Storage(Storage), 
-    IndexSize(IndexInfo.getIndexSize()), 
     NSymmetries(0)
 {
 }
@@ -200,6 +199,7 @@ bool Symmetrizer::checkSymmetry(const Operator &in)
 
 void Symmetrizer::compute(bool ignore_symmetries)
 {
+    IndexSize = IndexInfo.getIndexSize(); 
     if (Status>=Computed) return;
     if (!ignore_symmetries) {
         // Check particle number conservation

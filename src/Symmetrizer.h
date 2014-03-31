@@ -58,7 +58,7 @@ private:
     const IndexHamiltonian &Storage;
 
     /** Total amount of indices in the system. */
-    const ParticleIndex IndexSize;
+    ParticleIndex IndexSize;
 
     /** A list of equivalent lattice sites permutations. */
     std::list<IndexPermutation*> Permutations;
@@ -71,7 +71,7 @@ private:
     /** This method finds all possible symmetry operations. */ /** lattice permutation operators, that commute with the hamiltonian. */
     //void findLatticeSymmetry();
 public:
-    Symmetrizer(IndexClassification &IndexInfo, IndexHamiltonian &Storage);
+    Symmetrizer(const IndexClassification &IndexInfo, const IndexHamiltonian &Storage);
     /** This method checks several possible symmetry operations to split the Hamiltonian into blocks. */
     void compute(bool ignore_symmetries = false);
 

@@ -30,7 +30,7 @@
 namespace Pomerol{
 
 DensityMatrix::DensityMatrix(const StatesClassification& S, const Hamiltonian& H, RealType beta) : 
-    Thermal(beta), ComputableObject(), S(S), H(H), parts(S.NumberOfBlocks())
+    Thermal(beta), ComputableObject(), S(S), H(H)
 {}
 
 DensityMatrix::~DensityMatrix()
@@ -42,6 +42,7 @@ DensityMatrix::~DensityMatrix()
 void DensityMatrix::prepare(void)
 {
     if (Status >= Prepared) return;
+    parts = std::vector<DensityMatrixPart*>(S.NumberOfBlocks());
     BlockNumber NumOfBlocks = parts.size();
     RealType GroundEnergy = H.getGroundEnergy();
     // There is one-to-one correspondence between parts of the Hamiltonian
