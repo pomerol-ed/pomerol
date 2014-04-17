@@ -99,6 +99,14 @@ if (Examples)
     add_subdirectory(example)
 endif (Examples)
 
+# Build executables
+option(Execs "Build executables" OFF)
+if (Execs)
+    message(STATUS "Building executables")
+    add_subdirectory(prog)
+endif (Execs)
+
+
 # Install pkg-config file
 configure_file(pomerol.pc.in pomerol.pc @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pomerol.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
