@@ -13,6 +13,7 @@ link_libraries(
 
 set (progs 
 anderson
+hubbard2d
 )
 
 foreach (prog ${progs})
