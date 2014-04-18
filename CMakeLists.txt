@@ -3,6 +3,15 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 project (pomerol)
 set(POMEROL_VERSION 2.0)
 
+# Select default build type
+if(NOT CMAKE_BUILD_TYPE:String AND NOT CMAKE_CONFIGURATION_TYPES)
+   SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
+else()
+   SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
+endif()
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+
+# rpath fix
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
  set(CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib")
@@ -10,15 +19,8 @@ else()
  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 endif()
 
-# Select default build type
-IF(DEFINED CMAKE_BUILD_TYPE)
-   SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
-ELSE()
-   SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
-ENDIF()
-
-# begin :: C++11 check
-set(CMAKE_CXX_FLAGS "-std=c++11")
+# C++11 check
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     execute_process(
         COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
@@ -78,10 +80,8 @@ find_package (Eigen3 3.1)
 include_directories(
     ${Boost_INCLUDE_DIRS}
     ${MPI_CXX_INCLUDE_PATH}
-    #${HDF5_INCLUDE_DIR}
     ${EIGEN3_INCLUDE_DIR}
-    ${PYTHON_INCLUDE_DIRS}
-    ./src
+    ${CMAKE_SOURCE_DIR}/src
 )
 
 add_subdirectory(src)
@@ -100,11 +100,11 @@ if (Examples)
 endif (Examples)
 
 # Build executables
-option(Execs "Build executables" OFF)
-if (Execs)
+option(Progs "Build executables" OFF)
+if (Progs)
     message(STATUS "Building executables")
     add_subdirectory(prog)
-endif (Execs)
+endif (Progs)
 
 
 # Install pkg-config file
