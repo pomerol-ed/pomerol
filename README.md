@@ -1,7 +1,7 @@
 *pomerol* is an exact diagonalization (full-ED) code written in C++ aimed at solving condensed matter second-quantized models of interacting fermions on finite size lattices at finite temperatures. It is mostly developed to produce single and two-particle Greens functions and corresponding vertex functions of a Hubbard model on a cluster.
 
 _[10.01.2014]_ Updated pomerol to 2.0 version, that supports MPI. Removed obsolete hdf5 bindings.  
-_[10.06.2014]_ Moved repo to github. 
+_[10.06.2014]_ Moved repo to github; 1.0 tag
 
 ##### Documentation
 Check http://pomerol.sourceforge.net for the reference documentation.
@@ -11,6 +11,7 @@ Documentation can be compiled with a `make doc` command.
 #####  Features
   * Written in C++: iterators are used to avoid zero matrix elements and vanishing combinations. 
   * Symmetry analysis. The commutation relations between operators are taken into account.
+  * Fermionic operators algebra to diagonalize any fermionic Hamiltonian.
   * [http://eigen.tuxfamily.org Eigen3] template library for linear algebra is used (mostly its Sparse module).
   * High performance exact calculation of a Green's function and a two-particle Green's function in Matsubara domain.
   * [http://en.wikipedia.org/wiki/Message_Passing_Interface MPI] support. 
