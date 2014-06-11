@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 project (pomerol)
-set(POMEROL_VERSION 2.0)
+set(POMEROL_VERSION 1.0)
 
 # Select default build type
 if(NOT CMAKE_BUILD_TYPE:String AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -70,12 +70,6 @@ find_package (Boost COMPONENTS mpi serialization)
 
 find_package (Eigen3 3.1)
     message(STATUS "Eigen3 includes: " ${EIGEN3_INCLUDE_DIR} )
-
-
-
-#find_package (PythonLibs REQUIRED)
-#message("Include dirs of Python: " ${PYTHON_INCLUDE_DIRS} )
-#message("Libs of Python: " ${PYTHON_LIBRARIES} )
 
 include_directories(
     ${Boost_INCLUDE_DIRS}
