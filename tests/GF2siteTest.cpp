@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
     ParticleIndex NModes = IndexInfo.getIndexSize();
 
     std::vector<ParticleIndex> SpinUpIndices;
-    for (ParticleIndex i=0; i<NModes; i++) if (boost::get<2>(IndexInfo.getInfo(i))) SpinUpIndices.push_back(i);
+    for (ParticleIndex i=0; i<NModes; i++) if (IndexInfo.getInfo(i).Spin) SpinUpIndices.push_back(i);
 
     print_section("Matrix element storage");
     IndexHamiltonian Storage(&L,IndexInfo);

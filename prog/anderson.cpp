@@ -180,6 +180,11 @@ int main(int argc, char* argv[])
     rho.compute(); // evaluate thermal weights with respect to ground energy, i.e exp(-beta(e-e_0))/Z 
 
     INFO("<N> = " << rho.getAverageOccupancy()); // get average total particle number
+
+    for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {  
+        INFO("<N_{" << IndexInfo.getInfo(i) << "[" << i <<"]}> = " << rho.getAverageOccupancy(i)); // get average total particle number
+        }
+        
     savetxt("N_T.dat",rho.getAverageOccupancy());
 
     // Green's function calculation starts here

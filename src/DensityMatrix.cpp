@@ -104,7 +104,14 @@ RealType DensityMatrix::getAverageOccupancy() const
     return n;
 };
 
-
+RealType DensityMatrix::getAverageOccupancy(ParticleIndex i) const
+{
+    if ( Status < Computed ) { ERROR("DensityMatrix is not computed yet."); throw (exStatusMismatch()); };
+    RealType n = 0;
+    for(std::vector<DensityMatrixPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+    n += (*iter)->getAverageOccupancy(i);
+    return n;
+};
 
 RealType DensityMatrix::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const
 {

@@ -121,11 +121,19 @@ ParticleIndex IndexClassification::getIndex(const IndexClassification::IndexInfo
     else return IndexSize;
 }
 
+/*
 boost::tuple<std::string, unsigned short, unsigned short> IndexClassification::getInfo(ParticleIndex in) const 
 {
     if (in >= IndexSize) throw (exWrongIndex());
     IndexInfo *out = IndicesToInfo[in];
     return boost::make_tuple(out->SiteLabel, out->Orbital, out->Spin);
+}*/
+
+typename IndexClassification::IndexInfo IndexClassification::getInfo(ParticleIndex in) const
+{
+    if (in >= IndexSize) throw (exWrongIndex());
+    IndexInfo *out = IndicesToInfo[in];
+    return *out;
 }
 
 const char* IndexClassification::exWrongIndex::what() const throw(){

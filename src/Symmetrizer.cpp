@@ -209,11 +209,11 @@ void Symmetrizer::compute(bool ignore_symmetries)
         // Check Sz conservation
         bool valid_sz = true;
         for (ParticleIndex i=0; i<IndexSize && valid_sz; ++i) 
-            valid_sz = valid_sz && (boost::get<2>(IndexInfo.getInfo(i)) == up || boost::get<2>(IndexInfo.getInfo(i)) == down);
+            valid_sz = valid_sz && (IndexInfo.getInfo(i).Spin == up || IndexInfo.getInfo(i).Spin == down);
         if (valid_sz) {
             std::vector<ParticleIndex> SpinUpIndices;
             for (ParticleIndex i=0; i<IndexSize; ++i) { 
-                unsigned short Spin = boost::get<2>(IndexInfo.getInfo(i));
+                unsigned short Spin = IndexInfo.getInfo(i).Spin;
                 if ( Spin == up ) SpinUpIndices.push_back(i);
                 } 
             Operator op_sz = Pomerol::OperatorPresets::Sz(IndexSize, SpinUpIndices);

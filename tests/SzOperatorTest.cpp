@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     INFO("Total amount of indices: " << IndexSize);
 
     std::vector<ParticleIndex> SpinUpIndices;
-    for (ParticleIndex i=0; i<IndexSize; i++) if (boost::get<2>(Indices.getInfo(i))) SpinUpIndices.push_back(i);
+    for (ParticleIndex i=0; i<IndexSize; i++) if (Indices.getInfo(i).Spin) SpinUpIndices.push_back(i);
     OperatorPresets::Sz Sz(IndexSize,SpinUpIndices);
 
     FockState ket(IndexSize,3);

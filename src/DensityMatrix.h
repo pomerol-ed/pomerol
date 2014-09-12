@@ -83,8 +83,10 @@ public:
 
     /** Returns the average energy. */
     RealType getAverageEnergy() const;
-    /** Returns the average energy. */
+    /** Returns the total average occupancy. */
     RealType getAverageOccupancy() const;
+    /** Returns the average occupancy at site i. */
+    RealType getAverageOccupancy(ParticleIndex i) const;
 
     /** Returns an averaged value of the double occupancy. */
     RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const;

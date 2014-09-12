@@ -68,7 +68,8 @@ public:
     /** Returns a ParticleIndex, which corresponds to a IndexClassification::IndexInfo. */
     ParticleIndex getIndex(const std::string &Site, const unsigned short &Orbital, const unsigned short &Spin) const; 
     /** Return all information about the given index. */
-    boost::tuple<std::string, unsigned short, unsigned short> getInfo(ParticleIndex in) const;
+    //boost::tuple<std::string, unsigned short, unsigned short> getInfo(ParticleIndex in) const;
+    IndexInfo getInfo(ParticleIndex in) const;
     /** Returns total number of ParticleIndices. */
     const ParticleIndex getIndexSize() const;
 
