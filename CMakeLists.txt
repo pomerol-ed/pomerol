@@ -11,6 +11,11 @@ else()
 endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
+# mac os rpath
+if(POLICY CMP0042)
+cmake_policy(SET CMP0042 NEW)
+endif(POLICY CMP0042)
+
 # rpath fix
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -18,29 +23,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 else()
  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 endif()
-
-# C++11 check
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-#if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-#    execute_process(
-#        COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-#        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs")
-#    if (NOT (GCC_VERSION VERSION_GREATER 4.6 OR GCC_VERSION VERSION_EQUAL 4.6))
-#        message(FATAL_ERROR "${PROJECT_NAME} requires g++ 4.6 or greater.")
-#    endif ()
-#elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")
-#    if ("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
-#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
-#    elseif ("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
-#        message( STATUS "Adding -stdlib=libc++ flag")
-#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-#    else()
-#        message(FATAL_ERROR "Platform undefined")
-#    endif()
-#else ()
-#    message(FATAL_ERROR "Your C++ compiler does not support C++11.")
-#endif ()
-#end :: C++11 check
 
 #Use complex Matrix elements
 option(use_complex "Use complex matrix elements" OFF)
