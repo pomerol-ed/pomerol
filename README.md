@@ -32,6 +32,7 @@ Documentation can be compiled with a `make doc` command.
 
 ##### License 
 The software is released under GPLv2 license. 
+
 Academic usage : please attribute this work by a citation to http://dx.doi.org/10.5281/zenodo.17900.
 ##### Authors
   * Andrey Antipov <Andrey.E.Antipov\at\gmail.com>
