@@ -27,7 +27,8 @@ namespace Pomerol{
 
 FieldOperatorPart::FieldOperatorPart(
         const IndexClassification &IndexInfo, const StatesClassification &S, const HamiltonianPart &HFrom,  const HamiltonianPart &HTo, ParticleIndex PIndex) : 
-        ComputableObject(), IndexInfo(IndexInfo), S(S), HFrom(HFrom), HTo(HTo), PIndex(PIndex)
+        ComputableObject(), IndexInfo(IndexInfo), S(S), HFrom(HFrom), HTo(HTo), PIndex(PIndex),
+        MatrixElementTolerance(1e-8) 
 {}
 
 void FieldOperatorPart::compute()

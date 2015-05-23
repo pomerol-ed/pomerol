@@ -37,8 +37,9 @@ FieldOperatorContainer::FieldOperatorContainer(IndexClassification &IndexInfo, S
 void FieldOperatorContainer::prepareAll(std::set<ParticleIndex> in)
 {
     if (in.size() == 0) for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); ++i) in.insert(i);
-    for (auto i : in)
+    for (std::set<ParticleIndex>::const_iterator it = in.begin(); it!=in.end(); it++)
         {
+            ParticleIndex i = *it;
             CreationOperator *CX = new CreationOperator(IndexInfo, S,H,i);
             CX->prepare();
             mapCreationOperators[i] = CX;
@@ -50,12 +51,12 @@ void FieldOperatorContainer::prepareAll(std::set<ParticleIndex> in)
 
 void FieldOperatorContainer::computeAll()
 {
-    for (auto cdag_it : mapCreationOperators) {
-        CreationOperator &cdag = *(cdag_it.second);
+    for (std::map <ParticleIndex, CreationOperator*>::iterator cdag_it = mapCreationOperators.begin(); cdag_it != mapCreationOperators.end(); ++cdag_it) {
+        CreationOperator &cdag = *(cdag_it->second);
         cdag.compute();
-        AnnihilationOperator &c = *mapAnnihilationOperators[cdag_it.first];
+        AnnihilationOperator &c = *mapAnnihilationOperators[cdag_it->first];
 
-        auto cdag_block_map = cdag.getBlockMapping();
+        FieldOperator::BlocksBimap cdag_block_map = cdag.getBlockMapping();
         // hack - copy transpose matrices into c
         for (FieldOperator::BlocksBimap::right_const_iterator cdag_map_it=cdag_block_map.right.begin(); cdag_map_it!=cdag_block_map.right.end(); cdag_map_it++) {
                 c.getPartFromRightIndex(cdag_map_it->second).elementsRowMajor = cdag.getPartFromRightIndex(cdag_map_it->first).getColMajorValue().adjoint();

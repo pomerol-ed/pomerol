@@ -33,7 +33,7 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-
+#include <boost/local_function.hpp>
 
 #include <string>
 #include <iostream>
@@ -61,6 +61,12 @@ template <typename T1> void savetxt(std::string fname, T1 in);
 struct my_logic_error;
 double FMatsubara(int n, double beta){return M_PI/beta*(2.*n+1);}
 double BMatsubara(int n, double beta){return M_PI/beta*(2.*n);}
+int job_to_bfreq_index(int job, int wbmax) { return -wbmax + job+1; }
+
+template <typename T>
+ComplexType chi_bfreq_f(T const& chi, double W, double w1, double w2) { 
+    return chi(I*(W+w1), I*w2, I*w1); // this comes from Pomerol - see TwoParticleGF::operator()
+};
 
 int main(int argc, char* argv[])
 {
@@ -104,11 +110,11 @@ int main(int argc, char* argv[])
         cmd.parse( argc, argv );
         U = U_arg.getValue();
         mu = (mu_arg.isSet()?mu_arg.getValue():U/2);
-        std::tie(t, beta, calc_gf, calc_2pgf, reduce_tol, coeff_tol) = std::make_tuple( t_arg.getValue(), beta_arg.getValue(), 
+        boost::tie(t, beta, calc_gf, calc_2pgf, reduce_tol, coeff_tol) = boost::make_tuple( t_arg.getValue(), beta_arg.getValue(), 
             gf_arg.getValue(), twopgf_arg.getValue(), reduce_tol_arg.getValue(), coeff_tol_arg.getValue());
-        std::tie(size_x, size_y) = std::make_tuple(x_arg.getValue(), y_arg.getValue());
-        std::tie(wf_max, wb_max) = std::make_tuple(wn_arg.getValue(), wb_arg.getValue());
-        std::tie(eta, hbw, step) = std::make_tuple(eta_arg.getValue(), (hbw_arg.isSet()?hbw_arg.getValue():2.*U), step_arg.getValue());
+        boost::tie(size_x, size_y) = boost::make_tuple(x_arg.getValue(), y_arg.getValue());
+        boost::tie(wf_max, wb_max) = boost::make_tuple(wn_arg.getValue(), wb_arg.getValue());
+        boost::tie(eta, hbw, step) = boost::make_tuple(eta_arg.getValue(), (hbw_arg.isSet()?hbw_arg.getValue():2.*U), step_arg.getValue());
         calc_gf = calc_gf || calc_2pgf;
         calc_gf = calc_gf || calc_2pgf;
         }
@@ -121,7 +127,8 @@ int main(int argc, char* argv[])
 
     /* Add sites */
     std::vector<std::string> names(L);
-    auto SiteIndexF = [size_x](size_t x, size_t y){return y*size_x + x;};
+    //auto SiteIndexF = [size_x](size_t x, size_t y){return y*size_x + x;};
+    int BOOST_LOCAL_FUNCTION (bind size_x, size_t x, size_t y){return y*size_x + x;} BOOST_LOCAL_FUNCTION_NAME(SiteIndexF)
     for (size_t y=0; y<size_y; y++)
         for (size_t x=0; x<size_x; x++)
         {
@@ -286,17 +293,11 @@ int main(int argc, char* argv[])
                 // wb_max -  number of non-negative bosonic freqs
                 // wf_max -  number of positive fermionic freqs
 
-                // give 2pgf in bosonic-fermionic-fermionic freq notation
-                std::function<ComplexType(RealType,RealType,RealType)> chi_bfreq_f = [&](double W, double w1, double w2) { 
-                        return chi(I*(W+w1), I*w2, I*w1); // this comes from Pomerol - see TwoParticleGF::operator()
-                    };
-
                  { // dispatch and save two-particle GF data - MPI parallelization in bosonic freqs
 
                     // Master-slave scheme to distribute the bosonic frequencies on different processes
                     int ROOT = 0;
                     int ntasks = std::max(2*wb_max-1,0);
-                    std::function<int(int)> job_to_bfreq_index = [wb_max](int job){return -wb_max + job+1;};
 
                     std::unique_ptr<pMPI::MPIMaster> disp;
 
@@ -315,7 +316,7 @@ int main(int argc, char* argv[])
                             // this is what every process executes
                             auto p = worker.current_job;
 
-                            double W = BMatsubara(job_to_bfreq_index(p), beta); // get current bosonic frequency
+                            double W = BMatsubara(job_to_bfreq_index(p, wb_max), beta); // get current bosonic frequency
                             std::cout << "["<<p+1<<"/" << ntasks << "] p" << comm.rank() << " Omega = " << W << std::endl;
 
                             std::ofstream chi_stream ("chi"+ind_str+"_W"+std::to_string(W)+".dat");
@@ -326,7 +327,7 @@ int main(int argc, char* argv[])
                                 for (int w2_index = -wf_max; w2_index<wf_max; w2_index++) { // loop over second fermionic
                                     double w2 = FMatsubara(w2_index, beta);        
 
-                                    ComplexType val = chi_bfreq_f(W, w1, w2);
+                                    ComplexType val = chi_bfreq_f(chi, W, w1, w2);
 
                                     chi_stream << std::scientific << std::setprecision(12)  
                                                << w1 << " " << w2 << "   " << std::real(val) << " " << std::imag(val) << std::endl;

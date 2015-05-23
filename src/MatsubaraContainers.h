@@ -128,7 +128,7 @@ void MatsubaraContainer4<SourceObject>::fill(const SourceObject* pSource, long N
     // \omega_1 = \nu, \omega_3 = \nu', \omega_1+\omega_2 = \Omega
     for(long BosonicIndexV=0; BosonicIndexV<=4*NumberOfMatsubaras-2; ++BosonicIndexV){
         long BosonicIndex = BosonicIndexV - 2*NumberOfMatsubaras;
-        long FermionicMatrixSize = 2*NumberOfMatsubaras - abs(BosonicIndex+1);
+        long FermionicMatrixSize = 2*NumberOfMatsubaras - std::abs(BosonicIndex+1);
         Values[BosonicIndexV].resize(FermionicMatrixSize,FermionicMatrixSize);
         FermionicIndexOffset[BosonicIndexV] =
             (BosonicIndex < 0 ? 0 : BosonicIndex+1) -NumberOfMatsubaras;

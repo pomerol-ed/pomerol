@@ -45,8 +45,16 @@ int main(int argc, char* argv[])
     bool calc_gf = true, calc_2pgf = true;
     size_t L=2;
 
-    std::vector<double> levels ( {   1.02036910873357, -1.02036910873357, 0.140037222821207,  -0.140037222821207 } );
-    std::vector<double> hoppings ( { 0.296439333614347, 0.296439333614347,  0.229348742868022, 0.229348742868022 } ); 
+    std::vector<double> levels(4);
+    levels[0] = 1.02036910873357;
+    levels[1] = -1.02036910873357;
+    levels[2] = 0.140037222821207;
+    levels[3] =  -0.140037222821207;
+    std::vector<double> hoppings(4);
+    hoppings[0] = 0.296439333614347;
+    hoppings[1] = 0.296439333614347;
+    hoppings[2] =  0.229348742868022;
+    hoppings[3] = 0.229348742868022;
     L = std::min(L,levels.size());
 
     INFO("Diagonalization of 1+" << L << " sites");
@@ -146,18 +154,17 @@ int main(int argc, char* argv[])
             Chi4.computeAll(comm, true);
 
 
-            std::vector<ComplexType> chi_uuuu_vals = { 
-                -2.342841271771e+01,
-                0.000000000000e+00,
-                6.932231165814e-03,
-                2.037522082872e-03,
-                -2.150424835716e-03,
-                -4.384848776411e-03,
-                -5.253420668000e-03,
-                -5.370700986029e-03,
-                -5.126175681822e-03,
-                -4.732777836189e-03
-                            };
+            std::vector<ComplexType> chi_uuuu_vals(10);
+            chi_uuuu_vals[0] = -2.342841271771e+01;
+            chi_uuuu_vals[1] = 0.000000000000e+00;
+            chi_uuuu_vals[2] = 6.932231165814e-03;
+            chi_uuuu_vals[3] = 2.037522082872e-03;
+            chi_uuuu_vals[4] = -2.150424835716e-03;
+            chi_uuuu_vals[5] = -4.384848776411e-03;
+            chi_uuuu_vals[6] = -5.253420668000e-03;
+            chi_uuuu_vals[7] = -5.370700986029e-03;
+            chi_uuuu_vals[8] = -5.126175681822e-03;
+            chi_uuuu_vals[9] = -4.732777836189e-03;
 
             const TwoParticleGF& chi_uuuu = Chi4(IndexCombination4(u0,u0,u0,u0));
             const TwoParticleGF& chi_udud = Chi4(IndexCombination4(u0,u0,u0,u0));

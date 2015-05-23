@@ -60,6 +60,12 @@ struct my_logic_error;
 double FMatsubara(int n, double beta){return M_PI/beta*(2.*n+1);}
 double BMatsubara(int n, double beta){return M_PI/beta*(2.*n);}
 
+template <typename T>
+ComplexType chi_bfreq_f(T const& chi, double W, double w1, double w2) { 
+    return chi(I*(W+w1), I*w2, I*w1); // this comes from Pomerol - see TwoParticleGF::operator()
+};
+int job_to_bfreq_index(int job, int wbmax) { return -wbmax + job+1; }
+
 int main(int argc, char* argv[])
 {
     boost::mpi::environment env(argc,argv);
@@ -103,10 +109,10 @@ int main(int argc, char* argv[])
  
         U = U_arg.getValue();
         e0 = (e0_arg.isSet()?e0_arg.getValue():-U/2.0);
-        std::tie(beta, calc_gf, calc_2pgf, reduce_tol, coeff_tol) = std::make_tuple( beta_arg.getValue(), 
+        boost::tie(beta, calc_gf, calc_2pgf, reduce_tol, coeff_tol) = boost::make_tuple( beta_arg.getValue(), 
             gf_arg.getValue(), twopgf_arg.getValue(), reduce_tol_arg.getValue(), coeff_tol_arg.getValue());
-        std::tie(wf_max, wb_max) = std::make_tuple(wn_arg.getValue(), wb_arg.getValue());
-        std::tie(eta, hbw, step) = std::make_tuple(eta_arg.getValue(), (hbw_arg.isSet()?hbw_arg.getValue():2.*U), step_arg.getValue());
+        boost::tie(wf_max, wb_max) = boost::make_tuple(wn_arg.getValue(), wb_arg.getValue());
+        boost::tie(eta, hbw, step) = boost::make_tuple(eta_arg.getValue(), (hbw_arg.isSet()?hbw_arg.getValue():2.*U), step_arg.getValue());
         calc_gf = calc_gf || calc_2pgf;
 
         levels = level_args.getValue(); 
@@ -280,16 +286,12 @@ int main(int argc, char* argv[])
                 // wf_max -  number of positive fermionic freqs
 
                 // give 2pgf in bosonic-fermionic-fermionic freq notation
-                std::function<ComplexType(RealType,RealType,RealType)> chi_bfreq_f = [&](double W, double w1, double w2) { 
-                        return chi(I*(W+w1), I*w2, I*w1); // this comes from Pomerol - see TwoParticleGF::operator()
-                    };
 
                  { // dispatch and save two-particle GF data - MPI parallelization in bosonic freqs
 
                     // Master-slave scheme to distribute the bosonic frequencies on different processes
                     int ROOT = 0;
                     int ntasks = std::max(2*wb_max-1,0);
-                    std::function<int(int)> job_to_bfreq_index = [wb_max](int job){return -wb_max + job+1;};
 
                     std::unique_ptr<pMPI::MPIMaster> disp;
 
@@ -308,7 +310,7 @@ int main(int argc, char* argv[])
                             // this is what every process executes
                             auto p = worker.current_job;
 
-                            double W = BMatsubara(job_to_bfreq_index(p), beta); // get current bosonic frequency
+                            double W = BMatsubara(job_to_bfreq_index(p, wb_max), beta); // get current bosonic frequency
                             std::cout << "["<<p+1<<"/" << ntasks << "] p" << comm.rank() << " Omega = " << W << std::endl;
 
                             std::ofstream chi_stream ("chi"+ind_str+"_W"+std::to_string(W)+".dat");
@@ -319,7 +321,7 @@ int main(int argc, char* argv[])
                                 for (int w2_index = -wf_max; w2_index<wf_max; w2_index++) { // loop over second fermionic
                                     double w2 = FMatsubara(w2_index, beta);        
 
-                                    ComplexType val = chi_bfreq_f(W, w1, w2);
+                                    ComplexType val = chi_bfreq_f(chi, W, w1, w2);
 
                                     chi_stream << std::scientific << std::setprecision(12)  
                                                << w1 << " " << w2 << "   " << std::real(val) << " " << std::imag(val) << std::endl;

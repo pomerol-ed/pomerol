@@ -104,16 +104,16 @@ protected:
     BlockNumber getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const; //!< return right index of an operator at current position for a current permutation
 
 public:
-    /** A tolerance to distinguish two identical numbers. */
-    RealType KroneckerSymbolTolerance = std::numeric_limits<RealType>::epsilon();//1e-16;
-    /** A difference in energies with magnitude less than this value is treated as zero. */
-    RealType ReduceResonanceTolerance = 1e-8;//1e-16;
-    /** Minimal magnitude of the coefficient of a term to take it into account. */
-    RealType CoefficientTolerance = 1e-16;//1e-16;
-    /** A maximum amount of terms put into a list at which the reduceTerms method should be called */
-    RealType ReduceInvocationThreshold = 1e5;
-    /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
-    RealType MultiTermCoefficientTolerance = 1e-5;//1e-5;
+    /** A tolerance to distinguish two identical numbers. default = std::numeric_limits<RealType>::epsilon(). */
+    RealType KroneckerSymbolTolerance;
+    /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
+    RealType ReduceResonanceTolerance; 
+    /** Minimal magnitude of the coefficient of a term to take it into account. default = 1e-16. */
+    RealType CoefficientTolerance;
+    /** A maximum amount of terms put into a list at which the reduceTerms method should be called. default = 1e5. */
+    RealType ReduceInvocationThreshold;
+    /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. default = 1e-5. */
+    RealType MultiTermCoefficientTolerance; 
 
     /** Constructor.
      * \param[in] S A reference to a states classification object.

@@ -39,8 +39,13 @@ TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H
                 const DensityMatrix& DM) :
     Thermal(DM.beta), ComputableObject(),
     S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM),
-    parts(0), Vanishing(true)
-{}
+    parts(0), Vanishing(true),
+    KroneckerSymbolTolerance (std::numeric_limits<RealType>::epsilon()), 
+    ReduceResonanceTolerance (1e-8),
+    CoefficientTolerance (1e-16), 
+    ReduceInvocationThreshold (1e5)
+{
+}
 
 TwoParticleGF::~TwoParticleGF()
 {
@@ -76,6 +81,7 @@ const FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t Permutatio
         case 2: return CX3.getPartFromLeftIndex(LeftIndex);
         default: assert(0);
     }
+    throw std::logic_error("TwoParticleGF : could not find operator part");
 }
 
 void TwoParticleGF::prepare(void)
@@ -140,7 +146,7 @@ void TwoParticleGF::compute(const boost::mpi::communicator & comm)
     if (Status >= Computed) return;
     if (!Vanishing) {
         // Create a "skeleton" class with pointers to part that can call a compute method
-        pMPI::MPISkel<pMPI::ComputeWrap<TwoParticleGFPart>> skel;
+        pMPI::MPISkel<pMPI::ComputeWrap<TwoParticleGFPart> > skel;
         skel.parts.resize(parts.size());
         for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::ComputeWrap<TwoParticleGFPart>(*parts[i]);};
         std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
@@ -188,6 +194,7 @@ ParticleIndex TwoParticleGF::getIndex(size_t Position) const
         case 3: return CX4.getIndex();
         default: assert(0);
     }
+    throw std::logic_error("TwoParticleGF : could not get operator index");
 }
 
 unsigned short TwoParticleGF::getPermutationNumber ( const Permutation3& in )

@@ -34,8 +34,8 @@ Hamiltonian::Hamiltonian(const IndexClassification &IndexInfo, const IndexHamilt
 
 Hamiltonian::~Hamiltonian()
 {
-    for(auto iter = parts.begin(); iter != parts.end(); iter++)
-	    iter->reset();
+    //for(std::vector<std::shared_ptr<HamiltonianPart> >::iterator iter = parts.begin(); iter != parts.end(); iter++)
+	//    iter->reset();
 }
 
 void Hamiltonian::prepare(const boost::mpi::communicator& comm)
@@ -51,7 +51,7 @@ void Hamiltonian::prepare(const boost::mpi::communicator& comm)
 	    parts[CurrentBlock].reset(new HamiltonianPart(IndexInfo,F, S, CurrentBlock));
         //parts[CurrentBlock]->prepare();
     }
-    pMPI::MPISkel<pMPI::PrepareWrap<HamiltonianPart>> skel;
+    pMPI::MPISkel<pMPI::PrepareWrap<HamiltonianPart> > skel;
     skel.parts.resize(parts.size());
     for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::PrepareWrap<HamiltonianPart>(*parts[i]);};
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm,false);
@@ -79,7 +79,7 @@ void Hamiltonian::compute(const boost::mpi::communicator & comm)
     if (Status >= Computed) return;
 
     // Create a "skeleton" class with pointers to part that can call a compute method
-    pMPI::MPISkel<pMPI::ComputeWrap<HamiltonianPart>> skel;
+    pMPI::MPISkel<pMPI::ComputeWrap<HamiltonianPart> > skel;
     skel.parts.resize(parts.size());
     for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::ComputeWrap<HamiltonianPart>(*parts[i],parts[i]->getSize());};
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true);

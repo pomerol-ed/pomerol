@@ -102,6 +102,8 @@ unsigned short GreensFunction::getIndex(size_t Position) const
         case 1: return CX.getIndex();
         default: assert(0);
     }
+    throw std::logic_error("GreensFunction :: wrong operator");
+    return C.getIndex();
 }
 
 bool GreensFunction::isVanishing(void) const

@@ -28,7 +28,12 @@ namespace Pomerol{
 TwoParticleGFContainer::TwoParticleGFContainer(const IndexClassification& IndexInfo, const StatesClassification &S,
                                                const Hamiltonian &H, const DensityMatrix &DM, const FieldOperatorContainer& Operators) :
     IndexContainer4<TwoParticleGF,TwoParticleGFContainer>(this,IndexInfo), Thermal(DM),
-    S(S),H(H),DM(DM), Operators(Operators)
+    S(S),H(H),DM(DM), Operators(Operators),
+    KroneckerSymbolTolerance (1e-16),//1e-16),
+    ReduceResonanceTolerance (1e-8),//1e-16),
+    CoefficientTolerance (1e-16),//1e-16),
+    ReduceInvocationThreshold (1e5),
+    MultiTermCoefficientTolerance (1e-5)//1e-5),
 {}
 
 void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& InitialIndices)
@@ -92,7 +97,7 @@ void TwoParticleGFContainer::computeAll_split(const boost::mpi::communicator & c
 
     boost::mpi::communicator comm_split = comm.split(proc_colors[comm.rank()]);
 
-    for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
+    for(std::map<IndexCombination4, boost::shared_ptr<TwoParticleGF> >::iterator iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
         bool calc = (elem_colors[comp] == proc_colors[comm.rank()]);
         if (calc) { 
             INFO("C" << elem_colors[comp] << "p" << comm.rank() << ": computing 2PGF for " << iter->first);
@@ -103,8 +108,8 @@ void TwoParticleGFContainer::computeAll_split(const boost::mpi::communicator & c
     // distribute data
     if (!comm.rank()) INFO_NONEWLINE("Distributing 2PGF container...");
     comp = 0;
-    for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
-        auto sender = color_roots[elem_colors[comp]];
+    for(std::map<IndexCombination4, boost::shared_ptr<TwoParticleGF> >::iterator iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
+        int sender = color_roots[elem_colors[comp]];
         TwoParticleGF& chi = *((iter)->second);
         for (size_t p = 0; p<chi.parts.size(); p++) {
         //    if (comm.rank() == sender) INFO("P" << comm.rank() << " 2pgf " << p << " " << chi.parts[p]->NonResonantTerms.size());

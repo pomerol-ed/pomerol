@@ -118,7 +118,14 @@ TwoParticleGFPart::TwoParticleGFPart(
     O1(O1), O2(O2), O3(O3), CX4(CX4), 
     Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
     DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
-    Permutation(Permutation)
+    Permutation(Permutation),
+    KroneckerSymbolTolerance(1e-16),
+    ReduceResonanceTolerance(1e-8),
+    CoefficientTolerance (1e-16),
+    ReduceInvocationThreshold (1e5),
+    MultiTermCoefficientTolerance (1e-5)
+
+
 {}
 
 void TwoParticleGFPart::compute()

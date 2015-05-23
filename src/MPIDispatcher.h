@@ -38,7 +38,8 @@ namespace Pomerol {
 
 namespace pMPI {
 
-enum class WorkerTag : int { Pending, Work, Finish }; // tags for MPI communication
+//enum class WorkerTag : int { Pending, Work, Finish }; // tags for MPI communication
+enum WorkerTag { Pending, Work, Finish }; // tags for MPI communication
 typedef int JobId;
 typedef int WorkerId;
 
@@ -49,10 +50,8 @@ struct MPIWorker
     const WorkerId boss;
 
     WorkerTag Status;
-
-    JobId current_job = -1;
-
     boost::mpi::request WorkReq, FinishReq;
+    JobId current_job;
 
     MPIWorker(const boost::mpi::communicator &comm, WorkerId boss);
     void receive_order();
@@ -79,6 +78,8 @@ struct MPIMaster
     std::vector<boost::mpi::request> wait_statuses;
     std::vector<bool> workers_finish;
 
+    void swap(MPIMaster &x);
+
     MPIMaster(const boost::mpi::communicator &comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers );
     MPIMaster(const boost::mpi::communicator &comm, std::vector<JobId> task_numbers, bool include_boss = true );
     MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, bool include_boss = true );
@@ -86,6 +87,8 @@ struct MPIMaster
     void order_worker(WorkerId worker_id, JobId job);
     void order();
     void check_workers();
+protected:
+    void fill_stack_();
 };
 
 } // end of namespace MPI

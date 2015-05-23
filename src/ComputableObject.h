@@ -37,8 +37,9 @@ struct ComputableObject {
     enum {Constructed, Prepared, Computed};
 protected:
     /** Current status of an object */
-    unsigned int Status = Constructed;
+    unsigned int Status;
 public:
+    ComputableObject():Status(Constructed){}
     /** Returns the current status of an object */
     unsigned int getStatus(){return Status;};
     void setStatus(unsigned int Status_in){if (Status_in>Computed) throw (exStatusMismatch()); Status = Status_in;};

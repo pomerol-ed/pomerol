@@ -66,7 +66,7 @@ protected:
     ColMajorMatrixType elementsColMajor;
     /** The tolerance with which the matrix elements are evaluated. */
     //static
-    const RealType MatrixElementTolerance = 1e-8;
+    const RealType MatrixElementTolerance; //1e-8 by default
     /** Make this class purely abstract. */
     virtual void do_nothing(void) = 0;
 
