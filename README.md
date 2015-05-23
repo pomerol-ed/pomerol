@@ -1,4 +1,4 @@
-![doi](https://zenodo.org/badge/4569/aeantipov/pomerol.png)
+[![DOI](https://zenodo.org/badge/4569/aeantipov/pomerol.svg)](http://dx.doi.org/10.5281/zenodo.17900)
 
 **pomerol** is an exact diagonalization (full-ED) code written in C++ aimed at solving condensed matter second-quantized models of interacting fermions on finite size lattices at finite temperatures. It is designed to produce single and two-particle Greens functions.
 
@@ -32,7 +32,7 @@ Documentation can be compiled with a `make doc` command.
 
 ##### License 
 The software is released under GPLv2 license. 
-Academic usage : please attribute this work by a citation to http://dx.doi.org/10.5281/zenodo.10436 .
+Academic usage : please attribute this work by a citation to http://dx.doi.org/10.5281/zenodo.17900.
 ##### Authors
   * Andrey Antipov <Andrey.E.Antipov\at\gmail.com>
   * Igor Krivenko <igor\at\shg.ru>
