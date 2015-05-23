@@ -44,7 +44,7 @@
 #include <fstream>
 
 #include <pomerol.h>
-#include "MPIDispatcher.h"
+#include "mpi_dispatcher/mpi_dispatcher.hpp"
 
 using namespace Pomerol;
 
@@ -314,7 +314,7 @@ int main(int argc, char* argv[])
                         //DEBUG((worker.Status == WorkerTag::Pending));
                         if (worker.is_working()) { 
                             // this is what every process executes
-                            auto p = worker.current_job;
+                            auto p = worker.current_job();
 
                             double W = BMatsubara(job_to_bfreq_index(p, wb_max), beta); // get current bosonic frequency
                             std::cout << "["<<p+1<<"/" << ntasks << "] p" << comm.rank() << " Omega = " << W << std::endl;

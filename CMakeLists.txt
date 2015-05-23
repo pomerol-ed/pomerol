@@ -78,6 +78,11 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src
 )
 
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+add_subdirectory("./mpi_dispatcher")
+set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES} ./mpi_dispatcher")
+link_libraries(mpi_dispatcher)
+
 add_subdirectory(src)
 
 option(Testing "Enable testing" ON)

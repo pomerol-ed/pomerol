@@ -159,14 +159,14 @@ int main(int argc, char* argv[])
     int wn = 4;
 
     if (!world.rank()) INFO("TEST: CHI_UPUPUPUP");
-    auto &GF = G(0,0);
-    auto &Chi_uuuu = Chi(IndexCombination4(0,0,0,0));
+    GreensFunction &GF = G(0,0);
+    TwoParticleGF &Chi_uuuu = Chi(IndexCombination4(0,0,0,0));
     for(int n1 = -wn; n1<wn && success; ++n1)
     for(int n2 = -wn; n2<wn && success; ++n2)
     for(int n3 = -wn; n3<wn && success; ++n3){
          int n4 = n1+n2-n3;
-         auto l = Chi_uuuu(n1,n2,n3); 
-         auto r = gamma4ref_uuuu(n1,n2,n3)*GF(n1)*GF(n2)*GF(n3)*GF(n4) + beta*GF(n1)*GF(n2)*delta(n1,n4) - beta*GF(n1)*GF(n2)*delta(n1,n3);
+         ComplexType l = Chi_uuuu(n1,n2,n3); 
+         ComplexType r = gamma4ref_uuuu(n1,n2,n3)*GF(n1)*GF(n2)*GF(n3)*GF(n4) + beta*GF(n1)*GF(n2)*delta(n1,n4) - beta*GF(n1)*GF(n2)*delta(n1,n3);
          success = success && compare(l,r,1e-6);
          if (!success) INFO(n1 << " " << n2 << " " << n3 << " " << n1+n2-n3 << " : " << l << " == " << r);
      }
@@ -180,13 +180,13 @@ int main(int argc, char* argv[])
 
 
     if (!world.rank()) INFO("TEST: CHI_UPDOWNUPDOWN");
-    auto &Chi_udud = Chi(IndexCombination4(0,1,0,1));
+    TwoParticleGF &Chi_udud = Chi(IndexCombination4(0,1,0,1));
     for(int n1 = -wn; n1<wn && success; ++n1)
     for(int n2 = -wn; n2<wn && success; ++n2)
     for(int n3 = -wn; n3<wn && success; ++n3){
          int n4 = n1+n2-n3;
-         auto l = Chi_udud(n1,n2,n3); 
-         auto r = gamma4ref_udud(n1,n2,n3)*GF(n1)*GF(n2)*GF(n3)*GF(n4) - beta*GF(n1)*GF(n2)*delta(n1,n3);
+         ComplexType l = Chi_udud(n1,n2,n3); 
+         ComplexType r = gamma4ref_udud(n1,n2,n3)*GF(n1)*GF(n2)*GF(n3)*GF(n4) - beta*GF(n1)*GF(n2)*delta(n1,n3);
          success = success && compare(l,r,1e-6);
          if (!success) INFO("P" << world.rank() << ":" << n1 << " " << n2 << " " << n3 << " " << n1+n2-n3 << " : " << l << " == " << r);
      }

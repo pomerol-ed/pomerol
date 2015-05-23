@@ -2,7 +2,6 @@ include_directories (.)
 
 set (pomerol_src Misc.cpp 
 	Lattice.h Lattice.cpp LatticePresets.h LatticePresets.cpp 
-    MPIDispatcher.h MPIDispatcher.cpp
 	Index.h Index.cpp 
 	IndexClassification.h IndexClassification.cpp 
 	Operator.h Operator.cpp OperatorPresets.h OperatorPresets.cpp 

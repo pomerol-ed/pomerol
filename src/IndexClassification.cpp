@@ -129,7 +129,7 @@ boost::tuple<std::string, unsigned short, unsigned short> IndexClassification::g
     return boost::make_tuple(out->SiteLabel, out->Orbital, out->Spin);
 }*/
 
-typename IndexClassification::IndexInfo IndexClassification::getInfo(ParticleIndex in) const
+IndexClassification::IndexInfo IndexClassification::getInfo(ParticleIndex in) const
 {
     if (in >= IndexSize) throw (exWrongIndex());
     IndexInfo *out = IndicesToInfo[in];

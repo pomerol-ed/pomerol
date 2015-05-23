@@ -23,7 +23,7 @@
 
 #include <boost/serialization/complex.hpp>
 #include <boost/serialization/vector.hpp>
-#include "MPISkel.h"
+#include "mpi_dispatcher/mpi_skel.hpp"
 
 namespace Pomerol{
 FieldOperator::FieldOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index) :
@@ -85,7 +85,7 @@ void FieldOperator::compute(const boost::mpi::communicator& comm)
     if (!comm.rank()) INFO_NONEWLINE("Computing " << *O << " in eigenbasis of the Hamiltonian: ");
 /*
 
-    pMPI::MPISkel<pMPI::ComputeWrap<FieldOperatorPart>> skel;
+    pMPI::mpi_skel<pMPI::ComputeWrap<FieldOperatorPart>> skel;
     skel.parts.resize(parts.size());
     for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::ComputeWrap<FieldOperatorPart>(*parts[i]);};
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly

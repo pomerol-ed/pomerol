@@ -29,7 +29,7 @@
 #include <boost/serialization/complex.hpp>
 #include <boost/serialization/vector.hpp>
 
-#include "MPISkel.h"
+#include "mpi_dispatcher/mpi_skel.hpp"
 
 namespace Pomerol{
 
@@ -146,7 +146,7 @@ void TwoParticleGF::compute(const boost::mpi::communicator & comm)
     if (Status >= Computed) return;
     if (!Vanishing) {
         // Create a "skeleton" class with pointers to part that can call a compute method
-        pMPI::MPISkel<pMPI::ComputeWrap<TwoParticleGFPart> > skel;
+        pMPI::mpi_skel<pMPI::ComputeWrap<TwoParticleGFPart> > skel;
         skel.parts.resize(parts.size());
         for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::ComputeWrap<TwoParticleGFPart>(*parts[i]);};
         std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
