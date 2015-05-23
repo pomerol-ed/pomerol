@@ -34,10 +34,8 @@
 #include <boost/scoped_ptr.hpp>
 
 //#include <type_traits>
-#include "Misc.h"
-#include "MPIDispatcher.h"
+#include "mpi_dispatcher.hpp"
 
-namespace Pomerol {
 namespace pMPI {
 
 template <typename PartType>
@@ -60,13 +58,13 @@ struct PrepareWrap {
 
 
 template <typename WrapType>
-struct MPISkel {
+struct mpi_skel {
     std::vector<WrapType> parts;
     std::map<pMPI::JobId, pMPI::WorkerId> run(const boost::mpi::communicator& comm, bool VerboseOutput = true);
 };
 
 template <typename WrapType>
-std::map<Pomerol::pMPI::JobId, Pomerol::pMPI::WorkerId> MPISkel<WrapType>::run(const boost::mpi::communicator& comm, bool VerboseOutput)
+std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const boost::mpi::communicator& comm, bool VerboseOutput)
 {
     int rank = comm.rank();
     int comm_size = comm.size(); 
@@ -103,7 +101,7 @@ std::map<Pomerol::pMPI::JobId, Pomerol::pMPI::WorkerId> MPISkel<WrapType>::run(c
         worker.receive_order(); 
         //DEBUG((worker.Status == WorkerTag::Pending));
         if (worker.is_working()) { // for a specific worker
-            JobId p = worker.current_job;
+            JobId p = worker.current_job();
             if (VerboseOutput) std::cout << "["<<p+1<<"/"<<parts.size()<< "] P" << comm.rank() 
                                          << " : part " << p << " [" << parts[p].complexity << "] run;" << std::endl;
             parts[p].run(); 
@@ -141,6 +139,5 @@ std::map<Pomerol::pMPI::JobId, Pomerol::pMPI::WorkerId> MPISkel<WrapType>::run(c
 }
 
 }; // end of namespace MPI
-}; //
 
 #endif

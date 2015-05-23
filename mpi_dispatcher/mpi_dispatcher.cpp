@@ -1,8 +1,10 @@
-#include "MPIDispatcher.h"
-
-namespace Pomerol { 
+#include "mpi_dispatcher.hpp"
 
 namespace pMPI {
+
+#ifndef NDEBUG
+    int MPI_DEBUG_VERBOSITY = 0; // set it to 1 to debug mpi messages
+#endif
 
 //
 // Worker
@@ -11,10 +13,10 @@ MPIWorker::MPIWorker(const boost::mpi::communicator &comm, WorkerId boss):
         Comm(comm),
         id(Comm.rank()),
         boss(boss),
-        WorkReq(Comm.irecv(boss, int(pMPI::Work), current_job)),
+        WorkReq(Comm.irecv(boss, int(pMPI::Work), current_job_)),
         FinishReq(Comm.irecv(boss, int(pMPI::Finish))),
         Status(pMPI::Pending),
-        current_job(-1)
+        current_job_(-1)
     {};
 
 
@@ -38,14 +40,14 @@ void MPIWorker::receive_order()
 void MPIWorker::report_job_done()
 { 
     boost::mpi::request send_req = Comm.isend(boss,int(pMPI::Pending)); 
-    DEBUG(id << "->" << boss << " tag: pending");
+    //DEBUG(id << "->" << boss << " tag: pending",MPI_DEBUG_VERBOSITY,1);
     Status = pMPI::Pending; 
-    WorkReq = Comm.irecv(boss, int(pMPI::Work), current_job);
+    WorkReq = Comm.irecv(boss, int(pMPI::Work), current_job_);
 };
 //
 // Master
 //
-//
+
 void MPIMaster::fill_stack_()
 {
     for (int i=Ntasks-1; i>=0; i--) { JobStack.push(task_numbers[i]); };
@@ -55,15 +57,21 @@ void MPIMaster::fill_stack_()
     };
 }
 
-MPIMaster::MPIMaster(const boost::mpi::communicator &comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers ):
-    Comm(comm), Ntasks(task_numbers.size()),
-    Nprocs(worker_pool.size()), id(Comm.rank()),
-    task_numbers(task_numbers), worker_pool(worker_pool), 
-    wait_statuses(Nprocs),
-    workers_finish(Nprocs,false)
+
+
+void MPIMaster::swap(MPIMaster &x)
 {
-    fill_stack_();
-};
+    std::swap(Ntasks, x.Ntasks);
+    std::swap(Nprocs, x.Nprocs);
+    std::swap(JobStack, x.JobStack);
+    std::swap(WorkerStack, x.WorkerStack);
+    std::swap(DispatchMap, x.DispatchMap);
+    std::swap(task_numbers, x.task_numbers);
+    std::swap(worker_pool, x.worker_pool);
+    std::swap(WorkerIndices, x.WorkerIndices);
+    std::swap(wait_statuses, x.wait_statuses);
+    std::swap(workers_finish, x.workers_finish);
+}
 
 inline std::vector<WorkerId> _autorange_workers(const boost::mpi::communicator &comm, bool include_boss)
 {
@@ -87,39 +95,34 @@ inline std::vector<JobId> _autorange_tasks(size_t ntasks)
     return out;
 }
 
-void MPIMaster::swap(MPIMaster &x)
+MPIMaster::MPIMaster(const boost::mpi::communicator &comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers ):
+    Comm(comm), Ntasks(task_numbers.size()),
+    Nprocs(worker_pool.size()),
+    task_numbers(task_numbers), worker_pool(worker_pool), 
+    wait_statuses(Nprocs),
+    workers_finish(Nprocs,false)
 {
-
-    std::swap(JobStack, x.JobStack);
-    std::swap(WorkerStack, x.WorkerStack);
-    std::swap(DispatchMap, x.DispatchMap);
-    std::swap(task_numbers, x.task_numbers);
-    std::swap(worker_pool, x.worker_pool);
-    std::swap(WorkerIndices, x.WorkerIndices);
-    std::swap(wait_statuses, x.wait_statuses);
-    std::swap(workers_finish, x.workers_finish);
-}
+    fill_stack_();
+};
 
 MPIMaster::MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, bool include_boss):
-    Comm(comm), id(Comm.rank())
+    Comm(comm)
 {
     MPIMaster x(comm,_autorange_workers(comm,include_boss), _autorange_tasks(ntasks));
     this->swap(x);
 };
 
 MPIMaster::MPIMaster(const boost::mpi::communicator &comm, std::vector<JobId> task_numbers, bool include_boss ):
-    Comm(comm), id(Comm.rank())
+    Comm(comm)
 {
     MPIMaster x(comm,_autorange_workers(comm,include_boss), task_numbers);
     this->swap(x);
 };
 
-
-
 void MPIMaster::order_worker(WorkerId worker, JobId job)
 {
     boost::mpi::request send_req = Comm.isend(worker,int(pMPI::Work),job);
-    DEBUG(id << "->" << worker << " tag: work");
+    //DEBUG(id << "->" << worker << " tag: work",MPI_DEBUG_VERBOSITY,1);
     send_req.wait();
     DispatchMap[job]=worker;
     wait_statuses[WorkerIndices[worker]] = Comm.irecv(worker,int(pMPI::Pending));
@@ -148,7 +151,7 @@ void MPIMaster::check_workers()
     else {
         for (size_t i=0; i<Nprocs; i++) {
             if (!workers_finish[i]) { 
-                DEBUG(id << "->" << worker_pool[i] << " tag: finish");
+                //DEBUG(id << "->" << worker_pool[i] << " tag: finish",MPI_DEBUG_VERBOSITY,1);
                 Comm.isend(worker_pool[i],int(pMPI::Finish));
                 workers_finish[i] = true; // to prevent double sending of Finish command that could overlap with other communication
             };
@@ -157,5 +160,4 @@ void MPIMaster::check_workers()
 }
 
 } // end of namespace MPI
-} // end of namespace Pomerol
 

@@ -1,11 +1,10 @@
 #include <boost/mpi.hpp>
 
-#include "MPIDispatcher.h"
+#include <mpi_dispatcher/mpi_dispatcher.hpp>
 #include <thread>
 #include <random>
 
-using namespace Pomerol;
-using namespace Pomerol::pMPI;
+using namespace pMPI;
 
 void dumb_task(double seconds) {
     std::cout << "running " << seconds << " seconds..." << std::flush;
@@ -23,7 +22,7 @@ int main(int argc, char* argv[])
     std::mt19937 gen(world.rank()*24);
     std::uniform_real_distribution<double> dist(0,0.1);
     size_t ROOT = 0;
-    auto rank = world.rank();
+    int rank = world.rank();
 
     try {
 
@@ -50,19 +49,19 @@ int main(int argc, char* argv[])
     if (rank == ROOT) disp.release();
 
     } // end try
-    catch (std::exception &e){ERROR(e.what());return EXIT_FAILURE;};
+    catch (std::exception &e){std::cerr << e.what() << std::endl; return EXIT_FAILURE;};
 
     world.barrier();
     if (world.size() > 1) {
         int t = 10;
-        DEBUG(world.rank() << " " << t);
+        //DEBUG(world.rank() << " " << t);
         if (world.rank() == 0)  {t=45; world.isend(1,1,t);}
         else if (world.rank()==1) { 
-            auto req = world.irecv(0,1,t); 
-            auto msg = req.wait(); 
+            boost::mpi::request req = world.irecv(0,1,t); 
+            boost::mpi::status msg = req.wait(); 
         };
         world.barrier();
-        DEBUG(world.rank() << " " << t);
+        //DEBUG(world.rank() << " " << t);
     };
 
 // do it again
@@ -90,7 +89,7 @@ int main(int argc, char* argv[])
     };
     if (rank == ROOT) disp.release();
     } // end try
-    catch (std::exception &e){ERROR(e.what());return EXIT_FAILURE;};
+    catch (std::exception &e){return EXIT_FAILURE;};
 
     return EXIT_SUCCESS;
 } 
