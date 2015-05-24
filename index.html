@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Pomerol by aeantipov</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Pomerol</h1>
+        <h2>Exact diagonalization, full ED, optimized Lehmann&#39;s representation</h2>
+        <a href="https://github.com/aeantipov/pomerol" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <p><a href="http://dx.doi.org/10.5281/zenodo.17900"><img src="https://zenodo.org/badge/4569/aeantipov/pomerol.svg" alt="DOI"></a></p>
+
+<p><strong>pomerol</strong> is an exact diagonalization (full-ED) code written in C++ aimed at solving condensed matter second-quantized models of interacting fermions on finite size lattices at finite temperatures. It is designed to produce single and two-particle Greens functions.</p>
+
+<h5>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h5>
+
+<p>Check <a href="http://pomerol.sourceforge.net">http://pomerol.sourceforge.net</a> or type <code>make doc</code> during compilation stage for the reference documentation.</p>
+
+<p>The library, <em>libpomerol</em> is built. It then can be used to linking with executables. The example of the latter is given in example section and some working executables are given in prog subdirectory.
+Documentation can be compiled with a <code>make doc</code> command.</p>
+
+<h5>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h5>
+
+<ul>
+<li>High performance exact calculation of a Green's function and a two-particle Green's function in Matsubara domain.</li>
+<li>Written in C++: iterators are used to avoid zero matrix elements and vanishing combinations. </li>
+<li>Symmetry analysis. The commutation relations between operators are taken into account.</li>
+<li>Fermionic operators algebra to diagonalize any fermionic Hamiltonian.</li>
+<li>
+<a href="http://eigen.tuxfamily.org">Eigen3</a> template library for linear algebra is used (mostly its Sparse module).</li>
+<li>
+<a href="http://en.wikipedia.org/wiki/Message_Passing_Interface">MPI</a> support. </li>
+<li>
+<a href="http://www.cmake.org">CMake</a> is used for the installation.</li>
+</ul>
+
+<h5>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h5>
+
+<p>Check the <em>dependencies</em>: c++ compiler, CMake, Eigen3, Boost (with Boost::mpi and serialization), mpi and git to fetch the sources. For compiling the binaries from prog you'll need a tclap header-only library. </p>
+
+<ul>
+<li>Checkout the latest sources <code>git clone https://github.com/aeantipov/pomerol.git</code>
+</li>
+<li>In a directory run <code>cmake &lt;path_to_pomerol&gt; -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=&lt;path&gt;</code> 
+
+<ul>
+<li>add <code>-DTesting=ON</code> for compiling tests. Default = ON.</li>
+<li>add <code>-DProgs=ON</code> for compiling provided binaries (from progs directory). These include diagonalizations of the Anderson impurity and Hubbard 2d cluster. Default = OFF.</li>
+<li>add <code>-DExamples=ON</code> for compiling provided binary examples (from examples directory). Default = OFF.</li>
+<li>add <code>-Duse_complex=ON</code> for allowing complex matrix elements in the Hamiltonian. Default = OFF.</li>
+</ul>
+</li>
+<li><code>make</code></li>
+<li>
+<code>make test</code> (if tests are compiled)</li>
+<li>
+<code>make install</code>
+
+<ul>
+<li>Shared library <em>libpomerol</em> will be in <code>&lt;path&gt;/lib</code>.</li>
+</ul>
+</li>
+<li>
+<code>make doc</code> generates the documentation in the <code>doc</code> subfolder.</li>
+</ul>
+
+<h5>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h5>
+
+<p>The software is released under GPLv2 license. </p>
+
+<p>Academic usage : please attribute this work by a citation to <a href="http://dx.doi.org/10.5281/zenodo.17900">http://dx.doi.org/10.5281/zenodo.17900</a>.</p>
+
+<h5>
+<a id="authors" class="anchor" href="#authors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors</h5>
+
+<ul>
+<li>Andrey Antipov </li>
+<li>Igor Krivenko </li>
+</ul>
+
+<h5>
+<a id="developmenthelp" class="anchor" href="#developmenthelp" aria-hidden="true"><span class="octicon octicon-link"></span></a>Development/Help</h5>
+
+<p>Please feel free to contact and contribute!</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/aeantipov/pomerol/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/aeantipov/pomerol/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/aeantipov/pomerol"></a> is maintained by <a href="https://github.com/aeantipov">aeantipov</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-22879498-2");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
