@@ -16,7 +16,7 @@ endforeach(test)
 
 foreach (np 1 2 4 8 16)
 foreach (test ${mpi_tests})
-    set (test_parameters -np ${np} "./${test}")
+    set (test_parameters ${MPIEXEC_NUMPROC_FLAG} ${np} ${MPIEXEC_PREFLAGS} "./${test}" ${MPIEXEC_POSTFLAGS})
     add_test(NAME ${test}${np}cpu COMMAND "${MPIEXEC}" ${test_parameters})
 endforeach(test)
 endforeach(np)
