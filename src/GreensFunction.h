@@ -83,6 +83,10 @@ public:
      */
     GreensFunction(const StatesClassification& S, const Hamiltonian& H,
                    const AnnihilationOperator& C, const CreationOperator& CX, const DensityMatrix& DM);
+    /** Copy-constructor.
+     * \param[in] GF GreensFunction object to be copied.
+     */
+    GreensFunction(const GreensFunction& GF);
     /** Destructor. */
     ~GreensFunction();
 
