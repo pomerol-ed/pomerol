@@ -33,6 +33,10 @@ GreensFunctionPart::Term::Term(ComplexType Residue, RealType Pole) :
     Residue(Residue), Pole(Pole) {};
 ComplexType GreensFunctionPart::Term::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
 
+ComplexType GreensFunctionPart::Term::of_tau(RealType tau, RealType beta) const {
+    return -Residue*exp(-tau*Pole)/(1 + exp(-beta*Pole));
+}
+
 inline
 GreensFunctionPart::Term& GreensFunctionPart::Term::operator+=(const Term& AnotherTerm)
 {

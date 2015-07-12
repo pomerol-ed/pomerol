@@ -108,6 +108,11 @@ public:
      */
     ComplexType operator()(ComplexType z) const;
 
+     /** Returns the value of the Green's function calculated at a given imaginary time point.
+     * \param[in] tau Imaginary time point.
+     */
+    ComplexType of_tau(RealType tau) const;
+
     bool isVanishing(void) const;
 };
 
@@ -120,6 +125,16 @@ inline ComplexType GreensFunction::operator()(ComplexType z) const {
         ComplexType Value = 0;
         for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
             Value += (**iter)(z);
+        return Value;
+    };
+}
+
+inline ComplexType GreensFunction::of_tau(RealType tau) const {
+    if(Vanishing) return 0;
+    else {
+        ComplexType Value = 0;
+        for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+            Value += (*iter)->of_tau(tau);
         return Value;
     };
 }

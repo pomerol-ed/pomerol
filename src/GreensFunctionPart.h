@@ -29,6 +29,7 @@
 #define __INCLUDE_GREENSFUNCTIONPART_H
 
 #include<iomanip>
+#include<cmath>
 
 #include"Misc.h"
 #include"StatesClassification.h"
@@ -98,6 +99,11 @@ public:
     */
     ComplexType operator()(long MatsubaraNumber) const;
 
+    /** Returns a sum of all the terms with a substituted imaginary time point.
+     * \param[in] tau Imaginary time point.
+     */
+    ComplexType of_tau(RealType tau) const;
+
     /** Reduces the number of calculated terms 
     * \param[in] Tolerance The tolerance for the terms cutoff.
     * \param[in] ResonantTerms The list of terms.
@@ -127,6 +133,12 @@ struct GreensFunctionPart::Term {
      */
     ComplexType operator()(ComplexType Frequency) const;
 
+    /** Returns a contribution to the imaginary-time Green's function made by this term.
+     * \param[in] tau Imaginary time point.
+     * \param[in] beta Inverse temperature.
+     */
+    ComplexType of_tau(RealType tau, RealType beta) const;
+
     /** This operator add a term to this one.
     * It does not check the similarity of the terms! 
     * \param[in] AnotherTerm Another term to add to this.
@@ -148,6 +160,12 @@ inline ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const {
 inline ComplexType GreensFunctionPart::operator()(ComplexType z) const {
     ComplexType G = 0; 
     for(std::list<Term>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm) G += (*pTerm)(z);
+    return G;
+}
+
+inline ComplexType GreensFunctionPart::of_tau(RealType tau) const {
+    ComplexType G = 0; 
+    for(std::list<Term>::const_iterator pTerm = Terms.begin(); pTerm != Terms.end(); ++pTerm) G += pTerm->of_tau(tau,beta);
     return G;
 }
 
