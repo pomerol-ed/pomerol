@@ -32,10 +32,15 @@ target_link_libraries(pomerol
     ${MPI_CXX_LIBRARIES}
     #${HDF5_LIBRARIES}
 )
+set_target_properties(pomerol PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-install(TARGETS pomerol
-    DESTINATION lib
-    )
+install(TARGETS pomerol 
+        EXPORT pomerol
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        INCLUDES DESTINATION include
+)
+install(EXPORT pomerol NAMESPACE pomerol:: DESTINATION share/pomerol)
 
-install(DIRECTORY . DESTINATION include/pomerol
+install(DIRECTORY . DESTINATION include/pomerol 
           FILES_MATCHING PATTERN "*.h")

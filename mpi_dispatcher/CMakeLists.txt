@@ -3,11 +3,16 @@ set (mpi_dispatcher_src
     )
 
 add_library(mpi_dispatcher STATIC ${mpi_dispatcher_src})
+set_target_properties(mpi_dispatcher PROPERTIES POSITION_INDEPENDENT_CODE ON)
+install(TARGETS mpi_dispatcher 
+        EXPORT mpi_dispatcher
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        INCLUDES DESTINATION include
+        )
+install(EXPORT mpi_dispatcher NAMESPACE bold_hyb:: DESTINATION share/bold_hyb/mpi_dispatcher)
 
 if (Testing)
     add_subdirectory(test)
 endif(Testing)
-
-#add_subdirectory(prog)
-
 
