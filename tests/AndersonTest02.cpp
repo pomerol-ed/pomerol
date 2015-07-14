@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
     INFO("Sites");
     Lat.printSites();
 
-    auto rank = comm.rank();
+    int rank = comm.rank();
     if (!rank) {
         INFO("Terms with 2 operators");
         Lat.printTerms(2);
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
     IndexClassification IndexInfo(Lat.getSiteMap());
     IndexInfo.prepare(false);
     if (!rank) { print_section("Indices"); IndexInfo.printIndices(); };
-    auto index_size = IndexInfo.getIndexSize();
+    int index_size = IndexInfo.getIndexSize();
 
     print_section("Matrix element storage");
     IndexHamiltonian Storage(&Lat,IndexInfo);

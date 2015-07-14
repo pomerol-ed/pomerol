@@ -32,6 +32,7 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/lexical_cast.hpp>
 
 
 #include <string>
@@ -147,7 +148,7 @@ int main(int argc, char* argv[])
     INFO("Sites");
     Lat.printSites();
 
-    auto rank = comm.rank();
+    int rank = comm.rank();
     if (!rank) {
         INFO("Terms with 2 operators");
         Lat.printTerms(2);
@@ -159,7 +160,7 @@ int main(int argc, char* argv[])
     IndexClassification IndexInfo(Lat.getSiteMap());
     IndexInfo.prepare(false); // Create index space
     if (!rank) { print_section("Indices"); IndexInfo.printIndices(); };
-    auto index_size = IndexInfo.getIndexSize();
+    int index_size = IndexInfo.getIndexSize();
 
     print_section("Matrix element storage");
     IndexHamiltonian Storage(&Lat,IndexInfo); 
@@ -218,10 +219,12 @@ int main(int argc, char* argv[])
         G.computeAll(); // Evaluate all GF terms, i.e. resonances and weights of expressions in Lehmans representation of the Green's function
 
         if (!comm.rank()) // dump gf into a file
-        for (auto ind2 : indices2) { // loops over all components (pairs of indices) of the Green's function 
+        // loops over all components (pairs of indices) of the Green's function 
+        for (std::set<IndexCombination2>::const_iterator it = indices2.begin(); it != indices2.end(); ++it) { 
+            IndexCombination2 ind2 = *it;
             // Save Matsubara GF from pi/beta to pi/beta*(4*wf_max + 1)
             std::cout << "Saving imfreq G" << ind2 << " on "<< 4*wf_max << " Matsubara freqs. " << std::endl;
-            std::ofstream gw_im("gw_imag"+std::to_string(ind2.Index1)+std::to_string(ind2.Index2)+".dat");
+            std::ofstream gw_im(("gw_imag"+ boost::lexical_cast<std::string>(ind2.Index1)+ boost::lexical_cast<std::string>(ind2.Index2)+".dat").c_str());
             const GreensFunction & GF = G(ind2);
             for (int wn = 0; wn < wf_max*4; wn++) {
                 ComplexType val = GF(I*FMatsubara(wn,beta)); // this comes from Pomerol - see GreensFunction::operator()
@@ -229,7 +232,7 @@ int main(int argc, char* argv[])
             };
             gw_im.close();
             // Save Retarded GF on the real axis
-            std::ofstream gw_re("gw_real"+std::to_string(ind2.Index1)+std::to_string(ind2.Index2)+".dat"); 
+            std::ofstream gw_re(("gw_real"+boost::lexical_cast<std::string>(ind2.Index1)+boost::lexical_cast<std::string>(ind2.Index2)+".dat").c_str()); 
             std::cout << "Saving real-freq GF " << ind2 << " in energy space [" << e0-hbw << ":" << e0+hbw << ":" << step << "] + I*" << eta << "." << std::endl;
             for (double w = e0-hbw; w < e0+hbw; w+=step) {
                 ComplexType val = GF(ComplexType(w) + I*eta);
@@ -265,14 +268,16 @@ int main(int argc, char* argv[])
             // ! The most important routine - actually calculate the 2PGF
             Chi4.computeAll(comm, true); 
 
-            for (auto ind : indices4) { // dump 2PGF into files - loop through 2pgf components
+            // dump 2PGF into files - loop through 2pgf components
+            for (std::set<IndexCombination4>::const_iterator it = indices4.begin(); it != indices4.end(); ++it) { 
+                IndexCombination4 ind = *it;
                 if (!comm.rank()) std::cout << "Saving 2PGF " << ind << std::endl;
-                std::string ind_str = std::to_string(ind.Index1) + std::to_string(ind.Index2) +std::to_string(ind.Index3) +std::to_string(ind.Index4);
+                std::string ind_str = boost::lexical_cast<std::string>(ind.Index1) + boost::lexical_cast<std::string>(ind.Index2) +boost::lexical_cast<std::string>(ind.Index3) +boost::lexical_cast<std::string>(ind.Index4);
                 const TwoParticleGF &chi = Chi4(ind);
 
                 // Save terms of two particle GF
-                std::ofstream term_res_stream("terms_res"+ind_str+".pom");
-                std::ofstream term_nonres_stream("terms_nonres"+ind_str+".pom");
+                std::ofstream term_res_stream(("terms_res"+ind_str+".pom").c_str());
+                std::ofstream term_nonres_stream(("terms_nonres"+ind_str+".pom").c_str());
                 boost::archive::text_oarchive oa_res(term_res_stream);
                 boost::archive::text_oarchive oa_nonres(term_nonres_stream);
                 for(std::vector<TwoParticleGFPart*>::const_iterator iter = chi.parts.begin(); iter != chi.parts.end(); iter++) {
@@ -293,7 +298,7 @@ int main(int argc, char* argv[])
                     int ROOT = 0;
                     int ntasks = std::max(2*wb_max-1,0);
 
-                    std::unique_ptr<pMPI::MPIMaster> disp;
+                    boost::scoped_ptr<pMPI::MPIMaster> disp;
 
                     if (comm.rank() == ROOT) { 
                         DEBUG("Master at " << comm.rank());
@@ -308,12 +313,12 @@ int main(int argc, char* argv[])
                         //DEBUG((worker.Status == WorkerTag::Pending));
                         if (worker.is_working()) { 
                             // this is what every process executes
-                            auto p = worker.current_job();
+                            pMPI::JobId p = worker.current_job();
 
                             double W = BMatsubara(job_to_bfreq_index(p, wb_max), beta); // get current bosonic frequency
                             std::cout << "["<<p+1<<"/" << ntasks << "] p" << comm.rank() << " Omega = " << W << std::endl;
 
-                            std::ofstream chi_stream ("chi"+ind_str+"_W"+std::to_string(W)+".dat");
+                            std::ofstream chi_stream (("chi"+ind_str+"_W"+boost::lexical_cast<std::string>(W)+".dat").c_str());
 
                             // Most important part 2 - loop over fermionic frequencies. Consider parallelizing one of the loop
                             for (int w1_index = -wf_max; w1_index<wf_max; w1_index++) { // loop over first fermionic frequency 
@@ -334,7 +339,7 @@ int main(int argc, char* argv[])
                         if (rank == ROOT) disp->check_workers(); // check if there are free workers 
                         };
                     comm.barrier();
-                    if (comm.rank() == ROOT) { disp.release(); DEBUG("Released master"); };
+                    //if (comm.rank() == ROOT) { disp.release(); DEBUG("Released master"); };
                     }
                 }
             };
@@ -362,7 +367,7 @@ bool is_equal ( F1 x, F2 y, RealType tolerance)
     return (std::abs(x-y)<tolerance);
 }
 
-template <typename T1> void savetxt(std::string fname, T1 in){std::ofstream out(fname); out << in << std::endl; out.close();};
+template <typename T1> void savetxt(std::string fname, T1 in){std::ofstream out(fname.c_str()); out << in << std::endl; out.close();};
 
 struct my_logic_error : public std::logic_error { my_logic_error (const std::string& what_arg):logic_error(what_arg){}; };
 
