@@ -24,6 +24,12 @@ else()
  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 endif()
 
+# C++11 (optional)
+option(CXX11 "Auto set c++11 flags" OFF)
+if (CXX11)
+    include(SetCXX11) 
+endif (CXX11)
+
 #Use complex Matrix elements
 option(use_complex "Use complex matrix elements" OFF)
 if (use_complex)

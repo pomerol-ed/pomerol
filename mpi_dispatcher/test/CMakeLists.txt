@@ -4,8 +4,8 @@ enable_testing()
 # MPI tests. Do not link to pomerol
 set (mpi_tests
 mpi_basic_test
-mpi_dispatcher_test
 )
+#mpi_dispatcher_test
 
 foreach (test ${mpi_tests})
     set(test_src ${test}.cpp)

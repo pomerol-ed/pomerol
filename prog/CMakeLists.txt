@@ -13,8 +13,8 @@ link_libraries(
 
 set (progs 
 anderson
-hubbard2d
 )
+#hubbard2d
 
 foreach (prog ${progs})
     set(prog_src ${prog}.cpp)
