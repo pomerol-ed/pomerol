@@ -34,8 +34,6 @@ Hamiltonian::Hamiltonian(const IndexClassification &IndexInfo, const IndexHamilt
 
 Hamiltonian::~Hamiltonian()
 {
-    //for(std::vector<std::shared_ptr<HamiltonianPart> >::iterator iter = parts.begin(); iter != parts.end(); iter++)
-	//    iter->reset();
 }
 
 void Hamiltonian::prepare(const boost::mpi::communicator& comm)
