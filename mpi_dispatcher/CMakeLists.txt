@@ -10,7 +10,7 @@ install(TARGETS mpi_dispatcher
         ARCHIVE DESTINATION lib
         INCLUDES DESTINATION include
         )
-install(EXPORT mpi_dispatcher NAMESPACE bold_hyb:: DESTINATION share/bold_hyb/mpi_dispatcher)
+install(EXPORT mpi_dispatcher NAMESPACE pomerol:: DESTINATION share/pomerol/mpi_dispatcher)
 
 if (Testing)
     add_subdirectory(test)
