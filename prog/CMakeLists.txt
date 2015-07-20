@@ -14,7 +14,10 @@ link_libraries(
 set (progs 
 anderson
 )
-#hubbard2d
+
+if (CXX11)
+list(APPEND progs hubbard2d)
+endif(CXX11)
 
 foreach (prog ${progs})
     set(prog_src ${prog}.cpp)

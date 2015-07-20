@@ -22,6 +22,7 @@ set (pomerol_src Misc.cpp
 	TwoParticleGFContainer.cpp TwoParticleGFContainer.h 
 	Vertex4.cpp Vertex4.h 
 	Vertex4Container.cpp Vertex4Container.h
+    $<TARGET_OBJECTS:mpi_dispatcher>
 )
 add_library(pomerol SHARED ${pomerol_src})
 set_target_properties(pomerol PROPERTIES VERSION ${POMEROL_VERSION})
