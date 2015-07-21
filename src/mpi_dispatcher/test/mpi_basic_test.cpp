@@ -1,6 +1,6 @@
 #include <boost/mpi.hpp>
 
-#include "pomerol/mpi_dispatcher/mpi_dispatcher.hpp"
+#include "mpi_dispatcher/mpi_dispatcher.hpp"
 
 using namespace pMPI;
 

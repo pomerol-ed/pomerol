@@ -69,7 +69,7 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const boost::mpi::
     int rank = comm.rank();
     int comm_size = comm.size(); 
     comm.barrier();
-    if (rank==0) { INFO("Calculating " << parts.size() << " jobs using " << comm_size << " procs."); };
+    if (rank==0) { std::cout << "Calculating " << parts.size() << " jobs using " << comm_size << " procs." << std::endl; };
 
     size_t ROOT = 0;
     boost::scoped_ptr<pMPI::MPIMaster> disp;
@@ -111,7 +111,7 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const boost::mpi::
     };
     // at this moment all communication is finished
     // Now spread the information, who did what.
-	if (VerboseOutput && rank==ROOT) INFO("done.");
+	if (VerboseOutput && rank==ROOT) std::cout << "done." << std::endl;
     comm.barrier();
     std::map<pMPI::JobId, pMPI::WorkerId> job_map;
     if (rank == ROOT) { 
