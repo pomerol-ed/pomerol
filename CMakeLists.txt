@@ -82,11 +82,11 @@ if (Testing)
 endif (Testing)
 
 # Build example
-option(Examples "Build examples" OFF)
-if (Examples)
-    message(STATUS "Building examples")
-    add_subdirectory(example)
-endif (Examples)
+#option(Examples "Build examples" OFF)
+#if (Examples)
+#    message(STATUS "Building examples")
+#    add_subdirectory(example)
+#endif (Examples)
 
 # Build executables
 option(Progs "Build executables" OFF)
