@@ -1,7 +1,7 @@
 #  Try to find Pomerol. Once done this will define
-#  Pomerol_FOUND - System has GFTools
-#  Pomerol_INCLUDE_DIRS - The GFTools include directories
-#  Pomerol_DEFINITIONS - Compiler switches required for using GFTools
+#  Pomerol_FOUND - System has Pomerol
+#  Pomerol_INCLUDE_DIRS - The Pomerol include directories
+#  Pomerol_DEFINITIONS - Compiler switches required for using Pomerol
 
 find_package(PkgConfig)
 pkg_check_modules(PC_Pomerol QUIET pomerol)

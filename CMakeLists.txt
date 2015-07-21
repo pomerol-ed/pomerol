@@ -95,6 +95,8 @@ if (Progs)
     add_subdirectory(prog)
 endif (Progs)
 
+# Install FindpPomerol.cmake
+install(FILES ${CMAKE_SOURCE_DIR}/cmake/FindPomerol.cmake DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pomerol)
 
 # Install pkg-config file
 configure_file(pomerol.pc.in pomerol.pc @ONLY)
