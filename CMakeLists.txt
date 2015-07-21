@@ -96,3 +96,6 @@ endif (Progs)
 # Install pkg-config file
 configure_file(pomerol.pc.in pomerol.pc @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pomerol.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
+
+# Configure lmod file
+configure_file(pomerol.lmod.in pomerol.lmod @ONLY)

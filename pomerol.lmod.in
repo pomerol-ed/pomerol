@@ -1,0 +1,14 @@
+#%Module1.0
+
+set     name        pomerol
+set     root        @CMAKE_INSTALL_PREFIX@
+
+setenv      POMEROL_DIR    $root
+setenv      POMEROL_ROOT   $root
+setenv      POMEROL_LIB    $root/lib
+setenv      POMEROL_INC    $root/include
+setenv      POMEROL_BIN    $root/bin
+
+prepend-path      PATH      $root/bin
+prepend-path      LD_LIBRARY_PATH $root/lib
+prepend-path      CMAKE_MODULE_PATH $root/share/pomerol
