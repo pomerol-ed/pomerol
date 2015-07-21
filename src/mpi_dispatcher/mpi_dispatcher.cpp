@@ -1,4 +1,4 @@
-#include "mpi_dispatcher.hpp"
+#include "pomerol/mpi_dispatcher/mpi_dispatcher.hpp"
 
 namespace pMPI {
 

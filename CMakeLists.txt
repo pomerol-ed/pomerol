@@ -67,10 +67,10 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src
 )
 
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+#include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include ${CMAKE_BINARY_DIR}/include)
-add_subdirectory("./mpi_dispatcher")
-set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES} ./mpi_dispatcher")
+#add_subdirectory("./mpi_dispatcher")
+#set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES} ./mpi_dispatcher")
 
 add_subdirectory(include)
 add_subdirectory(src)
