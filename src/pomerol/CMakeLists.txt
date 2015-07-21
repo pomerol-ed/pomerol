@@ -10,7 +10,6 @@ set (pomerol_src Misc.cpp
 	IndexHamiltonian.cpp 
 	Symmetrizer.cpp 
 	StatesClassification.cpp 
-	#HDF5Storage.h HDF5Storage.cpp 
 	HamiltonianPart.cpp 
  	Hamiltonian.cpp 
 	Thermal.cpp 
@@ -39,6 +38,7 @@ target_link_libraries(pomerol
     #${HDF5_LIBRARIES}
 )
 set_target_properties(pomerol PROPERTIES POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET pomerol APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS} ${MPI_CXX_INCLUDE_PATH} ${EIGEN3_INCLUDE_DIR})  
 
 install(TARGETS pomerol 
         EXPORT pomerol
