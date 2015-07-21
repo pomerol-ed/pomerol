@@ -1,4 +1,4 @@
-include_directories (. ../src)
+include_directories (${CMAKE_SOURCE_DIR}/include/pomerol)
 enable_testing()
 
 # Pomerol tests
@@ -35,16 +35,5 @@ foreach (test ${tests})
         pomerol
     )
 endforeach(test)
-
-
-set (tests_np 
-)
-
-foreach (np 1 4 16)
-foreach (test ${tests_np})
-    set (test_parameters -np ${np} "./${test}")
-    add_test(NAME ${test}${np}cpu COMMAND "${MPIEXEC}" ${test_parameters})
-endforeach(test)
-endforeach(np)
 
 

@@ -1,4 +1,4 @@
-include_directories (. ../src)
+include_directories (../pomerol)
 
 # tclap
 find_package (TCLAP)

@@ -40,6 +40,7 @@ endif (use_complex)
 # Documentation
 set(DOXYFILE_SOURCE_DIR "./src")
 include(UseDoxygen)
+set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES} ./pomerol")
 
 #set(Boost_USE_STATIC_LIBS        ON)
 #set(Boost_USE_STATIC_RUNTIME    OFF)
@@ -67,9 +68,11 @@ include_directories(
 )
 
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/include ${CMAKE_BINARY_DIR}/include)
 add_subdirectory("./mpi_dispatcher")
 set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES} ./mpi_dispatcher")
 
+add_subdirectory(include/pomerol)
 add_subdirectory(src)
 
 option(Testing "Enable testing" ON)
