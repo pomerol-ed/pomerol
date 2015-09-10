@@ -187,6 +187,10 @@ int main(int argc, char* argv[])
     rho.compute(); // evaluate thermal weights with respect to ground energy, i.e exp(-beta(e-e_0))/Z 
 
     INFO("<N> = " << rho.getAverageOccupancy()); // get average total particle number
+    INFO("<H> = " << rho.getAverageEnergy()); // get average energy
+    ParticleIndex d0 = IndexInfo.getIndex("A",0,down); // find the indices of the impurity, i.e. spin up index
+    ParticleIndex u0 = IndexInfo.getIndex("A",0,up);
+    INFO("<N_{" << IndexInfo.getInfo(u0) << "}N_{"<< IndexInfo.getInfo(u0) << "}> = " << rho.getAverageDoubleOccupancy(u0,d0)); // get double occupancy
 
     for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {  
         INFO("<N_{" << IndexInfo.getInfo(i) << "[" << i <<"]}> = " << rho.getAverageOccupancy(i)); // get average total particle number
@@ -204,8 +208,6 @@ int main(int argc, char* argv[])
         std::set<IndexCombination2> indices2; // a set of pairs of indices to evaluate Green's function
 
         // Take only impurity spin up and spin down indices
-        ParticleIndex d0 = IndexInfo.getIndex("A",0,down); // find the indices of the impurity, i.e. spin up index
-        ParticleIndex u0 = IndexInfo.getIndex("A",0,up);
         f.insert(u0); 
         f.insert(d0);
         indices2.insert(IndexCombination2(d0,d0)); // evaluate only G_{\down \down}
