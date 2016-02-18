@@ -38,9 +38,11 @@ if (use_complex)
 endif (use_complex)
 
 # Documentation
-set(DOXYFILE_SOURCE_DIR "./src")
+set(DOXYFILE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/pomerol")
+set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES} ${CMAKE_SOURCE_DIR}/src/mpi_dispatcher")
+set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES} ${CMAKE_SOURCE_DIR}/include/pomerol")
+set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES} ${CMAKE_SOURCE_DIR}/include/mpi_dispatcher")
 include(UseDoxygen)
-set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES} ./pomerol")
 
 #set(Boost_USE_STATIC_LIBS        ON)
 #set(Boost_USE_STATIC_RUNTIME    OFF)
