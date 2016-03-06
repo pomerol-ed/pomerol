@@ -89,7 +89,7 @@ macro(add_alpscore)
 find_package(ALPSCore REQUIRED COMPONENTS hdf5 accumulators mc params)
     message(STATUS "ALPSCore includes:  ${ALPSCore_INCLUDES}")
     message(STATUS "ALPSCore libraries: ${ALPSCore_LIBRARIES}")
-    include_directories(${ALPSCore_INCLUDE_DIRS})
+    target_include_directories(${PROJECT_NAME} PUBLIC ${ALPSCore_INCLUDE_DIRS})
     target_link_libraries(${PROJECT_NAME} PUBLIC ${ALPSCore_LIBRARIES})
 endmacro(add_alpscore)
 
@@ -97,7 +97,7 @@ endmacro(add_alpscore)
 macro(add_eigen3)
 find_package (Eigen3 3.1 REQUIRED)
     message(STATUS "Eigen3 includes: " ${EIGEN3_INCLUDE_DIR} )
-    include_directories(${EIGEN3_INCLUDE_DIR})
+    target_include_directories(${PROJECT_NAME} PUBLIC ${EIGEN3_INCLUDE_DIR})
 endmacro(add_eigen3)
 
 
@@ -139,23 +139,19 @@ endmacro(add_python)
 macro(add_fftw3)
 find_package (fftw REQUIRED)
     message(STATUS "FFTW includes: " ${FFTW_INCLUDE_DIR} )
-	include_directories(${FFTW_INCLUDE_DIR})
+	target_include_directories(${PROJECT_NAME} PUBLIC ${FFTW_INCLUDE_DIR})
     target_link_libraries(${PROJECT_NAME} PUBLIC ${FFTW_LIBRARIES})
 endmacro(add_fftw3)
 
 
 # boost
 macro(add_boost) # usage: add_boost(component1 component2...)
-  #set(Boost_USE_STATIC_LIBS        ON)
-  #set(Boost_USE_STATIC_RUNTIME    OFF)
   find_package (Boost 1.54.0 COMPONENTS ${ARGV} REQUIRED)
   message(STATUS "Boost includes: ${Boost_INCLUDE_DIRS}" )
   message(STATUS "Boost libs: ${Boost_LIBRARIES}" )
   target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
   target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
 endmacro(add_boost)
-
-
 
 #
 # Compilation/Installation shortcuts
@@ -198,7 +194,7 @@ macro(add_mpi)
     message(STATUS "MPI definitions : " ${MPI_CXX_COMPILE_FLAGS} ${MPI_C_COMPILE_FLAGS})
     add_definitions(${MPI_CXX_COMPILE_FLAGS}  ${MPI_C_COMPILE_FLAGS})
     target_link_libraries(${PROJECT_NAME} PUBLIC ${MPI_CXX_LIBRARIES})
-    include_directories(${MPI_CXX_INCLUDE_PATH})
+    target_include_directories(${PROJECT_NAME} PUBLIC ${MPI_CXX_INCLUDE_PATH})
 endmacro(add_mpi)
 
 # Usage: add_this_package(srcs...)
