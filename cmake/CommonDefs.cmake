@@ -1,5 +1,5 @@
 #
-# List of common macros for opendf objects compilation
+# List of common macros for ${PROJECT_NAME} objects compilation
 #
 
 # Disable in-source builds
@@ -216,7 +216,7 @@ function(add_this_package)
          )
 endfunction(add_this_package)
 
-# add interdependencies between opendf modules
+# add interdependencies between ${PROJECT_NAME} modules
 # Usage: add_opendf_module(pkgname1 pkgname2...)
 # Sets variable ${PROJECT_NAME}_DEPENDS
 macro(add_opendf_module)
@@ -254,7 +254,7 @@ macro(gen_documentation)
         set(DOXYFILE_SOURCE_DIR "${PROJECT_SOURCE_DIR}/include")
         set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES}")
         set(DOXYFILE_IN "${CMAKE_SOURCE_DIR}/Doxyfile.in") 
-        set(DOXYFILE_NAME "opendf")
+        set(DOXYFILE_NAME "${PROJECT_NAME}")
         set(DOXYFILE_OUTPUT_DIR "${CMAKE_BINARY_DIR}/doc")
     endif()
   endif(Documentation)
@@ -262,8 +262,8 @@ endmacro(gen_documentation)
 
 # Generate the automated configuration file with some of the compiler definitions
 macro(gen_config_hpp)
-  configure_file("${PROJECT_SOURCE_DIR}/include/opendf/config.hpp.in" "${PROJECT_BINARY_DIR}/include/opendf/config.hpp")
-  install(FILES "${PROJECT_BINARY_DIR}/include/opendf/config.hpp" DESTINATION include/opendf) 
+  configure_file("${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/config.hpp.in" "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/config.hpp")
+  install(FILES "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/config.hpp" DESTINATION include/${PROJECT_NAME}) 
 endmacro(gen_config_hpp)
 
 # Generation of pkg-config
@@ -291,15 +291,15 @@ function(gen_cfg_module)
     if (gen_cfg_module_EXPORTS)
         set(EXPORTS ${gen_cfg_module_EXPORTS})
     else()
-        set(EXPORTS opendf::${PROJECT_NAME})
+        set(EXPORTS ${PROJECT_NAME}::${PROJECT_NAME})
     endif()
-    configure_file("${PROJECT_SOURCE_DIR}/cmake/opendfModuleConfig.cmake.in" 
+    configure_file("${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}ModuleConfig.cmake.in" 
                    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
-    configure_file("${PROJECT_SOURCE_DIR}/../cmake/opendfConfig.cmake.in" 
-                   "${PROJECT_BINARY_DIR}/opendfConfig.cmake" @ONLY)
+    configure_file("${PROJECT_SOURCE_DIR}/../cmake/${PROJECT_NAME}Config.cmake.in" 
+                   "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
     install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" DESTINATION "share/${PROJECT_NAME}/")
-    install(FILES "${PROJECT_BINARY_DIR}/opendfConfig.cmake" DESTINATION "share/opendf/")
-    configure_file("${PROJECT_SOURCE_DIR}/../opendf.lmod.in" "${CMAKE_BINARY_DIR}/opendf.lmod")
+    install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" DESTINATION "share/${PROJECT_NAME}/")
+    configure_file("${PROJECT_SOURCE_DIR}/../${PROJECT_NAME}.lmod.in" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.lmod")
 endfunction()
 
 
