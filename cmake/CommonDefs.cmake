@@ -169,8 +169,8 @@ endmacro(add_boost)
 # Compile tests in "test" subdir 
 macro(add_testing)
 option(Testing "Enable testing" ON)
-include(EnableGtests) #defined in common/cmake
 if (Testing)
+    include(EnableGtests) #defined in common/cmake
     enable_testing()
     add_subdirectory(test)
 endif(Testing)
