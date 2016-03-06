@@ -176,11 +176,12 @@ endmacro(add_progs)
 
 macro(add_mpi)
     find_package (MPI)
-    message(STATUS "MPI includes: " ${MPI_INCLUDE_DIRS} )
+    message(STATUS "MPI includes: " ${MPI_CXX_INCLUDE_PATH} )
     message(STATUS "MPI CXX libs: " ${MPI_CXX_LIBRARIES} )
     message(STATUS "MPI definitions : " ${MPI_CXX_COMPILE_FLAGS} ${MPI_C_COMPILE_FLAGS})
     add_definitions(${MPI_CXX_COMPILE_FLAGS}  ${MPI_C_COMPILE_FLAGS})
     target_link_libraries(${PROJECT_NAME} PUBLIC ${MPI_CXX_LIBRARIES})
+    include_directories(${MPI_CXX_INCLUDE_PATH})
 endmacro(add_mpi)
 
 # Usage: add_this_package(srcs...)
