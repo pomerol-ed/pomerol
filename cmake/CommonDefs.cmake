@@ -64,6 +64,24 @@ macro(compiler_workarounds)
     endif()
 endmacro(compiler_workarounds)
 
+macro(set_build_type)
+option(BuildStatic "Build static libraries" OFF)
+option(BuildShared "Build shared libraries" ON)
+if (BuildStatic AND NOT BuildShared) 
+    message(STATUS "Building static libraries")
+    set(${PROJECT_CAPNAME}_BUILD_TYPE STATIC)
+    set(BUILD_SHARED_LIBS OFF)
+elseif(BuildShared AND NOT BuildStatic)
+    message(STATUS "Building shared libraries")
+    set(${PROJECT_CAPNAME}_BUILD_TYPE SHARED)
+    set(BUILD_SHARED_LIBS ON)
+else()
+    message(FATAL_ERROR "Please choose EITHER BuildStatic OR BuildShared type of building libraries, NOT both")
+endif()
+
+
+endmacro(set_build_type)
+
 # 
 # Dependencies
 #
@@ -167,10 +185,11 @@ endmacro(add_testing)
 # Build executables in "prog" subdirectory
 macro(add_progs)
   foreach(src_ ${ARGV})
-    add_executable(${src_} "prog/${src_}.cpp")
-    target_link_libraries(${src_} ${PROJECT_NAME})
-    set_target_properties(${src_} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-    install ( TARGETS ${src_} DESTINATION bin )
+    set(prog_name "${src_}.${PROJECT_NAME}")
+    add_executable(${prog_name} "prog/${src_}.cpp")
+    target_link_libraries(${prog_name} ${PROJECT_NAME})
+    set_target_properties(${prog_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+    install ( TARGETS ${prog_name} DESTINATION bin )
   endforeach()
 endmacro(add_progs)
 
@@ -200,7 +219,7 @@ function(add_this_package)
   foreach(src_ ${ARGV})
     list(APPEND src_list_ "src/${src_}.cpp")
   endforeach()
-  add_library(${PROJECT_NAME} ${ALPS_BUILD_TYPE} ${src_list_})
+  add_library(${PROJECT_NAME} ${${PROJECT_CAPNAME}_BUILD_TYPE} ${src_list_})
   set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
   install(TARGETS ${PROJECT_NAME} 

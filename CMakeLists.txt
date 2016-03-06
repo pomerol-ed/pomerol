@@ -6,6 +6,7 @@ cmake_minimum_required (VERSION 2.8.12)
 # title and version of the project
 project (pomerol CXX)
 message ("\n${PROJECT_NAME} configuration\n")
+string(TOUPPER ${PROJECT_NAME} PROJECT_CAPNAME)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 set(POMEROL_VERSION 1.0)
@@ -19,11 +20,17 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 # rpath fix
 fix_rpath()
 
+set_build_type()
+
 # C++11 (optional)
-option(AutoSetCXX11 "Auto set c++11 flags" OFF)
-if (AutoSetCXX11)
+option(CXX11 "Auto set c++11 flags" OFF)
+if (CXX11)
+    message(STATUS "Using c++11 build")
+    set(${PROJECT_CAPNAME}_CXX11 TRUE)
     set_cxx11()
-endif (AutoSetCXX11)
+else(CXX11)
+    set(${PROJECT_CAPNAME}_CXX11 FALSE)
+endif (CXX11)
 
 #Use complex Matrix elements
 option(use_complex "Use complex matrix elements" OFF)
@@ -77,7 +84,11 @@ add_testing()
 option(Progs "Build executables" OFF)
 if (Progs)
     message(STATUS "Building executables")
-    add_progs(anderson)
+    set (progs_list anderson)
+    if (${PROJECT_CAPNAME}_CXX11)
+        list(APPEND progs_list hubbard2d)
+    endif()
+    add_progs(${progs_list})
 endif (Progs)
 
 set(DOXYFILE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/pomerol")
