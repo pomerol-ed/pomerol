@@ -64,7 +64,7 @@ macro(compiler_workarounds)
     endif()
 endmacro(compiler_workarounds)
 
-macro(set_build_type)
+macro(set_linking_type)
 option(BuildStatic "Build static libraries" OFF)
 option(BuildShared "Build shared libraries" ON)
 if (BuildStatic AND NOT BuildShared) 
@@ -78,9 +78,7 @@ elseif(BuildShared AND NOT BuildStatic)
 else()
     message(FATAL_ERROR "Please choose EITHER BuildStatic OR BuildShared type of building libraries, NOT both")
 endif()
-
-
-endmacro(set_build_type)
+endmacro(set_linking_type)
 
 # 
 # Dependencies

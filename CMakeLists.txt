@@ -19,8 +19,8 @@ no_source_builds()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 # rpath fix
 fix_rpath()
-
-set_build_type()
+# set static or dynamic linking
+set_linking_type()
 
 # C++11 (optional)
 option(CXX11 "Auto set c++11 flags" OFF)
