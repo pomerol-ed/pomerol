@@ -25,7 +25,7 @@
 **  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include "Operator.h"
+#include "pomerol/Operator.h"
 #include <algorithm>
 #include <iterator>
 #include <boost/tuple/tuple.hpp>

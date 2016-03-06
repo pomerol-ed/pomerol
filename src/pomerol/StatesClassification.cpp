@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "StatesClassification.h"
+#include "pomerol/StatesClassification.h"
 
 namespace Pomerol{
 

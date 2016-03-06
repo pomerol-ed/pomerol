@@ -25,7 +25,7 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#include "GreensFunctionPart.h"
+#include "pomerol/GreensFunctionPart.h"
 
 namespace Pomerol{
 

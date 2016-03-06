@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "TwoParticleGFPart.h"
+#include "pomerol/TwoParticleGFPart.h"
 
 namespace Pomerol{
 

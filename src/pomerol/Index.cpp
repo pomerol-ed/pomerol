@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>
 
 
-#include"Index.h"
+#include"pomerol/Index.h"
 
 namespace Pomerol{
 //

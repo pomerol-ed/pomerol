@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "FieldOperatorPart.h"
+#include "pomerol/FieldOperatorPart.h"
 
 using std::stringstream;
 

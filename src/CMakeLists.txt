@@ -1,2 +1,0 @@
-add_subdirectory(mpi_dispatcher)
-add_subdirectory(pomerol)

@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "Hamiltonian.h"
+#include "pomerol/Hamiltonian.h"
 #include "mpi_dispatcher/mpi_skel.hpp"
 
 #ifdef ENABLE_SAVE_PLAINTEXT

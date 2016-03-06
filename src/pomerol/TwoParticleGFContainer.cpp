@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "TwoParticleGFContainer.h"
+#include "pomerol/TwoParticleGFContainer.h"
 #include <boost/serialization/complex.hpp>
 #include <boost/serialization/vector.hpp>
 

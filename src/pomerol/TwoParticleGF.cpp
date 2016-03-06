@@ -25,7 +25,7 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#include "TwoParticleGF.h"
+#include "pomerol/TwoParticleGF.h"
 #include <boost/serialization/complex.hpp>
 #include <boost/serialization/vector.hpp>
 

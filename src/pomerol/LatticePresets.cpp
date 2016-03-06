@@ -25,7 +25,7 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include "LatticePresets.h"
+#include "pomerol/LatticePresets.h"
 
 namespace Pomerol {
 

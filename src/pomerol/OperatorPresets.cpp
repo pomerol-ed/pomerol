@@ -25,7 +25,7 @@
 **  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include "OperatorPresets.h"
+#include "pomerol/OperatorPresets.h"
 
 namespace Pomerol {
 namespace OperatorPresets {

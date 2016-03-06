@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "IndexClassification.h"
+#include "pomerol/IndexClassification.h"
 #include <boost/functional/hash.hpp>
 
 namespace Pomerol{

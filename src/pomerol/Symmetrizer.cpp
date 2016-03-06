@@ -25,8 +25,8 @@
 **  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include "Symmetrizer.h"
-#include "OperatorPresets.h"
+#include "pomerol/Symmetrizer.h"
+#include "pomerol/OperatorPresets.h"
 
 namespace Pomerol { 
 

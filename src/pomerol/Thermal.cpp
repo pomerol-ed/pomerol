@@ -25,7 +25,7 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
 
-#include"Thermal.h"
+#include"pomerol/Thermal.h"
 
 namespace Pomerol{
 

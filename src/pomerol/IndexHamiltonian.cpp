@@ -24,7 +24,7 @@
 **  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include "IndexHamiltonian.h"
+#include "pomerol/IndexHamiltonian.h"
 #include <algorithm>
 #include <sstream>
 

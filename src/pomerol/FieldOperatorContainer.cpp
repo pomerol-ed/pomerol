@@ -26,7 +26,7 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include "FieldOperatorContainer.h"
+#include "pomerol/FieldOperatorContainer.h"
 
 namespace Pomerol{
 

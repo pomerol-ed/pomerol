@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "FourIndexObject.h"
+#include "pomerol/FourIndexObject.h"
 //
 //FourIndexObject::IndexCombination
 //

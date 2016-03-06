@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "GFContainer.h"
+#include "pomerol/GFContainer.h"
 
 namespace Pomerol{
 

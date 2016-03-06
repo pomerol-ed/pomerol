@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "FieldOperator.h"
+#include "pomerol/FieldOperator.h"
 
 #include <boost/serialization/complex.hpp>
 #include <boost/serialization/vector.hpp>

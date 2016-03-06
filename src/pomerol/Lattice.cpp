@@ -1,5 +1,5 @@
-#include "Lattice.h"
-#include "LatticePresets.h"
+#include "pomerol/Lattice.h"
+#include "pomerol/LatticePresets.h"
 #include <fstream>
 #include <algorithm>
 

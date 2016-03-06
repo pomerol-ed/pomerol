@@ -19,8 +19,8 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include"HamiltonianPart.h"
-#include"StatesClassification.h"
+#include"pomerol/HamiltonianPart.h"
+#include"pomerol/StatesClassification.h"
 #include<sstream>
 #include<Eigen/Eigenvalues>
 

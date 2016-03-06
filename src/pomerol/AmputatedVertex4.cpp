@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "Vertex4.h"
+#include "pomerol/Vertex4.h"
 #include <Eigen/LU> 
 
 namespace Pomerol{

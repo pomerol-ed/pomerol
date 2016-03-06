@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "Vertex4Container.h"
+#include "pomerol/Vertex4Container.h"
 
 namespace Pomerol{
 

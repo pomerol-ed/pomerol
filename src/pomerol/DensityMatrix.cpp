@@ -25,7 +25,7 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#include "DensityMatrix.h"
+#include "pomerol/DensityMatrix.h"
 
 namespace Pomerol{
 
