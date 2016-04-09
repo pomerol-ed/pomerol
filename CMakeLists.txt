@@ -36,37 +36,37 @@ endif (CXX11)
 option(use_complex "Use complex matrix elements" OFF)
 if (use_complex)
     message(STATUS "Using complex matrix elements")
-    add_definitions("-DPOMEROL_COMPLEX_MATRIX_ELEMENS")
+    add_definitions("-DPOMEROL_COMPLEX_MATRIX_ELEMENTS")
 endif (use_complex)
 
-set (pomerol_sources 
+set (pomerol_sources
     mpi_dispatcher/mpi_dispatcher
-    pomerol/Misc 
-    pomerol/Lattice 
-    pomerol/LatticePresets 
-    pomerol/Index 
-    pomerol/IndexClassification 
-    pomerol/Operator 
-    pomerol/OperatorPresets 
-    pomerol/IndexHamiltonian 
-    pomerol/Symmetrizer 
-    pomerol/StatesClassification 
-    pomerol/HamiltonianPart 
-    pomerol/Hamiltonian 
-    pomerol/Thermal 
-    pomerol/FieldOperatorPart 
-    pomerol/FieldOperator 
-    pomerol/FieldOperatorContainer 
-    pomerol/DensityMatrixPart 
-    pomerol/DensityMatrix 
-    pomerol/GreensFunctionPart 
+    pomerol/Misc
+    pomerol/Lattice
+    pomerol/LatticePresets
+    pomerol/Index
+    pomerol/IndexClassification
+    pomerol/Operator
+    pomerol/OperatorPresets
+    pomerol/IndexHamiltonian
+    pomerol/Symmetrizer
+    pomerol/StatesClassification
+    pomerol/HamiltonianPart
+    pomerol/Hamiltonian
+    pomerol/Thermal
+    pomerol/FieldOperatorPart
+    pomerol/FieldOperator
+    pomerol/FieldOperatorContainer
+    pomerol/DensityMatrixPart
+    pomerol/DensityMatrix
+    pomerol/GreensFunctionPart
     pomerol/GreensFunction
     pomerol/GFContainer
-    pomerol/TwoParticleGFPart 
+    pomerol/TwoParticleGFPart
     pomerol/TwoParticleGF
-    pomerol/TwoParticleGFContainer 
-    pomerol/Vertex4 
-    pomerol/Vertex4Container 
+    pomerol/TwoParticleGFContainer
+    pomerol/Vertex4
+    pomerol/Vertex4Container
 )
 
 configure_file(${CMAKE_SOURCE_DIR}/include/pomerol.h.in ${CMAKE_BINARY_DIR}/include/pomerol.h)

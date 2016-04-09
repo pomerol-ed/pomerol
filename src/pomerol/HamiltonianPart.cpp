@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2012 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -35,8 +35,8 @@ namespace Pomerol{
 
 HamiltonianPart::HamiltonianPart(const IndexClassification& IndexInfo, const IndexHamiltonian &F, const StatesClassification &S, const BlockNumber& Block):
     ComputableObject(),
-    IndexInfo(IndexInfo), 
-    F(F), S(S), 
+    IndexInfo(IndexInfo),
+    F(F), S(S),
     Block(Block), QN(S.getQuantumNumbers(Block))
 {
 }
@@ -45,7 +45,7 @@ void HamiltonianPart::prepare()
 {
     size_t BlockSize = S.getBlockSize(Block);
 
-    H.resize(BlockSize,BlockSize);		
+    H.resize(BlockSize,BlockSize);
     H.setZero();
     std::map<FockState,MelemType>::const_iterator melem_it;
 
@@ -62,7 +62,7 @@ void HamiltonianPart::prepare()
             H(left_st,right_st) = melem;
         }
     }
-		
+
 //    H.triangularView<Eigen::Lower>() = H.triangularView<Eigen::Upper>().transpose();
 //    assert(MatrixType(H.triangularView<Eigen::Lower>()) == MatrixType(H.triangularView<Eigen::Upper>().transpose()));
     assert((H.adjoint() - H).array().abs().maxCoeff() < 100*std::numeric_limits<RealType>::epsilon());
@@ -73,13 +73,13 @@ void HamiltonianPart::compute()		//method of diagonalization classificated part 
 {
     if (Status >= Computed) return;
     if (H.rows() == 1) {
-        #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+        #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
         assert (std::abs(H(0,0) - std::real(H(0,0))) < std::numeric_limits<RealType>::epsilon());
         #endif
         Eigenvalues.resize(1);
-        #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+        #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
 	    Eigenvalues << std::real(H(0,0));
-        #else 
+        #else
 	    Eigenvalues << H(0,0);
         #endif
 	    H(0,0) = 1;
@@ -127,7 +127,7 @@ QuantumNumbers HamiltonianPart::getQuantumNumbers(void) const
 
 
 
-void HamiltonianPart::print_to_screen() const	
+void HamiltonianPart::print_to_screen() const
 {
     INFO(H << std::endl);
 }
@@ -155,7 +155,7 @@ bool HamiltonianPart::reduce(RealType ActualCutoff)
     InnerQuantumState counter=0;
     for (counter=0; (counter< (unsigned int)Eigenvalues.size() && Eigenvalues[counter]<=ActualCutoff); ++counter){};
     std::cout << "Left " << counter << " eigenvalues : " << std::endl;
-    if (counter) 
+    if (counter)
 	{std::cout << Eigenvalues.head(counter) << std::endl << "_________" << std::endl;
 	Eigenvalues = Eigenvalues.head(counter);
 	H = H.topLeftCorner(counter,counter);

@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2012 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -26,9 +26,9 @@ using std::stringstream;
 namespace Pomerol{
 
 FieldOperatorPart::FieldOperatorPart(
-        const IndexClassification &IndexInfo, const StatesClassification &S, const HamiltonianPart &HFrom,  const HamiltonianPart &HTo, ParticleIndex PIndex) : 
+        const IndexClassification &IndexInfo, const StatesClassification &S, const HamiltonianPart &HFrom,  const HamiltonianPart &HTo, ParticleIndex PIndex) :
         ComputableObject(), IndexInfo(IndexInfo), S(S), HFrom(HFrom), HTo(HTo), PIndex(PIndex),
-        MatrixElementTolerance(1e-8) 
+        MatrixElementTolerance(1e-8)
 {}
 
 void FieldOperatorPart::compute()
@@ -36,7 +36,7 @@ void FieldOperatorPart::compute()
     if ( Status >= Computed ) return;
     BlockNumber to = HTo.getBlockNumber();
     BlockNumber from = HFrom.getBlockNumber();
- 
+
     //DynamicSparseMatrixType tempElements(toStates.size(),fromStates.size());
 
     const std::vector<FockState>& toStates = S.getFockStates(to);
@@ -51,18 +51,22 @@ void FieldOperatorPart::compute()
 	    FockState K=*CurrentState;
         std::map<FockState, MelemType> result1 = O->actRight(K);
         if (result1.size()) {
-            FockState L=result1.begin()->first; 
-            #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+            FockState L=result1.begin()->first;
+            #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
             int sign = int(std::real(result1.begin()->second));
             #else
             int sign = result1.begin()->second;
             #endif
 	        if ( L!=ERROR_FOCK_STATE && std::abs(sign)>std::numeric_limits<RealType>::epsilon() ) {
-		        InnerQuantumState l=S.getInnerState(L), k=S.getInnerState(K);  
+		        InnerQuantumState l=S.getInnerState(L), k=S.getInnerState(K);
 		        for (InnerQuantumState n=0; n<toStates.size(); n++) { // Not the best solution, but no major overhead for dense matrices.
 		            if(std::abs(HTo.getMatrixElement(l,n)) > std::numeric_limits<RealType>::epsilon()) {
 			            for (InnerQuantumState m=0; m<fromStates.size(); m++) {
+                            #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
+                            MelemType C_nm = std::conj(HTo.getMatrixElement(l,n))*RealType(sign)*HFrom.getMatrixElement(k,m);
+                            #else
 			                MelemType C_nm = HTo.getMatrixElement(l,n)*RealType(sign)*HFrom.getMatrixElement(k,m);
+                            #endif
 			                if (std::abs(C_nm)>MatrixElementTolerance) {
 				                tempElements.push_back( Eigen::Triplet<MelemType> ( n,m, C_nm));
 			                }
@@ -75,9 +79,9 @@ void FieldOperatorPart::compute()
 
 //    for (std::vector<QuantumState>::const_iterator CurrentState = toStates.begin();
 //                                                   CurrentState < toStates.end(); CurrentState++)
-    elementsRowMajor = RowMajorMatrixType(toStates.size(),fromStates.size()); 
+    elementsRowMajor = RowMajorMatrixType(toStates.size(),fromStates.size());
     elementsRowMajor.setFromTriplets( tempElements.begin(), tempElements.end());
-    #ifndef POMEROL_COMPLEX_MATRIX_ELEMENS
+    #ifndef POMEROL_COMPLEX_MATRIX_ELEMENTS
     elementsRowMajor.prune(MatrixElementTolerance);
     #endif
     elementsColMajor = elementsRowMajor;
@@ -88,7 +92,7 @@ const ColMajorMatrixType& FieldOperatorPart::getColMajorValue(void) const
 {
     return elementsColMajor;
 }
- 
+
 const RowMajorMatrixType& FieldOperatorPart::getRowMajorValue(void) const
 {
     return elementsRowMajor;
@@ -119,14 +123,14 @@ BlockNumber FieldOperatorPart::getRightIndex(void) const
 
 // Specialized methods
 
-AnnihilationOperatorPart::AnnihilationOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S, 
+AnnihilationOperatorPart::AnnihilationOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S,
                                                   const HamiltonianPart &HFrom, const HamiltonianPart &HTo, ParticleIndex PIndex) :
     FieldOperatorPart(IndexInfo,S,HFrom,HTo,PIndex)
 {
     O = new Pomerol::OperatorPresets::C(PIndex);
 }
 
-CreationOperatorPart::CreationOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S, 
+CreationOperatorPart::CreationOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S,
                                                   const HamiltonianPart &HFrom, const HamiltonianPart &HTo, ParticleIndex PIndex) :
     FieldOperatorPart(IndexInfo,S,HFrom,HTo,PIndex)
 {

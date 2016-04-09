@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2011 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2011 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -21,7 +21,7 @@
 
 /** \file Operator.cpp
 **  \brief Implementation of the Operator, Operator::Term classes
-** 
+**
 **  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
@@ -42,7 +42,7 @@ const char* Operator::exWrongLabel::what() const throw(){
 };
 
 const char* Operator::exMelemVanishes::what() const throw(){
-    return "Matrix element vanishes"; 
+    return "Matrix element vanishes";
 };
 
 bool Operator::commutes(const Operator &rhs) const
@@ -76,13 +76,13 @@ boost::tuple<FockState,MelemType> Operator::actRight(const monomial_t &in, const
             boost::tie(op,ind)=in[i];
             //DEBUG(op << "_" << ind);
             if ((op == creation && bra[ind]) || (op == annihilation && !bra[ind]) ) return boost::make_tuple(ERROR_FOCK_STATE, 0); // This is Pauli principle.
-            if (ind > prev_pos_) 
-                for (ParticleIndex j=prev_pos_; j<ind; ++j) { if (bra[j]) sign*=-1; } 
+            if (ind > prev_pos_)
+                for (ParticleIndex j=prev_pos_; j<ind; ++j) { if (bra[j]) sign*=-1; }
             else
                 for (ParticleIndex j=prev_pos_; j>ind; j--) { if (bra[j]) sign*=-1; }
             bra[ind] = (op == creation); // This is c or c^+ acting
             //prev_pos_ = 0;
-            
+
         }
     return boost::make_tuple(bra, MelemType(sign));
 }
@@ -96,11 +96,11 @@ std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
     std::map<FockState, MelemType> result1;
     for (std::map<monomial_t,MelemType>::const_iterator it = monomials.begin(); it!=monomials.end(); it++)
         {
-            FockState bra; 
+            FockState bra;
             MelemType melem;
             boost::tie(bra,melem) = actRight(it->first,ket);
             //if (std::abs(melem)>1e-8) DEBUG(bra << "|*" << melem);
-            if (bra!=ERROR_FOCK_STATE && std::abs(melem)>std::numeric_limits<RealType>::epsilon()) 
+            if (bra!=ERROR_FOCK_STATE && std::abs(melem)>std::numeric_limits<RealType>::epsilon())
                 result1[bra]+=melem*(it->second);
         };
     // C++11 remove_if has a different behaviour, so this is a hck around. */
@@ -113,21 +113,21 @@ std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
 MelemType Operator::getMatrixElement( const FockState & bra, const FockState &ket) const
 {
     std::map<FockState, MelemType> output = this->actRight(ket);
-    if (output.find(bra)==output.end()) 
+    if (output.find(bra)==output.end())
         return 0;
-    else { 
+    else {
         return output[bra];
         }
 }
 
 MelemType Operator::getMatrixElement( const VectorType & bra, const VectorType &ket, const std::vector<FockState> &states) const
 {
-    if (bra.size()!=ket.size() || bra.size()!=states.size()) throw (exMelemVanishes()); 
+    if (bra.size()!=ket.size() || bra.size()!=states.size()) throw (exMelemVanishes());
     MelemType melem = 0.0;
     for (int i=0; i<ket.size(); ++i) {
         FockState current_state = states[i];
         MelemType overlap = ket[i];
-        if (std::abs(overlap)>std::numeric_limits<RealType>::epsilon()) { 
+        if (std::abs(overlap)>std::numeric_limits<RealType>::epsilon()) {
             //DEBUG(overlap << "," << current_state);
             std::map<FockState, MelemType> map1 = this->actRight(current_state);
             for (std::map<FockState, MelemType>::const_iterator it = map1.begin(); it!= map1.end(); it++) {
@@ -136,9 +136,9 @@ MelemType Operator::getMatrixElement( const VectorType & bra, const VectorType &
                 //DEBUG("\t<" << result_state << "|" << melem2);
                 std::vector<FockState>::const_iterator it1 = std::find(states.begin(), states.end(), result_state);
                 MelemType overlap2;
-                if (it1 != states.end() ) { 
+                if (it1 != states.end() ) {
                     size_t j = std::distance(states.begin(), it1);
-                #ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+                #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
                     overlap2 = std::conj(bra(j));
                 #else
                     overlap2 = bra(j);
@@ -147,10 +147,10 @@ MelemType Operator::getMatrixElement( const VectorType & bra, const VectorType &
                 else overlap2 = 0.0;
                 //DEBUG(overlap2);
                 //DEBUG("<" << result_state << "|" << overlap2 << "*" << melem << "*" << overlap << "|" << current_state << ">");
-                melem += overlap2 * melem2 * overlap; 
-                }   
-            };  
-        }; 
+                melem += overlap2 * melem2 * overlap;
+                }
+            };
+        };
     return melem;
 }
 

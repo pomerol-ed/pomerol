@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2011 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2011 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -20,7 +20,7 @@
 
 /** \file Misc.h
 **    \brief Declares very common type names and macros.
-** 
+**
 ** \author    Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author    Alexey Rubtsov (alex@shg.ru)
 ** \author    Andrey Antipov (antipov@shg.ru)
@@ -70,7 +70,7 @@ namespace Pomerol{
 #ifndef NDEBUG
 #define DEBUG(MSG)            std::cout << MSG_PREFIX << MSG << std::endl
 #else
-#define DEBUG(MSG)            NULL; 
+#define DEBUG(MSG)            NULL;
 #endif
 #define INFO(MSG)             std::cout << MSG << std::endl
 #define INFO_NONEWLINE(MSG)   std::cout << MSG << std::flush
@@ -82,7 +82,7 @@ typedef double RealType;
 typedef std::complex<double> ComplexType;
 
 /** Matrix element type. */
-#ifdef POMEROL_COMPLEX_MATRIX_ELEMENS
+#ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
 #warning using complex matrix elements
 typedef ComplexType MelemType;
 #else
@@ -96,25 +96,25 @@ typedef unsigned int ParticleIndex;
 //typedef boost::tuple<bool,Statistics,ParticleIndex> AtomicOp;
 //typedef AtomicOp<1,fermion,ParticleIndex> AtomicCdag;
 
-/** Fock State representation. */ 
+/** Fock State representation. */
 typedef boost::dynamic_bitset<> FockState;
 const FockState ERROR_FOCK_STATE = FockState(); // A state with the size==0 is an error state
 
-/** Each Quantum State in the finite system is associated with a number. 
- * This works for any basis, including Fock and Hamiltonian eigenbasis. 
- * The Fock States are converted naturally from bitsets to ints. 
+/** Each Quantum State in the finite system is associated with a number.
+ * This works for any basis, including Fock and Hamiltonian eigenbasis.
+ * The Fock States are converted naturally from bitsets to ints.
  **/
 typedef unsigned long QuantumState;
 
 /** Index represents a combination of spin, orbital, and lattice indices **/
 typedef unsigned int ParticleIndex;
 
-enum OperatorStatistics {fermion, boson}; 
+enum OperatorStatistics {fermion, boson};
 /** A creation and annihilation operators */
-//typedef boost::tuple<bool,OperatorStatistics,ModeIndex,ParticleIndex> ElementaryOperator; 
-//typedef std::tuple<bool,OperatorStatistics,ParticleIndex> ElementaryOperator; 
+//typedef boost::tuple<bool,OperatorStatistics,ModeIndex,ParticleIndex> ElementaryOperator;
+//typedef std::tuple<bool,OperatorStatistics,ParticleIndex> ElementaryOperator;
 //template<ParticleIndex P> using ElemCreatOpFermion = typename ElementaryOperator<1,0,P>;
-//template<ParticleIndex> typedef boost::tuple<0,0,ParticleIndex> ElemAnnihOpFermion; 
+//template<ParticleIndex> typedef boost::tuple<0,0,ParticleIndex> ElemAnnihOpFermion;
 
 /** Dense complex matrix. */
 typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> ComplexMatrixType;
@@ -192,38 +192,38 @@ extern const Permutation4 permutations4[24];
 template <typename T> struct __num_format;
 template <typename T> std::ostream& operator<<(std::ostream& lhs, const __num_format<T> &in);
 template <typename T> std::istream& operator>>(std::istream& lhs, __num_format<T> &out);
-template <typename T>  
+template <typename T>
 struct __num_format {
-    static const int _prec = 12; 
-    T _v; 
+    static const int _prec = 12;
+    T _v;
     __num_format(T v):_v(v){};
     operator T(){return _v;};
-/*    void savetxt(const std::string& filename) { 
+/*    void savetxt(const std::string& filename) {
         std::cout << "Saving " << typeid(*this).name() << " to " << filename << std::endl;
-        std::ofstream out; out.open(filename.c_str()); out << *this << std::endl; out.close(); 
-    };  
+        std::ofstream out; out.open(filename.c_str()); out << *this << std::endl; out.close();
+    };
 */
     friend std::ostream& operator<< <>(std::ostream& lhs, const __num_format<T> &in);
     friend std::istream& operator>> <>(std::istream& lhs, __num_format<T> &out);
 };
 
-template <typename T>  
+template <typename T>
 inline std::ostream& operator<<(std::ostream& lhs, const __num_format<T> &in) {lhs << std::setprecision(in._prec) << in._v; return lhs;};
-template <typename T>  
+template <typename T>
 inline std::istream& operator>>(std::istream& lhs, __num_format<T> &out) {lhs >> out._v; return lhs;};
 template <>
 inline std::ostream& operator<<(std::ostream& lhs, const __num_format<ComplexType> &in){lhs << std::setprecision(in._prec) << real(in._v) << " " << imag(in._v); return lhs;};
 template <>
 inline std::istream& operator>>(std::istream& lhs, __num_format<ComplexType> &out){RealType re,im; lhs >> re; lhs >> im; out._v = re+I*im; return lhs;};
 
-/*template <class T> 
+/*template <class T>
 inline bool __is_zero(const T& in, RealType threshold = std::numeric_limits<RealType>::epsilon()){return (std::abs(in)<threshold);};
 */
 
 } // end of namespace Pomerol
 
 /**
- * \mainpage 
+ * \mainpage
  * The source code and fetch instructions are located at <a href="http://pomerol.googlecode.com">project's Google code page</a>.
  * \section   ref_API libpomerol API
  * The general sequence of a calculation is:
@@ -237,7 +237,7 @@ inline bool __is_zero(const T& in, RealType threshold = std::numeric_limits<Real
  *      -   The Green's function ( by GreensFunction, GreensFunctionPart and GFContainer to store the values of GF for various index combinations ).
  *      -   The TwoParticle Greens Function ( by TwoParticleGF, TwoParticleGFPart and TwoParticleGFContainer ).
  * -    Calculcate the Vertex Function out of GF- and TwoParticleGF- containers - no work with Fock space is done ( by Vertex4 ).
- * 
+ *
  * A hint: Refer to <a href="inherits.html">a Class Hierarchy</a> if provided
  *
  * \section ref_conventions Conventions
@@ -257,18 +257,18 @@ inline bool __is_zero(const T& in, RealType threshold = std::numeric_limits<Real
  *
  * \par The Wick part of a two-particle Green's function:
  * \f[
- * \chi^0_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) = 
+ * \chi^0_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) =
  * \beta\delta_{\omega_1\omega_4}\delta_{\omega_2\omega_3}G_{14}(\omega_1)G_{23}(\omega_2) -
  *  \beta\delta_{\omega_1\omega_3}\delta_{\omega_2\omega_4}G_{13}(\omega_1)G_{24}(\omega_2)
  * \f]
  * \par An irreducible vertex part:
- * \f[ \Gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv 
+ * \f[ \Gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv
  *     \chi_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) -
  *     \chi^{0}_{1234}(\omega_1,\omega_2;\omega_3,\omega_4)
  * \f]
  *
  * \par An amputated irreducible vertex part:
- * \f[ \gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv 
+ * \f[ \gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv
  *     \sum_{1'2'3'4'}
  *     (G^{-1}(\omega_1))_{11'} (G^{-1}(\omega_2))_{22'}
  *     \Gamma_{1'2'3'4'}(\omega_1,\omega_2;\omega_3,\omega_4)
@@ -276,7 +276,7 @@ inline bool __is_zero(const T& in, RealType threshold = std::numeric_limits<Real
  * \f]
  *
  * \section Features
- * -    OpenMP support 
+ * -    OpenMP support
  * \todo HDF5 storage ( read / write )
  * \section ref_authors Authors
  * -    Andrey Antipov <antipov[at]ct-qmc.org>
