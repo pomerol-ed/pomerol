@@ -17,12 +17,13 @@ Documentation can be compiled with a `make doc` command.
   * [CMake](http://www.cmake.org) is used for the installation.
 
 ##### Installation
-  Check the *dependencies*: c++ compiler, CMake, Eigen3, Boost (with Boost::mpi and serialization), mpi and git to fetch the sources. For compiling the binaries from prog you'll need a tclap header-only library. 
+  Check the *dependencies*: c++ compiler, CMake, Eigen3, Boost (with Boost::mpi and serialization), mpi and git to fetch the sources. TCLAP is required for building executables. For compiling the binaries from prog you'll need a tclap header-only library. 
   - Checkout the latest sources `git clone https://github.com/aeantipov/pomerol.git`
   - Create a (temporary) build directory.
   - In this build directory run `cmake <path_to_pomerol> -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<path>` 
     * add `-DTesting=ON` for compiling tests. Default = ON.
-    * add `-DProgs=ON` for compiling provided binaries (from progs directory). These include diagonalizations of the Anderson impurity and Hubbard 2d cluster. Default = OFF.
+    * add `-DProgs=ON` for compiling provided binaries (from progs directory). These include diagonalizations of the Anderson impurity and Hubbard 2d cluster. Default = OFF. 
+      * TCLAP is then required. Add -DTCLAP_ROOT=LOCATION_OF_TCLAP (downloaded and unpacked or system-wide installed) if it is not found automatically. 
     * add `-DExamples=ON` for compiling provided binary examples (from examples directory). Default = OFF.
     * add `-Duse_complex=ON` for allowing complex matrix elements in the Hamiltonian. Default = OFF.
   - ` make`
