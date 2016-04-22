@@ -19,7 +19,8 @@ Documentation can be compiled with a `make doc` command.
 ##### Installation
   Check the *dependencies*: c++ compiler, CMake, Eigen3, Boost (with Boost::mpi and serialization), mpi and git to fetch the sources. For compiling the binaries from prog you'll need a tclap header-only library. 
   - Checkout the latest sources `git clone https://github.com/aeantipov/pomerol.git`
-  - In a directory run ` cmake <path_to_pomerol> -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<path>` 
+  - Create a (temporary) build directory.
+  - In this build directory run `cmake <path_to_pomerol> -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<path>` 
     * add `-DTesting=ON` for compiling tests. Default = ON.
     * add `-DProgs=ON` for compiling provided binaries (from progs directory). These include diagonalizations of the Anderson impurity and Hubbard 2d cluster. Default = OFF.
     * add `-DExamples=ON` for compiling provided binary examples (from examples directory). Default = OFF.
