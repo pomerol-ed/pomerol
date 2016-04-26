@@ -394,5 +394,83 @@ void TwoParticleGFPart::clear()
     ResonantTerms.clear();
 }
 
+void TwoParticleGFPart::fillContainer(MatsubaraContainer &in) const
+{
+    in.fill(NonResonantTerms, ResonantTerms, Permutation);
+}
+
+//
+// Matsubara Container
+//
+TwoParticleGFPart::MatsubaraContainer::MatsubaraContainer(RealType beta):MatsubaraSpacing(I*M_PI/beta){};
+
+void TwoParticleGFPart::MatsubaraContainer::prepare(int NBosonic, int NFermionic)
+{
+    NBosonic_ = NBosonic;
+    NFermionic_ = NFermionic;
+
+    Data.resize(std::max(0, 2*NBosonic_ - 1));
+    int Size = 2*NFermionic_;
+    for (int BosonicIndex= 0; BosonicIndex < Data.size(); BosonicIndex++)
+    {
+        Data[BosonicIndex].resize(Size,Size);
+        Data[BosonicIndex].setZero();
+    };
+};
+
+TwoParticleGFPart::MatsubaraContainer& TwoParticleGFPart::MatsubaraContainer::operator+= (const MatsubaraContainer& rhs)
+{
+    for (long BosonicIndex=0;BosonicIndex < Data.size();BosonicIndex++){
+        Data[BosonicIndex]+=rhs.Data[BosonicIndex];
+    }
+    return (*this);
+};
+
+void TwoParticleGFPart::MatsubaraContainer::clear()
+{
+    for (long BosonicIndex=0;BosonicIndex < Data.size(); BosonicIndex++){
+        Data[BosonicIndex].resize(0,0);
+    }
+}
+
+void TwoParticleGFPart::MatsubaraContainer::fill(const std::vector<TwoParticleGFPart::NonResonantTerm>& NonResonantTerms, const std::vector<TwoParticleGFPart::ResonantTerm>& ResonantTerms, Permutation3 Permutation)
+{
+/*
+    for (long BosonicIndex=0;BosonicIndex<=(4*NumberOfMatsubaras)-2;BosonicIndex++){
+        for (long nuIndex=0;nuIndex<Data[BosonicIndex].cols();++nuIndex){
+            for (long nu1Index=0;nu1Index<Data[BosonicIndex].cols();++nu1Index){
+                
+                long FermionicIndexShift = FermionicFirstIndex[BosonicIndex];
+                long MatsubaraNumber2 = nuIndex +FermionicIndexShift;
+                long MatsubaraNumber1 = BosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber2;
+                long MatsubaraNumber3 = nu1Index+FermionicIndexShift;
+                
+                long MatsubaraNumberOdd1 = 2*MatsubaraNumber1 + 1;
+                long MatsubaraNumberOdd2 = 2*MatsubaraNumber2 + 1;
+                long MatsubaraNumberOdd3 = 2*MatsubaraNumber3 + 1;
+                ComplexType Frequencies[3] = {  MatsubaraSpacing * RealType(MatsubaraNumberOdd1),
+                                                MatsubaraSpacing * RealType(MatsubaraNumberOdd2),
+                                               -MatsubaraSpacing * RealType(MatsubaraNumberOdd3)};
+                                    
+                ComplexType z1 = Frequencies[Permutation.perm[0]];                                    
+                ComplexType z2 = Frequencies[Permutation.perm[1]];
+                ComplexType z3 = Frequencies[Permutation.perm[2]];
+    
+                ComplexType Value = 0;
+                for(std::list<TwoParticleGFPart::NonResonantTerm>::const_iterator pTerm = NonResonantTerms.begin(); pTerm != NonResonantTerms.end(); ++pTerm)
+                    Value += (*pTerm)(z1,z2,z3);
+                for(std::list<TwoParticleGFPart::ResonantTerm>::const_iterator pTerm = ResonantTerms.begin(); pTerm != ResonantTerms.end(); ++pTerm)
+                    Value += (*pTerm)(z1,z2,z3);
+
+                Data[BosonicIndex](nuIndex,nu1Index) += Value;
+            };
+        };
+    };
+*/
+};
+
+
+
+
 } // end of namespace Pomerol
 

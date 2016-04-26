@@ -182,6 +182,9 @@ public:
     /** Purges all terms. */
     void clear();
 
+    /// Fill the values of a Matsubara Container
+    void fillContainer(MatsubaraContainer& in) const;
+
     /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
     * \param[in] z1 Frequency 1
     * \param[in] z2 Frequency 2
@@ -365,8 +368,8 @@ class TwoParticleGFPart::MatsubaraContainer
     ComplexType MatsubaraSpacing;
 
     /* An amount of positive Matsubaras on which to store the values. The range of values [-MatsubaraSpacing;MatsubaraSpacing-1] will be available */
-    long NFermionic_;
-    long NBosonic_;
+    int NFermionic_;
+    int NBosonic_;
 
     /* The storage - an array of Matrices for nu,nu' space, stored as a vector which is dependent on a bosonic frequency index */
     std::vector<ComplexMatrixType> Data;
@@ -381,7 +384,7 @@ public:
     /** Allocate memory for a storage
      * \param[in] NumberOfMatsubaras An amount of positive Matsubara frequencies that will be held in a MatsubaraContainer.
      */
-    void prepare(long NBosonic, long NFermionic);
+    void prepare(int NBosonic, int NFermionic);
 
     /** Returns the value for a given Matsubara numbers (not frequencies themselves)
      * \param[in] MatsubaraNumber1 An index of the 1st Matsubara frequency.
@@ -403,7 +406,7 @@ public:
      * \param[in] ResonantTerms A list of Resonant Terms.
      * \param[in] Permutation A permutation of input Matsubara frequencies
      */
-    void fill(const std::list<TwoParticleGFPart::NonResonantTerm>& NonResonantTerms, const std::list<TwoParticleGFPart::ResonantTerm>& ResonantTerms, Permutation3 Permutation);
+    void fill(const std::vector<TwoParticleGFPart::NonResonantTerm>& NonResonantTerms, const std::vector<TwoParticleGFPart::ResonantTerm>& ResonantTerms, Permutation3 Permutation);
 
     /** Operator+= : adds to a current MatsubaraContainer another one
      * \param[in] rhs Right hand side of the equation Matsubara Container to add.
