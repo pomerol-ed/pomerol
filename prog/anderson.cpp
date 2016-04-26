@@ -266,9 +266,10 @@ int main(int argc, char* argv[])
             
             Chi4.prepareAll(indices4); // find all non-vanishing block connections inside 2pgf
             comm.barrier(); // MPI::BARRIER
+            bool clearTerms = false;
 
             // ! The most important routine - actually calculate the 2PGF
-            Chi4.computeAll(comm, true); 
+            Chi4.computeAll(clearTerms, comm, true); 
 
             // dump 2PGF into files - loop through 2pgf components
             for (std::set<IndexCombination4>::const_iterator it = indices4.begin(); it != indices4.end(); ++it) { 

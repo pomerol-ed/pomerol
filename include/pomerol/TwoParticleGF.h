@@ -136,7 +136,7 @@ public:
     /** Actually computes the parts and fill the internal cache of precomputed values.
      * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
      */
-    void compute(const boost::mpi::communicator & comm = boost::mpi::communicator());
+    void compute(bool clear = false, const boost::mpi::communicator & comm = boost::mpi::communicator());
 
     /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
      * \param[in] Position Zero-based number of the operator to use.

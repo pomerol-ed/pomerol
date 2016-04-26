@@ -140,15 +140,36 @@ bool TwoParticleGF::isVanishing(void) const
     return Vanishing;
 }
 
-void TwoParticleGF::compute(const boost::mpi::communicator & comm)
+
+// An mpi adapter to 1) compute 2pgf terms; 2) convert them to a MatsubaraContainer; 3) purge terms
+struct ComputeAndClearWrap
 {
+    int complexity;
+    void run(){p->compute(); p->fillContainer(data_); if (clear_) p->clear();}; 
+    ComputeAndClearWrap(TwoParticleGFPart::MatsubaraContainer &x, TwoParticleGFPart &p, bool clear, int complexity = 1):
+        data_(x),p(&p),clear_(clear), complexity(complexity){};
+protected:
+    TwoParticleGFPart::MatsubaraContainer& data_;
+    TwoParticleGFPart *p;
+    bool clear_;
+};
+
+
+
+void TwoParticleGF::compute(bool clear, const boost::mpi::communicator & comm)
+{
+
+    TwoParticleGFPart::MatsubaraContainer data(DM.beta);
+
     if (Status < Prepared) throw (exStatusMismatch());
     if (Status >= Computed) return;
     if (!Vanishing) {
         // Create a "skeleton" class with pointers to part that can call a compute method
-        pMPI::mpi_skel<pMPI::ComputeWrap<TwoParticleGFPart> > skel;
-        skel.parts.resize(parts.size());
-        for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::ComputeWrap<TwoParticleGFPart>(*parts[i]);};
+        pMPI::mpi_skel<ComputeAndClearWrap> skel;
+        skel.parts.reserve(parts.size());
+        for (size_t i=0; i<parts.size(); i++) { 
+            skel.parts.push_back(ComputeAndClearWrap(data, *parts[i], clear, 1));
+            };
         std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
         int rank = comm.rank();
         int comm_size = comm.size(); 

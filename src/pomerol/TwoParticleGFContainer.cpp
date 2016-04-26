@@ -50,24 +50,24 @@ void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& Initi
        };
 }
 
-void TwoParticleGFContainer::computeAll(const boost::mpi::communicator & comm, bool split)
+void TwoParticleGFContainer::computeAll(bool clearTerms, const boost::mpi::communicator & comm, bool split)
 {
     if (split) 
-        computeAll_split(comm);
+        computeAll_split(clearTerms, comm);
     else 
-        computeAll_nosplit(comm);
+        computeAll_nosplit(clearTerms, comm);
 }
 
-void TwoParticleGFContainer::computeAll_nosplit(const boost::mpi::communicator & comm)
+void TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, const boost::mpi::communicator & comm)
 {
     for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
         iter != ElementsMap.end(); iter++) {
         INFO("Computing 2PGF for " << iter->first);
-        static_cast<TwoParticleGF&>(iter->second).compute(comm);
+        static_cast<TwoParticleGF&>(iter->second).compute(clearTerms, comm);
         };
 }
 
-void TwoParticleGFContainer::computeAll_split(const boost::mpi::communicator & comm)
+void TwoParticleGFContainer::computeAll_split(bool clearTerms, const boost::mpi::communicator & comm)
 {
     // split communicator
     size_t ncomponents = NonTrivialElements.size();
@@ -101,7 +101,7 @@ void TwoParticleGFContainer::computeAll_split(const boost::mpi::communicator & c
         bool calc = (elem_colors[comp] == proc_colors[comm.rank()]);
         if (calc) { 
             INFO("C" << elem_colors[comp] << "p" << comm.rank() << ": computing 2PGF for " << iter->first);
-            if (calc) static_cast<TwoParticleGF&>(*(iter->second)).compute(comm_split);
+            if (calc) static_cast<TwoParticleGF&>(*(iter->second)).compute(clearTerms, comm_split);
             };
         };
     comm.barrier();
