@@ -368,8 +368,8 @@ class TwoParticleGFPart::MatsubaraContainer
     ComplexType MatsubaraSpacing;
 
     /* An amount of positive Matsubaras on which to store the values. The range of values [-MatsubaraSpacing;MatsubaraSpacing-1] will be available */
-    int NFermionic_;
-    int NBosonic_;
+    int FermionicMin_;
+    int FermionicMax_;
     int BosonicMin_;
     int BosonicMax_;
 
@@ -387,7 +387,7 @@ public:
     /** Allocate memory for a storage
      * \param[in] NumberOfMatsubaras An amount of positive Matsubara frequencies that will be held in a MatsubaraContainer.
      */
-    void prepare(int BosonicMin, int BosonicMax, int NFermionic);
+    void prepare(int BosonicMin, int BosonicMax, int FermionicMin, int FermionicMax);
 
     /** Returns the value for a given Matsubara numbers (not frequencies themselves)
      * \param[in] MatsubaraNumber1 An index of the 1st Matsubara frequency.
@@ -429,13 +429,13 @@ ComplexType TwoParticleGFPart::MatsubaraContainer::operator()(long MatsubaraNumb
     int nu2 = Omega - MatsubaraNumber3;
 
     int OmegaIndex = Omega - BosonicMin_;
-    int nu1Index = nu1 + NFermionic_;
-    int nu2Index = nu2 + NFermionic_;
+    int nu1Index = nu1 - FermionicMin_;
+    int nu2Index = nu2 - FermionicMin_;
 
     //cout << "Bosonic index : " << RealBosonicIndex - 2*NumberOfMatsubaras<< " shift : " << FermionicFirstIndex[RealBosonicIndex] << endl;
     if (OmegaIndex >= 0 && OmegaIndex <= BosonicMax_ - BosonicMin_ 
-        && nu1Index >= 0 && nu1Index < 2*NFermionic_ 
-        && nu2Index > 0 && nu2Index < 2*NFermionic_)
+        && nu1Index >= 0 && nu1 <= FermionicMax_   
+        && nu2Index >= 0 && nu2 <= FermionicMax_)
         return Data[OmegaIndex](nu1Index,nu2Index);
     else {
         ERROR("Warning! Matsubara numbers (" << MatsubaraNumber1 << "," << MatsubaraNumber2 << "," << MatsubaraNumber3 << "," << MatsubaraNumber1+ MatsubaraNumber2 - MatsubaraNumber3 << ") of FourIndexObject is out of range, returning 0");
