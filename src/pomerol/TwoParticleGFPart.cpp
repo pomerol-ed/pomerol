@@ -207,6 +207,7 @@ void TwoParticleGFPart::compute()
             }
         };
     }
+/*
     if (ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize > ReduceInvocationThreshold ){ 
         INFO_NONEWLINE(NonResonantTerms.size()-NonResonantTermsPreviousSize << "+" << ResonantTerms.size() - ResonantTermsPreviousSize << "=");
         INFO_NONEWLINE(ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize);
@@ -225,27 +226,43 @@ void TwoParticleGFPart::compute()
         INFO_NONEWLINE(NonResonantTermsPreviousSize << "+" << ResonantTermsPreviousSize << "=");
         INFO(NonResonantTermsPreviousSize + ResonantTermsPreviousSize << " , tol = " << std::max(NonResonantTolerance,ResonantTolerance));
         };
+*/
     };
-
     NonResonantTermsUnreducedSize=(NonResonantTermsUnreducedSize>0)?NonResonantTermsUnreducedSize:NonResonantTerms.size();
     ResonantTermsUnreducedSize=(ResonantTermsUnreducedSize>0)?ResonantTermsUnreducedSize:ResonantTerms.size();
+/*
     if (ResonantTermsUnreducedSize + NonResonantTermsUnreducedSize > 0){
-        INFO_NONEWLINE("Total " << NonResonantTermsUnreducedSize << "+" << ResonantTermsUnreducedSize << "=");
-        INFO_NONEWLINE(NonResonantTermsUnreducedSize+ResonantTermsUnreducedSize << " terms -> ");
-        this->reduceTerms(MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1), MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1), NonResonantTerms, ResonantTerms);
-        INFO_NONEWLINE(NonResonantTerms.size() << "+" << ResonantTerms.size() << "=");
-        INFO(NonResonantTerms.size() + ResonantTerms.size()  << ", \ttols = " << std::setw(4)  
+*/
+        std::cout << "Total " << NonResonantTermsUnreducedSize << "+" << ResonantTermsUnreducedSize << "=" 
+                  << NonResonantTermsUnreducedSize+ResonantTermsUnreducedSize << " terms -> " << std::flush;
+        ::Pomerol::reduceTerms(this->ReduceResonanceTolerance, 
+                               MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1), 
+                               MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1), 
+                               NonResonantTerms, 
+                               ResonantTerms);
+        std::cout << NonResonantTerms.size() << "+" << ResonantTerms.size() << "="
+                  << NonResonantTerms.size() + ResonantTerms.size()  << ", \ttols = " << std::setw(4)  
              << std::max(MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1), MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1))
-             << " (coeff), " << ReduceResonanceTolerance << " (res)" );
+             << " (coeff), " << ReduceResonanceTolerance << " (res)" << std::endl;
+/*
     };
+*/
 
     Status = Computed;
 }
 
+void TwoParticleGFPart::reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance,
+                                    std::vector<NonResonantTerm> &NonResonantTerms, std::vector<ResonantTerm>& ResonantTerms)
+{
+    ::Pomerol::reduceTerms(this->ReduceResonanceTolerance, NonResonantTolerance, ResonantTolerance, NonResonantTerms, ResonantTerms); 
+}
 
-void TwoParticleGFPart::reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance, std::vector<NonResonantTerm> &NonResonantTerms, std::vector<ResonantTerm>& ResonantTerms)
+void reduceTerms(const RealType ReduceResonanceTolerance, const RealType NonResonantTolerance, const RealType ResonantTolerance, 
+                 std::vector<TwoParticleGFPart::NonResonantTerm> &NonResonantTerms, std::vector<TwoParticleGFPart::ResonantTerm>& ResonantTerms)
 {
     #ifndef noReduction
+    typedef TwoParticleGFPart::NonResonantTerm NonResonantTerm;
+    typedef TwoParticleGFPart::ResonantTerm ResonantTerm;
     // Sieve reduction of the non-resonant terms
     //int i=0
     for(std::vector<NonResonantTerm>::iterator it1 = NonResonantTerms.begin(); it1 != NonResonantTerms.end();){

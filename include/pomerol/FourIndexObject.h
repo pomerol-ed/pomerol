@@ -114,7 +114,7 @@ class FourIndexObject::MatsubaraContainer
     long NumberOfMatsubaras;
 
     /* The storage - an array of Matrices for nu,nu' space, stored as a vector which is dependent on a bosonic frequency index */
-    std::vector<MatrixType> Data;
+    std::vector<ComplexMatrixType> Data;
     /* A first non-vanishing fermionic index - used for correspondence between number of element in a matrix and real Matsubara numbers */
     std::vector<long> FermionicFirstIndex;
 public:

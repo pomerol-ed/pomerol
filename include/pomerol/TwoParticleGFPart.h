@@ -353,5 +353,8 @@ ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexT
     }
 }
 
+void reduceTerms(const RealType ReduceResonanceTolerance, const RealType NonResonantTolerance, const RealType ResonantTolerance, 
+                 std::vector<TwoParticleGFPart::NonResonantTerm>& NonResonantTerms, std::vector<TwoParticleGFPart::ResonantTerm>& ResonantTerms);
+
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGFPART_H
