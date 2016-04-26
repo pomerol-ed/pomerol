@@ -39,6 +39,7 @@ TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H
                 const DensityMatrix& DM) :
     Thermal(DM.beta), ComputableObject(),
     S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM),
+    MatsubaraData_(DM.beta),
     parts(0), Vanishing(true),
     KroneckerSymbolTolerance (std::numeric_limits<RealType>::epsilon()), 
     ReduceResonanceTolerance (1e-8),
@@ -158,9 +159,6 @@ protected:
 
 void TwoParticleGF::compute(bool clear, const boost::mpi::communicator & comm)
 {
-
-    TwoParticleGFPart::MatsubaraContainer data(DM.beta);
-
     if (Status < Prepared) throw (exStatusMismatch());
     if (Status >= Computed) return;
     if (!Vanishing) {
@@ -168,7 +166,7 @@ void TwoParticleGF::compute(bool clear, const boost::mpi::communicator & comm)
         pMPI::mpi_skel<ComputeAndClearWrap> skel;
         skel.parts.reserve(parts.size());
         for (size_t i=0; i<parts.size(); i++) { 
-            skel.parts.push_back(ComputeAndClearWrap(data, *parts[i], clear, 1));
+            skel.parts.push_back(ComputeAndClearWrap(MatsubaraData_, *parts[i], clear, 1));
             };
         std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
         int rank = comm.rank();
@@ -178,14 +176,17 @@ void TwoParticleGF::compute(bool clear, const boost::mpi::communicator & comm)
         //DEBUG(comm.rank() << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << " Start distributing data");
         comm.barrier();
          
-        for (size_t p = 0; p<parts.size(); p++) {
-            boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, job_map[p]);
-            boost::mpi::broadcast(comm, parts[p]->ResonantTerms, job_map[p]);
-            if (rank == job_map[p]) { 
-                parts[p]->Status = TwoParticleGFPart::Computed;
-                 };
-            };
-        comm.barrier();
+
+        if (!clear) { 
+            for (size_t p = 0; p<parts.size(); p++) {
+                boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, job_map[p]);
+                boost::mpi::broadcast(comm, parts[p]->ResonantTerms, job_map[p]);
+                if (rank == job_map[p]) { 
+                    parts[p]->Status = TwoParticleGFPart::Computed;
+                     };
+                };
+            comm.barrier();
+        }
     };
     Status = Computed;
 }

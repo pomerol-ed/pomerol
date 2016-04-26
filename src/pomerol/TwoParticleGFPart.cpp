@@ -404,16 +404,20 @@ void TwoParticleGFPart::fillContainer(MatsubaraContainer &in) const
 //
 TwoParticleGFPart::MatsubaraContainer::MatsubaraContainer(RealType beta):MatsubaraSpacing(I*M_PI/beta){};
 
-void TwoParticleGFPart::MatsubaraContainer::prepare(int NBosonic, int NFermionic)
+void TwoParticleGFPart::MatsubaraContainer::prepare(int BosonicMin, int BosonicMax, int NFermionic)
 {
-    NBosonic_ = NBosonic;
+    BosonicMin_ = BosonicMin;
+    BosonicMax_ = BosonicMax;
+    if (BosonicMax_ < BosonicMin_) throw std::logic_error("MatsubaraContainer : BosonicMin > BosonicMax"); 
     NFermionic_ = NFermionic;
+    
+    int NBosonic = BosonicMax_ - BosonicMin_ + 1;
 
-    Data.resize(std::max(0, 2*NBosonic_ - 1));
-    int Size = 2*NFermionic_;
+    Data.resize(std::max(0, NBosonic));
+    int FSize = 2*NFermionic_;
     for (int BosonicIndex= 0; BosonicIndex < Data.size(); BosonicIndex++)
     {
-        Data[BosonicIndex].resize(Size,Size);
+        Data[BosonicIndex].resize(FSize,FSize);
         Data[BosonicIndex].setZero();
     };
 };

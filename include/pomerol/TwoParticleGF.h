@@ -72,6 +72,9 @@ class TwoParticleGF : public Thermal, public ComputableObject {
     /** A reference to a density matrix. */
     const DensityMatrix& DM;
 
+    /** A storage of the Matsubara frequency data */
+    TwoParticleGFPart::MatsubaraContainer MatsubaraData_;
+
 public:
     /** A list of pointers to parts. */
     std::vector<TwoParticleGFPart*> parts;
