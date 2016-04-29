@@ -146,11 +146,11 @@ bool TwoParticleGF::isVanishing(void) const
 struct ComputeAndClearWrap
 {
     int complexity;
-    void run(){p->compute(); p->fillContainer(data_); if (clear_) p->clear();}; 
+    void run(){p->compute(); p->fillContainer(*data_); if (clear_) p->clear();}; 
     ComputeAndClearWrap(TwoParticleGFPart::MatsubaraContainer &x, TwoParticleGFPart &p, bool clear, int complexity = 1):
-        data_(x),p(&p),clear_(clear), complexity(complexity){};
+        data_(&x),p(&p),clear_(clear), complexity(complexity){};
 protected:
-    TwoParticleGFPart::MatsubaraContainer& data_;
+    TwoParticleGFPart::MatsubaraContainer* data_;
     TwoParticleGFPart *p;
     bool clear_;
 };
