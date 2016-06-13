@@ -32,7 +32,7 @@ namespace Pomerol{
 //
 // Matsubara Container
 //
-MatsubaraContainer::MatsubaraContainer(RealType beta):MatsubaraSpacing(I*M_PI/beta){};
+MatsubaraContainer::MatsubaraContainer(RealType beta):MatsubaraSpacing(I*M_PI/beta),BosonicMin_(0),BosonicMax_(-1),FermionicMin_(-1),FermionicMax_(-1){};
 
 void MatsubaraContainer::prepare(int BosonicMin, int BosonicMax, int FermionicMin, int FermionicMax)
 {
