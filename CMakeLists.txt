@@ -61,6 +61,7 @@ set (pomerol_sources
     pomerol/DensityMatrix
     pomerol/GreensFunctionPart
     pomerol/GreensFunction
+    pomerol/MatsubaraContainer
     pomerol/GFContainer
     pomerol/TwoParticleGFPart
     pomerol/TwoParticleGF
