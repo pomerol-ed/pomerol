@@ -37,6 +37,7 @@
 #include"FieldOperator.h"
 #include"DensityMatrix.h"
 #include"TwoParticleGFPart.h"
+#include"MatsubaraContainer.h"
 
 namespace Pomerol{
 
@@ -72,9 +73,6 @@ class TwoParticleGF : public Thermal, public ComputableObject {
     /** A reference to a density matrix. */
     const DensityMatrix& DM;
 
-    /** A storage of the Matsubara frequency data */
-    TwoParticleGFPart::MatsubaraContainer MatsubaraData_;
-
 public:
     /** A list of pointers to parts. */
     std::vector<TwoParticleGFPart*> parts;
@@ -82,6 +80,8 @@ protected:
 
     /** A flag to determine whether this GF is identical to zero */
     bool Vanishing;
+   
+    MatsubaraContainer m_data_; 
 
     /** Extracts a part of the operator standing at a specified position in a given permutation.
      * \param[in] PermutationNumber The number of the permutation.
@@ -135,10 +135,11 @@ public:
     ~TwoParticleGF();
 
     /** Chooses relevant parts of C1, C2, CX3 and CX4 and allocates resources for the parts. */
-    void prepare(void);
+    void prepare(int BosonicMin, int BosonicMax, int FermionicMin, int FermionicMax);
     /** Actually computes the parts and fill the internal cache of precomputed values.
      * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
      */
+
     void compute(bool clear = false, const boost::mpi::communicator & comm = boost::mpi::communicator());
 
     /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
@@ -158,6 +159,8 @@ public:
      * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
      */
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
+
+    //void fillContainer(MatsubaraContainer& d, const std::vector<TwoParticleGFPart::NonResonantTerm>& NonResonantTerms, const std::vector<TwoParticleGFPart::ResonantTerm>& ResonantTerms, Permutation3 Permutation);
 
     /** Returns true, if GF is identical to zero */
     bool isVanishing(void) const;

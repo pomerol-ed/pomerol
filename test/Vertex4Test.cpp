@@ -155,7 +155,7 @@ int main(int argc, char* argv[])
     TwoParticleGF Chi_uuuu(S,H,Operators.getAnnihilationOperator(0), Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), 
                       Operators.getCreationOperator(0), rho);
     Chi_uuuu.CoefficientTolerance = 1e-12;
-    Chi_uuuu.prepare();
+    Chi_uuuu.prepare(0,0,0,0);
     Chi_uuuu.compute();
     
     ComplexType l,r;

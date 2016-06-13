@@ -39,8 +39,8 @@ TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H
                 const DensityMatrix& DM) :
     Thermal(DM.beta), ComputableObject(),
     S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM),
-    MatsubaraData_(DM.beta),
     parts(0), Vanishing(true),
+    m_data_(DM.beta),
     KroneckerSymbolTolerance (std::numeric_limits<RealType>::epsilon()), 
     ReduceResonanceTolerance (1e-8),
     CoefficientTolerance (1e-16), 
@@ -85,7 +85,7 @@ const FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t Permutatio
     throw std::logic_error("TwoParticleGF : could not find operator part");
 }
 
-void TwoParticleGF::prepare(void)
+void TwoParticleGF::prepare(int BosonicMin, int BosonicMax, int FermionicMin, int FermionicMax)
 {
     if(Status>=Prepared) return;
 
@@ -131,6 +131,7 @@ void TwoParticleGF::prepare(void)
     } 
     if ( parts.size() > 0 ) { 
         Vanishing = false;
+        m_data_.prepare(BosonicMin, BosonicMax, FermionicMin, FermionicMax);
         INFO("TwoParticleGF(" << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << "): " << parts.size() << " parts will be calculated");
         }
     Status = Prepared;
@@ -146,16 +147,15 @@ bool TwoParticleGF::isVanishing(void) const
 struct ComputeAndClearWrap
 {
     int complexity;
-    void run(){p->compute(); p->fillContainer(*data_); if (clear_) p->clear();}; 
-    ComputeAndClearWrap(TwoParticleGFPart::MatsubaraContainer &x, TwoParticleGFPart &p, bool clear, int complexity = 1):
-        data_(&x),p(&p),clear_(clear), complexity(complexity){};
+    void run(){p->compute(); if (fill_) p->fillContainer(*data_); if (clear_) p->clear();}; 
+    ComputeAndClearWrap(MatsubaraContainer *x, TwoParticleGFPart *p, bool clear, bool fill, int complexity = 1):
+        data_(x),p(p),clear_(clear), fill_(fill), complexity(complexity){};
 protected:
-    TwoParticleGFPart::MatsubaraContainer* data_;
+    MatsubaraContainer* data_;
     TwoParticleGFPart *p;
     bool clear_;
+    bool fill_;
 };
-
-
 
 void TwoParticleGF::compute(bool clear, const boost::mpi::communicator & comm)
 {
@@ -164,9 +164,10 @@ void TwoParticleGF::compute(bool clear, const boost::mpi::communicator & comm)
     if (!Vanishing) {
         // Create a "skeleton" class with pointers to part that can call a compute method
         pMPI::mpi_skel<ComputeAndClearWrap> skel;
+        bool fill_container = m_data_.NBosonic() > 0 && m_data_.NFermionic() > 0; 
         skel.parts.reserve(parts.size());
         for (size_t i=0; i<parts.size(); i++) { 
-            skel.parts.push_back(ComputeAndClearWrap(MatsubaraData_, *parts[i], clear, 1));
+            skel.parts.push_back(ComputeAndClearWrap(&m_data_, parts[i], clear, fill_container, 1));
             };
         std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
         int rank = comm.rank();
