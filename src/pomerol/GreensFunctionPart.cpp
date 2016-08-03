@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2012 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -29,12 +29,13 @@
 
 namespace Pomerol{
 
-GreensFunctionPart::Term::Term(ComplexType Residue, RealType Pole) : 
+GreensFunctionPart::Term::Term(ComplexType Residue, RealType Pole) :
     Residue(Residue), Pole(Pole) {};
 ComplexType GreensFunctionPart::Term::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
 
 ComplexType GreensFunctionPart::Term::of_tau(RealType tau, RealType beta) const {
-    return -Residue*exp(-tau*Pole)/(1 + exp(-beta*Pole));
+    return Pole > 0 ? -Residue*exp(-tau*Pole)/(1 + exp(-beta*Pole)) :
+                      -Residue*exp((beta-tau)*Pole)/(exp(beta*Pole) + 1);
 }
 
 inline
@@ -56,7 +57,7 @@ std::ostream& operator<<(std::ostream& out, const GreensFunctionPart::Term& T)
     return out;
 }
 
-GreensFunctionPart::GreensFunctionPart( const AnnihilationOperatorPart& C, const CreationOperatorPart& CX, 
+GreensFunctionPart::GreensFunctionPart( const AnnihilationOperatorPart& C, const CreationOperatorPart& CX,
                                         const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
                                         const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
                                         Thermal(DMpartInner),
@@ -65,7 +66,7 @@ GreensFunctionPart::GreensFunctionPart( const AnnihilationOperatorPart& C, const
                                         C(C), CX(CX),
                                         MatrixElementTolerance(1e-8),
                                         ReduceResonanceTolerance(1e-8),
-                                        ReduceTolerance(1e-8) 
+                                        ReduceTolerance(1e-8)
 {}
 
 void GreensFunctionPart::compute(void)
@@ -91,7 +92,7 @@ void GreensFunctionPart::compute(void)
 
             // A meaningful matrix element
             if(C_index2 == CX_index2){
-                ComplexType Residue = Cinner.value() * CXinner.value() * 
+                ComplexType Residue = Cinner.value() * CXinner.value() *
                                       (DMpartOuter.getWeight(index1) + DMpartInner.getWeight(C_index2));
                 if(abs(Residue) > MatrixElementTolerance) // Is the residue relevant?
                 {
