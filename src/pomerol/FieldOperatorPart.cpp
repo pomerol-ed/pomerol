@@ -44,7 +44,7 @@ void FieldOperatorPart::compute()
     std::vector<Eigen::Triplet<MelemType> > tempElements;
 
     /* Rotation is done in the following way:
-     * C_{mn} = \sum_{lk} U^{+}_{nl} C_{lk} U_{km} = \sum_{lk} U^{*}_{ln}O_{lk}U_{km},
+     * C_{nm} = \sum_{lk} U^{+}_{nl} C_{lk} U_{km} = \sum_{lk} U^{*}_{ln}O_{lk}U_{km},
      * where the actual sum starts from k state. Big letters denote global states, smaller - InnerQuantumStates. */
     for (std::vector<FockState>::const_iterator CurrentState = fromStates.begin();
                                                 CurrentState < fromStates.end(); CurrentState++) {

@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2012 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -35,12 +35,12 @@
 
 namespace Pomerol{
 
-/** This class is an abstract implementation of the electronic creation/annihilation operators, which acts in the eigenbasis of the Hamiltonian 
- * between it's certain blocks. 
+/** This class is an abstract implementation of the electronic creation/annihilation operators, which acts in the eigenbasis of the Hamiltonian
+ * between it's certain blocks.
  * Rotation to the basis is done in the following way:
- * C_{mn} = \sum_{lk} U^{+}_{nl} C_{lk} U_{km} = \sum_{lk} U^{*}_{ln}O_{lk}U_{km},
+ * C_{nm} = \sum_{lk} U^{+}_{nl} C_{lk} U_{km} = \sum_{lk} U^{*}_{ln}O_{lk}U_{km},
  * where the actual sum starts from k state. Big letters denote global states, smaller - InnerQuantumStates.
- * The actual creation and annihilation operators are inherited. 
+ * The actual creation and annihilation operators are inherited.
  */
 class FieldOperatorPart : public ComputableObject {
     friend class FieldOperatorContainer;
@@ -77,7 +77,7 @@ public:
      * \param[in] S A const reference to the StateClassification object.
      * \param[in] HFrom A const reference to the HamiltonianPart on the right hand side.
      * \param[in] HTo A const reference to the HamiltonianPart on the left hand side.
-     * \param[in] PIndex Index of the field operator. 
+     * \param[in] PIndex Index of the field operator.
      */
     FieldOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S, const HamiltonianPart &HFrom, const HamiltonianPart &HTo, ParticleIndex PIndex);
 
@@ -109,7 +109,7 @@ class CreationOperatorPart;
 
 /** This class is inheried from FieldOperatorPart and is a part of electronic annihilation operator in the eigenbasis of the Hamiltonian between it's two blocks. */
 class AnnihilationOperatorPart : public FieldOperatorPart
-{ 
+{
     friend class CreationOperatorPart;
     friend class CreationOperator;
     friend class AnnihilationOperator;
