@@ -37,7 +37,6 @@ namespace Pomerol {
 
 Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
-    if (Label1 == Label2) { ERROR("Hopping terms should connect different sites. Use Level terms for local quantities"); throw(exWrongIndices()); };
     Lattice::Term *T = new Term(2);
     bool OperatorSequence[2] = { 1, 0 };
     std::string Labels[2] = { Label1, Label2 };
