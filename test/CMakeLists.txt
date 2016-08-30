@@ -22,6 +22,7 @@ GFContainerTest
 TwoParticleGFContainerTest
 Vertex4Test
 AndersonTest02
+AndersonTest03
 )
 if(use_complex)
  list(APPEND tests AndersonComplexTest)
