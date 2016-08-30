@@ -191,7 +191,9 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<boost::t
         //DEBUG(comm.rank() << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << " Start distributing data");
         comm.barrier();
 
-        boost::mpi::reduce(comm, m_data, std::plus<ComplexType>(), 0);
+        std::vector<ComplexType> m_data2(m_data.size(), 0.0);
+        boost::mpi::reduce(comm, &m_data[0], m_data.size(), &m_data2[0], std::plus<ComplexType>(), 0);
+        std::swap(m_data, m_data2);
         if (!clear) { 
             for (size_t p = 0; p<parts.size(); p++) {
                 boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, job_map[p]);
