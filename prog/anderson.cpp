@@ -268,8 +268,10 @@ int main(int argc, char* argv[])
             comm.barrier(); // MPI::BARRIER
             bool clearTerms = false;
 
+            // Fill a vector of tuples of fermionic Matsubara frequencies - these will be evaluated in-place
+            std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs;
             // ! The most important routine - actually calculate the 2PGF
-            Chi4.computeAll(clearTerms, comm, true); 
+            Chi4.computeAll(clearTerms, freqs, comm, true); 
 
             // dump 2PGF into files - loop through 2pgf components
             for (std::set<IndexCombination4>::const_iterator it = indices4.begin(); it != indices4.end(); ++it) { 
