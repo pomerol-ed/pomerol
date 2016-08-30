@@ -394,47 +394,5 @@ void TwoParticleGFPart::clear()
     ResonantTerms.clear();
 }
 
-/*void TwoParticleGFPart::fillContainer(MatsubaraContainer &in) const
-{
-    in.fill(NonResonantTerms, ResonantTerms, Permutation);
-}
-*/
-
-void TwoParticleGFPart::fillContainer(MatsubaraContainer& in) const//, const std::vector<TwoParticleGFPart::NonResonantTerm>& NonResonantTerms, const std::vector<TwoParticleGFPart::ResonantTerm>& ResonantTerms, Permutation3 Permutation)
-{
-    for (int b = in.BosonicMin_; b<=in.BosonicMax_; ++b) { 
-        for (int nu1 = in.FermionicMin_; nu1<=in.FermionicMax_; ++nu1) { 
-            for (int nu2 = in.FermionicMin_; nu2<=in.FermionicMax_; ++nu2) { 
-
-                ComplexType Frequencies[3] = { MatsubaraSpacing * (2.0 * RealType(nu1) + 1),  
-                                               MatsubaraSpacing * (2.0 * RealType(nu2 + b) + 1),  
-                                               MatsubaraSpacing * (2.0 * RealType(nu1 + b) + 1)
-                                             }; 
-
-                ComplexType z1 = Frequencies[Permutation.perm[0]];                                    
-                ComplexType z2 = Frequencies[Permutation.perm[1]];
-                ComplexType z3 = Frequencies[Permutation.perm[2]];
-
-/*
-                long FermionicIndexShift = FermionicFirstIndex[BosonicIndex];
-                long MatsubaraNumber1 = BosonicIndex-2*NumberOfMatsubaras-MatsubaraNumber2;
-                long MatsubaraNumber2 = nuIndex +FermionicIndexShift;
-                long MatsubaraNumber3 = nu1Index+FermionicIndexShift;
-*/
-    
-                ComplexType Value = 0;
-                for(std::vector<TwoParticleGFPart::NonResonantTerm>::const_iterator pTerm = NonResonantTerms.begin(); pTerm != NonResonantTerms.end(); ++pTerm)
-                    Value += (*pTerm)(z1,z2,z3);
-                for(std::vector<TwoParticleGFPart::ResonantTerm>::const_iterator pTerm = ResonantTerms.begin(); pTerm != ResonantTerms.end(); ++pTerm)
-                    Value += (*pTerm)(z1,z2,z3);
-
-                in.Data[b - in.BosonicMin_](nu1 - in.FermionicMin_, nu2 - in.FermionicMin_) += Value;
-            };
-        };
-    };
-};
-
-
-
 } // end of namespace Pomerol
 

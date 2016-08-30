@@ -151,7 +151,8 @@ int main(int argc, char* argv[])
             Chi4.MultiTermCoefficientTolerance = 1e-6;
             Chi4.prepareAll(indices4);
             comm.barrier();
-            Chi4.computeAll(false, comm, true);
+            std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs;
+            Chi4.computeAll(false, freqs, comm, true);
 
 
             std::vector<ComplexType> chi_uuuu_vals(10);

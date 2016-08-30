@@ -33,7 +33,6 @@
 #include"HamiltonianPart.h"
 #include"FieldOperatorPart.h"
 #include"DensityMatrixPart.h"
-#include"MatsubaraContainer.h"
 
 namespace Pomerol{
 
@@ -181,9 +180,6 @@ public:
 
     /** Purges all terms. */
     void clear();
-
-    /// Fill the values of a Matsubara Container
-    void fillContainer(MatsubaraContainer& in) const;
 
     /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
     * \param[in] z1 Frequency 1

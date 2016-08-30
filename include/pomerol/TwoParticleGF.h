@@ -37,7 +37,6 @@
 #include"FieldOperator.h"
 #include"DensityMatrix.h"
 #include"TwoParticleGFPart.h"
-#include"MatsubaraContainer.h"
 
 namespace Pomerol{
 
@@ -81,8 +80,6 @@ protected:
     /** A flag to determine whether this GF is identical to zero */
     bool Vanishing;
    
-    MatsubaraContainer m_data_; 
-
     /** Extracts a part of the operator standing at a specified position in a given permutation.
      * \param[in] PermutationNumber The number of the permutation.
      * \param[in] OperatorPosition The number of the position of the operator.
@@ -136,11 +133,15 @@ public:
 
     /** Chooses relevant parts of C1, C2, CX3 and CX4 and allocates resources for the parts. */
     void prepare(int BosonicMin, int BosonicMax, int FermionicMin, int FermionicMax);
+
     /** Actually computes the parts and fill the internal cache of precomputed values.
      * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
      */
-
-    void compute(bool clear = false, const boost::mpi::communicator & comm = boost::mpi::communicator());
+    std::vector<ComplexType> compute(
+        bool clear = false, 
+        std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(), 
+        const boost::mpi::communicator & comm = boost::mpi::communicator()
+    );
 
     /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
      * \param[in] Position Zero-based number of the operator to use.

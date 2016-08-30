@@ -40,7 +40,6 @@ TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H
     Thermal(DM.beta), ComputableObject(),
     S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM),
     parts(0), Vanishing(true),
-    m_data_(DM.beta),
     KroneckerSymbolTolerance (std::numeric_limits<RealType>::epsilon()), 
     ReduceResonanceTolerance (1e-8),
     CoefficientTolerance (1e-16), 
@@ -131,7 +130,6 @@ void TwoParticleGF::prepare(int BosonicMin, int BosonicMax, int FermionicMin, in
     } 
     if ( parts.size() > 0 ) { 
         Vanishing = false;
-        m_data_.prepare(BosonicMin, BosonicMax, FermionicMin, FermionicMax);
         INFO("TwoParticleGF(" << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << "): " << parts.size() << " parts will be calculated");
         }
     Status = Prepared;
@@ -143,31 +141,47 @@ bool TwoParticleGF::isVanishing(void) const
 }
 
 
-// An mpi adapter to 1) compute 2pgf terms; 2) convert them to a MatsubaraContainer; 3) purge terms
+// An mpi adapter to 1) compute 2pgf terms; 2) convert them to a Matsubara Container; 3) purge terms
+typedef boost::tuple<ComplexType, ComplexType, ComplexType> freq_tuple;
+typedef std::vector<freq_tuple> freq_vec_t;
 struct ComputeAndClearWrap
 {
+    void run(){
+        p->compute(); 
+        if (fill_) {
+            int wsize = freqs_->size(); 
+            freq_tuple wfreqs;
+            for (int w = 0; w < wsize; ++w) { 
+                wfreqs = (*freqs_)[w];
+                (*data_)[w] += (*p)(boost::get<0>(wfreqs), boost::get<1>(wfreqs), boost::get<2>(wfreqs));
+                } 
+            }
+        if (clear_) p->clear();
+    }; 
+    ComputeAndClearWrap(freq_vec_t const* freqs, std::vector<ComplexType> *data,  TwoParticleGFPart *p, bool clear, bool fill, int complexity = 1):
+        freqs_(freqs), data_(data), p(p),clear_(clear), fill_(fill), complexity(complexity){};
     int complexity;
-    void run(){p->compute(); if (fill_) p->fillContainer(*data_); if (clear_) p->clear();}; 
-    ComputeAndClearWrap(MatsubaraContainer *x, TwoParticleGFPart *p, bool clear, bool fill, int complexity = 1):
-        data_(x),p(p),clear_(clear), fill_(fill), complexity(complexity){};
 protected:
-    MatsubaraContainer* data_;
+    freq_vec_t const* freqs_;
+    std::vector<ComplexType>* data_;
     TwoParticleGFPart *p;
     bool clear_;
     bool fill_;
 };
 
-void TwoParticleGF::compute(bool clear, const boost::mpi::communicator & comm)
+std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm)
 {
+    std::vector<ComplexType> m_data;
     if (Status < Prepared) throw (exStatusMismatch());
-    if (Status >= Computed) return;
+    if (Status >= Computed) return m_data;
     if (!Vanishing) {
         // Create a "skeleton" class with pointers to part that can call a compute method
         pMPI::mpi_skel<ComputeAndClearWrap> skel;
-        bool fill_container = m_data_.NBosonic() > 0 && m_data_.NFermionic() > 0; 
+        bool fill_container = freqs.size() > 0;
         skel.parts.reserve(parts.size());
+        m_data.resize(freqs.size(), 0.0);
         for (size_t i=0; i<parts.size(); i++) { 
-            skel.parts.push_back(ComputeAndClearWrap(&m_data_, parts[i], clear, fill_container, 1));
+            skel.parts.push_back(ComputeAndClearWrap(&freqs, &m_data, parts[i], clear, fill_container, 1));
             };
         std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
         int rank = comm.rank();
@@ -176,8 +190,8 @@ void TwoParticleGF::compute(bool clear, const boost::mpi::communicator & comm)
         // Start distributing data
         //DEBUG(comm.rank() << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << " Start distributing data");
         comm.barrier();
-         
 
+        boost::mpi::reduce(comm, m_data, std::plus<ComplexType>(), 0);
         if (!clear) { 
             for (size_t p = 0; p<parts.size(); p++) {
                 boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, job_map[p]);
@@ -190,6 +204,7 @@ void TwoParticleGF::compute(bool clear, const boost::mpi::communicator & comm)
         }
     };
     Status = Computed;
+    return m_data;
 }
 
 // size_t TwoParticleGF::getNumResonantTerms() const

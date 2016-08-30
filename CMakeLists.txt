@@ -61,7 +61,6 @@ set (pomerol_sources
     pomerol/DensityMatrix
     pomerol/GreensFunctionPart
     pomerol/GreensFunction
-    pomerol/MatsubaraContainer
     pomerol/GFContainer
     pomerol/TwoParticleGFPart
     pomerol/TwoParticleGF
@@ -82,7 +81,7 @@ add_boost(mpi serialization)
 add_testing()
 
 # Build executables
-option(Progs "Build executables" OFF)
+option(Progs "Build executables" ON)
 if (Progs)
     find_package (TCLAP)
     message(STATUS "TCLAP includes: " ${TCLAP_INCLUDE_DIR} )

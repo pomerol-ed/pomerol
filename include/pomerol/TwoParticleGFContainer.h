@@ -50,9 +50,22 @@ public:
                            const Hamiltonian &H, const DensityMatrix &DM, const FieldOperatorContainer& Operators);
 
     void prepareAll(const std::set<IndexCombination4>& InitialIndices = std::set<IndexCombination4>(),int BosonicMin = 0, int BosonicMax= 0, int FermionicMin = 0, int FermionicMax = 0);
-    void computeAll(bool clearTerms = false, const boost::mpi::communicator & comm = boost::mpi::communicator(), bool split = true);
-    void computeAll_nosplit(bool clearTerms, const boost::mpi::communicator & comm = boost::mpi::communicator());
-    void computeAll_split(bool clearTerms, const boost::mpi::communicator & comm = boost::mpi::communicator());
+    void computeAll(
+        bool clearTerms = false, 
+        std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(),
+        const boost::mpi::communicator & comm = boost::mpi::communicator(), 
+        bool split = true
+        );
+    void computeAll_nosplit(
+        bool clearTerms, 
+        std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(),
+        const boost::mpi::communicator & comm = boost::mpi::communicator()
+        );
+    void computeAll_split(
+        bool clearTerms,
+        std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(),
+        const boost::mpi::communicator & comm = boost::mpi::communicator()
+        );
 
 protected:
 
