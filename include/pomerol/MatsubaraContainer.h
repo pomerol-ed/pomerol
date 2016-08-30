@@ -92,6 +92,7 @@ public:
 
     int NBosonic() const { return BosonicMax_ - BosonicMin_ + 1; }
     int NFermionic() const { return FermionicMax_ - FermionicMin_;}
+    bool isEmpty() const { return NBosonic() == 0 || NFermionic() == 0; }
 
     friend class TwoParticleGF;
     friend class TwoParticleGFPart;
