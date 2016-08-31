@@ -33,11 +33,12 @@ else(CXX11)
 endif (CXX11)
 
 #Use complex Matrix elements
-option(use_complex "Use complex matrix elements" OFF)
-if (use_complex)
+option(POMEROL_COMPLEX_MATRIX_ELEMENTS "Use complex matrix elements" OFF)
+if (POMEROL_COMPLEX_MATRIX_ELEMENTS)
     message(STATUS "Using complex matrix elements")
-    set(POMEROL_COMPLEX_MATRIX_ELEMENTS TRUE)
-endif (use_complex)
+else (POMEROL_COMPLEX_MATRIX_ELEMENTS)
+    message(STATUS "Using real matrix elements")
+endif (POMEROL_COMPLEX_MATRIX_ELEMENTS)
 
 # Enable/Disable and find OpenMP
 option(POMEROL_USE_OPENMP "Use OpenMP" TRUE)

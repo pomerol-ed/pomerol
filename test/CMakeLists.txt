@@ -24,9 +24,9 @@ Vertex4Test
 AndersonTest02
 AndersonTest03
 )
-if(use_complex)
+if(POMEROL_COMPLEX_MATRIX_ELEMENTS)
  list(APPEND tests AndersonComplexTest)
-endif(use_complex)
+endif(POMEROL_COMPLEX_MATRIX_ELEMENTS)
 
 foreach (test ${tests})
     set(test_src ${test}.cpp)

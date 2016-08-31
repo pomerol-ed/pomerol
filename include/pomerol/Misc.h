@@ -83,7 +83,6 @@ typedef std::complex<double> ComplexType;
 
 /** Matrix element type. */
 #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
-#warning using complex matrix elements
 typedef ComplexType MelemType;
 #else
 typedef RealType MelemType;
