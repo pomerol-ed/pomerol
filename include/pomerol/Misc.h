@@ -56,6 +56,10 @@
 #include <boost/filesystem.hpp>
 #endif
 
+#ifdef POMEROL_USE_OPENMP
+#include <omp.h>
+#endif
+
 #include <boost/mpi.hpp>
 
 #define REALTYPE_DOUBLE

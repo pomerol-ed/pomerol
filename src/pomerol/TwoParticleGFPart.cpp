@@ -149,7 +149,8 @@ void TwoParticleGFPart::compute()
     InnerQuantumState index3;
     InnerQuantumState index3Max = O2matrix.outerSize();
 
-    std::list<InnerQuantumState> Index4List;
+    std::vector<InnerQuantumState> Index4List;
+    Index4List.reserve(index1Max*index3Max);
 
     unsigned long ResonantTermsUnreducedSize=0;
     unsigned long NonResonantTermsUnreducedSize=0;
@@ -185,7 +186,7 @@ void TwoParticleGFPart::compute()
                     RealType E2 = Hpart2.getEigenValue(index2);
                     RealType weight2 = DMpart2.getWeight(index2);
 
-                    for (std::list<InnerQuantumState>::iterator pIndex4 = Index4List.begin(); pIndex4!=Index4List.end(); ++pIndex4) 
+                    for (std::vector<InnerQuantumState>::iterator pIndex4 = Index4List.begin(); pIndex4!=Index4List.end(); ++pIndex4) 
                     {
                         InnerQuantumState index4 = *pIndex4;
                         RealType E4 = Hpart4.getEigenValue(index4);                       

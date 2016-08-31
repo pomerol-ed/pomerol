@@ -150,11 +150,15 @@ struct ComputeAndClearWrap
         p->compute(); 
         if (fill_) {
             int wsize = freqs_->size(); 
-            freq_tuple wfreqs;
+            #ifdef POMEROL_USE_OPENMP
+            #pragma omp parallel for
+            #endif
             for (int w = 0; w < wsize; ++w) { 
-                wfreqs = (*freqs_)[w];
-                (*data_)[w] += (*p)(boost::get<0>(wfreqs), boost::get<1>(wfreqs), boost::get<2>(wfreqs));
+                (*data_)[w] += (*p)(boost::get<0>((*freqs_)[w]), boost::get<1>((*freqs_)[w]), boost::get<2>((*freqs_)[w]));
                 } 
+            #ifdef POMEROL_USE_OPENMP
+            #pragma omp barrier
+            #endif
             }
         if (clear_) p->clear();
     }; 
