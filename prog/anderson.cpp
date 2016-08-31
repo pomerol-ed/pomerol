@@ -61,12 +61,6 @@ struct my_logic_error;
 double FMatsubara(int n, double beta){return M_PI/beta*(2.*n+1);}
 double BMatsubara(int n, double beta){return M_PI/beta*(2.*n);}
 
-template <typename T>
-ComplexType chi_bfreq_f(T const& chi, double W, double w1, double w2) { 
-    return chi(I*(W+w1), I*w2, I*w1); // this comes from Pomerol - see TwoParticleGF::operator()
-};
-int job_to_bfreq_index(int job, int wbmax) { return -wbmax + job+1; }
-
 int main(int argc, char* argv[])
 {
     boost::mpi::environment env(argc,argv);
@@ -74,7 +68,7 @@ int main(int argc, char* argv[])
 
     print_section("Hubbard nxn");
     
-    int wf_max, wb_max;
+    int wf_max, wb;
     RealType e0, U, beta, reduce_tol, coeff_tol;
     bool calc_gf, calc_2pgf;
     size_t L;
@@ -94,8 +88,8 @@ int main(int argc, char* argv[])
         TCLAP::MultiArg<double> level_args("l", "level", "level on auxiliary site", false,"RealType", cmd );
         TCLAP::MultiArg<double> hopping_args("t", "hopping", "hopping to an auxiliary site", false,"RealType", cmd );
 
-        TCLAP::ValueArg<size_t> wn_arg("","wf","Number of positive fermionic Matsubara Freqs",false,64,"int",cmd);
-        TCLAP::ValueArg<size_t> wb_arg("","wb","Number of positive bosonic Matsubara Freqs",false,1,"int",cmd);
+        TCLAP::ValueArg<size_t> wn_arg("","wn","Number of positive fermionic Matsubara Freqs",false,64,"int",cmd);
+        TCLAP::ValueArg<int> wb_arg("","wb","Bosonic Matsubara Freq",false,0,"int",cmd);
         TCLAP::SwitchArg gf_arg("","calcgf","Calculate Green's functions",cmd, false);
         TCLAP::SwitchArg twopgf_arg("","calc2pgf","Calculate 2-particle Green's functions",cmd, false);
         TCLAP::ValueArg<RealType> reduce_tol_arg("","reducetol","Energy resonance resolution in 2pgf",false,1e-5,"RealType",cmd);
@@ -112,7 +106,7 @@ int main(int argc, char* argv[])
         e0 = (e0_arg.isSet()?e0_arg.getValue():-U/2.0);
         boost::tie(beta, calc_gf, calc_2pgf, reduce_tol, coeff_tol) = boost::make_tuple( beta_arg.getValue(), 
             gf_arg.getValue(), twopgf_arg.getValue(), reduce_tol_arg.getValue(), coeff_tol_arg.getValue());
-        boost::tie(wf_max, wb_max) = boost::make_tuple(wn_arg.getValue(), wb_arg.getValue());
+        boost::tie(wf_max, wb) = boost::make_tuple(wn_arg.getValue(), wb_arg.getValue());
         boost::tie(eta, hbw, step) = boost::make_tuple(eta_arg.getValue(), (hbw_arg.isSet()?hbw_arg.getValue():2.*U), step_arg.getValue());
         calc_gf = calc_gf || calc_2pgf;
 
@@ -269,16 +263,29 @@ int main(int argc, char* argv[])
             bool clearTerms = false;
 
             // Fill a vector of tuples of fermionic Matsubara frequencies - these will be evaluated in-place
+            ComplexType W = I*BMatsubara(wb, beta);
             std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs;
+            for (int w3_index = -wf_max; w3_index<wf_max; w3_index++) { // loop over first fermionic frequency 
+                ComplexType w3 = I*FMatsubara(w3_index, beta);        
+                for (int w2_index = -wf_max; w2_index<wf_max; w2_index++) { // loop over second fermionic
+                    ComplexType w2 = I*FMatsubara(w2_index, beta);        
+                    ComplexType w1 = I*W+w3;
+                    freqs.push_back(boost::make_tuple(w1,w2,w3));
+                }
+            }
+
+
             // ! The most important routine - actually calculate the 2PGF
-            Chi4.computeAll(clearTerms, freqs, comm, true); 
+            //std::map<IndexCombination4, std::vector<ComplexType> > mdata = Chi4.computeAll(clearTerms, freqs, comm, false); 
+            // at this moment mdata contains all freqs
 
             // dump 2PGF into files - loop through 2pgf components
             for (std::set<IndexCombination4>::const_iterator it = indices4.begin(); it != indices4.end(); ++it) { 
                 IndexCombination4 ind = *it;
                 if (!comm.rank()) std::cout << "Saving 2PGF " << ind << std::endl;
                 std::string ind_str = boost::lexical_cast<std::string>(ind.Index1) + boost::lexical_cast<std::string>(ind.Index2) +boost::lexical_cast<std::string>(ind.Index3) +boost::lexical_cast<std::string>(ind.Index4);
-                const TwoParticleGF &chi = Chi4(ind);
+                TwoParticleGF &chi = Chi4(ind);
+                std::vector<ComplexType> chi_freq_data = chi.compute(false, freqs, comm); // mdata[ind];
 
                 // Save terms of two particle GF
                 std::ofstream term_res_stream(("terms_res"+ind_str+".pom").c_str());
@@ -290,65 +297,23 @@ int main(int argc, char* argv[])
                     oa_res << ((*iter)->getResonantTerms());
                     };
 
-                // start output of vertex
+                int ROOT = 0;
+                if (rank == ROOT) {
+                    std::ofstream chi_stream (("chi"+ind_str+"_W"+boost::lexical_cast<std::string>(std::imag(W))+".dat").c_str());
+                    for (int w = 0; w < freqs.size(); ++w) { 
+                        double w1 = std::imag(boost::get<2>(freqs[w])); 
+                        double w2 = std::imag(boost::get<1>(freqs[w]));
+                        std::complex<double> val = chi_freq_data[w];
 
-                // wb_max -  number of non-negative bosonic freqs
-                // wf_max -  number of positive fermionic freqs
-
-                // give 2pgf in bosonic-fermionic-fermionic freq notation
-
-                 { // dispatch and save two-particle GF data - MPI parallelization in bosonic freqs
-
-                    // Master-slave scheme to distribute the bosonic frequencies on different processes
-                    int ROOT = 0;
-                    int ntasks = std::max(2*wb_max-1,0);
-
-                    boost::scoped_ptr<pMPI::MPIMaster> disp;
-
-                    if (comm.rank() == ROOT) { 
-                        DEBUG("Master at " << comm.rank());
-                        disp.reset(new pMPI::MPIMaster(comm,ntasks,true));
-                    };
-                    comm.barrier();
-                    
-                
-                    for (pMPI::MPIWorker worker(comm,ROOT);!worker.is_finished();) {
-                        if (rank == ROOT) disp->order(); 
-                        worker.receive_order(); 
-                        //DEBUG((worker.Status == WorkerTag::Pending));
-                        if (worker.is_working()) { 
-                            // this is what every process executes
-                            pMPI::JobId p = worker.current_job();
-
-                            double W = BMatsubara(job_to_bfreq_index(p, wb_max), beta); // get current bosonic frequency
-                            std::cout << "["<<p+1<<"/" << ntasks << "] p" << comm.rank() << " Omega = " << W << std::endl;
-
-                            std::ofstream chi_stream (("chi"+ind_str+"_W"+boost::lexical_cast<std::string>(W)+".dat").c_str());
-
-                            // Most important part 2 - loop over fermionic frequencies. Consider parallelizing one of the loop
-                            for (int w1_index = -wf_max; w1_index<wf_max; w1_index++) { // loop over first fermionic frequency 
-                                double w1 = FMatsubara(w1_index, beta);        
-                                for (int w2_index = -wf_max; w2_index<wf_max; w2_index++) { // loop over second fermionic
-                                    double w2 = FMatsubara(w2_index, beta);        
-
-                                    ComplexType val = chi_bfreq_f(chi, W, w1, w2);
-
-                                    chi_stream << std::scientific << std::setprecision(12)  
-                                               << w1 << " " << w2 << "   " << std::real(val) << " " << std::imag(val) << std::endl;
-                                }
-                                chi_stream << std::endl;
-                            };
-                            chi_stream.close();
-                            worker.report_job_done(); 
-                            };
-                        if (rank == ROOT) disp->check_workers(); // check if there are free workers 
-                        };
-                    comm.barrier();
-                    //if (comm.rank() == ROOT) { disp.release(); DEBUG("Released master"); };
-                    }
+                        chi_stream << std::scientific << std::setprecision(12)  
+                                   << w1 << " " << w2 << "   " << std::real(val) << " " << std::imag(val) << std::endl;
+                        }
+                    chi_stream << std::endl;
+                    chi_stream.close();
                 }
-            };
-        };
+        }
+    }
+    }
 }
 
 

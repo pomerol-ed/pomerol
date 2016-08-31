@@ -64,7 +64,7 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
     for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
         iter != ElementsMap.end(); iter++) {
         INFO("Computing 2PGF for " << iter->first);
-        out[iter->first ] = static_cast<TwoParticleGF&>(iter->second).compute(clearTerms, freqs, comm);
+        out.insert(std::make_pair(iter->first, static_cast<TwoParticleGF&>(iter->second).compute(clearTerms, freqs, comm)));
         };
     return out;
 }
