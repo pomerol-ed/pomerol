@@ -47,7 +47,7 @@ if (OpenMP_FOUND)
 endif(OpenMP_FOUND)
 
 configure_file("${PROJECT_SOURCE_DIR}/include/pomerol/first_include.h.in" "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h")
-install(FILES "${PROJECT_BINARY_DIR}/include/bold_hyb/first_include.h" DESTINATION include/pomerol) 
+install(FILES "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h" DESTINATION include/pomerol) 
 
 set (pomerol_sources
     mpi_dispatcher/mpi_dispatcher
