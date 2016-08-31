@@ -36,8 +36,18 @@ endif (CXX11)
 option(use_complex "Use complex matrix elements" OFF)
 if (use_complex)
     message(STATUS "Using complex matrix elements")
-    add_definitions("-DPOMEROL_COMPLEX_MATRIX_ELEMENTS")
+    set(POMEROL_COMPLEX_MATRIX_ELEMENTS TRUE)
 endif (use_complex)
+
+find_package(OpenMP)
+if (OpenMP_FOUND)
+    message(STATUS "Found OpenMP")
+    set(POMEROL_USE_OPENMP TRUE)
+    add_definitions(${OpenMP_CXX_FLAGS})
+endif(OpenMP_FOUND)
+
+configure_file("${PROJECT_SOURCE_DIR}/include/pomerol/first_include.h.in" "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h")
+install(FILES "${PROJECT_BINARY_DIR}/include/bold_hyb/first_include.h" DESTINATION include/pomerol) 
 
 set (pomerol_sources
     mpi_dispatcher/mpi_dispatcher

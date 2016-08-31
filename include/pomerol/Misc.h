@@ -22,17 +22,13 @@
 **    \brief Declares very common type names and macros.
 **
 ** \author    Igor Krivenko (Igor.S.Krivenko@gmail.com)
-** \author    Alexey Rubtsov (alex@shg.ru)
 ** \author    Andrey Antipov (antipov@shg.ru)
 */
 
 #ifndef __INCLUDE_MISC_H
 #define __INCLUDE_MISC_H
 
-/** \cond */
-//#define NDEBUG
-/** \endcond */
-
+#include<pomerol/first_include.h>
 
 #include<iostream>
 #include<complex>
