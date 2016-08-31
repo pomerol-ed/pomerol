@@ -186,21 +186,21 @@ void TwoParticleGFPart::compute()
                     RealType E2 = Hpart2.getEigenValue(index2);
                     RealType weight2 = DMpart2.getWeight(index2);
 
-                    for (std::vector<InnerQuantumState>::iterator pIndex4 = Index4List.begin(); pIndex4!=Index4List.end(); ++pIndex4) 
+                    for (unsigned long p4 = 0; p4 < Index4List.size(); ++p4)
                     {
-                        InnerQuantumState index4 = *pIndex4;
+                        InnerQuantumState index4 = Index4List[p4];//*pIndex4;
                         RealType E4 = Hpart4.getEigenValue(index4);                       
                         RealType weight4 = DMpart4.getWeight(index4);
-                        if (weight1 + weight2 + weight3 + weight4 < CoefficientTolerance) break;  // optimization 
+                        if (weight1 + weight2 + weight3 + weight4 >= CoefficientTolerance) {
+                            ComplexType MatrixElement = index2ket_iter.value()*
+                                                        index2bra_iter.value()*
+                                                        O3matrix.coeff(index3,index4)*
+                                                        CX4matrix.coeff(index4,index1);
 
-                        ComplexType MatrixElement = index2ket_iter.value()*
-                                                    index2bra_iter.value()*
-                                                    O3matrix.coeff(index3,index4)*
-                                                    CX4matrix.coeff(index4,index1);
+                            MatrixElement *= Permutation.sign;
 
-                        MatrixElement *= Permutation.sign;
-
-                        addMultiterm(MatrixElement,beta,E1,E2,E3,E4,weight1,weight2,weight3,weight4);
+                            addMultiterm(MatrixElement,beta,E1,E2,E3,E4,weight1,weight2,weight3,weight4);
+                        }
                     }
                     ++index2bra_iter;
                     ++index2ket_iter;
