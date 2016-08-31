@@ -25,8 +25,8 @@ function(UseGtest)
             set (gtest_root ${gtest_root1})
         else()
             message(STATUS "Trying to fetch gtest via subversion")
-            find_package(Subversion)
-            execute_process(COMMAND "${Subversion_SVN_EXECUTABLE}" "checkout" "http://googletest.googlecode.com/svn/trunk/" "gtest" WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+            find_package(Git)
+            execute_process(COMMAND "${GIT_EXECUTABLE}" "clone" "--branch" "release-1.7.0" "https://github.com/google/googletest.git" "gtest" WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
             set (gtest_root "${CMAKE_BINARY_DIR}/gtest")
         endif()
         unset (gtest_root1)
@@ -73,7 +73,7 @@ endfunction(add_gtest_release)
 
 # enable testing with gtest - fetch it if needed
 if (NOT tests_are_already_enabled AND Testing ) 
-    find_package(GTest QUIET)
+    find_package(GTest)
 
     if (NOT GTEST_FOUND) 
         #include(UseGtest) # fetch gtest
