@@ -174,12 +174,13 @@ int main(int argc, char* argv[])
                 freqs[w] = boost::make_tuple(omega+Omega, w_p, omega);
                 }
 
-            //Chi4.computeAll(false, freqs, comm, true);
+            std::map<IndexCombination4, std::vector<ComplexType> > data_freqs = Chi4.computeAll(true, freqs, comm, true);
             TwoParticleGF& chi_uuuu = Chi4(IndexCombination4(u0,u0,u0,u0));
             const TwoParticleGF& chi_udud = Chi4(IndexCombination4(u0,u0,u0,u0));
             const TwoParticleGF& chi_dddd = Chi4(IndexCombination4(d0,d0,d0,d0));
 
-            std::vector<ComplexType> chi_uuuu_out = chi_uuuu.compute(true, freqs, comm);
+            //std::vector<ComplexType> chi_uuuu_out = chi_uuuu.compute(true, freqs, comm);
+            std::vector<ComplexType> chi_uuuu_out = data_freqs[IndexCombination4(u0,u0,u0,u0)];
 
             for (size_t w = 0; w < chi_uuuu_vals.size(); w++) { 
                 

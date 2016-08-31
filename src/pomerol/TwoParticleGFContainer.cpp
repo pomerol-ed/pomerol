@@ -50,25 +50,29 @@ void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& Initi
        };
 }
 
-void TwoParticleGFContainer::computeAll(bool clearTerms, std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm, bool split)
+std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll(bool clearTerms, std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm, bool split)
 {
     if (split) 
-        computeAll_split(clearTerms, freqs, comm);
+        return computeAll_split(clearTerms, freqs, comm);
     else 
-        computeAll_nosplit(clearTerms, freqs, comm);
+        return computeAll_nosplit(clearTerms, freqs, comm);
 }
 
-void TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm)
+std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm)
 {
+    std::map<IndexCombination4,std::vector<ComplexType> > out;
     for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
         iter != ElementsMap.end(); iter++) {
         INFO("Computing 2PGF for " << iter->first);
-        static_cast<TwoParticleGF&>(iter->second).compute(clearTerms, freqs, comm);
+        out[iter->first ] = static_cast<TwoParticleGF&>(iter->second).compute(clearTerms, freqs, comm);
         };
+    return out;
 }
 
-void TwoParticleGFContainer::computeAll_split(bool clearTerms, std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm)
+std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_split(bool clearTerms, std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm)
 {
+    std::map<IndexCombination4,std::vector<ComplexType> > out;
+    std::map<IndexCombination4,std::vector<ComplexType> > storage;
     // split communicator
     size_t ncomponents = NonTrivialElements.size();
     size_t ncolors = std::min(int(comm.size()), int(NonTrivialElements.size()));
@@ -101,7 +105,7 @@ void TwoParticleGFContainer::computeAll_split(bool clearTerms, std::vector<boost
         bool calc = (elem_colors[comp] == proc_colors[comm.rank()]);
         if (calc) { 
             INFO("C" << elem_colors[comp] << "p" << comm.rank() << ": computing 2PGF for " << iter->first);
-            if (calc) static_cast<TwoParticleGF&>(*(iter->second)).compute(clearTerms, freqs, comm_split);
+            if (calc) storage[iter->first] = static_cast<TwoParticleGF&>(*(iter->second)).compute(clearTerms, freqs, comm_split);
             };
         };
     comm.barrier();
@@ -115,6 +119,11 @@ void TwoParticleGFContainer::computeAll_split(bool clearTerms, std::vector<boost
         //    if (comm.rank() == sender) INFO("P" << comm.rank() << " 2pgf " << p << " " << chi.parts[p]->NonResonantTerms.size());
             boost::mpi::broadcast(comm, chi.parts[p]->NonResonantTerms, sender);
             boost::mpi::broadcast(comm, chi.parts[p]->ResonantTerms, sender);
+            std::vector<ComplexType> freq_data;
+            if (comm.rank() == sender) freq_data = storage[iter->first];
+            boost::mpi::broadcast(comm, freq_data, sender);
+            out[iter->first] = freq_data;
+
             if (comm.rank() != sender) { 
                 chi.setStatus(TwoParticleGF::Computed);
                  };
@@ -122,6 +131,7 @@ void TwoParticleGFContainer::computeAll_split(bool clearTerms, std::vector<boost
     }
     comm.barrier();
     if (!comm.rank()) INFO("done.");
+    return out;
 }
 
 TwoParticleGF* TwoParticleGFContainer::createElement(const IndexCombination4& Indices) const
