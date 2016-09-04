@@ -285,7 +285,7 @@ int main(int argc, char* argv[])
                 if (!comm.rank()) std::cout << "Saving 2PGF " << ind << std::endl;
                 std::string ind_str = boost::lexical_cast<std::string>(ind.Index1) + boost::lexical_cast<std::string>(ind.Index2) +boost::lexical_cast<std::string>(ind.Index3) +boost::lexical_cast<std::string>(ind.Index4);
                 TwoParticleGF &chi = Chi4(ind);
-                std::vector<ComplexType> chi_freq_data = chi.compute(false, freqs, comm); // mdata[ind];
+                std::vector<ComplexType> chi_freq_data = chi.compute(true, freqs, comm); // mdata[ind];
 
                 // Save terms of two particle GF
                 std::ofstream term_res_stream(("terms_res"+ind_str+".pom").c_str());
