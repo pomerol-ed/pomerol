@@ -102,7 +102,7 @@ add_boost(mpi serialization)
 add_testing()
 
 # Build executables
-option(Progs "Build executables" ON)
+option(Progs "Build executables" OFF)
 if (Progs)
     find_package (TCLAP)
     message(STATUS "TCLAP includes: " ${TCLAP_INCLUDE_DIR} )
