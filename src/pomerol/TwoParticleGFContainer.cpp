@@ -36,7 +36,7 @@ TwoParticleGFContainer::TwoParticleGFContainer(const IndexClassification& IndexI
     MultiTermCoefficientTolerance (1e-5)//1e-5),
 {}
 
-void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& InitialIndices,int BosonicMin, int BosonicMax, int FermionicMin, int FermionicMax)
+void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& InitialIndices)
 {
     fill(InitialIndices);
     for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
@@ -46,7 +46,7 @@ void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& Initi
         static_cast<TwoParticleGF&>(iter->second).CoefficientTolerance = CoefficientTolerance;
         static_cast<TwoParticleGF&>(iter->second).ReduceInvocationThreshold = ReduceInvocationThreshold;
         static_cast<TwoParticleGF&>(iter->second).MultiTermCoefficientTolerance = MultiTermCoefficientTolerance;
-        static_cast<TwoParticleGF&>(iter->second).prepare(BosonicMin,BosonicMax,FermionicMin,FermionicMax);
+        static_cast<TwoParticleGF&>(iter->second).prepare();
        };
 }
 

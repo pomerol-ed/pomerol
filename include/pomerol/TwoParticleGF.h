@@ -132,7 +132,7 @@ public:
     ~TwoParticleGF();
 
     /** Chooses relevant parts of C1, C2, CX3 and CX4 and allocates resources for the parts. */
-    void prepare(int BosonicMin, int BosonicMax, int FermionicMin, int FermionicMax);
+    void prepare();
 
     /** Actually computes the parts and fill the internal cache of precomputed values.
      * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.

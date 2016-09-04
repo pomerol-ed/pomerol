@@ -49,7 +49,7 @@ public:
     TwoParticleGFContainer(const IndexClassification& IndexInfo, const StatesClassification &S,
                            const Hamiltonian &H, const DensityMatrix &DM, const FieldOperatorContainer& Operators);
 
-    void prepareAll(const std::set<IndexCombination4>& InitialIndices = std::set<IndexCombination4>(),int BosonicMin = 0, int BosonicMax= 0, int FermionicMin = 0, int FermionicMax = 0);
+    void prepareAll(const std::set<IndexCombination4>& InitialIndices = std::set<IndexCombination4>());
     std::map<IndexCombination4,std::vector<ComplexType> > computeAll(
         bool clearTerms = false, 
         std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(),

@@ -84,7 +84,7 @@ const FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t Permutatio
     throw std::logic_error("TwoParticleGF : could not find operator part");
 }
 
-void TwoParticleGF::prepare(int BosonicMin, int BosonicMax, int FermionicMin, int FermionicMax)
+void TwoParticleGF::prepare()
 {
     if(Status>=Prepared) return;
 
