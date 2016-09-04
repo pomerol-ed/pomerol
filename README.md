@@ -22,15 +22,18 @@ Documentation can be compiled with a `make doc` command.
   - Create a (temporary) build directory.
   - In this build directory run `cmake <path_to_pomerol> -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<path>` 
     * add `-DTesting=ON` for compiling tests. Default = ON.
-    * add `-DProgs=ON` for compiling provided binaries (from progs directory). These include diagonalizations of the Anderson impurity and Hubbard 2d cluster. Default = OFF. 
+    * add `-DProgs=ON` for compiling provided binaries (from progs directory). These include diagonalizations of the Anderson impurity  Default = OFF. 
       * TCLAP is then required. Add -DTCLAP_ROOT=LOCATION_OF_TCLAP (downloaded and unpacked or system-wide installed) if it is not found automatically. 
-    * add `-DExamples=ON` for compiling provided binary examples (from examples directory). Default = OFF.
-    * add `-Duse_complex=ON` for allowing complex matrix elements in the Hamiltonian. Default = OFF.
+    * add `-DPOMEROL_COMPLEX_MATRIX_ELEMENTS=ON` for allowing complex matrix elements in the Hamiltonian. Default = OFF.
+    * add `-DPOMEROL_USE_OPENMP` to enable OpenMP optimization for two-particle GF calculation.
   - ` make`
   - ` make test` (if tests are compiled)
   - ` make install`
     * Shared library _libpomerol_ will be in `<path>/lib`.
   - ` make doc` generates the documentation in the `doc` subfolder.
+
+##### Interfacing with your own code and other libraries
+ Check the tutorial dir for an example of a pomerol-related code that is linked to external libraries
 
 ##### License 
 The software is released under GPLv2 license. 
@@ -39,7 +42,7 @@ Academic usage : please attribute this work by a citation to http://dx.doi.org/1
 
 ##### Authors
   * Andrey Antipov <Andrey.E.Antipov\at\gmail.com>
-  * Igor Krivenko <igor\at\shg.ru>
+  * Igor Krivenko <igor.s.krivenko\at\gmail.com>
 
 ##### Development/Help 
 Please feel free to contact and contribute!
