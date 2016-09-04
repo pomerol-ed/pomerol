@@ -14,9 +14,10 @@ set (progs
 anderson
 )
 
-#if (CXX11)
-#list(APPEND progs hubbard2d)
-#endif(CXX11)
+if (CXX11)
+list(APPEND progs anderson.cxx11)
+execute_process(COMMAND "${GIT_EXECUTABLE}" "clone" "--branch" "master" "https://github.com/aeantipov/gftools.git" "gftools" WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+endif(CXX11)
 
 foreach (prog ${progs})
     set(prog_src ${prog}.cpp)
