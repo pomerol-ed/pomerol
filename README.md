@@ -13,7 +13,7 @@ Documentation can be compiled with a `make doc` command.
   * Symmetry analysis. The commutation relations between operators are taken into account.
   * Fermionic operators algebra to diagonalize any fermionic Hamiltonian.
   * [Eigen3](http://eigen.tuxfamily.org) template library for linear algebra is used (mostly its Sparse module).
-  * [MPI](http://en.wikipedia.org/wiki/Message_Passing_Interface) support. 
+  * [MPI](http://en.wikipedia.org/wiki/Message_Passing_Interface) + [OpenMP](https://en.wikipedia.org/wiki/OpenMP) support. 
   * [CMake](http://www.cmake.org) is used for the installation.
 
 ##### Installation
@@ -22,10 +22,11 @@ Documentation can be compiled with a `make doc` command.
   - Create a (temporary) build directory.
   - In this build directory run `cmake <path_to_pomerol> -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<path>` 
     * add `-DTesting=ON` for compiling tests. Default = ON.
-    * add `-DProgs=ON` for compiling provided binaries (from progs directory). These include diagonalizations of the Anderson impurity  Default = OFF. 
+    * add `-DProgs=ON` for compiling provided binaries (from progs directory). These include a diagonalization of the Anderson impurity. Default = OFF. 
       * TCLAP is then required. Add -DTCLAP_ROOT=LOCATION_OF_TCLAP (downloaded and unpacked or system-wide installed) if it is not found automatically. 
     * add `-DPOMEROL_COMPLEX_MATRIX_ELEMENTS=ON` for allowing complex matrix elements in the Hamiltonian. Default = OFF.
-    * add `-DPOMEROL_USE_OPENMP` to enable OpenMP optimization for two-particle GF calculation.
+    * add `-DPOMEROL_USE_OPENMP=ON` to enable OpenMP optimization for two-particle GF calculation. Default = ON.
+    * add `-DPOMEROL_BUILD_STATIC=ON` to compile static instead of shared libraries.
   - ` make`
   - ` make test` (if tests are compiled)
   - ` make install`
@@ -33,7 +34,7 @@ Documentation can be compiled with a `make doc` command.
   - ` make doc` generates the documentation in the `doc` subfolder.
 
 ##### Interfacing with your own code and other libraries
- Check the tutorial dir for an example of a pomerol-related code that is linked to external libraries
+ Check the tutorial dir for an example of a pomerol-related code that is linked to external libraries.
 
 ##### License 
 The software is released under GPLv2 license. 
