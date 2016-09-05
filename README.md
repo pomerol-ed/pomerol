@@ -12,13 +12,14 @@
   * [CMake](http://www.cmake.org) is used for the installation.
 
 ### Source installation
-  Check the *dependencies*: c++ compiler, CMake, Eigen3, Boost (with Boost::mpi and serialization), mpi and git to fetch the sources. TCLAP is required for building executables. For compiling the binaries from prog you'll need a tclap header-only library. 
+  Check the *dependencies*: c++ compiler, CMake, Eigen3, Boost (with Boost::mpi and serialization), mpi and git to fetch the sources. boost::program_options is required for building executables. 
   - Checkout the latest sources `git clone https://github.com/aeantipov/pomerol.git`
   - Create a (temporary) build directory.
   - In this build directory run `cmake <path_to_pomerol> -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<path>` 
     * add `-DTesting=ON` for compiling tests. Default = ON.
     * add `-DProgs=ON` for compiling provided binaries (from progs directory). These include a diagonalization of the Anderson impurity. Default = OFF. 
-      * TCLAP is then required. Add -DTCLAP_ROOT=LOCATION_OF_TCLAP (downloaded and unpacked or system-wide installed) if it is not found automatically. 
+      * boost::program_options is then required.
+      * The flag `-DCXX11=ON` compiles the C++11-version of the anderson executable with [gftools](https://github.com/aeantipov/gftools) support for operations with Green's functions and vertices. The latter supports direct hdf5-saving through [ALPSCore](http://alpscore.org).
     * add `-DPOMEROL_COMPLEX_MATRIX_ELEMENTS=ON` for allowing complex matrix elements in the Hamiltonian. Default = OFF.
     * add `-DPOMEROL_USE_OPENMP=ON` to enable OpenMP optimization for two-particle GF calculation. Default = ON.
     * add `-DPOMEROL_BUILD_STATIC=ON` to compile static instead of shared libraries.
