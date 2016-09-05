@@ -158,15 +158,15 @@ int main(int argc, char* argv[])
             LatticePresets::addLevel(&Lat, names[i], levels[i]);
         };
     
-    INFO("Sites");
-    Lat.printSites();
+    mpi_cout << "Sites" << std::endl;
+    if (!comm.rank()) Lat.printSites();
 
     int rank = comm.rank();
     if (!rank) {
-        INFO("Terms with 2 operators");
+        mpi_cout << "Terms with 2 operators" << std::endl;
         Lat.printTerms(2);
 
-        INFO("Terms with 4 operators");
+        mpi_cout << "Terms with 4 operators" << std::endl;
         Lat.printTerms(4);
         };
 
@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
     IndexHamiltonian Storage(&Lat,IndexInfo); 
     Storage.prepare(); // Write down the Hamiltonian as a symbolic formula
     print_section("Terms");
-    if (!rank) INFO(Storage);
+    mpi_cout << Storage << std::endl;
 
     Symmetrizer Symm(IndexInfo, Storage);
     Symm.compute(); // Find symmetries of the problem
@@ -199,24 +199,24 @@ int main(int argc, char* argv[])
     rho.prepare();
     rho.compute(); // evaluate thermal weights with respect to ground energy, i.e exp(-beta(e-e_0))/Z 
 
-    INFO("<N> = " << rho.getAverageOccupancy()); // get average total particle number
-    INFO("<H> = " << rho.getAverageEnergy()); // get average energy
+    mpi_cout << "<N> = " << rho.getAverageOccupancy() << std::endl; // get average total particle number
+    mpi_cout << "<H> = " << rho.getAverageEnergy() << std::endl; // get average energy
     ParticleIndex d0 = IndexInfo.getIndex("A",0,down); // find the indices of the impurity, i.e. spin up index
     ParticleIndex u0 = IndexInfo.getIndex("A",0,up);
-    INFO("<N_{" << IndexInfo.getInfo(u0) << "}N_{"<< IndexInfo.getInfo(u0) << "}> = " << rho.getAverageDoubleOccupancy(u0,d0)); // get double occupancy
+    mpi_cout << "<N_{" << IndexInfo.getInfo(u0) << "}N_{"<< IndexInfo.getInfo(u0) << "}> = " << rho.getAverageDoubleOccupancy(u0,d0) << std::endl; // get double occupancy
 
     for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {  
-        INFO("<N_{" << IndexInfo.getInfo(i) << "[" << i <<"]}> = " << rho.getAverageOccupancy(i)); // get average total particle number
+        mpi_cout << "<N_{" << IndexInfo.getInfo(i) << "[" << i <<"]}> = " << rho.getAverageOccupancy(i) << std::endl; // get average total particle number
         }
         
-    savetxt("N_T.dat",rho.getAverageOccupancy());
+    if (!comm.rank()) savetxt("N_T.dat",rho.getAverageOccupancy());
 
     // Green's function calculation starts here
     
     FieldOperatorContainer Operators(IndexInfo, S, H); // Create a container for c and c^+ in the eigenstate basis
 
     if (calc_gf) {
-        INFO("1-particle Green's functions calc");
+        print_section("1-particle Green's functions calc");
         std::set<ParticleIndex> f; // a set of indices to evaluate c and c^+
         std::set<IndexCombination2> indices2; // a set of pairs of indices to evaluate Green's function
 
