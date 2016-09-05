@@ -35,8 +35,15 @@
 
 #include <pomerol.h>
 
+#ifdef POMEROL_CXX11
 #undef DEBUG
 #include <gftools.hpp>
+using gftools::tools::is_float_equal;
+using gftools::grid_object;
+using gftools::fmatsubara_grid;
+using gftools::bmatsubara_grid;
+using gftools::real_grid;
+#endif
 
 namespace po = boost::program_options;
 
@@ -44,12 +51,6 @@ void print_section (const std::string& str, boost::mpi::communicator comm = boos
 
 //boost::mpi::environment env;
 using namespace Pomerol;
-using gftools::tools::is_float_equal;
-using gftools::grid_object;
-using gftools::fmatsubara_grid;
-using gftools::bmatsubara_grid;
-using gftools::real_grid;
-
 #define mpi_cout if(!comm.rank()) std::cout 
 
 template <typename T>
@@ -74,8 +75,8 @@ po::variables_map cmdline_params(int argc, char* argv[])
 
     define<int>(p, "calc_gf", false, "Calculate Green's functions");
     define<int>(p, "calc_2pgf", false, "Calculate 2-particle Green's functions");
-    define<int>(p, "wf_min", 0, "Minimum fermionic Matsubara freq");
-    define<int>(p, "wf_max", 40, "Maximum fermionic Matsubara freq (4x for GF)");
+    define<int>(p, "wf_min", -20, "Minimum fermionic Matsubara freq");
+    define<int>(p, "wf_max", 20, "Maximum fermionic Matsubara freq (4x for GF)");
     define<int>(p, "wb_min", 0, "Minimum bosonic Matsubara freq");
     define<int>(p, "wb_max", 0, "Maximum bosonic Matsubara freq");
 

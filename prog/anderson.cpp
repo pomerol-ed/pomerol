@@ -25,31 +25,29 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#pragma clang diagnostic ignored "-Wc++11-extensions"
-#pragma clang diagnostic ignored "-Wgnu"
-
 #include <boost/serialization/complex.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/lexical_cast.hpp>
 
-
 #include <string>
 #include <iostream>
 #include <algorithm>
-#include <tclap/CmdLine.h>
 
 #include<cstdlib>
 #include <fstream>
 
 #include <pomerol.h>
 #include "mpi_dispatcher/mpi_dispatcher.hpp"
+#include <boost/program_options.hpp>
+namespace po = boost::program_options;
 
 using namespace Pomerol;
 
 extern boost::mpi::environment env;
 boost::mpi::communicator comm;
+#define mpi_cout if(!comm.rank()) std::cout 
 
 /* Auxiliary routines - implemented in the bottom. */
 bool compare(ComplexType a, ComplexType b);
@@ -61,68 +59,89 @@ struct my_logic_error;
 double FMatsubara(int n, double beta){return M_PI/beta*(2.*n+1);}
 double BMatsubara(int n, double beta){return M_PI/beta*(2.*n);}
 
+template <typename T>
+po::options_description define(po::options_description& opts, std::string name, T def_val, std::string desc) { 
+    opts.add_options()(name.c_str(), po::value<T>()->default_value(T(def_val)), desc.c_str()); return opts; }
+
+template <typename T>
+po::options_description define_vec(po::options_description& opts, std::string name, T&& def_val, std::string desc) { 
+    opts.add_options()(name.c_str(), po::value<T>()->multitoken()->default_value(T(def_val),""), desc.c_str()); return opts; }
+
+// cmdline parser
+po::variables_map cmdline_params(int argc, char* argv[]) 
+{
+    po::options_description p("Full-ED of the Anderson model");
+    //po::variables_map p(argc, (const char**)argv);
+    define_vec <std::vector<double> > (p, "levels", { }, "energy levels of the bath sites");
+    define_vec <std::vector<double> > (p, "hoppings", { }, "hopping to the bath sites");
+
+    define<double> (p, "U", 10.0, "Value of U");
+    define<double> (p, "beta", 1, "Value of inverse temperature");
+    define<double> (p, "ed", 0.0, "Value of energy level of the impurity");
+
+    define<int>(p, "calc_gf", false, "Calculate Green's functions");
+    define<int>(p, "calc_2pgf", false, "Calculate 2-particle Green's functions");
+    define<int>(p, "wf_min", -20, "Minimum fermionic Matsubara freq");
+    define<int>(p, "wf_max", 20, "Maximum fermionic Matsubara freq (4x for GF)");
+    define<int>(p, "wb_min", 0, "Minimum bosonic Matsubara freq");
+    define<int>(p, "wb_max", 0, "Maximum bosonic Matsubara freq");
+
+    define<double>(p, "gf.eta", 0.05, "GF: Offset from the real axis for Green's function calculation");
+    define<double>(p, "gf.step", 0.01, "GF: step of the real-freq grid");
+    define<double>(p, "gf.D", 6, "GF: length of the real-freq grid");
+    define<int>(p, "gf.ntau", 100, "GF: amount of points on the imag-time grid");
+
+    define<double>(p, "2pgf.reduce_tol", 1e-5, "Energy resonance resolution in 2pgf");
+    define<double>(p, "2pgf.coeff_tol",  1e-12, "Tolerance on nominators in 2pgf");
+    define<size_t>(p, "2pgf.reduce_freq", 1e5, "How often to reduce terms in 2pgf");
+    define<double>(p, "2pgf.multiterm_tol", 1e-6, "How often to reduce terms in 2pgf");
+    define_vec<std::vector<size_t> >(p, "2pgf.indices", std::vector<size_t>({0, 0, 0, 0 }), "2pgf index combination");
+
+    p.add_options()("help","help");
+
+    po::variables_map vm;
+    //po::store(po::parse_command_line(argc, argv, p), vm);
+    po::store(po::command_line_parser(argc, argv).options(p).style(
+        po::command_line_style::unix_style ^ po::command_line_style::allow_short).run(), vm);
+
+    po::notify(vm);    
+
+    if (vm.count("help")) { std::cerr << p << "\n"; MPI_Finalize(); exit(0); }
+
+    return vm;
+}
+
+
 int main(int argc, char* argv[])
 {
     boost::mpi::environment env(argc,argv);
     boost::mpi::communicator comm;
 
-    print_section("Hubbard nxn");
-    
-    int wf_max, wb;
-    RealType e0, U, beta, reduce_tol, coeff_tol;
+    // all the params of the model
+    RealType e0, U, beta;
     bool calc_gf, calc_2pgf;
     size_t L;
-
-    double eta, hbw, step; // for evaluation of GF on real axis 
-
     std::vector<double> levels;
     std::vector<double> hoppings;
 
-    try { // command line parser
-        TCLAP::CmdLine cmd("Hubbard nxn diag", ' ', "");
-        TCLAP::ValueArg<RealType> U_arg("U","U","Value of U",true,10.0,"RealType",cmd);
-        TCLAP::ValueArg<RealType> beta_arg("b","beta","Inverse temperature",true,100.,"RealType");
-        TCLAP::ValueArg<RealType> T_arg("T","T","Temperature",true,0.01,"RealType");
-        cmd.xorAdd(beta_arg,T_arg);
+    po::variables_map p = cmdline_params(argc, argv);
 
-        TCLAP::MultiArg<double> level_args("l", "level", "level on auxiliary site", false,"RealType", cmd );
-        TCLAP::MultiArg<double> hopping_args("t", "hopping", "hopping to an auxiliary site", false,"RealType", cmd );
+    U = p["U"].as<double>();
+    e0 = p["ed"].as<double>();
+    boost::tie(beta, calc_gf, calc_2pgf) = boost::make_tuple(  
+        p["beta"].as<double>(), p["calc_gf"].as<int>(), p["calc_2pgf"].as<int>());
+    calc_gf = calc_gf || calc_2pgf;
 
-        TCLAP::ValueArg<size_t> wn_arg("","wn","Number of positive fermionic Matsubara Freqs",false,64,"int",cmd);
-        TCLAP::ValueArg<int> wb_arg("","wb","Bosonic Matsubara Freq",false,0,"int",cmd);
-        TCLAP::SwitchArg gf_arg("","calcgf","Calculate Green's functions",cmd, false);
-        TCLAP::SwitchArg twopgf_arg("","calc2pgf","Calculate 2-particle Green's functions",cmd, false);
-        TCLAP::ValueArg<RealType> reduce_tol_arg("","reducetol","Energy resonance resolution in 2pgf",false,1e-5,"RealType",cmd);
-        TCLAP::ValueArg<RealType> coeff_tol_arg("","coefftol","Total weight tolerance",false,1e-12,"RealType",cmd);
-        TCLAP::ValueArg<RealType> e0_arg("e","e0","Energy level of the impurity",false,0.0,"RealType",cmd);
 
-        TCLAP::ValueArg<RealType> eta_arg("","eta","Offset from the real axis for Green's function calculation",false,0.05,"RealType",cmd);
-        TCLAP::ValueArg<RealType> hbw_arg("D","hbw","Half-bandwidth. Default = U",false,0.0,"RealType",cmd);
-        TCLAP::ValueArg<RealType> step_arg("","step","Step on a real axis. Default : 0.01",false,0.01,"RealType",cmd);
+    if (p.count("levels")) { 
+        levels = p["levels"].as<std::vector<double>>();
+        hoppings = p["hoppings"].as<std::vector<double>>();
+    }
 
-        cmd.parse( argc, argv ); // parse arguments
- 
-        U = U_arg.getValue();
-        e0 = (e0_arg.isSet()?e0_arg.getValue():-U/2.0);
-        boost::tie(beta, calc_gf, calc_2pgf, reduce_tol, coeff_tol) = boost::make_tuple( beta_arg.getValue(), 
-            gf_arg.getValue(), twopgf_arg.getValue(), reduce_tol_arg.getValue(), coeff_tol_arg.getValue());
-        boost::tie(wf_max, wb) = boost::make_tuple(wn_arg.getValue(), wb_arg.getValue());
-        boost::tie(eta, hbw, step) = boost::make_tuple(eta_arg.getValue(), (hbw_arg.isSet()?hbw_arg.getValue():2.*U), step_arg.getValue());
-        calc_gf = calc_gf || calc_2pgf;
-
-        levels = level_args.getValue(); 
-        hoppings = hopping_args.getValue();
-
-        if (levels.size() != hoppings.size()) throw (std::logic_error("number of levels != number of hoppings"));
-        }
-    catch (TCLAP::ArgException &e)  // catch parsing exceptions
-        { std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl; exit(1);}
-    catch (std::exception &e)  // catch standard exceptions
-        { std::cerr << "error: " << e.what() << std::endl; exit(1);}
-
+    if (levels.size() != hoppings.size()) {MPI_Finalize(); throw (std::logic_error("number of levels != number of hoppings")); }
 
     L = levels.size();
-    INFO("Diagonalization of 1+" << L << " sites");
+    mpi_cout << "Diagonalization of 1+" << L << " sites" << std::endl;
 
     /* Add sites */
     Lattice Lat;
@@ -201,6 +220,11 @@ int main(int argc, char* argv[])
         std::set<ParticleIndex> f; // a set of indices to evaluate c and c^+
         std::set<IndexCombination2> indices2; // a set of pairs of indices to evaluate Green's function
 
+        int ntau; double eta, step, hbw;
+        boost::tie(ntau, eta, step, hbw) = boost::make_tuple(p["gf.ntau"].as<int>(), p["gf.eta"].as<double>(), p["gf.step"].as<double>(), p["gf.D"].as<double>());
+        int wf_min, wf_max, wb_min, wb_max;
+        boost::tie(wf_min, wf_max, wb_min, wb_max) = boost::make_tuple(p["wf_min"].as<int>(), p["wf_max"].as<int>(), p["wb_min"].as<int>(), p["wb_max"].as<int>());
+
         // Take only impurity spin up and spin down indices
         f.insert(u0); 
         f.insert(d0);
@@ -241,78 +265,91 @@ int main(int argc, char* argv[])
 
         if (calc_2pgf) {   
             print_section("2-Particle Green's function calc");
-            std::set<IndexCombination4> indices4; // a set of four indices to evaluate the 2pgf
-            // 2PGF = <T c c c^+ c^+>
-            indices4.insert(IndexCombination4(u0,u0,u0,u0)); // register up-up-up-up component for evaluation
-            indices4.insert(IndexCombination4(u0,d0,u0,d0)); // register up-down-up-down component for evaluation
-            //indices4.insert(IndexCombination4(d0,d0,d0,d0));
+           
+            std::vector<size_t> indices_2pgf = p["2pgf.indices"].as<std::vector<size_t> >();
+            if (indices_2pgf.size() != 4) throw std::logic_error("Need 4 indices for 2pgf");
+    
+            // a set of four indices to evaluate the 2pgf
+            IndexCombination4 index_comb(indices_2pgf[0], indices_2pgf[1], indices_2pgf[2], indices_2pgf[3]);
 
-            TwoParticleGFContainer Chi4(IndexInfo,S,H,rho,Operators);
+            std::set<IndexCombination4> indices4; 
+            // 2PGF = <T c c c^+ c^+>
+            indices4.insert(index_comb);
+            std::string ind_str = boost::lexical_cast<std::string>(index_comb.Index1) 
+                                + boost::lexical_cast<std::string>(index_comb.Index2) 
+                                + boost::lexical_cast<std::string>(index_comb.Index3) 
+                                + boost::lexical_cast<std::string>(index_comb.Index4);
+
+            AnnihilationOperator const& C1 = Operators.getAnnihilationOperator(index_comb.Index1); 
+            AnnihilationOperator const& C2 = Operators.getAnnihilationOperator(index_comb.Index2); 
+            CreationOperator const&    CX3 = Operators.getCreationOperator(index_comb.Index3);
+            CreationOperator const&    CX4 = Operators.getCreationOperator(index_comb.Index4); 
+            TwoParticleGF G4(S, H, C1, C2, CX3, CX4, rho);
+
             /* Some knobs to make calc faster - the larger the values of tolerances, the faster is calc, but rounding errors may show up. */
             /** A difference in energies with magnitude less than this value is treated as zero - resolution of energy resonances. */
-            Chi4.ReduceResonanceTolerance = reduce_tol;
+            G4.ReduceResonanceTolerance = p["2pgf.reduce_tol"].as<double>();
             /** Minimal magnitude of the coefficient of a term to take it into account - resolution of thermal weight. */
-            Chi4.CoefficientTolerance = coeff_tol;
+            G4.CoefficientTolerance = p["2pgf.coeff_tol"].as<double>();
             /** Knob that controls the caching frequency. */
-            Chi4.ReduceInvocationThreshold = 1e5;
+            G4.ReduceInvocationThreshold = p["2pgf.reduce_freq"].as<size_t>();
             /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
-            Chi4.MultiTermCoefficientTolerance = 1e-6;
+            G4.MultiTermCoefficientTolerance = p["2pgf.multiterm_tol"].as<double>();
             
-            Chi4.prepareAll(indices4); // find all non-vanishing block connections inside 2pgf
+            G4.prepare(); 
             comm.barrier(); // MPI::BARRIER
-            bool clearTerms = false;
 
             // Fill a vector of tuples of fermionic Matsubara frequencies - these will be evaluated in-place
-            ComplexType W = I*BMatsubara(wb, beta);
-            std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs;
-            for (int w3_index = -wf_max; w3_index<wf_max; w3_index++) { // loop over first fermionic frequency 
-                ComplexType w3 = I*FMatsubara(w3_index, beta);        
-                for (int w2_index = -wf_max; w2_index<wf_max; w2_index++) { // loop over second fermionic
-                    ComplexType w2 = I*FMatsubara(w2_index, beta);        
-                    ComplexType w1 = I*W+w3;
-                    freqs.push_back(boost::make_tuple(w1,w2,w3));
+            std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
+            for (int W_index = -wb_min; W_index <= wb_max; W_index++) { // loop over bosonic freq
+                ComplexType W = I*BMatsubara(W_index, beta);
+                for (int w3_index = -wf_max; w3_index<wf_max; w3_index++) { // loop over first fermionic frequency 
+                    ComplexType w3 = I*FMatsubara(w3_index, beta);        
+                    for (int w2_index = -wf_max; w2_index<wf_max; w2_index++) { // loop over second fermionic
+                        ComplexType w2 = I*FMatsubara(w2_index, beta);        
+                        ComplexType w1 = W+w3;
+                        freqs_2pgf.push_back(boost::make_tuple(w1,w2,w3));
+                    }   
                 }
             }
+            mpi_cout << "2PGF : " << freqs_2pgf.size() << " freqs to evaluate" << std::endl;
 
+            std::vector<ComplexType> chi_freq_data = G4.compute(true, freqs_2pgf, comm); // mdata[ind];
 
-            // ! The most important routine - actually calculate the 2PGF
-            //std::map<IndexCombination4, std::vector<ComplexType> > mdata = Chi4.computeAll(clearTerms, freqs, comm, false); 
-            // at this moment mdata contains all freqs
+            // Save terms of two particle GF
+            std::ofstream term_res_stream(("terms_res"+ind_str+".pom").c_str());
+            std::ofstream term_nonres_stream(("terms_nonres"+ind_str+".pom").c_str());
+            boost::archive::text_oarchive oa_res(term_res_stream);
+            boost::archive::text_oarchive oa_nonres(term_nonres_stream);
+            for(std::vector<TwoParticleGFPart*>::const_iterator iter = G4.parts.begin(); iter != G4.parts.end(); iter++) {
+                oa_nonres << ((*iter)->getNonResonantTerms());
+                oa_res << ((*iter)->getResonantTerms());
+                };
 
-            // dump 2PGF into files - loop through 2pgf components
-            for (std::set<IndexCombination4>::const_iterator it = indices4.begin(); it != indices4.end(); ++it) { 
-                IndexCombination4 ind = *it;
-                if (!comm.rank()) std::cout << "Saving 2PGF " << ind << std::endl;
-                std::string ind_str = boost::lexical_cast<std::string>(ind.Index1) + boost::lexical_cast<std::string>(ind.Index2) +boost::lexical_cast<std::string>(ind.Index3) +boost::lexical_cast<std::string>(ind.Index4);
-                TwoParticleGF &chi = Chi4(ind);
-                std::vector<ComplexType> chi_freq_data = chi.compute(true, freqs, comm); // mdata[ind];
-
-                // Save terms of two particle GF
-                std::ofstream term_res_stream(("terms_res"+ind_str+".pom").c_str());
-                std::ofstream term_nonres_stream(("terms_nonres"+ind_str+".pom").c_str());
-                boost::archive::text_oarchive oa_res(term_res_stream);
-                boost::archive::text_oarchive oa_nonres(term_nonres_stream);
-                for(std::vector<TwoParticleGFPart*>::const_iterator iter = chi.parts.begin(); iter != chi.parts.end(); iter++) {
-                    oa_nonres << ((*iter)->getNonResonantTerms());
-                    oa_res << ((*iter)->getResonantTerms());
-                    };
-
-                int ROOT = 0;
-                if (rank == ROOT) {
+            if (!rank) {
+                size_t w = 0;
+                for (int W_index = -wb_min; W_index <= wb_max; W_index++) { // loop over bosonic freq
+                    ComplexType W = I*BMatsubara(W_index, beta);
                     std::ofstream chi_stream (("chi"+ind_str+"_W"+boost::lexical_cast<std::string>(std::imag(W))+".dat").c_str());
-                    for (int w = 0; w < freqs.size(); ++w) { 
-                        double w1 = std::imag(boost::get<2>(freqs[w])); 
-                        double w2 = std::imag(boost::get<1>(freqs[w]));
-                        std::complex<double> val = chi_freq_data[w];
+                    for (int w3_index = -wf_max; w3_index<wf_max; w3_index++) { // loop over first fermionic frequency 
+                        ComplexType w3 = I*FMatsubara(w3_index, beta);        
+                        for (int w2_index = -wf_max; w2_index<wf_max; w2_index++) { // loop over second fermionic
+                            ComplexType w2 = I*FMatsubara(w2_index, beta);        
+                            ComplexType w1 = W+w3;
+                            if (std::abs(w1 - boost::get<0>(freqs_2pgf[w])) > 1e-8) throw std::logic_error("2pgf freq mismatch");
 
-                        chi_stream << std::scientific << std::setprecision(12)  
-                                   << w1 << " " << w2 << "   " << std::real(val) << " " << std::imag(val) << std::endl;
-                        }
-                    chi_stream << std::endl;
-                    chi_stream.close();
+                            std::complex<double> val = chi_freq_data[w];
+
+                            chi_stream << std::scientific << std::setprecision(12)  
+                               << w3.real() << " " << w3.imag() << " " << w2.real() << " " << w2.imag() << "   " << std::real(val) << " " << std::imag(val) << std::endl;
+                            ++w;
+                    }
                 }
+                chi_stream << std::endl;
+                chi_stream.close();
+                }
+            }
         }
-    }
     }
 }
 
