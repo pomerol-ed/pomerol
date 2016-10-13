@@ -64,7 +64,7 @@ po::options_description define(po::options_description& opts, std::string name, 
     opts.add_options()(name.c_str(), po::value<T>()->default_value(T(def_val)), desc.c_str()); return opts; }
 
 template <typename T>
-po::options_description define_vec(po::options_description& opts, std::string name, T&& def_val, std::string desc) { 
+po::options_description define_vec(po::options_description& opts, std::string name, T def_val, std::string desc) { 
     opts.add_options()(name.c_str(), po::value<T>()->multitoken()->default_value(T(def_val),""), desc.c_str()); return opts; }
 
 // cmdline parser
@@ -72,8 +72,8 @@ po::variables_map cmdline_params(int argc, char* argv[])
 {
     po::options_description p("Full-ED of the Anderson model");
     //po::variables_map p(argc, (const char**)argv);
-    define_vec <std::vector<double> > (p, "levels", { }, "energy levels of the bath sites");
-    define_vec <std::vector<double> > (p, "hoppings", { }, "hopping to the bath sites");
+    define_vec <std::vector<double> > (p, "levels", std::vector<double>(), "energy levels of the bath sites");
+    define_vec <std::vector<double> > (p, "hoppings", std::vector<double>(), "hopping to the bath sites");
 
     define<double> (p, "U", 10.0, "Value of U");
     define<double> (p, "beta", 1, "Value of inverse temperature");
@@ -95,7 +95,9 @@ po::variables_map cmdline_params(int argc, char* argv[])
     define<double>(p, "2pgf.coeff_tol",  1e-12, "Tolerance on nominators in 2pgf");
     define<size_t>(p, "2pgf.reduce_freq", 1e5, "How often to reduce terms in 2pgf");
     define<double>(p, "2pgf.multiterm_tol", 1e-6, "How often to reduce terms in 2pgf");
-    define_vec<std::vector<size_t> >(p, "2pgf.indices", std::vector<size_t>({0, 0, 0, 0 }), "2pgf index combination");
+
+    std::vector<size_t> default_inds(4,0);
+    define_vec<std::vector<size_t> >(p, "2pgf.indices", default_inds, "2pgf index combination");
 
     p.add_options()("help","help");
 
@@ -134,8 +136,8 @@ int main(int argc, char* argv[])
 
 
     if (p.count("levels")) { 
-        levels = p["levels"].as<std::vector<double>>();
-        hoppings = p["hoppings"].as<std::vector<double>>();
+        levels = p["levels"].as<std::vector<double> >();
+        hoppings = p["hoppings"].as<std::vector<double> >();
     }
 
     if (levels.size() != hoppings.size()) {MPI_Finalize(); throw (std::logic_error("number of levels != number of hoppings")); }
