@@ -57,7 +57,6 @@ public:
         auto pos = SiteIndexF(x,y);
         auto pos_right = SiteIndexF((x+1)%size_x,y); /*if (x == size_x - 1) pos_right = SiteIndexF(0,y); */
         auto pos_up = SiteIndexF(x,(y+1)%size_y);
-        mpi_cout<<pos<<"->"<<pos_right<<"\n|\n"<<pos_up<<std::endl;
         if (size_x > 1) LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_right]), std::max(names[pos], names[pos_right]), -_t);
         if (size_y > 1) LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_up]), std::max(names[pos], names[pos_up]), -_t);
       };

@@ -25,8 +25,12 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
+#ifdef POMEROL_ANDERSON
 #include "anderson_model.h"
+#endif
+#ifdef POMEROL_HUBBARD2D
 #include "hubbard2d_model.h"
+#endif
 
 int main(int argc, char* argv[])
 {
