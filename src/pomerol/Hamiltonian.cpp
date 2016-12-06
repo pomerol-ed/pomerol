@@ -125,7 +125,7 @@ void Hamiltonian::reduce(const RealType Cutoff)
 
 void Hamiltonian::computeGroundEnergy()
 {
-    RealVectorType LEV(S.NumberOfBlocks());
+    RealVectorType LEV(size_t(S.NumberOfBlocks()));
     BlockNumber NumberOfBlocks = parts.size();
     for (BlockNumber CurrentBlock=0; CurrentBlock<NumberOfBlocks; CurrentBlock++) {
 	    LEV(CurrentBlock) = parts[CurrentBlock]->getMinimumEigenvalue();
