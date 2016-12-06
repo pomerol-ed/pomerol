@@ -98,7 +98,7 @@ void quantum_model::compute() {
         // Save Matsubara GF from pi/beta to pi/beta*(4*wf_max + 1)
         std::cout << "Saving imfreq G" << ind2 << " on " << 4 * wf_max << " Matsubara freqs. " << std::endl;
 #ifdef POMEROL_CXX11
-        grid_object<std::complex<double>, fmatsubara_grid> gf_imfreq (fmatsubara_grid(wf_min, wf_max*4, beta));
+        grid_object<std::complex<double>, fmatsubara_grid> gf_imfreq (fmatsubara_grid(wf_min, wf_max*4, beta, true));
         std::string ind_str = boost::lexical_cast<std::string>(ind2.Index1)+ boost::lexical_cast<std::string>(ind2.Index2);
         for (auto p : gf_imfreq.grid().points()) { gf_imfreq[p] = GF(p.value()); }
         gf_imfreq.savetxt("gw_imfreq_"+ ind_str +".dat");
@@ -112,7 +112,7 @@ void quantum_model::compute() {
         gf_refreq.savetxt("gw_refreq_"+ ind_str +".dat");
 #else
         std::ofstream gw_im(("gw_imag" + boost::lexical_cast< std::string>(ind2.Index1) + boost::lexical_cast< std::string>(ind2.Index2) + ".dat").c_str());
-        for (int wn = 0; wn < wf_max*4; wn++) {
+        for (int wn = 0; wn <= wf_max*4; wn++) {
           ComplexType val = GF(I*FMatsubara(wn,beta)); // this comes from Pomerol - see GreensFunction::operator()
           gw_im << std::scientific << std::setprecision(12) << FMatsubara(wn, beta) << "   " << real(val) << " " << imag(val) << std::endl;
         };
@@ -167,8 +167,8 @@ void quantum_model::compute() {
       comm.barrier(); // MPI::BARRIER
 #ifdef POMEROL_CXX11
       std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
-      fmatsubara_grid fgrid(wf_min, wf_max, beta);
-      bmatsubara_grid bgrid(wb_min, wb_max + 1, beta);
+      fmatsubara_grid fgrid(wf_min, wf_max, beta, true);
+      bmatsubara_grid bgrid(wb_min, wb_max, beta, true);
       freqs_2pgf.reserve(fgrid.size() * fgrid.size() * bgrid.size());
       for (auto W : bgrid.values()) {
         for (auto w3 : fgrid.values()) {
@@ -183,9 +183,9 @@ void quantum_model::compute() {
       std::vector< boost::tuples::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
       for (int W_index = -wb_min; W_index <= wb_max; W_index++) { // loop over bosonic freq
         ComplexType W = I*BMatsubara(W_index, beta);
-        for (int w3_index = -wf_max; w3_index<wf_max; w3_index++) { // loop over first fermionic frequency
+        for (int w3_index = -wf_max; w3_index<=wf_max; w3_index++) { // loop over first fermionic frequency
           ComplexType w3 = I*FMatsubara(w3_index, beta);
-          for (int w2_index = -wf_max; w2_index<wf_max; w2_index++) { // loop over second fermionic
+          for (int w2_index = -wf_max; w2_index<=wf_max; w2_index++) { // loop over second fermionic
             ComplexType w2 = I*FMatsubara(w2_index, beta);
             ComplexType w1 = W+w3;
             freqs_2pgf.push_back(boost::tuples::make_tuple(w1, w2, w3));
@@ -235,9 +235,9 @@ void quantum_model::compute() {
         for (int W_index = -wb_min; W_index <= wb_max; W_index++) { // loop over bosonic freq
           ComplexType W = I*BMatsubara(W_index, beta);
           std::ofstream chi_stream (("chi" + ind_str + "_W" + boost::lexical_cast< std::string>(imag(W)) + ".dat").c_str());
-          for (int w3_index = -wf_max; w3_index<wf_max; w3_index++) { // loop over first fermionic frequency
+          for (int w3_index = -wf_max; w3_index<=wf_max; w3_index++) { // loop over first fermionic frequency
             ComplexType w3 = I*FMatsubara(w3_index, beta);
-            for (int w2_index = -wf_max; w2_index<wf_max; w2_index++) { // loop over second fermionic
+            for (int w2_index = -wf_max; w2_index<=wf_max; w2_index++) { // loop over second fermionic
               ComplexType w2 = I*FMatsubara(w2_index, beta);
               ComplexType w1 = W+w3;
               if (::std::abs(w1 - boost::tuples::get<0>(freqs_2pgf[w])) > 1e-8) throw std::logic_error("2pgf freq mismatch");
