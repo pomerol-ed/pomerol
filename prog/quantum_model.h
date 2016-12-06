@@ -66,6 +66,8 @@ public:
 
   void compute();
 
+  virtual std::pair<ParticleIndex, ParticleIndex> get_node(const IndexClassification &IndexInfo) = 0;
+
   double FMatsubara(int n, double beta){return M_PI/beta*(2.*n+1);}
   double BMatsubara(int n, double beta){return M_PI/beta*(2.*n);}
 
@@ -83,6 +85,7 @@ public:
   RealType U() {return _U;};
   RealType e0() {return _e0;};
 
+  virtual void prepare_indices(ParticleIndex d0, ParticleIndex u0, std::set < IndexCombination2 > &indices2, std::set<ParticleIndex>& f, const IndexClassification &IndexInfo) = 0;
 private:
   // all the params of the model
   RealType _e0;

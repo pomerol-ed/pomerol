@@ -45,8 +45,9 @@ void quantum_model::compute() {
 
   mpi_cout << "<N> = " << rho.getAverageOccupancy() << std::endl; // get average total particle number
   mpi_cout << "<H> = " << rho.getAverageEnergy() << std::endl; // get average energy
-  ParticleIndex d0 = IndexInfo.getIndex("A",0,down); // find the indices of the impurity, i.e. spin up index
-  ParticleIndex u0 = IndexInfo.getIndex("A",0,up);
+  std::pair<ParticleIndex, ParticleIndex> pair = get_node(IndexInfo);
+  ParticleIndex d0 = pair.first;//IndexInfo.getIndex("A",0,down); // find the indices of the impurity, i.e. spin up index
+  ParticleIndex u0 = pair.second;//IndexInfo.getIndex("A",0,up);
   mpi_cout << "<N_{" << IndexInfo.getInfo(u0) << "}N_{"<< IndexInfo.getInfo(u0) << "}> = " << rho.getAverageDoubleOccupancy(u0,d0) << std::endl; // get double occupancy
 
   for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {
@@ -79,7 +80,7 @@ void quantum_model::compute() {
     // Take only impurity spin up and spin down indices
     f.insert(u0);
     f.insert(d0);
-    indices2.insert(IndexCombination2(d0, d0)); // evaluate only G_{\down \down}
+    prepare_indices(d0, u0, indices2, f, IndexInfo);
 
     Operators.prepareAll(f);
     Operators.computeAll(); // evaluate c, c^+ for chosen indices

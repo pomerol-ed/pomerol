@@ -21,6 +21,12 @@ public:
     init_lattice();
   };
 
+  virtual std::pair<ParticleIndex, ParticleIndex> get_node(const IndexClassification & IndexInfo) {
+    ParticleIndex d0 = IndexInfo.getIndex("A",0,down); // find the indices of the impurity, i.e. spin up index
+    ParticleIndex u0 = IndexInfo.getIndex("A",0,up);
+    return std::make_pair(d0, u0);
+  };
+
   virtual void init_parameters() {
     quantum_model::init_parameters();
     if (p.count("levels")) {
@@ -35,6 +41,9 @@ public:
     mpi_cout << "Diagonalization of 1+" << L << " sites" << std::endl;
   }
 
+  virtual void prepare_indices(ParticleIndex d0, ParticleIndex u0, std::set < IndexCombination2 > &indices2, std::set<ParticleIndex>& f, const IndexClassification &IndexInfo) {
+    indices2.insert(IndexCombination2(d0, d0)); // evaluate only G_{\down \down}
+  }
 
   virtual po::variables_map cmdline_params(int argc, char* argv[]) {
     po::options_description p("Full-ED of the Anderson model");

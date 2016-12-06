@@ -29,11 +29,17 @@ public:
     boost::tie(size_x, size_y) = boost::make_tuple(p["x"].as<int>(), p["y"].as<int>());
   }
 
+  virtual std::pair<ParticleIndex, ParticleIndex> get_node(const IndexClassification &IndexInfo) {
+    ParticleIndex d0 = IndexInfo.getIndex("S0",0,down);
+    ParticleIndex u0 = IndexInfo.getIndex("S0",0,up);
+    return std::make_pair(d0, u0);
+  };
+
   virtual void init_lattice() {
     int L = size_x*size_y;
     INFO("Diagonalization of " << L << "=" << size_x << "*" << size_y << " sites");
     /* Add sites */
-    std::vector<std::string> names(L);
+    names.resize(L);
     //auto SiteIndexF = [size_x](size_t x, size_t y){return y*size_x + x;};
     for (size_t y=0; y<size_y; y++) {
       for (size_t x = 0; x < size_x; x++) {
@@ -120,11 +126,20 @@ public:
     return vm;
   }
 
+  virtual void prepare_indices(ParticleIndex d0, ParticleIndex u0, std::set < IndexCombination2 > &indices2, std::set<ParticleIndex>& f, const IndexClassification &IndexInfo)  {
+    for (size_t x=0; x<size_x; x++) {
+      ParticleIndex ind = IndexInfo.getIndex(names[SiteIndexF(x,0)],0,down);
+      f.insert(ind);
+      indices2.insert(IndexCombination2(d0,ind));
+    };
+  }
+
 private:
   int size_x;
   int size_y;
   RealType _mu;
   RealType _t;
+  std::vector<std::string> names;
   size_t SiteIndexF(size_t x, size_t y) {
     return y*size_x + x;
   }
