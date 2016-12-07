@@ -29,6 +29,7 @@
 #pragma clang diagnostic ignored "-Wc++11-extensions"
 #pragma clang diagnostic ignored "-Wgnu"
 
+#include <boost/program_options.hpp>
 #include <boost/serialization/complex.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/archive/text_oarchive.hpp>
