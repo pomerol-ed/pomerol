@@ -17,6 +17,7 @@ endif()
 
 foreach(model ${progs_list})
     string(TOUPPER ${model} def)
-    string(CONCAT def "POMEROL_" ${def})
+    set(def "POMEROL_${def}")
+    #string(CONCAT def "POMEROL_" ${def})
     add_prog(${model} ${def})
 endforeach()
