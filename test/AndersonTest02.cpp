@@ -205,7 +205,7 @@ bool is_equal ( F1 x, F2 y, RealType tolerance)
     return (std::abs(x-y)<tolerance);
 }
 
-template <typename T1> void savetxt(std::string fname, T1 in){std::ofstream out(fname); out << in << std::endl; out.close();};
+template <typename T1> void savetxt(std::string fname, T1 in){std::ofstream out(fname.c_str()); out << in << std::endl; out.close();};
 
 struct my_logic_error : public std::logic_error { my_logic_error (const std::string& what_arg):logic_error(what_arg){}; };
 

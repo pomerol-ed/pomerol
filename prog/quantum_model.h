@@ -21,7 +21,6 @@
 #include <pomerol.h>
 #include "mpi_dispatcher/mpi_dispatcher.hpp"
 #include <boost/program_options.hpp>
-#include <hdf5_hl.h>
 
 #include <set>
 
