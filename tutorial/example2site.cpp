@@ -268,7 +268,8 @@ int main(int argc, char* argv[])
     Chi.MultiTermCoefficientTolerance = 1e-6;
 
     Chi.prepare();
-    Chi.compute(world);
+    std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
+    Chi.compute(false, freqs_2pgf, world);
 
     if (world.rank()==0) {
     int nm = 2;
