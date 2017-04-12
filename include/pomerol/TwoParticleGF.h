@@ -176,8 +176,9 @@ public:
 };
 
 inline ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const {
-    if(Vanishing)
+    if(Vanishing) { 
         return 0.0;
+        }
     else {
         ComplexType Value = 0;
         for(std::vector<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){

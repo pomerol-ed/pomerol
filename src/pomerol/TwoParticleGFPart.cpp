@@ -370,6 +370,8 @@ ComplexType TwoParticleGFPart::operator()(ComplexType z1, ComplexType z2, Comple
     z2 = Frequencies[Permutation.perm[1]];
     z3 = Frequencies[Permutation.perm[2]];
 
+    if (NonResonantTerms.size() + ResonantTerms.size() == 0) { std::cerr << "2PGFPart : Calling operator() on empty container, did you purge all the terms when called compute()" << std::endl; }
+
     ComplexType Value = 0;
     for(std::vector<NonResonantTerm>::const_iterator pTerm = NonResonantTerms.begin(); pTerm != NonResonantTerms.end(); ++pTerm)
         Value += (*pTerm)(z1,z2,z3);
