@@ -30,8 +30,8 @@ Lattice::Term::Term (unsigned int N):N(N)
     SiteLabels.resize(N);
     Spins.resize(N);
     Orbitals.resize(N);
-    for (unsigned int i=0; i<N; ++i) { OperatorSequence[i]=false; SiteLabels[i]=""; Spins[i]=0; Orbitals[i]=0.0; }; 
-    Value=0.0; 
+    for (unsigned int i=0; i<N; ++i) { OperatorSequence[i]=false; SiteLabels[i]=""; Spins[i]=0; Orbitals[i]=0.0; };
+    Value=0.0;
 };
 
 
@@ -51,10 +51,10 @@ Lattice::Term::Term (const Lattice::Term &in):N(in.N), OperatorSequence(in.Opera
 unsigned int Lattice::Term::getOrder() const { return N; };
 
 std::ostream& operator<< (std::ostream& output, const Lattice::Term& out)
-{   
-    output << out.Value << "*"; 
-    for (unsigned int i=0; i<out.N; ++i) output << ((out.OperatorSequence[i])?"c^{+}":"c") << "_{" << out.SiteLabels[i] << "," << out.Orbitals[i] << "," << out.Spins[i] << "}" ; 
-    return output; 
+{
+    output << out.Value << "*";
+    for (unsigned int i=0; i<out.N; ++i) output << ((out.OperatorSequence[i])?"c^{+}":"c") << "_{" << out.SiteLabels[i] << "," << out.Orbitals[i] << "," << out.Spins[i] << "}" ;
+    return output;
 };
 
 //
@@ -76,14 +76,14 @@ int Lattice::TermStorage::addTerm(const Lattice::Term *T)
 
 const unsigned int Lattice::TermStorage::getMaxTermOrder() const
 {
-    return MaxTermOrder;  
+    return MaxTermOrder;
 }
 
 const Lattice::TermList &Lattice::TermStorage::getTerms (unsigned int N) const
 {
-   std::map<unsigned int, Lattice::TermList>::const_iterator it1=Terms.find(N); 
-    if (Terms.find(N)!=Terms.end()) 
-        { 
+   std::map<unsigned int, Lattice::TermList>::const_iterator it1=Terms.find(N);
+    if (Terms.find(N)!=Terms.end())
+        {
             return it1->second;
         }
     else return *(new TermList ());
@@ -100,6 +100,11 @@ Lattice::Lattice():Terms(new TermStorage)
 Lattice::~Lattice(){
 delete Terms;
 };
+
+Lattice::Lattice(const Lattice &l) : Sites(l.Sites) {
+ Terms = new TermStorage(*l.Terms);
+}
+
 
 const Lattice::SiteMap& Lattice::getSiteMap() const
 {
@@ -149,8 +154,8 @@ void Lattice::addTerm(const Lattice::Term *T)
 
 const Lattice::Site& Lattice::getSite(const std::string& Label) const
 {
-    std::map<std::string, Site*>::const_iterator it1=Sites.find(Label); 
-    if (it1!=Sites.end()) throw (exWrongLabel()); 
+    std::map<std::string, Site*>::const_iterator it1=Sites.find(Label);
+    if (it1!=Sites.end()) throw (exWrongLabel());
     return *(it1->second);
 }
 
