@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2011 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2011 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -24,7 +24,7 @@
 namespace Pomerol{
 
 // Make the lagging index catch up or outrun the leading index.
-inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter, 
+inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter,
                          ColMajorMatrixType::InnerIterator& index2_iter)
 {
     InnerQuantumState index1 = index1_iter.index();
@@ -32,9 +32,9 @@ inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter,
 
     if(index1 == index2) return true;
 
-    if(index1 < index2) 
+    if(index1 < index2)
         for(;InnerQuantumState(index1_iter.index())<index2 && index1_iter; ++index1_iter);
-    else 
+    else
         for(;InnerQuantumState(index2_iter.index())<index1 && index2_iter; ++index2_iter);
 
     return false;
@@ -53,18 +53,18 @@ Coeff(Coeff), isz4(isz4)
 inline
 TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator+=(
                     const NonResonantTerm& AnotherTerm)
-{  
+{
     long combinedWeight=Weight + AnotherTerm.Weight;
     for (unsigned short p=0; p<3; ++p) Poles[p]= (Weight*Poles[p] + AnotherTerm.Weight*AnotherTerm.Poles[p])/combinedWeight;
     Weight=combinedWeight;
-    Coeff += AnotherTerm.Coeff;   
+    Coeff += AnotherTerm.Coeff;
     return *this;
 }
 
 inline
 bool TwoParticleGFPart::NonResonantTerm::isSimilarTo(const NonResonantTerm& AnotherTerm, RealType ReduceResonanceTolerance) const
-{   
-    return isz4 == AnotherTerm.isz4 && 
+{
+    return isz4 == AnotherTerm.isz4 &&
            (fabs(Poles[0] - AnotherTerm.Poles[0]) < ReduceResonanceTolerance) &&
            (fabs(Poles[1] - AnotherTerm.Poles[1]) < ReduceResonanceTolerance) &&
            (fabs(Poles[2] - AnotherTerm.Poles[2]) < ReduceResonanceTolerance);
@@ -95,7 +95,7 @@ TwoParticleGFPart::ResonantTerm& TwoParticleGFPart::ResonantTerm::operator+=(
 
 inline
 bool TwoParticleGFPart::ResonantTerm::isSimilarTo(const ResonantTerm& AnotherTerm, RealType ReduceResonanceTolerance) const
-{   
+{
     return isz1z2 == AnotherTerm.isz1z2 &&
            (fabs(Poles[0] - AnotherTerm.Poles[0]) < ReduceResonanceTolerance) &&
            (fabs(Poles[1] - AnotherTerm.Poles[1]) < ReduceResonanceTolerance) &&
@@ -115,7 +115,7 @@ TwoParticleGFPart::TwoParticleGFPart(
                 Permutation3 Permutation) :
     Thermal(DMpart1),
     ComputableObject(),
-    O1(O1), O2(O2), O3(O3), CX4(CX4), 
+    O1(O1), O2(O2), O3(O3), CX4(CX4),
     Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
     DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
     Permutation(Permutation),
@@ -124,8 +124,6 @@ TwoParticleGFPart::TwoParticleGFPart(
     CoefficientTolerance (1e-16),
     ReduceInvocationThreshold (1e5),
     MultiTermCoefficientTolerance (1e-5)
-
-
 {}
 
 void TwoParticleGFPart::compute()
@@ -139,12 +137,12 @@ void TwoParticleGFPart::compute()
     // Iterate over all values of |1><1| and |3><3|
     // Chase indices |2> and <2|, |4> and <4|.
     const RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
-    const ColMajorMatrixType& O2matrix = O2.getColMajorValue();    
+    const ColMajorMatrixType& O2matrix = O2.getColMajorValue();
     const RowMajorMatrixType& O3matrix = O3.getRowMajorValue();
     const ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
 
     InnerQuantumState index1;
-    InnerQuantumState index1Max = CX4matrix.outerSize(); // One can not make a cutoff in external index for evaluating 2PGF 
+    InnerQuantumState index1Max = CX4matrix.outerSize(); // One can not make a cutoff in external index for evaluating 2PGF
 
     InnerQuantumState index3;
     InnerQuantumState index3Max = O2matrix.outerSize();
@@ -159,7 +157,7 @@ void TwoParticleGFPart::compute()
 
     for(index1=0; index1<index1Max; ++index1){
     for(index3=0; index3<index3Max; ++index3){
-        ColMajorMatrixType::InnerIterator index4bra_iter(CX4matrix,index1);       
+        ColMajorMatrixType::InnerIterator index4bra_iter(CX4matrix,index1);
         RowMajorMatrixType::InnerIterator index4ket_iter(O3matrix,index3);
         Index4List.clear();
         while (index4bra_iter && index4ket_iter){
@@ -178,7 +176,7 @@ void TwoParticleGFPart::compute()
             RealType weight3 = DMpart3.getWeight(index3);
 
             ColMajorMatrixType::InnerIterator index2bra_iter(O2matrix,index3);
-            RowMajorMatrixType::InnerIterator index2ket_iter(O1matrix,index1);       
+            RowMajorMatrixType::InnerIterator index2ket_iter(O1matrix,index1);
             while (index2bra_iter && index2ket_iter){
                 if (chaseIndices(index2ket_iter,index2bra_iter)){
 
@@ -189,7 +187,7 @@ void TwoParticleGFPart::compute()
                     for (unsigned long p4 = 0; p4 < Index4List.size(); ++p4)
                     {
                         InnerQuantumState index4 = Index4List[p4];//*pIndex4;
-                        RealType E4 = Hpart4.getEigenValue(index4);                       
+                        RealType E4 = Hpart4.getEigenValue(index4);
                         RealType weight4 = DMpart4.getWeight(index4);
                         if (weight1 + weight2 + weight3 + weight4 >= CoefficientTolerance) {
                             ComplexType MatrixElement = index2ket_iter.value()*
@@ -209,7 +207,7 @@ void TwoParticleGFPart::compute()
         };
     }
 /*
-    if (ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize > ReduceInvocationThreshold ){ 
+    if (ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize > ReduceInvocationThreshold ){
         INFO_NONEWLINE(NonResonantTerms.size()-NonResonantTermsPreviousSize << "+" << ResonantTerms.size() - ResonantTermsPreviousSize << "=");
         INFO_NONEWLINE(ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize);
         INFO_NONEWLINE(" terms -> ");
@@ -220,9 +218,9 @@ void TwoParticleGFPart::compute()
         RealType NonResonantTolerance = MultiTermCoefficientTolerance*(index1+1)/NonResonantTermsUnreducedSize/(index1Max+1);
         RealType ResonantTolerance = MultiTermCoefficientTolerance*(index1+1)/ResonantTermsUnreducedSize/(index1Max+1);
 
-        this->reduceTerms(NonResonantTolerance, ResonantTolerance, NonResonantTerms, ResonantTerms); 
+        this->reduceTerms(NonResonantTolerance, ResonantTolerance, NonResonantTerms, ResonantTerms);
         NonResonantTermsPreviousSize = NonResonantTerms.size();
-        ResonantTermsPreviousSize = ResonantTerms.size(); 
+        ResonantTermsPreviousSize = ResonantTerms.size();
 
         INFO_NONEWLINE(NonResonantTermsPreviousSize << "+" << ResonantTermsPreviousSize << "=");
         INFO(NonResonantTermsPreviousSize + ResonantTermsPreviousSize << " , tol = " << std::max(NonResonantTolerance,ResonantTolerance));
@@ -234,15 +232,15 @@ void TwoParticleGFPart::compute()
 /*
     if (ResonantTermsUnreducedSize + NonResonantTermsUnreducedSize > 0){
 */
-        std::cout << "Total " << NonResonantTermsUnreducedSize << "+" << ResonantTermsUnreducedSize << "=" 
+        std::cout << "Total " << NonResonantTermsUnreducedSize << "+" << ResonantTermsUnreducedSize << "="
                   << NonResonantTermsUnreducedSize+ResonantTermsUnreducedSize << " terms -> " << std::flush;
-        ::Pomerol::reduceTerms(this->ReduceResonanceTolerance, 
-                               MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1), 
-                               MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1), 
-                               NonResonantTerms, 
+        ::Pomerol::reduceTerms(this->ReduceResonanceTolerance,
+                               MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1),
+                               MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1),
+                               NonResonantTerms,
                                ResonantTerms);
         std::cout << NonResonantTerms.size() << "+" << ResonantTerms.size() << "="
-                  << NonResonantTerms.size() + ResonantTerms.size()  << ", \ttols = " << std::setw(4)  
+                  << NonResonantTerms.size() + ResonantTerms.size()  << ", \ttols = " << std::setw(4)
              << std::max(MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1), MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1))
              << " (coeff), " << ReduceResonanceTolerance << " (res)" << std::endl;
 /*
@@ -255,10 +253,10 @@ void TwoParticleGFPart::compute()
 void TwoParticleGFPart::reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance,
                                     std::vector<NonResonantTerm> &NonResonantTerms, std::vector<ResonantTerm>& ResonantTerms)
 {
-    ::Pomerol::reduceTerms(this->ReduceResonanceTolerance, NonResonantTolerance, ResonantTolerance, NonResonantTerms, ResonantTerms); 
+    ::Pomerol::reduceTerms(this->ReduceResonanceTolerance, NonResonantTolerance, ResonantTolerance, NonResonantTerms, ResonantTerms);
 }
 
-void reduceTerms(const RealType ReduceResonanceTolerance, const RealType NonResonantTolerance, const RealType ResonantTolerance, 
+void reduceTerms(const RealType ReduceResonanceTolerance, const RealType NonResonantTolerance, const RealType ResonantTolerance,
                  std::vector<TwoParticleGFPart::NonResonantTerm> &NonResonantTerms, std::vector<TwoParticleGFPart::ResonantTerm>& ResonantTerms)
 {
     #ifndef noReduction
@@ -276,13 +274,13 @@ void reduceTerms(const RealType ReduceResonanceTolerance, const RealType NonReso
             }else
                 it2++;
         }
-        
+
         if(abs(it1->Coeff) < NonResonantTolerance)
             it1 = NonResonantTerms.erase(it1);
         else
             it1++;
     }
-    
+
     // Sieve reduction of the resonant terms
     for(std::vector<ResonantTerm>::iterator it1 = ResonantTerms.begin(); it1 != ResonantTerms.end();){
         std::vector<ResonantTerm>::iterator it2 = it1;
@@ -293,13 +291,13 @@ void reduceTerms(const RealType ReduceResonanceTolerance, const RealType NonReso
             }else
                 it2++;
         }
-        
+
         if(abs(it1->ResCoeff) + abs(it1->NonResCoeff) < ResonantTolerance)
             it1 = ResonantTerms.erase(it1);
         else
             it1++;
     }
-    #else 
+    #else
         INFO("No reduction is done due to -DnoReduction flag turned on");
     #endif // endif :: #ifndef noReduction
     //DEBUG("After: " << NonResonantTerms.size() << " non resonant terms + " << ResonantTerms.size() << " resonant terms = " << ResonantTerms.size()+NonResonantTerms.size());
@@ -370,7 +368,9 @@ ComplexType TwoParticleGFPart::operator()(ComplexType z1, ComplexType z2, Comple
     z2 = Frequencies[Permutation.perm[1]];
     z3 = Frequencies[Permutation.perm[2]];
 
-    if (NonResonantTerms.size() + ResonantTerms.size() == 0) { std::cerr << "2PGFPart : Calling operator() on empty container, did you purge all the terms when called compute()" << std::endl; }
+    if (Status != Computed) {
+        throw std::logic_error("2PGFPart : Calling operator() on empty container, did you purge all the terms when called compute()");
+    }
 
     ComplexType Value = 0;
     for(std::vector<NonResonantTerm>::const_iterator pTerm = NonResonantTerms.begin(); pTerm != NonResonantTerms.end(); ++pTerm)
@@ -395,6 +395,7 @@ void TwoParticleGFPart::clear()
 {
     NonResonantTerms.clear();
     ResonantTerms.clear();
+    Status = Constructed;
 }
 
 } // end of namespace Pomerol

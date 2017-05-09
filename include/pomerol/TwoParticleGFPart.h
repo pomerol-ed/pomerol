@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2012 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -48,7 +48,7 @@ public:
 
     struct NonResonantTerm;
     struct ResonantTerm;
-   
+
 private:
 
     /** A reference to a part of the first operator. */
@@ -114,7 +114,7 @@ private:
     *
     * In fact this is a slightly rewritten form of an equation for \f$ \phi \f$ from
     * <em>H. Hafermann et al 2009 EPL 85 27007</em>.
-    * 
+    *
     * \param[in] Coeff Common prefactor \f$ C \f$ for coefficients \f$ C_2 \f$, \f$ C_4 \f$,
     *              \f$ R_{12} \f$, \f$ N_{12} \f$, \f$ R_{23} \f$, \f$ N_{23} \f$.
     * \param[in] beta The inverse temperature.
@@ -133,7 +133,7 @@ private:
                       RealType Wi, RealType Wj, RealType Wk, RealType Wl);
 
     /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-16. */
-    RealType KroneckerSymbolTolerance; 
+    RealType KroneckerSymbolTolerance;
     /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
     RealType ReduceResonanceTolerance;
     /** Minimal magnitude of the coefficient of a term to take it into account. default = 1e-16. */
@@ -143,7 +143,7 @@ private:
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. default = 1e-5. */
     RealType MultiTermCoefficientTolerance;
 
-    /** Reduces the number of calculated terms 
+    /** Reduces the number of calculated terms
     * \param[in] NonResonantTolerance The tolerance for the nonresonant terms cutoff.
     * \param[in] ResonantTolerance    The tolerance for the resonant terms cutoff.
     * \param[in] NonResonantTerms     The list of nonresonant terms.
@@ -181,7 +181,7 @@ public:
     /** Purges all terms. */
     void clear();
 
-    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
+    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values).
     * \param[in] z1 Frequency 1
     * \param[in] z2 Frequency 2
     * \param[in] z3 Frequency 3
@@ -249,11 +249,11 @@ struct TwoParticleGFPart::NonResonantTerm{
     ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3) const;
 
     /** This operator add a non-resonant term to this one.
-    * It does not check the similarity of the terms! 
+    * It does not check the similarity of the terms!
     * \param[in] AnotherTerm Another term to add to this.
     */
     NonResonantTerm& operator+=(const NonResonantTerm& AnotherTerm);
-        
+
     /** Returns true if another term is similar to this
      * (sum of the terms is again a correct non-resonant term).
     */
@@ -267,7 +267,7 @@ struct TwoParticleGFPart::NonResonantTerm{
     }
 
     };
-       
+
 
     /** A resonant term has the following form:
     * \f[
@@ -275,7 +275,7 @@ struct TwoParticleGFPart::NonResonantTerm{
     *   \left( R \delta(z_1+z_2-P_1-P_2) + N \frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2} \right)
     * \f]
     */
-   
+
 struct TwoParticleGFPart::ResonantTerm {
 
     /** Coefficient \f$ R \f$. */
@@ -285,7 +285,7 @@ struct TwoParticleGFPart::ResonantTerm {
 
     /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
     RealType Poles[3];
-        
+
     /** Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
      Otherwise we are using \f$ \delta(z_2+z_3-P_2-P_3) \f$. */
     bool isz1z2;
@@ -302,7 +302,7 @@ struct TwoParticleGFPart::ResonantTerm {
      * \param[in] P3 Pole P3.
      * \param[in] isz1z2 Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
      */
-    ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff, RealType P1, RealType P2, RealType P3, bool isz1z2); 
+    ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff, RealType P1, RealType P2, RealType P3, bool isz1z2);
 
     /** Returns a contribution to the two-particle Green's function made by this term.
     * \param[in] z1 Complex frequency \f$ z_1 \f$.
@@ -312,7 +312,7 @@ struct TwoParticleGFPart::ResonantTerm {
     ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3, RealType KroneckerSymbolTolerance = 1e-16) const;
 
     /** This operator add a non-resonant term to this one.
-    * It does not check the similarity of the terms! 
+    * It does not check the similarity of the terms!
     * \param[in] AnotherTerm Another term to add to this.
     */
     ResonantTerm& operator+=(const ResonantTerm& AnotherTerm);
@@ -353,7 +353,7 @@ ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexT
     }
 }
 
-void reduceTerms(const RealType ReduceResonanceTolerance, const RealType NonResonantTolerance, const RealType ResonantTolerance, 
+void reduceTerms(const RealType ReduceResonanceTolerance, const RealType NonResonantTolerance, const RealType ResonantTolerance,
                  std::vector<TwoParticleGFPart::NonResonantTerm>& NonResonantTerms, std::vector<TwoParticleGFPart::ResonantTerm>& ResonantTerms);
 
 } // end of namespace Pomerol
