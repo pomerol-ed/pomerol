@@ -33,7 +33,7 @@ GreensFunctionPart::Term::Term(ComplexType Residue, RealType Pole) :
     Residue(Residue), Pole(Pole) {};
 ComplexType GreensFunctionPart::Term::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
 
-ComplexType GreensFunctionPart::Term::of_tau(RealType tau, RealType beta) const {
+ComplexType GreensFunctionPart::Term::operator()(RealType tau, RealType beta) const {
     return Pole > 0 ? -Residue*exp(-tau*Pole)/(1 + exp(-beta*Pole)) :
                       -Residue*exp((beta-tau)*Pole)/(exp(beta*Pole) + 1);
 }
@@ -43,12 +43,6 @@ GreensFunctionPart::Term& GreensFunctionPart::Term::operator+=(const Term& Anoth
 {
     Residue += AnotherTerm.Residue;
     return *this;
-}
-
-inline
-bool GreensFunctionPart::Term::isSimilarTo(const Term& AnotherTerm, RealType ReduceResonanceTolerance) const
-{
-    return (fabs(Pole - AnotherTerm.Pole) < ReduceResonanceTolerance);
 }
 
 std::ostream& operator<<(std::ostream& out, const GreensFunctionPart::Term& T)
@@ -61,6 +55,7 @@ GreensFunctionPart::GreensFunctionPart( const AnnihilationOperatorPart& C, const
                                         const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
                                         const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
                                         Thermal(DMpartInner),
+                                        Terms(Term::Compare(1e-8), Term::IsNegligible(1e-8)),
                                         HpartInner(HpartInner), HpartOuter(HpartOuter),
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
                                         C(C), CX(CX),
@@ -98,7 +93,7 @@ void GreensFunctionPart::compute(void)
                 {
                     // Create a new term and append it to the list.
                     RealType Pole = HpartInner.getEigenValue(C_index2) - HpartOuter.getEigenValue(index1);
-                    Terms.push_back(Term(Residue,Pole));
+                    Terms.add_term(Term(Residue, Pole));
                     //DEBUG("<" << C.S.getFockState(HpartInner.getBlockNumber(), C_index2) << "|" << Residue << "|" <<  C.S.getFockState(HpartInner.getBlockNumber(),CX_index2) << ">" );
                 };
                 ++Cinner;   // The next non-zero element
@@ -109,28 +104,6 @@ void GreensFunctionPart::compute(void)
                 else for(;QuantumState(Cinner.index())<CX_index2; ++Cinner);
             }
         }
-    }
-
-    reduceTerms(ReduceTolerance/Terms.size(),Terms);
-}
-
-void GreensFunctionPart::reduceTerms(const RealType Tolerance, std::list<Term> &Terms)
-{
-    // Sieve reduction of the terms
-    for(std::list<Term>::iterator it1 = Terms.begin(); it1 != Terms.end();){
-        std::list<Term>::iterator it2 = it1;
-        for(it2++; it2 != Terms.end();){
-            if(it1->isSimilarTo(*it2, ReduceResonanceTolerance)){
-                *it1 += *it2;
-                it2 = Terms.erase(it2);
-            }else
-                it2++;
-        }
-
-        if(abs(it1->Residue) < Tolerance)
-            it1 = Terms.erase(it1);
-        else
-            it1++;
     }
 }
 
