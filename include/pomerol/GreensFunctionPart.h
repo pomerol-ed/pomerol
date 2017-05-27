@@ -78,10 +78,14 @@ class GreensFunctionPart : public Thermal
 
         /** Does term have a negligible residue? */
         struct IsNegligible {
-            const double Tolerance;
+            double Tolerance;
             IsNegligible(double Tolerance) : Tolerance(Tolerance) {}
             bool operator()(Term const& t, size_t ToleranceDivisor) const {
                 return std::abs(t.Residue) < Tolerance / ToleranceDivisor;
+            }
+            friend class boost::serialization::access;
+            template<class Archive> void serialize(Archive & ar, const unsigned int version) {
+                ar & Tolerance;
             }
         };
 

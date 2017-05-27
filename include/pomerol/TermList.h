@@ -27,6 +27,9 @@
 #define __INCLUDE_TERMLIST_H
 
 #include <set>
+#include <boost/preprocessor/repetition/enum_params.hpp>
+#include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <boost/serialization/set.hpp>
 
 #include "Misc.h"
 
@@ -58,29 +61,33 @@ public:
         }
     }
 
-    // Some pre-C++11 ugliness ...
-    template<typename Arg1>
-    ComplexType operator()(Arg1 arg1) const {
-        ComplexType res = 0;
-        for(typename std::set<TermType>::const_iterator it = data.begin();
-            it != data.end(); ++it) {
-            res += (*it)(arg1);
-        }
-        return res;
-    }
-
-    template<typename Arg1, typename Arg2>
-    ComplexType operator()(Arg1 arg1, Arg2 arg2) const {
-        ComplexType res = 0;
-        for(typename std::set<TermType>::const_iterator it = data.begin();
-            it != data.end(); ++it) {
-            res += (*it)(arg1, arg2);
-        }
-        return res;
-    }
+    std::size_t size() const { return data.size(); }
 
     void clear() { data.clear(); }
 
+
+    // Some pre-C++11 ugliness ...
+#define MAKE_CALL_OPERATOR(N)                                               \
+    template<BOOST_PP_ENUM_PARAMS(N, typename Arg)>                         \
+    ComplexType operator()(BOOST_PP_ENUM_BINARY_PARAMS(N, Arg, arg)) const {\
+        ComplexType res = 0;                                                \
+        for(typename std::set<TermType>::const_iterator it = data.begin();  \
+            it != data.end(); ++it) {                                       \
+            res += (*it)(BOOST_PP_ENUM_PARAMS(N, arg));                     \
+        }                                                                   \
+        return res;                                                         \
+    }
+
+    MAKE_CALL_OPERATOR(1)
+    MAKE_CALL_OPERATOR(2)
+    MAKE_CALL_OPERATOR(3)
+    MAKE_CALL_OPERATOR(4)
+#undef CALL_OPERATOR
+
+    friend class boost::serialization::access;
+    template<class Archive> void serialize(Archive & ar, const unsigned int version) {
+        ar & data; ar & is_negligible;
+    }
 };
 
 }

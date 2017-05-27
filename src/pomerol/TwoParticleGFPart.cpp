@@ -61,15 +61,6 @@ TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator
     return *this;
 }
 
-inline
-bool TwoParticleGFPart::NonResonantTerm::isSimilarTo(const NonResonantTerm& AnotherTerm, RealType ReduceResonanceTolerance) const
-{
-    return isz4 == AnotherTerm.isz4 &&
-           (fabs(Poles[0] - AnotherTerm.Poles[0]) < ReduceResonanceTolerance) &&
-           (fabs(Poles[1] - AnotherTerm.Poles[1]) < ReduceResonanceTolerance) &&
-           (fabs(Poles[2] - AnotherTerm.Poles[2]) < ReduceResonanceTolerance);
-}
-
 //
 // TwoParticleGFPart::ResonantTerm
 //
@@ -93,15 +84,6 @@ TwoParticleGFPart::ResonantTerm& TwoParticleGFPart::ResonantTerm::operator+=(
     return *this;
 }
 
-inline
-bool TwoParticleGFPart::ResonantTerm::isSimilarTo(const ResonantTerm& AnotherTerm, RealType ReduceResonanceTolerance) const
-{
-    return isz1z2 == AnotherTerm.isz1z2 &&
-           (fabs(Poles[0] - AnotherTerm.Poles[0]) < ReduceResonanceTolerance) &&
-           (fabs(Poles[1] - AnotherTerm.Poles[1]) < ReduceResonanceTolerance) &&
-           (fabs(Poles[2] - AnotherTerm.Poles[2]) < ReduceResonanceTolerance);
-}
-
 //
 // TwoParticleGFPart
 //
@@ -115,6 +97,8 @@ TwoParticleGFPart::TwoParticleGFPart(
                 Permutation3 Permutation) :
     Thermal(DMpart1),
     ComputableObject(),
+    NonResonantTerms(NonResonantTerm::Compare(1e-8), NonResonantTerm::IsNegligible(1e-16)),
+    ResonantTerms(ResonantTerm::Compare(1e-8), ResonantTerm::IsNegligible(1e-16)),
     O1(O1), O2(O2), O3(O3), CX4(CX4),
     Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
     DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
@@ -122,7 +106,6 @@ TwoParticleGFPart::TwoParticleGFPart(
     KroneckerSymbolTolerance(1e-16),
     ReduceResonanceTolerance(1e-8),
     CoefficientTolerance (1e-16),
-    ReduceInvocationThreshold (1e5),
     MultiTermCoefficientTolerance (1e-5)
 {}
 
@@ -150,12 +133,7 @@ void TwoParticleGFPart::compute()
     std::vector<InnerQuantumState> Index4List;
     Index4List.reserve(index1Max*index3Max);
 
-    unsigned long ResonantTermsUnreducedSize=0;
-    unsigned long NonResonantTermsUnreducedSize=0;
-    unsigned long ResonantTermsPreviousSize=0;
-    unsigned long NonResonantTermsPreviousSize=0;
-
-    for(index1=0; index1<index1Max; ++index1){
+    for(index1=0; index1<index1Max; ++index1)
     for(index3=0; index3<index3Max; ++index3){
         ColMajorMatrixType::InnerIterator index4bra_iter(CX4matrix,index1);
         RowMajorMatrixType::InnerIterator index4ket_iter(O3matrix,index3);
@@ -206,101 +184,11 @@ void TwoParticleGFPart::compute()
             }
         };
     }
-/*
-    if (ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize > ReduceInvocationThreshold ){
-        INFO_NONEWLINE(NonResonantTerms.size()-NonResonantTermsPreviousSize << "+" << ResonantTerms.size() - ResonantTermsPreviousSize << "=");
-        INFO_NONEWLINE(ResonantTerms.size()-ResonantTermsPreviousSize + NonResonantTerms.size() - NonResonantTermsPreviousSize);
-        INFO_NONEWLINE(" terms -> ");
 
-        NonResonantTermsUnreducedSize+=NonResonantTerms.size();
-        ResonantTermsUnreducedSize+= ResonantTerms.size();
-
-        RealType NonResonantTolerance = MultiTermCoefficientTolerance*(index1+1)/NonResonantTermsUnreducedSize/(index1Max+1);
-        RealType ResonantTolerance = MultiTermCoefficientTolerance*(index1+1)/ResonantTermsUnreducedSize/(index1Max+1);
-
-        this->reduceTerms(NonResonantTolerance, ResonantTolerance, NonResonantTerms, ResonantTerms);
-        NonResonantTermsPreviousSize = NonResonantTerms.size();
-        ResonantTermsPreviousSize = ResonantTerms.size();
-
-        INFO_NONEWLINE(NonResonantTermsPreviousSize << "+" << ResonantTermsPreviousSize << "=");
-        INFO(NonResonantTermsPreviousSize + ResonantTermsPreviousSize << " , tol = " << std::max(NonResonantTolerance,ResonantTolerance));
-        };
-*/
-    };
-    NonResonantTermsUnreducedSize=(NonResonantTermsUnreducedSize>0)?NonResonantTermsUnreducedSize:NonResonantTerms.size();
-    ResonantTermsUnreducedSize=(ResonantTermsUnreducedSize>0)?ResonantTermsUnreducedSize:ResonantTerms.size();
-/*
-    if (ResonantTermsUnreducedSize + NonResonantTermsUnreducedSize > 0){
-*/
-        std::cout << "Total " << NonResonantTermsUnreducedSize << "+" << ResonantTermsUnreducedSize << "="
-                  << NonResonantTermsUnreducedSize+ResonantTermsUnreducedSize << " terms -> " << std::flush;
-        ::Pomerol::reduceTerms(this->ReduceResonanceTolerance,
-                               MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1),
-                               MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1),
-                               NonResonantTerms,
-                               ResonantTerms);
-        std::cout << NonResonantTerms.size() << "+" << ResonantTerms.size() << "="
-                  << NonResonantTerms.size() + ResonantTerms.size()  << ", \ttols = " << std::setw(4)
-             << std::max(MultiTermCoefficientTolerance/(NonResonantTermsUnreducedSize+1), MultiTermCoefficientTolerance/(ResonantTermsUnreducedSize+1))
-             << " (coeff), " << ReduceResonanceTolerance << " (res)" << std::endl;
-/*
-    };
-*/
+    std::cout << "Total " << NonResonantTerms.size() << "+" << ResonantTerms.size() << "="
+              << NonResonantTerms.size() + ResonantTerms.size() << " terms" << std::endl << std::flush;
 
     Status = Computed;
-}
-
-void TwoParticleGFPart::reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance,
-                                    std::vector<NonResonantTerm> &NonResonantTerms, std::vector<ResonantTerm>& ResonantTerms)
-{
-    ::Pomerol::reduceTerms(this->ReduceResonanceTolerance, NonResonantTolerance, ResonantTolerance, NonResonantTerms, ResonantTerms);
-}
-
-void reduceTerms(const RealType ReduceResonanceTolerance, const RealType NonResonantTolerance, const RealType ResonantTolerance,
-                 std::vector<TwoParticleGFPart::NonResonantTerm> &NonResonantTerms, std::vector<TwoParticleGFPart::ResonantTerm>& ResonantTerms)
-{
-    #ifndef noReduction
-    typedef TwoParticleGFPart::NonResonantTerm NonResonantTerm;
-    typedef TwoParticleGFPart::ResonantTerm ResonantTerm;
-    // Sieve reduction of the non-resonant terms
-    //int i=0
-    for(std::vector<NonResonantTerm>::iterator it1 = NonResonantTerms.begin(); it1 != NonResonantTerms.end();){
-        std::vector<NonResonantTerm>::iterator it2 = it1;
-    //    DEBUG(++i << "/" << NonResonantTerms.size());
-        for(it2++; it2 != NonResonantTerms.end();){
-            if(it1->isSimilarTo(*it2, ReduceResonanceTolerance)){
-                *it1 += *it2;
-                it2 = NonResonantTerms.erase(it2);
-            }else
-                it2++;
-        }
-
-        if(abs(it1->Coeff) < NonResonantTolerance)
-            it1 = NonResonantTerms.erase(it1);
-        else
-            it1++;
-    }
-
-    // Sieve reduction of the resonant terms
-    for(std::vector<ResonantTerm>::iterator it1 = ResonantTerms.begin(); it1 != ResonantTerms.end();){
-        std::vector<ResonantTerm>::iterator it2 = it1;
-        for(it2++; it2 != ResonantTerms.end();){
-            if(it1->isSimilarTo(*it2, ReduceResonanceTolerance)){
-                *it1 += *it2;
-                it2 = ResonantTerms.erase(it2);
-            }else
-                it2++;
-        }
-
-        if(abs(it1->ResCoeff) + abs(it1->NonResCoeff) < ResonantTolerance)
-            it1 = ResonantTerms.erase(it1);
-        else
-            it1++;
-    }
-    #else
-        INFO("No reduction is done due to -DnoReduction flag turned on");
-    #endif // endif :: #ifndef noReduction
-    //DEBUG("After: " << NonResonantTerms.size() << " non resonant terms + " << ResonantTerms.size() << " resonant terms = " << ResonantTerms.size()+NonResonantTerms.size());
 }
 
 inline
@@ -315,23 +203,23 @@ void TwoParticleGFPart::addMultiterm(ComplexType Coeff, RealType beta,
     // Non-resonant part of the multiterm
     ComplexType CoeffZ2 = -Coeff*(Wj + Wk);
     if(abs(CoeffZ2) > CoefficientTolerance)
-        NonResonantTerms.push_back(
+        NonResonantTerms.add_term(
             NonResonantTerm(CoeffZ2,P1,P2,P3,false));
     ComplexType CoeffZ4 = Coeff*(Wi + Wl);
     if(abs(CoeffZ4) > CoefficientTolerance)
-        NonResonantTerms.push_back(
+        NonResonantTerms.add_term(
             NonResonantTerm(CoeffZ4,P1,P2,P3,true));
 
     // Resonant part of the multiterm
     ComplexType CoeffZ1Z2Res = Coeff*beta*Wi;
     ComplexType CoeffZ1Z2NonRes = Coeff*(Wk - Wi);
     if(abs(CoeffZ1Z2Res) > CoefficientTolerance || abs(CoeffZ1Z2NonRes) > CoefficientTolerance)
-        ResonantTerms.push_back(
+        ResonantTerms.add_term(
             ResonantTerm(CoeffZ1Z2Res,CoeffZ1Z2NonRes,P1,P2,P3,true));
     ComplexType CoeffZ2Z3Res = -Coeff*beta*Wj;
     ComplexType CoeffZ2Z3NonRes = Coeff*(Wj - Wl);
     if(abs(CoeffZ2Z3Res) > CoefficientTolerance || abs(CoeffZ2Z3NonRes) > CoefficientTolerance)
-        ResonantTerms.push_back(
+        ResonantTerms.add_term(
             ResonantTerm(CoeffZ2Z3Res,CoeffZ2Z3NonRes,P1,P2,P3,false));
 }
 
@@ -372,23 +260,17 @@ ComplexType TwoParticleGFPart::operator()(ComplexType z1, ComplexType z2, Comple
         throw std::logic_error("2PGFPart : Calling operator() on empty container, did you purge all the terms when called compute()");
     }
 
-    ComplexType Value = 0;
-    for(std::vector<NonResonantTerm>::const_iterator pTerm = NonResonantTerms.begin(); pTerm != NonResonantTerms.end(); ++pTerm)
-        Value += (*pTerm)(z1,z2,z3);
-    for(std::vector<ResonantTerm>::const_iterator pTerm = ResonantTerms.begin(); pTerm != ResonantTerms.end(); ++pTerm)
-        Value += (*pTerm)(z1,z2,z3,KroneckerSymbolTolerance);
-
-    return Value;
+    return NonResonantTerms(z1, z2, z3) + ResonantTerms(z1, z2, z3, KroneckerSymbolTolerance);
 }
 
-const std::vector<TwoParticleGFPart::NonResonantTerm>& TwoParticleGFPart::getNonResonantTerms() const
-{
-    return NonResonantTerms;
-}
-
-const std::vector<TwoParticleGFPart::ResonantTerm>& TwoParticleGFPart::getResonantTerms() const
+const TermList<TwoParticleGFPart::ResonantTerm>& TwoParticleGFPart::getResonantTerms() const
 {
     return ResonantTerms;
+}
+
+const TermList<TwoParticleGFPart::NonResonantTerm>& TwoParticleGFPart::getNonResonantTerms() const
+{
+    return NonResonantTerms;
 }
 
 void TwoParticleGFPart::clear()

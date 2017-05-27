@@ -33,6 +33,7 @@
 #include"HamiltonianPart.h"
 #include"FieldOperatorPart.h"
 #include"DensityMatrixPart.h"
+#include"TermList.h"
 
 namespace Pomerol{
 
@@ -46,8 +47,181 @@ friend class TwoParticleGFContainer;
 
 public:
 
-    struct NonResonantTerm;
-    struct ResonantTerm;
+    /** A non-resonant term has the following form:
+     * \f[
+     * \frac{C}{(z_1-P_1)(z_2-P_2)(z_3-P_3)}
+     * \f]
+     * if isz4 == false, and
+     * \f[
+     * \frac{C}{(z_1-P_1)(z_1+z_2+z_3-P_1-P_2-P_3)(z_3-P_3)}
+     * \f]
+     * otherwise.
+     */
+    struct NonResonantTerm{
+        /** Coefficient \f$ C \f$. */
+        ComplexType Coeff;
+
+        /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
+        RealType Poles[3];
+
+        /** Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term? */
+        bool isz4;
+
+        /** A statistical weight of current term for averaging ( when averaging formula (*this.weight + other.weight)/(*this.weight+other.weight) is used */
+        long Weight;
+
+        /** Comparator object for terms */
+        struct Compare {
+            const double Tolerance;
+            Compare(double Tolerance) : Tolerance(Tolerance) {}
+            bool real_eq(RealType x1, RealType x2) const {
+                return std::abs(x1 - x2) < Tolerance;
+            }
+            bool operator()(NonResonantTerm const& t1, NonResonantTerm const& t2) const {
+                if (t1.isz4 == t2.isz4) {
+                    return !real_eq(t1.Poles[0], t2.Poles[0]) ? t1.Poles[0] < t2.Poles[0] : (
+                           !real_eq(t1.Poles[1], t2.Poles[1]) ? t1.Poles[1] < t2.Poles[1] : (
+                            t2.Poles[2] - t1.Poles[2] >= Tolerance
+                           ));
+                } else
+                    return t1.isz4 < t2.isz4;
+            }
+        };
+
+        /** Does term have a negligible residue? */
+        struct IsNegligible {
+            double Tolerance;
+            IsNegligible(double Tolerance) : Tolerance(Tolerance) {}
+            bool operator()(NonResonantTerm const& t, size_t ToleranceDivisor) const {
+                return std::abs(t.Coeff) < Tolerance / ToleranceDivisor;
+            }
+            friend class boost::serialization::access;
+            template<class Archive> void serialize(Archive & ar, const unsigned int version) {
+                ar & Tolerance;
+            }
+        };
+
+        NonResonantTerm(){};
+        /** Constructor.
+        * \param[in] Coeff Numerator of the term.
+        * \param[in] P1 Pole P1.
+        * \param[in] P2 Pole P2.
+        * \param[in] P3 Pole P3.
+        * \param[in] isz4 Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term?
+        */
+        NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4);
+
+        /** Returns a contribution to the two-particle Green's function made by this term.
+        * \param[in] z1 Complex frequency \f$ z_1 \f$.
+        * \param[in] z2 Complex frequency \f$ z_2 \f$.
+        * \param[in] z3 Complex frequency \f$ z_3 \f$.
+        */
+        ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3) const;
+
+        /** This operator add a non-resonant term to this one.
+        * It does not check the similarity of the terms!
+        * \param[in] AnotherTerm Another term to add to this.
+        */
+        NonResonantTerm& operator+=(const NonResonantTerm& AnotherTerm);
+
+        friend class boost::serialization::access;
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & Coeff; ar & Poles; ar & isz4; ar & Weight;
+        }
+
+        };
+
+
+    /** A resonant term has the following form:
+     * \f[
+     * \frac{1}{(z_1-P_1)(z_3-P_3)}
+     *   \left( R \delta(z_1+z_2-P_1-P_2) + N \frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2} \right)
+     * \f]
+     */
+
+    struct ResonantTerm {
+
+        /** Coefficient \f$ R \f$. */
+        ComplexType ResCoeff;
+        /** Coefficient \f$ N \f$. */
+        ComplexType NonResCoeff;
+
+        /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
+        RealType Poles[3];
+
+        /** Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
+        Otherwise we are using \f$ \delta(z_2+z_3-P_2-P_3) \f$. */
+        bool isz1z2;
+
+        /** A statistical weight of current term for averaging ( when averaging formula (*this.weight + other.weight)/(*this.weight+other.weight) is used */
+        long Weight;
+
+        /** Comparator object for terms */
+        struct Compare {
+            const double Tolerance;
+            Compare(double Tolerance) : Tolerance(Tolerance) {}
+            bool real_eq(RealType x1, RealType x2) const {
+                return std::abs(x1 - x2) < Tolerance;
+            }
+            bool operator()(ResonantTerm const& t1, ResonantTerm const& t2) const {
+                if (t1.isz1z2 == t2.isz1z2) {
+                    return !real_eq(t1.Poles[0], t2.Poles[0]) ? t1.Poles[0] < t2.Poles[0] : (
+                           !real_eq(t1.Poles[1], t2.Poles[1]) ? t1.Poles[1] < t2.Poles[1] : (
+                            t2.Poles[2] - t1.Poles[2] >= Tolerance
+                           ));
+                } else
+                    return t1.isz1z2 < t2.isz1z2;
+            }
+        };
+
+        /** Does term have a negligible residue? */
+        struct IsNegligible {
+            double Tolerance;
+            IsNegligible(double Tolerance) : Tolerance(Tolerance) {}
+            bool operator()(ResonantTerm const& t, size_t ToleranceDivisor) const {
+                return std::abs(t.ResCoeff) < Tolerance / ToleranceDivisor &&
+                       std::abs(t.NonResCoeff) < Tolerance / ToleranceDivisor;
+            }
+            friend class boost::serialization::access;
+            template<class Archive> void serialize(Archive & ar, const unsigned int version) {
+                ar & Tolerance;
+            }
+        };
+
+        ResonantTerm(){};
+        /** Constructor.
+        * \param[in] ResCoeff Numerator of the term for a resonant case.
+        * \param[in] NonResCoeff Numerator of the term for a non-resonant case.
+        * \param[in] P1 Pole P1.
+        * \param[in] P2 Pole P2.
+        * \param[in] P3 Pole P3.
+        * \param[in] isz1z2 Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
+        */
+        ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff, RealType P1, RealType P2, RealType P3, bool isz1z2);
+
+        /** Returns a contribution to the two-particle Green's function made by this term.
+        * \param[in] z1 Complex frequency \f$ z_1 \f$.
+        * \param[in] z2 Complex frequency \f$ z_2 \f$.
+        * \param[in] z3 Complex frequency \f$ z_3 \f$.
+        */
+        ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3, RealType KroneckerSymbolTolerance = 1e-16) const;
+
+        /** This operator add a non-resonant term to this one.
+        * It does not check the similarity of the terms!
+        * \param[in] AnotherTerm Another term to add to this.
+        */
+        ResonantTerm& operator+=(const ResonantTerm& AnotherTerm);
+
+        friend class boost::serialization::access;
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & ResCoeff; ar & NonResCoeff; ar & Poles; ar & isz1z2; ar & Weight;
+        }
+
+    };
 
 private:
 
@@ -82,9 +256,9 @@ private:
     Permutation3 Permutation;
 
     /** A list of non-resonant terms. */
-    std::vector<NonResonantTerm> NonResonantTerms;
+    TermList<NonResonantTerm> NonResonantTerms;
     /** A list of resonant terms. */
-    std::vector<ResonantTerm> ResonantTerms;
+    TermList<ResonantTerm> ResonantTerms;
 
     /** Adds a multi-term that has the following form:
     * \f[
@@ -138,18 +312,8 @@ private:
     RealType ReduceResonanceTolerance;
     /** Minimal magnitude of the coefficient of a term to take it into account. default = 1e-16. */
     RealType CoefficientTolerance;
-    /** A maximum amount of terms put into a list at which the reduceTerms method should be called. default = 1e5. */
-    RealType ReduceInvocationThreshold;
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. default = 1e-5. */
     RealType MultiTermCoefficientTolerance;
-
-    /** Reduces the number of calculated terms
-    * \param[in] NonResonantTolerance The tolerance for the nonresonant terms cutoff.
-    * \param[in] ResonantTolerance    The tolerance for the resonant terms cutoff.
-    * \param[in] NonResonantTerms     The list of nonresonant terms.
-    * \param[in] ResonantTerms        The list of resonant terms.
-    */
-    void reduceTerms(const RealType NonResonantTolerance, const RealType ResonantTolerance, std::vector<NonResonantTerm>& NonResonantTerms, std::vector<ResonantTerm>& ResonantTerms);
 
 public:
     /** Constructor.
@@ -195,140 +359,17 @@ public:
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
     /** Returns the number of resonant terms in the cache. */
-    size_t getNumResonantTerms(void) const;
+    size_t getNumResonantTerms() const;
     /** Returns the number of non-resonant terms in the cache. */
-    size_t getNumNonResonantTerms(void) const;
+    size_t getNumNonResonantTerms() const;
 
     /** Returns a Permutation3 of the current part */
-    const Permutation3& getPermutation(void) const;
+    const Permutation3& getPermutation() const;
 
     /** Return the list of Resonant Terms */
-    const std::vector<NonResonantTerm>& getNonResonantTerms(void) const;
+    const TermList<TwoParticleGFPart::ResonantTerm>& getResonantTerms() const;
     /** Return the list of NonResonantTerms */
-    const std::vector<ResonantTerm>& getResonantTerms(void) const;
-};
-
-    /** A non-resonant term has the following form:
-     * \f[
-     * \frac{C}{(z_1-P_1)(z_2-P_2)(z_3-P_3)}
-     * \f]
-     * if isz4 == false, and
-     * \f[
-     * \frac{C}{(z_1-P_1)(z_1+z_2+z_3-P_1-P_2-P_3)(z_3-P_3)}
-     * \f]
-     * otherwise.
-     */
-struct TwoParticleGFPart::NonResonantTerm{
-    /** Coefficient \f$ C \f$. */
-    ComplexType Coeff;
-
-    /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
-    RealType Poles[3];
-
-    /** Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term? */
-    bool isz4;
-
-    /** A statistical weight of current term for averaging ( when averaging formula (*this.weight + other.weight)/(*this.weight+other.weight) is used */
-    long Weight;
-
-    NonResonantTerm(){};
-    /** Constructor.
-    * \param[in] Coeff Numerator of the term.
-    * \param[in] P1 Pole P1.
-    * \param[in] P2 Pole P2.
-    * \param[in] P3 Pole P3.
-    * \param[in] isz4 Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term?
-    */
-    NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4);
-
-    /** Returns a contribution to the two-particle Green's function made by this term.
-    * \param[in] z1 Complex frequency \f$ z_1 \f$.
-    * \param[in] z2 Complex frequency \f$ z_2 \f$.
-    * \param[in] z3 Complex frequency \f$ z_3 \f$.
-    */
-    ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3) const;
-
-    /** This operator add a non-resonant term to this one.
-    * It does not check the similarity of the terms!
-    * \param[in] AnotherTerm Another term to add to this.
-    */
-    NonResonantTerm& operator+=(const NonResonantTerm& AnotherTerm);
-
-    /** Returns true if another term is similar to this
-     * (sum of the terms is again a correct non-resonant term).
-    */
-    bool isSimilarTo(const NonResonantTerm& AnotherTerm, RealType ReduceResonanceTolerance) const;
-
-    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version)
-    {
-        ar & Coeff; ar & Poles; ar & isz4; ar & Weight;
-    }
-
-    };
-
-
-    /** A resonant term has the following form:
-    * \f[
-    * \frac{1}{(z_1-P_1)(z_3-P_3)}
-    *   \left( R \delta(z_1+z_2-P_1-P_2) + N \frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2} \right)
-    * \f]
-    */
-
-struct TwoParticleGFPart::ResonantTerm {
-
-    /** Coefficient \f$ R \f$. */
-    ComplexType ResCoeff;
-    /** Coefficient \f$ N \f$. */
-    ComplexType NonResCoeff;
-
-    /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
-    RealType Poles[3];
-
-    /** Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
-     Otherwise we are using \f$ \delta(z_2+z_3-P_2-P_3) \f$. */
-    bool isz1z2;
-
-    /** A statistical weight of current term for averaging ( when averaging formula (*this.weight + other.weight)/(*this.weight+other.weight) is used */
-    long Weight;
-
-    ResonantTerm(){};
-    /** Constructor.
-     * \param[in] ResCoeff Numerator of the term for a resonant case.
-     * \param[in] NonResCoeff Numerator of the term for a non-resonant case.
-     * \param[in] P1 Pole P1.
-     * \param[in] P2 Pole P2.
-     * \param[in] P3 Pole P3.
-     * \param[in] isz1z2 Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
-     */
-    ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff, RealType P1, RealType P2, RealType P3, bool isz1z2);
-
-    /** Returns a contribution to the two-particle Green's function made by this term.
-    * \param[in] z1 Complex frequency \f$ z_1 \f$.
-    * \param[in] z2 Complex frequency \f$ z_2 \f$.
-    * \param[in] z3 Complex frequency \f$ z_3 \f$.
-    */
-    ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3, RealType KroneckerSymbolTolerance = 1e-16) const;
-
-    /** This operator add a non-resonant term to this one.
-    * It does not check the similarity of the terms!
-    * \param[in] AnotherTerm Another term to add to this.
-    */
-    ResonantTerm& operator+=(const ResonantTerm& AnotherTerm);
-
-    /** Returns true if another term is similar to this
-     * (sum of the terms is again a correct non-resonant term).
-    */
-    bool isSimilarTo(const ResonantTerm& AnotherTerm, RealType ReduceResonanceTolerance) const;
-
-    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version)
-    {
-        ar & ResCoeff; ar & NonResCoeff; ar & Poles; ar & isz1z2; ar & Weight;
-    }
-
+    const TermList<TwoParticleGFPart::NonResonantTerm>& getNonResonantTerms() const;
 };
 
 inline
@@ -352,9 +393,6 @@ ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexT
                 /((z1-Poles[0])*(z3-Poles[2]));
     }
 }
-
-void reduceTerms(const RealType ReduceResonanceTolerance, const RealType NonResonantTolerance, const RealType ResonantTolerance,
-                 std::vector<TwoParticleGFPart::NonResonantTerm>& NonResonantTerms, std::vector<TwoParticleGFPart::ResonantTerm>& ResonantTerms);
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGFPART_H

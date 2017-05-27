@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2012 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -34,15 +34,15 @@
 namespace Pomerol{
 
 TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H,
-                const AnnihilationOperator& C1, const AnnihilationOperator& C2, 
+                const AnnihilationOperator& C1, const AnnihilationOperator& C2,
                 const CreationOperator& CX3, const CreationOperator& CX4,
                 const DensityMatrix& DM) :
     Thermal(DM.beta), ComputableObject(),
     S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM),
     parts(0), Vanishing(true),
-    KroneckerSymbolTolerance (std::numeric_limits<RealType>::epsilon()), 
+    KroneckerSymbolTolerance (std::numeric_limits<RealType>::epsilon()),
     ReduceResonanceTolerance (1e-8),
-    CoefficientTolerance (1e-16), 
+    CoefficientTolerance (1e-16),
     ReduceInvocationThreshold (1e5)
 {
 }
@@ -105,7 +105,7 @@ void TwoParticleGF::prepare()
                   // Select a relevant 'world stripe' (sequence of blocks).
                   if(getRightIndex(p,1,LeftIndices[1]) == LeftIndices[2] && LeftIndices[1].isCorrect() && LeftIndices[2].isCorrect()){
                       // DEBUG
-                      /*DEBUG("new part: "  << S.getBlockInfo(LeftIndices[0]) << " " 
+                      /*DEBUG("new part: "  << S.getBlockInfo(LeftIndices[0]) << " "
                                           << S.getBlockInfo(LeftIndices[1]) << " "
                                           << S.getBlockInfo(LeftIndices[2]) << " "
                                           << S.getBlockInfo(LeftIndices[3]) << " "
@@ -123,12 +123,11 @@ void TwoParticleGF::prepare()
                       (*parts.rbegin())->KroneckerSymbolTolerance = KroneckerSymbolTolerance;
                       (*parts.rbegin())->ReduceResonanceTolerance = ReduceResonanceTolerance;
                       (*parts.rbegin())->CoefficientTolerance = CoefficientTolerance;
-                      (*parts.rbegin())->ReduceInvocationThreshold = ReduceInvocationThreshold;
                       (*parts.rbegin())->MultiTermCoefficientTolerance = MultiTermCoefficientTolerance;
                       }
             }
-    } 
-    if ( parts.size() > 0 ) { 
+    }
+    if ( parts.size() > 0 ) {
         Vanishing = false;
         INFO("TwoParticleGF(" << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << "): " << parts.size() << " parts will be calculated");
         }
@@ -147,21 +146,21 @@ typedef std::vector<freq_tuple> freq_vec_t;
 struct ComputeAndClearWrap
 {
     void run(){
-        p->compute(); 
+        p->compute();
         if (fill_) {
-            int wsize = freqs_->size(); 
+            int wsize = freqs_->size();
             #ifdef POMEROL_USE_OPENMP
             #pragma omp parallel for
             #endif
-            for (int w = 0; w < wsize; ++w) { 
+            for (int w = 0; w < wsize; ++w) {
                 (*data_)[w] += (*p)(boost::get<0>((*freqs_)[w]), boost::get<1>((*freqs_)[w]), boost::get<2>((*freqs_)[w]));
-                } 
+                }
             #ifdef POMEROL_USE_OPENMP
             #pragma omp barrier
             #endif
             }
         if (clear_) p->clear();
-    }; 
+    };
     ComputeAndClearWrap(freq_vec_t const* freqs, std::vector<ComplexType> *data,  TwoParticleGFPart *p, bool clear, bool fill, int complexity = 1):
         freqs_(freqs), data_(data), p(p),clear_(clear), fill_(fill), complexity(complexity){};
     int complexity;
@@ -184,12 +183,12 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<boost::t
         bool fill_container = freqs.size() > 0;
         skel.parts.reserve(parts.size());
         m_data.resize(freqs.size(), 0.0);
-        for (size_t i=0; i<parts.size(); i++) { 
+        for (size_t i=0; i<parts.size(); i++) {
             skel.parts.push_back(ComputeAndClearWrap(&freqs, &m_data, parts[i], clear, fill_container, 1));
             };
         std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
         int rank = comm.rank();
-        int comm_size = comm.size(); 
+        int comm_size = comm.size();
 
         // Start distributing data
         //DEBUG(comm.rank() << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << " Start distributing data");
@@ -198,11 +197,11 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<boost::t
         std::vector<ComplexType> m_data2(m_data.size(), 0.0);
         boost::mpi::reduce(comm, &m_data[0], m_data.size(), &m_data2[0], std::plus<ComplexType>(), 0);
         std::swap(m_data, m_data2);
-        if (!clear) { 
+        if (!clear) {
             for (size_t p = 0; p<parts.size(); p++) {
                 boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, job_map[p]);
                 boost::mpi::broadcast(comm, parts[p]->ResonantTerms, job_map[p]);
-                if (rank == job_map[p]) { 
+                if (rank == job_map[p]) {
                     parts[p]->Status = TwoParticleGFPart::Computed;
                      };
                 };
@@ -220,7 +219,7 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<boost::t
 //         num += (*iter)->getNumResonantTerms();
 //     return num;
 // }
-// 
+//
 // size_t TwoParticleGF::getNumNonResonantTerms() const
 // {
 //     size_t num = 0;
