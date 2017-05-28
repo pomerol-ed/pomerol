@@ -188,6 +188,9 @@ void TwoParticleGFPart::compute()
     std::cout << "Total " << NonResonantTerms.size() << "+" << ResonantTerms.size() << "="
               << NonResonantTerms.size() + ResonantTerms.size() << " terms" << std::endl << std::flush;
 
+    assert(NonResonantTerms.check_terms());
+    assert(ResonantTerms.check_terms());
+
     Status = Computed;
 }
 

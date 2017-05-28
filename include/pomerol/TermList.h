@@ -56,7 +56,7 @@ public:
             TermType sum = *it;
             sum += term;
             data.erase(*it);
-            if(!is_negligible(sum, data.size()))
+            if(!is_negligible(sum, data.size() + 1))
                 data.insert(sum);
         }
     }
@@ -64,7 +64,6 @@ public:
     std::size_t size() const { return data.size(); }
 
     void clear() { data.clear(); }
-
 
     // Some pre-C++11 ugliness ...
 #define MAKE_CALL_OPERATOR(N)                                               \
@@ -82,11 +81,27 @@ public:
     MAKE_CALL_OPERATOR(2)
     MAKE_CALL_OPERATOR(3)
     MAKE_CALL_OPERATOR(4)
-#undef CALL_OPERATOR
+#undef MAKE_CALL_OPERATOR
 
     friend class boost::serialization::access;
     template<class Archive> void serialize(Archive & ar, const unsigned int version) {
         ar & data; ar & is_negligible;
+    }
+
+    bool check_terms() {
+        if(size() == 0) return true;
+        typename std::set<TermType>::const_iterator prev_it = data.begin();
+        if(is_negligible(*prev_it, data.size() + 1)) return false;
+        if(size() == 1) return true;
+
+        Compare const& compare = data.key_comp();
+
+        typename std::set<TermType>::const_iterator it = prev_it;
+        for(++it; it != data.end(); ++it, ++prev_it) {
+            if(is_negligible(*it, data.size() + 1) || !compare(*prev_it, *it))
+                return false;
+        }
+        return true;
     }
 };
 

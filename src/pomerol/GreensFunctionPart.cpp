@@ -105,6 +105,8 @@ void GreensFunctionPart::compute(void)
             }
         }
     }
+
+    assert(Terms.check_terms());
 }
 
 } // end of namespace Pomerol
