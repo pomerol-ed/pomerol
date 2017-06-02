@@ -40,12 +40,13 @@ TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H
     Thermal(DM.beta), ComputableObject(),
     S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM),
     parts(0), Vanishing(true),
-    KroneckerSymbolTolerance (std::numeric_limits<RealType>::epsilon()),
+    KroneckerSymbolTolerance (1e-16),
     ReduceResonanceTolerance (1e-8),
     CoefficientTolerance (1e-16),
-    ReduceInvocationThreshold (1e5)
+    MultiTermCoefficientTolerance (1e-5)
 {
 }
+
 
 TwoParticleGF::~TwoParticleGF()
 {

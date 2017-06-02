@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2014 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2014 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -51,18 +51,18 @@ void print_section (const std::string& str, boost::mpi::communicator comm = boos
 
 //boost::mpi::environment env;
 using namespace Pomerol;
-#define mpi_cout if(!comm.rank()) std::cout 
+#define mpi_cout if(!comm.rank()) std::cout
 
 template <typename T>
-po::options_description define(po::options_description& opts, std::string name, T def_val, std::string desc) { 
+po::options_description define(po::options_description& opts, std::string name, T def_val, std::string desc) {
     opts.add_options()(name.c_str(), po::value<T>()->default_value(T(def_val)), desc.c_str()); return opts; }
 
 template <typename T>
-po::options_description define_vec(po::options_description& opts, std::string name, T&& def_val, std::string desc) { 
+po::options_description define_vec(po::options_description& opts, std::string name, T&& def_val, std::string desc) {
     opts.add_options()(name.c_str(), po::value<T>()->multitoken()->default_value(T(def_val),""), desc.c_str()); return opts; }
 
 // cmdline parser
-po::variables_map cmdline_params(int argc, char* argv[]) 
+po::variables_map cmdline_params(int argc, char* argv[])
 {
     po::options_description p("Full-ED of the Anderson model");
     //po::variables_map p(argc, (const char**)argv);
@@ -87,7 +87,6 @@ po::variables_map cmdline_params(int argc, char* argv[])
 
     define<double>(p, "2pgf.reduce_tol", 1e-5, "Energy resonance resolution in 2pgf");
     define<double>(p, "2pgf.coeff_tol",  1e-12, "Tolerance on nominators in 2pgf");
-    define<size_t>(p, "2pgf.reduce_freq", 1e5, "How often to reduce terms in 2pgf");
     define<double>(p, "2pgf.multiterm_tol", 1e-6, "How often to reduce terms in 2pgf");
     define_vec<std::vector<size_t> >(p, "2pgf.indices", std::vector<size_t>({0, 0, 0, 0 }), "2pgf index combination");
 
@@ -98,7 +97,7 @@ po::variables_map cmdline_params(int argc, char* argv[])
     po::store(po::command_line_parser(argc, argv).options(p).style(
         po::command_line_style::unix_style ^ po::command_line_style::allow_short).run(), vm);
 
-    po::notify(vm);    
+    po::notify(vm);
 
     if (vm.count("help")) { std::cerr << p << "\n"; MPI_Finalize(); exit(0); }
 
@@ -111,7 +110,7 @@ int main(int argc, char* argv[])
     boost::mpi::communicator comm;
 
     print_section("Anderson model ED");
-    
+
     // all the params of the model
     RealType e0, U, beta;
     bool calc_gf, calc_2pgf;
@@ -123,12 +122,12 @@ int main(int argc, char* argv[])
 
     U = p["U"].as<double>();
     e0 = p["ed"].as<double>();
-    boost::tie(beta, calc_gf, calc_2pgf) = boost::make_tuple(  
+    boost::tie(beta, calc_gf, calc_2pgf) = boost::make_tuple(
         p["beta"].as<double>(), p["calc_gf"].as<int>(), p["calc_2pgf"].as<int>());
     calc_gf = calc_gf || calc_2pgf;
 
 
-    if (p.count("levels")) { 
+    if (p.count("levels")) {
         levels = p["levels"].as<std::vector<double>>();
         hoppings = p["hoppings"].as<std::vector<double>>();
     }
@@ -146,13 +145,13 @@ int main(int argc, char* argv[])
     std::vector<std::string> names(L);
     for (size_t i=0; i<L; i++)
         {
-            std::stringstream s; s << i; 
+            std::stringstream s; s << i;
             names[i]="b"+s.str();
             Lat.addSite(new Lattice::Site(names[i],1,2));
             LatticePresets::addHopping(&Lat, "A", names[i], hoppings[i]);
             LatticePresets::addLevel(&Lat, names[i], levels[i]);
         };
-    
+
     int rank = comm.rank();
     mpi_cout << "Sites" << std::endl;
     if (!rank) Lat.printSites();
@@ -167,31 +166,31 @@ int main(int argc, char* argv[])
 
     IndexClassification IndexInfo(Lat.getSiteMap());
     // Create index space
-    IndexInfo.prepare(false); 
+    IndexInfo.prepare(false);
     if (!rank) { print_section("Indices"); IndexInfo.printIndices(); };
     int index_size = IndexInfo.getIndexSize();
 
     print_section("Matrix element storage");
-    IndexHamiltonian Storage(&Lat,IndexInfo); 
+    IndexHamiltonian Storage(&Lat,IndexInfo);
     // Write down the Hamiltonian as a symbolic formula
-    Storage.prepare(); 
+    Storage.prepare();
     print_section("Terms");
     mpi_cout << Storage << std::endl;
 
     Symmetrizer Symm(IndexInfo, Storage);
     // Find symmetries of the problem
-    Symm.compute(); 
+    Symm.compute();
 
     // Introduce Fock space and classify states to blocks
-    StatesClassification S(IndexInfo,Symm); 
+    StatesClassification S(IndexInfo,Symm);
     S.compute();
 
     // Hamiltonian in the basis of Fock Space
-    Hamiltonian H(IndexInfo, Storage, S); 
+    Hamiltonian H(IndexInfo, Storage, S);
     // enter the Hamiltonian matrices
-    H.prepare(); 
+    H.prepare();
     // compute eigenvalues and eigenvectors
-    H.compute(); 
+    H.compute();
 
     // Save spectrum
     if (!rank) {
@@ -205,28 +204,28 @@ int main(int argc, char* argv[])
 
     DensityMatrix rho(S,H,beta); // create Density Matrix
     rho.prepare();
-    rho.compute(); // evaluate thermal weights with respect to ground energy, i.e exp(-beta(e-e_0))/Z 
+    rho.compute(); // evaluate thermal weights with respect to ground energy, i.e exp(-beta(e-e_0))/Z
 
     ParticleIndex d0 = IndexInfo.getIndex("A",0,down); // find the indices of the impurity, i.e. spin up index
     ParticleIndex u0 = IndexInfo.getIndex("A",0,up);
 
-    if (!rank) { 
+    if (!rank) {
         // get average total particle number
-        mpi_cout << "<N> = " << rho.getAverageOccupancy() << std::endl; 
+        mpi_cout << "<N> = " << rho.getAverageOccupancy() << std::endl;
         // get average energy
-        mpi_cout << "<H> = " << rho.getAverageEnergy() << std::endl; 
+        mpi_cout << "<H> = " << rho.getAverageEnergy() << std::endl;
         // get double occupancy
-        mpi_cout << "<N_{" << IndexInfo.getInfo(u0) << "}N_{"<< IndexInfo.getInfo(u0) << "}> = " << rho.getAverageDoubleOccupancy(u0,d0) << std::endl; 
+        mpi_cout << "<N_{" << IndexInfo.getInfo(u0) << "}N_{"<< IndexInfo.getInfo(u0) << "}> = " << rho.getAverageDoubleOccupancy(u0,d0) << std::endl;
         // get average total particle number per index
-        for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {  
-            std::cout << "<N_{" << IndexInfo.getInfo(i) << "[" << i <<"]}> = " << rho.getAverageOccupancy(i) << std::endl; 
+        for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {
+            std::cout << "<N_{" << IndexInfo.getInfo(i) << "[" << i <<"]}> = " << rho.getAverageOccupancy(i) << std::endl;
             }
         double n_av = rho.getAverageOccupancy();
         gftools::num_io<double>(n_av).savetxt("N_T.dat");
         }
 
     // Green's function calculation starts here
-    
+
     FieldOperatorContainer Operators(IndexInfo, S, H); // Create a container for c and c^+ in the eigenstate basis
 
     if (calc_gf) {
@@ -240,12 +239,12 @@ int main(int argc, char* argv[])
         std::set<IndexCombination2> indices2; // a set of pairs of indices to evaluate Green's function
 
         // Take only impurity spin up and spin down indices
-        f.insert(u0); 
+        f.insert(u0);
         f.insert(d0);
         indices2.insert(IndexCombination2(d0,d0)); // evaluate only G_{\down \down}
 
-        Operators.prepareAll(f); 
-        Operators.computeAll(); // evaluate c, c^+ for chosen indices 
+        Operators.prepareAll(f);
+        Operators.computeAll(); // evaluate c, c^+ for chosen indices
 
         GFContainer G(IndexInfo,S,H,rho,Operators);
 
@@ -253,8 +252,8 @@ int main(int argc, char* argv[])
         G.computeAll(); // Evaluate all GF terms, i.e. resonances and weights of expressions in Lehmans representation of the Green's function
 
         if (!comm.rank()) // dump gf into a file
-        // loops over all components (pairs of indices) of the Green's function 
-        for (std::set<IndexCombination2>::const_iterator it = indices2.begin(); it != indices2.end(); ++it) { 
+        // loops over all components (pairs of indices) of the Green's function
+        for (std::set<IndexCombination2>::const_iterator it = indices2.begin(); it != indices2.end(); ++it) {
             IndexCombination2 ind2 = *it;
             const GreensFunction & GF = G(ind2);
 
@@ -275,27 +274,27 @@ int main(int argc, char* argv[])
 
         // Start Two-particle GF calculation
 
-        if (calc_2pgf) {   
+        if (calc_2pgf) {
             print_section("2-Particle Green's function calc");
 
             std::vector<size_t> indices_2pgf = p["2pgf.indices"].as<std::vector<size_t> >();
             if (indices_2pgf.size() != 4) throw std::logic_error("Need 4 indices for 2pgf");
-    
+
             // a set of four indices to evaluate the 2pgf
             IndexCombination4 index_comb(indices_2pgf[0], indices_2pgf[1], indices_2pgf[2], indices_2pgf[3]);
 
-            std::set<IndexCombination4> indices4; 
+            std::set<IndexCombination4> indices4;
             // 2PGF = <T c c c^+ c^+>
             indices4.insert(index_comb);
-            std::string ind_str = boost::lexical_cast<std::string>(index_comb.Index1) 
-                                + boost::lexical_cast<std::string>(index_comb.Index2) 
-                                + boost::lexical_cast<std::string>(index_comb.Index3) 
+            std::string ind_str = boost::lexical_cast<std::string>(index_comb.Index1)
+                                + boost::lexical_cast<std::string>(index_comb.Index2)
+                                + boost::lexical_cast<std::string>(index_comb.Index3)
                                 + boost::lexical_cast<std::string>(index_comb.Index4);
 
-            AnnihilationOperator const& C1 = Operators.getAnnihilationOperator(index_comb.Index1); 
-            AnnihilationOperator const& C2 = Operators.getAnnihilationOperator(index_comb.Index2); 
+            AnnihilationOperator const& C1 = Operators.getAnnihilationOperator(index_comb.Index1);
+            AnnihilationOperator const& C2 = Operators.getAnnihilationOperator(index_comb.Index2);
             CreationOperator const&    CX3 = Operators.getCreationOperator(index_comb.Index3);
-            CreationOperator const&    CX4 = Operators.getCreationOperator(index_comb.Index4); 
+            CreationOperator const&    CX4 = Operators.getCreationOperator(index_comb.Index4);
             TwoParticleGF G4(S, H, C1, C2, CX3, CX4, rho);
 
             /* Some knobs to make calc faster - the larger the values of tolerances, the faster is calc, but rounding errors may show up. */
@@ -303,21 +302,19 @@ int main(int argc, char* argv[])
             G4.ReduceResonanceTolerance = p["2pgf.reduce_tol"].as<double>();
             /** Minimal magnitude of the coefficient of a term to take it into account - resolution of thermal weight. */
             G4.CoefficientTolerance = p["2pgf.coeff_tol"].as<double>();
-            /** Knob that controls the caching frequency. */
-            G4.ReduceInvocationThreshold = p["2pgf.reduce_freq"].as<size_t>();
             /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
             G4.MultiTermCoefficientTolerance = p["2pgf.multiterm_tol"].as<double>();
-            
-            G4.prepare(); 
+
+            G4.prepare();
             comm.barrier(); // MPI::BARRIER
 
             std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
             fmatsubara_grid fgrid(wf_min, wf_max, beta);
             bmatsubara_grid bgrid(wb_min, wb_max + 1, beta);
             freqs_2pgf.reserve(fgrid.size() * fgrid.size() * bgrid.size());
-            for (auto W : bgrid.values()) { 
-                for (auto w3 : fgrid.values()) { 
-                    for (auto w2 : fgrid.values()) { 
+            for (auto W : bgrid.values()) {
+                for (auto w3 : fgrid.values()) {
+                    for (auto w2 : fgrid.values()) {
                         ComplexType w1 = W+w3;
                         freqs_2pgf.push_back(boost::make_tuple(w1,w2,w3));
                         }
@@ -326,7 +323,7 @@ int main(int argc, char* argv[])
             mpi_cout << "2PGF : " << freqs_2pgf.size() << " freqs to evaluate" << std::endl;
 
             // ! The most important routine - actually calculate the 2PGF
-            auto chi_freq_data = G4.compute(true, freqs_2pgf, comm); 
+            auto chi_freq_data = G4.compute(true, freqs_2pgf, comm);
 
             // dump 2PGF into files - loop through 2pgf components
             if (!comm.rank()) {
@@ -334,10 +331,10 @@ int main(int argc, char* argv[])
                 grid_object<std::complex<double>, bmatsubara_grid, fmatsubara_grid, fmatsubara_grid> full_vertex(std::forward_as_tuple(bgrid, fgrid, fgrid));
                 grid_object<std::complex<double>, fmatsubara_grid, fmatsubara_grid> full_vertex_1freq(std::forward_as_tuple(fgrid, fgrid));
                 size_t w_ind = 0;
-                for (auto W : bgrid.points()) { 
-                    for (auto w3 : fgrid.points()) { 
-                        for (auto w2 : fgrid.points()) { 
-                            std::complex<double> val = chi_freq_data[w_ind]; 
+                for (auto W : bgrid.points()) {
+                    for (auto w3 : fgrid.points()) {
+                        for (auto w2 : fgrid.points()) {
+                            std::complex<double> val = chi_freq_data[w_ind];
                             full_vertex[W][w3.index()][w2.index()] = val;
                             full_vertex_1freq[w3.index()][w2.index()] = val;
                             if (!is_float_equal(boost::get<0>(freqs_2pgf[w_ind]), W.value()+w3.value())) throw std::logic_error("2pgf freq mismatch");

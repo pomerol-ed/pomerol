@@ -1,7 +1,7 @@
 
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2014 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2014 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -65,7 +65,7 @@ double BMatsubara(int n, double beta){return M_PI/beta*(2.*n);}
 int job_to_bfreq_index(int job, int wbmax) { return -wbmax + job+1; }
 
 template <typename T>
-ComplexType chi_bfreq_f(T const& chi, double W, double w1, double w2) { 
+ComplexType chi_bfreq_f(T const& chi, double W, double w1, double w2) {
     return chi(I*(W+w1), I*w2, I*w1); // this comes from Pomerol - see TwoParticleGF::operator()
 };
 
@@ -75,12 +75,12 @@ int main(int argc, char* argv[])
     boost::mpi::communicator comm;
 
     print_section("Hubbard nxn");
-    
+
     int size_x, size_y, wn;
     RealType t, mu, U, beta, reduce_tol, coeff_tol;
     bool calc_gf, calc_2pgf;
     int wf_max, wb_max;
-    double eta, hbw, step; // for evaluation of GF on real axis 
+    double eta, hbw, step; // for evaluation of GF on real axis
 
     try { // command line parser
         TCLAP::CmdLine cmd("Hubbard nxn diag", ' ', "");
@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
         cmd.parse( argc, argv );
         U = U_arg.getValue();
         mu = (mu_arg.isSet()?mu_arg.getValue():U/2);
-        boost::tie(t, beta, calc_gf, calc_2pgf, reduce_tol, coeff_tol) = boost::make_tuple( t_arg.getValue(), beta_arg.getValue(), 
+        boost::tie(t, beta, calc_gf, calc_2pgf, reduce_tol, coeff_tol) = boost::make_tuple( t_arg.getValue(), beta_arg.getValue(),
             gf_arg.getValue(), twopgf_arg.getValue(), reduce_tol_arg.getValue(), coeff_tol_arg.getValue());
         boost::tie(size_x, size_y) = boost::make_tuple(x_arg.getValue(), y_arg.getValue());
         boost::tie(wf_max, wb_max) = boost::make_tuple(wn_arg.getValue(), wb_arg.getValue());
@@ -134,14 +134,14 @@ int main(int argc, char* argv[])
         for (size_t x=0; x<size_x; x++)
         {
             auto i = SiteIndexF(x,y);
-            std::stringstream s; s << i; 
+            std::stringstream s; s << i;
             names[i]="S"+s.str();
             Lat.addSite(new Lattice::Site(names[i],1,2));
         };
-    
+
     INFO("Sites");
     Lat.printSites();
-    
+
     /* Add interaction on each site*/
     for (size_t i=0; i<L; i++) LatticePresets::addCoulombS(&Lat, names[i], U, -mu);
 
@@ -150,7 +150,7 @@ int main(int argc, char* argv[])
         for (size_t x=0; x<size_x; x++) {
             auto pos = SiteIndexF(x,y);
             auto pos_right = SiteIndexF((x+1)%size_x,y); /*if (x == size_x - 1) pos_right = SiteIndexF(0,y); */
-            auto pos_up = SiteIndexF(x,(y+1)%size_y); 
+            auto pos_up = SiteIndexF(x,(y+1)%size_y);
 
             if (size_x > 1) LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_right]), std::max(names[pos], names[pos_right]), -t);
             if (size_y > 1) LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_up]), std::max(names[pos], names[pos_up]), -t);
@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
     auto index_size = IndexInfo.getIndexSize();
 
     print_section("Matrix element storage");
-    IndexHamiltonian Storage(&Lat,IndexInfo); 
+    IndexHamiltonian Storage(&Lat,IndexInfo);
     Storage.prepare(); // Write down the Hamiltonian as a symbolic formula
     print_section("Terms");
     if (!rank) INFO(Storage);
@@ -193,32 +193,32 @@ int main(int argc, char* argv[])
 
     DensityMatrix rho(S,H,beta); // create Density Matrix
     rho.prepare();
-    rho.compute(); // evaluate thermal weights with respect to ground energy, i.e exp(-beta(e-e_0))/Z 
+    rho.compute(); // evaluate thermal weights with respect to ground energy, i.e exp(-beta(e-e_0))/Z
 
     INFO("<N> = " << rho.getAverageOccupancy()); // get average total particle number
     savetxt("N_T.dat",rho.getAverageOccupancy());
 
     // Green's function calculation starts here
-    
+
     FieldOperatorContainer Operators(IndexInfo, S, H); // Create a container for c and c^+ in the eigenstate basis
 
     if (calc_gf) {
 
         INFO("1-particle Green's functions calc");
-        std::set<ParticleIndex> f; 
+        std::set<ParticleIndex> f;
         std::set<IndexCombination2> indices2;
-        ParticleIndex d0 = IndexInfo.getIndex("S0",0,down); 
+        ParticleIndex d0 = IndexInfo.getIndex("S0",0,down);
         ParticleIndex u0 = IndexInfo.getIndex("S0",0,up);
         f.insert(u0);
         f.insert(d0);
-        for (size_t x=0; x<size_x; x++) { 
+        for (size_t x=0; x<size_x; x++) {
             ParticleIndex ind = IndexInfo.getIndex(names[SiteIndexF(x,0)],0,down);
-            f.insert(ind); 
+            f.insert(ind);
             indices2.insert(IndexCombination2(d0,ind));
             };
 
-        Operators.prepareAll(f); 
-        Operators.computeAll(); // evaluate c, c^+ for chosen indices 
+        Operators.prepareAll(f);
+        Operators.computeAll(); // evaluate c, c^+ for chosen indices
 
         GFContainer G(IndexInfo,S,H,rho,Operators);
 
@@ -226,7 +226,7 @@ int main(int argc, char* argv[])
         G.computeAll(); // Evaluate all GF terms, i.e. resonances and weights of expressions in Lehmans representation of the Green's function
 
         if (!comm.rank()) // dump gf into a file
-        for (auto ind2 : indices2) { // loops over all components (pairs of indices) of the Green's function 
+        for (auto ind2 : indices2) { // loops over all components (pairs of indices) of the Green's function
             // Save Matsubara GF from pi/beta to pi/beta*(4*wf_max + 1)
             std::cout << "Saving imfreq G" << ind2 << " on "<< 4*wf_max << " Matsubara freqs. " << std::endl;
             std::ofstream gw_im("gw_imag"+std::to_string(ind2.Index1)+std::to_string(ind2.Index2)+".dat");
@@ -238,7 +238,7 @@ int main(int argc, char* argv[])
             gw_im.close();
             // Save Retarded GF on the real axis
             double e0 = U - 2.*mu;
-            std::ofstream gw_re("gw_real"+std::to_string(ind2.Index1)+std::to_string(ind2.Index2)+".dat"); 
+            std::ofstream gw_re("gw_real"+std::to_string(ind2.Index1)+std::to_string(ind2.Index2)+".dat");
             std::cout << "Saving real-freq GF " << ind2 << " in energy space [" << e0-hbw << ":" << e0+hbw << ":" << step << "] + I*" << eta << "." << std::endl;
             for (double w = e0-hbw; w < e0+hbw; w+=step) {
                 ComplexType val = GF(ComplexType(w) + I*eta);
@@ -249,7 +249,7 @@ int main(int argc, char* argv[])
 
         // Start Two-particle GF calculation
 
-        if (calc_2pgf) {   
+        if (calc_2pgf) {
             print_section("2-Particle Green's function calc");
             std::set<IndexCombination4> indices4; // a set of four indices to evaluate the 2pgf
             // 2PGF = <T c c c^+ c^+>
@@ -263,17 +263,15 @@ int main(int argc, char* argv[])
             Chi4.ReduceResonanceTolerance = reduce_tol;
             /** Minimal magnitude of the coefficient of a term to take it into account - resolution of thermal weight. */
             Chi4.CoefficientTolerance = coeff_tol;
-            /** Knob that controls the caching frequency. */
-            Chi4.ReduceInvocationThreshold = 1e5;
             /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
             Chi4.MultiTermCoefficientTolerance = 1e-6;
-            
+
             Chi4.prepareAll(indices4); // find all non-vanishing block connections inside 2pgf
             comm.barrier(); // MPI::BARRIER
 
             bool clearTerms = false;
             // ! The most important routine - actually calculate the 2PGF
-            Chi4.computeAll(clearTerms, comm, true); 
+            Chi4.computeAll(clearTerms, comm, true);
 
             for (auto ind : indices4) { // dump 2PGF into files - loop through 2pgf components
                 if (!comm.rank()) std::cout << "Saving 2PGF " << ind << std::endl;
@@ -303,18 +301,18 @@ int main(int argc, char* argv[])
 
                     std::unique_ptr<pMPI::MPIMaster> disp;
 
-                    if (comm.rank() == ROOT) { 
+                    if (comm.rank() == ROOT) {
                         DEBUG("Master at " << comm.rank());
                         disp.reset(new pMPI::MPIMaster(comm,ntasks,true));
                     };
                     comm.barrier();
-                    
-                
+
+
                     for (pMPI::MPIWorker worker(comm,ROOT);!worker.is_finished();) {
-                        if (rank == ROOT) disp->order(); 
-                        worker.receive_order(); 
+                        if (rank == ROOT) disp->order();
+                        worker.receive_order();
                         //DEBUG((worker.Status == WorkerTag::Pending));
-                        if (worker.is_working()) { 
+                        if (worker.is_working()) {
                             // this is what every process executes
                             auto p = worker.current_job();
 
@@ -324,22 +322,22 @@ int main(int argc, char* argv[])
                             std::ofstream chi_stream ("chi"+ind_str+"_W"+std::to_string(W)+".dat");
 
                             // Most important part 2 - loop over fermionic frequencies. Consider parallelizing one of the loop
-                            for (int w1_index = -wf_max; w1_index<wf_max; w1_index++) { // loop over first fermionic frequency 
-                                double w1 = FMatsubara(w1_index, beta);        
+                            for (int w1_index = -wf_max; w1_index<wf_max; w1_index++) { // loop over first fermionic frequency
+                                double w1 = FMatsubara(w1_index, beta);
                                 for (int w2_index = -wf_max; w2_index<wf_max; w2_index++) { // loop over second fermionic
-                                    double w2 = FMatsubara(w2_index, beta);        
+                                    double w2 = FMatsubara(w2_index, beta);
 
                                     ComplexType val = chi_bfreq_f(chi, W, w1, w2);
 
-                                    chi_stream << std::scientific << std::setprecision(12)  
+                                    chi_stream << std::scientific << std::setprecision(12)
                                                << w1 << " " << w2 << "   " << std::real(val) << " " << std::imag(val) << std::endl;
                                 }
                                 chi_stream << std::endl;
                             };
                             chi_stream.close();
-                            worker.report_job_done(); 
+                            worker.report_job_done();
                             };
-                        if (rank == ROOT) disp->check_workers(); // check if there are free workers 
+                        if (rank == ROOT) disp->check_workers(); // check if there are free workers
                         };
                     comm.barrier();
                     if (comm.rank() == ROOT) { disp.release(); DEBUG("Released master"); };
@@ -356,7 +354,7 @@ bool compare(ComplexType a, ComplexType b)
 
 void print_section (const std::string& str)
 {
-    if (!comm.rank()) { 
+    if (!comm.rank()) {
         std::cout << std::string(str.size(),'=') << std::endl;
         std::cout << str << std::endl;
         std::cout << std::string(str.size(),'=') << std::endl;

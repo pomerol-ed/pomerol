@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2012 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -32,7 +32,6 @@ TwoParticleGFContainer::TwoParticleGFContainer(const IndexClassification& IndexI
     KroneckerSymbolTolerance (1e-16),//1e-16),
     ReduceResonanceTolerance (1e-8),//1e-16),
     CoefficientTolerance (1e-16),//1e-16),
-    ReduceInvocationThreshold (1e5),
     MultiTermCoefficientTolerance (1e-5)//1e-5),
 {}
 
@@ -44,7 +43,6 @@ void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& Initi
         static_cast<TwoParticleGF&>(iter->second).KroneckerSymbolTolerance = KroneckerSymbolTolerance;
         static_cast<TwoParticleGF&>(iter->second).ReduceResonanceTolerance = ReduceResonanceTolerance;
         static_cast<TwoParticleGF&>(iter->second).CoefficientTolerance = CoefficientTolerance;
-        static_cast<TwoParticleGF&>(iter->second).ReduceInvocationThreshold = ReduceInvocationThreshold;
         static_cast<TwoParticleGF&>(iter->second).MultiTermCoefficientTolerance = MultiTermCoefficientTolerance;
         static_cast<TwoParticleGF&>(iter->second).prepare();
        };
@@ -52,9 +50,9 @@ void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& Initi
 
 std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll(bool clearTerms, std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm, bool split)
 {
-    if (split) 
+    if (split)
         return computeAll_split(clearTerms, freqs, comm);
-    else 
+    else
         return computeAll_nosplit(clearTerms, freqs, comm);
 }
 
@@ -84,7 +82,7 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
     for (size_t p=0; p<comm.size(); p++) {
         int color = int (1.0*p / color_size);
         proc_colors[p] = color;
-        color_roots[color]=p; 
+        color_roots[color]=p;
     }
     for (size_t i=0; i<ncomponents; i++) {
         int color = i*ncolors/ncomponents;
@@ -93,8 +91,8 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
 
     if (!comm.rank()) {
         INFO("Splitting " << ncomponents << " components in " << ncolors << " communicators");
-        for (size_t i=0; i<ncomponents; i++) 
-        INFO("2pgf " << i << " color: " << elem_colors[i] << " color_root: " << color_roots[elem_colors[i]]); 
+        for (size_t i=0; i<ncomponents; i++)
+        INFO("2pgf " << i << " color: " << elem_colors[i] << " color_root: " << color_roots[elem_colors[i]]);
         };
     comm.barrier();
     int comp = 0;
@@ -103,7 +101,7 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
 
     for(std::map<IndexCombination4, boost::shared_ptr<TwoParticleGF> >::iterator iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
         bool calc = (elem_colors[comp] == proc_colors[comm.rank()]);
-        if (calc) { 
+        if (calc) {
             INFO("C" << elem_colors[comp] << "p" << comm.rank() << ": computing 2PGF for " << iter->first);
             if (calc) storage[iter->first] = static_cast<TwoParticleGF&>(*(iter->second)).compute(clearTerms, freqs, comm_split);
             };
@@ -124,7 +122,7 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
             boost::mpi::broadcast(comm, freq_data, sender);
             out[iter->first] = freq_data;
 
-            if (comm.rank() != sender) { 
+            if (comm.rank() != sender) {
                 chi.setStatus(TwoParticleGF::Computed);
                  };
             };

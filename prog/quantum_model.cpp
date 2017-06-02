@@ -158,8 +158,6 @@ void quantum_model::compute() {
       G4.ReduceResonanceTolerance = p["2pgf.reduce_tol"].as<double>();
       /** Minimal magnitude of the coefficient of a term to take it into account - resolution of thermal weight. */
       G4.CoefficientTolerance = p["2pgf.coeff_tol"].as<double>();
-      /** Knob that controls the caching frequency. */
-      G4.ReduceInvocationThreshold = p["2pgf.reduce_freq"].as<size_t>();
       /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
       G4.MultiTermCoefficientTolerance = p["2pgf.multiterm_tol"].as<double>();
 

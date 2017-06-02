@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 
     Lattice Lat;
     print_section("Anderson ");
-    
+
     int wn;
     RealType U=0.5, mu = 0.25, beta = 26, reduce_tol = 1e-5, coeff_tol = 1e-8;
     bool calc_gf = true, calc_2pgf = true;
@@ -66,13 +66,13 @@ int main(int argc, char* argv[])
     std::vector<std::string> names(L);
     for (size_t i=0; i<L; i++)
         {
-            std::stringstream s; s << i; 
+            std::stringstream s; s << i;
             names[i]="b"+s.str();
             Lat.addSite(new Lattice::Site(names[i],1,2));
             LatticePresets::addHopping(&Lat, "A", names[i], hoppings[i]);
             LatticePresets::addLevel(&Lat, names[i], levels[i]);
         };
-    
+
     INFO("Sites");
     Lat.printSites();
 
@@ -114,18 +114,18 @@ int main(int argc, char* argv[])
     rho.compute();
 
     INFO("<N> = " << rho.getAverageOccupancy());
-    
+
     FieldOperatorContainer Operators(IndexInfo, S, H);
 
     if (calc_gf) {
         INFO("1-particle Green's functions calc");
-        std::set<ParticleIndex> f; 
+        std::set<ParticleIndex> f;
         std::set<IndexCombination2> indices2;
-        ParticleIndex d0 = IndexInfo.getIndex("A",0,down); 
+        ParticleIndex d0 = IndexInfo.getIndex("A",0,down);
         ParticleIndex u0 = IndexInfo.getIndex("A",0,up);
         f.insert(u0);
         f.insert(d0);
-        
+
         indices2.insert(IndexCombination2(d0,d0));
         Operators.prepareAll(f);
         Operators.computeAll();
@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
         G.prepareAll(indices2);
         G.computeAll();
 
-        if (calc_2pgf) {   
+        if (calc_2pgf) {
             print_section("2-Particle Green's function calc");
             std::set<IndexCombination4> indices4;
             indices4.insert(IndexCombination4(u0,u0,u0,u0));
@@ -145,8 +145,6 @@ int main(int argc, char* argv[])
             Chi4.ReduceResonanceTolerance = reduce_tol;
             /** Minimal magnitude of the coefficient of a term to take it into account. */
             Chi4.CoefficientTolerance = coeff_tol;
-            /** Knob that controls the caching frequency. */
-            Chi4.ReduceInvocationThreshold = 1e5;
             /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
             Chi4.MultiTermCoefficientTolerance = 1e-6;
             Chi4.prepareAll(indices4);
@@ -169,7 +167,7 @@ int main(int argc, char* argv[])
             ComplexType Omega = I*2.*M_PI/beta;
             ComplexType omega = I*M_PI/beta;
 
-            for (int w = 0; w < chi_uuuu_vals.size(); ++w) { 
+            for (int w = 0; w < chi_uuuu_vals.size(); ++w) {
                 ComplexType w_p = I*(2.*w+1.)*M_PI/beta;
                 freqs[w] = boost::make_tuple(omega+Omega, w_p, omega);
                 }
@@ -182,16 +180,16 @@ int main(int argc, char* argv[])
             //std::vector<ComplexType> chi_uuuu_out = chi_uuuu.compute(true, freqs, comm);
             std::vector<ComplexType> chi_uuuu_out = data_freqs[IndexCombination4(u0,u0,u0,u0)];
 
-            for (size_t w = 0; w < chi_uuuu_vals.size(); w++) { 
-                
-                std::cout << "(" << imag(boost::get<0>(freqs[w])) << "," << imag(boost::get<1>(freqs[w])) << "," << imag(boost::get<2>(freqs[w])) << "): " << std::flush; 
-                ComplexType chi_uuuu_val = chi_uuuu_out[w]; 
+            for (size_t w = 0; w < chi_uuuu_vals.size(); w++) {
+
+                std::cout << "(" << imag(boost::get<0>(freqs[w])) << "," << imag(boost::get<1>(freqs[w])) << "," << imag(boost::get<2>(freqs[w])) << "): " << std::flush;
+                ComplexType chi_uuuu_val = chi_uuuu_out[w];
                 // this now won't work - all terms are cleared
-                //ComplexType chi_uuuu_val = chi_uuuu(boost::get<0>(freqs[w]), boost::get<1>(freqs[w]), boost::get<2>(freqs[w])); 
+                //ComplexType chi_uuuu_val = chi_uuuu(boost::get<0>(freqs[w]), boost::get<1>(freqs[w]), boost::get<2>(freqs[w]));
                 bool success = is_equal(chi_uuuu_val, chi_uuuu_vals[w], 1e-6);
                 std::cout << "uuuu: " << chi_uuuu_val << " == (exact_uuuu) " << chi_uuuu_vals[w] << " == " << std::boolalpha << success << std::endl;
                 if (!success) return EXIT_FAILURE;
-                
+
                 };
             };
     };
@@ -200,7 +198,7 @@ int main(int argc, char* argv[])
 
 void print_section (const std::string& str)
 {
-    if (!comm.rank()) { 
+    if (!comm.rank()) {
         std::cout << std::string(str.size(),'=') << std::endl;
         std::cout << str << std::endl;
         std::cout << std::string(str.size(),'=') << std::endl;

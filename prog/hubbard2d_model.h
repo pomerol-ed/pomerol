@@ -106,7 +106,6 @@ public:
 
     define<double>(p, "2pgf.reduce_tol", 1e-5, "Energy resonance resolution in 2pgf");
     define<double>(p, "2pgf.coeff_tol",  1e-12, "Tolerance on nominators in 2pgf");
-    define<size_t>(p, "2pgf.reduce_freq", 1e5, "How often to reduce terms in 2pgf");
     define<double>(p, "2pgf.multiterm_tol", 1e-6, "How often to reduce terms in 2pgf");
 
     std::vector<size_t> default_inds(4,0);

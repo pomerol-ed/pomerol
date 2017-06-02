@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2012 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -40,8 +40,6 @@ public:
     RealType ReduceResonanceTolerance;
     /** Minimal magnitude of the coefficient of a term to take it into account. default = 1e-16. */
     RealType CoefficientTolerance;
-    /** A maximum amount of terms put into a list at which the reduceTerms method should be called. default = 1e5. */
-    RealType ReduceInvocationThreshold;
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. default = 1e-5. */
     RealType MultiTermCoefficientTolerance;
 
@@ -51,13 +49,13 @@ public:
 
     void prepareAll(const std::set<IndexCombination4>& InitialIndices = std::set<IndexCombination4>());
     std::map<IndexCombination4,std::vector<ComplexType> > computeAll(
-        bool clearTerms = false, 
+        bool clearTerms = false,
         std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(),
-        const boost::mpi::communicator & comm = boost::mpi::communicator(), 
+        const boost::mpi::communicator & comm = boost::mpi::communicator(),
         bool split = true
         );
     std::map<IndexCombination4,std::vector<ComplexType> > computeAll_nosplit(
-        bool clearTerms, 
+        bool clearTerms,
         std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(),
         const boost::mpi::communicator & comm = boost::mpi::communicator()
         );
@@ -75,7 +73,7 @@ protected:
     const StatesClassification &S;
 
     const Hamiltonian &H;
-    const DensityMatrix &DM; 
+    const DensityMatrix &DM;
     const FieldOperatorContainer &Operators;
 };
 

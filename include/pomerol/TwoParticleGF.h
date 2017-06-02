@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2012 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -79,7 +79,7 @@ protected:
 
     /** A flag to determine whether this GF is identical to zero */
     bool Vanishing;
-   
+
     /** Extracts a part of the operator standing at a specified position in a given permutation.
      * \param[in] PermutationNumber The number of the permutation.
      * \param[in] OperatorPosition The number of the position of the operator.
@@ -107,13 +107,11 @@ public:
     /** A tolerance to distinguish two identical numbers. default = std::numeric_limits<RealType>::epsilon(). */
     RealType KroneckerSymbolTolerance;
     /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
-    RealType ReduceResonanceTolerance; 
+    RealType ReduceResonanceTolerance;
     /** Minimal magnitude of the coefficient of a term to take it into account. default = 1e-16. */
     RealType CoefficientTolerance;
-    /** A maximum amount of terms put into a list at which the reduceTerms method should be called. default = 1e5. */
-    RealType ReduceInvocationThreshold;
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. default = 1e-5. */
-    RealType MultiTermCoefficientTolerance; 
+    RealType MultiTermCoefficientTolerance;
 
     /** Constructor.
      * \param[in] S A reference to a states classification object.
@@ -138,8 +136,8 @@ public:
      * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
      */
     std::vector<ComplexType> compute(
-        bool clear = false, 
-        std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(), 
+        bool clear = false,
+        std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(),
         const boost::mpi::communicator & comm = boost::mpi::communicator()
     );
 
@@ -148,7 +146,7 @@ public:
      */
     ParticleIndex getIndex(size_t Position) const;
 
-    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values). 
+    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values).
     * \param[in] z1 Frequency 1
     * \param[in] z2 Frequency 2
     * \param[in] z3 Frequency 3
@@ -170,13 +168,13 @@ public:
 //     size_t getNumResonantTerms() const;
 //     /** Returns the totla number of non-resonant terms for all parts. */
 //     size_t getNumNonResonantTerms() const;
-    
+
     /** Returns the number of current permutation in permutations3 */
     unsigned short getPermutationNumber(const Permutation3& in);
 };
 
 inline ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const {
-    if(Vanishing) { 
+    if(Vanishing) {
         return 0.0;
         }
     else {
