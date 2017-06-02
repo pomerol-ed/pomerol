@@ -152,7 +152,7 @@ void MPIMaster::check_workers()
         for (size_t i=0; i<Nprocs; i++) {
             if (!workers_finish[i]) { 
                 //DEBUG(id << "->" << worker_pool[i] << " tag: finish",MPI_DEBUG_VERBOSITY,1);
-                Comm.isend(worker_pool[i],int(pMPI::Finish));
+                Comm.send(worker_pool[i],int(pMPI::Finish));
                 workers_finish[i] = true; // to prevent double sending of Finish command that could overlap with other communication
             };
         };
