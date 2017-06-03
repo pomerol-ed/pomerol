@@ -110,7 +110,8 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const boost::mpi::
         if (rank == ROOT) disp->check_workers(); // check if there are free workers 
     };
     // at this moment all communication is finished
-    comm.barrier();
+    //comm.barrier();
+    MPI_Barrier(MPI_COMM_WORLD);
     // Now spread the information, who did what.
 	if (VerboseOutput && rank==ROOT) std::cout << "done." << std::endl;
     comm.barrier();
