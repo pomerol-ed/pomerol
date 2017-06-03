@@ -103,7 +103,6 @@ TwoParticleGFPart::TwoParticleGFPart(
     Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
     DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
     Permutation(Permutation),
-    KroneckerSymbolTolerance(1e-16),
     ReduceResonanceTolerance(1e-8),
     CoefficientTolerance (1e-16),
     MultiTermCoefficientTolerance (1e-5)
@@ -263,7 +262,7 @@ ComplexType TwoParticleGFPart::operator()(ComplexType z1, ComplexType z2, Comple
         throw std::logic_error("2PGFPart : Calling operator() on empty container, did you purge all the terms when called compute()");
     }
 
-    return NonResonantTerms(z1, z2, z3) + ResonantTerms(z1, z2, z3, KroneckerSymbolTolerance);
+    return NonResonantTerms(z1, z2, z3) + ResonantTerms(z1, z2, z3, ReduceResonanceTolerance);
 }
 
 const TermList<TwoParticleGFPart::ResonantTerm>& TwoParticleGFPart::getResonantTerms() const

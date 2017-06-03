@@ -306,8 +306,6 @@ private:
                       RealType Ei, RealType Ej, RealType Ek, RealType El,
                       RealType Wi, RealType Wj, RealType Wk, RealType Wl);
 
-    /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-16. */
-    RealType KroneckerSymbolTolerance;
     /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
     RealType ReduceResonanceTolerance;
     /** Minimal magnitude of the coefficient of a term to take it into account. default = 1e-16. */

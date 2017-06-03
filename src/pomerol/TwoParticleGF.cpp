@@ -40,7 +40,6 @@ TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H
     Thermal(DM.beta), ComputableObject(),
     S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM),
     parts(0), Vanishing(true),
-    KroneckerSymbolTolerance (1e-16),
     ReduceResonanceTolerance (1e-8),
     CoefficientTolerance (1e-16),
     MultiTermCoefficientTolerance (1e-5)
@@ -121,7 +120,6 @@ void TwoParticleGF::prepare()
                             DM.getPart(LeftIndices[0]), DM.getPart(LeftIndices[1]), DM.getPart(LeftIndices[2]), DM.getPart(LeftIndices[3]),
                       permutations3[p]));
 
-                      (*parts.rbegin())->KroneckerSymbolTolerance = KroneckerSymbolTolerance;
                       (*parts.rbegin())->ReduceResonanceTolerance = ReduceResonanceTolerance;
                       (*parts.rbegin())->CoefficientTolerance = CoefficientTolerance;
                       (*parts.rbegin())->MultiTermCoefficientTolerance = MultiTermCoefficientTolerance;
@@ -212,22 +210,6 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<boost::t
     Status = Computed;
     return m_data;
 }
-
-// size_t TwoParticleGF::getNumResonantTerms() const
-// {
-//     size_t num = 0;
-//     for(std::vector<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
-//         num += (*iter)->getNumResonantTerms();
-//     return num;
-// }
-//
-// size_t TwoParticleGF::getNumNonResonantTerms() const
-// {
-//     size_t num = 0;
-//     for(std::vector<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
-//         num += (*iter)->getNumNonResonantTerms();
-//     return num;
-// }
 
 ParticleIndex TwoParticleGF::getIndex(size_t Position) const
 {

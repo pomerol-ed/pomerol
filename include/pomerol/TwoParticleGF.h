@@ -104,8 +104,6 @@ protected:
     BlockNumber getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const; //!< return right index of an operator at current position for a current permutation
 
 public:
-    /** A tolerance to distinguish two identical numbers. default = std::numeric_limits<RealType>::epsilon(). */
-    RealType KroneckerSymbolTolerance;
     /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
     RealType ReduceResonanceTolerance;
     /** Minimal magnitude of the coefficient of a term to take it into account. default = 1e-16. */
@@ -163,11 +161,6 @@ public:
 
     /** Returns true, if GF is identical to zero */
     bool isVanishing(void) const;
-
-//     /** Returns the total number of resonant terms for all parts. */
-//     size_t getNumResonantTerms() const;
-//     /** Returns the totla number of non-resonant terms for all parts. */
-//     size_t getNumNonResonantTerms() const;
 
     /** Returns the number of current permutation in permutations3 */
     unsigned short getPermutationNumber(const Permutation3& in);
