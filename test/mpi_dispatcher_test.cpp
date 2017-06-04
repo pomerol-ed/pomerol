@@ -5,9 +5,12 @@
 
 using namespace pMPI;
 
-void dumb_task(double seconds) {
-    std::cout << "running " << seconds << " seconds..." << std::flush;
+int dumb_task_counter;
+
+void dumb_task(double seconds, int jobid) {
+    std::cout << "running job " << jobid << " " << seconds << " seconds..." << std::flush;
     std::this_thread::sleep_for(std::chrono::milliseconds(int(seconds * 1000)));
+    ++dumb_task_counter;
     std::cout << "done." << std::endl;
 };
 
@@ -17,15 +20,16 @@ int main(int argc, char *argv[]) {
 
     std::random_device rd;
     boost::mpi::communicator world;
-    std::mt19937 gen(world.rank() * 24);
-    std::uniform_real_distribution<double> dist(0, 0.1);
+    std::mt19937 gen(100000);
+    std::uniform_real_distribution<double> dist(0, 0.001);
     size_t ROOT = 0;
     int rank = world.rank();
 
     try {
 
         MPIWorker worker(world, ROOT);
-        int ntasks = 15;
+        int ntasks = 7;
+        dumb_task_counter = 0;
 
         std::unique_ptr<MPIMaster> disp;
 
@@ -39,13 +43,21 @@ int main(int argc, char *argv[]) {
             if (rank == ROOT) disp->order();
             worker.receive_order();
             if (worker.is_working()) {
-                dumb_task(dist(gen));
+                dumb_task(dist(gen), worker.current_job());
                 worker.report_job_done();
             };
             if (rank == ROOT) disp->check_workers();
         };
         if (rank == ROOT) disp.release();
 
+        world.barrier();
+        MPI_Allreduce(MPI_IN_PLACE, &dumb_task_counter, 1, MPI_INT, MPI_SUM, world);
+        if(dumb_task_counter != ntasks) {
+            std::cout << "ntasks = " << ntasks
+                      << ", dumb_task_counter = "
+                      << dumb_task_counter << std::endl;
+            return EXIT_FAILURE;
+        }
     } // end try
     catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
@@ -74,8 +86,9 @@ int main(int argc, char *argv[]) {
 // do it again
     try {
 
-        int ntasks = 9;
         MPIWorker worker(world, ROOT);
+        int ntasks = 9;
+        dumb_task_counter = 0;
 
         std::unique_ptr<MPIMaster> disp;
 
@@ -89,15 +102,17 @@ int main(int argc, char *argv[]) {
             if (rank == ROOT) disp->order();
             worker.receive_order();
             if (worker.is_working()) {
-                dumb_task(dist(gen));
+                dumb_task(dist(gen), 0);
                 worker.report_job_done();
             };
             if (rank == ROOT) disp->check_workers();
         };
         if (rank == ROOT) disp.release();
+
+
     } // end try
     catch (std::exception &e) { return EXIT_FAILURE; };
 
     MPI_Finalize();
     return EXIT_SUCCESS;
-} 
+}
