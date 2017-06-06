@@ -41,7 +41,7 @@ foreach (test ${tests})
 endforeach(test)
 
 if(CXX11)
-    set(mpi_tests mpi_dispatcher_test)
+    set(mpi_tests mpi_dispatcher_test mpi_dispatcher_test_nomaster)
     foreach (test ${mpi_tests})
         set(test_src ${test}.cpp)
         add_executable(${test} ${test_src})

@@ -27,31 +27,30 @@ int main(int argc, char *argv[]) {
 
     try {
 
-        MPIWorker worker(world, ROOT);
+        //MPIWorker worker(world, ROOT);
         int ntasks = 7;
         dumb_task_counter = 0;
 
-        std::unique_ptr<MPIMaster> disp;
+        std::unique_ptr<MPIWorker> worker_ptr;
 
         if (world.rank() == ROOT) {
-            disp.reset(new MPIMaster(world, ntasks, true));
-            disp->order();
-            std::cout << "ordered" << std::endl;
-        };
-        world.barrier();
+            MPIMaster master(world, ntasks, true);
+            for (; !master.is_finished();) { 
+                master.order();
+                master.check_workers();
+            }
 
-        for (; !worker.is_finished();) {
-            if (rank == ROOT) disp->order();
-            worker.receive_order();
-            if (worker.is_working()) {
-                dumb_task(dist(gen), worker.current_job(), rank);
-                worker.report_job_done();
-            };
-            if (rank == ROOT) std::cout << "--> stack size = " << disp->JobStack.size() << " --> worker stack size =" << disp->WorkerStack.size() << std::endl;
-            if (rank == ROOT) disp->check_workers();
-        };
-        if (rank == ROOT) disp.release();
-
+        }
+        else { 
+            MPIWorker worker(world, ROOT);
+            for (; !worker.is_finished();) {
+                worker.receive_order();
+                if (worker.is_working()) {
+                    dumb_task(dist(gen), worker.current_job(), rank);
+                    worker.report_job_done();
+                };
+            }
+        }
         world.barrier();
         MPI_Allreduce(MPI_IN_PLACE, &dumb_task_counter, 1, MPI_INT, MPI_SUM, world);
         if(dumb_task_counter != ntasks) {
@@ -93,25 +92,25 @@ int main(int argc, char *argv[]) {
         int ntasks = 9;
         dumb_task_counter = 0;
 
-        std::unique_ptr<MPIMaster> disp;
+        std::unique_ptr<MPIMaster> master_ptr;
 
         if (world.rank() == ROOT) {
-            disp.reset(new MPIMaster(world, ntasks, true));
-            disp->order();
+            master_ptr.reset(new MPIMaster(world, ntasks, true));
+            master_ptr->order();
         };
         world.barrier();
 
         for (; !worker.is_finished();) {
-            if (rank == ROOT) disp->order();
+            if (rank == ROOT) master_ptr->order();
             worker.receive_order();
             if (worker.is_working()) {
                 dumb_task(dist(gen), 0);
                 worker.report_job_done();
             };
-            if (rank == ROOT) disp->check_workers();
+            if (rank == ROOT) master_ptr->check_workers();
         };
         std::cout << "Huy! " << std::endl;
-        if (rank == ROOT) disp.release();
+        if (rank == ROOT) master_ptr.release();
 
 
     } // end try

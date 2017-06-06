@@ -57,6 +57,7 @@ struct MPIMaster
     void order_worker(WorkerId worker_id, JobId job);
     void order();
     void check_workers();
+    bool is_finished() const;
     void fill_stack_();
 };
 
