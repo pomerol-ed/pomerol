@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
         std::unique_ptr<MPIWorker> worker_ptr;
 
         if (world.rank() == ROOT) {
-            MPIMaster master(world, ntasks, true);
+            MPIMaster master(world, ntasks, false);
             for (; !master.is_finished();) {
                 master.order();
                 master.check_workers();
