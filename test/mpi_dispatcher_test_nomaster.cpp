@@ -35,13 +35,13 @@ int main(int argc, char *argv[]) {
 
         if (world.rank() == ROOT) {
             MPIMaster master(world, ntasks, true);
-            for (; !master.is_finished();) { 
+            for (; !master.is_finished();) {
                 master.order();
                 master.check_workers();
             }
 
         }
-        else { 
+        else {
             MPIWorker worker(world, ROOT);
             for (; !worker.is_finished();) {
                 worker.receive_order();

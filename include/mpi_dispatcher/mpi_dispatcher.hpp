@@ -11,7 +11,7 @@ enum WorkerTag { Pending, Work, Finish }; // tags for MPI communication
 typedef int JobId;
 typedef int WorkerId;
 
-struct MPIWorker 
+struct MPIWorker
 {
     boost::mpi::communicator Comm;
     const WorkerId id;
@@ -28,11 +28,11 @@ struct MPIWorker
 
 protected:
     JobId current_job_;
-    boost::mpi::request WorkReq, FinishReq;
+    boost::mpi::request req;
     WorkerTag Status;
 };
 
-struct MPIMaster 
+struct MPIMaster
 {
     boost::mpi::communicator Comm;
     size_t Ntasks, Nprocs;
