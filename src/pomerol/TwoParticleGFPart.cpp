@@ -259,7 +259,7 @@ ComplexType TwoParticleGFPart::operator()(ComplexType z1, ComplexType z2, Comple
     z3 = Frequencies[Permutation.perm[2]];
 
     if (Status != Computed) {
-        throw std::logic_error("2PGFPart : Calling operator() on empty container, did you purge all the terms when called compute()");
+        throw std::logic_error("2PGFPart : Calling operator() on uncomputed container, did you purge all the terms when called compute()");
     }
 
     return NonResonantTerms(z1, z2, z3) + ResonantTerms(z1, z2, z3, ReduceResonanceTolerance);

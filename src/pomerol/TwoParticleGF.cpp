@@ -200,10 +200,8 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<boost::t
             for (size_t p = 0; p<parts.size(); p++) {
                 boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, job_map[p]);
                 boost::mpi::broadcast(comm, parts[p]->ResonantTerms, job_map[p]);
-                if (rank == job_map[p]) {
-                    parts[p]->Status = TwoParticleGFPart::Computed;
-                     };
-                };
+                parts[p]->Status = TwoParticleGFPart::Computed;
+            };
             comm.barrier();
         }
     };
