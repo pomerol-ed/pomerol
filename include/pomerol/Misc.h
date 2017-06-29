@@ -248,10 +248,10 @@ inline bool __is_zero(const T& in, RealType threshold = std::numeric_limits<Real
  *
  * \par Two-particle Green's function:
  * \f[ \chi_{ijkl}(\omega_{n_1},\omega_{n_2};\omega_{n_3},\omega_{n_1}+\omega_{n_2}-\omega_{n_3}) =
- *   -\int_0^\beta
- *      \langle\mathbf{T} c_i(\tau_1)c_j(\tau_2)c^+_k(\tau_3)c^+_l(0) \rangle
- *      \exp(i\omega_{n_1}\tau_1+i\omega_{n_2}\tau_2-i\omega_{n_3}\tau_3)
- *    d\tau_1 d\tau_2 d\tau_3
+ *   \int_0^\beta
+ *     \langle\mathbf{T} c_i(\tau_1)c_j(\tau_2)c^+_k(\tau_3)c^+_l(0) \rangle
+ *     \exp(i\omega_{n_1}\tau_1+i\omega_{n_2}\tau_2-i\omega_{n_3}\tau_3)
+ *   d\tau_1 d\tau_2 d\tau_3
  * \f]
  *
  * \par The Wick part of a two-particle Green's function:
