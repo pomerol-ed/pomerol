@@ -1,25 +1,15 @@
-#
-# Pomerol CMake configuration file
-#
-
 cmake_minimum_required (VERSION 2.8.12)
-# title and version of the project
 project (pomerol CXX)
 message ("\n${PROJECT_NAME} configuration\n")
 string(TOUPPER ${PROJECT_NAME} PROJECT_CAPNAME)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-set(POMEROL_VERSION 1.0)
-# check ./cmake/CommondDefs.cmake for all of the macro/functions below
+set(POMEROL_VERSION 1.0) #Remove?
 include(CommonDefs)
 
-# Disable build in source
 no_source_builds()
-# Print build type
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
-# rpath fix
 fix_rpath()
-# set static or dynamic linking
 set_linking_type()
 
 # C++11 (optional)
