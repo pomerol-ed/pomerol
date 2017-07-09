@@ -75,9 +75,7 @@ set (pomerol_sources
     pomerol/GFContainer
     pomerol/TwoParticleGFPart
     pomerol/TwoParticleGF
-    pomerol/TwoParticleGFContainer
     pomerol/Vertex4
-    pomerol/Vertex4Container
 )
 
 configure_file(${CMAKE_SOURCE_DIR}/include/pomerol.h.in ${CMAKE_BINARY_DIR}/include/pomerol.h)
