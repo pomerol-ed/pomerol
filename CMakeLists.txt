@@ -4,7 +4,7 @@ message ("\n${PROJECT_NAME} configuration\n")
 string(TOUPPER ${PROJECT_NAME} PROJECT_CAPNAME)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-set(POMEROL_VERSION 1.0) #Remove?
+set(POMEROL_VERSION 1.2)
 include(CommonDefs)
 
 no_source_builds()
@@ -48,7 +48,7 @@ else(POMEROL_USE_OPENMP)
 endif(POMEROL_USE_OPENMP)
 
 configure_file("${PROJECT_SOURCE_DIR}/include/pomerol/first_include.h.in" "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h")
-install(FILES "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h" DESTINATION include/pomerol) 
+install(FILES "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h" DESTINATION include/pomerol)
 
 set (pomerol_sources
     mpi_dispatcher/mpi_dispatcher

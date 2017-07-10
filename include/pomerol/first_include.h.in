@@ -1,5 +1,8 @@
 #ifndef __INCLUDE_FIRST_INCLUDE_H_a83f82k
 
+// Pomerol version
+#define POMEROL_VERSION "@POMEROL_VERSION@"
+
 // openmp
 #cmakedefine POMEROL_USE_OPENMP
 
