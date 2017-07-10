@@ -19,6 +19,6 @@
 #include "pomerol/FieldOperatorContainer.h"
 #include "pomerol/DensityMatrix.h"
 #include "pomerol/GFContainer.h"
-#include "pomerol/TwoParticleGFContainer.h"
+#include "pomerol/TwoParticleGF.h"
 
 #endif
