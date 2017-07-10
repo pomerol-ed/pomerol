@@ -1,4 +1,4 @@
-/** \file src/LatticePresets.h
+/** \file include/pomerol/LatticePresets.h
 ** \brief A set of preset methods to simplify Pomerol::Lattice entering. 
 ** 
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)

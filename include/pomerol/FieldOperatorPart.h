@@ -1,4 +1,4 @@
-/** \file src/FieldOperatorPart.h
+/** \file include/pomerol/FieldOperatorPart.h
 ** \brief Declaration of FieldOperatorPart, CreationOperatorPart and AnnihilationOperatorPart classes.
 **
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)

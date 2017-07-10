@@ -1,4 +1,4 @@
-/** \file src/DensityMatrixPart.h
+/** \file include/pomerol/DensityMatrixPart.h
 ** \brief Part (diagonal block) of a density matrix.
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)

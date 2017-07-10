@@ -1,4 +1,4 @@
-/** \file src/HamiltonianPart.h
+/** \file include/pomerol/HamiltonianPart.h
 ** \brief Declaration of the HamiltonianPart class.
 **
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)

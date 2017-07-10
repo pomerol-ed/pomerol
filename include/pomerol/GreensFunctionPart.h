@@ -1,4 +1,4 @@
-/** \file src/GreensFunctionPart.h
+/** \file include/pomerol/GreensFunctionPart.h
 ** \brief Part of a Green's function for a given set of quantum numbers.
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)

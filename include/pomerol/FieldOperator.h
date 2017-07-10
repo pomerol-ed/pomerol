@@ -1,4 +1,4 @@
-/** \file src/FieldOperator.h
+/** \file include/pomerol/FieldOperator.h
 ** \brief Declaration of field operators : creation and annihilation operators.
 ** 
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)

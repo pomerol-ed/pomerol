@@ -1,4 +1,4 @@
-/** \file src/TwoParticleGFPart.h
+/** \file include/pomerol/TwoParticleGFPart.h
 ** \brief Part of a two-particle Green's function.
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)

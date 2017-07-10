@@ -1,29 +1,5 @@
-//
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
-//
-// Copyright (C) 2010-2012 Andrey Antipov <Andrey.E.Antipov@gmail.com>
-// Copyright (C) 2010-2012 Igor Krivenko <Igor.S.Krivenko@gmail.com>
-//
-// pomerol is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// pomerol is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
-
-
-/** \file src/DensityMatrix.h
-** \brief A storage of the matrix elements of the hamiltonian in Fock basis, provides eigenvalues and eigenfunctions
-** 
-** \author Andrey Antipov(Andrey.E.Antipov@gmail.com)
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
+/** \file include/mpi_dispatcher/mpi_skel.hpp
+** \brief Declares mpi_skel - a structure to simplify master-slave calculations
 */
 
 #ifndef __INCLUDE_MPISKEL_H
@@ -63,6 +39,7 @@ struct mpi_skel {
     std::map<pMPI::JobId, pMPI::WorkerId> run(const boost::mpi::communicator& comm, bool VerboseOutput = true);
 };
 
+/// Master-slave task schedule, associates jobs with workers and executes mpi_dispatcher to run the simulation
 template <typename WrapType>
 std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const boost::mpi::communicator& comm, bool VerboseOutput)
 {
@@ -78,19 +55,10 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const boost::mpi::
         // prepare one Master on a root process for distributing parts.size() jobs
         std::vector<pMPI::JobId> job_order(parts.size());
         for (size_t i=0; i<job_order.size(); i++) job_order[i] = i;
-//        for (size_t i=0; i<job_order.size(); i++) std::cout << job_order[i] << " " << std::flush; std::cout << std::endl; // DEBUG
-//        for (size_t i=0; i<job_order.size(); i++) std::cout << parts[job_order[i]].complexity << " " << std::flush; std::cout << std::endl; // DEBUG
-        //std::sort(job_order.begin(), job_order.end(), [&](const int &l, const int &r){return (parts[l].complexity > parts[r].complexity);});
-
-        int BOOST_LOCAL_FUNCTION_TPL(bind this_, std::size_t l, std::size_t r) { 
+        int BOOST_LOCAL_FUNCTION_TPL(bind this_, std::size_t l, std::size_t r) {
             return (this_->parts[l].complexity > this_->parts[r].complexity); } BOOST_LOCAL_FUNCTION_NAME_TPL(comp1) 
         std::sort(job_order.begin(), job_order.end(), comp1);
-
-
- //[&](const int &l, const int &r){return (parts[l].complexity > parts[r].complexity);});
-//        for (size_t i=0; i<job_order.size(); i++) std::cout << job_order[i] << " " << std::flush; std::cout << std::endl; // DEBUG
-//        for (size_t i=0; i<job_order.size(); i++) std::cout << parts[job_order[i]].complexity << " " << std::flush; std::cout << std::endl; // DEBUG
-        disp.reset(new pMPI::MPIMaster(comm,job_order,true)); 
+        disp.reset(new pMPI::MPIMaster(comm,job_order,true));
     };
 
     comm.barrier();
@@ -99,7 +67,6 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const boost::mpi::
     for (pMPI::MPIWorker worker(comm,ROOT);!worker.is_finished();) {
         if (rank == ROOT) disp->order(); 
         worker.receive_order(); 
-        //DEBUG((worker.Status == WorkerTag::Pending));
         if (worker.is_working()) { // for a specific worker
             JobId p = worker.current_job();
             if (VerboseOutput) std::cout << "["<<p+1<<"/"<<parts.size()<< "] P" << comm.rank() 

@@ -1,3 +1,9 @@
+/** \file include/mpi_dispatcher/mpi_dispatcher.hpp
+** \brief Implementation of a master-slave computation using unbloced MPI Communication that allows to utilize
+** master as a computation node
+*/
+
+
 #pragma once
 
 #include <boost/mpi.hpp>

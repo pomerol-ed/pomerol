@@ -1,4 +1,4 @@
-/** \file src/GreensFunction.h
+/** \file include/pomerol/GreensFunction.h
 ** \brief Thermal Green's function.
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)

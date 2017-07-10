@@ -1,4 +1,4 @@
-/** \file src/IndexContainer2.h
+/** \file include/pomerol/IndexContainer2.h
 ** \brief A parent abstract class for 2-index objects
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)

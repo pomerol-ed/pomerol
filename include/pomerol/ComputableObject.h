@@ -1,4 +1,4 @@
-/** \file src/ComputableObject.h
+/** \file include/pomerol/ComputableObject.h
 ** \brief A parent abstract class for all complex computable objects, i.e. Greens Function, Density matrix, Two Particle GF etc.
 ** 
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)

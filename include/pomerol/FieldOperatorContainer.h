@@ -1,4 +1,4 @@
-/** \file src/FieldOperatorContainer.h
+/** \file include/pomerol/FieldOperatorContainer.h
 ** \brief A container for either creation or annihilation operators in eigenvector basis
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)

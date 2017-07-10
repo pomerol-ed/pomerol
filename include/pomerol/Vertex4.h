@@ -1,4 +1,4 @@
-/** \file src/Vertex4.h
+/** \file include/pomerol/Vertex4.h
 ** \brief Irreducible two-particle vertex in the Matsubara representation.
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)

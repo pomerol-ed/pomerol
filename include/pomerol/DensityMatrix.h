@@ -1,4 +1,4 @@
-/** \file src/DensityMatrix.h
+/** \file include/pomerol/DensityMatrix.h
 ** \brief Density matrix of the grand canonical ensemble.
 ** 
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)

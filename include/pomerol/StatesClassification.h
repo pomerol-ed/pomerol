@@ -1,4 +1,4 @@
-/** \file src/StatesClassification.h
+/** \file include/pomerol/StatesClassification.h
 ** \brief Declaration of BlockNumber and StatesClassification classes
 **
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)

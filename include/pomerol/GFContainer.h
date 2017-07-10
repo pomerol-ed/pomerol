@@ -1,4 +1,4 @@
-/** \file src/GFContainer.h
+/** \file include/pomerol/GFContainer.h
 ** \brief Storage of GF for multiple indices (obsolete, remove)
 **
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)

@@ -1,4 +1,4 @@
-/** \file src/TwoParticleGF.h
+/** \file include/pomerol/TwoParticleGF.h
 ** \brief Two-particle Green's function in the Matsubara representation.
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)

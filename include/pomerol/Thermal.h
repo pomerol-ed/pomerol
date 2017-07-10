@@ -1,4 +1,4 @@
-/** \file src/Thermal.h
+/** \file include/pomerol/Thermal.h
 ** \brief Thermal object (an object which has sense only for a finite temperature).
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)

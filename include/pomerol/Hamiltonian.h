@@ -1,4 +1,4 @@
-/** \file src/Hamiltonian.h
+/** \file include/pomerol/Hamiltonian.h
 ** \brief A storage of the matrix elements of the hamiltonian in Fock basis, provides eigenvalues and eigenfunctions
 ** 
 ** \author Andrey Antipov(Andrey.E.Antipov@gmail.com)

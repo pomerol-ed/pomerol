@@ -1,4 +1,4 @@
-/** \file src/Lattice.h
+/** \file include/pomerol/Lattice.h
 ** \brief A lattice handler.
 **
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)

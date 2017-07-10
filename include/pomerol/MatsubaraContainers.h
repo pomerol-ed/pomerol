@@ -1,4 +1,4 @@
-/** \file src/MatsubaraContainers.h
+/** \file include/pomerol/MatsubaraContainers.h
 ** \brief Templated container classes designed to store values of functions of Matsubara frequencies.
 **
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
