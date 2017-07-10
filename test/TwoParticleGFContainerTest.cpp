@@ -39,7 +39,6 @@
 #include "FieldOperatorContainer.h"
 #include "GFContainer.h"
 #include "TwoParticleGFContainer.h"
-#include "Vertex4Container.h"
 
 #include<cstdlib>
 

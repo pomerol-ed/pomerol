@@ -9,7 +9,7 @@
 
 #include"Misc.h"
 #include"GFContainer.h"
-#include"TwoParticleGFContainer.h"
+#include"TwoParticleGF.h"
 #include"MatsubaraContainers.h"
 
 namespace Pomerol{

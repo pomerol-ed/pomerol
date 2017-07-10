@@ -20,5 +20,6 @@
 #include "pomerol/DensityMatrix.h"
 #include "pomerol/GFContainer.h"
 #include "pomerol/TwoParticleGF.h"
+#include "pomerol/TwoParticleGFContainer.h"
 
 #endif
