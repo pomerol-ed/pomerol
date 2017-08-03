@@ -107,8 +107,8 @@ void Hamiltonian::computeGroundEnergy()
     RealVectorType LEV(size_t(S.NumberOfBlocks()));
     BlockNumber NumberOfBlocks = parts.size();
     for (BlockNumber CurrentBlock=0; CurrentBlock<NumberOfBlocks; CurrentBlock++) {
-	    LEV(CurrentBlock) = parts[CurrentBlock]->getMinimumEigenvalue();
-        }
+	    LEV(CurrentBlock,0) = parts[CurrentBlock]->getMinimumEigenvalue();
+    }
     GroundEnergy=LEV.minCoeff();
 }
 
