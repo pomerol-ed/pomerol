@@ -1,7 +1,7 @@
 #include "pomerol/Symmetrizer.h"
 #include "pomerol/OperatorPresets.h"
 
-namespace Pomerol { 
+namespace Pomerol {
 
 //
 //Symmetrizer::IndexPermutation
@@ -9,10 +9,10 @@ namespace Pomerol {
 
 Symmetrizer::IndexPermutation::IndexPermutation(const DynamicIndexCombination &in):N(in.getNumberOfIndices())
 {
-    if ( checkConsistency(in) && checkIrreducibility(in) ) { 
+    if ( checkConsistency(in) && checkIrreducibility(in) ) {
         Combinations.push_back(new DynamicIndexCombination(in));
         CycleLength=0;
-        calculateCycleLength();    
+        calculateCycleLength();
     }
     else throw ( DynamicIndexCombination::exWrongIndices()) ;
 }
@@ -21,12 +21,12 @@ bool Symmetrizer::IndexPermutation::checkConsistency(const DynamicIndexCombinati
 {
 
     for (ParticleIndex i=0; i<N; ++i) {
-        if (in.getIndex(i)>=N) { 
-            ERROR("Indices in IndexPermutation should belong to the interval 0..N-1"); 
+        if (in.getIndex(i)>=N) {
+            ERROR("Indices in IndexPermutation should belong to the interval 0..N-1");
             return false;
             };
         for (ParticleIndex j=i+1; j<N; ++j)
-            if (in.getIndex(i)==in.getIndex(j)) { 
+            if (in.getIndex(i)==in.getIndex(j)) {
             ERROR("Found equal indices in given combination");
             return false;
             }
@@ -60,13 +60,13 @@ bool Symmetrizer::IndexPermutation::checkIrreducibility(const DynamicIndexCombin
                     };
                 current_index++;
             }
-        else { 
-            ERROR("Permutation " << in << " is reducible"); 
+        else {
+            ERROR("Permutation " << in << " is reducible");
             return false; // Once an index which is not a part of previously checked loop is found means a permutation is reducible.
             };
     };
     if ( trivial_indices.size() == N ) { ERROR("Identity permutation " << in << " is rejected."); return false; } // reject trivial identity permutation.
-    return true; 
+    return true;
 }
 
 void Symmetrizer::IndexPermutation::calculateCycleLength()
@@ -77,7 +77,7 @@ void Symmetrizer::IndexPermutation::calculateCycleLength()
     DynamicIndexCombination next(N);
     for (ParticleIndex i=0; i<N; ++i) trivial[i] = i;
     bool exit_loop=false;
-    while (!exit_loop) { 
+    while (!exit_loop) {
         for (ParticleIndex i=0; i<N; ++i) next[i]=current[current[i]];
         CycleLength++;
         exit_loop = ( next == initial || next == trivial );
@@ -99,38 +99,38 @@ const char* Symmetrizer::IndexPermutation::exEqualIndices::what() const throw(){
     return "Cannot have equal indices in the Symmetrizer index combination";
 };
 
-// 
+//
 // Symmetrizer::QuantumNumbers
 //
 
-Symmetrizer::QuantumNumbers::QuantumNumbers(int amount):amount(amount),numbers( std::vector<MelemType>(amount) ),NumbersHash(numbers_hash_generator(numbers)) 
+Symmetrizer::QuantumNumbers::QuantumNumbers(int amount):amount(amount),numbers( std::vector<MelemType>(amount) ),NumbersHash(numbers_hash_generator(numbers))
 {
 };
 
 bool Symmetrizer::QuantumNumbers::set ( int pos, MelemType val )
-{ 
-    if (pos<amount) { 
-        numbers[pos] = val; 
-        NumbersHash = numbers_hash_generator(numbers); 
+{
+    if (pos<amount) {
+        numbers[pos] = val;
+        NumbersHash = numbers_hash_generator(numbers);
         }
-    else { 
+    else {
         ERROR("Tried to insert element " << val << " to wrong position " << pos << " in " << __PRETTY_FUNCTION__ );
-        return false; 
+        return false;
         };
-    return true; 
+    return true;
 }
 
-bool Symmetrizer::QuantumNumbers::operator< (const Symmetrizer::QuantumNumbers& rhs) const 
+bool Symmetrizer::QuantumNumbers::operator< (const Symmetrizer::QuantumNumbers& rhs) const
 {
     return (NumbersHash<rhs.NumbersHash);
 }
 
-bool Symmetrizer::QuantumNumbers::operator== (const Symmetrizer::QuantumNumbers& rhs) const 
+bool Symmetrizer::QuantumNumbers::operator== (const Symmetrizer::QuantumNumbers& rhs) const
 {
     return (NumbersHash==rhs.NumbersHash);
 }
 
-bool Symmetrizer::QuantumNumbers::operator!= (const Symmetrizer::QuantumNumbers& rhs) const 
+bool Symmetrizer::QuantumNumbers::operator!= (const Symmetrizer::QuantumNumbers& rhs) const
 {
     return (NumbersHash!=rhs.NumbersHash);
 }
@@ -140,9 +140,9 @@ bool Symmetrizer::QuantumNumbers::operator!= (const Symmetrizer::QuantumNumbers&
 //
 
 Symmetrizer::Symmetrizer(const IndexClassification &IndexInfo, const IndexHamiltonian &Storage):
-    ComputableObject(), 
-    IndexInfo(IndexInfo), 
-    Storage(Storage), 
+    ComputableObject(),
+    IndexInfo(IndexInfo),
+    Storage(Storage),
     NSymmetries(0)
 {
 }
@@ -162,7 +162,7 @@ const std::vector<boost::shared_ptr<Operator> >& Symmetrizer::getOperations() co
 bool Symmetrizer::checkSymmetry(const Operator &in)
 {
     boost::shared_ptr<Operator> OP1 ( new Operator(in));
-    if (Storage.commutes(*OP1)) { 
+    if (Storage.commutes(*OP1)) {
         Operations.push_back(OP1);
         NSymmetries++;
         return true;
@@ -170,28 +170,40 @@ bool Symmetrizer::checkSymmetry(const Operator &in)
     else return false;
 }
 
+void Symmetrizer::compute(const std::vector<Operator>& integrals_of_motion)
+{
+    if (Status>=Computed) return;
+
+    for(int i = 0; i < integrals_of_motion.size(); ++i) {
+        const Operator& in = integrals_of_motion[i];
+        if (checkSymmetry(in)) INFO("[ H ," << in << " ]=0");
+    }
+
+    Status = Computed;
+}
+
 void Symmetrizer::compute(bool ignore_symmetries)
 {
-    IndexSize = IndexInfo.getIndexSize(); 
+    IndexSize = IndexInfo.getIndexSize();
     if (Status>=Computed) return;
     if (!ignore_symmetries) {
         // Check particle number conservation
         Operator op_n = Pomerol::OperatorPresets::N(IndexSize);
-        if (this->checkSymmetry(op_n)) INFO("[ H ,"<< op_n << " ]=0");
+        if (this->checkSymmetry(op_n)) INFO("[ H ," << op_n << " ]=0");
 
         // Check Sz conservation
         bool valid_sz = true;
-        for (ParticleIndex i=0; i<IndexSize && valid_sz; ++i) 
+        for (ParticleIndex i=0; i<IndexSize && valid_sz; ++i)
             valid_sz = valid_sz && (IndexInfo.getInfo(i).Spin == up || IndexInfo.getInfo(i).Spin == down);
         if (valid_sz) {
             std::vector<ParticleIndex> SpinUpIndices;
-            for (ParticleIndex i=0; i<IndexSize; ++i) { 
+            for (ParticleIndex i=0; i<IndexSize; ++i) {
                 unsigned short Spin = IndexInfo.getInfo(i).Spin;
                 if ( Spin == up ) SpinUpIndices.push_back(i);
-                } 
+            }
             Operator op_sz = Pomerol::OperatorPresets::Sz(IndexSize, SpinUpIndices);
-            if (this->checkSymmetry(op_sz)) INFO("[ H ,"<< op_sz << " ]=0");
-            };
+            if (this->checkSymmetry(op_sz)) INFO("[ H ," << op_sz << " ]=0");
+        };
     };
 
     Status = Computed;
@@ -211,5 +223,5 @@ std::ostream& operator<<(std::ostream& output, const Symmetrizer::QuantumNumbers
     return output;
 }
 
-} // end of namespace Pomerol 
+} // end of namespace Pomerol
 
