@@ -162,17 +162,24 @@ const std::vector<boost::shared_ptr<Operator> >& Symmetrizer::getOperations() co
 bool Symmetrizer::checkSymmetry(const Operator &in)
 {
     boost::shared_ptr<Operator> OP1 ( new Operator(in));
-    if (Storage.commutes(*OP1)) {
-        Operations.push_back(OP1);
-        NSymmetries++;
-        return true;
+    // Check that OP1 is an integrals of motion
+    if (!Storage.commutes(*OP1)) return false;
+
+    // Check that all Fock states are eigenstates of OP1
+    // Otherwise, it's unsuitable for Hilbert space partitioning
+    for(ParticleIndex i = 0; i < IndexSize; ++i) {
+        if (!OperatorPresets::n(i).commutes(*OP1)) return false;
     }
-    else return false;
+
+    Operations.push_back(OP1);
+    NSymmetries++;
+    return true;
 }
 
 void Symmetrizer::compute(const std::vector<Operator>& integrals_of_motion)
 {
     if (Status>=Computed) return;
+    IndexSize = IndexInfo.getIndexSize();
 
     for(int i = 0; i < integrals_of_motion.size(); ++i) {
         const Operator& in = integrals_of_motion[i];
@@ -184,8 +191,8 @@ void Symmetrizer::compute(const std::vector<Operator>& integrals_of_motion)
 
 void Symmetrizer::compute(bool ignore_symmetries)
 {
-    IndexSize = IndexInfo.getIndexSize();
     if (Status>=Computed) return;
+    IndexSize = IndexInfo.getIndexSize();
     if (!ignore_symmetries) {
         // Check particle number conservation
         Operator op_n = Pomerol::OperatorPresets::N(IndexSize);
