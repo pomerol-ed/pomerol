@@ -18,12 +18,17 @@ void FieldOperatorPart::compute()
 
     const std::vector<FockState>& toStates = S.getFockStates(to);
     const std::vector<FockState>& fromStates = S.getFockStates(from);
-    MatrixType tempElements(toStates.size(), fromStates.size());
-    tempElements.setZero();
+
+    MatrixType RightMat(fromStates.size(), fromStates.size());
+    MatrixType LeftMat(toStates.size(), fromStates.size());
+    RightMat.setZero();
+    LeftMat.setZero();
 
     /* Rotation is done in the following way:
      * C_{nm} = \sum_{lk} U^{+}_{nl} C_{lk} U_{km} = \sum_{lk} U^{*}_{ln}O_{lk}U_{km},
-     * where the actual sum starts from k state. Big letters denote global states, smaller - InnerQuantumStates. */
+     * where the actual sum starts from k state. Big letters denote global states, smaller - InnerQuantumStates.
+     * We use the fact each column of O_{lk} has only one nonzero elements.
+     * */
     for (std::vector<FockState>::const_iterator CurrentState = fromStates.begin();
                                                 CurrentState < fromStates.end(); CurrentState++) {
 	    FockState K=*CurrentState;
@@ -38,28 +43,22 @@ void FieldOperatorPart::compute()
 	        if ( L!=ERROR_FOCK_STATE && std::abs(sign)>std::numeric_limits<RealType>::epsilon() ) {
 		        InnerQuantumState l=S.getInnerState(L), k=S.getInnerState(K);
 
-                MatrixType Un(toStates.size(),1);
                 for (InnerQuantumState n=0; n<toStates.size(); n++) {
 #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
-                    Un(n,0) = std::conj(HTo.getMatrixElement(l,n));
+                    LeftMat(n,k) = std::conj(HTo.getMatrixElement(l,n));
 #else
-                    Un(n,0) = HTo.getMatrixElement(l,n);
+                    LeftMat(n,k) = HTo.getMatrixElement(l,n);
 #endif
                 }
 
-                MatrixType Um(1,fromStates.size());
                 for (InnerQuantumState m=0; m<fromStates.size(); m++) {
-                    Um(0,m) = HFrom.getMatrixElement(k,m);
+                    RightMat(k,m) = RealType(sign) * HFrom.getMatrixElement(k,m);
                 }
-                tempElements += RealType(sign) * Un * Um;
 	        }
         }
     }
 
-//    for (std::vector<QuantumState>::const_iterator CurrentState = toStates.begin();
-//                                                   CurrentState < toStates.end(); CurrentState++)
-    elementsRowMajor = RowMajorMatrixType(toStates.size(),fromStates.size());
-    elementsRowMajor = tempElements.sparseView(MatrixElementTolerance);
+    elementsRowMajor = (LeftMat * RightMat).sparseView(MatrixElementTolerance);
     #ifndef POMEROL_COMPLEX_MATRIX_ELEMENTS
     elementsRowMajor.prune(MatrixElementTolerance);
     #endif
