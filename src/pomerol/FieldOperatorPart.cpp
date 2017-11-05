@@ -16,11 +16,10 @@ void FieldOperatorPart::compute()
     BlockNumber to = HTo.getBlockNumber();
     BlockNumber from = HFrom.getBlockNumber();
 
-    //DynamicSparseMatrixType tempElements(toStates.size(),fromStates.size());
-
     const std::vector<FockState>& toStates = S.getFockStates(to);
     const std::vector<FockState>& fromStates = S.getFockStates(from);
-    std::vector<Eigen::Triplet<MelemType> > tempElements;
+    MatrixType tempElements(toStates.size(), fromStates.size());
+    tempElements.setZero();
 
     /* Rotation is done in the following way:
      * C_{nm} = \sum_{lk} U^{+}_{nl} C_{lk} U_{km} = \sum_{lk} U^{*}_{ln}O_{lk}U_{km},
@@ -38,20 +37,21 @@ void FieldOperatorPart::compute()
             #endif
 	        if ( L!=ERROR_FOCK_STATE && std::abs(sign)>std::numeric_limits<RealType>::epsilon() ) {
 		        InnerQuantumState l=S.getInnerState(L), k=S.getInnerState(K);
-		        for (InnerQuantumState n=0; n<toStates.size(); n++) { // Not the best solution, but no major overhead for dense matrices.
-		            if(std::abs(HTo.getMatrixElement(l,n)) > std::numeric_limits<RealType>::epsilon()) {
-			            for (InnerQuantumState m=0; m<fromStates.size(); m++) {
-                            #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
-                            MelemType C_nm = std::conj(HTo.getMatrixElement(l,n))*RealType(sign)*HFrom.getMatrixElement(k,m);
-                            #else
-			                MelemType C_nm = HTo.getMatrixElement(l,n)*RealType(sign)*HFrom.getMatrixElement(k,m);
-                            #endif
-			                if (std::abs(C_nm)>MatrixElementTolerance) {
-				                tempElements.push_back( Eigen::Triplet<MelemType> ( n,m, C_nm));
-			                }
-			            }
-		            }
-		        }
+
+                MatrixType Un(toStates.size(),1);
+                for (InnerQuantumState n=0; n<toStates.size(); n++) {
+#ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
+                    Un(n,0) = std::conj(HTo.getMatrixElement(l,n));
+#else
+                    Un(n,0) = HTo.getMatrixElement(l,n);
+#endif
+                }
+
+                MatrixType Um(1,fromStates.size());
+                for (InnerQuantumState m=0; m<fromStates.size(); m++) {
+                    Um(0,m) = HFrom.getMatrixElement(k,m);
+                }
+                tempElements += RealType(sign) * Un * Um;
 	        }
         }
     }
@@ -59,7 +59,7 @@ void FieldOperatorPart::compute()
 //    for (std::vector<QuantumState>::const_iterator CurrentState = toStates.begin();
 //                                                   CurrentState < toStates.end(); CurrentState++)
     elementsRowMajor = RowMajorMatrixType(toStates.size(),fromStates.size());
-    elementsRowMajor.setFromTriplets( tempElements.begin(), tempElements.end());
+    elementsRowMajor = tempElements.sparseView(MatrixElementTolerance);
     #ifndef POMEROL_COMPLEX_MATRIX_ELEMENTS
     elementsRowMajor.prune(MatrixElementTolerance);
     #endif
