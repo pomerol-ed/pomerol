@@ -29,6 +29,8 @@ class DensityMatrix : public Thermal, public ComputableObject
     const Hamiltonian &H;
     /** A vector of pointers to parts (every part corresponds to a part of the Hamiltonian). */
     std::vector<DensityMatrixPart*> parts;
+    /** A vector of bool: true if the block has not been truncated. */
+    std::vector<bool> block_retained;
 
 public:
     /** Constructor.
@@ -69,6 +71,12 @@ public:
 
     /** Returns an averaged value of the double occupancy. */
     RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const;
+
+    /** Truncate such blocks that do not include any states having larger weight than Tolerance. */
+    void truncateBlocks(RealType Tolerance, bool verbose=true);
+
+    /** Return true if the block has not been truncated. Always true if function truncateBlocks has not been called. */
+    bool isRetained(BlockNumber in) const;
 };
 
 }; // end of namespace Pomerol

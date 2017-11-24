@@ -94,5 +94,47 @@ RealType DensityMatrix::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex
     NN += (*iter)->getAverageDoubleOccupancy(i,j);
     return NN;
 };
- 
+
+void DensityMatrix::truncateBlocks(RealType Tolerance, bool verbose)
+{
+    // init vector<bool> at false
+    block_retained.resize(S.NumberOfBlocks());
+    for(int i=0; i<block_retained.size(); i++)  block_retained[i]=false;
+
+    // check if each state has weight larger than Tolerance,
+    // and set true for the corresponding block
+    RealType sum=0;  // sum of weights (to be 1.0)
+    int n_states_relevant=0;  // count states having weight larger than Tolerance
+    for (QuantumState i=0; i<S.getNumberOfStates(); i++){
+        RealType w = getWeight(i);
+        if ( w > Tolerance ){
+            block_retained[S.getBlockNumber(i)] = true;
+            sum += w;
+            ++n_states_relevant;
+        }
+    }
+
+    if(verbose){
+        // count blocks and states retained
+        int n_blocks_retained=0, n_states_retained=0;
+        for(BlockNumber i=0; i<S.NumberOfBlocks(); i++)
+            if(isRetained(i)){
+                ++n_blocks_retained;
+                n_states_retained += S.getBlockSize(i);
+            }
+        INFO("Number of blocks retained: " << n_blocks_retained);
+        INFO("Number of states retained: " << n_states_retained);
+        INFO("Number of states having weight larger than Tolerance: " << n_states_relevant);
+        INFO("Total weight of the trucated states: " << sum-1.0);
+    }
+}
+
+bool DensityMatrix::isRetained(BlockNumber in) const
+{
+    if (int(in) < block_retained.size())  // if function truncateBlocks has been called
+        return block_retained[in];
+    else
+        return true;
+}
+
 } // end of namespace Pomerol

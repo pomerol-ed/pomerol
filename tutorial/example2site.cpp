@@ -222,6 +222,8 @@ int main(int argc, char* argv[])
     rho.prepare();
     // Actually compute the density matrix.
     rho.compute();
+    // Truncate blocks that have only small contributions
+    // rho.truncateBlocks(1e-15);
 
     /* Lehmanns representation of the Green's function required creation and
      * annihilation operators, calculated in the basis of eigenstates of the
@@ -287,4 +289,3 @@ void print_section (const std::string& str)
   std::cout << std::string(str.size(),'=') << std::endl;
     };
 }
-
