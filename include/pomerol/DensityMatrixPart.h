@@ -37,6 +37,9 @@ class DensityMatrixPart : public Thermal
     /** The contribution to the partition function. */
     RealType Z_part;
 
+    /** It is true if this part has not been truncated. */
+    bool retained;
+
 public:
     /** Constructor.
      * \param[in] hpart A reference to a part of the Hamiltonian.
@@ -73,6 +76,12 @@ public:
 
     /** Returns the partition function of this part. */
     RealType getPartialZ(void) const;
+
+    /** Truncates this part if it does not include any states having larger weight than Tolerance. */
+    void truncate(RealType Tolerance);
+
+    /** Returns true if this part has not been truncated. */
+    bool isRetained() const;
 };
 
 } // end of namespace Pomerol

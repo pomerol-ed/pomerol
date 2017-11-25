@@ -3,7 +3,7 @@
 namespace Pomerol{
 
 DensityMatrix::DensityMatrix(const StatesClassification& S, const Hamiltonian& H, RealType beta) : 
-    Thermal(beta), ComputableObject(), S(S), H(H), block_retained(S.NumberOfBlocks(),true)
+    Thermal(beta), ComputableObject(), S(S), H(H)
 {}
 
 DensityMatrix::~DensityMatrix()
@@ -97,24 +97,11 @@ RealType DensityMatrix::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex
 
 void DensityMatrix::truncateBlocks(RealType Tolerance, bool verbose)
 {
-    // fill vector block_retained with false, and assign true later
-    std::fill(block_retained.begin(), block_retained.end(), false);
-
-    // check if each state has weight larger than Tolerance,
-    // and set true for the corresponding block
-    RealType sum=0;  // sum of weights (to be 1.0)
-    int n_states_relevant=0;  // count states having weight larger than Tolerance
-    for (QuantumState i=0; i<S.getNumberOfStates(); i++){
-        RealType w = getWeight(i);
-        if ( w > Tolerance ){
-            block_retained[S.getBlockNumber(i)] = true;
-            sum += w;
-            ++n_states_relevant;
-        }
-    }
+    for(std::vector<DensityMatrixPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+        (*iter)->truncate(Tolerance);
 
     if(verbose){
-        // count blocks and states retained
+        // count retained blocks and states included in those blocks
         int n_blocks_retained=0, n_states_retained=0;
         for(BlockNumber i=0; i<S.NumberOfBlocks(); i++)
             if(isRetained(i)){
@@ -123,14 +110,12 @@ void DensityMatrix::truncateBlocks(RealType Tolerance, bool verbose)
             }
         INFO("Number of blocks retained: " << n_blocks_retained);
         INFO("Number of states retained: " << n_states_retained);
-        INFO("Number of states having weight larger than Tolerance: " << n_states_relevant);
-        INFO("Total weight of the trucated states: " << sum-1.0);
     }
 }
 
 bool DensityMatrix::isRetained(BlockNumber in) const
 {
-    return block_retained[in];
+    return parts[in]->isRetained();
 }
 
 } // end of namespace Pomerol

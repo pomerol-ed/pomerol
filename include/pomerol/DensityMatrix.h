@@ -29,8 +29,6 @@ class DensityMatrix : public Thermal, public ComputableObject
     const Hamiltonian &H;
     /** A vector of pointers to parts (every part corresponds to a part of the Hamiltonian). */
     std::vector<DensityMatrixPart*> parts;
-    /** A vector of bool: true if the block has not been truncated. */
-    std::vector<bool> block_retained;
 
 public:
     /** Constructor.
