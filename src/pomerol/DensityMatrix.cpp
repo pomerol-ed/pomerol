@@ -3,7 +3,7 @@
 namespace Pomerol{
 
 DensityMatrix::DensityMatrix(const StatesClassification& S, const Hamiltonian& H, RealType beta) : 
-    Thermal(beta), ComputableObject(), S(S), H(H)
+    Thermal(beta), ComputableObject(), S(S), H(H), block_retained(S.NumberOfBlocks(),true)
 {}
 
 DensityMatrix::~DensityMatrix()
@@ -97,9 +97,8 @@ RealType DensityMatrix::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex
 
 void DensityMatrix::truncateBlocks(RealType Tolerance, bool verbose)
 {
-    // init vector<bool> at false
-    block_retained.resize(S.NumberOfBlocks());
-    for(int i=0; i<block_retained.size(); i++)  block_retained[i]=false;
+    // fill vector block_retained with false, and assign true later
+    std::fill(block_retained.begin(), block_retained.end(), false);
 
     // check if each state has weight larger than Tolerance,
     // and set true for the corresponding block
@@ -131,10 +130,7 @@ void DensityMatrix::truncateBlocks(RealType Tolerance, bool verbose)
 
 bool DensityMatrix::isRetained(BlockNumber in) const
 {
-    if (int(in) < block_retained.size())  // if function truncateBlocks has been called
-        return block_retained[in];
-    else
-        return true;
+    return block_retained[in];
 }
 
 } // end of namespace Pomerol
