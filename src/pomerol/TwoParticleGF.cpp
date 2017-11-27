@@ -77,6 +77,12 @@ void TwoParticleGF::prepare()
                   // < LeftIndices[3] | CX4 | LeftIndices[0] >
                   // Select a relevant 'world stripe' (sequence of blocks).
                   if(getRightIndex(p,1,LeftIndices[1]) == LeftIndices[2] && LeftIndices[1].isCorrect() && LeftIndices[2].isCorrect()){
+                      { // check if retained blocks are included. If not, do not push.
+                          bool include_block_retained=false;
+                          for(int k=0; k<4; k++)
+                              if (DM.isRetained(LeftIndices[k]))  include_block_retained=true;
+                          if(!include_block_retained)  continue;
+                      }
                       // DEBUG
                       /*DEBUG("new part: "  << S.getBlockInfo(LeftIndices[0]) << " "
                                           << S.getBlockInfo(LeftIndices[1]) << " "
@@ -202,4 +208,3 @@ unsigned short TwoParticleGF::getPermutationNumber ( const Permutation3& in )
 }
 
 } // end of namespace Pomerol
-

@@ -2,7 +2,7 @@
 
 namespace Pomerol{
 DensityMatrixPart::DensityMatrixPart(const StatesClassification &S, const HamiltonianPart& hpart, RealType beta, RealType GroundEnergy) :
-    Thermal(beta), S(S), hpart(hpart), GroundEnergy(GroundEnergy), weights(hpart.getSize())
+    Thermal(beta), S(S), hpart(hpart), GroundEnergy(GroundEnergy), weights(hpart.getSize()), retained(true)
 {}
 
 RealType DensityMatrixPart::computeUnnormalized(void)
@@ -86,6 +86,22 @@ RealType DensityMatrixPart::getAverageDoubleOccupancy(ParticleIndex i, ParticleI
 RealType DensityMatrixPart::getWeight(InnerQuantumState s) const
 {
     return weights(s);
+}
+
+void DensityMatrixPart::truncate(RealType Tolerance)
+{
+    retained = false;
+    InnerQuantumState partSize = weights.size();
+    for(InnerQuantumState s = 0; s < partSize; ++s)
+        if ( weights(s) > Tolerance ){
+            retained = true;
+            break;
+        }
+}
+
+bool DensityMatrixPart::isRetained() const
+{
+    return retained;
 }
 
 } // end of namespace Pomerol

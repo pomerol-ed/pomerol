@@ -69,6 +69,12 @@ public:
 
     /** Returns an averaged value of the double occupancy. */
     RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const;
+
+    /** Truncate such blocks that do not include any states having larger weight than Tolerance. */
+    void truncateBlocks(RealType Tolerance, bool verbose=true);
+
+    /** Return true if the block has not been truncated. Always true if function truncateBlocks has not been called. */
+    bool isRetained(BlockNumber in) const;
 };
 
 }; // end of namespace Pomerol
