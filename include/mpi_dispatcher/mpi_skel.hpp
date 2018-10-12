@@ -8,6 +8,7 @@
 #include <boost/mpi.hpp>
 #include <boost/local_function.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/serialization/vector.hpp>
 
 //#include <type_traits>
 #include "mpi_dispatcher.hpp"
