@@ -33,6 +33,7 @@ namespace OperatorPresets {
     Operator c(ParticleIndex);
     Operator c_dag(ParticleIndex);
     Operator n(ParticleIndex);
+    Operator n_offdiag(ParticleIndex, ParticleIndex);
 };
 
 class Operator :
@@ -265,7 +266,8 @@ public:
     friend Operator Pomerol::OperatorPresets::c(ParticleIndex);
     friend Operator Pomerol::OperatorPresets::c_dag(ParticleIndex);
     friend Operator Pomerol::OperatorPresets::n(ParticleIndex);
-    
+    friend Operator Pomerol::OperatorPresets::n_offdiag(ParticleIndex, ParticleIndex);
+
 protected:
     
     // Use a template parameter instead of std::complex<double>
@@ -358,17 +360,29 @@ inline Operator c_dag(ParticleIndex index) {
 
 inline Operator n(ParticleIndex index) {
     typedef Operator n_t;
-    
+
     n_t tmp;
     n_t::monomial_t m;
     m.push_back(boost::make_tuple(n_t::creation, index));
     m.push_back(boost::make_tuple(n_t::annihilation, index));
     tmp.monomials.insert(std::make_pair(m,1.0));
-    
+
     return tmp;
 }
-} // end of namespace Pomerol::OperatorPresets
 
+inline Operator n_offdiag(ParticleIndex index1, ParticleIndex index2) {
+    typedef Operator n_t;
+
+    n_t tmp;
+    n_t::monomial_t m;
+    m.push_back(boost::make_tuple(n_t::creation, index1));
+    m.push_back(boost::make_tuple(n_t::annihilation, index2));
+    tmp.monomials.insert(std::make_pair(m,1.0));
+
+    return tmp;
+}
+
+} // end of namespace Pomerol::OperatorPresets
 } // end of namespace Pomerol
 
 #endif

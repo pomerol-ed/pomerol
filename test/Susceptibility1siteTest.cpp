@@ -119,14 +119,21 @@ int main(int argc, char* argv[])
     Operators.computeAll();
 
     ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
-    
+    ParticleIndex up_index = IndexInfo.getIndex("A",0,up);
+
     FieldOperator::BlocksBimap c_map = Operators.getCreationOperator(down_index).getBlockMapping();
     for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
         {
             INFO(c_map_it->first << "->" << c_map_it->second);
         }
 
+    Operator s_plus = OperatorPresets::n_offdiag(up_index, down_index);
+    Operator s_minus = OperatorPresets::n_offdiag(down_index, up_index);
+    INFO("S^+ = " << s_plus);
+    INFO("S^- = " << s_minus);
+
     Susceptibility Chi(S,H,Operators.getAnnihilationOperator(down_index), Operators.getCreationOperator(down_index), rho);
+//    Susceptibility Chi(S,H, s_plus, s_minus, rho);
 
     Chi.prepare();
     Chi.compute();
@@ -137,7 +144,5 @@ int main(int argc, char* argv[])
         result = (result && compare(Chi(n),Gref(n,beta)));
         }
     if (!result) return EXIT_FAILURE;
-    return EXIT_SUCCESS;
-
     return EXIT_SUCCESS;
 }
