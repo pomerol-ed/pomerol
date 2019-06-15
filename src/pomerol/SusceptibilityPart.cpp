@@ -24,14 +24,14 @@ std::ostream& operator<<(std::ostream& out, const SusceptibilityPart::Term& T)
     return out;
 }
 
-SusceptibilityPart::SusceptibilityPart( const AnnihilationOperatorPart& C, const CreationOperatorPart& CX,
+SusceptibilityPart::SusceptibilityPart( const AnnihilationOperatorPart& A, const CreationOperatorPart& B,
                                         const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
                                         const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
                                         Thermal(DMpartInner),
                                         Terms(Term::Compare(1e-8), Term::IsNegligible(1e-8)),
                                         HpartInner(HpartInner), HpartOuter(HpartOuter),
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
-                                        C(C), CX(CX),
+                                        A(A), B(B),
                                         MatrixElementTolerance(1e-8),
                                         ReduceResonanceTolerance(1e-8),
                                         ReduceTolerance(1e-8)
@@ -41,40 +41,40 @@ void SusceptibilityPart::compute(void)
 {
     Terms.clear();
 
-    // Blocks (submatrices) of C and CX
-    const RowMajorMatrixType& Cmatrix = C.getRowMajorValue();
-    const ColMajorMatrixType& CXmatrix = CX.getColMajorValue();
-    QuantumState outerSize = Cmatrix.outerSize();
+    // Blocks (submatrices) of A and B
+    const RowMajorMatrixType& Amatrix = A.getRowMajorValue();
+    const ColMajorMatrixType& Bmatrix = B.getColMajorValue();
+    QuantumState outerSize = Amatrix.outerSize();
 
     // Iterate over all values of the outer index.
-    // TODO: should be optimized - skip empty rows of Cmatrix and empty columns of CXmatrix.
+    // TODO: should be optimized - skip empty rows of Amatrix and empty columns of Bmatrix.
     for(QuantumState index1=0; index1<outerSize; ++index1){
-        // <index1|C|Cinner><CXinner|CX|index1>
-        RowMajorMatrixType::InnerIterator Cinner(Cmatrix,index1);
-        ColMajorMatrixType::InnerIterator CXinner(CXmatrix,index1);
+        // <index1|A|Ainner><Binner|B|index1>
+        RowMajorMatrixType::InnerIterator Ainner(Amatrix,index1);
+        ColMajorMatrixType::InnerIterator Binner(Bmatrix,index1);
 
-        // While we are not at the last column of Cmatrix or at the last row of CXmatrix.
-        while(Cinner && CXinner){
-            QuantumState C_index2 = Cinner.index();
-            QuantumState CX_index2 = CXinner.index();
+        // While we are not at the last column of Amatrix or at the last row of Bmatrix.
+        while(Ainner && Binner){
+            QuantumState A_index2 = Ainner.index();
+            QuantumState B_index2 = Binner.index();
 
             // A meaningful matrix element
-            if(C_index2 == CX_index2){
-                ComplexType Residue = Cinner.value() * CXinner.value() *
-                                      (DMpartOuter.getWeight(index1) + DMpartInner.getWeight(C_index2));
+            if(A_index2 == B_index2){
+                ComplexType Residue = Ainner.value() * Binner.value() *
+                                      (DMpartOuter.getWeight(index1) + DMpartInner.getWeight(A_index2));
                 if(abs(Residue) > MatrixElementTolerance) // Is the residue relevant?
                 {
                     // Create a new term and append it to the list.
-                    RealType Pole = HpartInner.getEigenValue(C_index2) - HpartOuter.getEigenValue(index1);
+                    RealType Pole = HpartInner.getEigenValue(A_index2) - HpartOuter.getEigenValue(index1);
                     Terms.add_term(Term(Residue, Pole));
-                    //DEBUG("<" << C.S.getFockState(HpartInner.getBlockNumber(), C_index2) << "|" << Residue << "|" <<  C.S.getFockState(HpartInner.getBlockNumber(),CX_index2) << ">" );
+                    //DEBUG("<" << C.S.getFockState(HpartInner.getBlockNumber(), A_index2) << "|" << Residue << "|" <<  C.S.getFockState(HpartInner.getBlockNumber(),B_index2) << ">" );
                 };
-                ++Cinner;   // The next non-zero element
-                ++CXinner;  // The next non-zero element
+                ++Ainner;   // The next non-zero element
+                ++Binner;  // The next non-zero element
             }else{
                 // Chasing: one index runs down the other index
-                if(CX_index2 < C_index2) for(;QuantumState(CXinner.index())<C_index2; ++CXinner);
-                else for(;QuantumState(Cinner.index())<CX_index2; ++Cinner);
+                if(B_index2 < A_index2) for(;QuantumState(Binner.index())<A_index2; ++Binner);
+                else for(;QuantumState(Ainner.index())<B_index2; ++Ainner);
             }
         }
     }

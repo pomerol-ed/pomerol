@@ -38,9 +38,9 @@ class Susceptibility : public Thermal, public ComputableObject {
     /** A reference to a Hamiltonian. */
     const Hamiltonian& H;
     /** A reference to an annihilation operator. */
-    const AnnihilationOperator& C;
+    const AnnihilationOperator& A;
     /** A reference to a creation operator. */
-    const CreationOperator& CX;
+    const CreationOperator& B;
     /** A reference to a density matrix. */
     const DensityMatrix& DM;
 
@@ -56,28 +56,28 @@ public:
      /** Constructor.
      * \param[in] S A reference to a states classification object.
      * \param[in] H A reference to a Hamiltonian.
-     * \param[in] C A reference to an annihilation operator.
-     * \param[in] CX A reference to a creation operator.
+     * \param[in] A A reference to an annihilation operator.
+     * \param[in] B A reference to a creation operator.
      * \param[in] DM A reference to a density matrix.
      */
     Susceptibility(const StatesClassification& S, const Hamiltonian& H,
-                   const AnnihilationOperator& C, const CreationOperator& CX, const DensityMatrix& DM);
+                   const AnnihilationOperator& A, const CreationOperator& B, const DensityMatrix& DM);
     /** Copy-constructor.
      * \param[in] GF Susceptibility object to be copied.
      */
-    Susceptibility(const Susceptibility& GF);
+    Susceptibility(const Susceptibility& Chi);
     /** Destructor. */
     ~Susceptibility();
 
-    /** Chooses relevant parts of C and CX and allocates resources for the parts of the Green's function. */
+    /** Chooses relevant parts of A and B and allocates resources for the parts of the Green's function. */
     void prepare(void);
     /** Actually computes the parts and fills the internal cache of precomputed values.
      * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
      */
     void compute();
 
-    /** Returns the 'bit' (index) of the operator C or CX.
-     * \param[in] Position Use C for Position==0 and CX for Position==1.
+    /** Returns the 'bit' (index) of the operator A or B.
+     * \param[in] Position Use A for Position==0 and B for Position==1.
      */
     unsigned short getIndex(size_t Position) const;
 

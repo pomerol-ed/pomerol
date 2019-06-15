@@ -3,16 +3,16 @@
 namespace Pomerol{
 
 Susceptibility::Susceptibility(const StatesClassification& S, const Hamiltonian& H,
-                               const AnnihilationOperator& C, const CreationOperator& CX,
+                               const AnnihilationOperator& A, const CreationOperator& B,
                                const DensityMatrix& DM) :
-    Thermal(DM.beta), ComputableObject(), S(S), H(H), C(C), CX(CX), DM(DM), Vanishing(true)
+    Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), B(B), DM(DM), Vanishing(true)
 {
 }
 
-Susceptibility::Susceptibility(const Susceptibility& GF) :
-    Thermal(GF.beta), ComputableObject(GF), S(GF.S), H(GF.H), C(GF.C), CX(GF.CX), DM(GF.DM), Vanishing(GF.Vanishing)
+Susceptibility::Susceptibility(const Susceptibility& Chi) :
+    Thermal(Chi.beta), ComputableObject(Chi), S(Chi.S), H(Chi.H), A(Chi.A), B(Chi.B), DM(Chi.DM), Vanishing(Chi.Vanishing)
 {
-    for(std::list<SusceptibilityPart*>::const_iterator iter = GF.parts.begin(); iter != GF.parts.end(); iter++)
+    for(std::list<SusceptibilityPart*>::const_iterator iter = Chi.parts.begin(); iter != Chi.parts.end(); iter++)
         parts.push_back(new SusceptibilityPart(**iter));
 }
 
@@ -26,38 +26,38 @@ void Susceptibility::prepare(void)
 {
     if(Status>=Prepared) return;
 
-    // Find out non-trivial blocks of C and CX.
-    FieldOperator::BlocksBimap const& CNontrivialBlocks = C.getBlockMapping();
-    FieldOperator::BlocksBimap const& CXNontrivialBlocks = CX.getBlockMapping();
+    // Find out non-trivial blocks of A and B.
+    FieldOperator::BlocksBimap const& ANontrivialBlocks = A.getBlockMapping();
+    FieldOperator::BlocksBimap const& BNontrivialBlocks = B.getBlockMapping();
 
-    FieldOperator::BlocksBimap::left_const_iterator Citer = CNontrivialBlocks.left.begin();
-    FieldOperator::BlocksBimap::right_const_iterator CXiter = CXNontrivialBlocks.right.begin();
+    FieldOperator::BlocksBimap::left_const_iterator Aiter = ANontrivialBlocks.left.begin();
+    FieldOperator::BlocksBimap::right_const_iterator Biter = BNontrivialBlocks.right.begin();
 
-    while(Citer != CNontrivialBlocks.left.end() && CXiter != CXNontrivialBlocks.right.end()){
-        // <Cleft|C|Cright><CXleft|CX|CXright>
-        BlockNumber Cleft = Citer->first;
-        BlockNumber Cright = Citer->second;
-        BlockNumber CXleft = CXiter->second;
-        BlockNumber CXright = CXiter->first;
+    while(Aiter != ANontrivialBlocks.left.end() && Biter != BNontrivialBlocks.right.end()){
+        // <Aleft|A|Aright><Bleft|B|Bright>
+        BlockNumber Aleft = Aiter->first;
+        BlockNumber Aright = Aiter->second;
+        BlockNumber Bleft = Biter->second;
+        BlockNumber Bright = Biter->first;
 
 
         // Select a relevant 'world stripe' (sequence of blocks).
-        if(Cleft == CXright && Cright == CXleft){
-        //DEBUG(S.getQuantumNumbers(Cleft) << "|" << S.getQuantumNumbers(Cright) << "||" << S.getQuantumNumbers(CXleft) << "|" << S.getQuantumNumbers(CXright) );
+        if(Aleft == Bright && Aright == Bleft){
+        //DEBUG(S.getQuantumNumbers(Aleft) << "|" << S.getQuantumNumbers(Aright) << "||" << S.getQuantumNumbers(Bleft) << "|" << S.getQuantumNumbers(Bright) );
             // check if retained blocks are included. If not, do not push.
-            if ( DM.isRetained(Cleft) || DM.isRetained(Cright) )
+            if ( DM.isRetained(Aleft) || DM.isRetained(Aright) )
                 parts.push_back(new SusceptibilityPart(
-                              (AnnihilationOperatorPart&)C.getPartFromLeftIndex(Cleft),
-                              (CreationOperatorPart&)CX.getPartFromRightIndex(CXright),
-                              H.getPart(Cright), H.getPart(Cleft),
-                              DM.getPart(Cright), DM.getPart(Cleft)));
+                              (AnnihilationOperatorPart&)A.getPartFromLeftIndex(Aleft),
+                              (CreationOperatorPart&)B.getPartFromRightIndex(Bright),
+                              H.getPart(Aright), H.getPart(Aleft),
+                              DM.getPart(Aright), DM.getPart(Aleft)));
         }
 
-        unsigned long CleftInt = Cleft;
-        unsigned long CXrightInt = CXright;
+        unsigned long AleftInt = Aleft;
+        unsigned long BrightInt = Bright;
 
-        if(CleftInt <= CXrightInt) Citer++;
-        if(CleftInt >= CXrightInt) CXiter++;
+        if(AleftInt <= BrightInt) Aiter++;
+        if(AleftInt >= BrightInt) Biter++;
     }
     if (parts.size() > 0) Vanishing = false;
 
@@ -79,12 +79,12 @@ void Susceptibility::compute()
 unsigned short Susceptibility::getIndex(size_t Position) const
 {
     switch(Position){
-        case 0: return C.getIndex();
-        case 1: return CX.getIndex();
+        case 0: return A.getIndex();
+        case 1: return B.getIndex();
         default: assert(0);
     }
     throw std::logic_error("Susceptibility :: wrong operator");
-    return C.getIndex();
+    return A.getIndex();
 }
 
 bool Susceptibility::isVanishing(void) const
