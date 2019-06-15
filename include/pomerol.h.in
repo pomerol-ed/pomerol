@@ -21,5 +21,6 @@
 #include "pomerol/GFContainer.h"
 #include "pomerol/TwoParticleGF.h"
 #include "pomerol/TwoParticleGFContainer.h"
+#include "pomerol/Susceptibility.h"
 
 #endif

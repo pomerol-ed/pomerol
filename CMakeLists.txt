@@ -77,6 +77,8 @@ set (pomerol_sources
     pomerol/TwoParticleGF
     pomerol/TwoParticleGFContainer
     pomerol/Vertex4
+    pomerol/SusceptibilityPart
+    pomerol/Susceptibility
 )
 
 configure_file(${CMAKE_SOURCE_DIR}/include/pomerol.h.in ${CMAKE_BINARY_DIR}/include/pomerol.h)
