@@ -24,7 +24,7 @@ namespace Pomerol{
  * Exact definition:
  * 
  * \f[
- *      G(\omega_n) = -\int_0^\beta \langle\mathbf{T}c_i(\tau)c^+_j(0)\rangle e^{i\omega_n\tau} d\tau
+ *      \chi(\omega_n) = \int_0^\beta \langle\mathbf{T} A(\tau) B(0)\rangle e^{i\omega_n\tau} d\tau
  * \f]
  * 
  * It is actually a container class for a collection of parts (most of real calculations
@@ -99,8 +99,9 @@ public:
     bool isVanishing(void) const;
 };
 
+// BOSON: bosononic Matsubara frequency
 inline ComplexType Susceptibility::operator()(long int MatsubaraNumber) const {
-    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1)); }
+    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber)); }
 
 inline ComplexType Susceptibility::operator()(ComplexType z) const {
     if(Vanishing) return 0;

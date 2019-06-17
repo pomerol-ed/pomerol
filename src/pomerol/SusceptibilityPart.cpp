@@ -4,11 +4,12 @@ namespace Pomerol{
 
 SusceptibilityPart::Term::Term(ComplexType Residue, RealType Pole) :
     Residue(Residue), Pole(Pole) {};
-ComplexType SusceptibilityPart::Term::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
+// BOSON: minus sign before Residue according to the definition \chi(tau) = < A(tau) B >
+ComplexType SusceptibilityPart::Term::operator()(ComplexType Frequency) const { return -Residue/(Frequency - Pole); }
 
 ComplexType SusceptibilityPart::Term::operator()(RealType tau, RealType beta) const {
-    return Pole > 0 ? -Residue*exp(-tau*Pole)/(1 + exp(-beta*Pole)) :
-                      -Residue*exp((beta-tau)*Pole)/(exp(beta*Pole) + 1);
+    return Pole > 0 ? Residue*exp(-tau*Pole)/(1 - exp(-beta*Pole)) :
+                      Residue*exp((beta-tau)*Pole)/(exp(beta*Pole) - 1);
 }
 
 inline
@@ -60,8 +61,9 @@ void SusceptibilityPart::compute(void)
 
             // A meaningful matrix element
             if(A_index2 == B_index2){
+                // BOSON: minus sign before the second term
                 ComplexType Residue = Ainner.value() * Binner.value() *
-                                      (DMpartOuter.getWeight(index1) + DMpartInner.getWeight(A_index2));
+                                      (DMpartOuter.getWeight(index1) - DMpartInner.getWeight(A_index2));
                 if(abs(Residue) > MatrixElementTolerance) // Is the residue relevant?
                 {
                     // Create a new term and append it to the list.

@@ -45,6 +45,8 @@ using namespace Pomerol;
 
 RealType U = 1.0;
 RealType mu = 0.4;
+RealType h_field = 0.01;
+//RealType h_field = 0;
 
 bool compare(ComplexType a, ComplexType b)
 {
@@ -52,17 +54,26 @@ bool compare(ComplexType a, ComplexType b)
 }
 
 // Reference Green's function
+// <S_+; S_->
 ComplexType Gref(int n, RealType beta)
 {
-    RealType omega = M_PI*(2*n+1)/beta;
+    RealType omega = M_PI*(2*n)/beta;
 
     RealType w0 = 1.0;
-    RealType w1 = exp(beta*mu);
+    RealType w_u = exp(beta*(mu+h_field));
+    RealType w_d = exp(beta*(mu-h_field));
     RealType w2 = exp(-beta*(-2*mu+U));
-    RealType Z = w0 + 2*w1 +w2;
-    w0 /= Z; w1 /= Z; w2 /= Z;
+    RealType Z = w0 + w_u + w_d + w2;
+    w0 /= Z; w2 /= Z; w_u /= Z; w_d /= Z;
 
-    return (w0+w1)/(I*omega+mu) + (w1+w2)/(I*omega+mu-U);
+    ComplexType g = 0;
+    if( std::abs(w_u - w_d) < 1e-8 ){  // E_up == E_down
+        if(n==0)  g += w_u * beta;
+    }
+    else{
+        g += -(w_u - w_d) / (I*omega - 2*h_field);
+    }
+    return g;
 }
 
 void print_section (const std::string& str)
@@ -80,6 +91,11 @@ int main(int argc, char* argv[])
     
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
+
+    // h_field (n_down - n_up)
+    // addHopping double-counts diagonal term, and divide h_field by 2.
+    LatticePresets::addHopping(&L, "A", "A", -h_field/2., 0, 0, up);  // up
+    LatticePresets::addHopping(&L, "A", "A", h_field/2., 0, 0, down);  // down
 
     LatticePresets::addCoulombS(&L, "A", U, -mu);
     print_section("Sites");
@@ -107,7 +123,7 @@ int main(int argc, char* argv[])
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
     H.compute(world);
- 
+
     RealType beta = 10.0;
 
     DensityMatrix rho(S,H,beta);
@@ -127,19 +143,9 @@ int main(int argc, char* argv[])
             INFO(c_map_it->first << "->" << c_map_it->second);
         }
 
-//    Operator s_plus = OperatorPresets::n_offdiag(up_index, down_index);
-//    Operator s_minus = OperatorPresets::n_offdiag(down_index, up_index);
-//    INFO("S^+ = " << s_plus);
-//    INFO("S^- = " << s_minus);
-
-//    QuadraticOperator s_plus(Operators.getCreationOperator(up_index), Operators.getAnnihilationOperator(down_index));
-//    QuadraticOperator s_minus(Operators.getCreationOperator(down_index), Operators.getAnnihilationOperator(up_index));
-
     QuadraticOperator s_plus(IndexInfo, S, H, up_index, down_index);
     QuadraticOperator s_minus(IndexInfo, S, H, down_index, up_index);
 
-//    s_plus.prepare();
-//    s_plus.compute();
     std::vector<QuadraticOperator*> quad_ops{&s_plus, &s_minus};
     for(auto op : quad_ops){
         op->prepare();
