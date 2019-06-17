@@ -45,8 +45,8 @@ using namespace Pomerol;
 
 RealType U = 1.0;
 RealType mu = 0.4;
-RealType h_field = 0.01;
-//RealType h_field = 0;
+//RealType h_field = 0.01;
+RealType h_field = 0;
 
 bool compare(ComplexType a, ComplexType b)
 {
@@ -67,7 +67,7 @@ ComplexType Gref(int n, RealType beta)
     w0 /= Z; w2 /= Z; w_u /= Z; w_d /= Z;
 
     ComplexType g = 0;
-    if( std::abs(w_u - w_d) < 1e-8 ){  // E_up == E_down
+    if( abs(w_u - w_d) < 1e-8 ){  // E_up == E_down
         if(n==0)  g += w_u * beta;
     }
     else{

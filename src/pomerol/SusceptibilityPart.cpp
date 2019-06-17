@@ -35,7 +35,8 @@ SusceptibilityPart::SusceptibilityPart( const QuadraticOperatorPart& A, const Qu
                                         A(A), B(B),
                                         MatrixElementTolerance(1e-8),
                                         ReduceResonanceTolerance(1e-8),
-                                        ReduceTolerance(1e-8)
+                                        ReduceTolerance(1e-8),
+                                        ZeroPoleWeight(0)
 {}
 
 void SusceptibilityPart::compute(void)
@@ -61,16 +62,21 @@ void SusceptibilityPart::compute(void)
 
             // A meaningful matrix element
             if(A_index2 == B_index2){
-                // BOSON: minus sign before the second term
-                ComplexType Residue = Ainner.value() * Binner.value() *
-                                      (DMpartOuter.getWeight(index1) - DMpartInner.getWeight(A_index2));
-                if(abs(Residue) > MatrixElementTolerance) // Is the residue relevant?
-                {
-                    // Create a new term and append it to the list.
-                    RealType Pole = HpartInner.getEigenValue(A_index2) - HpartOuter.getEigenValue(index1);
-                    Terms.add_term(Term(Residue, Pole));
-                    //DEBUG("<" << C.S.getFockState(HpartInner.getBlockNumber(), A_index2) << "|" << Residue << "|" <<  C.S.getFockState(HpartInner.getBlockNumber(),B_index2) << ">" );
-                };
+                RealType Pole = HpartInner.getEigenValue(A_index2) - HpartOuter.getEigenValue(index1);
+                if(abs(Pole) < ReduceResonanceTolerance){
+                    // BOSON: pole at zero energy
+                    ZeroPoleWeight += Ainner.value() * Binner.value() * DMpartOuter.getWeight(index1);
+                }
+                else{
+                    // BOSON: minus sign before the second term
+                    ComplexType Residue = Ainner.value() * Binner.value() *
+                                          (DMpartOuter.getWeight(index1) - DMpartInner.getWeight(A_index2));
+                    if(abs(Residue) > MatrixElementTolerance) // Is the residue relevant?
+                    {
+                        // Create a new term and append it to the list.
+                        Terms.add_term(Term(Residue, Pole));
+                    }
+                }
                 ++Ainner;   // The next non-zero element
                 ++Binner;  // The next non-zero element
             }else{

@@ -102,6 +102,9 @@ class SusceptibilityPart : public Thermal
     /** A matrix element with magnitude less than this value is treated as zero. */
     const RealType MatrixElementTolerance; // 1e-8;
 
+    /** BOSON: The weight of zero-energy pole. **/
+    RealType ZeroPoleWeight;
+
 public:
 
     /** Constructor.
@@ -142,11 +145,14 @@ public:
 std::ostream& operator<< (std::ostream& out, const SusceptibilityPart::Term& T);
 
 // Inline call operators
+// BOSON: bosononic Matsubara frequency
 inline ComplexType SusceptibilityPart::operator()(long MatsubaraNumber) const {
-    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1)); }
+    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber)); }
 
 inline ComplexType SusceptibilityPart::operator()(ComplexType z) const {
-    return Terms(z);
+    // BOSON: add contribution of zero-energy pole
+    ComplexType ZeroPole = abs(z) < 1e-15 ? ZeroPoleWeight*beta : 0;
+    return Terms(z) + ZeroPole;
 }
 
 inline ComplexType SusceptibilityPart::of_tau(RealType tau) const {
