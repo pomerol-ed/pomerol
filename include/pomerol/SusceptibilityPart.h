@@ -34,10 +34,10 @@ class SusceptibilityPart : public Thermal
     /** A reference to a part of a density matrix (the part corresponding to HpartOuter). */
     const DensityMatrixPart& DMpartOuter;
 
-    /** A reference to a part of an annihilation operator. */
-    const AnnihilationOperatorPart& A;
-    /** A reference to a part of a creation operator. */
-    const CreationOperatorPart& B;
+    /** A reference to a part of a quadratic operator. */
+    const QuadraticOperatorPart& A;
+    /** A reference to a part of a quadratic operator. */
+    const QuadraticOperatorPart& B;
 
     /** Every term is a fraction \f$ \frac{R}{z - P} \f$. */
     struct Term {
@@ -105,14 +105,14 @@ class SusceptibilityPart : public Thermal
 public:
 
     /** Constructor.
-     * \param[in] A A reference to a part of an annihilation operator.
-     * \param[in] B A reference to a part of a creation operator.
+     * \param[in] A A reference to a part of a quadratic operator.
+     * \param[in] B A reference to a part of a quadratic operator.
      * \param[in] HpartInner A reference to a part of the Hamiltonian (inner index).
      * \param[in] HpartOuter A reference to a part of the Hamiltonian (outer index).
      * \param[in] DMpartInner A reference to a part of the density matrix (inner index).
      * \param[in] DMpartOuter A reference to a part of the density matrix (outer index).
      */
-    SusceptibilityPart(const AnnihilationOperatorPart& A, const CreationOperatorPart& B,
+    SusceptibilityPart(const QuadraticOperatorPart& A, const QuadraticOperatorPart& B,
                        const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
                        const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter);
 

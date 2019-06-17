@@ -131,4 +131,19 @@ const AnnihilationOperatorPart& CreationOperatorPart::transpose() const
     return *C;
 }
 
+//QuadraticOperatorPart::QuadraticOperatorPart()
+//{
+////    O = new Pomerol::OperatorPresets::n_offdiag(PIndex);
+//
+//}
+
+QuadraticOperatorPart::QuadraticOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S,
+                                             const HamiltonianPart &HFrom, const HamiltonianPart &HTo,
+                                             ParticleIndex PIndex1, ParticleIndex PIndex2) :
+        FieldOperatorPart(IndexInfo,S,HFrom,HTo,9999), Index1(PIndex1), Index2(PIndex2)
+        // Index=9999 dummy
+{
+    O = new Pomerol::OperatorPresets::N_offdiag(PIndex1, PIndex2);
+}
+
 } // end of namespace Pomerol

@@ -37,18 +37,18 @@ class Susceptibility : public Thermal, public ComputableObject {
     const StatesClassification& S;
     /** A reference to a Hamiltonian. */
     const Hamiltonian& H;
-    /** A reference to an annihilation operator. */
-    const AnnihilationOperator& A;
-    /** A reference to a creation operator. */
-    const CreationOperator& B;
+    /** A reference to a quadratic operator. */
+    const QuadraticOperator& A;
+    /** A reference to a quadratic operator. */
+    const QuadraticOperator& B;
     /** A reference to a density matrix. */
     const DensityMatrix& DM;
 
     /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
     bool Vanishing;
 
-    /** A list of pointers to parts (every part corresponds to a part of the annihilation operator
-     * and a part of the creation operator).
+    /** A list of pointers to parts (every part corresponds to a part of the quadratic operator A
+     * and a part of the quadratic operator B).
      */
     std::list<SusceptibilityPart*> parts;
 
@@ -56,12 +56,12 @@ public:
      /** Constructor.
      * \param[in] S A reference to a states classification object.
      * \param[in] H A reference to a Hamiltonian.
-     * \param[in] A A reference to an annihilation operator.
-     * \param[in] B A reference to a creation operator.
+     * \param[in] A A reference to an operator.
+     * \param[in] B A reference to an operator.
      * \param[in] DM A reference to a density matrix.
      */
     Susceptibility(const StatesClassification& S, const Hamiltonian& H,
-                   const AnnihilationOperator& A, const CreationOperator& B, const DensityMatrix& DM);
+                   const QuadraticOperator& A, const QuadraticOperator& B, const DensityMatrix& DM);
     /** Copy-constructor.
      * \param[in] GF Susceptibility object to be copied.
      */
@@ -76,7 +76,7 @@ public:
      */
     void compute();
 
-    /** Returns the 'bit' (index) of the operator A or B.
+    /** Returns the 'bit' (index) of the quadratic operator A or B.
      * \param[in] Position Use A for Position==0 and B for Position==1.
      */
     unsigned short getIndex(size_t Position) const;

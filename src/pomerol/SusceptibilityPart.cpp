@@ -24,7 +24,7 @@ std::ostream& operator<<(std::ostream& out, const SusceptibilityPart::Term& T)
     return out;
 }
 
-SusceptibilityPart::SusceptibilityPart( const AnnihilationOperatorPart& A, const CreationOperatorPart& B,
+SusceptibilityPart::SusceptibilityPart( const QuadraticOperatorPart& A, const QuadraticOperatorPart& B,
                                         const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
                                         const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
                                         Thermal(DMpartInner),

@@ -183,4 +183,43 @@ QuantumNumbers FieldOperator::mapsTo(const QuantumNumbers& in) const
     return S.getQuantumNumbers(out);
 }
 
+QuadraticOperator::QuadraticOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index1, ParticleIndex Index2) :
+        FieldOperator(IndexInfo,S,H,9999), Index1(Index1), Index2(Index2)
+        // Index=9999 dummy
+{
+    O = new Pomerol::OperatorPresets::N_offdiag(Index1, Index2);
+}
+
+//QuadraticOperator::QuadraticOperator(const CreationOperator &CX, const AnnihilationOperator &C) :
+//    FieldOperator(CX.IndexInfo, CX.S, CX.H, CX.Index)
+//{
+//    // assuming
+//    // CX.IndexInfo == C.IndexInfo
+//    // CX.S == C.S
+//    // CX.H == C.H
+//    // CX.Index == C.Index
+//}
+
+void QuadraticOperator::prepare(void)
+{
+    if (Status >= Prepared) return;
+    size_t Size = parts.size();
+    for (BlockNumber RightIndex=0; RightIndex<S.NumberOfBlocks(); RightIndex++){
+        // TODO: check if mapsTo() works. O is not c or c^+ but n_offdiag
+        BlockNumber LeftIndex = mapsTo(RightIndex);
+        DEBUG(RightIndex << "->" << LeftIndex);
+        if (LeftIndex.isCorrect()){
+            FieldOperatorPart *Part = new QuadraticOperatorPart(IndexInfo, S,
+                    H.getPart(RightIndex), H.getPart(LeftIndex), Index1, Index2);
+            parts.push_back(Part);
+            mapPartsFromRight[RightIndex]=Size;
+            mapPartsFromLeft[LeftIndex]=Size;
+            LeftRightBlocks.insert(BlockMapping(LeftIndex,RightIndex));
+            Size++;
+        }
+    }
+    INFO("QuadraticOperator_" << Index1 << "_" << Index2 <<": " << Size << " parts will be computed");
+    Status = Prepared;
+}
+
 } // end of namespace Pomerol

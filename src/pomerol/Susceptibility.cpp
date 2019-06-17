@@ -3,7 +3,7 @@
 namespace Pomerol{
 
 Susceptibility::Susceptibility(const StatesClassification& S, const Hamiltonian& H,
-                               const AnnihilationOperator& A, const CreationOperator& B,
+                               const QuadraticOperator& A, const QuadraticOperator& B,
                                const DensityMatrix& DM) :
     Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), B(B), DM(DM), Vanishing(true)
 {
@@ -47,8 +47,8 @@ void Susceptibility::prepare(void)
             // check if retained blocks are included. If not, do not push.
             if ( DM.isRetained(Aleft) || DM.isRetained(Aright) )
                 parts.push_back(new SusceptibilityPart(
-                              (AnnihilationOperatorPart&)A.getPartFromLeftIndex(Aleft),
-                              (CreationOperatorPart&)B.getPartFromRightIndex(Bright),
+                              (QuadraticOperatorPart&)A.getPartFromLeftIndex(Aleft),
+                              (QuadraticOperatorPart&)B.getPartFromRightIndex(Bright),
                               H.getPart(Aright), H.getPart(Aleft),
                               DM.getPart(Aright), DM.getPart(Aleft)));
         }

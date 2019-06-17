@@ -111,6 +111,7 @@ class CreationOperator : public FieldOperator
 {
     friend class AnnihilationOperator;
     friend class FieldOperatorContainer;
+    friend class QuadraticOperator;
 public:
     /* Returns hermitian conjugate of current operator */
     AnnihilationOperator& transpose(void);
@@ -129,6 +130,7 @@ class AnnihilationOperator : public FieldOperator
 {
     friend class CreationOperator;
     friend class FieldOperatorContainer;
+    friend class QuadraticOperator;
 public:
     /* Returns hermitian conjugate of current operator */
     CreationOperator& transpose(void);
@@ -142,6 +144,22 @@ public:
      * \param[in] Index An index of an operator
      */
     AnnihilationOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index);
+};
+
+class QuadraticOperator : public FieldOperator
+{
+//    friend class CreationOperator;
+//    friend class AnnihilationOperator;
+
+protected:
+    /** Indices of the operator. Used instead of FieldOperator::Index */
+    ParticleIndex Index1, Index2;
+
+public:
+    void prepare();
+
+    QuadraticOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index1, ParticleIndex Index2);
+//    QuadraticOperator(const CreationOperator &CX, const AnnihilationOperator &C);
 };
 
 } // end of namespace Pomerol

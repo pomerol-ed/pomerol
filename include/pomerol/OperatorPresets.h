@@ -52,6 +52,13 @@ public:
     C(ParticleIndex index):Operator(c(index)){};
 };
 
+class N_offdiag : public Operator {
+private:
+    ParticleIndex index1, index2;
+public:
+    N_offdiag(ParticleIndex index1, ParticleIndex index2):Operator(n_offdiag(index1, index2)){};
+};
+
 
 
 } // end of namespace OperatorPresets

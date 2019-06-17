@@ -127,13 +127,26 @@ int main(int argc, char* argv[])
             INFO(c_map_it->first << "->" << c_map_it->second);
         }
 
-    Operator s_plus = OperatorPresets::n_offdiag(up_index, down_index);
-    Operator s_minus = OperatorPresets::n_offdiag(down_index, up_index);
-    INFO("S^+ = " << s_plus);
-    INFO("S^- = " << s_minus);
+//    Operator s_plus = OperatorPresets::n_offdiag(up_index, down_index);
+//    Operator s_minus = OperatorPresets::n_offdiag(down_index, up_index);
+//    INFO("S^+ = " << s_plus);
+//    INFO("S^- = " << s_minus);
 
-    Susceptibility Chi(S,H,Operators.getAnnihilationOperator(down_index), Operators.getCreationOperator(down_index), rho);
-//    Susceptibility Chi(S,H, s_plus, s_minus, rho);
+//    QuadraticOperator s_plus(Operators.getCreationOperator(up_index), Operators.getAnnihilationOperator(down_index));
+//    QuadraticOperator s_minus(Operators.getCreationOperator(down_index), Operators.getAnnihilationOperator(up_index));
+
+    QuadraticOperator s_plus(IndexInfo, S, H, up_index, down_index);
+    QuadraticOperator s_minus(IndexInfo, S, H, down_index, up_index);
+
+//    s_plus.prepare();
+//    s_plus.compute();
+    std::vector<QuadraticOperator*> quad_ops{&s_plus, &s_minus};
+    for(auto op : quad_ops){
+        op->prepare();
+        op->compute();
+    }
+
+    Susceptibility Chi(S,H, s_plus, s_minus, rho);
 
     Chi.prepare();
     Chi.compute();
