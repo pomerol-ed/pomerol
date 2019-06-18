@@ -46,6 +46,10 @@ Academic usage : please attribute this work by a citation to http://dx.doi.org/1
 ### Authors
   * Andrey Antipov <Andrey.E.Antipov\at\gmail.com>
   * Igor Krivenko <igor.s.krivenko\at\gmail.com>
+  
+### Contributors
+  * Junya Otsuki
+  * Nils Wentzell
 
 ### Development/Help 
 Please feel free to contact and contribute!
