@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
         print_section(names[i]);
         EnsembleAverage EA(S,H, *quad_ops[i], rho);
         EA.prepare();
-        EA.compute();
+//        EA.compute();
 
         // check if results are correct
         INFO(EA.getResult() << " == " << Refs[i]);

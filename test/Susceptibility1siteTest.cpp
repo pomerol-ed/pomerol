@@ -38,6 +38,7 @@
 #include "Hamiltonian.h"
 #include "FieldOperatorContainer.h"
 #include "Susceptibility.h"
+#include "EnsembleAverage.h"
 
 #include<cstdlib>
 
@@ -186,6 +187,13 @@ int main(int argc, char* argv[])
     for(auto op : quad_ops){
         op->prepare();
         op->compute();
+    }
+
+    // ensemble average of quadratic operators
+    for(int i=0; i<quad_ops.size(); i++) {
+        print_section(names[i]);
+        EnsembleAverage EA(S, H, *quad_ops[i], rho);
+        EA.prepare();
     }
 
     // compute 3 susceptibilities

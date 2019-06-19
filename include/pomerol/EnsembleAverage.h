@@ -15,21 +15,22 @@
 #include"StatesClassification.h"
 #include"FieldOperator.h"
 #include"DensityMatrix.h"
-#include"EnsembleAveragePart.h"
+//#include"EnsembleAveragePart.h"
 
 namespace Pomerol{
 
-/** This class represents the ensemble average of a bosonic operator.
+/** This class represents the ensemble average of a quadratic operator.
  *
  * Exact definition:
  * 
  * \f[
- *      \langle A \rangle
+ *      \langle A \rangle = \langle c_i^{\dag} c_j \rangle
  * \f]
- * 
- * It is actually a container class for a collection of parts (most of real calculations
- * take place inside the parts). A pair of parts, one part of an annihilation operator and
- * another from a creation operator, corresponds to a part of the Green's function.
+ *
+ * How to use:
+ *   EnsembleAverage EA(S, H, A, DM);
+ *   EA.prepare()
+ *   EA.getResult()
  */
 class EnsembleAverage : public Thermal, public ComputableObject {
 
@@ -42,13 +43,10 @@ class EnsembleAverage : public Thermal, public ComputableObject {
     /** A reference to a density matrix. */
     const DensityMatrix& DM;
 
-    /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
-    bool Vanishing;
+    ComplexType result;
 
-    /** A list of pointers to parts (every part corresponds to a part of the annihilation operator
-     * and a part of the creation operator).
-     */
-    std::list<EnsembleAveragePart*> parts;
+    /** Returns the contribution to the ensemble average from a part. Called in prepare() */
+    ComplexType compute(const QuadraticOperatorPart& Apart, const HamiltonianPart& Hpart, const DensityMatrixPart& DMpart);
 
 public:
      /** Constructor.
@@ -63,25 +61,13 @@ public:
      * \param[in] EA EnsembleAverage object to be copied.
      */
     EnsembleAverage(const EnsembleAverage& EA);
-    /** Destructor. */
-    ~EnsembleAverage();
 
-    /** Chooses relevant parts of A and allocates resources for the parts of the ensemble average. */
-    void prepare(void);
-    /** Actually computes the parts and fills the internal cache of precomputed values. */
-    void compute();
+    /** Compute the ensemble average of A by choosing relevant parts of A and sum up each contribution. */
+    void prepare();
 
-    ComplexType getResult(){
-        if(Vanishing) return 0;
-        else {
-            ComplexType Value = 0;
-            for(std::list<EnsembleAveragePart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
-                Value += (**iter).getResult();
-            return Value;
-        };
-    };
+    /** Returns the ensemble average */
+    ComplexType getResult(){ return result; };
 
-    bool isVanishing(void) const;
 };
 
 } // end of namespace Pomerol

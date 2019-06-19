@@ -4,22 +4,12 @@ namespace Pomerol{
 
 EnsembleAverage::EnsembleAverage(const StatesClassification& S, const Hamiltonian& H,
                                  const QuadraticOperator& A, const DensityMatrix& DM) :
-    Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), DM(DM), Vanishing(true)
-{
-}
+    Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), DM(DM), result(0)
+{}
 
 EnsembleAverage::EnsembleAverage(const EnsembleAverage& EA) :
-    Thermal(EA.beta), ComputableObject(EA), S(EA.S), H(EA.H), A(EA.A), DM(EA.DM), Vanishing(EA.Vanishing)
-{
-    for(std::list<EnsembleAveragePart*>::const_iterator iter = EA.parts.begin(); iter != EA.parts.end(); iter++)
-        parts.push_back(new EnsembleAveragePart(**iter));
-}
-
-EnsembleAverage::~EnsembleAverage()
-{
-    for(std::list<EnsembleAveragePart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
-        delete *iter;
-}
+    Thermal(EA.beta), ComputableObject(EA), S(EA.S), H(EA.H), A(EA.A), DM(EA.DM), result(EA.result)
+{}
 
 void EnsembleAverage::prepare(void)
 {
@@ -37,31 +27,33 @@ void EnsembleAverage::prepare(void)
         if(Aleft == Aright){
             DEBUG(S.getQuantumNumbers(Aleft) << "|" << S.getQuantumNumbers(Aright) );
             // check if retained blocks are included. If not, do not push.
-            if ( DM.isRetained(Aleft) )
-                parts.push_back(new EnsembleAveragePart((QuadraticOperatorPart&)A.getPartFromLeftIndex(Aleft),
-                                                        H.getPart(Aleft), DM.getPart(Aleft)));
+            if ( DM.isRetained(Aleft) ){
+                result += compute((QuadraticOperatorPart&)A.getPartFromLeftIndex(Aleft),
+                                  H.getPart(Aleft), DM.getPart(Aleft));
+//                EnsembleAveragePart part((QuadraticOperatorPart&)A.getPartFromLeftIndex(Aleft),
+//                                         H.getPart(Aleft), DM.getPart(Aleft));
+//                part.compute();
+//                result += part.getResult();
+            }
         }
     }
-    if (parts.size() > 0) Vanishing = false;
 
     Status = Prepared;
 }
 
-void EnsembleAverage::compute()
+// This function is called directly in prepare()
+ComplexType EnsembleAverage::compute(const QuadraticOperatorPart& Apart,
+                                     const HamiltonianPart& Hpart,
+                                     const DensityMatrixPart& DMpart)
 {
-    if(Status>=Computed) return;
-    if(Status<Prepared) prepare();
+    // Blocks (submatrices) of A
+    const RowMajorMatrixType& Amatrix = Apart.getRowMajorValue();
 
-    if(Status<Computed){
-        for(std::list<EnsembleAveragePart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
-            (*iter)->compute();
-    }
-    Status = Computed;
-}
-
-bool EnsembleAverage::isVanishing(void) const
-{
-    return Vanishing;
+    // Sum up <index1|A|index1> * weight(index1)
+    ComplexType result_part = 0;
+    for(QuantumState index1=0; index1<Amatrix.outerSize(); ++index1)
+        result_part += Amatrix.coeff(index1, index1) * DMpart.getWeight(index1);
+    return result_part;
 }
 
 } // end of namespace Pomerol
