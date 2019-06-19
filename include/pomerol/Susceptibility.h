@@ -3,6 +3,7 @@
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
+** \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
 */
 #ifndef __INCLUDE_SUSCEPTIBILITY_H
 #define __INCLUDE_SUSCEPTIBILITY_H
@@ -71,8 +72,8 @@ public:
      /** Constructor.
      * \param[in] S A reference to a states classification object.
      * \param[in] H A reference to a Hamiltonian.
-     * \param[in] A A reference to an operator.
-     * \param[in] B A reference to an operator.
+     * \param[in] A A reference to a quadratic operator.
+     * \param[in] B A reference to a quadratic operator.
      * \param[in] DM A reference to a density matrix.
      */
     Susceptibility(const StatesClassification& S, const Hamiltonian& H,
@@ -92,7 +93,7 @@ public:
     void compute();
 
     /** Activate subtraction of the disconnected part <A><B>
-     * <A> and <B> are computed when necessary.
+     * <A> and <B> are computed in this class.
      */
     void subtractDisconnected();
     /** Activate subtraction of the disconnected part <A><B>

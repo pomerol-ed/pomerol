@@ -18,10 +18,11 @@
 // You should have received a copy of the GNU General Public License
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
-/** \file tests/green.cpp
-** \brief Test of a Green's function calculation (1 s-orbital).
+/** \file tests/EnsembleAverage1siteTest.cpp
+** \brief Test of a calculation of ensemble averages (1 s-orbital).
 **
 ** \author Igor Krivenko (igor@shg.ru)
+** \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
 */
 
 #include "Misc.h"
@@ -136,12 +137,6 @@ int main(int argc, char* argv[])
     ParticleIndex dn_index = IndexInfo.getIndex("A",0,down);
     ParticleIndex up_index = IndexInfo.getIndex("A",0,up);
 
-    FieldOperator::BlocksBimap c_map = Operators.getCreationOperator(dn_index).getBlockMapping();
-    for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
-        {
-            INFO(c_map_it->first << "->" << c_map_it->second);
-        }
-
     // quadratic operators, c^+ c
     QuadraticOperator s_plus(IndexInfo, S, H, up_index, dn_index);
     QuadraticOperator s_minus(IndexInfo, S, H, dn_index, up_index);
@@ -171,7 +166,6 @@ int main(int argc, char* argv[])
         print_section(names[i]);
         EnsembleAverage EA(S,H, *quad_ops[i], rho);
         EA.prepare();
-//        EA.compute();
 
         // check if results are correct
         INFO(EA.getResult() << " == " << Refs[i]);

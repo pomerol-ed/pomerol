@@ -88,7 +88,7 @@ class AnnihilationOperatorPart;
 class CreationOperatorPart;
 class QuadraticOperatorPart;
 
-/** This class is inheried from FieldOperatorPart and is a part of electronic annihilation operator in the eigenbasis of the Hamiltonian between it's two blocks. */
+/** This class is inherited from FieldOperatorPart and is a part of electronic annihilation operator in the eigenbasis of the Hamiltonian between it's two blocks. */
 class AnnihilationOperatorPart : public FieldOperatorPart
 {
     friend class CreationOperatorPart;
@@ -103,7 +103,7 @@ public :
     const CreationOperatorPart& transpose(void) const;
 };
 
-/** This class is inheried from FieldOperatorPart and is a part of electronic creation operator in the eigenbasis of the Hamiltonian between it's two blocks. */
+/** This class is inherited from FieldOperatorPart and is a part of electronic creation operator in the eigenbasis of the Hamiltonian between it's two blocks. */
 class CreationOperatorPart : public FieldOperatorPart
 {
     friend class AnnihilationOperatorPart;
@@ -123,13 +123,10 @@ class QuadraticOperatorPart : public FieldOperatorPart
     friend class QuadraticOperator;
     /** Does nothing. Private. */
     void do_nothing(){};
-
 protected:
     /** Indices of the operator. Used instead of FieldOperator::Index */
     ParticleIndex Index1, Index2;
-
 public:
-//    QuadraticOperatorPart();
     QuadraticOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S, const HamiltonianPart &HFrom, const HamiltonianPart &HTo, ParticleIndex PIndex1, ParticleIndex PIndex2);
 };
 

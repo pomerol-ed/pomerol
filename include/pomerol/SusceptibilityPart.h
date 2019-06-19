@@ -1,8 +1,9 @@
 /** \file include/pomerol/GreensFunctionPart.h
-** \brief Part of a Green's function for a given set of quantum numbers.
+** \brief Part of a dynamical susceptibility for a given set of quantum numbers.
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
+** \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
 */
 #ifndef __INCLUDE_SUSCEPTIBILITYPART_H
 #define __INCLUDE_SUSCEPTIBILITYPART_H
@@ -19,7 +20,7 @@
 
 namespace Pomerol{
 
-/** This class represents a part of a Green's function.
+/** This class represents a part of a dynamical susceptibility.
  * Every part describes all transitions allowed by selection rules
  * between a given pair of Hamiltonian blocks.
  */

@@ -131,12 +131,6 @@ const AnnihilationOperatorPart& CreationOperatorPart::transpose() const
     return *C;
 }
 
-//QuadraticOperatorPart::QuadraticOperatorPart()
-//{
-////    O = new Pomerol::OperatorPresets::n_offdiag(PIndex);
-//
-//}
-
 QuadraticOperatorPart::QuadraticOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S,
                                              const HamiltonianPart &HFrom, const HamiltonianPart &HTo,
                                              ParticleIndex PIndex1, ParticleIndex PIndex2) :

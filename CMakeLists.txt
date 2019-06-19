@@ -79,7 +79,6 @@ set (pomerol_sources
     pomerol/Vertex4
     pomerol/SusceptibilityPart
     pomerol/Susceptibility
-    pomerol/EnsembleAveragePart
     pomerol/EnsembleAverage
 )
 

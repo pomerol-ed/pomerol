@@ -190,24 +190,12 @@ QuadraticOperator::QuadraticOperator(const IndexClassification &IndexInfo, const
     O = new Pomerol::OperatorPresets::N_offdiag(Index1, Index2);
 }
 
-//QuadraticOperator::QuadraticOperator(const CreationOperator &CX, const AnnihilationOperator &C) :
-//    FieldOperator(CX.IndexInfo, CX.S, CX.H, CX.Index)
-//{
-//    // assuming
-//    // CX.IndexInfo == C.IndexInfo
-//    // CX.S == C.S
-//    // CX.H == C.H
-//    // CX.Index == C.Index
-//}
-
 void QuadraticOperator::prepare(void)
 {
     if (Status >= Prepared) return;
     size_t Size = parts.size();
     for (BlockNumber RightIndex=0; RightIndex<S.NumberOfBlocks(); RightIndex++){
-        // TODO: check if mapsTo() works. O is not c or c^+ but n_offdiag
         BlockNumber LeftIndex = mapsTo(RightIndex);
-        DEBUG(RightIndex << "->" << LeftIndex);
         if (LeftIndex.isCorrect()){
             FieldOperatorPart *Part = new QuadraticOperatorPart(IndexInfo, S,
                     H.getPart(RightIndex), H.getPart(LeftIndex), Index1, Index2);

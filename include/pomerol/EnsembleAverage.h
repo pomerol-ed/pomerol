@@ -1,8 +1,9 @@
 /** \file include/pomerol/EnsembleAverage.h
-** \brief Thermal Green's function.
+** \brief Ensemble average.
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
+** \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
 */
 #ifndef __INCLUDE_ENSEMBLEAVERAGE_H
 #define __INCLUDE_ENSEMBLEAVERAGE_H
@@ -15,7 +16,6 @@
 #include"StatesClassification.h"
 #include"FieldOperator.h"
 #include"DensityMatrix.h"
-//#include"EnsembleAveragePart.h"
 
 namespace Pomerol{
 
