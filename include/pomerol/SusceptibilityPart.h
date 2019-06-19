@@ -156,7 +156,7 @@ inline ComplexType SusceptibilityPart::operator()(ComplexType z) const {
 }
 
 inline ComplexType SusceptibilityPart::of_tau(RealType tau) const {
-    return Terms(tau, beta);
+    return Terms(tau, beta) + ZeroPoleWeight;
 }
 
 } // end of namespace Pomerol
