@@ -94,8 +94,8 @@ ComplexType Gref_uu(int n, RealType beta)
     Weights W(n, beta);
 
     ComplexType g = 0;
-    if(n==0)  g += (W.wu + W.w2) * beta;
-//    if(n==0)  g += (W.wu + W.w2) * (1 - W.wu - W.w2) * beta;
+//    if(n==0)  g += (W.wu + W.w2) * beta;
+    if(n==0)  g += (W.wu + W.w2) * (1 - W.wu - W.w2) * beta;
     return g;
 }
 
@@ -105,8 +105,8 @@ ComplexType Gref_ud(int n, RealType beta)
     Weights W(n, beta);
 
     ComplexType g = 0;
-    if(n==0)  g += W.w2 * beta;
-//    if(n==0)  g += (W.w2 - (W.wu + W.w2) * (W.wd + W.w2)) * beta;
+//    if(n==0)  g += W.w2 * beta;
+    if(n==0)  g += (W.w2 - (W.wu + W.w2) * (W.wd + W.w2)) * beta;
     return g;
 }
 
@@ -189,27 +189,20 @@ int main(int argc, char* argv[])
         op->compute();
     }
 
-    // ensemble average of quadratic operators
-    for(int i=0; i<quad_ops.size(); i++) {
-        print_section(names[i]);
-        EnsembleAverage EA(S, H, *quad_ops[i], rho);
-        EA.prepare();
-    }
-
     // compute 3 susceptibilities
     //  < S_+ ; S_- >
     //  < n_up ; n_up >
     //  < n_up ; n_dn >
     std::vector< std::pair<QuadraticOperator*, QuadraticOperator*> > op_pairs;
-    op_pairs.push_back(std::make_pair(&s_plus, &s_minus));
-    op_pairs.push_back(std::make_pair(&n_up, &n_up));
-    op_pairs.push_back(std::make_pair(&n_up, &n_dn));
+    op_pairs.emplace_back(std::make_pair(&s_plus, &s_minus));
+    op_pairs.emplace_back(std::make_pair(&n_up, &n_up));
+    op_pairs.emplace_back(std::make_pair(&n_up, &n_dn));
 
     // for print
     std::vector< std::string > names;
-    names.push_back(std::string("< S_+ ; S_- >"));
-    names.push_back(std::string("< n_up ; n_up >"));
-    names.push_back(std::string("< n_up ; n_dn >"));
+    names.emplace_back(std::string("< S_+ ; S_- >"));
+    names.emplace_back(std::string("< n_up ; n_up >"));
+    names.emplace_back(std::string("< n_up ; n_dn >"));
 
     // reference data
     ComplexType (*Grefs[3])(int n, RealType beta) = {Gref_pm, Gref_uu, Gref_ud};
@@ -221,6 +214,7 @@ int main(int argc, char* argv[])
         Susceptibility Chi(S,H, *(op_pairs[i].first), *(op_pairs[i].second), rho);
         Chi.prepare();
         Chi.compute();
+        Chi.subtractDisconnected();
 
         // check if results are correct
         for(int n = 0; n<20; ++n) {

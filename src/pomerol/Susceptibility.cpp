@@ -5,12 +5,14 @@ namespace Pomerol{
 Susceptibility::Susceptibility(const StatesClassification& S, const Hamiltonian& H,
                                const QuadraticOperator& A, const QuadraticOperator& B,
                                const DensityMatrix& DM) :
-    Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), B(B), DM(DM), Vanishing(true)
+    Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), B(B), DM(DM), Vanishing(true),
+    ave_A(0), ave_B(0), SubtractDisconnected(false)
 {
 }
 
 Susceptibility::Susceptibility(const Susceptibility& Chi) :
-    Thermal(Chi.beta), ComputableObject(Chi), S(Chi.S), H(Chi.H), A(Chi.A), B(Chi.B), DM(Chi.DM), Vanishing(Chi.Vanishing)
+    Thermal(Chi.beta), ComputableObject(Chi), S(Chi.S), H(Chi.H), A(Chi.A), B(Chi.B), DM(Chi.DM),
+    Vanishing(Chi.Vanishing), ave_A(Chi.ave_A), ave_B(Chi.ave_B), SubtractDisconnected(Chi.SubtractDisconnected)
 {
     for(std::list<SusceptibilityPart*>::const_iterator iter = Chi.parts.begin(); iter != Chi.parts.end(); iter++)
         parts.push_back(new SusceptibilityPart(**iter));
@@ -76,15 +78,25 @@ void Susceptibility::compute()
     Status = Computed;
 }
 
-unsigned short Susceptibility::getIndex(size_t Position) const
+void Susceptibility::subtractDisconnected()
 {
-    switch(Position){
-        case 0: return A.getIndex();
-        case 1: return B.getIndex();
-        default: assert(0);
-    }
-    throw std::logic_error("Susceptibility :: wrong operator");
-    return A.getIndex();
+    EnsembleAverage EA_A(S, H, A, DM);
+    EnsembleAverage EA_B(S, H, B, DM);
+    subtractDisconnected(EA_A, EA_B);
+}
+
+void Susceptibility::subtractDisconnected(ComplexType ave_A, ComplexType ave_B)
+{
+    SubtractDisconnected = true;
+    this->ave_A = ave_A;
+    this->ave_B = ave_B;
+}
+
+void Susceptibility::subtractDisconnected(EnsembleAverage &EA_A, EnsembleAverage &EA_B)
+{
+    EA_A.prepare();
+    EA_B.prepare();
+    subtractDisconnected(EA_A.getResult(), EA_B.getResult());
 }
 
 bool Susceptibility::isVanishing(void) const

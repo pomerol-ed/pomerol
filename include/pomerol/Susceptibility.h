@@ -1,5 +1,5 @@
 /** \file include/pomerol/Susceptibility.h
-** \brief Thermal Green's function.
+** \brief Dynamical susceptibility.
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
@@ -16,17 +16,26 @@
 #include"FieldOperator.h"
 #include"DensityMatrix.h"
 #include"SusceptibilityPart.h"
+#include"EnsembleAverage.h"
 
 namespace Pomerol{
 
-/** This class represents a thermal Green's function in the Matsubara representation.
+/** This class represents a dynamical susceptibility in the Matsubara representation.
  *
  * Exact definition:
  * 
  * \f[
  *      \chi(\omega_n) = \int_0^\beta \langle\mathbf{T} A(\tau) B(0)\rangle e^{i\omega_n\tau} d\tau
  * \f]
- * 
+ *
+ * or
+ *
+ * \f[
+ *      \tilde{\chi}(\omega_n) = \chi(\omega_n) - \beta \langle A \rangle \langle B \rangle
+ * \f]
+ *
+ * if specified.
+ *
  * It is actually a container class for a collection of parts (most of real calculations
  * take place inside the parts). A pair of parts, one part of an annihilation operator and
  * another from a creation operator, corresponds to a part of the Green's function.
@@ -52,6 +61,12 @@ class Susceptibility : public Thermal, public ComputableObject {
      */
     std::list<SusceptibilityPart*> parts;
 
+    /** Subtract disconnected part <A><B> */
+    bool SubtractDisconnected;
+
+    /** <A>, <B> */
+    ComplexType ave_A, ave_B;
+
 public:
      /** Constructor.
      * \param[in] S A reference to a states classification object.
@@ -76,10 +91,20 @@ public:
      */
     void compute();
 
-    /** Returns the 'bit' (index) of the quadratic operator A or B.
-     * \param[in] Position Use A for Position==0 and B for Position==1.
+    /** Activate subtraction of the disconnected part <A><B>
+     * <A> and <B> are computed when necessary.
      */
-    unsigned short getIndex(size_t Position) const;
+    void subtractDisconnected();
+    /** Activate subtraction of the disconnected part <A><B>
+     * \param[in] ave_A Precomputed value of <A>
+     * \param[in] ave_B Precomputed value of <B>
+     */
+    void subtractDisconnected(ComplexType ave_A, ComplexType ave_B);
+    /** Activate subtraction of the disconnected part <A><B>
+     * \param[in] EA_A Predefined EnsembleAverage class for operator A.
+     * \param[in] EA_B Predefined EnsembleAverage class for operator B.
+     */
+    void subtractDisconnected(EnsembleAverage &EA_A, EnsembleAverage &EA_B);
 
      /** Returns the value of the Green's function calculated at a given frequency.
      * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
@@ -104,23 +129,25 @@ inline ComplexType Susceptibility::operator()(long int MatsubaraNumber) const {
     return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber)); }
 
 inline ComplexType Susceptibility::operator()(ComplexType z) const {
-    if(Vanishing) return 0;
-    else {
-        ComplexType Value = 0;
+    ComplexType Value = 0;
+    if(!Vanishing) {
         for(std::list<SusceptibilityPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
             Value += (**iter)(z);
-        return Value;
-    };
+    }
+    if(SubtractDisconnected)
+        if( abs(z) < 1e-15 )  Value -= ave_A * ave_B * beta;  // only for n=0
+    return Value;
 }
 
 inline ComplexType Susceptibility::of_tau(RealType tau) const {
-    if(Vanishing) return 0;
-    else {
-        ComplexType Value = 0;
+    ComplexType Value = 0;
+    if(!Vanishing) {
         for(std::list<SusceptibilityPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
             Value += (*iter)->of_tau(tau);
-        return Value;
-    };
+    }
+    if(SubtractDisconnected)
+        Value -= ave_A * ave_B;
+    return Value;
 }
 
 } // end of namespace Pomerol
