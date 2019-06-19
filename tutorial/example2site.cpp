@@ -279,6 +279,46 @@ int main(int argc, char* argv[])
                 INFO(n1 << " " << n2 << " " << n3 << "|" << Chi(n1,n2,n3));
                 };
     };
+
+    /* We define a quadratic operator, O_{ij} = c_i^+ c_j, to compute its ensemble average
+     * and its fluctuations (dynamical susceptibility).
+     * QuadraticOperator is the class which defines O_{ij}.
+     */
+
+    // define a quadratic operator, O = c^+_{up} c_{up}
+    print_section("Quadratic oparator");
+    QuadraticOperator N_up(IndexInfo, S, H, up_index, up_index);
+    N_up.prepare();
+    N_up.compute();
+
+    // compute an ensemble average, <O>
+    print_section("Ensemble average");
+    EnsembleAverage EA(S,H, N_up, rho);
+    EA.prepare();
+    RealType occup_up = real(EA.getResult());
+    INFO("Occupation number of up spin is " << occup_up);
+
+    /* The dynamical susceptibility is computed by Susceptibility class.
+     * One can obtain either F[ <A(tau)B> ] or F[ <A(tau)B> - <A><B> ],
+     * where F denotes Fourier transform from tau to Matsubara frequency.
+     * To choose the latter quantity, call subtractDisconnected() method.
+     *
+     * There are 3 variants of subtractDisconnected() method.
+     *  1. <A> and <B> are computed in Susceptibility class
+     *  2. use precomputed <A> and <B>
+     *  3. use predefined QuadraticOperator instances, A and B
+     */
+    print_section("Dynamical susceptibility");
+    Susceptibility Sus(S,H, N_up, N_up, rho);
+    Sus.prepare();
+    Sus.compute();
+    // subtract <n_up><n_uo>
+    Sus.subtractDisconnected();  // 1
+    //Sus.subtractDisconnected(occup_up, occup_up);  // 2
+    //Sus.subtractDisconnected(N_up, N_up);  // 3
+    for(int n=0; n<10; n++){
+        INFO(n << " " << Sus(n));
+    }
 }
 
 void print_section (const std::string& str)
