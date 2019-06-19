@@ -22,5 +22,6 @@
 #include "pomerol/TwoParticleGF.h"
 #include "pomerol/TwoParticleGFContainer.h"
 #include "pomerol/Susceptibility.h"
+#include "pomerol/EnsembleAverage.h"
 
 #endif

@@ -22,6 +22,7 @@ TwoParticleGFContainerTest
 Vertex4Test
 AndersonTest02
 AndersonTest03
+EnsembleAverage1siteTest
 Susceptibility1siteTest
 )
 if(POMEROL_COMPLEX_MATRIX_ELEMENTS)

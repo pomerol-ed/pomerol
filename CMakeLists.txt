@@ -79,6 +79,8 @@ set (pomerol_sources
     pomerol/Vertex4
     pomerol/SusceptibilityPart
     pomerol/Susceptibility
+    pomerol/EnsembleAveragePart
+    pomerol/EnsembleAverage
 )
 
 configure_file(${CMAKE_SOURCE_DIR}/include/pomerol.h.in ${CMAKE_BINARY_DIR}/include/pomerol.h)
