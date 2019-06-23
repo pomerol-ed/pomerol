@@ -106,11 +106,14 @@ public:
 class CreationOperator;
 /** An annihilation operator in the eigenspace of a Hamiltonian */
 class AnnihilationOperator;
+/** A quadratic operator, c_1^+ c_2, in the eigenspace of a Hamiltonian */
+class QuadraticOperator;
 
 class CreationOperator : public FieldOperator
 {
     friend class AnnihilationOperator;
     friend class FieldOperatorContainer;
+    friend class QuadraticOperator;
 public:
     /* Returns hermitian conjugate of current operator */
     AnnihilationOperator& transpose(void);
@@ -129,6 +132,7 @@ class AnnihilationOperator : public FieldOperator
 {
     friend class CreationOperator;
     friend class FieldOperatorContainer;
+    friend class QuadraticOperator;
 public:
     /* Returns hermitian conjugate of current operator */
     CreationOperator& transpose(void);
@@ -142,6 +146,25 @@ public:
      * \param[in] Index An index of an operator
      */
     AnnihilationOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index);
+};
+
+class QuadraticOperator : public FieldOperator
+{
+protected:
+    /** Indices of the operator. Used instead of FieldOperator::Index */
+    ParticleIndex Index1, Index2;
+
+public:
+    void prepare();
+
+    /** Constructor
+     * \param[in] IndexInfo A reference to an IndexClassification object
+     * \param[in] S A reference to a StatesClassification object
+     * \param[in] H A reference to a Hamiltonian object
+     * \param[in] Index1 An index of a creation operator
+     * \param[in] Index2 An index of an annihilation operator
+     */
+    QuadraticOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index1, ParticleIndex Index2);
 };
 
 } // end of namespace Pomerol

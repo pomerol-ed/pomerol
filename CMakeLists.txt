@@ -13,14 +13,9 @@ fix_rpath()
 set_linking_type()
 
 # C++11 (optional)
-option(CXX11 "Auto set c++11 flags" OFF)
-if (CXX11)
-    message(STATUS "Using c++11 build")
-    set(${PROJECT_CAPNAME}_CXX11 TRUE CACHE BOOL "Pomerol C++11" FORCE)
-    set_cxx11()
-else(CXX11)
-    set(${PROJECT_CAPNAME}_CXX11 FALSE CACHE BOOL "Pomerol C++11" FORCE)
-endif (CXX11)
+message(STATUS "Using c++11 build")
+set(${PROJECT_CAPNAME}_CXX11 TRUE CACHE BOOL "Pomerol C++11" FORCE)
+set_cxx11()
 
 #Use complex Matrix elements
 option(POMEROL_COMPLEX_MATRIX_ELEMENTS "Use complex matrix elements" OFF)
@@ -77,6 +72,9 @@ set (pomerol_sources
     pomerol/TwoParticleGF
     pomerol/TwoParticleGFContainer
     pomerol/Vertex4
+    pomerol/SusceptibilityPart
+    pomerol/Susceptibility
+    pomerol/EnsembleAverage
 )
 
 configure_file(${CMAKE_SOURCE_DIR}/include/pomerol.h.in ${CMAKE_BINARY_DIR}/include/pomerol.h)
