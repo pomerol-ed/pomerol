@@ -4,7 +4,7 @@ message ("\n${PROJECT_NAME} configuration\n")
 string(TOUPPER ${PROJECT_NAME} PROJECT_CAPNAME)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-set(POMEROL_VERSION 1.2)
+set(POMEROL_VERSION 1.3)
 include(CommonDefs)
 
 no_source_builds()
