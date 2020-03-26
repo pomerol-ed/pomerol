@@ -26,6 +26,7 @@ public:
     quantum_model::init_parameters();
     _mu = p.count("mu") ? p["mu"].as<double>() :U()/2;
     _t = p["t"].as<double>();
+    _tp = p["tp"].as<double>();
     boost::tie(size_x, size_y) = boost::make_tuple(p["x"].as<int>(), p["y"].as<int>());
   }
 
@@ -63,8 +64,12 @@ public:
         auto pos = SiteIndexF(x,y);
         auto pos_right = SiteIndexF((x+1)%size_x,y); /*if (x == size_x - 1) pos_right = SiteIndexF(0,y); */
         auto pos_up = SiteIndexF(x,(y+1)%size_y);
+        auto pos_dia = SiteIndexF((x+1)%size_x,(y+1)%size_y);
         if (size_x > 1) LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_right]), std::max(names[pos], names[pos_right]), -_t);
         if (size_y > 1) LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_up]), std::max(names[pos], names[pos_up]), -_t);
+        if (std::abs(_tp)>1e-10 && size_x > 1 && size_y>1) {
+          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_dia]), std::max(names[pos], names[pos_dia]), _tp);
+        }
       };
     };
 
@@ -86,6 +91,7 @@ public:
     define<double> (p, "U", 10.0, "Value of U");
     define<double> (p, "mu", 0.0, "Global chemical potential");
     define<double> (p, "t", 1.0, "Value of t");
+    define<double> (p, "tp", 0.0, "Value of t'");
     define<double> (p, "beta", 100, "Value of inverse temperature");
     define<double> (p, "T", .01, "Value of temperature");
     define<double> (p, "ed", 0.0, "Value of energy level of the impurity");
@@ -138,6 +144,7 @@ private:
   int size_y;
   RealType _mu;
   RealType _t;
+  RealType _tp;
   std::vector<std::string> names;
   size_t SiteIndexF(size_t x, size_t y) {
     return y*size_x + x;
