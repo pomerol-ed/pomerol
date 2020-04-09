@@ -64,11 +64,14 @@ public:
         auto pos = SiteIndexF(x,y);
         auto pos_right = SiteIndexF((x+1)%size_x,y); /*if (x == size_x - 1) pos_right = SiteIndexF(0,y); */
         auto pos_up = SiteIndexF(x,(y+1)%size_y);
-        auto pos_dia = SiteIndexF((x+1)%size_x,(y+1)%size_y);
+        auto pos_dia_right = SiteIndexF((x+1)%size_x,(y+1)%size_y);
+        auto pos_dia_left  = SiteIndexF((x+1)%size_x,(y-1)%size_y);
+        std::cout<<pos_dia_right<<" "<<pos_dia_left<<std::endl;
         if (size_x > 1) LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_right]), std::max(names[pos], names[pos_right]), -_t);
         if (size_y > 1) LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_up]), std::max(names[pos], names[pos_up]), -_t);
         if (std::abs(_tp)>1e-10 && size_x > 1 && size_y>1) {
-          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_dia]), std::max(names[pos], names[pos_dia]), _tp);
+          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_dia_right]), std::max(names[pos], names[pos_dia_right]), _tp);
+          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_dia_left]) , std::max(names[pos], names[pos_dia_left]), _tp);
         }
       };
     };
