@@ -18,7 +18,7 @@ before_install:
 script:
   - mkdir build
   - cd build
-  - cmake -DTesting=ON -DExamples=ON .. 
+  - cmake -DTesting=ON -DProgs=ON -Dprogs_list="anderson;hubbard2d" ..
   - make
   - make test
 
