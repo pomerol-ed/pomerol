@@ -31,25 +31,17 @@ macro(fix_rpath)
     endif()
 endmacro(fix_rpath)
 
-# C++11
-macro(set_cxx11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-        execute_process(
-            COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-            set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs")
-        if (NOT (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7))
-            message(FATAL_ERROR "${PROJECT_NAME} requires g++ 4.7 or greater.")
-        endif ()
-    elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")
-        if ("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
-            message( STATUS "Adding -stdlib=libc++ flag")
+# Compiler quirks
+macro(compiler_quirks)
+    if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs")
+    elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")
+        if("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
+            message(STATUS "Adding -stdlib=libc++ flag")
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
         endif()
-    else ()
-        message(FATAL_ERROR "Your C++ compiler does not support C++11.")
-    endif ()
-endmacro(set_cxx11)
+    endif()
+endmacro(compiler_quirks)
 
 # workaround definitions for different compilers
 macro(compiler_workarounds)
@@ -67,7 +59,7 @@ endmacro(compiler_workarounds)
 macro(set_linking_type)
 option(POMEROL_BUILD_STATIC "Build static libraries" OFF)
 option(POMEROL_BUILD_SHARED "Build shared libraries" ON)
-if (POMEROL_BUILD_STATIC) 
+if (POMEROL_BUILD_STATIC)
     message(STATUS "Building static libraries")
     set(${PROJECT_CAPNAME}_BUILD_TYPE STATIC)
     set(BUILD_SHARED_LIBS OFF)
@@ -80,11 +72,11 @@ else()
 endif()
 endmacro(set_linking_type)
 
-# 
+#
 # Dependencies
 #
 
-# ALPSCore - brings MPI, HDF5, boost 
+# ALPSCore - brings MPI, HDF5, boost
 macro(add_alpscore)
 find_package(ALPSCore REQUIRED COMPONENTS hdf5 accumulators mc params)
     message(STATUS "ALPSCore includes:  ${ALPSCore_INCLUDES}")
@@ -100,16 +92,20 @@ find_package (Eigen3 3.1 REQUIRED)
     target_include_directories(${PROJECT_NAME} PUBLIC ${EIGEN3_INCLUDE_DIR})
 endmacro(add_eigen3)
 
-
-# find and include gftools
+# gftools
 macro(add_gftools)
-find_package(GFTools QUIET)
-    if (NOT GFTOOLS_FOUND)
+    find_package(gftools CONFIG)
+    if(gftools_FOUND)
+        get_target_property(GFTOOLS_INCLUDE_DIR gftools INTERFACE_INCLUDE_DIRECTORIES)
+    else()
         message(STATUS "Fetching gftools")
-        include(ExtGFTools)
+        find_package(Git)
+        execute_process(COMMAND "${GIT_EXECUTABLE}" "clone" "--branch" "master"
+                        "https://github.com/aeantipov/gftools.git" "gftools"
+                        WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+        set(GFTOOLS_INCLUDE_DIR "${CMAKE_BINARY_DIR}/gftools")
     endif()
-    message(STATUS "GFTools includes : ${GFTOOLS_INCLUDE_DIR}") 
-    include_directories(${GFTOOLS_INCLUDE_DIR})
+    message(STATUS "gftools includes : ${GFTOOLS_INCLUDE_DIR}")
 endmacro(add_gftools)
 
 # find, include and link to python
@@ -123,7 +119,7 @@ macro(add_python)
         execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print sysconfig.get_python_inc()," OUTPUT_VARIABLE P_INC OUTPUT_STRIP_TRAILING_WHITESPACE)
         set(PYTHON_INCLUDE_DIR "${P_INC}")
         set(PYTHON_LIBRARY "${P_LIB}/libpython${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}.dylib") # dirty hack
-        unset(P_INC) 
+        unset(P_INC)
         unset(P_LIB)
     endif(APPLE)
 
@@ -153,20 +149,7 @@ macro(add_boost) # usage: add_boost(component1 component2...)
   target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
 endmacro(add_boost)
 
-#
-# Compilation/Installation shortcuts
-#
-
-# from alpscore
-#macro(add_testing)
-#  option(Testing "Enable testing" ON)
-#  if (Testing)
-#    enable_testing()
-#    add_subdirectory(test)
-#  endif (Testing)
-#endmacro(add_testing)
-
-# Compile tests in "test" subdir 
+# Compile tests in "test" subdir
 macro(add_testing)
 option(Testing "Enable testing" ON)
 if (Testing)
@@ -193,9 +176,7 @@ macro(add_prog name def)
     target_link_libraries(${prog_name} ${PROJECT_NAME} ${BOOST_EXTRA_LIBS})
     set_target_properties(${prog_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
     install ( TARGETS ${prog_name} DESTINATION bin )
-    if (${PROJECT_CAPNAME}_CXX11)
-        target_include_directories(${prog_name} PUBLIC "${CMAKE_BINARY_DIR}/gftools")
-    endif()
+    target_include_directories(${prog_name} PRIVATE ${GFTOOLS_INCLUDE_DIR})
     target_include_directories(${prog_name} PUBLIC ${BOOST_EXTRA_INCLUDES})
     target_compile_definitions(${prog_name} PRIVATE ${def})
 endmacro(add_prog)
@@ -221,7 +202,7 @@ function(add_this_package)
      ${PROJECT_SOURCE_DIR}/include
      ${PROJECT_BINARY_DIR}/include
    )
-  
+
   set(src_list_ "")
   foreach(src_ ${ARGV})
     list(APPEND src_list_ "src/${src_}.cpp")
@@ -229,8 +210,8 @@ function(add_this_package)
   add_library(${PROJECT_NAME} ${${PROJECT_CAPNAME}_BUILD_TYPE} ${src_list_})
   set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-  install(TARGETS ${PROJECT_NAME} 
-          EXPORT ${PROJECT_NAME} 
+  install(TARGETS ${PROJECT_NAME}
+          EXPORT ${PROJECT_NAME}
           LIBRARY DESTINATION lib
           ARCHIVE DESTINATION lib
           INCLUDES DESTINATION include)
@@ -254,7 +235,7 @@ macro(add_opendf_module)
         else(DEFINED BOLD_HYB_GLOBAL_BUILD)
             string(REGEX REPLACE "^opendf_" "" pkgcomp_ ${pkg_})
             find_package(opendf QUIET COMPONENTS ${pkgcomp_})
-            if (opendf_${pkgcomp_}_FOUND) 
+            if (opendf_${pkgcomp_}_FOUND)
               set(${pkg_}_LIBRARIES ${opendf_${pkgcomp_}_LIBRARIES})
             else()
               find_package(${pkg_} REQUIRED HINTS ${BOLD_HYB_ROOT})
@@ -265,21 +246,21 @@ macro(add_opendf_module)
     endforeach(pkg_)
 endmacro(add_opendf_module)
 
-# Generate documentation 
+# Generate documentation
 macro(gen_documentation)
   set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES} ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src" )
   option(Documentation "Build documentation" ON)
   if (Documentation)
     if (NOT BOLD_HYB_GLOBAL_BUILD)
         set(DOXYFILE_SOURCE_DIR "${PROJECT_SOURCE_DIR}/include")
-        set(DOXYFILE_IN "${PROJECT_SOURCE_DIR}/Doxyfile.in") 
+        set(DOXYFILE_IN "${PROJECT_SOURCE_DIR}/Doxyfile.in")
         set(DOXYFILE_NAME ${PROJECT_NAME})
         set(DOXYFILE_OUTPUT_DIR "${CMAKE_BINARY_DIR}/doc")
         include(UseDoxygen)
     else()
         set(DOXYFILE_SOURCE_DIR "${PROJECT_SOURCE_DIR}/include")
         set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES}")
-        set(DOXYFILE_IN "${CMAKE_SOURCE_DIR}/Doxyfile.in") 
+        set(DOXYFILE_IN "${CMAKE_SOURCE_DIR}/Doxyfile.in")
         set(DOXYFILE_NAME "${PROJECT_NAME}")
         set(DOXYFILE_OUTPUT_DIR "${CMAKE_BINARY_DIR}/doc")
     endif()
@@ -289,7 +270,7 @@ endmacro(gen_documentation)
 # Generate the automated configuration file with some of the compiler definitions
 macro(gen_config_hpp)
   configure_file("${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/config.hpp.in" "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/config.hpp")
-  install(FILES "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/config.hpp" DESTINATION include/${PROJECT_NAME}) 
+  install(FILES "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/config.hpp" DESTINATION include/${PROJECT_NAME})
 endmacro(gen_config_hpp)
 
 # Generation of pkg-config
@@ -319,9 +300,9 @@ function(gen_cfg_module)
     else()
         set(EXPORTS ${PROJECT_NAME}::${PROJECT_NAME})
     endif()
-    configure_file("${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}ModuleConfig.cmake.in" 
+    configure_file("${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}ModuleConfig.cmake.in"
                    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
-    configure_file("${PROJECT_SOURCE_DIR}/../cmake/${PROJECT_NAME}Config.cmake.in" 
+    configure_file("${PROJECT_SOURCE_DIR}/../cmake/${PROJECT_NAME}Config.cmake.in"
                    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
     install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" DESTINATION "share/${PROJECT_NAME}/")
     install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" DESTINATION "share/${PROJECT_NAME}/")

@@ -30,7 +30,6 @@ namespace po = boost::program_options;
 
 using namespace Pomerol;
 
-#ifdef POMEROL_CXX11
 #undef DEBUG
 #include <gftools.hpp>
 using gftools::tools::is_float_equal;
@@ -38,7 +37,6 @@ using gftools::grid_object;
 using gftools::fmatsubara_grid;
 using gftools::bmatsubara_grid;
 using gftools::real_grid;
-#endif
 
 /**
  * @brief Base class for quantum model full-ED calculation

@@ -35,7 +35,6 @@
 
 #include <pomerol.h>
 
-#ifdef POMEROL_CXX11
 #undef DEBUG
 #include <gftools.hpp>
 using gftools::tools::is_float_equal;
@@ -43,7 +42,6 @@ using gftools::grid_object;
 using gftools::fmatsubara_grid;
 using gftools::bmatsubara_grid;
 using gftools::real_grid;
-#endif
 
 namespace po = boost::program_options;
 

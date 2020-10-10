@@ -1,21 +1,20 @@
-cmake_minimum_required (VERSION 2.8.12)
-project (pomerol CXX)
-message ("\n${PROJECT_NAME} configuration\n")
+cmake_minimum_required(VERSION 3.1.0)
+
+project(pomerol CXX)
+message("\n${PROJECT_NAME} configuration\n")
 string(TOUPPER ${PROJECT_NAME} PROJECT_CAPNAME)
 
+set(CMAKE_CXX_STANDARD 11)
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-set(POMEROL_VERSION 1.3)
+set(POMEROL_VERSION 2.0)
 include(CommonDefs)
 
 no_source_builds()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 fix_rpath()
 set_linking_type()
-
-# C++11 (optional)
-message(STATUS "Using c++11 build")
-set(${PROJECT_CAPNAME}_CXX11 TRUE CACHE BOOL "Pomerol C++11" FORCE)
-set_cxx11()
+compiler_quirks()
 
 #Use complex Matrix elements
 option(POMEROL_COMPLEX_MATRIX_ELEMENTS "Use complex matrix elements" OFF)
@@ -42,8 +41,10 @@ else(POMEROL_USE_OPENMP)
     message(STATUS "OpenMP disabled")
 endif(POMEROL_USE_OPENMP)
 
-configure_file("${PROJECT_SOURCE_DIR}/include/pomerol/first_include.h.in" "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h")
-install(FILES "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h" DESTINATION include/pomerol)
+configure_file("${PROJECT_SOURCE_DIR}/include/pomerol/first_include.h.in"
+               "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h")
+install(FILES "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h"
+        DESTINATION include/pomerol)
 
 set (pomerol_sources
     mpi_dispatcher/mpi_dispatcher
@@ -77,8 +78,9 @@ set (pomerol_sources
     pomerol/EnsembleAverage
 )
 
-configure_file(${CMAKE_SOURCE_DIR}/include/pomerol.h.in ${CMAKE_BINARY_DIR}/include/pomerol.h)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/include/pomerol.h DESTINATION include)
+configure_file(${CMAKE_SOURCE_DIR}/include/pomerol.h.in
+               ${CMAKE_BINARY_DIR}/include/pomerol.h)
+install(FILES ${CMAKE_BINARY_DIR}/include/pomerol.h DESTINATION include)
 
 add_this_package(${pomerol_sources})
 
@@ -102,12 +104,13 @@ gen_documentation()
 
 # Install pkg-config file
 configure_file(pomerol.pc.in pomerol.pc @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pomerol.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pomerol.pc
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
 
 # Configure cmake config
 configure_file(pomerolConfig.cmake.in pomerolConfig.cmake @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pomerolConfig.cmake DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pomerol)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pomerolConfig.cmake
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pomerol)
 
 # Configure lmod file
 configure_file(pomerol.lmod.in pomerol.lmod @ONLY)
-
