@@ -78,10 +78,6 @@ set (pomerol_sources
     pomerol/EnsembleAverage
 )
 
-configure_file(${CMAKE_SOURCE_DIR}/include/pomerol.h.in
-               ${CMAKE_BINARY_DIR}/include/pomerol.h)
-install(FILES ${CMAKE_BINARY_DIR}/include/pomerol.h DESTINATION include)
-
 add_this_package(${pomerol_sources})
 
 # Dependencies
