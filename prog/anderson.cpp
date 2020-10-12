@@ -25,46 +25,38 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include <boost/serialization/complex.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/program_options.hpp>
+#include <boost/mpi.hpp>
 
 #include <string>
 #include <iostream>
 #include <algorithm>
 
-#include<cstdlib>
-#include <fstream>
-
 #include <pomerol.h>
-#include "mpi_dispatcher/mpi_dispatcher.hpp"
-#include <boost/program_options.hpp>
+
+#undef DEBUG
+#include <gftools.hpp>
+using gftools::tools::is_float_equal;
+using gftools::grid_object;
+using gftools::fmatsubara_grid;
+using gftools::bmatsubara_grid;
+using gftools::real_grid;
+
 namespace po = boost::program_options;
 
+void print_section (const std::string& str, boost::mpi::communicator comm = boost::mpi::communicator());
+
+//boost::mpi::environment env;
 using namespace Pomerol;
-
-extern boost::mpi::environment env;
-boost::mpi::communicator comm;
 #define mpi_cout if(!comm.rank()) std::cout
-
-/* Auxiliary routines - implemented in the bottom. */
-bool compare(ComplexType a, ComplexType b);
-void print_section (const std::string& str);
-template <typename F1, typename F2>
-    bool is_equal ( F1 x, F2 y, RealType tolerance = 1e-7);
-template <typename T1> void savetxt(std::string fname, T1 in);
-struct my_logic_error;
-double FMatsubara(int n, double beta){return M_PI/beta*(2.*n+1);}
-double BMatsubara(int n, double beta){return M_PI/beta*(2.*n);}
 
 template <typename T>
 po::options_description define(po::options_description& opts, std::string name, T def_val, std::string desc) {
     opts.add_options()(name.c_str(), po::value<T>()->default_value(T(def_val)), desc.c_str()); return opts; }
 
 template <typename T>
-po::options_description define_vec(po::options_description& opts, std::string name, T def_val, std::string desc) {
+po::options_description define_vec(po::options_description& opts, std::string name, T&& def_val, std::string desc) {
     opts.add_options()(name.c_str(), po::value<T>()->multitoken()->default_value(T(def_val),""), desc.c_str()); return opts; }
 
 // cmdline parser
@@ -72,8 +64,8 @@ po::variables_map cmdline_params(int argc, char* argv[])
 {
     po::options_description p("Full-ED of the Anderson model");
     //po::variables_map p(argc, (const char**)argv);
-    define_vec <std::vector<double> > (p, "levels", std::vector<double>(), "energy levels of the bath sites");
-    define_vec <std::vector<double> > (p, "hoppings", std::vector<double>(), "hopping to the bath sites");
+    define_vec <std::vector<double> > (p, "levels", { }, "energy levels of the bath sites");
+    define_vec <std::vector<double> > (p, "hoppings", { }, "hopping to the bath sites");
 
     define<double> (p, "U", 10.0, "Value of U");
     define<double> (p, "beta", 1, "Value of inverse temperature");
@@ -94,9 +86,7 @@ po::variables_map cmdline_params(int argc, char* argv[])
     define<double>(p, "2pgf.reduce_tol", 1e-5, "Energy resonance resolution in 2pgf");
     define<double>(p, "2pgf.coeff_tol",  1e-12, "Tolerance on nominators in 2pgf");
     define<double>(p, "2pgf.multiterm_tol", 1e-6, "How often to reduce terms in 2pgf");
-
-    std::vector<size_t> default_inds(4,0);
-    define_vec<std::vector<size_t> >(p, "2pgf.indices", default_inds, "2pgf index combination");
+    define_vec<std::vector<size_t> >(p, "2pgf.indices", std::vector<size_t>({0, 0, 0, 0 }), "2pgf index combination");
 
     p.add_options()("help","help");
 
@@ -112,11 +102,12 @@ po::variables_map cmdline_params(int argc, char* argv[])
     return vm;
 }
 
-
 int main(int argc, char* argv[])
 {
     boost::mpi::environment env(argc,argv);
     boost::mpi::communicator comm;
+
+    print_section("Anderson model ED");
 
     // all the params of the model
     RealType e0, U, beta;
@@ -135,8 +126,8 @@ int main(int argc, char* argv[])
 
 
     if (p.count("levels")) {
-        levels = p["levels"].as<std::vector<double> >();
-        hoppings = p["hoppings"].as<std::vector<double> >();
+        levels = p["levels"].as<std::vector<double>>();
+        hoppings = p["hoppings"].as<std::vector<double>>();
     }
 
     if (levels.size() != hoppings.size()) {MPI_Finalize(); throw (std::logic_error("number of levels != number of hoppings")); }
@@ -159,10 +150,10 @@ int main(int argc, char* argv[])
             LatticePresets::addLevel(&Lat, names[i], levels[i]);
         };
 
-    mpi_cout << "Sites" << std::endl;
-    if (!comm.rank()) Lat.printSites();
-
     int rank = comm.rank();
+    mpi_cout << "Sites" << std::endl;
+    if (!rank) Lat.printSites();
+
     if (!rank) {
         mpi_cout << "Terms with 2 operators" << std::endl;
         Lat.printTerms(2);
@@ -172,59 +163,78 @@ int main(int argc, char* argv[])
         };
 
     IndexClassification IndexInfo(Lat.getSiteMap());
-    IndexInfo.prepare(false); // Create index space
+    // Create index space
+    IndexInfo.prepare(false);
     if (!rank) { print_section("Indices"); IndexInfo.printIndices(); };
     int index_size = IndexInfo.getIndexSize();
 
     print_section("Matrix element storage");
     IndexHamiltonian Storage(&Lat,IndexInfo);
-    Storage.prepare(); // Write down the Hamiltonian as a symbolic formula
+    // Write down the Hamiltonian as a symbolic formula
+    Storage.prepare();
     print_section("Terms");
     mpi_cout << Storage << std::endl;
 
     Symmetrizer Symm(IndexInfo, Storage);
-    Symm.compute(); // Find symmetries of the problem
+    // Find symmetries of the problem
+    Symm.compute();
 
-    StatesClassification S(IndexInfo,Symm); // Introduce Fock space and classify states to blocks
+    // Introduce Fock space and classify states to blocks
+    StatesClassification S(IndexInfo,Symm);
     S.compute();
 
-    Hamiltonian H(IndexInfo, Storage, S); // Hamiltonian in the basis of Fock Space
-    H.prepare(); // enter the Hamiltonian matrices
-    H.compute(); // compute eigenvalues and eigenvectors
+    // Hamiltonian in the basis of Fock Space
+    Hamiltonian H(IndexInfo, Storage, S);
+    // enter the Hamiltonian matrices
+    H.prepare();
+    // compute eigenvalues and eigenvectors
+    H.compute();
 
-    RealVectorType evals (H.getEigenValues());
-    std::sort(evals.data(), evals.data() + H.getEigenValues().size());
-    savetxt("spectrum.dat", evals); // dump eigenvalues
+    // Save spectrum
+    if (!rank) {
+        gftools::grid_object<double, gftools::enum_grid> evals1(gftools::enum_grid(0, S.getNumberOfStates()));
+        RealVectorType evals (H.getEigenValues());
+        std::sort(evals.data(), evals.data() + H.getEigenValues().size());
+        std::copy(evals.data(), evals.data() + S.getNumberOfStates(), evals1.data().data());
+        evals1.savetxt("spectrum.dat");
+    }
+    //savetxt("spectrum.dat", evals); // dump eigenvalues
 
     DensityMatrix rho(S,H,beta); // create Density Matrix
     rho.prepare();
     rho.compute(); // evaluate thermal weights with respect to ground energy, i.e exp(-beta(e-e_0))/Z
 
-    mpi_cout << "<N> = " << rho.getAverageOccupancy() << std::endl; // get average total particle number
-    mpi_cout << "<H> = " << rho.getAverageEnergy() << std::endl; // get average energy
     ParticleIndex d0 = IndexInfo.getIndex("A",0,down); // find the indices of the impurity, i.e. spin up index
     ParticleIndex u0 = IndexInfo.getIndex("A",0,up);
-    mpi_cout << "<N_{" << IndexInfo.getInfo(u0) << "}N_{"<< IndexInfo.getInfo(u0) << "}> = " << rho.getAverageDoubleOccupancy(u0,d0) << std::endl; // get double occupancy
 
-    for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {
-        mpi_cout << "<N_{" << IndexInfo.getInfo(i) << "[" << i <<"]}> = " << rho.getAverageOccupancy(i) << std::endl; // get average total particle number
+    if (!rank) {
+        // get average total particle number
+        mpi_cout << "<N> = " << rho.getAverageOccupancy() << std::endl;
+        // get average energy
+        mpi_cout << "<H> = " << rho.getAverageEnergy() << std::endl;
+        // get double occupancy
+        mpi_cout << "<N_{" << IndexInfo.getInfo(u0) << "}N_{"<< IndexInfo.getInfo(u0) << "}> = " << rho.getAverageDoubleOccupancy(u0,d0) << std::endl;
+        // get average total particle number per index
+        for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {
+            std::cout << "<N_{" << IndexInfo.getInfo(i) << "[" << i <<"]}> = " << rho.getAverageOccupancy(i) << std::endl;
+            }
+        double n_av = rho.getAverageOccupancy();
+        gftools::num_io<double>(n_av).savetxt("N_T.dat");
         }
-
-    if (!comm.rank()) savetxt("N_T.dat",rho.getAverageOccupancy());
 
     // Green's function calculation starts here
 
     FieldOperatorContainer Operators(IndexInfo, S, H); // Create a container for c and c^+ in the eigenstate basis
 
     if (calc_gf) {
-        print_section("1-particle Green's functions calc");
-        std::set<ParticleIndex> f; // a set of indices to evaluate c and c^+
-        std::set<IndexCombination2> indices2; // a set of pairs of indices to evaluate Green's function
-
         int ntau; double eta, step, hbw;
         boost::tie(ntau, eta, step, hbw) = boost::make_tuple(p["gf.ntau"].as<int>(), p["gf.eta"].as<double>(), p["gf.step"].as<double>(), p["gf.D"].as<double>());
         int wf_min, wf_max, wb_min, wb_max;
         boost::tie(wf_min, wf_max, wb_min, wb_max) = boost::make_tuple(p["wf_min"].as<int>(), p["wf_max"].as<int>(), p["wb_min"].as<int>(), p["wb_max"].as<int>());
+
+        mpi_cout << "1-particle Green's functions calc" << std::endl;
+        std::set<ParticleIndex> f; // a set of indices to evaluate c and c^+
+        std::set<IndexCombination2> indices2; // a set of pairs of indices to evaluate Green's function
 
         // Take only impurity spin up and spin down indices
         f.insert(u0);
@@ -243,23 +253,21 @@ int main(int argc, char* argv[])
         // loops over all components (pairs of indices) of the Green's function
         for (std::set<IndexCombination2>::const_iterator it = indices2.begin(); it != indices2.end(); ++it) {
             IndexCombination2 ind2 = *it;
-            // Save Matsubara GF from pi/beta to pi/beta*(4*wf_max + 1)
-            std::cout << "Saving imfreq G" << ind2 << " on "<< 4*wf_max << " Matsubara freqs. " << std::endl;
-            std::ofstream gw_im(("gw_imag"+ boost::lexical_cast<std::string>(ind2.Index1)+ boost::lexical_cast<std::string>(ind2.Index2)+".dat").c_str());
             const GreensFunction & GF = G(ind2);
-            for (int wn = 0; wn < wf_max*4; wn++) {
-                ComplexType val = GF(I*FMatsubara(wn,beta)); // this comes from Pomerol - see GreensFunction::operator()
-                gw_im << std::scientific << std::setprecision(12) << FMatsubara(wn,beta) << "   " << real(val) << " " << imag(val) << std::endl;
+
+            mpi_cout << "Saving imfreq G" << ind2 << " on "<< 4*wf_max << " Matsubara freqs. " << std::endl;
+            grid_object<std::complex<double>, fmatsubara_grid> gf_imfreq (fmatsubara_grid(wf_min, wf_max*4, beta));
+            std::string ind_str = boost::lexical_cast<std::string>(ind2.Index1)+ boost::lexical_cast<std::string>(ind2.Index2);
+            for (auto p : gf_imfreq.grid().points()) { gf_imfreq[p] = GF(p.value()); }
+            gf_imfreq.savetxt("gw_imfreq_"+ ind_str +".dat");
+
+            real_grid freq_grid(-hbw, hbw, 2*hbw/step+1, true);
+            grid_object<std::complex<double>, real_grid> gf_refreq(freq_grid);
+            for (auto p : freq_grid.points()) {
+                ComplexType val = GF(ComplexType(p.value()) + I*eta);
+                gf_refreq[p] = val;
             };
-            gw_im.close();
-            // Save Retarded GF on the real axis
-            std::ofstream gw_re(("gw_real"+boost::lexical_cast<std::string>(ind2.Index1)+boost::lexical_cast<std::string>(ind2.Index2)+".dat").c_str());
-            std::cout << "Saving real-freq GF " << ind2 << " in energy space [" << e0-hbw << ":" << e0+hbw << ":" << step << "] + I*" << eta << "." << std::endl;
-            for (double w = e0-hbw; w < e0+hbw; w+=step) {
-                ComplexType val = GF(ComplexType(w) + I*eta);
-                gw_re << std::scientific << std::setprecision(12) << w << "   " << real(val) << " " << imag(val) << std::endl;
-            };
-            gw_re.close();
+            gf_refreq.savetxt("gw_refreq_"+ ind_str +".dat");
         }
 
         // Start Two-particle GF calculation
@@ -298,84 +306,52 @@ int main(int argc, char* argv[])
             G4.prepare();
             comm.barrier(); // MPI::BARRIER
 
-            // Fill a vector of tuples of fermionic Matsubara frequencies - these will be evaluated in-place
             std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
-            for (int W_index = -wb_min; W_index <= wb_max; W_index++) { // loop over bosonic freq
-                ComplexType W = I*BMatsubara(W_index, beta);
-                for (int w3_index = -wf_max; w3_index<wf_max; w3_index++) { // loop over first fermionic frequency
-                    ComplexType w3 = I*FMatsubara(w3_index, beta);
-                    for (int w2_index = -wf_max; w2_index<wf_max; w2_index++) { // loop over second fermionic
-                        ComplexType w2 = I*FMatsubara(w2_index, beta);
+            fmatsubara_grid fgrid(wf_min, wf_max, beta);
+            bmatsubara_grid bgrid(wb_min, wb_max + 1, beta);
+            freqs_2pgf.reserve(fgrid.size() * fgrid.size() * bgrid.size());
+            for (auto W : bgrid.values()) {
+                for (auto w3 : fgrid.values()) {
+                    for (auto w2 : fgrid.values()) {
                         ComplexType w1 = W+w3;
                         freqs_2pgf.push_back(boost::make_tuple(w1,w2,w3));
+                        }
                     }
                 }
-            }
             mpi_cout << "2PGF : " << freqs_2pgf.size() << " freqs to evaluate" << std::endl;
 
-            std::vector<ComplexType> chi_freq_data = G4.compute(true, freqs_2pgf, comm); // mdata[ind];
+            // ! The most important routine - actually calculate the 2PGF
+            auto chi_freq_data = G4.compute(true, freqs_2pgf, comm);
 
-            // Save terms of two particle GF
-            std::ofstream term_res_stream(("terms_res"+ind_str+".pom").c_str());
-            std::ofstream term_nonres_stream(("terms_nonres"+ind_str+".pom").c_str());
-            boost::archive::text_oarchive oa_res(term_res_stream);
-            boost::archive::text_oarchive oa_nonres(term_nonres_stream);
-            for(std::vector<TwoParticleGFPart*>::const_iterator iter = G4.parts.begin(); iter != G4.parts.end(); iter++) {
-                oa_nonres << ((*iter)->getNonResonantTerms());
-                oa_res << ((*iter)->getResonantTerms());
-                };
-
-            if (!rank) {
-                size_t w = 0;
-                for (int W_index = -wb_min; W_index <= wb_max; W_index++) { // loop over bosonic freq
-                    ComplexType W = I*BMatsubara(W_index, beta);
-                    std::ofstream chi_stream (("chi"+ind_str+"_W"+boost::lexical_cast<std::string>(std::imag(W))+".dat").c_str());
-                    for (int w3_index = -wf_max; w3_index<wf_max; w3_index++) { // loop over first fermionic frequency
-                        ComplexType w3 = I*FMatsubara(w3_index, beta);
-                        for (int w2_index = -wf_max; w2_index<wf_max; w2_index++) { // loop over second fermionic
-                            ComplexType w2 = I*FMatsubara(w2_index, beta);
-                            ComplexType w1 = W+w3;
-                            if (std::abs(w1 - boost::get<0>(freqs_2pgf[w])) > 1e-8) throw std::logic_error("2pgf freq mismatch");
-
-                            std::complex<double> val = chi_freq_data[w];
-
-                            chi_stream << std::scientific << std::setprecision(12)
-                               << w3.real() << " " << w3.imag() << " " << w2.real() << " " << w2.imag() << "   " << std::real(val) << " " << std::imag(val) << std::endl;
-                            ++w;
+            // dump 2PGF into files - loop through 2pgf components
+            if (!comm.rank()) {
+                mpi_cout << "Saving 2PGF " << index_comb << std::endl;
+                grid_object<std::complex<double>, bmatsubara_grid, fmatsubara_grid, fmatsubara_grid> full_vertex(std::forward_as_tuple(bgrid, fgrid, fgrid));
+                grid_object<std::complex<double>, fmatsubara_grid, fmatsubara_grid> full_vertex_1freq(std::forward_as_tuple(fgrid, fgrid));
+                size_t w_ind = 0;
+                for (auto W : bgrid.points()) {
+                    for (auto w3 : fgrid.points()) {
+                        for (auto w2 : fgrid.points()) {
+                            std::complex<double> val = chi_freq_data[w_ind];
+                            full_vertex[W][w3.index()][w2.index()] = val;
+                            full_vertex_1freq[w3.index()][w2.index()] = val;
+                            if (!is_float_equal(boost::get<0>(freqs_2pgf[w_ind]), W.value()+w3.value())) throw std::logic_error("2pgf freq mismatch");
+                            ++w_ind;
+                            }
+                        }
+                    std::string fv1_name = "chi"+ind_str+"_W"+boost::lexical_cast<std::string>(std::imag(W.value()))+".dat";
+                    full_vertex_1freq.savetxt(fv1_name);
                     }
                 }
-                chi_stream << std::endl;
-                chi_stream.close();
-                }
+            // with the help of alpscore grid_object could be dumped to hdf5 - see save_grid_object(alps::hdf5::archive&, grid_object const&, group)
             }
-        }
     }
 }
 
-
-bool compare(ComplexType a, ComplexType b)
+void print_section (const std::string& str, boost::mpi::communicator comm)
 {
-    return abs(a-b) < 1e-5;
+    mpi_cout << std::string(str.size(),'=') << std::endl;
+    mpi_cout << str << std::endl;
+    mpi_cout << std::string(str.size(),'=') << std::endl;
 }
-
-void print_section (const std::string& str)
-{
-    if (!comm.rank()) {
-        std::cout << std::string(str.size(),'=') << std::endl;
-        std::cout << str << std::endl;
-        std::cout << std::string(str.size(),'=') << std::endl;
-        };
-}
-
-template <typename F1, typename F2>
-bool is_equal ( F1 x, F2 y, RealType tolerance)
-{
-    return (std::abs(x-y)<tolerance);
-}
-
-template <typename T1> void savetxt(std::string fname, T1 in){std::ofstream out(fname.c_str()); out << in << std::endl; out.close();};
-
-struct my_logic_error : public std::logic_error { my_logic_error (const std::string& what_arg):logic_error(what_arg){}; };
-
-
 

@@ -41,20 +41,18 @@ foreach (test ${tests})
     )
 endforeach(test)
 
-if(CXX11)
-    set(mpi_tests mpi_dispatcher_test mpi_dispatcher_test_nomaster)
-    foreach (test ${mpi_tests})
-        set(test_src ${test}.cpp)
-        add_executable(${test} ${test_src})
-        target_link_libraries(${test}
-            ${Boost_LIBRARIES}
-            ${MPI_CXX_LIBRARIES}
-            pomerol
-        )
+set(mpi_tests mpi_dispatcher_test mpi_dispatcher_test_nomaster)
+foreach (test ${mpi_tests})
+    set(test_src ${test}.cpp)
+    add_executable(${test} ${test_src})
+    target_link_libraries(${test}
+        ${Boost_LIBRARIES}
+        ${MPI_CXX_LIBRARIES}
+        pomerol
+    )
 
-        foreach (np 2 4 8 16)
-            set(test_parameters ${MPIEXEC_NUMPROC_FLAG} ${np} ${MPIEXEC_PREFLAGS} ${test} ${MPIEXEC_POSTFLAGS})
-            add_test(NAME ${test}${np}cpu COMMAND "${MPIEXEC}" ${test_parameters})
-        endforeach (np)
-    endforeach (test)
-endif(CXX11)
+    foreach (np 2 4 8 16)
+        set(test_parameters ${MPIEXEC_NUMPROC_FLAG} ${np} ${MPIEXEC_PREFLAGS} ${test} ${MPIEXEC_POSTFLAGS})
+        add_test(NAME ${test}${np}cpu COMMAND "${MPIEXEC}" ${test_parameters})
+    endforeach(np)
+endforeach(test)
