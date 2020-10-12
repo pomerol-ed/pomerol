@@ -14,8 +14,9 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <tuple>
 
-#include<cstdlib>
+#include <cstdlib>
 #include <fstream>
 
 #include <pomerol.h>
@@ -54,7 +55,7 @@ public:
   virtual void init_parameters() {
     _U = p["U"].as<double>();
     _e0 = p["ed"].as<double>();
-    boost::tie(beta, calc_gf, calc_2pgf) = boost::make_tuple(p["beta"].as<double>(), p["calc_gf"].as<int>(), p["calc_2pgf"].as<int>());
+    std::tie(beta, calc_gf, calc_2pgf) = std::make_tuple(p["beta"].as<double>(), p["calc_gf"].as<int>(), p["calc_2pgf"].as<int>());
     calc_gf = calc_gf || calc_2pgf;
     rank = comm.rank();
   }

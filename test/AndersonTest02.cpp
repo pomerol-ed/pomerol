@@ -11,10 +11,11 @@
 
 
 #include <string>
+#include <tuple>
 #include <iostream>
 #include <algorithm>
 
-#include<cstdlib>
+#include <cstdlib>
 #include <fstream>
 
 #include <pomerol.h>
@@ -149,7 +150,7 @@ int main(int argc, char* argv[])
             Chi4.MultiTermCoefficientTolerance = 1e-6;
             Chi4.prepareAll(indices4);
             comm.barrier();
-            std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs;
+            std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > freqs;
             Chi4.computeAll(false, freqs, comm, true);
 
 

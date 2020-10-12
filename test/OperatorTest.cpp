@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
 // Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
@@ -37,8 +37,8 @@ using namespace Pomerol::OperatorPresets;
 int main(int argc, char* argv[])
 {
   /* Test of Operator::Term*/
-  
-  Operator IT1 = Cdag(0)*C(0)*Cdag(1)*C(1); 
+
+  Operator IT1 = Cdag(0)*C(0)*Cdag(1)*C(1);
   INFO("Created Operator " << IT1);
 
    FockState a1(4);
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
    MelemType result;
    std::map<FockState, MelemType> out;
 
-   Operator IT2 = Cdag(1); 
+   Operator IT2 = Cdag(1);
    out=IT2.actRight(a1);
    res_state = out.begin()->first;
    result = out.begin()->second;
@@ -79,49 +79,49 @@ int main(int argc, char* argv[])
    Operator IT5 = Cdag(0)*C(1);
 
    Operator IT6 = - C(1)*Cdag(0);
-   Operator IT7 = C(1)*Cdag(0); 
-   
+   Operator IT7 = C(1)*Cdag(0);
+
    INFO("( " << IT5 << "==" << IT6 <<" ) = " << (IT5 == IT6));
    if (!(IT5 == IT6)) return EXIT_FAILURE;
    INFO("( " << IT5 << "==" << IT7 <<" ) = " << (IT5 == IT7));
    if ((IT5 == IT7)) return EXIT_FAILURE;
-   
+
    Operator IT7_2 = Cdag(2)*C(2);
    INFO(IT4 << " commutes with " << IT7_2 << " = " << IT4.commutes(IT7_2));
 
-   Operator IT101 = Cdag(1)*C(1); //((boost::make_tuple(1.0, ops)));
+   Operator IT101 = Cdag(1)*C(1); //((std::make_tuple(1.0, ops)));
 
-   Operator IT102 = Cdag(2)*C(2)*Cdag(0)*C(0); //((boost::make_tuple(1.0, ops)));
+   Operator IT102 = Cdag(2)*C(2)*Cdag(0)*C(0); //((std::make_tuple(1.0, ops)));
    if (!(IT102.commutes(IT101))) return EXIT_FAILURE;
 
-   Operator IT8 = Cdag(0)*C(1)*Cdag(2)*C(3); 
+   Operator IT8 = Cdag(0)*C(1)*Cdag(2)*C(3);
 
-   Operator IT9 = - Cdag(0) * C(1) * C(3) * Cdag(2); // (boost::make_tuple(-1.0, ops));
+   Operator IT9 = - Cdag(0) * C(1) * C(3) * Cdag(2); // (std::make_tuple(-1.0, ops));
    INFO("( " << IT8 << "==" << IT9 <<" ) = " << (IT8 == IT9));
    if (!(IT8==IT9)) return EXIT_FAILURE;
-   //ops[0]=boost::make_tuple(1,0);
-   //ops[1]=boost::make_tuple(0,1);
-   //ops[2]=boost::make_tuple(0,2);
-   //ops[3]=boost::make_tuple(1,2);
+   //ops[0]=std::make_tuple(1,0);
+   //ops[1]=std::make_tuple(0,1);
+   //ops[2]=std::make_tuple(0,2);
+   //ops[3]=std::make_tuple(1,2);
    Operator IT10 = Cdag(0)*C(1)*C(2)*Cdag(2);
 
    Operator IT11 = -C(1)*Cdag(0)*C(2)*Cdag(2);
    INFO("( " << IT10 << "==" << IT11 <<" ) = " << (IT10 == IT11));
    if (!(IT10==IT11)) return EXIT_FAILURE;
-   
+
    INFO(IT10 << " commutes with " << IT11 << " = " << IT10.commutes(IT11));
 
    // test reduce
    Operator IT12Base = Cdag(1)*C(1)*C(0)*Cdag(0);
-   Operator IT12 = 13*IT12Base; //(boost::make_tuple(13.0, ops));
-   Operator IT12_2 = -5 * IT12Base; // (boost::make_tuple(-5.0, ops));
-   Operator IT12_3 = -8*IT12Base; //(boost::make_tuple(-8.0, ops));
+   Operator IT12 = 13*IT12Base; //(std::make_tuple(13.0, ops));
+   Operator IT12_2 = -5 * IT12Base; // (std::make_tuple(-5.0, ops));
+   Operator IT12_3 = -8*IT12Base; //(std::make_tuple(-8.0, ops));
 
    Operator ITsum;
    ITsum=IT12;
    ITsum+=IT12_2;
    ITsum+=IT12_3;
-   
+
    INFO(IT12 << "+" << IT12_2 << "+" << IT12_3 << "=" << ITsum);
    if (!ITsum.isEmpty()) return EXIT_FAILURE;
 

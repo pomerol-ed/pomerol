@@ -13,8 +13,9 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <tuple>
 
-#include<cstdlib>
+#include <cstdlib>
 #include <fstream>
 
 #include <pomerol.h>
@@ -162,14 +163,14 @@ int main(int argc, char* argv[])
             chi_uuuu_vals[7] = -5.370700986029e-03;
             chi_uuuu_vals[8] = -5.126175681822e-03;
             chi_uuuu_vals[9] = -4.732777836189e-03;
-            std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs(chi_uuuu_vals.size());
+            std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > freqs(chi_uuuu_vals.size());
 
             ComplexType Omega = I*2.*M_PI/beta;
             ComplexType omega = I*M_PI/beta;
 
             for (int w = 0; w < chi_uuuu_vals.size(); ++w) {
                 ComplexType w_p = I*(2.*w+1.)*M_PI/beta;
-                freqs[w] = boost::make_tuple(omega+Omega, w_p, omega);
+                freqs[w] = std::make_tuple(omega+Omega, w_p, omega);
                 }
 
             std::map<IndexCombination4, std::vector<ComplexType> > data_freqs = Chi4.computeAll(true, freqs, comm, true);
@@ -182,10 +183,10 @@ int main(int argc, char* argv[])
 
             for (size_t w = 0; w < chi_uuuu_vals.size(); w++) {
 
-                std::cout << "(" << imag(boost::get<0>(freqs[w])) << "," << imag(boost::get<1>(freqs[w])) << "," << imag(boost::get<2>(freqs[w])) << "): " << std::flush;
+                std::cout << "(" << imag(std::get<0>(freqs[w])) << "," << imag(std::get<1>(freqs[w])) << "," << imag(std::get<2>(freqs[w])) << "): " << std::flush;
                 ComplexType chi_uuuu_val = chi_uuuu_out[w];
                 // this now won't work - all terms are cleared
-                //ComplexType chi_uuuu_val = chi_uuuu(boost::get<0>(freqs[w]), boost::get<1>(freqs[w]), boost::get<2>(freqs[w]));
+                //ComplexType chi_uuuu_val = chi_uuuu(std::get<0>(freqs[w]), std::get<1>(freqs[w]), std::get<2>(freqs[w]));
                 bool success = is_equal(chi_uuuu_val, chi_uuuu_vals[w], 1e-6);
                 std::cout << "uuuu: " << chi_uuuu_val << " == (exact_uuuu) " << chi_uuuu_vals[w] << " == " << std::boolalpha << success << std::endl;
                 if (!success) return EXIT_FAILURE;

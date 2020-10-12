@@ -4,7 +4,7 @@
 namespace Pomerol{
 
 //
-//IndexClassification::IndexInfo 
+//IndexClassification::IndexInfo
 //
 
 IndexClassification::IndexInfo::IndexInfo( const std::string &SiteLabel, const unsigned short Orbital, const unsigned short Spin):
@@ -14,7 +14,7 @@ IndexClassification::IndexInfo::IndexInfo( const std::string &SiteLabel, const u
     SiteLabelHash = string_hash(SiteLabel);
 };
 
-bool IndexClassification::IndexInfo::operator<(const IndexClassification::IndexInfo& rhs) const 
+bool IndexClassification::IndexInfo::operator<(const IndexClassification::IndexInfo& rhs) const
 {
     if (SiteLabelHash != rhs.SiteLabelHash) return (SiteLabelHash < rhs.SiteLabelHash);
     if (Orbital != rhs.Orbital) return (Orbital < rhs.Orbital);
@@ -95,18 +95,10 @@ ParticleIndex IndexClassification::getIndex(const std::string &Site, const unsig
 
 ParticleIndex IndexClassification::getIndex(const IndexClassification::IndexInfo &in) const
 {
-    std::map<IndexInfo, ParticleIndex>::const_iterator it=InfoToIndices.find(in); 
+    std::map<IndexInfo, ParticleIndex>::const_iterator it=InfoToIndices.find(in);
     if (it!=InfoToIndices.end()) return (*it).second;
     else return IndexSize;
 }
-
-/*
-boost::tuple<std::string, unsigned short, unsigned short> IndexClassification::getInfo(ParticleIndex in) const 
-{
-    if (in >= IndexSize) throw (exWrongIndex());
-    IndexInfo *out = IndicesToInfo[in];
-    return boost::make_tuple(out->SiteLabel, out->Orbital, out->Spin);
-}*/
 
 IndexClassification::IndexInfo IndexClassification::getInfo(ParticleIndex in) const
 {

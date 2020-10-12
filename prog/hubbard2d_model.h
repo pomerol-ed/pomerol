@@ -27,7 +27,7 @@ public:
     _mu = p.count("mu") ? p["mu"].as<double>() :U()/2;
     _t = p["t"].as<double>();
     _tp = p["tp"].as<double>();
-    boost::tie(size_x, size_y) = boost::make_tuple(p["x"].as<int>(), p["y"].as<int>());
+    std::tie(size_x, size_y) = std::make_tuple(p["x"].as<int>(), p["y"].as<int>());
   }
 
   virtual std::pair<ParticleIndex, ParticleIndex> get_node(const IndexClassification &IndexInfo) {

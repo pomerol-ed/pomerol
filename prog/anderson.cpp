@@ -32,6 +32,7 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <tuple>
 
 #include <pomerol.h>
 
@@ -120,7 +121,7 @@ int main(int argc, char* argv[])
 
     U = p["U"].as<double>();
     e0 = p["ed"].as<double>();
-    boost::tie(beta, calc_gf, calc_2pgf) = boost::make_tuple(
+    std::tie(beta, calc_gf, calc_2pgf) = std::make_tuple(
         p["beta"].as<double>(), p["calc_gf"].as<int>(), p["calc_2pgf"].as<int>());
     calc_gf = calc_gf || calc_2pgf;
 
@@ -228,9 +229,9 @@ int main(int argc, char* argv[])
 
     if (calc_gf) {
         int ntau; double eta, step, hbw;
-        boost::tie(ntau, eta, step, hbw) = boost::make_tuple(p["gf.ntau"].as<int>(), p["gf.eta"].as<double>(), p["gf.step"].as<double>(), p["gf.D"].as<double>());
+        std::tie(ntau, eta, step, hbw) = std::make_tuple(p["gf.ntau"].as<int>(), p["gf.eta"].as<double>(), p["gf.step"].as<double>(), p["gf.D"].as<double>());
         int wf_min, wf_max, wb_min, wb_max;
-        boost::tie(wf_min, wf_max, wb_min, wb_max) = boost::make_tuple(p["wf_min"].as<int>(), p["wf_max"].as<int>(), p["wb_min"].as<int>(), p["wb_max"].as<int>());
+        std::tie(wf_min, wf_max, wb_min, wb_max) = std::make_tuple(p["wf_min"].as<int>(), p["wf_max"].as<int>(), p["wb_min"].as<int>(), p["wb_max"].as<int>());
 
         mpi_cout << "1-particle Green's functions calc" << std::endl;
         std::set<ParticleIndex> f; // a set of indices to evaluate c and c^+
@@ -306,7 +307,7 @@ int main(int argc, char* argv[])
             G4.prepare();
             comm.barrier(); // MPI::BARRIER
 
-            std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
+            std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
             fmatsubara_grid fgrid(wf_min, wf_max, beta);
             bmatsubara_grid bgrid(wb_min, wb_max + 1, beta);
             freqs_2pgf.reserve(fgrid.size() * fgrid.size() * bgrid.size());

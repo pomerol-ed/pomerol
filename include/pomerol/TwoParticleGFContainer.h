@@ -28,6 +28,7 @@
 #include"IndexContainer4.h"
 
 #include <memory>
+#include <tuple>
 
 namespace Pomerol{
 
@@ -50,18 +51,18 @@ public:
     void prepareAll(const std::set<IndexCombination4>& InitialIndices = std::set<IndexCombination4>());
     std::map<IndexCombination4,std::vector<ComplexType> > computeAll(
         bool clearTerms = false,
-        std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(),
+        std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<std::tuple<ComplexType, ComplexType, ComplexType> >(),
         const boost::mpi::communicator & comm = boost::mpi::communicator(),
         bool split = true
         );
     std::map<IndexCombination4,std::vector<ComplexType> > computeAll_nosplit(
         bool clearTerms,
-        std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(),
+        std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<std::tuple<ComplexType, ComplexType, ComplexType> >(),
         const boost::mpi::communicator & comm = boost::mpi::communicator()
         );
     std::map<IndexCombination4,std::vector<ComplexType> > computeAll_split(
         bool clearTerms,
-        std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(),
+        std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<std::tuple<ComplexType, ComplexType, ComplexType> >(),
         const boost::mpi::communicator & comm = boost::mpi::communicator()
         );
 
