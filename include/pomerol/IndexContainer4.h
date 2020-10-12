@@ -1,6 +1,6 @@
  //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <Andrey.E.Antipov@gmail.com>
 // Copyright (C) 2010-2012 Igor Krivenko <Igor.S.Krivenko@gmail.com>
@@ -29,8 +29,8 @@
 
 #include"IndexClassification.h"
 
-#include<set>
-#include<boost/shared_ptr.hpp>
+#include <memory>
+#include <set>
 
 namespace Pomerol {
 
@@ -38,10 +38,10 @@ namespace Pomerol {
 template<typename ElementType>
 struct ElementWithPermFreq
 {
-    boost::shared_ptr<ElementType> pElement;
+    std::shared_ptr<ElementType> pElement;
     const Permutation4 FrequenciesPermutation;
 
-    ElementWithPermFreq(boost::shared_ptr<ElementType> pElement, Permutation4 FrequenciesPermutation);
+    ElementWithPermFreq(std::shared_ptr<ElementType> pElement, Permutation4 FrequenciesPermutation);
 
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
     operator ElementType&();
@@ -59,7 +59,7 @@ protected:
 
 public:
     std::map<IndexCombination4,ElementWithPermFreq<ElementType> > ElementsMap;
-    std::map<IndexCombination4, boost::shared_ptr<ElementType>  > NonTrivialElements;
+    std::map<IndexCombination4, std::shared_ptr<ElementType>  > NonTrivialElements;
     IndexContainer4<ElementType,SourceObject>(SourceObject* pSource, const IndexClassification& IndexInfo);
 
     void fill(std::set<IndexCombination4> InitialIndices = std::set<IndexCombination4>());
@@ -79,7 +79,7 @@ public:
 /////////////////////////
 template<typename ElementType> inline
 ElementWithPermFreq<ElementType>::ElementWithPermFreq(
-    boost::shared_ptr<ElementType> pElement, Permutation4 FrequenciesPermutation) :
+    std::shared_ptr<ElementType> pElement, Permutation4 FrequenciesPermutation) :
     pElement(pElement), FrequenciesPermutation(FrequenciesPermutation)
 {}
 
@@ -139,7 +139,7 @@ void IndexContainer4<ElementType,SourceObject>::fill(std::set<IndexCombination4>
 
     std::set<IndexCombination4> II;
     if(InitialIndices.size()==0)           // If there are no indices provided,
-        II = enumerateInitialIndices(); // Enumerate all possible combinations. 
+        II = enumerateInitialIndices(); // Enumerate all possible combinations.
     else
         II = InitialIndices;    // Otherwise use provided indices.
 
@@ -155,12 +155,12 @@ inline
 ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::set(const IndexCombination4& Indices)
 {
     // TODO: rewrite this method entirely (merge with fill()?)
-    boost::shared_ptr<ElementType> pElement(pSource->createElement(Indices));
+    std::shared_ptr<ElementType> pElement(pSource->createElement(Indices));
     typename std::map<IndexCombination4,ElementWithPermFreq<ElementType> >::iterator iter =
         ElementsMap.insert(
             std::pair<IndexCombination4,ElementWithPermFreq<ElementType> >
                 (Indices,ElementWithPermFreq<ElementType>(pElement,permutations4[0]))).first;
-    
+
     DEBUG("IndexContainer4::fill() at " << this << ": " <<
         "added an element with indices " << Indices <<
         " and frequency permutation " << permutations4[0] <<
@@ -168,8 +168,8 @@ ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::set
 
     bool SameCIndices = (Indices.Index1==Indices.Index2);
     bool SameCXIndices = (Indices.Index3==Indices.Index4);
-    
-    NonTrivialElements.insert(std::make_pair(Indices,pElement)); 
+
+    NonTrivialElements.insert(std::make_pair(Indices,pElement));
 
     if(!SameCIndices){
         IndexCombination4 Indices2134(Indices.Index2,Indices.Index1,Indices.Index3,Indices.Index4);

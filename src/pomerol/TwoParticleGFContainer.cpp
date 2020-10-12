@@ -97,7 +97,7 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
 
     boost::mpi::communicator comm_split = comm.split(proc_colors[comm.rank()]);
 
-    for(std::map<IndexCombination4, boost::shared_ptr<TwoParticleGF> >::iterator iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
+    for(std::map<IndexCombination4, std::shared_ptr<TwoParticleGF> >::iterator iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
         bool calc = (elem_colors[comp] == proc_colors[comm.rank()]);
         if (calc) {
             INFO("C" << elem_colors[comp] << "p" << comm.rank() << ": computing 2PGF for " << iter->first);
@@ -108,7 +108,7 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
     // distribute data
     if (!comm.rank()) INFO_NONEWLINE("Distributing 2PGF container...");
     comp = 0;
-    for(std::map<IndexCombination4, boost::shared_ptr<TwoParticleGF> >::iterator iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
+    for(std::map<IndexCombination4, std::shared_ptr<TwoParticleGF> >::iterator iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
         int sender = color_roots[elem_colors[comp]];
         TwoParticleGF& chi = *((iter)->second);
         for (size_t p = 0; p<chi.parts.size(); p++) {

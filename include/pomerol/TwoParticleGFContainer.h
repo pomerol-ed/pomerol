@@ -27,9 +27,11 @@
 #include"FieldOperatorContainer.h"
 #include"IndexContainer4.h"
 
+#include <memory>
+
 namespace Pomerol{
 
-typedef boost::shared_ptr<TwoParticleGF> GF2Pointer;
+typedef std::shared_ptr<TwoParticleGF> GF2Pointer;
 
 class TwoParticleGFContainer: public IndexContainer4<TwoParticleGF,TwoParticleGFContainer>, public Thermal
 {

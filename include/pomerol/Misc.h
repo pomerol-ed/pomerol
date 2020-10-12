@@ -19,8 +19,6 @@
 #include<iomanip>
 
 
-#include<boost/shared_ptr.hpp>
-#include<boost/scoped_ptr.hpp>
 #include<boost/make_shared.hpp>
 #include<boost/dynamic_bitset.hpp>
 #include<boost/tuple/tuple.hpp>

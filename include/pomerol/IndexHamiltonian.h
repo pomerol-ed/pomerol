@@ -1,6 +1,6 @@
 /** \file IndexHamiltonian.h
 **  \brief Declaration of the IndexHamiltonian class - the Hamiltonian written in Index space.
-** 
+**
 **  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
@@ -12,11 +12,10 @@
 #include "IndexClassification.h"
 #include "Lattice.h"
 #include "Operator.h"
-#include <boost/shared_ptr.hpp>
 
 namespace Pomerol{
 
-/* This class stores all matrix elements of a Hamiltonian in the index space. All terms have the ordering, 
+/* This class stores all matrix elements of a Hamiltonian in the index space. All terms have the ordering,
  * defined at the TERM_DEFAULT_SEQUENCE, which is by default taken as \f$ c^{\dagger} c c^{\dagger} c ... \f$. */
 class IndexHamiltonian : public Operator
 {
@@ -38,7 +37,7 @@ public:
     //void printTerms(unsigned int order) const;
 };
 
-/** This function is used in the IndexHamiltonian prepare method. 
+/** This function is used in the IndexHamiltonian prepare method.
  * This defines the default sequence of elements to be used in IndexHamiltonian OpTerm storage.. */
 inline std::vector<bool>& TERM_DEFAULT_SEQUENCE(unsigned int N)
 {
