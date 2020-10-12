@@ -34,7 +34,6 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-#include <boost/local_function.hpp>
 
 #include <string>
 #include <iostream>
@@ -128,8 +127,7 @@ int main(int argc, char* argv[])
 
     /* Add sites */
     std::vector<std::string> names(L);
-    //auto SiteIndexF = [size_x](size_t x, size_t y){return y*size_x + x;};
-    int BOOST_LOCAL_FUNCTION (bind size_x, size_t x, size_t y){return y*size_x + x;} BOOST_LOCAL_FUNCTION_NAME(SiteIndexF)
+    auto SiteIndexF = [size_x](size_t x, size_t y) -> int { return y*size_x + x; };
     for (size_t y=0; y<size_y; y++)
         for (size_t x=0; x<size_x; x++)
         {

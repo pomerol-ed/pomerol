@@ -6,7 +6,6 @@
 #define __INCLUDE_MPISKEL_H
 
 #include <boost/mpi.hpp>
-#include <boost/local_function.hpp>
 #include <boost/serialization/vector.hpp>
 
 //#include <type_traits>
@@ -57,8 +56,9 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const boost::mpi::
         // prepare one Master on a root process for distributing parts.size() jobs
         std::vector<pMPI::JobId> job_order(parts.size());
         for (size_t i=0; i<job_order.size(); i++) job_order[i] = i;
-        int BOOST_LOCAL_FUNCTION_TPL(bind this_, std::size_t l, std::size_t r) {
-            return (this_->parts[l].complexity > this_->parts[r].complexity); } BOOST_LOCAL_FUNCTION_NAME_TPL(comp1)
+        auto comp1 = [this](std::size_t l, std::size_t r) -> int {
+          return (parts[l].complexity > parts[r].complexity);
+        };
         std::sort(job_order.begin(), job_order.end(), comp1);
         disp.reset(new pMPI::MPIMaster(comm,job_order,true));
     };
