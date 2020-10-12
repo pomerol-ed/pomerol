@@ -76,15 +76,6 @@ endmacro(set_linking_type)
 # Dependencies
 #
 
-# ALPSCore - brings MPI, HDF5, boost
-macro(add_alpscore)
-find_package(ALPSCore REQUIRED COMPONENTS hdf5 accumulators mc params)
-    message(STATUS "ALPSCore includes:  ${ALPSCore_INCLUDES}")
-    message(STATUS "ALPSCore libraries: ${ALPSCore_LIBRARIES}")
-    target_include_directories(${PROJECT_NAME} PUBLIC ${ALPSCore_INCLUDE_DIRS})
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${ALPSCore_LIBRARIES})
-endmacro(add_alpscore)
-
 # Eigen
 macro(add_eigen3)
 find_package (Eigen3 3.1 REQUIRED)
@@ -222,29 +213,6 @@ function(add_this_package)
           FILES_MATCHING PATTERN "*.hpp" PATTERN "*.hxx" PATTERN "*.h"
          )
 endfunction(add_this_package)
-
-# add interdependencies between ${PROJECT_NAME} modules
-# Usage: add_opendf_module(pkgname1 pkgname2...)
-# Sets variable ${PROJECT_NAME}_DEPENDS
-macro(add_opendf_module)
-    list(APPEND ${PROJECT_NAME}_DEPENDS ${ARGV})
-    foreach(pkg_ ${ARGV})
-        if (DEFINED BOLD_HYB_GLOBAL_BUILD)
-            include_directories(${${pkg_}_INCLUDE_DIRS}) # this is needed to compile tests
-            message(STATUS "${pkg_} includes: ${${pkg_}_INCLUDE_DIRS}" )
-        else(DEFINED BOLD_HYB_GLOBAL_BUILD)
-            string(REGEX REPLACE "^opendf_" "" pkgcomp_ ${pkg_})
-            find_package(opendf QUIET COMPONENTS ${pkgcomp_})
-            if (opendf_${pkgcomp_}_FOUND)
-              set(${pkg_}_LIBRARIES ${opendf_${pkgcomp_}_LIBRARIES})
-            else()
-              find_package(${pkg_} REQUIRED HINTS ${BOLD_HYB_ROOT})
-            endif()
-        endif (DEFINED BOLD_HYB_GLOBAL_BUILD)
-        target_link_libraries(${PROJECT_NAME} PUBLIC ${${pkg_}_LIBRARIES})
-        message(STATUS "${pkg_} libs: ${${pkg_}_LIBRARIES}")
-    endforeach(pkg_)
-endmacro(add_opendf_module)
 
 # Generate documentation
 macro(gen_documentation)
