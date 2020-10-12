@@ -1,6 +1,5 @@
 set(default_progs
     anderson
-    anderson_gftools
     hubbard2d
     quantum_model)
 
