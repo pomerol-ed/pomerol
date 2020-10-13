@@ -9,7 +9,6 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <iostream>
 #include <string>

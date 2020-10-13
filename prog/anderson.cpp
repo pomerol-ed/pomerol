@@ -25,7 +25,6 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
 #include <boost/mpi.hpp>
 
@@ -258,7 +257,7 @@ int main(int argc, char* argv[])
 
             mpi_cout << "Saving imfreq G" << ind2 << " on "<< 4*wf_max << " Matsubara freqs. " << std::endl;
             grid_object<std::complex<double>, fmatsubara_grid> gf_imfreq (fmatsubara_grid(wf_min, wf_max*4, beta));
-            std::string ind_str = boost::lexical_cast<std::string>(ind2.Index1)+ boost::lexical_cast<std::string>(ind2.Index2);
+            std::string ind_str = std::to_string(ind2.Index1)+ std::to_string(ind2.Index2);
             for (auto p : gf_imfreq.grid().points()) { gf_imfreq[p] = GF(p.value()); }
             gf_imfreq.savetxt("gw_imfreq_"+ ind_str +".dat");
 
@@ -285,10 +284,10 @@ int main(int argc, char* argv[])
             std::set<IndexCombination4> indices4;
             // 2PGF = <T c c c^+ c^+>
             indices4.insert(index_comb);
-            std::string ind_str = boost::lexical_cast<std::string>(index_comb.Index1)
-                                + boost::lexical_cast<std::string>(index_comb.Index2)
-                                + boost::lexical_cast<std::string>(index_comb.Index3)
-                                + boost::lexical_cast<std::string>(index_comb.Index4);
+            std::string ind_str = std::to_string(index_comb.Index1)
+                                + std::to_string(index_comb.Index2)
+                                + std::to_string(index_comb.Index3)
+                                + std::to_string(index_comb.Index4);
 
             AnnihilationOperator const& C1 = Operators.getAnnihilationOperator(index_comb.Index1);
             AnnihilationOperator const& C2 = Operators.getAnnihilationOperator(index_comb.Index2);
@@ -340,7 +339,7 @@ int main(int argc, char* argv[])
                             ++w_ind;
                             }
                         }
-                    std::string fv1_name = "chi"+ind_str+"_W"+boost::lexical_cast<std::string>(std::imag(W.value()))+".dat";
+                    std::string fv1_name = "chi"+ind_str+"_W"+std::to_string(std::imag(W.value()))+".dat";
                     full_vertex_1freq.savetxt(fv1_name);
                     }
                 }
