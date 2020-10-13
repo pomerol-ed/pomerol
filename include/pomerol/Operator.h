@@ -16,9 +16,7 @@
 #include <limits>
 #include <cmath>
 #include <iterator>
-#include <boost/foreach.hpp>
 #include <boost/operators.hpp>
-#include <boost/type_traits/has_less.hpp>
 
 #include "Misc.h"
 #include "Index.h"
@@ -82,9 +80,8 @@ public:
 
     friend std::ostream& operator<<(std::ostream &os, monomial_t const& m)
     {
-        BOOST_FOREACH(const composite_index_t & c, m){
+        for(auto const& c : m)
             os << "C" << c;
-        }
         return os;
     }
 
@@ -105,7 +102,7 @@ public:
     {
         if(op.monomials.size() != 0){
             bool print_plus = false;
-            BOOST_FOREACH(const monomials_map_t::value_type& m, op.monomials){
+            for(auto const& m : op.monomials) {
                 os << (print_plus ? " + " : "" ) << m.second;
                 if(m.first.size()) os << "*";
                 os << m.first;
@@ -127,8 +124,8 @@ public:
     Operator operator-() const
     {
         Operator tmp(*this);
-        BOOST_FOREACH( monomials_map_t::value_type& m, tmp.monomials) {
-            m.second = -m.second; };
+        for(auto & m : tmp.monomials)
+            m.second = -m.second;
         return tmp;
     }
 
@@ -167,9 +164,7 @@ public:
         if(std::abs(alpha) < 100*std::numeric_limits<RealType>::epsilon()){
             monomials.clear();
         } else {
-            BOOST_FOREACH(monomials_map_t::value_type& m, monomials) {
-                m.second *= alpha;
-            };
+            for(auto & m : monomials) m.second *= alpha;
         }
         return *this;
     }
@@ -179,7 +174,7 @@ public:
     {
         bool is_new_monomial;
         monomials_map_t::iterator it;
-        BOOST_FOREACH(const monomials_map_t::value_type& m, op.monomials) {
+        for(auto const& m : op.monomials) {
             std::tie(it,is_new_monomial) = monomials.insert(m);
             if(!is_new_monomial){
                 it->second += m.second;
@@ -193,7 +188,7 @@ public:
     {
         bool is_new_monomial;
         monomials_map_t::iterator it;
-        BOOST_FOREACH(const monomials_map_t::value_type& m, op.monomials) {
+        for(auto const& m : op.monomials) {
             std::tie(it,is_new_monomial) = monomials.insert(std::make_pair(m.first,-m.second));
             if(!is_new_monomial){
                 it->second -= m.second;
@@ -206,8 +201,8 @@ public:
     Operator& operator*=(Operator const& op)
     {
         monomials_map_t tmp_map; // product will be stored here
-        BOOST_FOREACH(const monomials_map_t::value_type& m, monomials)
-            BOOST_FOREACH(const monomials_map_t::value_type& op_m, op.monomials) {
+        for(auto const& m : monomials)
+            for(auto const& op_m : op.monomials) {
                 // prepare an unnormalized product
                 monomial_t product_m;
                 product_m.reserve(m.first.size() + op_m.first.size());

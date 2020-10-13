@@ -1,10 +1,6 @@
 #include "pomerol/Operator.h"
 #include <algorithm>
 #include <iterator>
-//#include <boost/lambda/lambda.hpp>
-//#include <boost/lambda/bind.hpp>
-#include "boost/utility/swap.hpp"
-#include <boost/functional/hash.hpp>
 
 namespace Pomerol{
 

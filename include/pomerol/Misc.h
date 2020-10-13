@@ -18,10 +18,7 @@
 #include<map>
 #include<iomanip>
 
-
-#include<boost/make_shared.hpp>
 #include<boost/dynamic_bitset.hpp>
-#include<boost/utility.hpp>
 #include<boost/serialization/complex.hpp>
 
 
