@@ -28,6 +28,10 @@
  * pomerol library.
  */
 
+#include <iostream>
+#include <string>
+#include <tuple>
+
 // Include the pomerol library
 #include <pomerol.h>
 
@@ -268,7 +272,7 @@ int main(int argc, char* argv[])
     Chi.MultiTermCoefficientTolerance = 1e-6;
 
     Chi.prepare();
-    std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
+    std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
     Chi.compute(false, freqs_2pgf, world);
 
     if (world.rank()==0) {

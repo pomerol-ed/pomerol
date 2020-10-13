@@ -7,8 +7,7 @@
 #define __INCLUDE_TERMLIST_H
 
 #include <set>
-#include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <utility>
 #include <boost/serialization/set.hpp>
 
 #include "Misc.h"
@@ -64,26 +63,16 @@ public:
     /** Remove all terms from the container */
     void clear() { data.clear(); }
 
-    // Some pre-C++11 ugliness ...
-#define MAKE_CALL_OPERATOR(N)                                               \
-    template<BOOST_PP_ENUM_PARAMS(N, typename Arg)>                         \
-    ComplexType operator()(BOOST_PP_ENUM_BINARY_PARAMS(N, Arg, arg)) const {\
-        ComplexType res = 0;                                                \
-        for(typename std::set<TermType>::const_iterator it = data.begin();  \
-            it != data.end(); ++it) {                                       \
-            res += (*it)(BOOST_PP_ENUM_PARAMS(N, arg));                     \
-        }                                                                   \
-        return res;                                                         \
-    }
-
     /** Pass arguments to operator() of each term in the container
      *  and return a sum of their return values.
      */
-    MAKE_CALL_OPERATOR(1)
-    MAKE_CALL_OPERATOR(2)
-    MAKE_CALL_OPERATOR(3)
-    MAKE_CALL_OPERATOR(4)
-#undef MAKE_CALL_OPERATOR
+    template<typename... Args>
+    ComplexType operator()(Args&&... args) const {
+        ComplexType res = 0;
+        for(auto const& t : data)
+          res += t(std::forward<Args>(args)...);
+        return res;
+    }
 
     /** Boost.Serialization interface */
     friend class boost::serialization::access;

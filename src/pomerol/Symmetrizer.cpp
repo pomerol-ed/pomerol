@@ -1,6 +1,7 @@
 #include "pomerol/Symmetrizer.h"
 #include "pomerol/OperatorPresets.h"
 
+
 namespace Pomerol {
 
 //
@@ -154,14 +155,14 @@ const DynamicIndexCombination& Symmetrizer::generateTrivialCombination(ParticleI
     return trivial;
 }
 
-const std::vector<boost::shared_ptr<Operator> >& Symmetrizer::getOperations() const
+const std::vector<std::shared_ptr<Operator> >& Symmetrizer::getOperations() const
 {
     return Operations;
 }
 
 bool Symmetrizer::checkSymmetry(const Operator &in)
 {
-    boost::shared_ptr<Operator> OP1 ( new Operator(in));
+    std::shared_ptr<Operator> OP1 ( new Operator(in));
     // Check that OP1 is an integrals of motion
     if (!Storage.commutes(*OP1)) return false;
 

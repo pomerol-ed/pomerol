@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
 // Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
@@ -29,7 +29,6 @@
 #include "IndexClassification.h"
 #include "Operator.h"
 #include "OperatorPresets.h"
-#include <boost/shared_ptr.hpp>
 
 using namespace Pomerol;
 
@@ -57,8 +56,8 @@ int main(int argc, char* argv[])
     std::map<FockState, MelemType> map1=Sz.actRight(ket);
     for ( std::map<FockState, MelemType>::iterator it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
-        MelemType Value= it1->second; 
-        INFO("<" << bra << "| Sz |" << ket << "> = " << Value ); 
+        MelemType Value= it1->second;
+        INFO("<" << bra << "| Sz |" << ket << "> = " << Value );
         }
     if ( map1.size()!=1 && std::abs(Sz.getMatrixElement(ket,ket)+1.0)>std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;
     ket = FockState(IndexSize, 7);
@@ -70,7 +69,7 @@ int main(int argc, char* argv[])
     ket = FockState(IndexSize, 10);
     INFO ( "<" << ket << "| Sz |" << ket << "> = " << Sz.getMatrixElement(ket));
     if ( std::abs(Sz.getMatrixElement(ket) - 0.0) >std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;
-    
+
     INFO(Sz.commutes(Sz));
     if (!(Sz.commutes(Sz))) return EXIT_FAILURE;
 

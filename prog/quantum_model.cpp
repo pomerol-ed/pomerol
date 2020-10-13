@@ -63,9 +63,9 @@ void quantum_model::compute() {
     std::set<IndexCombination2> indices2; // a set of pairs of indices to evaluate Green's function
 
     int ntau; double eta, step, hbw;
-    boost::tuples::tie(ntau, eta, step, hbw) = boost::tuples::make_tuple(p["gf.ntau"].as<int>(), p["gf.eta"].as<double>(), p["gf.step"].as<double>(), p["gf.D"].as<double>());
+    std::tie(ntau, eta, step, hbw) = std::make_tuple(p["gf.ntau"].as<int>(), p["gf.eta"].as<double>(), p["gf.step"].as<double>(), p["gf.D"].as<double>());
     int wf_min, wf_max, wb_min, wb_max;
-    boost::tuples::tie(wf_min, wf_max, wb_min, wb_max) = boost::tuples::make_tuple(p["wf_min"].as<int>(), p["wf_max"].as<int>(), p["wb_min"].as<int>(), p["wb_max"].as<int>());
+    std::tie(wf_min, wf_max, wb_min, wb_max) = std::make_tuple(p["wf_min"].as<int>(), p["wf_max"].as<int>(), p["wb_min"].as<int>(), p["wb_max"].as<int>());
 
     // Take only impurity spin up and spin down indices
     f.insert(u0);
@@ -88,7 +88,7 @@ void quantum_model::compute() {
         // Save Matsubara GF from pi/beta to pi/beta*(4*wf_max + 1)
         std::cout << "Saving imfreq G" << ind2 << " on " << 4 * wf_max << " Matsubara freqs. " << std::endl;
         grid_object<std::complex<double>, fmatsubara_grid> gf_imfreq (fmatsubara_grid(wf_min, wf_max*4, beta, true));
-        std::string ind_str = boost::lexical_cast<std::string>(ind2.Index1)+ boost::lexical_cast<std::string>(ind2.Index2);
+        std::string ind_str = std::to_string(ind2.Index1)+ std::to_string(ind2.Index2);
         for (auto p : gf_imfreq.grid().points()) { gf_imfreq[p] = GF(p.value()); }
         gf_imfreq.savetxt("gw_imfreq_"+ ind_str +".dat");
 
@@ -115,10 +115,10 @@ void quantum_model::compute() {
       std::set<IndexCombination4> indices4;
       // 2PGF = <T c c c^+ c^+>
       indices4.insert(index_comb);
-      std::string ind_str = boost::lexical_cast< std::string>(index_comb.Index1)
-                            + boost::lexical_cast< std::string>(index_comb.Index2)
-                            + boost::lexical_cast< std::string>(index_comb.Index3)
-                            + boost::lexical_cast< std::string>(index_comb.Index4);
+      std::string ind_str = std::to_string(index_comb.Index1)
+                            + std::to_string(index_comb.Index2)
+                            + std::to_string(index_comb.Index3)
+                            + std::to_string(index_comb.Index4);
 
       AnnihilationOperator const& C1 = Operators.getAnnihilationOperator(index_comb.Index1);
       AnnihilationOperator const& C2 = Operators.getAnnihilationOperator(index_comb.Index2);
@@ -136,7 +136,7 @@ void quantum_model::compute() {
 
       G4.prepare();
       comm.barrier(); // MPI::BARRIER
-      std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
+      std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
       fmatsubara_grid fgrid(wf_min, wf_max, beta, true);
       bmatsubara_grid bgrid(wb_min, wb_max, beta, true);
       freqs_2pgf.reserve(fgrid.size() * fgrid.size() * bgrid.size());
@@ -144,7 +144,7 @@ void quantum_model::compute() {
         for (auto w3 : fgrid.values()) {
           for (auto w2 : fgrid.values()) {
             ComplexType w1 = W+w3;
-            freqs_2pgf.push_back(boost::make_tuple(w1,w2,w3));
+            freqs_2pgf.push_back(std::make_tuple(w1,w2,w3));
           }
         }
       }
@@ -164,11 +164,11 @@ void quantum_model::compute() {
               std::complex<double> val = chi_freq_data[w_ind];
               full_vertex[W][w3.index()][w2.index()] = val;
               full_vertex_1freq[w3.index()][w2.index()] = val;
-              if (!is_float_equal(boost::get<0>(freqs_2pgf[w_ind]), W.value()+w3.value())) throw std::logic_error("2pgf freq mismatch");
+              if (!is_float_equal(std::get<0>(freqs_2pgf[w_ind]), W.value()+w3.value())) throw std::logic_error("2pgf freq mismatch");
               ++w_ind;
             }
           }
-          std::string fv1_name = "chi"+ind_str+"_W"+boost::lexical_cast<std::string>(std::imag(W.value()))+".dat";
+          std::string fv1_name = "chi"+ind_str+"_W"+std::to_string(std::imag(W.value()))+".dat";
           full_vertex_1freq.savetxt(fv1_name);
         }
       }

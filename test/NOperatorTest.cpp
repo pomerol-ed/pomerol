@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
 // Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
@@ -29,7 +29,6 @@
 #include "IndexClassification.h"
 #include "Operator.h"
 #include "OperatorPresets.h"
-#include <boost/shared_ptr.hpp>
 
 using namespace Pomerol;
 
@@ -42,7 +41,7 @@ int main(int argc, char* argv[])
     L.addSite(new Lattice::Site("A",1,2));
     L.addSite(new Lattice::Site("B",1,2));
     L.addSite(new Lattice::Site("C",1,2));
-    
+
 
     IndexClassification Indices(L.getSiteMap());
     Indices.prepare();
@@ -57,8 +56,8 @@ int main(int argc, char* argv[])
     std::map<FockState, MelemType> map1=NN->actRight(ket);
     for ( std::map<FockState, MelemType>::iterator it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
-        MelemType Value= it1->second; 
-        INFO("<" << bra << "| N |" << ket << "> = " << Value ); 
+        MelemType Value= it1->second;
+        INFO("<" << bra << "| N |" << ket << "> = " << Value );
         }
     if ( map1.size()!=1 && N.getMatrixElement(ket,ket)!=MelemType(2)) return EXIT_FAILURE;
     ket = FockState(IndexSize, 7);

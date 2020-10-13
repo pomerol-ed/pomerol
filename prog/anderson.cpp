@@ -25,13 +25,13 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
 #include <boost/mpi.hpp>
 
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <tuple>
 
 #include <pomerol.h>
 
@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
 
     U = p["U"].as<double>();
     e0 = p["ed"].as<double>();
-    boost::tie(beta, calc_gf, calc_2pgf) = boost::make_tuple(
+    std::tie(beta, calc_gf, calc_2pgf) = std::make_tuple(
         p["beta"].as<double>(), p["calc_gf"].as<int>(), p["calc_2pgf"].as<int>());
     calc_gf = calc_gf || calc_2pgf;
 
@@ -228,9 +228,9 @@ int main(int argc, char* argv[])
 
     if (calc_gf) {
         int ntau; double eta, step, hbw;
-        boost::tie(ntau, eta, step, hbw) = boost::make_tuple(p["gf.ntau"].as<int>(), p["gf.eta"].as<double>(), p["gf.step"].as<double>(), p["gf.D"].as<double>());
+        std::tie(ntau, eta, step, hbw) = std::make_tuple(p["gf.ntau"].as<int>(), p["gf.eta"].as<double>(), p["gf.step"].as<double>(), p["gf.D"].as<double>());
         int wf_min, wf_max, wb_min, wb_max;
-        boost::tie(wf_min, wf_max, wb_min, wb_max) = boost::make_tuple(p["wf_min"].as<int>(), p["wf_max"].as<int>(), p["wb_min"].as<int>(), p["wb_max"].as<int>());
+        std::tie(wf_min, wf_max, wb_min, wb_max) = std::make_tuple(p["wf_min"].as<int>(), p["wf_max"].as<int>(), p["wb_min"].as<int>(), p["wb_max"].as<int>());
 
         mpi_cout << "1-particle Green's functions calc" << std::endl;
         std::set<ParticleIndex> f; // a set of indices to evaluate c and c^+
@@ -257,7 +257,7 @@ int main(int argc, char* argv[])
 
             mpi_cout << "Saving imfreq G" << ind2 << " on "<< 4*wf_max << " Matsubara freqs. " << std::endl;
             grid_object<std::complex<double>, fmatsubara_grid> gf_imfreq (fmatsubara_grid(wf_min, wf_max*4, beta));
-            std::string ind_str = boost::lexical_cast<std::string>(ind2.Index1)+ boost::lexical_cast<std::string>(ind2.Index2);
+            std::string ind_str = std::to_string(ind2.Index1)+ std::to_string(ind2.Index2);
             for (auto p : gf_imfreq.grid().points()) { gf_imfreq[p] = GF(p.value()); }
             gf_imfreq.savetxt("gw_imfreq_"+ ind_str +".dat");
 
@@ -284,10 +284,10 @@ int main(int argc, char* argv[])
             std::set<IndexCombination4> indices4;
             // 2PGF = <T c c c^+ c^+>
             indices4.insert(index_comb);
-            std::string ind_str = boost::lexical_cast<std::string>(index_comb.Index1)
-                                + boost::lexical_cast<std::string>(index_comb.Index2)
-                                + boost::lexical_cast<std::string>(index_comb.Index3)
-                                + boost::lexical_cast<std::string>(index_comb.Index4);
+            std::string ind_str = std::to_string(index_comb.Index1)
+                                + std::to_string(index_comb.Index2)
+                                + std::to_string(index_comb.Index3)
+                                + std::to_string(index_comb.Index4);
 
             AnnihilationOperator const& C1 = Operators.getAnnihilationOperator(index_comb.Index1);
             AnnihilationOperator const& C2 = Operators.getAnnihilationOperator(index_comb.Index2);
@@ -306,7 +306,7 @@ int main(int argc, char* argv[])
             G4.prepare();
             comm.barrier(); // MPI::BARRIER
 
-            std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
+            std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
             fmatsubara_grid fgrid(wf_min, wf_max, beta);
             bmatsubara_grid bgrid(wb_min, wb_max + 1, beta);
             freqs_2pgf.reserve(fgrid.size() * fgrid.size() * bgrid.size());
@@ -339,7 +339,7 @@ int main(int argc, char* argv[])
                             ++w_ind;
                             }
                         }
-                    std::string fv1_name = "chi"+ind_str+"_W"+boost::lexical_cast<std::string>(std::imag(W.value()))+".dat";
+                    std::string fv1_name = "chi"+ind_str+"_W"+std::to_string(std::imag(W.value()))+".dat";
                     full_vertex_1freq.savetxt(fv1_name);
                     }
                 }

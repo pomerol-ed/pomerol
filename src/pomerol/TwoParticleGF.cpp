@@ -4,6 +4,8 @@
 
 #include "mpi_dispatcher/mpi_skel.hpp"
 
+#include <tuple>
+
 namespace Pomerol{
 
 TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H,
@@ -119,7 +121,7 @@ bool TwoParticleGF::isVanishing(void) const
 
 
 // An mpi adapter to 1) compute 2pgf terms; 2) convert them to a Matsubara Container; 3) purge terms
-typedef boost::tuple<ComplexType, ComplexType, ComplexType> freq_tuple;
+typedef std::tuple<ComplexType, ComplexType, ComplexType> freq_tuple;
 typedef std::vector<freq_tuple> freq_vec_t;
 struct ComputeAndClearWrap
 {
@@ -131,7 +133,7 @@ struct ComputeAndClearWrap
             #pragma omp parallel for
             #endif
             for (int w = 0; w < wsize; ++w) {
-                (*data_)[w] += (*p)(boost::get<0>((*freqs_)[w]), boost::get<1>((*freqs_)[w]), boost::get<2>((*freqs_)[w]));
+                (*data_)[w] += (*p)(std::get<0>((*freqs_)[w]), std::get<1>((*freqs_)[w]), std::get<2>((*freqs_)[w]));
                 }
             #ifdef POMEROL_USE_OPENMP
             #pragma omp barrier
@@ -150,7 +152,7 @@ protected:
     bool fill_;
 };
 
-std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm)
+std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm)
 {
     std::vector<ComplexType> m_data;
     if (Status < Prepared) throw (exStatusMismatch());

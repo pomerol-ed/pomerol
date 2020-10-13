@@ -1,5 +1,7 @@
 #include "pomerol/StatesClassification.h"
 
+#include <memory>
+
 namespace Pomerol{
 
 bool BlockNumber::operator<(const BlockNumber& rhs) const {return number<rhs.number;}
@@ -10,18 +12,18 @@ bool BlockNumber::operator==(const BlockNumber& rhs) const {return number==rhs.n
 //
 
 StatesClassification::StatesClassification(const IndexClassification& IndexInfo, const Symmetrizer &Symm):
-    ComputableObject(), 
+    ComputableObject(),
     IndexInfo(IndexInfo),
     Symm(Symm)
 {
 }
 
-void StatesClassification::compute()             
+void StatesClassification::compute()
 {
     if (Status>=Computed) return;
     IndexSize = IndexInfo.getIndexSize();
     StateSize = 1<<IndexSize;
-    std::vector<boost::shared_ptr<Operator> > sym_op = Symm.getOperations();
+    std::vector<std::shared_ptr<Operator> > sym_op = Symm.getOperations();
     int NOperations=sym_op.size();
     BlockNumber block_index=0;
     for (QuantumState FockStateIndex=0; FockStateIndex<StateSize; ++FockStateIndex) {
@@ -81,8 +83,8 @@ const InnerQuantumState StatesClassification::getInnerState(FockState state) con
     if ( state.to_ulong() > StateSize ) { throw (exWrongState()); return StateSize; };
     BlockNumber block = this->getBlockNumber(state);
     for (InnerQuantumState n=0; n<StatesContainer[block].size(); n++ )
-      {    
-          if ( StatesContainer[block][n]== state) { return n; } 
+      {
+          if ( StatesContainer[block][n]== state) { return n; }
       }
     throw (exWrongState());
     return StateSize;
@@ -118,9 +120,9 @@ const size_t StatesClassification::getBlockSize( BlockNumber in ) const
 }
 
 const FockState StatesClassification::getFockState( BlockNumber in, InnerQuantumState m) const
-{  
+{
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
-    if (int(in) < StatesContainer.size()) 
+    if (int(in) < StatesContainer.size())
         if ( m < StatesContainer[in].size())
             return StatesContainer[in][m];
     ERROR("Couldn't find state numbered " << m << " in block " << in);
@@ -149,7 +151,7 @@ BlockNumber StatesClassification::NumberOfBlocks() const
     return StatesContainer.size();
 }
 
-Symmetrizer::QuantumNumbers StatesClassification::getQuantumNumbers(FockState in) const             
+Symmetrizer::QuantumNumbers StatesClassification::getQuantumNumbers(FockState in) const
 {
     return BlockToQuantum.find(getBlockNumber(in))->second;
 }

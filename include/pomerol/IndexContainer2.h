@@ -9,8 +9,8 @@
 
 #include"IndexClassification.h"
 
-#include<set>
-#include<boost/shared_ptr.hpp>
+#include <memory>
+#include <set>
 
 namespace Pomerol {
 
@@ -19,7 +19,7 @@ template<typename ElementType, typename SourceObject>
 class IndexContainer2 {
 protected:
     const IndexClassification& IndexInfo;
-    std::map<IndexCombination2,boost::shared_ptr<ElementType> > ElementsMap;
+    std::map<IndexCombination2,std::shared_ptr<ElementType> > ElementsMap;
 
     SourceObject* pSource;
 
@@ -72,7 +72,7 @@ void IndexContainer2<ElementType,SourceObject>::fill(std::set<IndexCombination2>
 
     std::set<IndexCombination2> II;
     if(InitialIndices.size()==0)           // If there are no indices provided,
-        II = enumerateInitialIndices(); // Enumerate all possible combinations. 
+        II = enumerateInitialIndices(); // Enumerate all possible combinations.
     else
         II = InitialIndices;    // Otherwise use provided indices.
 
@@ -87,7 +87,7 @@ void IndexContainer2<ElementType,SourceObject>::fill(std::set<IndexCombination2>
 template<typename ElementType, typename SourceObject>
 ElementType& IndexContainer2<ElementType,SourceObject>::set(const IndexCombination2& Indices)
 {
-    boost::shared_ptr<ElementType> pElement(pSource->createElement(Indices));
+    std::shared_ptr<ElementType> pElement(pSource->createElement(Indices));
     ElementsMap[Indices] = pElement;
 
     DEBUG("IndexContainer2::set() at " << this << ": "
@@ -99,7 +99,7 @@ ElementType& IndexContainer2<ElementType,SourceObject>::set(const IndexCombinati
 template<typename ElementType, typename SourceObject>
 ElementType& IndexContainer2<ElementType,SourceObject>::operator()(const IndexCombination2& Indices)
 {
-    typename std::map<IndexCombination2,boost::shared_ptr<ElementType> >::iterator
+    typename std::map<IndexCombination2,std::shared_ptr<ElementType> >::iterator
         iter = ElementsMap.find(Indices);
 
     if(iter == ElementsMap.end()){

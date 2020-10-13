@@ -1,12 +1,6 @@
 #include "pomerol/Operator.h"
 #include <algorithm>
 #include <iterator>
-#include <boost/tuple/tuple.hpp>
-//#include <boost/lambda/lambda.hpp>
-//#include <boost/lambda/bind.hpp>
-#include "boost/tuple/tuple_comparison.hpp"
-#include "boost/utility/swap.hpp"
-#include <boost/functional/hash.hpp>
 
 namespace Pomerol{
 
@@ -33,9 +27,9 @@ Operator Operator::getAntiCommutator(const Operator &rhs) const
     return (*this)*rhs + rhs*(*this);
 }
 
-boost::tuple<FockState,MelemType> Operator::actRight(const monomial_t &in, const FockState &ket)
+std::tuple<FockState,MelemType> Operator::actRight(const monomial_t &in, const FockState &ket)
 {
-    if (in.size()==0) return boost::make_tuple(ket, MelemType(1));
+    if (in.size()==0) return std::make_tuple(ket, MelemType(1));
     //DEBUG(in << "|" << ket << ">");
     //ParticleIndex prev_pos_ = ket.size(); // Here we'll store the index of the last operator to speed up sign counting
     ParticleIndex prev_pos_ = 0;
@@ -46,9 +40,9 @@ boost::tuple<FockState,MelemType> Operator::actRight(const monomial_t &in, const
     for (int i=N-1; i>=0; i--) // Is the number of operator in OperatorSequence. Now we need to count them from back.
         {
             bool op; ParticleIndex ind;
-            boost::tie(op,ind)=in[i];
+            std::tie(op,ind)=in[i];
             //DEBUG(op << "_" << ind);
-            if ((op == creation && bra[ind]) || (op == annihilation && !bra[ind]) ) return boost::make_tuple(ERROR_FOCK_STATE, 0); // This is Pauli principle.
+            if ((op == creation && bra[ind]) || (op == annihilation && !bra[ind]) ) return std::make_tuple(ERROR_FOCK_STATE, 0); // This is Pauli principle.
             if (ind > prev_pos_)
                 for (ParticleIndex j=prev_pos_; j<ind; ++j) { if (bra[j]) sign*=-1; }
             else
@@ -57,7 +51,7 @@ boost::tuple<FockState,MelemType> Operator::actRight(const monomial_t &in, const
             //prev_pos_ = 0;
 
         }
-    return boost::make_tuple(bra, MelemType(sign));
+    return std::make_tuple(bra, MelemType(sign));
 }
 
 
@@ -71,7 +65,7 @@ std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
         {
             FockState bra;
             MelemType melem;
-            boost::tie(bra,melem) = actRight(it->first,ket);
+            std::tie(bra,melem) = actRight(it->first,ket);
             //if (std::abs(melem)>1e-8) DEBUG(bra << "|*" << melem);
             if (bra!=ERROR_FOCK_STATE && std::abs(melem)>std::numeric_limits<RealType>::epsilon())
                 result1[bra]+=melem*(it->second);

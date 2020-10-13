@@ -1,6 +1,6 @@
 /** \file IndexClassification.h
 **  \brief Declaration of IndexClassification class.
-** 
+**
 **  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
@@ -29,35 +29,34 @@ private:
     /** A vector of IndexInfo - each element corresponds to its number. */
     std::vector<IndexInfo*> IndicesToInfo;
 public:
-    /** Returns a list of indices, which belong to a current site. 
-     * \param[in] SiteLabel Label of the Site. 
+    /** Returns a list of indices, which belong to a current site.
+     * \param[in] SiteLabel Label of the Site.
      */
    // std::list<ParticleIndex>& findIndices(const std::string &SiteLabel);
-    /** Returns a list of indices, which belong to a current site. 
+    /** Returns a list of indices, which belong to a current site.
      * \param[in] A Lattice::Site to match.
      */
     //std::list<ParticleIndex>& findIndices(const Lattice::Site &Site);
-    
+
     /** Checks if the index belongs to the space of indices
      * \param[in] in Index to check. */
     bool checkIndex(ParticleIndex in);
 
-    /** Returns a ParticleIndex, which corresponds to a given site, orbital and spin. */ 
+    /** Returns a ParticleIndex, which corresponds to a given site, orbital and spin. */
     ParticleIndex getIndex(const IndexClassification::IndexInfo& ) const;
     /** Returns a ParticleIndex, which corresponds to a IndexClassification::IndexInfo. */
-    ParticleIndex getIndex(const std::string &Site, const unsigned short &Orbital, const unsigned short &Spin) const; 
+    ParticleIndex getIndex(const std::string &Site, const unsigned short &Orbital, const unsigned short &Spin) const;
     /** Return all information about the given index. */
-    //boost::tuple<std::string, unsigned short, unsigned short> getInfo(ParticleIndex in) const;
     IndexInfo getInfo(ParticleIndex in) const;
     /** Returns total number of ParticleIndices. */
     const ParticleIndex getIndexSize() const;
 
-    /** Constructor 
-     * \param[in] L A pointer to a Lattice Object. 
+    /** Constructor
+     * \param[in] L A pointer to a Lattice Object.
      */
     IndexClassification (const Lattice::SiteMap &Sites);
-    
-    /** Define the index space 
+
+    /** Define the index space
      * \param[in] order_spins Group indices by spins
     */
     void prepare(bool order_spins = false);
@@ -71,7 +70,7 @@ public:
 };
 
 /** This structure holds the site label, the orbital and spin of a ParticleIndex */
-struct IndexClassification::IndexInfo 
+struct IndexClassification::IndexInfo
 {
 private:
     /** Site label hash */

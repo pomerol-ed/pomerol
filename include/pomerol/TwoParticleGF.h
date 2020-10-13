@@ -8,6 +8,7 @@
 #define __INCLUDE_TWOPARTICLEGF_H
 
 #include <sstream>
+#include <tuple>
 #include <iomanip>
 
 #include"Misc.h"
@@ -114,7 +115,7 @@ public:
      */
     std::vector<ComplexType> compute(
         bool clear = false,
-        std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> >(),
+        std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<std::tuple<ComplexType, ComplexType, ComplexType> >(),
         const boost::mpi::communicator & comm = boost::mpi::communicator()
     );
 

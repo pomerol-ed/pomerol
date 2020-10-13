@@ -46,7 +46,7 @@ void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& Initi
        };
 }
 
-std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll(bool clearTerms, std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm, bool split)
+std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll(bool clearTerms, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm, bool split)
 {
     if (split)
         return computeAll_split(clearTerms, freqs, comm);
@@ -54,7 +54,7 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
         return computeAll_nosplit(clearTerms, freqs, comm);
 }
 
-std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm)
+std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm)
 {
     std::map<IndexCombination4,std::vector<ComplexType> > out;
     for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
@@ -65,7 +65,7 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
     return out;
 }
 
-std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_split(bool clearTerms, std::vector<boost::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm)
+std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_split(bool clearTerms, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm)
 {
     std::map<IndexCombination4,std::vector<ComplexType> > out;
     std::map<IndexCombination4,std::vector<ComplexType> > storage;
@@ -97,7 +97,7 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
 
     boost::mpi::communicator comm_split = comm.split(proc_colors[comm.rank()]);
 
-    for(std::map<IndexCombination4, boost::shared_ptr<TwoParticleGF> >::iterator iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
+    for(std::map<IndexCombination4, std::shared_ptr<TwoParticleGF> >::iterator iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
         bool calc = (elem_colors[comp] == proc_colors[comm.rank()]);
         if (calc) {
             INFO("C" << elem_colors[comp] << "p" << comm.rank() << ": computing 2PGF for " << iter->first);
@@ -108,7 +108,7 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
     // distribute data
     if (!comm.rank()) INFO_NONEWLINE("Distributing 2PGF container...");
     comp = 0;
-    for(std::map<IndexCombination4, boost::shared_ptr<TwoParticleGF> >::iterator iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
+    for(std::map<IndexCombination4, std::shared_ptr<TwoParticleGF> >::iterator iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
         int sender = color_roots[elem_colors[comp]];
         TwoParticleGF& chi = *((iter)->second);
         for (size_t p = 0; p<chi.parts.size(); p++) {

@@ -14,9 +14,11 @@
 #include"FieldOperatorContainer.h"
 #include"IndexContainer2.h"
 
+#include <memory>
+
 namespace Pomerol{
 
-typedef boost::shared_ptr<GreensFunction> GFPointer;
+typedef std::shared_ptr<GreensFunction> GFPointer;
 
 class GFContainer: public IndexContainer2<GreensFunction,GFContainer>, public Thermal
 {

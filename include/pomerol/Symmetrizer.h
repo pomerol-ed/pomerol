@@ -12,8 +12,10 @@
 #include "IndexClassification.h"
 #include "IndexHamiltonian.h"
 #include "ComputableObject.h"
-#include <boost/functional/hash.hpp>
+
+#include <memory>
 #include <set>
+#include <boost/functional/hash.hpp>
 
 namespace Pomerol{
 
@@ -44,7 +46,7 @@ private:
     /** Total amount of symmetries found. */
     int NSymmetries;
     /** A vector of operators that commute with the Hamiltonian. */
-    std::vector<boost::shared_ptr<Operator> > Operations;
+    std::vector<std::shared_ptr<Operator> > Operations;
 
 
     /** This method finds all possible symmetry operations. */ /** lattice permutation operators, that commute with the hamiltonian. */
@@ -60,7 +62,7 @@ public:
 
     bool checkSymmetry(const Operator &in);
     /** Get a vector of operators that commute with the Hamiltonian. */
-    const std::vector<boost::shared_ptr<Operator> >& getOperations() const;
+    const std::vector<std::shared_ptr<Operator> >& getOperations() const;
     /** Get a sample QuantumNumbers. Their amount is set. */
     QuantumNumbers getQuantumNumbers() const;
 };

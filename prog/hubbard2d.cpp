@@ -34,14 +34,13 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-#include <boost/local_function.hpp>
 
 #include <string>
 #include <iostream>
 #include <algorithm>
 #include <tclap/CmdLine.h>
 
-#include<cstdlib>
+#include <cstdlib>
 #include <fstream>
 
 #include <pomerol.h>
@@ -111,11 +110,11 @@ int main(int argc, char* argv[])
         cmd.parse( argc, argv );
         U = U_arg.getValue();
         mu = (mu_arg.isSet()?mu_arg.getValue():U/2);
-        boost::tie(t, beta, calc_gf, calc_2pgf, reduce_tol, coeff_tol) = boost::make_tuple( t_arg.getValue(), beta_arg.getValue(),
+        std::tie(t, beta, calc_gf, calc_2pgf, reduce_tol, coeff_tol) = std::make_tuple( t_arg.getValue(), beta_arg.getValue(),
             gf_arg.getValue(), twopgf_arg.getValue(), reduce_tol_arg.getValue(), coeff_tol_arg.getValue());
-        boost::tie(size_x, size_y) = boost::make_tuple(x_arg.getValue(), y_arg.getValue());
-        boost::tie(wf_max, wb_max) = boost::make_tuple(wn_arg.getValue(), wb_arg.getValue());
-        boost::tie(eta, hbw, step) = boost::make_tuple(eta_arg.getValue(), (hbw_arg.isSet()?hbw_arg.getValue():2.*U), step_arg.getValue());
+        std::tie(size_x, size_y) = std::make_tuple(x_arg.getValue(), y_arg.getValue());
+        std::tie(wf_max, wb_max) = std::make_tuple(wn_arg.getValue(), wb_arg.getValue());
+        std::tie(eta, hbw, step) = std::make_tuple(eta_arg.getValue(), (hbw_arg.isSet()?hbw_arg.getValue():2.*U), step_arg.getValue());
         calc_gf = calc_gf || calc_2pgf;
         calc_gf = calc_gf || calc_2pgf;
         }
@@ -128,8 +127,7 @@ int main(int argc, char* argv[])
 
     /* Add sites */
     std::vector<std::string> names(L);
-    //auto SiteIndexF = [size_x](size_t x, size_t y){return y*size_x + x;};
-    int BOOST_LOCAL_FUNCTION (bind size_x, size_t x, size_t y){return y*size_x + x;} BOOST_LOCAL_FUNCTION_NAME(SiteIndexF)
+    auto SiteIndexF = [size_x](size_t x, size_t y) -> int { return y*size_x + x; };
     for (size_t y=0; y<size_y; y++)
         for (size_t x=0; x<size_x; x++)
         {
