@@ -3,44 +3,47 @@
 ** master as a computation node
 */
 
-
 #pragma once
 
-#include <boost/mpi.hpp>
+#include <mpi.h>
+
 #include <stack>
 #include <vector>
 #include <map>
 
 namespace pMPI {
 
-enum WorkerTag { Pending, Work, Finish }; // tags for MPI communication
+enum WorkerTag : int { Pending, Work, Finish }; // tags for MPI communication
 typedef int JobId;
 typedef int WorkerId;
 
+inline int rank(const MPI_Comm &Comm) { int r; MPI_Comm_rank(Comm, &r); return r; }
+inline int size(const MPI_Comm &Comm) { int s; MPI_Comm_size(Comm, &s); return s; }
+
 struct MPIWorker
 {
-    boost::mpi::communicator Comm;
+    MPI_Comm Comm;
     const WorkerId id;
     const WorkerId boss;
 
-    MPIWorker(const boost::mpi::communicator &comm, WorkerId boss);
+    MPIWorker(const MPI_Comm &comm, WorkerId boss);
     void receive_order();
     void report_job_done();
     bool is_finished();
     bool is_working();
 
 
-    JobId current_job() { return current_job_; };
+    JobId current_job() const { return current_job_; };
 
 protected:
     JobId current_job_;
-    boost::mpi::request req;
+    MPI_Request req;
     WorkerTag Status;
 };
 
 struct MPIMaster
 {
-    boost::mpi::communicator Comm;
+    MPI_Comm Comm;
     size_t Ntasks, Nprocs;
 
     std::stack<JobId> JobStack;
@@ -52,21 +55,20 @@ struct MPIMaster
     std::vector<WorkerId> worker_pool;
     std::map<size_t, WorkerId> WorkerIndices;
 
-    std::vector<boost::mpi::request> wait_statuses;
+    std::vector<MPI_Request> wait_statuses;
     std::vector<bool> workers_finish;
 
-    MPIMaster(const boost::mpi::communicator &comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers );
-    MPIMaster(const boost::mpi::communicator &comm, std::vector<JobId> task_numbers, bool include_boss = true );
-    MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, bool include_boss = true );
+    MPIMaster(const MPI_Comm &comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers);
+    MPIMaster(const MPI_Comm &comm, std::vector<JobId> task_numbers, bool include_boss = true);
+    MPIMaster(const MPI_Comm &comm, size_t ntasks, bool include_boss = true);
 
-    void swap(MPIMaster &x);
     void order_worker(WorkerId worker_id, JobId job);
     void order();
     void check_workers();
     bool is_finished() const;
+
+private:
     void fill_stack_();
 };
 
-} // end of namespace MPI
-
-
+} // end of namespace pMPI
