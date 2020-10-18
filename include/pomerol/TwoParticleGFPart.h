@@ -53,7 +53,7 @@ public:
 
         /** Comparator object for terms */
         struct Compare {
-            const double Tolerance;
+            double Tolerance;
             Compare(double Tolerance) : Tolerance(Tolerance) {}
             bool real_eq(RealType x1, RealType x2) const {
                 return std::abs(x1 - x2) < Tolerance;
@@ -66,6 +66,9 @@ public:
                            ));
                 } else
                     return t1.isz4 < t2.isz4;
+            }
+            void broadcast(const MPI_Comm &comm, int root) {
+                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
             }
         };
 
@@ -89,7 +92,11 @@ public:
         * \param[in] P3 Pole P3.
         * \param[in] isz4 Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term?
         */
-        NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4);
+        inline NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4):
+            Coeff(Coeff), isz4(isz4)
+        {
+            Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight=1;
+        }
 
         /** Returns a contribution to the two-particle Green's function made by this term.
         * \param[in] z1 Complex frequency \f$ z_1 \f$.
@@ -105,7 +112,7 @@ public:
         NonResonantTerm& operator+=(const NonResonantTerm& AnotherTerm);
 
         /** Create and commit an MPI datatype for NonResonantTerm */
-        static MPI_Datatype make_mpi_datatype();
+        static MPI_Datatype mpi_datatype();
     };
 
 
@@ -135,7 +142,7 @@ public:
 
         /** Comparator object for terms */
         struct Compare {
-            const double Tolerance;
+            double Tolerance;
             Compare(double Tolerance) : Tolerance(Tolerance) {}
             bool real_eq(RealType x1, RealType x2) const {
                 return std::abs(x1 - x2) < Tolerance;
@@ -148,6 +155,9 @@ public:
                            ));
                 } else
                     return t1.isz1z2 < t2.isz1z2;
+            }
+            void broadcast(const MPI_Comm &comm, int root) {
+                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
             }
         };
 
@@ -173,7 +183,11 @@ public:
         * \param[in] P3 Pole P3.
         * \param[in] isz1z2 Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
         */
-        ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff, RealType P1, RealType P2, RealType P3, bool isz1z2);
+        inline ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff, RealType P1, RealType P2, RealType P3, bool isz1z2):
+            ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), isz1z2(isz1z2)
+        {
+            Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight=1;
+        }
 
         /** Returns a contribution to the two-particle Green's function made by this term.
         * \param[in] z1 Complex frequency \f$ z_1 \f$.
@@ -189,7 +203,7 @@ public:
         ResonantTerm& operator+=(const ResonantTerm& AnotherTerm);
 
         /** Create and commit an MPI datatype for ResonantTerm */
-        static MPI_Datatype make_mpi_datatype();
+        static MPI_Datatype mpi_datatype();
     };
 
 private:

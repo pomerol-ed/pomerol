@@ -45,7 +45,11 @@ private:
 public:
 
   quantum_model(int argc, char ** argv) : comm(MPI_COMM_WORLD) {
-    MPI_Init(&argc, &argv);
+      MPI_Init(&argc, &argv);
+  }
+
+  ~quantum_model() {
+      MPI_Finalize();
   }
 
   virtual void init_parameters() {

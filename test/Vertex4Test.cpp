@@ -112,7 +112,6 @@ int main(int argc, char* argv[])
 
     U = 1.0;
 
-
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
     LatticePresets::addCoulombS(&L, "A", U, -U/2.);
