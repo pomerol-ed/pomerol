@@ -8,7 +8,8 @@
 
 #include <set>
 #include <utility>
-#include <boost/serialization/set.hpp>
+
+#include "mpi_dispatcher/misc.hpp"
 
 #include "Misc.h"
 
@@ -74,10 +75,21 @@ public:
         return res;
     }
 
-    /** Boost.Serialization interface */
-    friend class boost::serialization::access;
-    template<class Archive> void serialize(Archive & ar, const unsigned int version) {
-        ar & data; ar & is_negligible;
+    void broadcast(const MPI_Comm &comm, int root) {
+        long n_terms;
+
+        if(pMPI::rank(comm) == root) { // Broadcast the terms from this process
+            n_terms = data.size();
+            std::vector<TermType> v(data.begin(), data.end());
+            MPI_Bcast(&n_terms, 1, MPI_LONG, root, comm);
+            MPI_Bcast(v.data(), v.size(), TermType::make_mpi_datatype(), root, comm);
+        } else { // Receive terms
+            MPI_Bcast(&n_terms, 1, MPI_LONG, root, comm);
+            std::vector<TermType> v(n_terms);
+            MPI_Bcast(v.data(), v.size(), TermType::make_mpi_datatype(), root, comm);
+        }
+
+        is_negligible.broadcast(comm, root);
     }
 
     /** Check that all terms in the container are properly ordered and are not negligible */

@@ -1,4 +1,5 @@
 #include "pomerol/Hamiltonian.h"
+#include "mpi_dispatcher/misc.hpp"
 #include "mpi_dispatcher/mpi_skel.hpp"
 
 #ifdef ENABLE_SAVE_PLAINTEXT
@@ -15,79 +16,103 @@ Hamiltonian::~Hamiltonian()
 {
 }
 
-void Hamiltonian::prepare(const boost::mpi::communicator& comm)
+void Hamiltonian::prepare(const MPI_Comm& comm)
 {
     if (Status >= Prepared) return;
     BlockNumber NumberOfBlocks = S.NumberOfBlocks();
     parts.resize(NumberOfBlocks);
-    if (!comm.rank()) INFO_NONEWLINE("Preparing Hamiltonian parts...");
+    int rank = pMPI::rank(comm);
+    if (!rank) INFO_NONEWLINE("Preparing Hamiltonian parts...");
 
 
     for (BlockNumber CurrentBlock = 0; CurrentBlock < NumberOfBlocks; CurrentBlock++)
     {
 	    parts[CurrentBlock].reset(new HamiltonianPart(IndexInfo,F, S, CurrentBlock));
-        //parts[CurrentBlock]->prepare();
     }
     pMPI::mpi_skel<pMPI::PrepareWrap<HamiltonianPart> > skel;
     skel.parts.resize(parts.size());
     for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::PrepareWrap<HamiltonianPart>(*parts[i]);};
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm,false);
-    comm.barrier();
+    MPI_Barrier(comm);
     for (size_t p = 0; p<parts.size(); p++) {
-            if (comm.rank() == job_map[p]){
-                if (parts[p]->Status != HamiltonianPart::Prepared) { 
-                    ERROR ("Worker" << comm.rank() << " didn't calculate part" << p); 
-                    throw (std::logic_error("Worker didn't calculate this part."));
-                    };
-                boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->H.rows()*parts[p]->H.cols(), comm.rank());
-                }
-            else {
-                parts[p]->H.resize(parts[p]->getSize(),parts[p]->getSize());
-                boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->getSize()*parts[p]->getSize(), job_map[p]);
-                parts[p]->Status = HamiltonianPart::Prepared;
-                 };
-            };
+        if (rank == job_map[p]){
+            if (parts[p]->Status != HamiltonianPart::Prepared) {
+                ERROR ("Worker" << rank << " didn't calculate part" << p);
+                throw std::logic_error("Worker didn't calculate this part.");
+            }
+
+            MPI_Bcast(parts[p]->H.data(),
+                      parts[p]->H.size(),
+                      MPI_MELEM_DATATYPE,
+                      rank,
+                      comm
+                     );
+        } else {
+            auto mat_rows = parts[p]->getSize();
+            parts[p]->H.resize(mat_rows, mat_rows);
+            MPI_Bcast(parts[p]->H.data(),
+                      mat_rows * mat_rows,
+                      MPI_MELEM_DATATYPE,
+                      job_map[p],
+                      comm
+                     );
+            parts[p]->Status = HamiltonianPart::Prepared;
+        }
+    }
     Status = Prepared;
 }
 
-
-void Hamiltonian::compute(const boost::mpi::communicator & comm)
+void Hamiltonian::compute(const MPI_Comm& comm)
 {
     if (Status >= Computed) return;
 
     // Create a "skeleton" class with pointers to part that can call a compute method
     pMPI::mpi_skel<pMPI::ComputeWrap<HamiltonianPart> > skel;
     skel.parts.resize(parts.size());
-    for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::ComputeWrap<HamiltonianPart>(*parts[i],parts[i]->getSize());};
+    for (size_t i = 0; i < parts.size(); i++) {
+      skel.parts[i] = pMPI::ComputeWrap<HamiltonianPart>(*parts[i],parts[i]->getSize());
+    }
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true);
-    int rank = comm.rank();
-    int comm_size = comm.size(); 
+    int rank = pMPI::rank(comm);
+    int comm_size = pMPI::size(comm);
 
     // Start distributing data
-    comm.barrier();
-    for (size_t p = 0; p<parts.size(); p++) {
-            if (rank == job_map[p]){
-                if (parts[p]->Status != HamiltonianPart::Computed) { 
-                    ERROR ("Worker" << rank << " didn't calculate part" << p); 
-                    throw (std::logic_error("Worker didn't calculate this part."));
-                    };
-                boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->H.rows()*parts[p]->H.cols(), rank);
-                boost::mpi::broadcast(comm, parts[p]->Eigenvalues.data(), parts[p]->H.rows(), rank);
-                }
-            else {
-                parts[p]->Eigenvalues.resize(parts[p]->H.rows());
-                boost::mpi::broadcast(comm, parts[p]->H.data(), parts[p]->H.rows()*parts[p]->H.cols(), job_map[p]);
-                boost::mpi::broadcast(comm, parts[p]->Eigenvalues.data(), parts[p]->H.rows(), job_map[p]);
-                parts[p]->Status = HamiltonianPart::Computed;
-                 };
-            };
-/*
-    for (BlockNumber CurrentBlock=0; CurrentBlock<NumberOfBlocks; CurrentBlock++)
-    {
-	    parts[CurrentBlock]->compute();
-	    INFO("Hpart " << CurrentBlock << " (" << S.getQuantumNumbers(CurrentBlock) << ") is diagonalized.");
+    MPI_Barrier(comm);
+    for (size_t p = 0; p < parts.size(); p++) {
+        if (rank == job_map[p]){
+            if (parts[p]->Status != HamiltonianPart::Computed) {
+                ERROR ("Worker" << rank << " didn't calculate part" << p);
+                throw std::logic_error("Worker didn't calculate this part.");
+            }
+            MPI_Bcast(parts[p]->H.data(),
+                      parts[p]->H.size(),
+                      MPI_MELEM_DATATYPE,
+                      rank,
+                      comm
+                    );
+            MPI_Bcast(parts[p]->Eigenvalues.data(),
+                      parts[p]->H.rows(),
+                      MPI_DOUBLE,
+                      rank,
+                      comm
+                    );
+        } else {
+            parts[p]->Eigenvalues.resize(parts[p]->H.rows());
+            MPI_Bcast(parts[p]->H.data(),
+                      parts[p]->H.size(),
+                      MPI_MELEM_DATATYPE,
+                      job_map[p],
+                      comm);
+            MPI_Bcast(parts[p]->Eigenvalues.data(),
+                      parts[p]->H.rows(),
+                      MPI_DOUBLE,
+                      job_map[p],
+                      comm
+                     );
+            parts[p]->Status = HamiltonianPart::Computed;
+        }
     }
-*/
+
     computeGroundEnergy();
     Status = Computed;
 }
@@ -135,7 +160,7 @@ RealVectorType Hamiltonian::getEigenValues() const
     for (BlockNumber CurrentBlock=0; CurrentBlock<S.NumberOfBlocks(); CurrentBlock++) {
         const RealVectorType& tmp = parts[CurrentBlock]->getEigenValues();
         std::copy(tmp.data(), tmp.data() + tmp.size(), out.data()+i);
-        i+=tmp.size(); 
+        i+=tmp.size();
         }
     return out;
 }
@@ -154,7 +179,7 @@ bool Hamiltonian::savetxt(const boost::filesystem::path &path)
     for (BlockNumber CurrentBlock=0; CurrentBlock<NumberOfBlocks; CurrentBlock++) {
         std::stringstream tmp;
         tmp << "part" << S.getQuantumNumbers(CurrentBlock);
-        boost::filesystem::path out = path / boost::filesystem::path (tmp.str()); 
+        boost::filesystem::path out = path / boost::filesystem::path (tmp.str());
 	    parts[CurrentBlock]->savetxt(out);
         }
     return true;

@@ -11,6 +11,8 @@
 #include<iomanip>
 #include<cmath>
 
+#include <mpi.h>
+
 #include"Misc.h"
 #include"StatesClassification.h"
 #include"HamiltonianPart.h"
@@ -63,9 +65,8 @@ class SusceptibilityPart : public Thermal
             bool operator()(Term const& t, size_t ToleranceDivisor) const {
                 return std::abs(t.Residue) < Tolerance / ToleranceDivisor;
             }
-            friend class boost::serialization::access;
-            template<class Archive> void serialize(Archive & ar, const unsigned int version) {
-                ar & Tolerance;
+            void broadcast(const MPI_Comm &comm, int root) {
+                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
             }
         };
 

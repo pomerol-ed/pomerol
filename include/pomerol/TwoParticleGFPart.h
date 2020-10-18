@@ -7,6 +7,8 @@
 #ifndef __INCLUDE_TWOPARTICLEGFPART_H
 #define __INCLUDE_TWOPARTICLEGFPART_H
 
+#include <mpi.h>
+
 #include"Misc.h"
 #include"StatesClassification.h"
 #include"HamiltonianPart.h"
@@ -74,9 +76,8 @@ public:
             bool operator()(NonResonantTerm const& t, size_t ToleranceDivisor) const {
                 return std::abs(t.Coeff) < Tolerance / ToleranceDivisor;
             }
-            friend class boost::serialization::access;
-            template<class Archive> void serialize(Archive & ar, const unsigned int version) {
-                ar & Tolerance;
+            void broadcast(const MPI_Comm &comm, int root) {
+                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
             }
         };
 
@@ -103,14 +104,9 @@ public:
         */
         NonResonantTerm& operator+=(const NonResonantTerm& AnotherTerm);
 
-        friend class boost::serialization::access;
-        template<class Archive>
-        void serialize(Archive & ar, const unsigned int version)
-        {
-            ar & Coeff; ar & Poles; ar & isz4; ar & Weight;
-        }
-
-        };
+        /** Create and commit an MPI datatype for NonResonantTerm */
+        static MPI_Datatype make_mpi_datatype();
+    };
 
 
     /** A resonant term has the following form:
@@ -163,9 +159,8 @@ public:
                 return std::abs(t.ResCoeff) < Tolerance / ToleranceDivisor &&
                        std::abs(t.NonResCoeff) < Tolerance / ToleranceDivisor;
             }
-            friend class boost::serialization::access;
-            template<class Archive> void serialize(Archive & ar, const unsigned int version) {
-                ar & Tolerance;
+            void broadcast(const MPI_Comm &comm, int root) {
+                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
             }
         };
 
@@ -193,13 +188,8 @@ public:
         */
         ResonantTerm& operator+=(const ResonantTerm& AnotherTerm);
 
-        friend class boost::serialization::access;
-        template<class Archive>
-        void serialize(Archive & ar, const unsigned int version)
-        {
-            ar & ResCoeff; ar & NonResCoeff; ar & Poles; ar & isz1z2; ar & Weight;
-        }
-
+        /** Create and commit an MPI datatype for ResonantTerm */
+        static MPI_Datatype make_mpi_datatype();
     };
 
 private:

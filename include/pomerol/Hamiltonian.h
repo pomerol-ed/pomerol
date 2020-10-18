@@ -7,13 +7,16 @@
 
 #ifndef __INCLUDE_HAMILTONIAN_H
 #define __INCLUDE_HAMILTONIAN_H
+
+#include <memory>
+
+#include <mpi.h>
+
 #include "Misc.h"
 #include "IndexClassification.h"
 #include "IndexHamiltonian.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
-
-#include <memory>
 
 #ifdef ENABLE_SAVE_PLAINTEXT
 #include <boost/filesystem/path.hpp>
@@ -45,8 +48,8 @@ public:
     /** Destructor. */
     ~Hamiltonian();
 
-    void prepare(const boost::mpi::communicator &comm = boost::mpi::communicator());
-    void compute(const boost::mpi::communicator &comm = boost::mpi::communicator());
+    void prepare(const MPI_Comm &comm = MPI_COMM_WORLD);
+    void compute(const MPI_Comm &comm = MPI_COMM_WORLD);
     void reduce(const RealType Cutoff);
 
     const HamiltonianPart& getPart(const QuantumNumbers &in) const;

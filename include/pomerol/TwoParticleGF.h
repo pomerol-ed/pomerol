@@ -11,6 +11,8 @@
 #include <tuple>
 #include <iomanip>
 
+#include <mpi.h>
+
 #include"Misc.h"
 #include"ComputableObject.h"
 #include"StatesClassification.h"
@@ -116,7 +118,7 @@ public:
     std::vector<ComplexType> compute(
         bool clear = false,
         std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<std::tuple<ComplexType, ComplexType, ComplexType> >(),
-        const boost::mpi::communicator & comm = boost::mpi::communicator()
+        const MPI_Comm& comm = MPI_COMM_WORLD
     );
 
     /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
