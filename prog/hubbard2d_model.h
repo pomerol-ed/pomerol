@@ -76,7 +76,7 @@ public:
       };
     };
 
-    auto rank = comm.rank();
+    auto rank = pMPI::rank(comm);
     if (!rank) {
       INFO("Terms with 2 operators");
       Lat.printTerms(2);

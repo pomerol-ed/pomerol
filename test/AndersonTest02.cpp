@@ -4,12 +4,6 @@
 #pragma clang diagnostic ignored "-Wc++11-extensions"
 #pragma clang diagnostic ignored "-Wgnu"
 
-#include <boost/serialization/complex.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-
-
 #include <string>
 #include <tuple>
 #include <iostream>
@@ -22,9 +16,6 @@
 
 using namespace Pomerol;
 
-extern boost::mpi::environment env;
-boost::mpi::communicator comm;
-
 /* Auxiliary routines - implemented in the bottom. */
 bool compare(ComplexType a, ComplexType b);
 void print_section (const std::string& str);
@@ -35,8 +26,7 @@ struct my_logic_error;
 
 int main(int argc, char* argv[])
 {
-    boost::mpi::environment env(argc,argv);
-    boost::mpi::communicator comm;
+    MPI_Init(&argc, &argv);
 
     Lattice Lat;
     print_section("Anderson ");
@@ -77,14 +67,14 @@ int main(int argc, char* argv[])
     INFO("Sites");
     Lat.printSites();
 
-    int rank = comm.rank();
+    int rank = pMPI::rank(MPI_COMM_WORLD);
     if (!rank) {
         INFO("Terms with 2 operators");
         Lat.printTerms(2);
 
         INFO("Terms with 4 operators");
         Lat.printTerms(4);
-        };
+    }
 
     IndexClassification IndexInfo(Lat.getSiteMap());
     IndexInfo.prepare(false);
@@ -104,8 +94,8 @@ int main(int argc, char* argv[])
     S.compute();
 
     Hamiltonian H(IndexInfo, Storage, S);
-    H.prepare(comm);
-    H.compute(comm);
+    H.prepare(MPI_COMM_WORLD);
+    H.compute(MPI_COMM_WORLD);
 
     RealVectorType evals (H.getEigenValues());
     std::sort(evals.data(), evals.data() + H.getEigenValues().size());
@@ -149,9 +139,9 @@ int main(int argc, char* argv[])
             /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
             Chi4.MultiTermCoefficientTolerance = 1e-6;
             Chi4.prepareAll(indices4);
-            comm.barrier();
+            MPI_Barrier(MPI_COMM_WORLD);
             std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > freqs;
-            Chi4.computeAll(false, freqs, comm, true);
+            Chi4.computeAll(false, freqs, MPI_COMM_WORLD, true);
 
 
             std::vector<ComplexType> chi_uuuu_vals(10);
@@ -181,21 +171,26 @@ int main(int argc, char* argv[])
                 std::cout << "(" << imag(omega+Omega) << "," << imag(w_p) << "," << imag(omega) << "): " << std::flush;
                 bool success = is_equal(chi_uuuu_val, chi_uuuu_vals[v], 1e-6);
                 std::cout << "uuuu: " << chi_uuuu_val << " == (exact_uuuu) " << chi_uuuu_vals[v] << " == " << std::boolalpha << success << std::endl;
-                if (!success) return EXIT_FAILURE;
+                if (!success) {
+                    MPI_Finalize();
+                    return EXIT_FAILURE;
+                }
+            }
+        }
+    }
 
-                };
-            };
-    };
+    MPI_Finalize();
+    return EXIT_SUCCESS;
 }
 
 
 void print_section (const std::string& str)
 {
-    if (!comm.rank()) {
+    if (!pMPI::rank(MPI_COMM_WORLD)) {
         std::cout << std::string(str.size(),'=') << std::endl;
         std::cout << str << std::endl;
         std::cout << std::string(str.size(),'=') << std::endl;
-        };
+    }
 }
 
 template <typename F1, typename F2>

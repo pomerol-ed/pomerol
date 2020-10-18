@@ -74,7 +74,6 @@ void Hamiltonian::compute(const MPI_Comm& comm)
     }
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true);
     int rank = pMPI::rank(comm);
-    int comm_size = pMPI::size(comm);
 
     // Start distributing data
     MPI_Barrier(comm);
@@ -91,7 +90,7 @@ void Hamiltonian::compute(const MPI_Comm& comm)
                       comm
                     );
             MPI_Bcast(parts[p]->Eigenvalues.data(),
-                      parts[p]->H.rows(),
+                      parts[p]->Eigenvalues.size(),
                       MPI_DOUBLE,
                       rank,
                       comm
@@ -104,7 +103,7 @@ void Hamiltonian::compute(const MPI_Comm& comm)
                       job_map[p],
                       comm);
             MPI_Bcast(parts[p]->Eigenvalues.data(),
-                      parts[p]->H.rows(),
+                      parts[p]->Eigenvalues.size(),
                       MPI_DOUBLE,
                       job_map[p],
                       comm

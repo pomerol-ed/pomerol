@@ -41,10 +41,7 @@ using namespace Pomerol;
 
 int main(int argc, char* argv[])
 {
-    boost::mpi::environment env(argc,argv);
-    boost::mpi::communicator world;
-
-
+    MPI_Init(&argc, &argv);
 
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
@@ -68,12 +65,17 @@ int main(int argc, char* argv[])
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
     H.getPart(BlockNumber(4)).print_to_screen();
-    H.compute(world);
+    H.compute(MPI_COMM_WORLD);
     H.getPart(BlockNumber(4)).print_to_screen();
     RealType E = -2.8860009;
     RealType E_calc = H.getGroundEnergy();
     INFO("Lowest energy level is " << E_calc);
-    if (std::abs(E-E_calc) > 1e-7) return EXIT_FAILURE;
+    if (std::abs(E-E_calc) > 1e-7) {
+      MPI_Finalize();
+      return EXIT_FAILURE;
+    }
+
+    MPI_Finalize();
     return EXIT_SUCCESS;
 }
 

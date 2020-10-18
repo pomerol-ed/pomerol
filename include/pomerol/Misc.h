@@ -32,8 +32,6 @@
 #include <omp.h>
 #endif
 
-#include <boost/mpi.hpp>
-
 #define REALTYPE_DOUBLE
 
 namespace Pomerol{

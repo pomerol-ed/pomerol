@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
 // Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
@@ -118,10 +118,8 @@ void print_section (const std::string& str)
 
 int main(int argc, char* argv[])
 {
-    boost::mpi::environment env(argc,argv);
-    boost::mpi::communicator world;
+    MPI_Init(&argc, &argv);
 
-    
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
 
@@ -155,7 +153,7 @@ int main(int argc, char* argv[])
 
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
-    H.compute(world);
+    H.compute(MPI_COMM_WORLD);
 
     RealType beta = 10.0;
 
@@ -216,6 +214,6 @@ int main(int argc, char* argv[])
         }
     }
 
-    if (!result) return EXIT_FAILURE;
-    return EXIT_SUCCESS;
+    MPI_Finalize();
+    return result ? EXIT_SUCCESS : EXIT_FAILURE;
 }

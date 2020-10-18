@@ -37,7 +37,7 @@ public:
     if (levels.size() != hoppings.size()) {MPI_Finalize(); throw (std::logic_error("number of levels != number of hoppings")); }
 
     L = levels.size();
-    int rank = comm.rank();
+    int rank = pMPI::rank(comm);
     mpi_cout << "Diagonalization of 1+" << L << " sites" << std::endl;
   }
 

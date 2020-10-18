@@ -5,11 +5,6 @@
 #ifndef POMEROL_QUANTUM_MODEL_H
 #define POMEROL_QUANTUM_MODEL_H
 
-#include <boost/serialization/complex.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -24,7 +19,7 @@
 
 #include <set>
 
-#define mpi_cout if(!comm.rank()) std::cout
+#define mpi_cout if(!pMPI::rank(comm)) std::cout
 
 namespace po = boost::program_options;
 
@@ -49,14 +44,16 @@ private:
 
 public:
 
-  quantum_model(int argc, char ** argv) : env(argc,argv) {};
+  quantum_model(int argc, char ** argv) : comm(MPI_COMM_WORLD) {
+    MPI_Init(&argc, &argv);
+  }
 
   virtual void init_parameters() {
     _U = p["U"].as<double>();
     _e0 = p["ed"].as<double>();
     std::tie(beta, calc_gf, calc_2pgf) = std::make_tuple(p["beta"].as<double>(), p["calc_gf"].as<int>(), p["calc_2pgf"].as<int>());
     calc_gf = calc_gf || calc_2pgf;
-    rank = comm.rank();
+    rank = pMPI::rank(comm);
   }
 
   virtual void init_lattice() = 0;
@@ -92,8 +89,7 @@ private:
   bool calc_2pgf;
 
 protected:
-  boost::mpi::environment env;
-  boost::mpi::communicator comm;
+  MPI_Comm comm;
   int rank;
   po::variables_map p;
   Lattice Lat;
@@ -106,7 +102,7 @@ protected:
 
   void print_section (const std::string& str)
   {
-    if (!comm.rank()) {
+    if (!rank) {
       std::cout << std::string(str.size(),'=') << std::endl;
       std::cout << str << std::endl;
       std::cout << std::string(str.size(),'=') << std::endl;

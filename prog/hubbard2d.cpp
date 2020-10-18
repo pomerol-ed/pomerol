@@ -30,10 +30,6 @@
 #pragma clang diagnostic ignored "-Wgnu"
 
 #include <boost/program_options.hpp>
-#include <boost/serialization/complex.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 
 #include <string>
 #include <iostream>
@@ -47,10 +43,6 @@
 #include "mpi_dispatcher/mpi_dispatcher.hpp"
 
 using namespace Pomerol;
-
-
-extern boost::mpi::environment env;
-boost::mpi::communicator comm;
 
 /* Auxiliary routines - implemented in the bottom. */
 bool compare(ComplexType a, ComplexType b);
@@ -70,8 +62,7 @@ ComplexType chi_bfreq_f(T const& chi, double W, double w1, double w2) {
 
 int main(int argc, char* argv[])
 {
-    boost::mpi::environment env(argc,argv);
-    boost::mpi::communicator comm;
+    MPI_Init(&argc, &argv);
 
     print_section("Hubbard nxn");
 
@@ -155,14 +146,14 @@ int main(int argc, char* argv[])
         };
     };
 
-    auto rank = comm.rank();
+    auto rank = pMPI::rank(MPI_COMM_WORLD);
     if (!rank) {
         INFO("Terms with 2 operators");
         Lat.printTerms(2);
 
         INFO("Terms with 4 operators");
         Lat.printTerms(4);
-        };
+    }
 
     IndexClassification IndexInfo(Lat.getSiteMap());
     IndexInfo.prepare(false); // Create index space
@@ -223,7 +214,7 @@ int main(int argc, char* argv[])
         G.prepareAll(indices2); // identify all non-vanishing block connections in the Green's function
         G.computeAll(); // Evaluate all GF terms, i.e. resonances and weights of expressions in Lehmans representation of the Green's function
 
-        if (!comm.rank()) // dump gf into a file
+        if (!pMPI::rank(MPI_COMM_WORLD)) // dump gf into a file
         for (auto ind2 : indices2) { // loops over all components (pairs of indices) of the Green's function
             // Save Matsubara GF from pi/beta to pi/beta*(4*wf_max + 1)
             std::cout << "Saving imfreq G" << ind2 << " on "<< 4*wf_max << " Matsubara freqs. " << std::endl;
@@ -265,7 +256,7 @@ int main(int argc, char* argv[])
             Chi4.MultiTermCoefficientTolerance = 1e-6;
 
             Chi4.prepareAll(indices4); // find all non-vanishing block connections inside 2pgf
-            comm.barrier(); // MPI::BARRIER
+            MPI_Barrier(MPI_COMM_WORLD);
 
             bool clearTerms = false;
             // ! The most important routine - actually calculate the 2PGF

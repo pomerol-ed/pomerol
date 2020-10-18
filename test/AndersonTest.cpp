@@ -24,17 +24,15 @@ RealType epsilon = 2.3;
 
 int main(int argc, char* argv[])
 {
-    boost::mpi::environment env(argc,argv);
-    boost::mpi::communicator world;
+    MPI_Init(&argc, &argv);
 
-    
     Lattice L;
     // Correlated site
     L.addSite(new Lattice::Site("C",1,2));
     // Bath sites
     L.addSite(new Lattice::Site("0",1,2));
     //L.addSite(new Lattice::Site("1",1,2));
-    
+
     LatticePresets::addCoulombS(&L, "C", U, -mu);
 /*
     LatticePresets::addMagnetization(&L, "C", 2*h);
@@ -47,7 +45,7 @@ int main(int argc, char* argv[])
     IndexInfo.prepare();
     INFO("Indices");
     IndexInfo.printIndices();
-    
+
     IndexHamiltonian HStorage(&L,IndexInfo);
     HStorage.prepare();
 
@@ -64,17 +62,15 @@ int main(int argc, char* argv[])
         INFO(S.getQuantumNumbers(i));
         std::vector<FockState> st = S.getFockStates(i);
         for (int i=0; i<st.size(); ++i) INFO(st[i]);
-//        INFO(H.getPart(i).getBlockNumber() << "|" << H.getPart(i).getQuantumNumbers());
-//        INFO(H.getPart(i).getMatrix());
         INFO("");
     };
 
-    H.compute(world);
+    H.compute(MPI_COMM_WORLD);
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
     rho.compute();
-    
+
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepareAll();
     Operators.computeAll();
@@ -84,45 +80,29 @@ int main(int argc, char* argv[])
 
     DEBUG(down_index);
     DEBUG(up_index);
-    
+
     IndexInfo.printIndices();
     for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {
-    INFO("C^+_"<<i);
-/*
-    FieldOperator::BlocksBimap c_map=Operators.getCreationOperator(i).getBlockMapping();
-    for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
-        {
-            //INFO(c_map_it->second << "->" << c_map_it->first);
-            //INFO(S.getQuantumNumbers(c_map_it->second) << "->" << S.getQuantumNumbers(c_map_it->first));
-            Operators.getCreationOperator(i).getPartFromRightIndex(c_map_it->second).print_to_screen();
-        }
-    c_map=Operators.getAnnihilationOperator(i).getBlockMapping();
-    for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
-        {
-            //INFO(c_map_it->second << "->" << c_map_it->first);
-            //INFO(S.getQuantumNumbers(c_map_it->second) << "->" << S.getQuantumNumbers(c_map_it->first));
-            Operators.getAnnihilationOperator(i).getPartFromRightIndex(c_map_it->second).print_to_screen();
-        }
-
-*/
-    };
+        INFO("C^+_"<<i);
+    }
 
     GreensFunction GF_down(S,H,
-    	Operators.getAnnihilationOperator(down_index),
-    	Operators.getCreationOperator(down_index),
-	rho);
-    
+        Operators.getAnnihilationOperator(down_index),
+        Operators.getCreationOperator(down_index),
+    rho);
+
     GreensFunction GF_up(S,H,
-    	Operators.getAnnihilationOperator(up_index),
-    	Operators.getCreationOperator(up_index),
-	rho);
+        Operators.getAnnihilationOperator(up_index),
+        Operators.getCreationOperator(up_index),
+    rho);
 
     GF_down.prepare(); DEBUG(""); GF_up.prepare();
     GF_down.compute(); DEBUG(""); GF_up.compute();
 
     for (size_t i=0; i<10; i++) {
         INFO(GF_down(i) << " " << GF_up(i));
-        };
+    }
 
+    MPI_Finalize();
     return EXIT_SUCCESS;
 }

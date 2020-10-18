@@ -164,21 +164,19 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<std::tup
         m_data.resize(freqs.size(), 0.0);
         for (size_t i=0; i<parts.size(); i++) {
             skel.parts.push_back(ComputeAndClearWrap(&freqs, &m_data, parts[i], clear, fill_container, 1));
-            };
+        }
         std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
 
         // Start distributing data
         MPI_Barrier(comm);
 
-        std::vector<ComplexType> m_data2(m_data.size(), 0.0);
-        MPI_Reduce(m_data.data(),
-                   m_data2.data(),
+        MPI_Reduce(MPI_IN_PLACE,
+                   m_data.data(),
                    m_data.size(),
-                   MPI_DOUBLE_COMPLEX,
+                   MPI_CXX_DOUBLE_COMPLEX,
                    MPI_SUM,
                    0,
                    comm);
-        std::swap(m_data, m_data2);
 
         // Optionally distribute terms to other processes
         if (!clear) {

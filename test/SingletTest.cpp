@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
 // Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
@@ -40,7 +40,7 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
-#include<cstdlib>
+#include <cstdlib>
 #include <fstream>
 
 #pragma clang diagnostic ignored "-Wc++11-extensions"
@@ -69,12 +69,11 @@ bool is_equal ( F1 x, F2 y, RealType tolerance = 1e-7)
 
 int main(int argc, char* argv[])
 {
-    boost::mpi::environment env(argc,argv);
-    boost::mpi::communicator world;
-    
+    MPI_Init(&argc, &argv);
+
     Lattice L;
     print_section("Kondo chain diagonalization");
-    
+
     size_t NSites = 1;
     RealType t = 0.0;
     RealType U = 100;
@@ -123,7 +122,7 @@ int main(int argc, char* argv[])
 
     StatesClassification S(IndexInfo,Symm);
     S.compute();
-    
+
     auto Q=Symm.getQuantumNumbers();
     Q.set(0,2);
     Q.set(1,0.0);
@@ -133,14 +132,14 @@ int main(int argc, char* argv[])
     HamiltonianPart Hpart(IndexInfo, Storage, S, B);
     Hpart.prepare();
     INFO_NONEWLINE("Diagonalizing...");
-    Hpart.compute(world);
+    Hpart.compute(MPI_COMM_WORLD);
     INFO("done.");
     size_t IndexSize = IndexInfo.getIndexSize();
-    
+
     Operator Splus;
     Operator Sminus;
     std::vector<ParticleIndex> up_indices, down_indices;
-    for (auto site_pairs : L.getSiteMap()) {  
+    for (auto site_pairs : L.getSiteMap()) {
         auto site_name = site_pairs.first;
         ParticleIndex up = IndexInfo.getIndex(site_name, 0, 0);
         ParticleIndex down = IndexInfo.getIndex(site_name, 0, 1);
@@ -167,13 +166,13 @@ int main(int argc, char* argv[])
     DEBUG(S2.commutes(Splus));
 
     auto blockstates = S.getFockStates(B);
-    
+
     for (size_t state_index = 0; state_index < 1; ++state_index) {
         auto State = Hpart.getEigenState(state_index);
 
         for (size_t i=0; i<State.size(); ++i) { if (!is_equal(State(i),0.0,1e-3)) INFO_NONEWLINE(State(i) << "*|" << blockstates[i] << "> + "); }; INFO("");
         //RealType s2val = S2.getMatrixElement(State,State,blockstates);
-        //RealType szszval = SzSz.getMatrixElement(State,State,blockstates); 
+        //RealType szszval = SzSz.getMatrixElement(State,State,blockstates);
         MelemType splussminusval = SplusSminus.getMatrixElement(State,State,blockstates);
 
         //INFO("<S^2> = " << s2val);
@@ -187,14 +186,14 @@ int main(int argc, char* argv[])
     H.compute(world);
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
-    for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(H.getEigenValue(i)); 
- 
+    for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(H.getEigenValue(i));
+
     //srand (time(NULL));
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
     rho.compute();
-    for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i)); 
+    for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i));
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepareAll();

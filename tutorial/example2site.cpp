@@ -39,7 +39,6 @@
 // calling of the objects would be required
 using namespace Pomerol;
 
-boost::mpi::communicator world;
 // Small routine to make fancy screen output for text.
 void print_section (const std::string& str);
 
@@ -56,8 +55,7 @@ void print_section (const std::string& str);
 
 int main(int argc, char* argv[])
 {
-    boost::mpi::environment MpiEnv(argc, argv);
-    world = boost::mpi::communicator();
+    MPI_Init(&argc, &argv);
 
     /* As pomerol is an ED code, it requires a finite-size lattice to be
      * provided. Here is an example of a lattice of 2 sites. */
@@ -188,7 +186,7 @@ int main(int argc, char* argv[])
     // Enter all blocks of the Hamiltonian.
     H.prepare();
     // Diagonalize them.
-    H.compute(world);
+    H.compute(MPI_COMM_WORLD);
     // Get ground energy.
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
@@ -273,9 +271,9 @@ int main(int argc, char* argv[])
 
     Chi.prepare();
     std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
-    Chi.compute(false, freqs_2pgf, world);
+    Chi.compute(false, freqs_2pgf, MPI_COMM_WORLD);
 
-    if (world.rank()==0) {
+    if (pMPI::rank(MPI_COMM_WORLD)==0) {
     int nm = 2;
     for(int n1 = -nm; n1<nm; ++n1)
         for(int n2 = -nm; n2<nm; ++n2)
@@ -327,7 +325,7 @@ int main(int argc, char* argv[])
 
 void print_section (const std::string& str)
 {
-  if (!world.rank()) {
+  if (!pMPI::rank(MPI_COMM_WORLD)) {
   std::cout << std::string(str.size(),'=') << std::endl;
   std::cout << str << std::endl;
   std::cout << std::string(str.size(),'=') << std::endl;

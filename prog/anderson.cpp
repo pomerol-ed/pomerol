@@ -26,7 +26,6 @@
 */
 
 #include <boost/program_options.hpp>
-#include <boost/mpi.hpp>
 
 #include <string>
 #include <iostream>
@@ -45,11 +44,10 @@ using gftools::real_grid;
 
 namespace po = boost::program_options;
 
-void print_section (const std::string& str, boost::mpi::communicator comm = boost::mpi::communicator());
+void print_section (const std::string& str, MPI_Comm comm = MPI_COMM_WORLD);
 
-//boost::mpi::environment env;
 using namespace Pomerol;
-#define mpi_cout if(!comm.rank()) std::cout
+#define mpi_cout if(!pMPI::rank(comm)) std::cout
 
 template <typename T>
 po::options_description define(po::options_description& opts, std::string name, T def_val, std::string desc) {
@@ -104,8 +102,7 @@ po::variables_map cmdline_params(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-    boost::mpi::environment env(argc,argv);
-    boost::mpi::communicator comm;
+    MPI_Init(&arc, &argv);
 
     print_section("Anderson model ED");
 
@@ -304,7 +301,7 @@ int main(int argc, char* argv[])
             G4.MultiTermCoefficientTolerance = p["2pgf.multiterm_tol"].as<double>();
 
             G4.prepare();
-            comm.barrier(); // MPI::BARRIER
+            MPI_Barrier(MPI_COMM_WORLD);
 
             std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
             fmatsubara_grid fgrid(wf_min, wf_max, beta);
@@ -321,10 +318,10 @@ int main(int argc, char* argv[])
             mpi_cout << "2PGF : " << freqs_2pgf.size() << " freqs to evaluate" << std::endl;
 
             // ! The most important routine - actually calculate the 2PGF
-            auto chi_freq_data = G4.compute(true, freqs_2pgf, comm);
+            auto chi_freq_data = G4.compute(true, freqs_2pgf, MPI_COMM_WORLD);
 
             // dump 2PGF into files - loop through 2pgf components
-            if (!comm.rank()) {
+            if (!pMPI::rank(MPI_COMM_WORLD)) {
                 mpi_cout << "Saving 2PGF " << index_comb << std::endl;
                 grid_object<std::complex<double>, bmatsubara_grid, fmatsubara_grid, fmatsubara_grid> full_vertex(std::forward_as_tuple(bgrid, fgrid, fgrid));
                 grid_object<std::complex<double>, fmatsubara_grid, fmatsubara_grid> full_vertex_1freq(std::forward_as_tuple(fgrid, fgrid));
@@ -348,7 +345,7 @@ int main(int argc, char* argv[])
     }
 }
 
-void print_section (const std::string& str, boost::mpi::communicator comm)
+void print_section (const std::string& str, MPI_Comm comm)
 {
     mpi_cout << std::string(str.size(),'=') << std::endl;
     mpi_cout << str << std::endl;
