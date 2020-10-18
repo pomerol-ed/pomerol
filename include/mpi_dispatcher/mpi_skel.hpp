@@ -5,6 +5,7 @@
 #ifndef __INCLUDE_MPISKEL_H
 #define __INCLUDE_MPISKEL_H
 
+#include "misc.hpp"
 #include "mpi_dispatcher.hpp"
 
 #include <algorithm>

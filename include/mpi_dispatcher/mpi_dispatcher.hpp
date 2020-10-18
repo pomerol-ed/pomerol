@@ -17,9 +17,6 @@ enum WorkerTag : int { Pending, Work, Finish }; // tags for MPI communication
 typedef int JobId;
 typedef int WorkerId;
 
-inline int rank(const MPI_Comm &Comm) { int r; MPI_Comm_rank(Comm, &r); return r; }
-inline int size(const MPI_Comm &Comm) { int s; MPI_Comm_size(Comm, &s); return s; }
-
 struct MPIWorker
 {
     MPI_Comm Comm;

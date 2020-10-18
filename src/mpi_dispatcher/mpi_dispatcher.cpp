@@ -1,3 +1,4 @@
+#include "mpi_dispatcher/misc.hpp"
 #include "mpi_dispatcher/mpi_dispatcher.hpp"
 
 #include <numeric>
