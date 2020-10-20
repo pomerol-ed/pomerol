@@ -173,7 +173,7 @@ macro(add_prog name def)
 endmacro(add_prog)
 
 macro(add_mpi)
-    find_package (MPI 3.0)
+    find_package (MPI 3.0 REQUIRED)
     message(STATUS "MPI includes: " ${MPI_CXX_INCLUDE_PATH} )
     message(STATUS "MPI CXX libs: " ${MPI_CXX_LIBRARIES} )
     message(STATUS "MPI definitions : " ${MPI_CXX_COMPILE_FLAGS} ${MPI_C_COMPILE_FLAGS})
