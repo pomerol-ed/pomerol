@@ -38,6 +38,13 @@ TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator
     return *this;
 }
 
+// When called for the first time, this function creates an MPI structure datatype
+// describing TwoParticleGFPart::NonResonantTerm and registers it using MPI_Type_commit().
+// The registered datatype is stored in a static variable and is immediately returned
+// upon successive calls to mpi_datatype().
+//
+// About MPI structure datatypes:
+// https://pages.tacc.utexas.edu/~eijkhout/pcse/html/mpi-data.html#Structtype
 MPI_Datatype TwoParticleGFPart::NonResonantTerm::mpi_datatype() {
     static MPI_Datatype dt;
 
@@ -80,6 +87,13 @@ TwoParticleGFPart::ResonantTerm& TwoParticleGFPart::ResonantTerm::operator+=(
     return *this;
 }
 
+// When called for the first time, this function creates an MPI structure datatype
+// describing TwoParticleGFPart::ResonantTerm and registers it using MPI_Type_commit().
+// The registered datatype is stored in a static variable and is immediately returned
+// upon successive calls to mpi_datatype().
+//
+// About MPI structure datatypes:
+// https://pages.tacc.utexas.edu/~eijkhout/pcse/html/mpi-data.html#Structtype
 MPI_Datatype TwoParticleGFPart::ResonantTerm::mpi_datatype() {
     static MPI_Datatype dt;
 
