@@ -58,7 +58,16 @@ void FieldOperatorPart::compute()
         }
     }
 
+// Workaround for Eigen issue 1224
+// https://gitlab.com/libeigen/eigen/-/issues/1224
+//
+// Affected versions are some betas of 3.3 but not the 3.3 release
+#if EIGEN_VERSION_AT_LEAST(3,2,90) && EIGEN_MAJOR_VERSION<3
+    elementsRowMajor = MatrixType(LeftMat * RightMat).sparseView(MatrixElementTolerance);
+#else
     elementsRowMajor = (LeftMat * RightMat).sparseView(MatrixElementTolerance);
+#endif
+
     #ifndef POMEROL_COMPLEX_MATRIX_ELEMENTS
     elementsRowMajor.prune(MatrixElementTolerance);
     #endif
