@@ -4,10 +4,6 @@ language: cpp
 os: linux
 dist: xenial
 
-compiler:
-  - clang
-  - gcc
-
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libeigen3-dev
@@ -21,10 +17,12 @@ script:
   - cd build
   - cmake -DTesting=ON -DProgs=ON -Dprogs_list="anderson;hubbard2d" ..
   - make
-  - make test
+  - CTEST_OUTPUT_ON_FAILURE=1 make test
 
 jobs:
   include:
+    - compiler: gcc
+      env: CXX=g++-5
     - compiler: gcc
       addons:
         apt:
