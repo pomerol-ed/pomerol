@@ -128,11 +128,11 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
                 freq_data = storage[iter->first];
                 freq_data_size = freq_data.size();
                 MPI_Bcast(&freq_data_size, 1, MPI_LONG, sender, comm);
-                MPI_Bcast(freq_data.data(), freq_data_size, MPI_CXX_COMPLEX, sender, comm);
+                MPI_Bcast(freq_data.data(), freq_data_size, MPI_CXX_DOUBLE_COMPLEX, sender, comm);
             } else {
                 MPI_Bcast(&freq_data_size, 1, MPI_LONG, sender, comm);
                 freq_data.resize(freq_data_size);
-                MPI_Bcast(freq_data.data(), freq_data_size, MPI_CXX_COMPLEX, sender, comm);
+                MPI_Bcast(freq_data.data(), freq_data_size, MPI_CXX_DOUBLE_COMPLEX, sender, comm);
             }
             out[iter->first] = freq_data;
 
