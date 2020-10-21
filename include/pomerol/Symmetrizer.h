@@ -114,10 +114,10 @@ private:
     std::vector<MelemType> numbers;
     /** Private constuctor - can be called only inside Symmetrizer. */
     QuantumNumbers(int amount);
-    /** A hash of the quantum numbers - used for comparison. */
-    std::size_t NumbersHash;
     /** Hash generator. */
     boost::hash<std::vector<MelemType> > numbers_hash_generator;
+    /** A hash of the quantum numbers - used for comparison. */
+    std::size_t NumbersHash;
 public:
     /** Set a quantum number at the given position to a value
      * \param[in] pos Position of QuantumNumber, e.g. the number of operation in Symmetrizer::Operations.

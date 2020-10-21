@@ -40,7 +40,8 @@
 #include "FieldOperatorContainer.h"
 #include "EnsembleAverage.h"
 
-#include<cstdlib>
+#include <cmath>
+#include <cstdlib>
 
 using namespace Pomerol;
 
@@ -51,11 +52,11 @@ RealType h_field = 0.01;
 
 bool compare(ComplexType a, ComplexType b)
 {
-    return abs(a-b) < 1e-14;
+    return std::abs(a-b) < 1e-14;
 }
 bool compare(RealType a, RealType b)
 {
-    return abs(a-b) < 1e-14;
+    return std::abs(a-b) < 1e-14;
 }
 
 

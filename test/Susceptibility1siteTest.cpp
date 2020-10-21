@@ -40,7 +40,8 @@
 #include "FieldOperatorContainer.h"
 #include "Susceptibility.h"
 
-#include<cstdlib>
+#include <cmath>
+#include <cstdlib>
 
 using namespace Pomerol;
 
@@ -51,7 +52,7 @@ RealType h_field = 0.01;
 
 bool compare(ComplexType a, ComplexType b)
 {
-    return abs(a-b) < 1e-14;
+    return std::abs(a-b) < 1e-14;
 }
 
 
@@ -78,7 +79,7 @@ ComplexType Gref_pm(int n, RealType beta)
     Weights W(n, beta);
 
     ComplexType g = 0;
-    if( abs(W.wu - W.wd) < 1e-8 ){  // E_up == E_down
+    if(std::abs(W.wu - W.wd) < 1e-8 ){  // E_up == E_down
         if(n==0)  g += W.wu * beta;
     }
     else{
