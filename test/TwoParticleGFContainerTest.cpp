@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
 // Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
@@ -106,12 +106,10 @@ ComplexType gamma4ref_udud(int n1, int n2, int n3)
 
 int main(int argc, char* argv[])
 {
-    boost::mpi::environment env(argc,argv);
-    boost::mpi::communicator world;
+    MPI_Init(&argc, &argv);
 
     U = 1.0;
 
-    
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
     LatticePresets::addCoulombS(&L, "A", U, -U/2.);
@@ -152,49 +150,54 @@ int main(int argc, char* argv[])
     Chi.ReduceResonanceTolerance = 1e-4;
     Chi.prepareAll();
     Chi.computeAll();
-    world.barrier();
+    MPI_Barrier(MPI_COMM_WORLD);
 
-    bool success = true; 
+    bool success = true;
     int wn = 4;
 
-    if (!world.rank()) INFO("TEST: CHI_UPUPUPUP");
+    int rank = pMPI::rank(MPI_COMM_WORLD);
+
+    if (!rank) INFO("TEST: CHI_UPUPUPUP");
     GreensFunction &GF = G(0,0);
     TwoParticleGF &Chi_uuuu = Chi(IndexCombination4(0,0,0,0));
     for(int n1 = -wn; n1<wn && success; ++n1)
     for(int n2 = -wn; n2<wn && success; ++n2)
     for(int n3 = -wn; n3<wn && success; ++n3){
          int n4 = n1+n2-n3;
-         ComplexType l = Chi_uuuu(n1,n2,n3); 
+         ComplexType l = Chi_uuuu(n1,n2,n3);
          ComplexType r = gamma4ref_uuuu(n1,n2,n3)*GF(n1)*GF(n2)*GF(n3)*GF(n4) + beta*GF(n1)*GF(n2)*delta(n1,n4) - beta*GF(n1)*GF(n2)*delta(n1,n3);
          success = success && compare(l,r,1e-6);
-         if (!success) INFO(n1 << " " << n2 << " " << n3 << " " << n1+n2-n3 << " : " << l << " == " << r);
+         if (!success)
+            INFO(n1 << " " << n2 << " " << n3 << " " << n1+n2-n3 << " : " << l << " == " << r);
      }
-    world.barrier();
-    if (!success) { 
-        ERROR(world.rank() << ": FAIL");
+    MPI_Barrier(MPI_COMM_WORLD);
+    if (!success) {
+        ERROR(rank << ": FAIL");
+        MPI_Finalize();
         return EXIT_FAILURE;
-        };
-    INFO(world.rank() << ": SUCCESS");
-    world.barrier();
+    }
+    INFO(rank << ": SUCCESS");
+    MPI_Barrier(MPI_COMM_WORLD);
 
-
-    if (!world.rank()) INFO("TEST: CHI_UPDOWNUPDOWN");
+    if (!rank) INFO("TEST: CHI_UPDOWNUPDOWN");
     TwoParticleGF &Chi_udud = Chi(IndexCombination4(0,1,0,1));
     for(int n1 = -wn; n1<wn && success; ++n1)
     for(int n2 = -wn; n2<wn && success; ++n2)
     for(int n3 = -wn; n3<wn && success; ++n3){
          int n4 = n1+n2-n3;
-         ComplexType l = Chi_udud(n1,n2,n3); 
+         ComplexType l = Chi_udud(n1,n2,n3);
          ComplexType r = gamma4ref_udud(n1,n2,n3)*GF(n1)*GF(n2)*GF(n3)*GF(n4) - beta*GF(n1)*GF(n2)*delta(n1,n3);
          success = success && compare(l,r,1e-6);
-         if (!success) INFO("P" << world.rank() << ":" << n1 << " " << n2 << " " << n3 << " " << n1+n2-n3 << " : " << l << " == " << r);
-     }
-    world.barrier();
-    if (!success) { 
-        ERROR(world.rank() << ": FAIL");
+         if (!success) INFO("P" << rank << ":" << n1 << " " << n2 << " " << n3 << " " << n1+n2-n3 << " : " << l << " == " << r);
+    }
+    MPI_Barrier(MPI_COMM_WORLD);
+    if (!success) {
+        ERROR(rank << ": FAIL");
+        MPI_Finalize();
         return EXIT_FAILURE;
-        };
-    INFO(world.rank() << ": SUCCESS");
+    }
+    INFO(rank << ": SUCCESS");
 
+    MPI_Finalize();
     return EXIT_SUCCESS;
 }

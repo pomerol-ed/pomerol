@@ -1,6 +1,6 @@
 /** \file include/pomerol/FieldOperator.h
 ** \brief Declaration of field operators : creation and annihilation operators.
-** 
+**
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
@@ -10,30 +10,32 @@
 
 #include<boost/bimap.hpp>
 
+#include <mpi.h>
+
 #include"Misc.h"
 #include"StatesClassification.h"
-#include"Hamiltonian.h" 
+#include"Hamiltonian.h"
 #include"FieldOperatorPart.h"
 
 namespace Pomerol{
 
-/** \typedef 
+/** \typedef
  * A pair of left and right indices of a part in a Field Operator. Each part is a non-vanishing worldline in an operator
  */
 typedef std::pair<BlockNumber,BlockNumber> BlockMapping;
 
 /** This class is a parent class for creation/annihilation operators which act
- * on all blocks of quantum states */ 
-class FieldOperator : public ComputableObject 
+ * on all blocks of quantum states */
+class FieldOperator : public ComputableObject
 {
 public:
-    
+
     typedef boost::bimaps::bimap<
         boost::bimaps::set_of<BlockNumber>,
         boost::bimaps::set_of<BlockNumber>
     > BlocksBimap;
     typedef BlocksBimap::value_type BlockMapping;
-    
+
 protected:
     /** A reference to a IndexClassification object */
     const IndexClassification &IndexInfo;
@@ -52,16 +54,16 @@ protected:
     std::map<size_t,BlockNumber> mapPartsFromRight;
     /** A map between non-vanishing parts (internal numbering) and their L.H.S. BlockNumbers  */
     std::map<size_t,BlockNumber> mapPartsFromLeft;
-        
+
     BlocksBimap LeftRightBlocks;
 
-    /** Return the resulting BlockNumber of states obtained by this operator, acting on states from another block. 
+    /** Return the resulting BlockNumber of states obtained by this operator, acting on states from another block.
      * If no BlockNumber found returns ERROR_BLOCK_NUMBER.
      * \param[in] RightIndex The BlockNumber of states on right hand side of the FieldOperator.
      */
     virtual BlockNumber mapsTo(BlockNumber RightIndex) const;
 
-    /** Return the resulting QuantumNumbers of states obtained by this operator, acting on states from another block. 
+    /** Return the resulting QuantumNumbers of states obtained by this operator, acting on states from another block.
      * If no QuantumNumbers found throws an exception.
      * \param[in] RightIndex The BlockNumber of states on right hand side of the FieldOperator.
      */
@@ -99,7 +101,7 @@ public:
     /** Virtual method for assigning world-lines */
     virtual void prepare(void) = 0;
     /** Computes all world-lines */
-    void compute(const boost::mpi::communicator& comm = boost::mpi::communicator());
+    void compute(const MPI_Comm& comm = MPI_COMM_WORLD);
 };
 
 /** A creation operator in the eigenspace of a Hamiltonian */

@@ -1,3 +1,4 @@
+#include <mpi_dispatcher/misc.hpp>
 #include <mpi_dispatcher/mpi_dispatcher.hpp>
 #include <thread>
 #include <random>
@@ -19,26 +20,25 @@ int main(int argc, char *argv[]) {
     MPI_Init(&argc, &argv);
 
     std::random_device rd;
-    boost::mpi::communicator world;
     std::mt19937 gen(100000);
     std::uniform_real_distribution<double> dist(0, 0.1);
     size_t ROOT = 0;
-    int rank = world.rank();
+    int rank = pMPI::rank(MPI_COMM_WORLD);
 
     try {
 
-        MPIWorker worker(world, ROOT);
+        MPIWorker worker(MPI_COMM_WORLD, ROOT);
         int ntasks = 45;
         dumb_task_counter = 0;
 
         std::unique_ptr<MPIMaster> disp;
 
-        if (world.rank() == ROOT) {
-            disp.reset(new MPIMaster(world, ntasks, true));
+        if (rank == ROOT) {
+            disp.reset(new MPIMaster(MPI_COMM_WORLD, ntasks, true));
             disp->order();
             std::cout << "ordered" << std::endl;
         };
-        world.barrier();
+        MPI_Barrier(MPI_COMM_WORLD);
 
         for (; !worker.is_finished();) {
             if (rank == ROOT) disp->order();
@@ -56,8 +56,8 @@ int main(int argc, char *argv[]) {
         };
         if (rank == ROOT) disp.release();
 
-        world.barrier();
-        MPI_Allreduce(MPI_IN_PLACE, &dumb_task_counter, 1, MPI_INT, MPI_SUM, world);
+        MPI_Barrier(MPI_COMM_WORLD);
+        MPI_Allreduce(MPI_IN_PLACE, &dumb_task_counter, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
         if(dumb_task_counter != ntasks) {
             std::cout << "ntasks = " << ntasks
                       << ", dumb_task_counter = "

@@ -57,8 +57,6 @@ struct GF_ref {
     }
 };
 
-boost::mpi::communicator world;
-
 bool run_test(ComplexType J /* spin-flip amplitude */) {
 
     INFO("J = " << J);
@@ -85,7 +83,7 @@ bool run_test(ComplexType J /* spin-flip amplitude */) {
 
     Hamiltonian H(IndexInfo, HStorage, S);
     H.prepare();
-    H.compute(world);
+    H.compute(MPI_COMM_WORLD);
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
@@ -124,8 +122,7 @@ bool run_test(ComplexType J /* spin-flip amplitude */) {
 
 int main(int argc, char* argv[]) {
 
-    boost::mpi::environment MpiEnv(argc,argv);
-    world = boost::mpi::communicator();
+    MPI_Init(&argc, &argv);
 
     return (
      run_test(ComplexType( 0.1,0)) &&

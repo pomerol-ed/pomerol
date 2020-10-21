@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
 // Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
@@ -41,10 +41,7 @@ using namespace Pomerol;
 
 int main(int argc, char* argv[])
 {
-    boost::mpi::environment env(argc,argv);
-    boost::mpi::communicator world;
-
-    
+    MPI_Init(&argc, &argv);
 
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
@@ -67,7 +64,7 @@ int main(int argc, char* argv[])
 
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
-    H.compute(world);
+    H.compute(MPI_COMM_WORLD);
 
     ParticleIndex op_index=3;
     CreationOperator Cdag(IndexInfo, S, H, op_index);
@@ -79,10 +76,12 @@ int main(int argc, char* argv[])
     AnnihilationOperator C(IndexInfo, S, H, op_index);
     C.prepare();
     C.compute();
-    
+
     DEBUG(C.getParts()[1]->getColMajorValue());
 
     DEBUG((C.getParts()[1]->getColMajorValue().transpose() - Cdag.getParts()[1]->getRowMajorValue()).norm());
+
+    MPI_Finalize();
     return EXIT_SUCCESS;
 }
 

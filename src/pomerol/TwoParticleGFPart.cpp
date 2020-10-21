@@ -1,5 +1,11 @@
 #include "pomerol/TwoParticleGFPart.h"
 
+#include <cstddef>
+#include <mutex>
+
+std::mutex NonResonantTerm_mpi_datatype_mutex;
+std::mutex ResonantTerm_mpi_datatype_mutex;
+
 namespace Pomerol{
 
 // Make the lagging index catch up or outrun the leading index.
@@ -22,14 +28,6 @@ inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter,
 //
 // TwoParticleGFPart::NonResonantTerm
 //
-inline
-TwoParticleGFPart::NonResonantTerm::NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4) :
-Coeff(Coeff), isz4(isz4)
-{
-    Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight=1;
-}
-
-inline
 TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator+=(
                     const NonResonantTerm& AnotherTerm)
 {
@@ -40,18 +38,44 @@ TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator
     return *this;
 }
 
+// When called for the first time, this function creates an MPI structure datatype
+// describing TwoParticleGFPart::NonResonantTerm and registers it using MPI_Type_commit().
+// The registered datatype is stored in a static variable and is immediately returned
+// upon successive calls to mpi_datatype().
+//
+// About MPI structure datatypes:
+// https://pages.tacc.utexas.edu/~eijkhout/pcse/html/mpi-data.html#Structtype
+MPI_Datatype TwoParticleGFPart::NonResonantTerm::mpi_datatype() {
+    static MPI_Datatype dt;
+
+    // Since we are using static variables here, we have to make sure the code
+    // is thread-safe.
+    const std::lock_guard<std::mutex> lock(NonResonantTerm_mpi_datatype_mutex);
+
+    // Create and commit datatype only once
+    static bool type_committed = false;
+    if(!type_committed) {
+        int blocklengths[] = {1,3,1,1};
+        MPI_Aint displacements[] = {offsetof(NonResonantTerm, Coeff),
+                                    offsetof(NonResonantTerm, Poles),
+                                    offsetof(NonResonantTerm, isz4),
+                                    offsetof(NonResonantTerm, Weight)
+                                   };
+        MPI_Datatype types[] = {MPI_CXX_DOUBLE_COMPLEX, // ComplexType Coeff
+                                MPI_DOUBLE,             // RealType Poles[3]
+                                MPI_CXX_BOOL,           // bool isz4
+                                MPI_LONG                // long Weight
+                               };
+        MPI_Type_create_struct(4, blocklengths, displacements, types, &dt);
+        MPI_Type_commit(&dt);
+        type_committed = true;
+    }
+    return dt;
+}
+
 //
 // TwoParticleGFPart::ResonantTerm
 //
-inline
-TwoParticleGFPart::ResonantTerm::ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff,
-                                              RealType P1, RealType P2, RealType P3, bool isz1z2):
-ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), isz1z2(isz1z2)
-{
-    Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight=1;
-}
-
-inline
 TwoParticleGFPart::ResonantTerm& TwoParticleGFPart::ResonantTerm::operator+=(
                 const ResonantTerm& AnotherTerm)
 {
@@ -61,6 +85,43 @@ TwoParticleGFPart::ResonantTerm& TwoParticleGFPart::ResonantTerm::operator+=(
     ResCoeff += AnotherTerm.ResCoeff;
     NonResCoeff += AnotherTerm.NonResCoeff;
     return *this;
+}
+
+// When called for the first time, this function creates an MPI structure datatype
+// describing TwoParticleGFPart::ResonantTerm and registers it using MPI_Type_commit().
+// The registered datatype is stored in a static variable and is immediately returned
+// upon successive calls to mpi_datatype().
+//
+// About MPI structure datatypes:
+// https://pages.tacc.utexas.edu/~eijkhout/pcse/html/mpi-data.html#Structtype
+MPI_Datatype TwoParticleGFPart::ResonantTerm::mpi_datatype() {
+    static MPI_Datatype dt;
+
+    // Since we are using static variables here, we have to make sure the code
+    // is thread-safe.
+    const std::lock_guard<std::mutex> lock(ResonantTerm_mpi_datatype_mutex);
+
+    // Create and commit datatype only once
+    static bool type_committed = false;
+    if(!type_committed) {
+        int blocklengths[] = {1,1,3,1,1};
+        MPI_Aint displacements[] = {offsetof(ResonantTerm, ResCoeff),
+                                    offsetof(ResonantTerm, NonResCoeff),
+                                    offsetof(ResonantTerm, Poles),
+                                    offsetof(ResonantTerm, isz1z2),
+                                    offsetof(ResonantTerm, Weight)
+                                   };
+        MPI_Datatype types[] = {MPI_CXX_DOUBLE_COMPLEX, // ComplexType ResCoeff
+                                MPI_CXX_DOUBLE_COMPLEX, // ComplexType NonResCoeff
+                                MPI_DOUBLE,             // RealType Poles[3]
+                                MPI_CXX_BOOL,           // bool isz1z2
+                                MPI_LONG                // long Weight
+                               };
+        MPI_Type_create_struct(5, blocklengths, displacements, types, &dt);
+        MPI_Type_commit(&dt);
+        type_committed = true;
+    }
+    return dt;
 }
 
 //

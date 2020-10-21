@@ -48,7 +48,7 @@ void quantum_model::compute() {
     mpi_cout << "<N_{" << IndexInfo.getInfo(i) << "[" << i <<"]}> = " << rho.getAverageOccupancy(i) << std::endl; // get average total particle number
   }
 
-  if (!comm.rank()) {
+  if (!rank) {
     double n_av = rho.getAverageOccupancy();
     gftools::num_io<double>(n_av).savetxt("N_T.dat");
   }
@@ -80,7 +80,7 @@ void quantum_model::compute() {
     G.prepareAll(indices2); // identify all non-vanishing block connections in the Green's function
     G.computeAll(); // Evaluate all GF terms, i.e. resonances and weights of expressions in Lehmans representation of the Green's function
 
-    if (!comm.rank()) // dump gf into a file
+    if (!rank) // dump gf into a file
       // loops over all components (pairs of indices) of the Green's function
       for (std::set<IndexCombination2>::const_iterator it = indices2.begin(); it != indices2.end(); ++it) {
         IndexCombination2 ind2 = *it;
@@ -135,7 +135,7 @@ void quantum_model::compute() {
       G4.MultiTermCoefficientTolerance = p["2pgf.multiterm_tol"].as<double>();
 
       G4.prepare();
-      comm.barrier(); // MPI::BARRIER
+      MPI_Barrier(comm);
       std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
       fmatsubara_grid fgrid(wf_min, wf_max, beta, true);
       bmatsubara_grid bgrid(wb_min, wb_max, beta, true);
@@ -153,7 +153,7 @@ void quantum_model::compute() {
       std::vector<ComplexType> chi_freq_data = G4.compute(true, freqs_2pgf, comm); // mdata[ind];
 
       // dump 2PGF into files - loop through 2pgf components
-      if (!comm.rank()) {
+      if (!rank) {
         mpi_cout << "Saving 2PGF " << index_comb << std::endl;
         grid_object<std::complex<double>, bmatsubara_grid, fmatsubara_grid, fmatsubara_grid> full_vertex(std::forward_as_tuple(bgrid, fgrid, fgrid));
         grid_object<std::complex<double>, fmatsubara_grid, fmatsubara_grid> full_vertex_1freq(std::forward_as_tuple(fgrid, fgrid));

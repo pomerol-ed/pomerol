@@ -7,6 +7,8 @@
 #ifndef __INCLUDE_TWOPARTICLEGFPART_H
 #define __INCLUDE_TWOPARTICLEGFPART_H
 
+#include <mpi.h>
+
 #include"Misc.h"
 #include"StatesClassification.h"
 #include"HamiltonianPart.h"
@@ -51,7 +53,7 @@ public:
 
         /** Comparator object for terms */
         struct Compare {
-            const double Tolerance;
+            double Tolerance;
             Compare(double Tolerance) : Tolerance(Tolerance) {}
             bool real_eq(RealType x1, RealType x2) const {
                 return std::abs(x1 - x2) < Tolerance;
@@ -65,6 +67,9 @@ public:
                 } else
                     return t1.isz4 < t2.isz4;
             }
+            void broadcast(const MPI_Comm &comm, int root) {
+                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
+            }
         };
 
         /** Does term have a negligible residue? */
@@ -74,9 +79,8 @@ public:
             bool operator()(NonResonantTerm const& t, size_t ToleranceDivisor) const {
                 return std::abs(t.Coeff) < Tolerance / ToleranceDivisor;
             }
-            friend class boost::serialization::access;
-            template<class Archive> void serialize(Archive & ar, const unsigned int version) {
-                ar & Tolerance;
+            void broadcast(const MPI_Comm &comm, int root) {
+                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
             }
         };
 
@@ -88,7 +92,11 @@ public:
         * \param[in] P3 Pole P3.
         * \param[in] isz4 Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term?
         */
-        NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4);
+        inline NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4):
+            Coeff(Coeff), isz4(isz4)
+        {
+            Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight=1;
+        }
 
         /** Returns a contribution to the two-particle Green's function made by this term.
         * \param[in] z1 Complex frequency \f$ z_1 \f$.
@@ -103,14 +111,9 @@ public:
         */
         NonResonantTerm& operator+=(const NonResonantTerm& AnotherTerm);
 
-        friend class boost::serialization::access;
-        template<class Archive>
-        void serialize(Archive & ar, const unsigned int version)
-        {
-            ar & Coeff; ar & Poles; ar & isz4; ar & Weight;
-        }
-
-        };
+        /** Create and commit an MPI datatype for NonResonantTerm */
+        static MPI_Datatype mpi_datatype();
+    };
 
 
     /** A resonant term has the following form:
@@ -139,7 +142,7 @@ public:
 
         /** Comparator object for terms */
         struct Compare {
-            const double Tolerance;
+            double Tolerance;
             Compare(double Tolerance) : Tolerance(Tolerance) {}
             bool real_eq(RealType x1, RealType x2) const {
                 return std::abs(x1 - x2) < Tolerance;
@@ -153,6 +156,9 @@ public:
                 } else
                     return t1.isz1z2 < t2.isz1z2;
             }
+            void broadcast(const MPI_Comm &comm, int root) {
+                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
+            }
         };
 
         /** Does term have a negligible residue? */
@@ -163,9 +169,8 @@ public:
                 return std::abs(t.ResCoeff) < Tolerance / ToleranceDivisor &&
                        std::abs(t.NonResCoeff) < Tolerance / ToleranceDivisor;
             }
-            friend class boost::serialization::access;
-            template<class Archive> void serialize(Archive & ar, const unsigned int version) {
-                ar & Tolerance;
+            void broadcast(const MPI_Comm &comm, int root) {
+                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
             }
         };
 
@@ -178,7 +183,11 @@ public:
         * \param[in] P3 Pole P3.
         * \param[in] isz1z2 Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
         */
-        ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff, RealType P1, RealType P2, RealType P3, bool isz1z2);
+        inline ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff, RealType P1, RealType P2, RealType P3, bool isz1z2):
+            ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), isz1z2(isz1z2)
+        {
+            Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight=1;
+        }
 
         /** Returns a contribution to the two-particle Green's function made by this term.
         * \param[in] z1 Complex frequency \f$ z_1 \f$.
@@ -193,13 +202,8 @@ public:
         */
         ResonantTerm& operator+=(const ResonantTerm& AnotherTerm);
 
-        friend class boost::serialization::access;
-        template<class Archive>
-        void serialize(Archive & ar, const unsigned int version)
-        {
-            ar & ResCoeff; ar & NonResCoeff; ar & Poles; ar & isz1z2; ar & Weight;
-        }
-
+        /** Create and commit an MPI datatype for ResonantTerm */
+        static MPI_Datatype mpi_datatype();
     };
 
 private:

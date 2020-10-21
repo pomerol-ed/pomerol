@@ -1,13 +1,8 @@
-# Specify c language to get right CXX compiler (Travis bug https://github.com/travis-ci/travis-ci/issues/3871)
-language: c
+language: cpp
 
-# Ubuntu 14.04 Trusty support
-sudo: required
-dist: trusty
-
-compiler:
-  - clang
-  - gcc
+# Ubuntu 16.04 Xenial support
+os: linux
+dist: xenial
 
 before_install:
   - sudo apt-get -qq update
@@ -16,14 +11,18 @@ before_install:
   - sudo apt-get install -y libboost-all-dev
 
 script:
+  # Stop on first error
+  - set -e
   - mkdir build
   - cd build
   - cmake -DTesting=ON -DProgs=ON -Dprogs_list="anderson;hubbard2d" ..
   - make
-  - make test
+  - CTEST_OUTPUT_ON_FAILURE=1 make test
 
-matrix:
+jobs:
   include:
+    - compiler: gcc
+      env: CXX=g++-5
     - compiler: gcc
       addons:
         apt:
@@ -32,29 +31,19 @@ matrix:
           packages:
             - g++-4.9
       env: CXX=g++-4.9
-    - compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-      env: CXX=g++-5
     - compiler: clang
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.6
           packages:
             - clang-3.6
-      env: CXX=clang++-3.6 
+      env: CXX=clang++-3.6
     - compiler: clang
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
           packages:
             - clang-3.7
       env: CXX=clang++-3.7

@@ -22,13 +22,15 @@
 #ifndef __INCLUDE_TWOPARTICLEGFCONTAINER_H
 #define __INCLUDE_TWOPARTICLEGFCONTAINER_H
 
+#include <memory>
+#include <tuple>
+
+#include <mpi.h>
+
 #include"Misc.h"
 #include"TwoParticleGF.h"
 #include"FieldOperatorContainer.h"
 #include"IndexContainer4.h"
-
-#include <memory>
-#include <tuple>
 
 namespace Pomerol{
 
@@ -52,18 +54,18 @@ public:
     std::map<IndexCombination4,std::vector<ComplexType> > computeAll(
         bool clearTerms = false,
         std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<std::tuple<ComplexType, ComplexType, ComplexType> >(),
-        const boost::mpi::communicator & comm = boost::mpi::communicator(),
+        const MPI_Comm& comm = MPI_COMM_WORLD,
         bool split = true
         );
     std::map<IndexCombination4,std::vector<ComplexType> > computeAll_nosplit(
         bool clearTerms,
         std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<std::tuple<ComplexType, ComplexType, ComplexType> >(),
-        const boost::mpi::communicator & comm = boost::mpi::communicator()
+        const MPI_Comm& comm = MPI_COMM_WORLD
         );
     std::map<IndexCombination4,std::vector<ComplexType> > computeAll_split(
         bool clearTerms,
         std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<std::tuple<ComplexType, ComplexType, ComplexType> >(),
-        const boost::mpi::communicator & comm = boost::mpi::communicator()
+        const MPI_Comm& comm = MPI_COMM_WORLD
         );
 
 protected:

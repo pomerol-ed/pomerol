@@ -8,7 +8,8 @@
 
 #include <set>
 #include <utility>
-#include <boost/serialization/set.hpp>
+
+#include "mpi_dispatcher/misc.hpp"
 
 #include "Misc.h"
 
@@ -23,7 +24,6 @@ namespace Pomerol {
  * container if TermType::IsNegligible(T, current_number_of_terms + 1) evaluates to true.
  */
 template<typename TermType> class TermList {
-
     /** Comparison function */
     typedef typename TermType::Compare Compare;
     /** Predicate for determining negligible terms */
@@ -63,6 +63,12 @@ public:
     /** Remove all terms from the container */
     void clear() { data.clear(); }
 
+    /** Access set of terms */
+    const std::set<TermType, Compare>& as_set() const { return data; }
+
+    /** Access the is_negligible object */
+    const IsNegligible& get_is_negligible() const { return is_negligible; }
+
     /** Pass arguments to operator() of each term in the container
      *  and return a sum of their return values.
      */
@@ -74,10 +80,24 @@ public:
         return res;
     }
 
-    /** Boost.Serialization interface */
-    friend class boost::serialization::access;
-    template<class Archive> void serialize(Archive & ar, const unsigned int version) {
-        ar & data; ar & is_negligible;
+    void broadcast(const MPI_Comm &comm, int root) {
+        auto comp = data.key_comp();
+        comp.broadcast(comm, root);
+
+        long n_terms;
+        if(pMPI::rank(comm) == root) { // Broadcast the terms from this process
+            n_terms = data.size();
+            std::vector<TermType> v(data.begin(), data.end());
+            MPI_Bcast(&n_terms, 1, MPI_LONG, root, comm);
+            MPI_Bcast(v.data(), v.size(), TermType::mpi_datatype(), root, comm);
+        } else { // Receive terms
+            MPI_Bcast(&n_terms, 1, MPI_LONG, root, comm);
+            std::vector<TermType> v(n_terms);
+            MPI_Bcast(v.data(), v.size(), TermType::mpi_datatype(), root, comm);
+            data = std::set<TermType, Compare>(v.begin(), v.end(), comp);
+        }
+
+        is_negligible.broadcast(comm, root);
     }
 
     /** Check that all terms in the container are properly ordered and are not negligible */

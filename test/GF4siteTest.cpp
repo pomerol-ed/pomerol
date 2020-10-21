@@ -1,6 +1,6 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is a part of pomerol - a scientific ED code for obtaining
+// properties of a Hubbard model on a finite-size lattice
 //
 // Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
 // Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
@@ -57,10 +57,8 @@ void print_section (const std::string& str)
 
 int main(int argc, char* argv[])
 {
-    boost::mpi::environment env(argc,argv);
-    boost::mpi::communicator world;
+    MPI_Init(&argc, &argv);
 
-    
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
     LatticePresets::addCoulombS(&L, "A", 1.0, -0.5);
@@ -101,7 +99,7 @@ int main(int argc, char* argv[])
 
     Hamiltonian H(IndexInfo, Storage, S);
     H.prepare();
-    H.compute(world);
+    H.compute(MPI_COMM_WORLD);
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
     RealType beta = 10.0;
@@ -109,7 +107,7 @@ int main(int argc, char* argv[])
     DensityMatrix rho(S,H,beta);
     rho.prepare();
     rho.compute();
-    for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i)); 
+    for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i));
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepareAll();
@@ -120,7 +118,7 @@ int main(int argc, char* argv[])
         {
             INFO(c_map_it->first << "->" << c_map_it->second);
         }
-        
+
     ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
     //ParticleIndex up_index = IndexInfo.getIndex("A",0,up);
     GreensFunction GF(S,H,Operators.getAnnihilationOperator(down_index), Operators.getCreationOperator(down_index), rho);
@@ -130,7 +128,7 @@ int main(int argc, char* argv[])
 
     ComplexVectorType GF_ref(10);
 
-    GF_ref << 0.00515461461  -0.191132319*I, 
+    GF_ref << 0.00515461461  -0.191132319*I,
               -0.0129218293  -0.35749415*I,
               -0.0063208255  -0.364571553*I,
               -0.00244599255  -0.326995909*I,
@@ -140,12 +138,14 @@ int main(int argc, char* argv[])
               -3.20102701e-05  -0.194983212*I,
               9.51503858e-06  -0.175149329*I,
               2.68929175e-05  -0.158732731*I;
- 
+
     bool result = true;
     for(int n = 0; n<10; ++n) {
         DEBUG(GF(n) << " " << GF_ref(n));
         result = (result && compare(GF(n),GF_ref(n)));
-        }
-    if (!result) return EXIT_FAILURE;
-    return EXIT_SUCCESS;
+    }
+
+    MPI_Finalize();
+
+    return result ? EXIT_SUCCESS : EXIT_FAILURE;
 }

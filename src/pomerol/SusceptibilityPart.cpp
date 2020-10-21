@@ -63,7 +63,7 @@ void SusceptibilityPart::compute(void)
             // A meaningful matrix element
             if(A_index2 == B_index2){
                 RealType Pole = HpartInner.getEigenValue(A_index2) - HpartOuter.getEigenValue(index1);
-                if(abs(Pole) < ReduceResonanceTolerance){
+                if(std::abs(Pole) < ReduceResonanceTolerance){
                     // BOSON: pole at zero energy
                     ZeroPoleWeight += Ainner.value() * Binner.value() * DMpartOuter.getWeight(index1);
                 }
@@ -71,7 +71,7 @@ void SusceptibilityPart::compute(void)
                     // BOSON: minus sign before the second term
                     ComplexType Residue = Ainner.value() * Binner.value() *
                                           (DMpartOuter.getWeight(index1) - DMpartInner.getWeight(A_index2));
-                    if(abs(Residue) > MatrixElementTolerance) // Is the residue relevant?
+                    if(std::abs(Residue) > MatrixElementTolerance) // Is the residue relevant?
                     {
                         // Create a new term and append it to the list.
                         Terms.add_term(Term(Residue, Pole));

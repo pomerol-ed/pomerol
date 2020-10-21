@@ -1,9 +1,8 @@
 #include "pomerol/TwoParticleGF.h"
-#include <boost/serialization/complex.hpp>
-#include <boost/serialization/vector.hpp>
 
 #include "mpi_dispatcher/mpi_skel.hpp"
 
+#include <vector>
 #include <tuple>
 
 namespace Pomerol{
@@ -152,7 +151,7 @@ protected:
     bool fill_;
 };
 
-std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const boost::mpi::communicator & comm)
+std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const MPI_Comm& comm)
 {
     std::vector<ComplexType> m_data;
     if (Status < Prepared) throw (exStatusMismatch());
@@ -165,27 +164,29 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, std::vector<std::tup
         m_data.resize(freqs.size(), 0.0);
         for (size_t i=0; i<parts.size(); i++) {
             skel.parts.push_back(ComputeAndClearWrap(&freqs, &m_data, parts[i], clear, fill_container, 1));
-            };
+        }
         std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
-        int rank = comm.rank();
-        int comm_size = comm.size();
 
         // Start distributing data
-        //DEBUG(comm.rank() << getIndex(0) << getIndex(1) << getIndex(2) << getIndex(3) << " Start distributing data");
-        comm.barrier();
+        MPI_Barrier(comm);
 
-        std::vector<ComplexType> m_data2(m_data.size(), 0.0);
-        boost::mpi::reduce(comm, &m_data[0], m_data.size(), &m_data2[0], std::plus<ComplexType>(), 0);
-        std::swap(m_data, m_data2);
+        MPI_Allreduce(MPI_IN_PLACE,
+                      m_data.data(),
+                      m_data.size(),
+                      MPI_CXX_DOUBLE_COMPLEX,
+                      MPI_SUM,
+                      comm);
+
+        // Optionally distribute terms to other processes
         if (!clear) {
-            for (size_t p = 0; p<parts.size(); p++) {
-                boost::mpi::broadcast(comm, parts[p]->NonResonantTerms, job_map[p]);
-                boost::mpi::broadcast(comm, parts[p]->ResonantTerms, job_map[p]);
+            for (size_t p = 0; p < parts.size(); p++) {
+                parts[p]->NonResonantTerms.broadcast(comm, job_map[p]);
+                parts[p]->ResonantTerms.broadcast(comm, job_map[p]);
                 parts[p]->Status = TwoParticleGFPart::Computed;
-            };
-            comm.barrier();
+            }
+            MPI_Barrier(comm);
         }
-    };
+    }
     Status = Computed;
     return m_data;
 }
