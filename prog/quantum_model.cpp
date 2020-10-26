@@ -2,13 +2,88 @@
 // Created by iskakoff on 05/12/16.
 //
 
+#include <algorithm>
+#include <cstdlib>
+#include <fstream>
+#include <stdexcept>
+#include <tuple>
+
 #include "quantum_model.h"
 
+#undef DEBUG
+#include <gftools.hpp>
+
+using namespace Pomerol;
+
+quantum_model::quantum_model(int argc, char* argv[], const std::string &prog_desc) :
+  comm(MPI_COMM_WORLD),
+  args_parser(prog_desc),
+  args_options{{args_parser, "help", "Display this help menu", {'h', "help"}},
+               {args_parser, "beta", "Inverse temperature", {"beta"}, 1.0},
+               {args_parser, "calc_gf", "Calculate Green's functions", {"calc_gf"}},
+               {args_parser, "calc_2gf", "Calculate 2-particle Green's functions", {"calc_2gf"}},
+               {args_parser, "eta", "GF: Offset from the real axis for Green's function calculation", {"gf.eta"}, 0.05},
+               {args_parser, "step", "GF: step of the real frequency grid", {"gf.step"}, 0.01},
+               {args_parser, "D", "GF: length of the real frequency grid", {"gf.D"}, 6.0},
+               {args_parser, "wf_min", "Minimum fermionic Matsubara frequency", {"wf_min"}, -20},
+               {args_parser, "wf_max", "Maximum fermionic Matsubara frequency (4x for GF)", {"wf_max"}, 20},
+               {args_parser, "wb_min", "Minimum bosonic Matsubara frequency", {"wb_min"}, 0},
+               {args_parser, "wb_max", "Maximum bosonic Matsubara frequency", {"wb_max"}, 0},
+               {args_parser, "indices", "2PGF index combination", {"2pgf.indices"}, {0, 0, 0, 0}},
+               {args_parser, "tol", "Energy resonance resolution in 2PGF", {"2pgf.reduce_tol"}, 1e-5},
+               {args_parser, "tol", "Tolerance on nominators in 2PGF", {"2pgf.coeff_tol"}, 1e-12},
+               {args_parser, "tol", "How often to reduce terms in 2PGF", {"2pgf.multiterm_tol"}, 1e-6}
+  } {
+  MPI_Init(&argc, &argv);
+  rank = pMPI::rank(comm);
+  // Print defaults in the usage message
+  args_parser.helpParams.addDefault = true;
+}
+
+quantum_model::~quantum_model() {
+  MPI_Finalize();
+}
+
+void quantum_model::parse_args(int argc, char* argv[]) {
+  try {
+    args_parser.ParseCLI(argc, argv);
+  } catch (args::Help) {
+    std::cout << args_parser;
+    exit(0);
+  }
+  catch (args::ParseError& e)
+  {
+    std::cerr << e.what() << std::endl;
+    std::cerr << args_parser;
+    exit(1);
+  }
+  catch (args::ValidationError& e)
+  {
+    std::cerr << e.what() << std::endl;
+    std::cerr << args_parser;
+    exit(1);
+  }
+
+  beta = args::get(args_options.beta);
+  calc_gf = args::get(args_options.calc_gf);
+  calc_2pgf = args::get(args_options.calc_2pgf);
+  calc_gf = calc_gf || calc_2pgf;
+}
+
 void quantum_model::compute() {
+
+  using gftools::tools::is_float_equal;
+  using gftools::grid_object;
+  using gftools::fmatsubara_grid;
+  using gftools::bmatsubara_grid;
+  using gftools::real_grid;
+
   IndexClassification IndexInfo(Lat.getSiteMap());
   IndexInfo.prepare(false); // Create index space
-  if (!rank) { print_section("Indices"); IndexInfo.printIndices(); };
-  int index_size = IndexInfo.getIndexSize();
+  if (!rank) {
+    print_section("Indices");
+    IndexInfo.printIndices();
+  };
 
   print_section("Matrix element storage");
   IndexHamiltonian Storage(&Lat,IndexInfo);
@@ -42,10 +117,12 @@ void quantum_model::compute() {
   std::pair<ParticleIndex, ParticleIndex> pair = get_node(IndexInfo);
   ParticleIndex d0 = pair.first;//IndexInfo.getIndex("A",0,down); // find the indices of the impurity, i.e. spin up index
   ParticleIndex u0 = pair.second;//IndexInfo.getIndex("A",0,up);
-  mpi_cout << "<N_{" << IndexInfo.getInfo(u0) << "}N_{"<< IndexInfo.getInfo(u0) << "}> = " << rho.getAverageDoubleOccupancy(u0,d0) << std::endl; // get double occupancy
+  mpi_cout << "<N_{" << IndexInfo.getInfo(u0) << "}N_{"<< IndexInfo.getInfo(u0) << "}> = "
+           << rho.getAverageDoubleOccupancy(u0,d0) << std::endl; // get double occupancy
 
   for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {
-    mpi_cout << "<N_{" << IndexInfo.getInfo(i) << "[" << i <<"]}> = " << rho.getAverageOccupancy(i) << std::endl; // get average total particle number
+    mpi_cout << "<N_{" << IndexInfo.getInfo(i) << "[" << i <<"]}> = "
+             << rho.getAverageOccupancy(i) << std::endl; // get average total particle number
   }
 
   if (!rank) {
@@ -55,17 +132,22 @@ void quantum_model::compute() {
 
   // Green's function calculation starts here
 
-  FieldOperatorContainer Operators(IndexInfo, S, H); // Create a container for c and c^+ in the eigenstate basis
+  // Create a container for c and c^+ in the eigenstate basis
+  FieldOperatorContainer Operators(IndexInfo, S, H);
 
   if (calc_gf) {
     print_section("1-particle Green's functions calc");
     std::set<ParticleIndex> f; // a set of indices to evaluate c and c^+
     std::set<IndexCombination2> indices2; // a set of pairs of indices to evaluate Green's function
 
-    int ntau; double eta, step, hbw;
-    std::tie(ntau, eta, step, hbw) = std::make_tuple(p["gf.ntau"].as<int>(), p["gf.eta"].as<double>(), p["gf.step"].as<double>(), p["gf.D"].as<double>());
-    int wf_min, wf_max, wb_min, wb_max;
-    std::tie(wf_min, wf_max, wb_min, wb_max) = std::make_tuple(p["wf_min"].as<int>(), p["wf_max"].as<int>(), p["wb_min"].as<int>(), p["wb_max"].as<int>());
+    double eta = args::get(args_options.gf_eta);
+    double step = args::get(args_options.gf_step);
+    double hbw = args::get(args_options.gf_D);
+
+    int wf_min = args::get(args_options.wf_min);
+    int wf_max = args::get(args_options.wf_max);
+    int wb_min = args::get(args_options.wb_min);
+    int wb_max = args::get(args_options.wb_max);
 
     // Take only impurity spin up and spin down indices
     f.insert(u0);
@@ -106,8 +188,10 @@ void quantum_model::compute() {
     if (calc_2pgf) {
       print_section("2-Particle Green's function calc");
 
-      std::vector<size_t> indices_2pgf = p["2pgf.indices"].as< std::vector<size_t> >();
-      if (indices_2pgf.size() != 4) throw std::logic_error("Need 4 indices for 2pgf");
+      std::vector<size_t> indices_2pgf = args::get(args_options._2pgf_indices);
+
+      if (indices_2pgf.size() != 4)
+        throw std::logic_error("Need 4 indices for 2PGF");
 
       // a set of four indices to evaluate the 2pgf
       IndexCombination4 index_comb(indices_2pgf[0], indices_2pgf[1], indices_2pgf[2], indices_2pgf[3]);
@@ -116,9 +200,9 @@ void quantum_model::compute() {
       // 2PGF = <T c c c^+ c^+>
       indices4.insert(index_comb);
       std::string ind_str = std::to_string(index_comb.Index1)
-                            + std::to_string(index_comb.Index2)
-                            + std::to_string(index_comb.Index3)
-                            + std::to_string(index_comb.Index4);
+                          + std::to_string(index_comb.Index2)
+                          + std::to_string(index_comb.Index3)
+                          + std::to_string(index_comb.Index4);
 
       AnnihilationOperator const& C1 = Operators.getAnnihilationOperator(index_comb.Index1);
       AnnihilationOperator const& C2 = Operators.getAnnihilationOperator(index_comb.Index2);
@@ -128,15 +212,15 @@ void quantum_model::compute() {
 
       /* Some knobs to make calc faster - the larger the values of tolerances, the faster is calc, but rounding errors may show up. */
       /** A difference in energies with magnitude less than this value is treated as zero - resolution of energy resonances. */
-      G4.ReduceResonanceTolerance = p["2pgf.reduce_tol"].as<double>();
+      G4.ReduceResonanceTolerance = args::get(args_options._2pgf_reduce_tol);
       /** Minimal magnitude of the coefficient of a term to take it into account - resolution of thermal weight. */
-      G4.CoefficientTolerance = p["2pgf.coeff_tol"].as<double>();
+      G4.CoefficientTolerance = args::get(args_options._2pgf_coeff_tol);
       /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
-      G4.MultiTermCoefficientTolerance = p["2pgf.multiterm_tol"].as<double>();
+      G4.MultiTermCoefficientTolerance = args::get(args_options._2pgf_multiterm_tol);
 
       G4.prepare();
       MPI_Barrier(comm);
-      std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > freqs_2pgf;
+      std::vector<std::tuple<ComplexType, ComplexType, ComplexType>> freqs_2pgf;
       fmatsubara_grid fgrid(wf_min, wf_max, beta, true);
       bmatsubara_grid bgrid(wb_min, wb_max, beta, true);
       freqs_2pgf.reserve(fgrid.size() * fgrid.size() * bgrid.size());
@@ -150,7 +234,7 @@ void quantum_model::compute() {
       }
       mpi_cout << "2PGF : " << freqs_2pgf.size() << " freqs to evaluate" << std::endl;
 
-      std::vector<ComplexType> chi_freq_data = G4.compute(true, freqs_2pgf, comm); // mdata[ind];
+      std::vector<ComplexType> chi_freq_data = G4.compute(true, freqs_2pgf, comm);
 
       // dump 2PGF into files - loop through 2pgf components
       if (!rank) {
@@ -164,7 +248,8 @@ void quantum_model::compute() {
               std::complex<double> val = chi_freq_data[w_ind];
               full_vertex[W][w3.index()][w2.index()] = val;
               full_vertex_1freq[w3.index()][w2.index()] = val;
-              if (!is_float_equal(std::get<0>(freqs_2pgf[w_ind]), W.value()+w3.value())) throw std::logic_error("2pgf freq mismatch");
+              if (!is_float_equal(std::get<0>(freqs_2pgf[w_ind]), W.value()+w3.value()))
+                throw std::logic_error("2PGF freq mismatch");
               ++w_ind;
             }
           }

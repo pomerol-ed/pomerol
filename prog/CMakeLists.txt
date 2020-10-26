@@ -3,10 +3,6 @@ set(default_progs
     hubbard2d
     quantum_model)
 
-find_package(Boost COMPONENTS system program_options REQUIRED)
-set(BOOST_EXTRA_LIBS ${Boost_LIBRARIES})
-set(BOOST_EXTRA_INCLUDES ${Boost_INCLUDE_DIRS})
-
 # Find or fetch gftools
 add_gftools()
 
