@@ -5,8 +5,12 @@
 #ifndef POMEROL_HUBBARD2D_MODEL_H
 #define POMEROL_HUBBARD2D_MODEL_H
 
+#include <cmath>
+#include <limits>
 
 #include "quantum_model.h"
+
+using namespace Pomerol;
 
 /**
  * @brief hubbard2d_model class
@@ -16,32 +20,38 @@
 class hubbard2d_model: public quantum_model {
 
 public:
-  hubbard2d_model(int argc, char ** argv): quantum_model(argc, argv){
-    p = cmdline_params(argc, argv);
-    init_parameters();
-    init_lattice();
-  };
 
-  virtual void init_parameters() {
-    quantum_model::init_parameters();
-    _mu = p.count("mu") ? p["mu"].as<double>() :U()/2;
-    _t = p["t"].as<double>();
-    _tp = p["tp"].as<double>();
-    std::tie(size_x, size_y) = std::make_tuple(p["x"].as<int>(), p["y"].as<int>());
+  hubbard2d_model(int argc, char* argv[]) :
+    quantum_model(argc, argv, "Full-ED of the MxM Hubbard cluster"),
+    args_options{{args_parser, "U", "Hubbard constant U", {"U"}, 10.0},
+                 {args_parser, "mu", "Chemical potential", {"mu"}, std::numeric_limits<double>::quiet_NaN()},
+                 {args_parser, "t", "NN hopping constant t", {"t"}, 1.0},
+                 {args_parser, "tp", "NNN hopping constant t'", {"tp"}, 0.0},
+                 {args_parser, "x", "Size over x", {"x"}, 2},
+                 {args_parser, "y", "Size over y", {"y"}, 2}}
+  {
+    args_options.mu.HelpDefault("U/2");
+    parse_args(argc, argv);
+
+    size_x = args::get(args_options.x);
+    size_y = args::get(args_options.y);
+
+    init_lattice();
   }
 
-  virtual std::pair<ParticleIndex, ParticleIndex> get_node(const IndexClassification &IndexInfo) {
+  virtual std::pair<ParticleIndex, ParticleIndex>
+  get_node(const IndexClassification &IndexInfo) override {
     ParticleIndex d0 = IndexInfo.getIndex("S0",0,down);
     ParticleIndex u0 = IndexInfo.getIndex("S0",0,up);
     return std::make_pair(d0, u0);
   };
 
-  virtual void init_lattice() {
+  virtual void init_lattice() override {
     int L = size_x*size_y;
     INFO("Diagonalization of " << L << "=" << size_x << "*" << size_y << " sites");
+
     /* Add sites */
     names.resize(L);
-    //auto SiteIndexF = [size_x](size_t x, size_t y){return y*size_x + x;};
     for (size_t y=0; y<size_y; y++) {
       for (size_t x = 0; x < size_x; x++) {
         auto i = SiteIndexF(x, y);
@@ -49,16 +59,24 @@ public:
         s << i;
         names[i] = "S" + s.str();
         Lat.addSite(new Lattice::Site(names[i], 1, 2));
-      };
+      }
     }
 
     INFO("Sites");
     Lat.printSites();
 
     /* Add interaction on each site*/
-    for (size_t i=0; i<L; i++) LatticePresets::addCoulombS(&Lat, names[i], U(), -_mu);
+    double U = args::get(args_options.U);
+    double mu = args::get(args_options.mu);
+    if(std::isnan(mu)) mu = U / 2;
+
+    for (size_t i=0; i<L; i++)
+      LatticePresets::addCoulombS(&Lat, names[i], U, -mu);
 
     /* Add hopping */
+    double t = args::get(args_options.t);
+    double tp = args::get(args_options.tp);
+
     for (size_t y=0; y<size_y; y++) {
       for (size_t x=0; x<size_x; x++) {
         auto pos = SiteIndexF(x,y);
@@ -67,14 +85,16 @@ public:
         auto pos_dia_right = SiteIndexF((x+1)%size_x,(y+1)%size_y);
         auto pos_dia_left  = SiteIndexF((x+1)%size_x,(y-1)%size_y);
         std::cout<<pos_dia_right<<" "<<pos_dia_left<<std::endl;
-        if (size_x > 1) LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_right]), std::max(names[pos], names[pos_right]), -_t);
-        if (size_y > 1) LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_up]), std::max(names[pos], names[pos_up]), -_t);
-        if (std::abs(_tp)>1e-10 && size_x > 1 && size_y>1) {
-          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_dia_right]), std::max(names[pos], names[pos_dia_right]), _tp);
-          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_dia_left]) , std::max(names[pos], names[pos_dia_left]), _tp);
+        if (size_x > 1)
+          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_right]), std::max(names[pos], names[pos_right]), -t);
+        if (size_y > 1)
+          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_up]), std::max(names[pos], names[pos_up]), -t);
+        if (std::abs(tp)>1e-10 && size_x > 1 && size_y>1) {
+          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_dia_right]), std::max(names[pos], names[pos_dia_right]), tp);
+          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_dia_left]), std::max(names[pos], names[pos_dia_left]), tp);
         }
-      };
-    };
+      }
+    }
 
     auto rank = pMPI::rank(comm);
     if (!rank) {
@@ -82,77 +102,37 @@ public:
       Lat.printTerms(2);
       INFO("Terms with 4 operators");
       Lat.printTerms(4);
-    };
+    }
   }
 
-  virtual po::variables_map cmdline_params(int argc, char**argv) {
-    po::options_description p("Hubbard nxn diag");
-    //po::variables_map p(argc, (const char**)argv);
-    define_vec <std::vector<double> > (p, "levels", std::vector<double>(), "energy levels of the bath sites");
-    define_vec <std::vector<double> > (p, "hoppings", std::vector<double>(), "hopping to the bath sites");
-
-    define<double> (p, "U", 10.0, "Value of U");
-    define<double> (p, "mu", 0.0, "Global chemical potential");
-    define<double> (p, "t", 1.0, "Value of t");
-    define<double> (p, "tp", 0.0, "Value of t'");
-    define<double> (p, "beta", 100, "Value of inverse temperature");
-    define<double> (p, "T", .01, "Value of temperature");
-    define<double> (p, "ed", 0.0, "Value of energy level of the impurity");
-    define<int> (p,"x", 2,"Size over x");
-    define<int> (p,"y", 2,"Size over y");
-
-    define<int>(p, "calc_gf", false, "Calculate Green's functions");
-    define<int>(p, "calc_2pgf", false, "Calculate 2-particle Green's functions");
-    define<int>(p, "wf_min", -20, "Minimum fermionic Matsubara freq");
-    define<int>(p, "wf_max", 20, "Maximum fermionic Matsubara freq (4x for GF)");
-    define<int>(p, "wb_min", 0, "Minimum bosonic Matsubara freq");
-    define<int>(p, "wb_max", 0, "Maximum bosonic Matsubara freq");
-
-    define<double>(p, "gf.eta", 0.05, "GF: Offset from the real axis for Green's function calculation");
-    define<double>(p, "gf.step", 0.01, "GF: step of the real-freq grid");
-    define<double>(p, "gf.D", 6, "GF: length of the real-freq grid");
-    define<int>(p, "gf.ntau", 100, "GF: amount of points on the imag-time grid");
-
-    define<double>(p, "2pgf.reduce_tol", 1e-5, "Energy resonance resolution in 2pgf");
-    define<double>(p, "2pgf.coeff_tol",  1e-12, "Tolerance on nominators in 2pgf");
-    define<double>(p, "2pgf.multiterm_tol", 1e-6, "How often to reduce terms in 2pgf");
-
-    std::vector<size_t> default_inds(4,0);
-    define_vec<std::vector<size_t> >(p, "2pgf.indices", default_inds, "2pgf index combination");
-
-    p.add_options()("help","help");
-
-    po::variables_map vm;
-    //po::store(po::parse_command_line(argc, argv, p), vm);
-    po::store(po::command_line_parser(argc, argv).options(p).style(
-      po::command_line_style::unix_style ^ po::command_line_style::allow_short).run(), vm);
-
-    po::notify(vm);
-
-    if (vm.count("help")) { std::cerr << p << "\n"; MPI_Finalize(); exit(0); }
-
-    return vm;
-  }
-
-  virtual void prepare_indices(ParticleIndex d0, ParticleIndex u0, std::set < IndexCombination2 > &indices2, std::set<ParticleIndex>& f, const IndexClassification &IndexInfo)  {
+  virtual void prepare_indices(ParticleIndex d0,
+                               ParticleIndex u0,
+                               std::set<IndexCombination2> &indices2,
+                               std::set<ParticleIndex>& f,
+                               const IndexClassification &IndexInfo) override {
     for (size_t x=0; x<size_x; x++) {
       ParticleIndex ind = IndexInfo.getIndex(names[SiteIndexF(x,0)],0,down);
       f.insert(ind);
       indices2.insert(IndexCombination2(d0,ind));
-    };
+    }
   }
 
 private:
+
+  struct {
+    args::ValueFlag<double> U;
+    args::ValueFlag<double> mu;
+    args::ValueFlag<double> t;
+    args::ValueFlag<double> tp;
+    args::ValueFlag<int> x;
+    args::ValueFlag<int> y;
+  } args_options;
+
   int size_x;
   int size_y;
-  RealType _mu;
-  RealType _t;
-  RealType _tp;
   std::vector<std::string> names;
-  size_t SiteIndexF(size_t x, size_t y) {
-    return y*size_x + x;
-  }
-};
 
+  size_t SiteIndexF(size_t x, size_t y) { return y * size_x + x; }
+};
 
 #endif //POMEROL_HUBBARD2D_MODEL_H
