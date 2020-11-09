@@ -8,7 +8,7 @@ add_gftools()
 
 message(STATUS "Building executables")
 if(NOT progs_list)
-    set(progs_list default_progs)
+    set(progs_list ${default_progs})
 endif()
 
 foreach(model ${progs_list})
