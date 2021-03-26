@@ -17,20 +17,21 @@ namespace Pomerol{
 
 /* This class stores all matrix elements of a Hamiltonian in the index space. All terms have the ordering,
  * defined at the TERM_DEFAULT_SEQUENCE, which is by default taken as \f$ c^{\dagger} c c^{\dagger} c ... \f$. */
-class IndexHamiltonian : public Operator
+template<bool Complex = false>
+class IndexHamiltonian : public Operator<Complex>
 {
 private:
     /** A pointer to the Lattice object. */
-    const Lattice *L;
+    const Lattice<Complex> *L;
     /** A link to the IndexClassification object. */
-    const IndexClassification &IndexInfo;
+    const IndexClassification<Complex> &IndexInfo;
     /** A storage of Terms. Realized as a map of the order of the Term (number of operators) to the list of Terms. */
     //std::map <unsigned int, std::list<OpTerm*> > mapTerms;
 public:
     /** Generates all Terms. */
     void prepare();
     /** Constructor. */
-    IndexHamiltonian(const Lattice *L, const IndexClassification &Info);
+    IndexHamiltonian(const Lattice<Complex> *L, const IndexClassification<Complex> &Info);
     /** Gets all Terms of desired order. */
     //const std::list<OpTerm*> getTermsByOrder(unsigned int N) const;
     /** Print all Operator::Term s */
@@ -46,6 +47,9 @@ inline std::vector<bool>& TERM_DEFAULT_SEQUENCE(unsigned int N)
     for (unsigned int i=0; i<N; ++i) out[i]=(i+1)%2;
     return out;
 }
+
+extern template class IndexHamiltonian<false>;
+extern template class IndexHamiltonian<true>;
 
 }; // end of namespace Pomerol
 

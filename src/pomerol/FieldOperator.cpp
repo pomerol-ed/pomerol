@@ -3,58 +3,76 @@
 #include "mpi_dispatcher/mpi_skel.hpp"
 
 namespace Pomerol{
-FieldOperator::FieldOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index) :
+
+template<bool Complex>
+FieldOperator<Complex>::FieldOperator(const IndexClassification<Complex> &IndexInfo,
+                                      const StatesClassification<Complex> &S,
+                                      const Hamiltonian<Complex> &H,
+                                      ParticleIndex Index) :
     ComputableObject(), IndexInfo(IndexInfo), S(S), H(H), Index(Index)
 {}
 
-CreationOperator::CreationOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index) :
-    FieldOperator(IndexInfo,S,H,Index)
+template<bool Complex>
+CreationOperator<Complex>::CreationOperator(const IndexClassification<Complex> &IndexInfo,
+                                            const StatesClassification<Complex> &S,
+                                            const Hamiltonian<Complex> &H, ParticleIndex Index) :
+    FieldOperator<Complex>(IndexInfo,S,H,Index)
 {
-    O = new Pomerol::OperatorPresets::Cdag(Index);
+    Base::O = new Pomerol::OperatorPresets::Cdag<Complex>(Index);
 }
 
-AnnihilationOperator::AnnihilationOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index) :
-    FieldOperator(IndexInfo,S,H,Index)
+template<bool Complex>
+AnnihilationOperator<Complex>::AnnihilationOperator(const IndexClassification<Complex> &IndexInfo,
+                                                    const StatesClassification<Complex> &S,
+                                                    const Hamiltonian<Complex> &H, ParticleIndex Index) :
+    FieldOperator<Complex>(IndexInfo,S,H,Index)
 {
-    O = new Pomerol::OperatorPresets::C(Index);
+    Base::O = new Pomerol::OperatorPresets::C<Complex>(Index);
 }
 
-FieldOperator::BlocksBimap const& FieldOperator::getBlockMapping() const
+template<bool Complex>
+auto FieldOperator<Complex>::getBlockMapping() const -> FieldOperator<Complex>::BlocksBimap const&
 {
     if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
     return LeftRightBlocks;
 }
 
-FieldOperatorPart& FieldOperator::getPartFromRightIndex(BlockNumber in) const
+template<bool Complex>
+auto FieldOperator<Complex>::getPartFromRightIndex(BlockNumber in) const -> PartT&
 {
     if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
     return *parts[mapPartsFromRight.find(in)->second];
 }
 
-FieldOperatorPart& FieldOperator::getPartFromRightIndex(const QuantumNumbers& in) const
+template<bool Complex>
+auto FieldOperator<Complex>::getPartFromRightIndex(const QuantumNumbers<Complex>& in) const -> PartT&
 {
     if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
     return *parts[mapPartsFromRight.find(S.getBlockNumber(in))->second];
 }
 
-FieldOperatorPart& FieldOperator::getPartFromLeftIndex(BlockNumber in) const
+template<bool Complex>
+auto FieldOperator<Complex>::getPartFromLeftIndex(BlockNumber in) const -> PartT&
 {
     if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
     return *parts[mapPartsFromLeft.find(in)->second];
 }
 
-FieldOperatorPart& FieldOperator::getPartFromLeftIndex(const QuantumNumbers& in) const
+template<bool Complex>
+auto FieldOperator<Complex>::getPartFromLeftIndex(const QuantumNumbers<Complex>& in) const -> PartT&
 {
     if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
     return *parts[mapPartsFromLeft.find(S.getBlockNumber(in))->second];
 }
 
-const std::vector<FieldOperatorPart*>& FieldOperator::getParts()
+template<bool Complex>
+auto FieldOperator<Complex>::getParts() -> const std::vector<PartT*>&
 {
     return parts;
 }
 
-void FieldOperator::compute(const MPI_Comm& comm)
+template<bool Complex>
+void FieldOperator<Complex>::compute(const MPI_Comm& comm)
 {
     if (Status < Prepared) throw (exStatusMismatch());
     if (Status >= Computed) return;
@@ -71,53 +89,67 @@ void FieldOperator::compute(const MPI_Comm& comm)
     Status = Computed;
 }
 
-ParticleIndex FieldOperator::getIndex(void) const
+template<bool Complex>
+ParticleIndex FieldOperator<Complex>::getIndex(void) const
 {
     return Index;
 }
 
-void CreationOperator::prepare(void)
+template<bool Complex>
+void CreationOperator<Complex>::prepare(void)
 {
-    if (Status >= Prepared) return;
-    size_t Size = parts.size();
-    for (BlockNumber RightIndex=0; RightIndex<S.NumberOfBlocks(); RightIndex++){
-        BlockNumber LeftIndex = mapsTo(RightIndex);
+    if (Base::Status >= ComputableObject::Prepared) return;
+    size_t Size = Base::parts.size();
+    for (BlockNumber RightIndex=0; RightIndex<Base::S.NumberOfBlocks(); RightIndex++){
+        BlockNumber LeftIndex = Base::mapsTo(RightIndex);
         //DEBUG(RightIndex << "->" << LeftIndex);
         if (LeftIndex.isCorrect()){
-            FieldOperatorPart *Part = new CreationOperatorPart(IndexInfo, S,
-                                    H.getPart(RightIndex),H.getPart(LeftIndex),Index);
-            parts.push_back(Part);
-            mapPartsFromRight[RightIndex]=Size;
-            mapPartsFromLeft[LeftIndex]=Size;
-            LeftRightBlocks.insert(BlockMapping(LeftIndex,RightIndex));
+            FieldOperatorPart<Complex> *Part = new CreationOperatorPart<Complex>(
+                Base::IndexInfo,
+                Base::S,
+                Base::H.getPart(RightIndex),
+                Base::H.getPart(LeftIndex),
+                Base::Index
+            );
+            Base::parts.push_back(Part);
+            Base::mapPartsFromRight[RightIndex]=Size;
+            Base::mapPartsFromLeft[LeftIndex]=Size;
+            Base::LeftRightBlocks.insert(BlockMapping(LeftIndex,RightIndex));
             Size++;
         }
     }
-    INFO("CreationOperator_" << Index <<": " << Size << " parts will be computed");
-    Status = Prepared;
+    INFO("CreationOperator_" << Base::Index <<": " << Size << " parts will be computed");
+    Base::Status = ComputableObject::Prepared;
 }
 
-void AnnihilationOperator::prepare()
+template<bool Complex>
+void AnnihilationOperator<Complex>::prepare()
 {
-    if (Status >= Prepared) return;
-    size_t Size = parts.size();
-    for (BlockNumber RightIndex=0;RightIndex<S.NumberOfBlocks();RightIndex++){
-        BlockNumber LeftIndex = mapsTo(RightIndex);
+    if (Base::Status >= ComputableObject::Prepared) return;
+    size_t Size = Base::parts.size();
+    for (BlockNumber RightIndex=0;RightIndex<Base::S.NumberOfBlocks();RightIndex++){
+        BlockNumber LeftIndex = Base::mapsTo(RightIndex);
         if (LeftIndex.isCorrect()){
-            FieldOperatorPart *Part = new AnnihilationOperatorPart(IndexInfo, S,
-                                    H.getPart(RightIndex),H.getPart(LeftIndex), Index);
-            parts.push_back(Part);
-            mapPartsFromRight[RightIndex]=Size;
-            mapPartsFromLeft[LeftIndex]=Size;
-            LeftRightBlocks.insert(BlockMapping(LeftIndex,RightIndex));
+            FieldOperatorPart<Complex> *Part = new AnnihilationOperatorPart<Complex>(
+                Base::IndexInfo,
+                Base::S,
+                Base::H.getPart(RightIndex),
+                Base::H.getPart(LeftIndex),
+                Base::Index
+            );
+            Base::parts.push_back(Part);
+            Base::mapPartsFromRight[RightIndex]=Size;
+            Base::mapPartsFromLeft[LeftIndex]=Size;
+            Base::LeftRightBlocks.insert(BlockMapping(LeftIndex,RightIndex));
             Size++;
         }
     }
-    INFO("AnnihilationOperator_" << Index <<": " << Size << " parts will be computed");
-    Status = Prepared;
+    INFO("AnnihilationOperator_" << Base::Index <<": " << Size << " parts will be computed");
+    Base::Status = ComputableObject::Prepared;
 }
 
-BlockNumber FieldOperator::getRightIndex(BlockNumber LeftIndex) const
+template<bool Complex>
+BlockNumber FieldOperator<Complex>::getRightIndex(BlockNumber LeftIndex) const
 {
     if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
 
@@ -125,7 +157,8 @@ BlockNumber FieldOperator::getRightIndex(BlockNumber LeftIndex) const
     return (it != LeftRightBlocks.left.end()) ? it->second : ERROR_BLOCK_NUMBER;
 }
 
-BlockNumber FieldOperator::getLeftIndex(BlockNumber RightIndex) const
+template<bool Complex>
+BlockNumber FieldOperator<Complex>::getLeftIndex(BlockNumber RightIndex) const
 {
     if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
 
@@ -133,10 +166,11 @@ BlockNumber FieldOperator::getLeftIndex(BlockNumber RightIndex) const
     return (it != LeftRightBlocks.right.end()) ? it->second : ERROR_BLOCK_NUMBER;
 }
 
-BlockNumber FieldOperator::mapsTo(BlockNumber RightIndex) const
+template<bool Complex>
+BlockNumber FieldOperator<Complex>::mapsTo(BlockNumber RightIndex) const
 {
     bool found=false;
-    std::map<FockState, MelemType> result;
+    std::map<FockState, MelemType<Complex>> result;
     const std::vector<FockState> &states=S.getFockStates(RightIndex);
     for (std::vector<FockState>::const_iterator state_it=states.begin(); state_it!=states.end() && !found; state_it++) {
         result = O->actRight(*state_it);
@@ -145,38 +179,64 @@ BlockNumber FieldOperator::mapsTo(BlockNumber RightIndex) const
     return (found)?S.getBlockNumber(result.begin()->first):ERROR_BLOCK_NUMBER;
 }
 
-QuantumNumbers FieldOperator::mapsTo(const QuantumNumbers& in) const
+template<bool Complex>
+QuantumNumbers<Complex> FieldOperator<Complex>::mapsTo(const QuantumNumbers<Complex>& in) const
 {
     BlockNumber out = this->mapsTo(S.getBlockNumber(in));
-    if ( out == ERROR_BLOCK_NUMBER) throw (QuantumNumbers::exWrongNumbers());
+    if ( out == ERROR_BLOCK_NUMBER) throw (typename QuantumNumbers<Complex>::exWrongNumbers());
     return S.getQuantumNumbers(out);
 }
 
-QuadraticOperator::QuadraticOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index1, ParticleIndex Index2) :
-        FieldOperator(IndexInfo,S,H,9999), Index1(Index1), Index2(Index2)
+template<bool Complex>
+QuadraticOperator<Complex>::QuadraticOperator(const IndexClassification<Complex> &IndexInfo,
+                                              const StatesClassification<Complex> &S,
+                                              const Hamiltonian<Complex> &H,
+                                              ParticleIndex Index1, ParticleIndex Index2) :
+        FieldOperator<Complex>(IndexInfo,S,H,9999), Index1(Index1), Index2(Index2)
         // Index=9999 dummy
 {
-    O = new Pomerol::OperatorPresets::N_offdiag(Index1, Index2);
+    Base::O = new Pomerol::OperatorPresets::N_offdiag<Complex>(Index1, Index2);
 }
 
-void QuadraticOperator::prepare(void)
+template<bool Complex>
+void QuadraticOperator<Complex>::prepare(void)
 {
-    if (Status >= Prepared) return;
-    size_t Size = parts.size();
-    for (BlockNumber RightIndex=0; RightIndex<S.NumberOfBlocks(); RightIndex++){
-        BlockNumber LeftIndex = mapsTo(RightIndex);
+    if (Base::Status >= ComputableObject::Prepared) return;
+    size_t Size = Base::parts.size();
+    for (BlockNumber RightIndex=0; RightIndex<Base::S.NumberOfBlocks(); RightIndex++){
+        BlockNumber LeftIndex = Base::mapsTo(RightIndex);
         if (LeftIndex.isCorrect()){
-            FieldOperatorPart *Part = new QuadraticOperatorPart(IndexInfo, S,
-                    H.getPart(RightIndex), H.getPart(LeftIndex), Index1, Index2);
-            parts.push_back(Part);
-            mapPartsFromRight[RightIndex]=Size;
-            mapPartsFromLeft[LeftIndex]=Size;
-            LeftRightBlocks.insert(BlockMapping(LeftIndex,RightIndex));
+            FieldOperatorPart<Complex> *Part = new QuadraticOperatorPart<Complex>(
+                Base::IndexInfo,
+                Base::S,
+                Base::H.getPart(RightIndex),
+                Base::H.getPart(LeftIndex),
+                Index1,
+                Index2
+            );
+            Base::parts.push_back(Part);
+            Base::mapPartsFromRight[RightIndex]=Size;
+            Base::mapPartsFromLeft[LeftIndex]=Size;
+            Base::LeftRightBlocks.insert(BlockMapping(LeftIndex,RightIndex));
             Size++;
         }
     }
     INFO("QuadraticOperator_" << Index1 << "_" << Index2 <<": " << Size << " parts will be computed");
-    Status = Prepared;
+    Base::Status = ComputableObject::Prepared;
 }
+
+// Explicit instantiations: Real case
+
+template class FieldOperator<false>;
+template class AnnihilationOperator<false>;
+template class CreationOperator<false>;
+template class QuadraticOperator<false>;
+
+// Explicit instantiations: Complex case
+
+template class FieldOperator<true>;
+template class AnnihilationOperator<true>;
+template class CreationOperator<true>;
+template class QuadraticOperator<true>;
 
 } // end of namespace Pomerol

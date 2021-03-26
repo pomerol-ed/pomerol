@@ -7,26 +7,30 @@ namespace OperatorPresets {
 // Operator N
 //
 
-N::N(ParticleIndex Nmodes):Operator(),Nmodes(Nmodes)
+template<bool Complex>
+N<Complex>::N(ParticleIndex Nmodes):Operator<Complex>(),Nmodes(Nmodes)
 {
     for (ParticleIndex index=0; index<Nmodes; ++index) {
-        (*this)+=n(index);
+        (*this)+=n<Complex>(index);
     };
 };
-    
-std::map<FockState,MelemType> N::actRight(const FockState &ket) const
+
+template<bool Complex>
+std::map<FockState,MelemType<Complex>> N<Complex>::actRight(const FockState &ket) const
 {
-    std::map<FockState,MelemType> output;
+    std::map<FockState,MelemType<Complex>> output;
     output[ket]=this->getMatrixElement(ket);
     return output;
 }
 
-MelemType N::getMatrixElement(const FockState &bra, const FockState &ket) const
+template<bool Complex>
+MelemType<Complex> N<Complex>::getMatrixElement(const FockState &bra, const FockState &ket) const
 {
     return (bra!=ket)?0:getMatrixElement(ket);
 }
 
-MelemType N::getMatrixElement(const FockState &ket) const
+template<bool Complex>
+MelemType<Complex> N<Complex>::getMatrixElement(const FockState &ket) const
 {
     return ket.count();
 }
@@ -35,34 +39,37 @@ MelemType N::getMatrixElement(const FockState &ket) const
 // Operator Sz
 //
 
-Sz::Sz(ParticleIndex Nmodes, const std::vector<ParticleIndex> & SpinUpIndices) 
-    : Operator(),Nmodes(Nmodes),SpinUpIndices(SpinUpIndices)
+template<bool Complex>
+Sz<Complex>::Sz(ParticleIndex Nmodes, const std::vector<ParticleIndex> & SpinUpIndices)
+    : Operator<Complex>(),Nmodes(Nmodes),SpinUpIndices(SpinUpIndices)
 {
     SpinDownIndices.reserve(Nmodes/2);
-    for (ParticleIndex i=0; i<Nmodes; i++) { 
+    for (ParticleIndex i=0; i<Nmodes; i++) {
         if (std::find(SpinUpIndices.begin(), SpinUpIndices.end(), i)==SpinUpIndices.end()) SpinDownIndices.push_back(i);
         };
-    if (SpinUpIndices.size() != SpinDownIndices.size() ) { throw ( Pomerol::Operator::exWrongLabel() ); ERROR("Sz operator requires even number of indices"); }; 
+    if (SpinUpIndices.size() != SpinDownIndices.size() ) { throw (typename Pomerol::Operator<Complex>::exWrongLabel() ); ERROR("Sz operator requires even number of indices"); };
     generateTerms();
 }
 
-
-Sz::Sz(const std::vector<ParticleIndex> & SpinUpIndices, const std::vector<ParticleIndex> & SpinDownIndices) 
-    : Operator(),Nmodes(SpinUpIndices.size() + SpinDownIndices.size()),SpinUpIndices(SpinUpIndices), SpinDownIndices(SpinDownIndices)
+template<bool Complex>
+Sz<Complex>::Sz(const std::vector<ParticleIndex> & SpinUpIndices, const std::vector<ParticleIndex> & SpinDownIndices)
+    : Operator<Complex>(),Nmodes(SpinUpIndices.size() + SpinDownIndices.size()),SpinUpIndices(SpinUpIndices), SpinDownIndices(SpinDownIndices)
 {
-    if (SpinUpIndices.size() != SpinDownIndices.size() ) { throw ( Pomerol::Operator::exWrongLabel() ); ERROR("Sz operator requires even number of indices"); }; 
+    if (SpinUpIndices.size() != SpinDownIndices.size() ) { throw (typename Pomerol::Operator<Complex>::exWrongLabel() ); ERROR("Sz operator requires even number of indices"); };
     generateTerms();
 }
 
-void Sz::generateTerms()
+template<bool Complex>
+void Sz<Complex>::generateTerms()
 {
     for (ParticleIndex i=0; i<SpinUpIndices.size(); ++i) {
-        (*this)+=n(SpinUpIndices[i])*0.5;
-        (*this)-=n(SpinDownIndices[i])*0.5;
+        (*this)+=n<Complex>(SpinUpIndices[i])*0.5;
+        (*this)-=n<Complex>(SpinDownIndices[i])*0.5;
     }
 }
 
-MelemType Sz::getMatrixElement(const FockState &ket) const
+template<bool Complex>
+MelemType<Complex> Sz<Complex>::getMatrixElement(const FockState &ket) const
 {
     int up_value=0, down_value=0;
     std::vector<ParticleIndex>::const_iterator it_up=SpinUpIndices.begin(), it_down=SpinDownIndices.begin();
@@ -71,17 +78,35 @@ MelemType Sz::getMatrixElement(const FockState &ket) const
     return 0.5*(up_value-down_value);
 }
 
-MelemType Sz::getMatrixElement(const FockState &bra, const FockState &ket) const
+template<bool Complex>
+MelemType<Complex> Sz<Complex>::getMatrixElement(const FockState &bra, const FockState &ket) const
 {
     return (bra!=ket)?0:getMatrixElement(ket);
 }
 
-std::map<FockState,MelemType> Sz::actRight(const FockState &ket) const
+template<bool Complex>
+std::map<FockState,MelemType<Complex>> Sz<Complex>::actRight(const FockState &ket) const
 {
-    std::map<FockState,MelemType> output;
+    std::map<FockState,MelemType<Complex>> output;
     output[ket]=this->getMatrixElement(ket);
     return output;
 }
+
+// Explicit instantiations: Real case
+
+template class N<false>;
+template class Sz<false>;
+template class Cdag<false>;
+template class C<false>;
+template class N_offdiag<false>;
+
+// Explicit instantiations: Complex case
+
+template class N<true>;
+template class Sz<true>;
+template class Cdag<true>;
+template class C<true>;
+template class N_offdiag<true>;
 
 } // end of namespace OperatorPresets
 } // end of namespace Pomerol

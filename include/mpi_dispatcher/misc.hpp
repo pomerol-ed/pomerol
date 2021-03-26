@@ -4,17 +4,19 @@
 
 #pragma once
 
+#include <type_traits>
 #include <mpi.h>
 
 #include "../pomerol/Misc.h"
 
-#ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
-#define MPI_MELEM_DATATYPE MPI_CXX_DOUBLE_COMPLEX
-#else
-#define MPI_MELEM_DATATYPE MPI_DOUBLE
-#endif
-
 namespace pMPI {
+
+template<typename T> MPI_Datatype mpi_datatype();
+
+template<> MPI_Datatype mpi_datatype<Pomerol::RealType>() { return MPI_DOUBLE; }
+template<> MPI_Datatype mpi_datatype<Pomerol::ComplexType>() {
+  return MPI_CXX_DOUBLE_COMPLEX;
+}
 
 // Size of communicator 'Comm'
 inline int size(const MPI_Comm &Comm) {

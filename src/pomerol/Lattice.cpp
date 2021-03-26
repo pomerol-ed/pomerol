@@ -6,15 +6,15 @@
 namespace Pomerol{
 
 //
-// Lattice::Site
+// Site
 //
 
-Lattice::Site::Site(const std::string& Label, unsigned short OrbitalSize, unsigned short SpinSize):Label(Label), OrbitalSize(OrbitalSize), SpinSize(SpinSize)
+Site::Site(const std::string& Label, unsigned short OrbitalSize, unsigned short SpinSize):Label(Label), OrbitalSize(OrbitalSize), SpinSize(SpinSize)
 {
 };
 
 
-std::ostream& operator<<(std::ostream& output, const Lattice::Site& out)
+std::ostream& operator<<(std::ostream& output, const Site& out)
 {
     output << "Site \"" << out.Label << "\", " << out.OrbitalSize << " orbital" << ((out.OrbitalSize>1)?"s":"") << ", " << out.SpinSize << " spin" << ((out.SpinSize>1)?"s":"") << ".";
 	return output;
@@ -24,7 +24,8 @@ std::ostream& operator<<(std::ostream& output, const Lattice::Site& out)
 // Lattice::Term
 //
 
-Lattice::Term::Term (unsigned int N):N(N)
+template<bool Complex>
+Lattice<Complex>::Term::Term (unsigned int N):N(N)
 {
     OperatorSequence.resize(N);
     SiteLabels.resize(N);
@@ -34,8 +35,13 @@ Lattice::Term::Term (unsigned int N):N(N)
     Value=0.0;
 };
 
-
-Lattice::Term::Term(unsigned int N, bool * OperatorSequence_, MelemType Value_, std::string * SiteLabels_, unsigned short * Orbitals_, unsigned short *Spins_):
+template<bool Complex>
+Lattice<Complex>::Term::Term(unsigned int N,
+                             bool * OperatorSequence_,
+                             MelemType<Complex> Value_,
+                             std::string * SiteLabels_,
+                             unsigned short * Orbitals_,
+                             unsigned short *Spins_):
 N(N)
 {
   OperatorSequence.assign( OperatorSequence_, OperatorSequence_+N );
@@ -45,12 +51,16 @@ N(N)
   Value=Value_;
 }
 
-Lattice::Term::Term (const Lattice::Term &in):N(in.N), OperatorSequence(in.OperatorSequence), SiteLabels(in.SiteLabels), Spins(in.Spins), Orbitals(in.Orbitals), Value(in.Value)
+template<bool Complex>
+Lattice<Complex>::Term::Term (const Lattice::Term &in):N(in.N), OperatorSequence(in.OperatorSequence), SiteLabels(in.SiteLabels), Spins(in.Spins), Orbitals(in.Orbitals), Value(in.Value)
 {
 };
-unsigned int Lattice::Term::getOrder() const { return N; };
 
-std::ostream& operator<< (std::ostream& output, const Lattice::Term& out)
+template<bool Complex>
+unsigned int Lattice<Complex>::Term::getOrder() const { return N; };
+
+template<bool Complex>
+std::ostream& operator<< (std::ostream& output, const typename Lattice<Complex>::Term& out)
 {
     output << out.Value << "*";
     for (unsigned int i=0; i<out.N; ++i) output << ((out.OperatorSequence[i])?"c^{+}":"c") << "_{" << out.SiteLabels[i] << "," << out.Orbitals[i] << "," << out.Spins[i] << "}" ;
@@ -61,12 +71,14 @@ std::ostream& operator<< (std::ostream& output, const Lattice::Term& out)
 // Lattice::TermStorage
 //
 
-Lattice::TermStorage::TermStorage()
+template<bool Complex>
+Lattice<Complex>::TermStorage::TermStorage()
 {
     MaxTermOrder=0;
 };
 
-int Lattice::TermStorage::addTerm(const Lattice::Term *T)
+template<bool Complex>
+int Lattice<Complex>::TermStorage::addTerm(const Lattice::Term *T)
 {
     unsigned int N = T->getOrder();
     Terms[N].push_back(new Term(*T));
@@ -74,14 +86,16 @@ int Lattice::TermStorage::addTerm(const Lattice::Term *T)
     return 0;
 };
 
-const unsigned int Lattice::TermStorage::getMaxTermOrder() const
+template<bool Complex>
+const unsigned int Lattice<Complex>::TermStorage::getMaxTermOrder() const
 {
     return MaxTermOrder;
 }
 
-const Lattice::TermList &Lattice::TermStorage::getTerms (unsigned int N) const
+template<bool Complex>
+const typename Lattice<Complex>::TermList &Lattice<Complex>::TermStorage::getTerms (unsigned int N) const
 {
-   std::map<unsigned int, Lattice::TermList>::const_iterator it1=Terms.find(N);
+   auto it1 = Terms.find(N);
     if (Terms.find(N)!=Terms.end())
         {
             return it1->second;
@@ -93,55 +107,64 @@ const Lattice::TermList &Lattice::TermStorage::getTerms (unsigned int N) const
 // Lattice
 //
 
-Lattice::Lattice():Terms(new TermStorage)
+template<bool Complex>
+Lattice<Complex>::Lattice():Terms(new TermStorage)
 {
 };
 
-Lattice::~Lattice(){
+template<bool Complex>
+Lattice<Complex>::~Lattice(){
 delete Terms;
 };
 
-Lattice::Lattice(const Lattice &l) : Sites(l.Sites) {
+template<bool Complex>
+Lattice<Complex>::Lattice(const Lattice &l) : Sites(l.Sites) {
  Terms = new TermStorage(*l.Terms);
 }
 
-
-const Lattice::SiteMap& Lattice::getSiteMap() const
+template<bool Complex>
+auto Lattice<Complex>::getSiteMap() const -> const SiteMap&
 {
     return Sites;
 }
 
-const Lattice::TermStorage& Lattice::getTermStorage() const
+template<bool Complex>
+auto Lattice<Complex>::getTermStorage() const -> const TermStorage&
 {
     return *Terms;
 }
 
-void Lattice::printTerms(unsigned int n)
+template<bool Complex>
+void Lattice<Complex>::printTerms(unsigned int n)
 {
 TermList Temp = Terms->getTerms(n);
-for (TermList::const_iterator it1=Temp.begin(); it1!=Temp.end(); ++it1) {
-    INFO(**it1 );
+    for (auto it1 = Temp.begin(); it1!=Temp.end(); ++it1) {
+        INFO(**it1 );
     };
 }
 
-void Lattice::printSites() const
+template<bool Complex>
+void Lattice<Complex>::printSites() const
 {
     for (SiteMap::const_iterator it1=Sites.begin(); it1!=Sites.end(); ++it1) {
             INFO(*(it1->second));
         };
 }
 
-void Lattice::addSite(Lattice::Site* S)
+template<bool Complex>
+void Lattice<Complex>::addSite(Site* S)
 {
     Sites[S->Label]= S ;
 }
 
-void Lattice::addSite(const std::string &Label, unsigned short orbitals, unsigned short spins)
+template<bool Complex>
+void Lattice<Complex>::addSite(const std::string &Label, unsigned short orbitals, unsigned short spins)
 {
-    addSite(new Lattice::Site(Label, orbitals, spins));
+    addSite(new Site(Label, orbitals, spins));
 }
 
-void Lattice::addTerm(const Lattice::Term *T)
+template<bool Complex>
+void Lattice<Complex>::addTerm(const Lattice::Term *T)
 {
     unsigned int N=T->getOrder();
     for (unsigned int i=0; i<N; ++i) { // some checks to avoid bad terms.
@@ -152,15 +175,20 @@ void Lattice::addTerm(const Lattice::Term *T)
     if ( std::abs(T->Value) ) Terms->addTerm(T);
 }
 
-const Lattice::Site& Lattice::getSite(const std::string& Label) const
+template<bool Complex>
+const Site& Lattice<Complex>::getSite(const std::string& Label) const
 {
     std::map<std::string, Site*>::const_iterator it1=Sites.find(Label);
     if (it1!=Sites.end()) throw (exWrongLabel());
     return *(it1->second);
 }
 
-const char* Lattice::exWrongLabel::what() const throw(){
+template<bool Complex>
+const char* Lattice<Complex>::exWrongLabel::what() const throw(){
     return "Wrong requested Label";
 };
+
+template class Lattice<false>;
+template class Lattice<true>;
 
 } // end of namespace Pomerol

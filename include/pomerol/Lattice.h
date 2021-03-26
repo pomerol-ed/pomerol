@@ -12,14 +12,31 @@
 
 namespace Pomerol{
 
+/** This structure holds the information about a given site of the lattice, namely it's label, number of spins and orbitals. */
+struct Site {
+public:
+    /** Site label. */
+    const std::string Label;
+    /** Amount of orbitals on a site. */
+    const unsigned short OrbitalSize;
+    /** Amount of spins on a site. */
+    const unsigned short SpinSize;
+    /** Full constructor
+     * \param[in] Label Site label
+     * \param[in] OrbitalSize Number of Orbitals for current site
+     * \param[in] SpinSize Number of spins for current site
+     * */
+    Site(const std::string& Label, unsigned short OrbitalSize, unsigned short SpinSize );
+    /** Make the object printable. */
+    friend std::ostream& operator<<(std::ostream& output, const Site& out);
+};
+
 /** This class stores the information about a lattice.
  */
-class Lattice
+template<bool Complex = false> class Lattice
 {
 friend class LatticePresets;
 public:
-    /** This holds the information about a given site of the lattice, namely it's label, number of spins and orbitals. */
-    struct Site;
     /** This structure holds the information, about a written term in a formula - it's matrix element, corresponding site labels, spins and orbitals. */
     struct Term;
     /** A typedef for a list of pointers to the terms. */
@@ -32,7 +49,7 @@ public:
     /** Add a Site to list of Sites
      * \param[in] S A site to add.
      */
-    void addSite(Lattice::Site* S);
+    void addSite(Site* S);
     /** Add a Site to list of Sites
      * \param[in] Label Label of Site.
      * \param[in] Orbitals Amount of orbitals on Site.
@@ -53,7 +70,7 @@ public:
     void printSites() const;
 
 protected:
-    /** A map between the particular Lattice::Site and it's label. */
+    /** A map between the particular Site and it's label. */
     SiteMap Sites;
     //Lattice::TermStorage Terms1;
     TermStorage* Terms;
@@ -65,7 +82,7 @@ public:
     /** Destructor. */
     ~Lattice();
     /** Returns a Lattice::Site for a given Label. */
-    const Lattice::Site& getSite(const std::string& Label) const;
+    const Site& getSite(const std::string& Label) const;
     /** Returns the map of Sites*/
     const Lattice::SiteMap& getSiteMap() const;
     /** Returns all stored terms */
@@ -77,30 +94,9 @@ public:
 };
 
 
-/** This structure holds the information about a given site of the lattice, namely it's label, number of spins and orbitals. */
-struct Lattice::Site{
-friend class Lattice;
-public:
-    /** Site label. */
-    const std::string Label;
-    /** Amount of orbitals on a site. */
-    const unsigned short OrbitalSize;
-    /** Amount of spins on a site. */
-    const unsigned short SpinSize;
-    /** Full constructor
-     * \param[in] Label Site label
-     * \param[in] OrbitalSize Number of Orbitals for current site
-     * \param[in] SpinSize Number of spins for current site
-     * */
-    Site(const std::string& Label, unsigned short OrbitalSize, unsigned short SpinSize );
-/** Make the object printable. */
-friend std::ostream& operator<<(std::ostream& output, const Site& out);
-};
-
-
 /** This structure holds the information, about a written term in a formula - it's matrix element, corresponding site labels, spins and orbitals.
  */
-struct Lattice::Term {
+template<bool Complex> struct Lattice<Complex>::Term {
 friend class Lattice;
 private:
     /** Total amount of operators in Lattice::Term. */
@@ -118,14 +114,20 @@ public:
     /** An array of orbitals on the sites, which are connected by this Lattice::Term. */
     std::vector<unsigned short> Orbitals;
     /** The matrix element of the Lattice::Term. */
-    MelemType Value;
+    MelemType<Complex> Value;
     /** This returns the order of Term. Also the inheritance from TermPointer is provided by this method. */
     unsigned int getOrder() const;
     /** Constructor */
     Term(unsigned int N);
 
     /** Full constructor */
-    Term(unsigned int N, bool OperatorSequence[ ], MelemType Value, std::string SiteLabels[ ], unsigned short Orbitals[ ], unsigned short Spins[ ]);
+    Term(unsigned int N,
+         bool OperatorSequence[ ],
+         MelemType<Complex> Value,
+         std::string SiteLabels[ ],
+         unsigned short Orbitals[ ],
+         unsigned short Spins[ ]
+    );
 
     /** Copy-constuctor
      * \param[in] in A Lattice::Term to copy.
@@ -137,7 +139,7 @@ friend std::ostream& operator<< (std::ostream& output, const Term& out);
 
 
 /** A storage for all the terms. Realized as a map between the order of the Lattice::Terms and the corresponding Lattice::TermList */
-class Lattice::TermStorage {
+template<bool Complex> class Lattice<Complex>::TermStorage {
 friend class Lattice;
 protected:
     /** A storage for the TermLists for the corresponding order */
@@ -158,6 +160,9 @@ public:
     /** Empty constructor */
     TermStorage();
 };
+
+extern template class Lattice<false>;
+extern template class Lattice<true>;
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_LATTICE_H

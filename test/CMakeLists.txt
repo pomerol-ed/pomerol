@@ -22,12 +22,10 @@ TwoParticleGFContainerTest
 Vertex4Test
 AndersonTest02
 AndersonTest03
+AndersonComplexTest
 EnsembleAverage1siteTest
 Susceptibility1siteTest
 )
-if(POMEROL_COMPLEX_MATRIX_ELEMENTS)
- list(APPEND tests AndersonComplexTest)
-endif(POMEROL_COMPLEX_MATRIX_ELEMENTS)
 
 foreach (test ${tests})
     set(test_src ${test}.cpp)

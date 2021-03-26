@@ -8,7 +8,8 @@ namespace Pomerol {
 //Symmetrizer::IndexPermutation
 //
 
-Symmetrizer::IndexPermutation::IndexPermutation(const DynamicIndexCombination &in):N(in.getNumberOfIndices())
+template<bool Complex>
+Symmetrizer<Complex>::IndexPermutation::IndexPermutation(const DynamicIndexCombination &in):N(in.getNumberOfIndices())
 {
     if ( checkConsistency(in) && checkIrreducibility(in) ) {
         Combinations.push_back(new DynamicIndexCombination(in));
@@ -18,7 +19,8 @@ Symmetrizer::IndexPermutation::IndexPermutation(const DynamicIndexCombination &i
     else throw ( DynamicIndexCombination::exWrongIndices()) ;
 }
 
-bool Symmetrizer::IndexPermutation::checkConsistency(const DynamicIndexCombination &in)
+template<bool Complex>
+bool Symmetrizer<Complex>::IndexPermutation::checkConsistency(const DynamicIndexCombination &in)
 {
 
     for (ParticleIndex i=0; i<N; ++i) {
@@ -35,7 +37,8 @@ bool Symmetrizer::IndexPermutation::checkConsistency(const DynamicIndexCombinati
     return true;
 }
 
-bool Symmetrizer::IndexPermutation::checkIrreducibility(const DynamicIndexCombination &in)
+template<bool Complex>
+bool Symmetrizer<Complex>::IndexPermutation::checkIrreducibility(const DynamicIndexCombination &in)
 {
     std::map<ParticleIndex, unsigned int> nontrivial_indices; // Here collected indices, which are changed
     std::vector<ParticleIndex> trivial_indices;
@@ -70,7 +73,8 @@ bool Symmetrizer::IndexPermutation::checkIrreducibility(const DynamicIndexCombin
     return true;
 }
 
-void Symmetrizer::IndexPermutation::calculateCycleLength()
+template<bool Complex>
+void Symmetrizer<Complex>::IndexPermutation::calculateCycleLength()
 {
     DynamicIndexCombination initial(**(Combinations.begin()));
     DynamicIndexCombination current(**(Combinations.begin()));
@@ -86,17 +90,20 @@ void Symmetrizer::IndexPermutation::calculateCycleLength()
         }
 }
 
-const DynamicIndexCombination& Symmetrizer::IndexPermutation::getIndices( unsigned int cycle_number ) const
+template<bool Complex>
+const DynamicIndexCombination& Symmetrizer<Complex>::IndexPermutation::getIndices( unsigned int cycle_number ) const
 {
     return *Combinations[cycle_number];
 }
 
-const unsigned int Symmetrizer::IndexPermutation::getCycleLength() const
+template<bool Complex>
+const unsigned int Symmetrizer<Complex>::IndexPermutation::getCycleLength() const
 {
     return CycleLength;
 }
 
-const char* Symmetrizer::IndexPermutation::exEqualIndices::what() const throw(){
+template<bool Complex>
+const char* Symmetrizer<Complex>::IndexPermutation::exEqualIndices::what() const throw(){
     return "Cannot have equal indices in the Symmetrizer index combination";
 };
 
@@ -104,11 +111,16 @@ const char* Symmetrizer::IndexPermutation::exEqualIndices::what() const throw(){
 // Symmetrizer::QuantumNumbers
 //
 
-Symmetrizer::QuantumNumbers::QuantumNumbers(int amount):amount(amount),numbers( std::vector<MelemType>(amount) ),NumbersHash(numbers_hash_generator(numbers))
+template<bool Complex>
+Symmetrizer<Complex>::QuantumNumbers::QuantumNumbers(int amount):
+  amount(amount),
+  numbers( std::vector<MelemType<Complex>>(amount)),
+  NumbersHash(numbers_hash_generator(numbers))
 {
 };
 
-bool Symmetrizer::QuantumNumbers::set ( int pos, MelemType val )
+template<bool Complex>
+bool Symmetrizer<Complex>::QuantumNumbers::set ( int pos, MelemType<Complex> val )
 {
     if (pos<amount) {
         numbers[pos] = val;
@@ -121,17 +133,20 @@ bool Symmetrizer::QuantumNumbers::set ( int pos, MelemType val )
     return true;
 }
 
-bool Symmetrizer::QuantumNumbers::operator< (const Symmetrizer::QuantumNumbers& rhs) const
+template<bool Complex>
+bool Symmetrizer<Complex>::QuantumNumbers::operator< (const Symmetrizer::QuantumNumbers& rhs) const
 {
     return (NumbersHash<rhs.NumbersHash);
 }
 
-bool Symmetrizer::QuantumNumbers::operator== (const Symmetrizer::QuantumNumbers& rhs) const
+template<bool Complex>
+bool Symmetrizer<Complex>::QuantumNumbers::operator== (const Symmetrizer::QuantumNumbers& rhs) const
 {
     return (NumbersHash==rhs.NumbersHash);
 }
 
-bool Symmetrizer::QuantumNumbers::operator!= (const Symmetrizer::QuantumNumbers& rhs) const
+template<bool Complex>
+bool Symmetrizer<Complex>::QuantumNumbers::operator!= (const Symmetrizer::QuantumNumbers& rhs) const
 {
     return (NumbersHash!=rhs.NumbersHash);
 }
@@ -140,7 +155,8 @@ bool Symmetrizer::QuantumNumbers::operator!= (const Symmetrizer::QuantumNumbers&
 // Symmetrizer
 //
 
-Symmetrizer::Symmetrizer(const IndexClassification &IndexInfo, const IndexHamiltonian &Storage):
+template<bool Complex>
+Symmetrizer<Complex>::Symmetrizer(const IndexClassification<Complex> &IndexInfo, const IndexHamiltonian<Complex> &Storage):
     ComputableObject(),
     IndexInfo(IndexInfo),
     Storage(Storage),
@@ -148,28 +164,31 @@ Symmetrizer::Symmetrizer(const IndexClassification &IndexInfo, const IndexHamilt
 {
 }
 
-const DynamicIndexCombination& Symmetrizer::generateTrivialCombination(ParticleIndex N)
+template<bool Complex>
+const DynamicIndexCombination& Symmetrizer<Complex>::generateTrivialCombination(ParticleIndex N)
 {
     static DynamicIndexCombination trivial(N);
     for (ParticleIndex i=0; i<N; ++i) trivial[i] = i;
     return trivial;
 }
 
-const std::vector<std::shared_ptr<Operator> >& Symmetrizer::getOperations() const
+template<bool Complex>
+const std::vector<std::shared_ptr<Operator<Complex>> >& Symmetrizer<Complex>::getOperations() const
 {
     return Operations;
 }
 
-bool Symmetrizer::checkSymmetry(const Operator &in)
+template<bool Complex>
+bool Symmetrizer<Complex>::checkSymmetry(const Operator<Complex> &in)
 {
-    std::shared_ptr<Operator> OP1 ( new Operator(in));
+    std::shared_ptr<Operator<Complex>> OP1 ( new Operator<Complex>(in));
     // Check that OP1 is an integrals of motion
     if (!Storage.commutes(*OP1)) return false;
 
     // Check that all Fock states are eigenstates of OP1
     // Otherwise, it's unsuitable for Hilbert space partitioning
     for(ParticleIndex i = 0; i < IndexSize; ++i) {
-        if (!OperatorPresets::n(i).commutes(*OP1)) return false;
+        if (!OperatorPresets::n<Complex>(i).commutes(*OP1)) return false;
     }
 
     Operations.push_back(OP1);
@@ -177,26 +196,28 @@ bool Symmetrizer::checkSymmetry(const Operator &in)
     return true;
 }
 
-void Symmetrizer::compute(const std::vector<Operator>& integrals_of_motion)
+template<bool Complex>
+void Symmetrizer<Complex>::compute(const std::vector<Operator<Complex>>& integrals_of_motion)
 {
     if (Status>=Computed) return;
     IndexSize = IndexInfo.getIndexSize();
 
     for(int i = 0; i < integrals_of_motion.size(); ++i) {
-        const Operator& in = integrals_of_motion[i];
+        const Operator<Complex>& in = integrals_of_motion[i];
         if (checkSymmetry(in)) INFO("[ H ," << in << " ]=0");
     }
 
     Status = Computed;
 }
 
-void Symmetrizer::compute(bool ignore_symmetries)
+template<bool Complex>
+void Symmetrizer<Complex>::compute(bool ignore_symmetries)
 {
     if (Status>=Computed) return;
     IndexSize = IndexInfo.getIndexSize();
     if (!ignore_symmetries) {
         // Check particle number conservation
-        Operator op_n = Pomerol::OperatorPresets::N(IndexSize);
+        Operator<Complex> op_n = Pomerol::OperatorPresets::N<Complex>(IndexSize);
         if (this->checkSymmetry(op_n)) INFO("[ H ," << op_n << " ]=0");
 
         // Check Sz conservation
@@ -209,7 +230,7 @@ void Symmetrizer::compute(bool ignore_symmetries)
                 unsigned short Spin = IndexInfo.getInfo(i).Spin;
                 if ( Spin == up ) SpinUpIndices.push_back(i);
             }
-            Operator op_sz = Pomerol::OperatorPresets::Sz(IndexSize, SpinUpIndices);
+            Operator<Complex> op_sz = Pomerol::OperatorPresets::Sz<Complex>(IndexSize, SpinUpIndices);
             if (this->checkSymmetry(op_sz)) INFO("[ H ," << op_sz << " ]=0");
         };
     };
@@ -217,12 +238,14 @@ void Symmetrizer::compute(bool ignore_symmetries)
     Status = Computed;
 }
 
-Symmetrizer::QuantumNumbers Symmetrizer::getQuantumNumbers() const
+template<bool Complex>
+typename Symmetrizer<Complex>::QuantumNumbers Symmetrizer<Complex>::getQuantumNumbers() const
 {
     return Symmetrizer::QuantumNumbers(NSymmetries);
 }
 
-std::ostream& operator<<(std::ostream& output, const Symmetrizer::QuantumNumbers& out)
+template<bool Complex>
+std::ostream& operator<<(std::ostream& output, const typename Symmetrizer<Complex>::QuantumNumbers& out)
 {
     output << "[";
     for (int i=0 ;i<out.amount-1; ++i) output << out.numbers[i] << ",";
@@ -232,4 +255,3 @@ std::ostream& operator<<(std::ostream& output, const Symmetrizer::QuantumNumbers
 }
 
 } // end of namespace Pomerol
-

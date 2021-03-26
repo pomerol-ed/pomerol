@@ -12,7 +12,11 @@
 
 namespace Pomerol{
 
-HamiltonianPart::HamiltonianPart(const IndexClassification& IndexInfo, const IndexHamiltonian &F, const StatesClassification &S, const BlockNumber& Block):
+template<bool Complex>
+HamiltonianPart<Complex>::HamiltonianPart(const IndexClassification<Complex>& IndexInfo,
+                                          const IndexHamiltonian<Complex> &F,
+                                          const StatesClassification<Complex> &S,
+                                          const BlockNumber& Block):
     ComputableObject(),
     IndexInfo(IndexInfo),
     F(F), S(S),
@@ -20,21 +24,22 @@ HamiltonianPart::HamiltonianPart(const IndexClassification& IndexInfo, const Ind
 {
 }
 
-void HamiltonianPart::prepare()
+template<bool Complex>
+void HamiltonianPart<Complex>::prepare()
 {
     size_t BlockSize = S.getBlockSize(Block);
 
     H.resize(BlockSize,BlockSize);
     H.setZero();
-    std::map<FockState,MelemType>::const_iterator melem_it;
+    typename std::map<FockState, MelemT>::const_iterator melem_it;
 
     for(InnerQuantumState right_st=0; right_st<BlockSize; right_st++)
     {
         FockState ket = S.getFockState(Block,right_st);
-        std::map<FockState,MelemType> mapStates = F.actRight(ket);
+        std::map<FockState, MelemT> mapStates = F.actRight(ket);
         for (melem_it=mapStates.begin(); melem_it!=mapStates.end(); melem_it++) {
             FockState bra = melem_it -> first;
-            MelemType melem = melem_it -> second;
+            MelemT melem = melem_it -> second;
             //DEBUG("<" << bra << "|" << melem << "|" << F << "|" << ket << ">");
             InnerQuantumState left_st = S.getInnerState(bra);
 //            if (left_st > right_st) { ERROR("!"); exit(1); };
@@ -48,87 +53,90 @@ void HamiltonianPart::prepare()
     Status = Prepared;
 }
 
-void HamiltonianPart::compute()		//method of diagonalization classificated part of Hamiltonian
+template<bool Complex>
+void HamiltonianPart<Complex>::compute()		//method of diagonalization classificated part of Hamiltonian
 {
     if (Status >= Computed) return;
     if (H.rows() == 1) {
-        #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
         assert (std::abs(H(0,0) - std::real(H(0,0))) < std::numeric_limits<RealType>::epsilon());
-        #endif
         Eigenvalues.resize(1);
-        #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
-	    Eigenvalues << std::real(H(0,0));
-        #else
-	    Eigenvalues << H(0,0);
-        #endif
-	    H(0,0) = 1;
+        Eigenvalues << real(H(0,0));
+        H(0,0) = 1;
         }
     else {
-	    Eigen::SelfAdjointEigenSolver<MatrixType> Solver(H,Eigen::ComputeEigenvectors);
+	    Eigen::SelfAdjointEigenSolver<MatrixT> Solver(H,Eigen::ComputeEigenvectors);
 	    H = Solver.eigenvectors();
 	    Eigenvalues = Solver.eigenvalues();	// eigenvectors are ready
     }
     Status = Computed;
 }
 
-
-MelemType HamiltonianPart::getMatrixElement(InnerQuantumState m, InnerQuantumState n) const	//return  H(m,n)
+template<bool Complex>
+auto HamiltonianPart<Complex>::getMatrixElement(InnerQuantumState m, InnerQuantumState n) const -> MelemT //return  H(m,n)
 {
     return H(m,n);
 }
 
-RealType HamiltonianPart::getEigenValue(InnerQuantumState state) const // return Eigenvalues(state)
+template<bool Complex>
+RealType HamiltonianPart<Complex>::getEigenValue(InnerQuantumState state) const // return Eigenvalues(state)
 {
     if ( Status < Computed ) throw (exStatusMismatch());
     return Eigenvalues(state);
 }
 
-const RealVectorType& HamiltonianPart::getEigenValues() const
+template<bool Complex>
+const RealVectorType& HamiltonianPart<Complex>::getEigenValues() const
 {
     if ( Status < Computed ) throw (exStatusMismatch());
     return Eigenvalues;
 }
 
-InnerQuantumState HamiltonianPart::getSize(void) const
+template<bool Complex>
+InnerQuantumState HamiltonianPart<Complex>::getSize(void) const
 {
     return S.getBlockSize(Block);
 }
 
-BlockNumber HamiltonianPart::getBlockNumber(void) const
+template<bool Complex>
+BlockNumber HamiltonianPart<Complex>::getBlockNumber(void) const
 {
     return S.getBlockNumber(QN);
 }
 
-QuantumNumbers HamiltonianPart::getQuantumNumbers(void) const
+template<bool Complex>
+QuantumNumbers<Complex> HamiltonianPart<Complex>::getQuantumNumbers(void) const
 {
     return QN;
 }
 
-
-
-void HamiltonianPart::print_to_screen() const
+template<bool Complex>
+void HamiltonianPart<Complex>::print_to_screen() const
 {
     INFO(H << std::endl);
 }
 
-const MatrixType& HamiltonianPart::getMatrix() const
+template<bool Complex>
+auto HamiltonianPart<Complex>::getMatrix() const -> const MatrixT&
 {
     return H;
 }
 
-VectorType HamiltonianPart::getEigenState(InnerQuantumState state) const
+template<bool Complex>
+VectorType<Complex> HamiltonianPart<Complex>::getEigenState(InnerQuantumState state) const
 {
     if ( Status < Computed ) throw (exStatusMismatch());
     return H.col(state);
 }
 
-RealType HamiltonianPart::getMinimumEigenvalue() const
+template<bool Complex>
+RealType HamiltonianPart<Complex>::getMinimumEigenvalue() const
 {
     if ( Status < Computed ) throw (exStatusMismatch());
     return Eigenvalues.minCoeff();
 }
 
-bool HamiltonianPart::reduce(RealType ActualCutoff)
+template<bool Complex>
+bool HamiltonianPart<Complex>::reduce(RealType ActualCutoff)
 {
     if ( Status < Computed ) throw (exStatusMismatch());
     InnerQuantumState counter=0;
@@ -144,7 +152,8 @@ bool HamiltonianPart::reduce(RealType ActualCutoff)
 }
 
 #ifdef ENABLE_SAVE_PLAINTEXT
-bool HamiltonianPart::savetxt(const boost::filesystem::path &path1)
+template<bool Complex>
+bool HamiltonianPart<Complex>::savetxt(const boost::filesystem::path &path1)
 {
     boost::filesystem::create_directory(path1);
     boost::filesystem::fstream out;
@@ -168,6 +177,9 @@ bool HamiltonianPart::savetxt(const boost::filesystem::path &path1)
     return true;
 }
 #endif
+
+template class HamiltonianPart<false>;
+template class HamiltonianPart<true>;
 
 } // end of namespace Pomerol
 

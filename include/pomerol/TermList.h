@@ -89,11 +89,11 @@ public:
             n_terms = data.size();
             std::vector<TermType> v(data.begin(), data.end());
             MPI_Bcast(&n_terms, 1, MPI_LONG, root, comm);
-            MPI_Bcast(v.data(), v.size(), TermType::mpi_datatype(), root, comm);
+            MPI_Bcast(v.data(), v.size(), pMPI::mpi_datatype<TermType>(), root, comm);
         } else { // Receive terms
             MPI_Bcast(&n_terms, 1, MPI_LONG, root, comm);
             std::vector<TermType> v(n_terms);
-            MPI_Bcast(v.data(), v.size(), TermType::mpi_datatype(), root, comm);
+            MPI_Bcast(v.data(), v.size(), pMPI::mpi_datatype<TermType>(), root, comm);
             data = std::set<TermType, Compare>(v.begin(), v.end(), comp);
         }
 

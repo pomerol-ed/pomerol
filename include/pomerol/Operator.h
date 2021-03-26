@@ -25,39 +25,33 @@
 
 namespace Pomerol {
 
-class Operator;
+template<bool Complex> class Operator;
 
 namespace OperatorPresets {
-    Operator c(ParticleIndex);
-    Operator c_dag(ParticleIndex);
-    Operator n(ParticleIndex);
-    Operator n_offdiag(ParticleIndex, ParticleIndex);
+    template<bool Complex> Operator<Complex> c(ParticleIndex);
+    template<bool Complex> Operator<Complex> c_dag(ParticleIndex);
+    template<bool Complex> Operator<Complex> n(ParticleIndex);
+    template<bool Complex> Operator<Complex> n_offdiag(ParticleIndex, ParticleIndex);
 };
 
-class Operator :
-    boost::addable<Operator,
-    boost::subtractable<Operator,
-    boost::multipliable<Operator,
-    boost::addable2<Operator, MelemType,
-    boost::subtractable2<Operator, MelemType,
-    boost::multipliable2<Operator, MelemType
+template<bool Complex> class Operator :
+    boost::addable<Operator<Complex>,
+    boost::subtractable<Operator<Complex>,
+    boost::multipliable<Operator<Complex>,
+    boost::addable2<Operator<Complex>, MelemType<Complex>,
+    boost::subtractable2<Operator<Complex>, MelemType<Complex>,
+    boost::multipliable2<Operator<Complex>, MelemType<Complex>
     > > > > > >
 {
 
 public:
 
+    using MelemT = MelemType<Complex>;
+
     Operator(){};
     Operator(Operator const& in):monomials(in.monomials){};
-    //Operator(Operator &&);
     Operator& operator=(Operator const & in){monomials = in.monomials; return *this;};
-/*
-#ifndef TRIQS_WORKAROUND_INTEL_COMPILER_BUGS
-    Operator& operator=(Operator && o);
-#else
-    Operator& operator=(Operator && o) noexcept
-        { std::swap(monomials,o.monomials); return *this; }
-#endif
-*/
+
     // Type of a fundamental operator
     enum op_type  {creation, annihilation };
     static const int create_annihilate = 0;  // to use std::get<create_annihilate>(...)
@@ -96,7 +90,7 @@ public:
     bool operator==(monomial_t const& m1, monomial_t const& m2);
 
     // Map of all monomials with coefficients
-    typedef std::map<monomial_t,MelemType> monomials_map_t;
+    typedef std::map<monomial_t, MelemT> monomials_map_t;
     // Print Operator itself
     friend std::ostream& operator<<(std::ostream& os, Operator const& op)
     {
@@ -114,13 +108,11 @@ public:
     }
 
     // Iterators (only const!)
-    typedef monomials_map_t::const_iterator const_iterator;
+    using const_iterator = typename monomials_map_t::const_iterator;
     const_iterator begin() const { return monomials.begin(); }
     const_iterator end() const { return monomials.end(); }
-    //const_iterator cbegin() const { return monomials.cbegin(); }
-    //const_iterator cend() const { return monomials.cend(); }
 
-    // Algebraic operations involving MelemType constants
+    // Algebraic operations involving MelemT constants
     Operator operator-() const
     {
         Operator tmp(*this);
@@ -129,10 +121,10 @@ public:
         return tmp;
     }
 
-    Operator& operator+=(const MelemType alpha)
+    Operator& operator+=(const MelemT alpha)
     {
         bool is_new_monomial;
-        monomials_map_t::iterator it;
+       typename  monomials_map_t::iterator it;
         std::tie(it,is_new_monomial) = monomials.insert(std::make_pair(monomial_t(0),alpha));
         if(!is_new_monomial){
             it->second += alpha;
@@ -141,10 +133,10 @@ public:
         return *this;
     }
 
-    Operator& operator-=(const MelemType alpha)
+    Operator& operator-=(const MelemT alpha)
     {
         bool is_new_monomial;
-        monomials_map_t::iterator it;
+        typename monomials_map_t::iterator it;
         std::tie(it,is_new_monomial) = monomials.insert(std::make_pair(monomial_t(0),-alpha));
         if(!is_new_monomial){
             it->second -= alpha;
@@ -154,12 +146,12 @@ public:
     }
 
     friend
-    Operator operator-(const MelemType alpha, Operator const& op)
+    Operator operator-(const MelemT alpha, Operator const& op)
     {
         return -op + alpha;
     }
 
-    Operator& operator*= (const MelemType alpha)
+    Operator& operator*= (const MelemT alpha)
     {
         if(std::abs(alpha) < 100*std::numeric_limits<RealType>::epsilon()){
             monomials.clear();
@@ -173,7 +165,7 @@ public:
     Operator& operator+=(Operator const& op)
     {
         bool is_new_monomial;
-        monomials_map_t::iterator it;
+        typename monomials_map_t::iterator it;
         for(auto const& m : op.monomials) {
             std::tie(it,is_new_monomial) = monomials.insert(m);
             if(!is_new_monomial){
@@ -187,7 +179,7 @@ public:
     Operator& operator-=(Operator const& op)
     {
         bool is_new_monomial;
-        monomials_map_t::iterator it;
+        typename monomials_map_t::iterator it;
         for(auto const& m : op.monomials) {
             std::tie(it,is_new_monomial) = monomials.insert(std::make_pair(m.first,-m.second));
             if(!is_new_monomial){
@@ -223,17 +215,19 @@ public:
      * \param[in] ket A state to the right of the operator.
      * \param[out] Resulting matrix element.
      */
-    virtual MelemType getMatrixElement(const FockState &bra, const FockState &ket) const;
+    virtual MelemT getMatrixElement(const FockState &bra, const FockState &ket) const;
 
     /** Returns the matrix element of an operator between two states represented by a linear combination of FockState's. */
-    virtual MelemType getMatrixElement( const VectorType & bra, const VectorType &ket, const std::vector<FockState> &states) const;
+    virtual MelemT getMatrixElement(const VectorType<Complex> &bra,
+                                    const VectorType<Complex> &ket,
+                                    const std::vector<FockState> &states) const;
 
     /** Returns a result of acting of an operator on a state to the right of the operator.
      * \param[in] ket A state to act on.
      * \param[out] A map of states and corresponding matrix elements, which are the result of an action.
      */
-    static std::tuple<FockState,MelemType> actRight(const monomial_t &in, const FockState &ket);
-    virtual std::map<FockState, MelemType> actRight(const FockState &ket) const;
+    static std::tuple<FockState, MelemT> actRight(const monomial_t &in, const FockState &ket);
+    virtual std::map<FockState, MelemT> actRight(const FockState &ket) const;
 
     /** Returns an operator that is a commutator of the current operator and another one
      * \param[in] rhs An operator to calculate a commutator with.
@@ -269,7 +263,7 @@ protected:
     monomials_map_t monomials;
 
     // Normalize a monomial and insert into a map
-    static void normalize_and_insert(monomial_t & m, MelemType coeff, monomials_map_t & target)
+    static void normalize_and_insert(monomial_t & m, MelemT coeff, monomials_map_t & target)
     {
         // The normalization is done by employing a simple bubble sort algorithms.
         // Apart from sorting elements this function keeps track of the sign and
@@ -307,7 +301,7 @@ protected:
 
         // Insert the result
         bool is_new_monomial;
-        monomials_map_t::iterator it;
+        typename monomials_map_t::iterator it;
         std::tie(it,is_new_monomial) = target.insert(std::make_pair(m, coeff));
         if(!is_new_monomial){
             it->second += coeff;
@@ -317,7 +311,7 @@ protected:
 
     // Erase a monomial with a close-to-zero coefficient.
     static void erase_zero_monomial(monomials_map_t & m,
-                                    monomials_map_t::iterator & it)
+                                    typename monomials_map_t::iterator & it)
     {
         if(std::abs(it->second) < 100*std::numeric_limits<RealType>::epsilon())
             m.erase(it);
@@ -332,32 +326,40 @@ protected:
 
 };
 
+extern template class Operator<false>;
+extern template class Operator<true>;
+
 // Free functions to make creation/annihilation operators
 namespace OperatorPresets {
-inline Operator c(ParticleIndex index) {
-    typedef Operator c_t;
+
+template<bool Complex = false>
+inline Operator<Complex> c(ParticleIndex index) {
+    typedef Operator<Complex> c_t;
 
     c_t tmp;
-    c_t::monomial_t m; m.push_back(std::make_tuple(c_t::annihilation, index));
+    typename c_t::monomial_t m;
+    m.push_back(std::make_tuple(c_t::annihilation, index));
     tmp.monomials.insert(std::make_pair(m,1.0));
     return tmp;
 }
 
-inline Operator c_dag(ParticleIndex index) {
-    typedef Operator c_dag_t;
+template<bool Complex = false>
+inline Operator<Complex> c_dag(ParticleIndex index) {
+    typedef Operator<Complex> c_dag_t;
 
     c_dag_t tmp;
-    c_dag_t::monomial_t m;
+    typename c_dag_t::monomial_t m;
     m.push_back(std::make_tuple(c_dag_t::creation, index));
     tmp.monomials.insert(std::make_pair(m,1.0));
     return tmp;
 }
 
-inline Operator n(ParticleIndex index) {
-    typedef Operator n_t;
+template<bool Complex = false>
+inline Operator<Complex> n(ParticleIndex index) {
+    typedef Operator<Complex> n_t;
 
     n_t tmp;
-    n_t::monomial_t m;
+    typename n_t::monomial_t m;
     m.push_back(std::make_tuple(n_t::creation, index));
     m.push_back(std::make_tuple(n_t::annihilation, index));
     tmp.monomials.insert(std::make_pair(m,1.0));
@@ -365,17 +367,32 @@ inline Operator n(ParticleIndex index) {
     return tmp;
 }
 
-inline Operator n_offdiag(ParticleIndex index1, ParticleIndex index2) {
-    typedef Operator n_t;
+template<bool Complex = false>
+inline Operator<Complex> n_offdiag(ParticleIndex index1, ParticleIndex index2) {
+    typedef Operator<Complex> n_t;
 
     n_t tmp;
-    n_t::monomial_t m;
+    typename n_t::monomial_t m;
     m.push_back(std::make_tuple(n_t::creation, index1));
     m.push_back(std::make_tuple(n_t::annihilation, index2));
     tmp.monomials.insert(std::make_pair(m,1.0));
 
     return tmp;
 }
+
+// External templates: Real case
+
+extern template Operator<false> c<false>(ParticleIndex);
+extern template Operator<false> c_dag<false>(ParticleIndex);
+extern template Operator<false> n<false>(ParticleIndex);
+extern template Operator<false> n_offdiag<false>(ParticleIndex, ParticleIndex);
+
+// External templates: Complex case
+
+extern template Operator<true> c<true>(ParticleIndex);
+extern template Operator<true> c_dag<true>(ParticleIndex);
+extern template Operator<true> n<true>(ParticleIndex);
+extern template Operator<true> n_offdiag<true>(ParticleIndex, ParticleIndex);
 
 } // end of namespace Pomerol::OperatorPresets
 } // end of namespace Pomerol

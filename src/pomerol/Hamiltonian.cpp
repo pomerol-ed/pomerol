@@ -8,15 +8,20 @@
 
 namespace Pomerol{
 
-Hamiltonian::Hamiltonian(const IndexClassification &IndexInfo, const IndexHamiltonian& F, const StatesClassification &S):
+template<bool Complex>
+Hamiltonian<Complex>::Hamiltonian(const IndexClassification<Complex> &IndexInfo,
+                                  const IndexHamiltonian<Complex>& F,
+                                  const StatesClassification<Complex> &S):
     ComputableObject(), IndexInfo(IndexInfo), F(F), S(S)
 {}
 
-Hamiltonian::~Hamiltonian()
+template<bool Complex>
+Hamiltonian<Complex>::~Hamiltonian()
 {
 }
 
-void Hamiltonian::prepare(const MPI_Comm& comm)
+template<bool Complex>
+void Hamiltonian<Complex>::prepare(const MPI_Comm& comm)
 {
     if (Status >= Prepared) return;
     BlockNumber NumberOfBlocks = S.NumberOfBlocks();
@@ -27,23 +32,25 @@ void Hamiltonian::prepare(const MPI_Comm& comm)
 
     for (BlockNumber CurrentBlock = 0; CurrentBlock < NumberOfBlocks; CurrentBlock++)
     {
-	    parts[CurrentBlock].reset(new HamiltonianPart(IndexInfo,F, S, CurrentBlock));
+	    parts[CurrentBlock].reset(new PartT(IndexInfo,F, S, CurrentBlock));
     }
-    pMPI::mpi_skel<pMPI::PrepareWrap<HamiltonianPart> > skel;
+    pMPI::mpi_skel<pMPI::PrepareWrap<PartT> > skel;
     skel.parts.resize(parts.size());
-    for (size_t i=0; i<parts.size(); i++) { skel.parts[i] = pMPI::PrepareWrap<HamiltonianPart>(*parts[i]);};
+    for (size_t i=0; i<parts.size(); i++) {
+      skel.parts[i] = pMPI::PrepareWrap<PartT>(*parts[i]);
+    };
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm,false);
     MPI_Barrier(comm);
     for (size_t p = 0; p<parts.size(); p++) {
         if (rank == job_map[p]){
-            if (parts[p]->Status != HamiltonianPart::Prepared) {
+            if (parts[p]->Status != PartT::Prepared) {
                 ERROR ("Worker" << rank << " didn't calculate part" << p);
                 throw std::logic_error("Worker didn't calculate this part.");
             }
 
             MPI_Bcast(parts[p]->H.data(),
                       parts[p]->H.size(),
-                      MPI_MELEM_DATATYPE,
+                      pMPI::mpi_datatype<MelemType<Complex>>(),
                       rank,
                       comm
                      );
@@ -52,25 +59,26 @@ void Hamiltonian::prepare(const MPI_Comm& comm)
             parts[p]->H.resize(mat_rows, mat_rows);
             MPI_Bcast(parts[p]->H.data(),
                       mat_rows * mat_rows,
-                      MPI_MELEM_DATATYPE,
+                      pMPI::mpi_datatype<MelemType<Complex>>(),
                       job_map[p],
                       comm
                      );
-            parts[p]->Status = HamiltonianPart::Prepared;
+            parts[p]->Status = PartT::Prepared;
         }
     }
     Status = Prepared;
 }
 
-void Hamiltonian::compute(const MPI_Comm& comm)
+template<bool Complex>
+void Hamiltonian<Complex>::compute(const MPI_Comm& comm)
 {
     if (Status >= Computed) return;
 
     // Create a "skeleton" class with pointers to part that can call a compute method
-    pMPI::mpi_skel<pMPI::ComputeWrap<HamiltonianPart> > skel;
+    pMPI::mpi_skel<pMPI::ComputeWrap<PartT>> skel;
     skel.parts.resize(parts.size());
     for (size_t i = 0; i < parts.size(); i++) {
-      skel.parts[i] = pMPI::ComputeWrap<HamiltonianPart>(*parts[i],parts[i]->getSize());
+      skel.parts[i] = pMPI::ComputeWrap<PartT>(*parts[i],parts[i]->getSize());
     }
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true);
     int rank = pMPI::rank(comm);
@@ -79,13 +87,13 @@ void Hamiltonian::compute(const MPI_Comm& comm)
     MPI_Barrier(comm);
     for (size_t p = 0; p < parts.size(); p++) {
         if (rank == job_map[p]){
-            if (parts[p]->Status != HamiltonianPart::Computed) {
+            if (parts[p]->Status != PartT::Computed) {
                 ERROR ("Worker" << rank << " didn't calculate part" << p);
                 throw std::logic_error("Worker didn't calculate this part.");
             }
             MPI_Bcast(parts[p]->H.data(),
                       parts[p]->H.size(),
-                      MPI_MELEM_DATATYPE,
+                      pMPI::mpi_datatype<MelemType<Complex>>(),
                       rank,
                       comm
                     );
@@ -99,7 +107,7 @@ void Hamiltonian::compute(const MPI_Comm& comm)
             parts[p]->Eigenvalues.resize(parts[p]->H.rows());
             MPI_Bcast(parts[p]->H.data(),
                       parts[p]->H.size(),
-                      MPI_MELEM_DATATYPE,
+                      pMPI::mpi_datatype<MelemType<Complex>>(),
                       job_map[p],
                       comm);
             MPI_Bcast(parts[p]->Eigenvalues.data(),
@@ -108,7 +116,7 @@ void Hamiltonian::compute(const MPI_Comm& comm)
                       job_map[p],
                       comm
                      );
-            parts[p]->Status = HamiltonianPart::Computed;
+            parts[p]->Status = PartT::Computed;
         }
     }
 
@@ -116,7 +124,8 @@ void Hamiltonian::compute(const MPI_Comm& comm)
     Status = Computed;
 }
 
-void Hamiltonian::reduce(const RealType Cutoff)
+template<bool Complex>
+void Hamiltonian<Complex>::reduce(const RealType Cutoff)
 {
     std::cout << "Performing EV cutoff at " << Cutoff << " level" << std::endl;
     BlockNumber NumberOfBlocks = parts.size();
@@ -126,7 +135,8 @@ void Hamiltonian::reduce(const RealType Cutoff)
     }
 }
 
-void Hamiltonian::computeGroundEnergy()
+template<bool Complex>
+void Hamiltonian<Complex>::computeGroundEnergy()
 {
     RealVectorType LEV(size_t(S.NumberOfBlocks()));
     BlockNumber NumberOfBlocks = parts.size();
@@ -136,23 +146,27 @@ void Hamiltonian::computeGroundEnergy()
     GroundEnergy=LEV.minCoeff();
 }
 
-const HamiltonianPart& Hamiltonian::getPart(const QuantumNumbers &in) const
+template<bool Complex>
+auto Hamiltonian<Complex>::getPart(const QuantumNumbers<Complex> &in) const -> const PartT&
 {
     return *parts[S.getBlockNumber(in)];
 }
 
-const HamiltonianPart& Hamiltonian::getPart(BlockNumber in) const
+template<bool Complex>
+auto Hamiltonian<Complex>::getPart(BlockNumber in) const -> const PartT&
 {
     return *parts[in];
 }
 
-RealType Hamiltonian::getEigenValue(QuantumState state) const
+template<bool Complex>
+RealType Hamiltonian<Complex>::getEigenValue(QuantumState state) const
 {
     InnerQuantumState InnerState = S.getInnerState(state);
     return getPart(S.getBlockNumber(state)).getEigenValue(InnerState);
 }
 
-RealVectorType Hamiltonian::getEigenValues() const
+template<bool Complex>
+RealVectorType Hamiltonian<Complex>::getEigenValues() const
 {
     RealVectorType out(S.getNumberOfStates());
     size_t i=0;
@@ -160,18 +174,19 @@ RealVectorType Hamiltonian::getEigenValues() const
         const RealVectorType& tmp = parts[CurrentBlock]->getEigenValues();
         std::copy(tmp.data(), tmp.data() + tmp.size(), out.data()+i);
         i+=tmp.size();
-        }
+    }
     return out;
 }
 
-
-RealType Hamiltonian::getGroundEnergy() const
+template<bool Complex>
+RealType Hamiltonian<Complex>::getGroundEnergy() const
 {
     return GroundEnergy;
 }
 
 #ifdef ENABLE_SAVE_PLAINTEXT
-bool Hamiltonian::savetxt(const boost::filesystem::path &path)
+template<bool Complex>
+bool Hamiltonian<Complex>::savetxt(const boost::filesystem::path &path)
 {
     BlockNumber NumberOfBlocks = parts.size();
     boost::filesystem::create_directory(path);
@@ -184,5 +199,8 @@ bool Hamiltonian::savetxt(const boost::filesystem::path &path)
     return true;
 }
 #endif
+
+template class Hamiltonian<false>;
+template class Hamiltonian<true>;
 
 } // end of namespace Pomerol

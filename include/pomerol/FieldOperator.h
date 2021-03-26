@@ -26,6 +26,7 @@ typedef std::pair<BlockNumber,BlockNumber> BlockMapping;
 
 /** This class is a parent class for creation/annihilation operators which act
  * on all blocks of quantum states */
+template<bool Complex = false>
 class FieldOperator : public ComputableObject
 {
 public:
@@ -36,20 +37,22 @@ public:
     > BlocksBimap;
     typedef BlocksBimap::value_type BlockMapping;
 
+    using PartT = FieldOperatorPart<Complex>;
+
 protected:
     /** A reference to a IndexClassification object */
-    const IndexClassification &IndexInfo;
+    const IndexClassification<Complex> &IndexInfo;
     /** A reference to a StatesClassification object */
-    const StatesClassification &S;
+    const StatesClassification<Complex> &S;
     /** A reference to a Hamiltonian object */
-    const Hamiltonian &H;
+    const Hamiltonian<Complex> &H;
     /** A reference an Operator object (OperatorPresets::C or Cdag). */
-    const Operator *O;
+    const Operator<Complex> *O;
 
     /** An index of the operator */
     ParticleIndex Index;
     /** A vector of parts */
-    std::vector<FieldOperatorPart*> parts;
+    std::vector<PartT*> parts;
     /** A map between non-vanishing parts (internal numbering) and their R.H.S. BlockNumbers  */
     std::map<size_t,BlockNumber> mapPartsFromRight;
     /** A map between non-vanishing parts (internal numbering) and their L.H.S. BlockNumbers  */
@@ -67,7 +70,7 @@ protected:
      * If no QuantumNumbers found throws an exception.
      * \param[in] RightIndex The BlockNumber of states on right hand side of the FieldOperator.
      */
-    virtual QuantumNumbers mapsTo(const QuantumNumbers& in) const;
+    virtual QuantumNumbers<Complex> mapsTo(const QuantumNumbers<Complex>& in) const;
 
 public:
     /** Constructor
@@ -76,16 +79,19 @@ public:
      * \param[in] H A reference to a Hamiltonian object
      * \param[in] Index An index of an operator
      */
-    FieldOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index);
+    FieldOperator(const IndexClassification<Complex> &IndexInfo,
+                  const StatesClassification<Complex> &S,
+                  const Hamiltonian<Complex> &H,
+                  ParticleIndex Index);
 
     /** Returns a FieldOperatorPart based on its left BlockNumber */
-    FieldOperatorPart& getPartFromLeftIndex(BlockNumber in) const;
+    PartT& getPartFromLeftIndex(BlockNumber in) const;
     /** Returns a FieldOperatorPart based on its left QuantumNumbers */
-    FieldOperatorPart& getPartFromLeftIndex(const QuantumNumbers& in) const;
+    PartT& getPartFromLeftIndex(const QuantumNumbers<Complex>& in) const;
     /** Returns a FieldOperatorPart based on its right BlockNumber */
-    FieldOperatorPart& getPartFromRightIndex(BlockNumber out) const;
+    PartT& getPartFromRightIndex(BlockNumber out) const;
     /** Returns a FieldOperatorPart based on its right QuantumNumbers */
-    FieldOperatorPart& getPartFromRightIndex(const QuantumNumbers& out) const;
+    PartT& getPartFromRightIndex(const QuantumNumbers<Complex>& out) const;
     /** Returns a left BlockNumber for a given right BlockNumber */
     BlockNumber getLeftIndex(BlockNumber RightIndex) const;
     /** Returns a right BlockNumber for a given left BlockNumber */
@@ -94,7 +100,7 @@ public:
     BlocksBimap const& getBlockMapping() const;
 
     /** Returns a vector of all underlying parts. */
-    const std::vector<FieldOperatorPart*>& getParts();
+    const std::vector<PartT*>& getParts();
 
     /** Returns acting ParticleIndex of current operator */
     ParticleIndex getIndex(void) const;
@@ -105,20 +111,24 @@ public:
 };
 
 /** A creation operator in the eigenspace of a Hamiltonian */
-class CreationOperator;
+template<bool Complex> class CreationOperator;
 /** An annihilation operator in the eigenspace of a Hamiltonian */
-class AnnihilationOperator;
+template<bool Complex> class AnnihilationOperator;
 /** A quadratic operator, c_1^+ c_2, in the eigenspace of a Hamiltonian */
-class QuadraticOperator;
+template<bool Complex> class QuadraticOperator;
 
-class CreationOperator : public FieldOperator
+template<bool Complex = false>
+class CreationOperator : public FieldOperator<Complex>
 {
-    friend class AnnihilationOperator;
-    friend class FieldOperatorContainer;
-    friend class QuadraticOperator;
+    friend class AnnihilationOperator<Complex>;
+    friend class FieldOperatorContainer<Complex>;
+    friend class QuadraticOperator<Complex>;
 public:
+
+    using Base = FieldOperator<Complex>;
+
     /* Returns hermitian conjugate of current operator */
-    AnnihilationOperator& transpose(void);
+    AnnihilationOperator<Complex>& transpose(void);
     void prepare();
 
     /** Constructor
@@ -127,17 +137,24 @@ public:
      * \param[in] H A reference to a Hamiltonian object
      * \param[in] Index An index of an operator
      */
-    CreationOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index);
+    CreationOperator(const IndexClassification<Complex> &IndexInfo,
+                     const StatesClassification<Complex> &S,
+                     const Hamiltonian<Complex> &H,
+                     ParticleIndex Index);
 };
 
-class AnnihilationOperator : public FieldOperator
+template<bool Complex = false>
+class AnnihilationOperator : public FieldOperator<Complex>
 {
-    friend class CreationOperator;
-    friend class FieldOperatorContainer;
-    friend class QuadraticOperator;
+    friend class CreationOperator<Complex>;
+    friend class FieldOperatorContainer<Complex>;
+    friend class QuadraticOperator<Complex>;
 public:
+
+    using Base = FieldOperator<Complex>;
+
     /* Returns hermitian conjugate of current operator */
-    CreationOperator& transpose(void);
+    CreationOperator<Complex>& transpose(void);
 
     void prepare();
 
@@ -147,16 +164,23 @@ public:
      * \param[in] H A reference to a Hamiltonian object
      * \param[in] Index An index of an operator
      */
-    AnnihilationOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index);
+    AnnihilationOperator(const IndexClassification<Complex> &IndexInfo,
+                         const StatesClassification<Complex> &S,
+                         const Hamiltonian<Complex> &H,
+                         ParticleIndex Index);
 };
 
-class QuadraticOperator : public FieldOperator
+template<bool Complex = false>
+class QuadraticOperator : public FieldOperator<Complex>
 {
 protected:
     /** Indices of the operator. Used instead of FieldOperator::Index */
     ParticleIndex Index1, Index2;
 
 public:
+
+    using Base = FieldOperator<Complex>;
+
     void prepare();
 
     /** Constructor
@@ -166,8 +190,25 @@ public:
      * \param[in] Index1 An index of a creation operator
      * \param[in] Index2 An index of an annihilation operator
      */
-    QuadraticOperator(const IndexClassification &IndexInfo, const StatesClassification &S, const Hamiltonian &H, ParticleIndex Index1, ParticleIndex Index2);
+    QuadraticOperator(const IndexClassification<Complex> &IndexInfo,
+                      const StatesClassification<Complex> &S,
+                      const Hamiltonian<Complex> &H,
+                      ParticleIndex Index1, ParticleIndex Index2);
 };
+
+// External templates: Real case
+
+extern template class FieldOperator<false>;
+extern template class AnnihilationOperator<false>;
+extern template class CreationOperator<false>;
+extern template class QuadraticOperator<false>;
+
+// External templates: Complex case
+
+extern template class FieldOperator<true>;
+extern template class AnnihilationOperator<true>;
+extern template class CreationOperator<true>;
+extern template class QuadraticOperator<true>;
 
 } // end of namespace Pomerol
 #endif // endif :: #ifdef __INCLUDE_FIELDOPERATOR_H

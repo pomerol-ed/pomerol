@@ -11,29 +11,31 @@ bool BlockNumber::operator==(const BlockNumber& rhs) const {return number==rhs.n
 // StatesClassification
 //
 
-StatesClassification::StatesClassification(const IndexClassification& IndexInfo, const Symmetrizer &Symm):
+template<bool Complex>
+StatesClassification<Complex>::StatesClassification(const IndexClassification<Complex>& IndexInfo, const Symmetrizer<Complex> &Symm):
     ComputableObject(),
     IndexInfo(IndexInfo),
     Symm(Symm)
 {
 }
 
-void StatesClassification::compute()
+template<bool Complex>
+void StatesClassification<Complex>::compute()
 {
     if (Status>=Computed) return;
     IndexSize = IndexInfo.getIndexSize();
     StateSize = 1<<IndexSize;
-    std::vector<std::shared_ptr<Operator> > sym_op = Symm.getOperations();
+    std::vector<std::shared_ptr<Operator<Complex>> > sym_op = Symm.getOperations();
     int NOperations=sym_op.size();
     BlockNumber block_index=0;
     for (QuantumState FockStateIndex=0; FockStateIndex<StateSize; ++FockStateIndex) {
         FockState current_state(IndexSize,FockStateIndex);
-        QuantumNumbers QNumbers(Symm.getQuantumNumbers());
+        QuantumNumbers<Complex> QNumbers(Symm.getQuantumNumbers());
         for (int n=0; n<NOperations; ++n) {
-            MelemType Value=sym_op[n]->getMatrixElement(current_state, current_state);
+            MelemType<Complex> Value=sym_op[n]->getMatrixElement(current_state, current_state);
             QNumbers.set(n,Value);
         }
-        std::map<QuantumNumbers, BlockNumber>::iterator map_pos=QuantumToBlock.find(QNumbers);
+        auto map_pos=QuantumToBlock.find(QNumbers);
         if (map_pos==QuantumToBlock.end()) {
 //            DEBUG("Adding " << current_state << " to block " << block_index << " with QuantumNumbers " << QNumbers << ".");
             QuantumToBlock[QNumbers]=block_index;
@@ -52,32 +54,37 @@ void StatesClassification::compute()
     Status = Computed;
 }
 
-BlockNumber StatesClassification::getBlockNumber(QuantumNumbers in) const
+template<bool Complex>
+BlockNumber StatesClassification<Complex>::getBlockNumber(QuantumNumbers<Complex> in) const
 {
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
     return (QuantumToBlock.count(in))?QuantumToBlock.find(in)->second:ERROR_BLOCK_NUMBER;
 }
 
-const unsigned long StatesClassification::getNumberOfStates() const
+template<bool Complex>
+const unsigned long StatesClassification<Complex>::getNumberOfStates() const
 {
     return StateSize;
 }
 
-BlockNumber StatesClassification::getBlockNumber(FockState in) const
+template<bool Complex>
+BlockNumber StatesClassification<Complex>::getBlockNumber(FockState in) const
 {
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
     if ( in.to_ulong() > StateSize ) { throw exWrongState(); };
     return StateBlockIndex[in.to_ulong()];
 }
 
-BlockNumber StatesClassification::getBlockNumber(QuantumState in) const
+template<bool Complex>
+BlockNumber StatesClassification<Complex>::getBlockNumber(QuantumState in) const
 {
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
     if ( in > StateSize ) { throw exWrongState(); };
     return StateBlockIndex[in];
 }
 
-const InnerQuantumState StatesClassification::getInnerState(FockState state) const
+template<bool Complex>
+const InnerQuantumState StatesClassification<Complex>::getInnerState(FockState state) const
 {
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
     if ( state.to_ulong() > StateSize ) { throw (exWrongState()); return StateSize; };
@@ -90,36 +97,41 @@ const InnerQuantumState StatesClassification::getInnerState(FockState state) con
     return StateSize;
 }
 
-const InnerQuantumState StatesClassification::getInnerState(QuantumState state) const
+template<bool Complex>
+const InnerQuantumState StatesClassification<Complex>::getInnerState(QuantumState state) const
 {
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
     if ( state > StateSize ) { throw (exWrongState()); return StateSize; };
     return this->getInnerState(FockState(IndexSize, state));
 }
 
-const std::vector<FockState>& StatesClassification::getFockStates( BlockNumber in ) const
+template<bool Complex>
+const std::vector<FockState>& StatesClassification<Complex>::getFockStates( BlockNumber in ) const
 {
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
     return StatesContainer[in];
 }
 
-const std::vector<FockState>& StatesClassification::getFockStates( QuantumNumbers in ) const
+template<bool Complex>
+const std::vector<FockState>& StatesClassification<Complex>::getFockStates( QuantumNumbers<Complex> in ) const
 {
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
-    std::map<QuantumNumbers,BlockNumber>::const_iterator it=QuantumToBlock.find(in);
+    auto it = QuantumToBlock.find(in);
     if (it != QuantumToBlock.end())
         return this->getFockStates(it->second);
     else
         throw (exWrongState());
 }
 
-const size_t StatesClassification::getBlockSize( BlockNumber in ) const
+template<bool Complex>
+const size_t StatesClassification<Complex>::getBlockSize( BlockNumber in ) const
 {
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
     return this->getFockStates(in).size();
 }
 
-const FockState StatesClassification::getFockState( BlockNumber in, InnerQuantumState m) const
+template<bool Complex>
+const FockState StatesClassification<Complex>::getFockState( BlockNumber in, InnerQuantumState m) const
 {
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
     if (int(in) < StatesContainer.size())
@@ -130,14 +142,15 @@ const FockState StatesClassification::getFockState( BlockNumber in, InnerQuantum
     return ERROR_FOCK_STATE;
 }
 
-const FockState StatesClassification::getFockState( QuantumNumbers in, InnerQuantumState m) const
+template<bool Complex>
+const FockState StatesClassification<Complex>::getFockState( QuantumNumbers<Complex> in, InnerQuantumState m) const
 {
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
     return getFockState(getBlockNumber(in),m);
 }
 
-
-Symmetrizer::QuantumNumbers StatesClassification::getQuantumNumbers(BlockNumber in) const
+template<bool Complex>
+QuantumNumbers<Complex> StatesClassification<Complex>::getQuantumNumbers(BlockNumber in) const
 {
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
     if (BlockToQuantum.count(in))
@@ -146,19 +159,25 @@ Symmetrizer::QuantumNumbers StatesClassification::getQuantumNumbers(BlockNumber 
     return BlockToQuantum.find(0)->second;
 }
 
-BlockNumber StatesClassification::NumberOfBlocks() const
+template<bool Complex>
+BlockNumber StatesClassification<Complex>::NumberOfBlocks() const
 {
     return StatesContainer.size();
 }
 
-Symmetrizer::QuantumNumbers StatesClassification::getQuantumNumbers(FockState in) const
+template<bool Complex>
+QuantumNumbers<Complex> StatesClassification<Complex>::getQuantumNumbers(FockState in) const
 {
     return BlockToQuantum.find(getBlockNumber(in))->second;
 }
 
-const char* StatesClassification::exWrongState::what() const throw(){
+template<bool Complex>
+const char* StatesClassification<Complex>::exWrongState::what() const throw(){
     return "Wrong state";
 };
+
+template class StatesClassification<false>;
+template class StatesClassification<true>;
 
 } // end of namespace Pomerol
 

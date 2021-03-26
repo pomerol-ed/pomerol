@@ -17,6 +17,7 @@
 #include<list>
 #include<map>
 #include<iomanip>
+#include<type_traits>
 
 #include<boost/dynamic_bitset.hpp>
 
@@ -31,8 +32,6 @@
 #ifdef POMEROL_USE_OPENMP
 #include <omp.h>
 #endif
-
-#define REALTYPE_DOUBLE
 
 namespace Pomerol{
 
@@ -52,11 +51,8 @@ typedef double RealType;
 typedef std::complex<double> ComplexType;
 
 /** Matrix element type. */
-#ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
-typedef ComplexType MelemType;
-#else
-typedef RealType MelemType;
-#endif
+template<bool Complex>
+using MelemType = typename std::conditional<Complex, ComplexType, RealType>::type;
 
 /** Index represents a combination of spin, orbital, and lattice indices **/
 typedef unsigned int ParticleIndex;
@@ -82,7 +78,11 @@ typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign
 typedef Eigen::Matrix<RealType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> RealMatrixType;
 typedef Eigen::Matrix<RealType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> LowerTriangularRealMatrixType;
 /** Default Matrix Type comes from MelemType. */
-typedef Eigen::Matrix<MelemType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> MatrixType;
+template<bool Complex>
+using MatrixType = Eigen::Matrix<MelemType<Complex>,
+                                 Eigen::Dynamic,
+                                 Eigen::Dynamic,
+                                 Eigen::AutoAlign|Eigen::RowMajor>;
 
 /** Dense complex vector. */
 typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,1,Eigen::AutoAlign> ComplexVectorType;
@@ -91,20 +91,33 @@ typedef Eigen::Matrix<RealType,Eigen::Dynamic,1,Eigen::AutoAlign> RealVectorType
 /** Dense vector of integers. */
 typedef Eigen::Matrix<int,Eigen::Dynamic,1,Eigen::AutoAlign> IntVectorType;
 /** Default vector type comes from MelemType. */
-typedef Eigen::Matrix<MelemType,Eigen::Dynamic,1,Eigen::AutoAlign> VectorType;
+template<bool Complex>
+using VectorType = Eigen::Matrix<MelemType<Complex>,
+                                 Eigen::Dynamic,
+                                 1,
+                                 Eigen::AutoAlign>;
 
 /** Sparse complex matrix */
-typedef Eigen::SparseMatrix<MelemType,Eigen::ColMajor> ColMajorMatrixType;
-typedef Eigen::SparseMatrix<MelemType,Eigen::RowMajor> RowMajorMatrixType;
-typedef Eigen::DynamicSparseMatrix<MelemType,Eigen::ColMajor> DynamicSparseMatrixType;
-//typedef Eigen::Triplet<RealType> RealTypeTriplet;
-//typedef Eigen::Triplet<ComplexType> ComplexTypeTriplet;
+template<bool Complex>
+using ColMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>,Eigen::ColMajor>;
+template<bool Complex>
+using RowMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>,Eigen::RowMajor>;
+template<bool Complex>
+using DynamicSparseMatrixType = Eigen::DynamicSparseMatrix<MelemType<Complex>,Eigen::ColMajor>;
 
 /** Possible spin projections are \b down and \b up */
 enum spin {down, up};
 
 /** A short name for imaginary unit. */
 static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
+
+/** Real part **/
+RealType real(RealType x) { return x; }
+RealType real(ComplexType x) { return std::real(x); }
+
+/** Complex conjugate */
+RealType conj(RealType x) { return x; }
+ComplexType conj(ComplexType x) { return std::conj(x); }
 
 /** Generalized 'square' function. */
 template<typename T> inline T sqr(T x) { return x*x; }

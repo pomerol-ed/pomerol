@@ -22,7 +22,6 @@
       * boost::program_options is then required.
       * Some of the binaries depend on the [gftools](https://github.com/aeantipov/gftools) library, which will be automatically downloaded in case it cannot
         be found by CMake (use `-Dgftools_DIR` to specify its installation path). gftools supports direct hdf5-saving through [ALPSCore](http://alpscore.org).
-    * add `-DPOMEROL_COMPLEX_MATRIX_ELEMENTS=ON` for allowing complex matrix elements in the Hamiltonian. Default = OFF.
     * add `-DPOMEROL_USE_OPENMP=ON` to enable OpenMP optimization for two-particle GF calculation. Default = ON.
     * add `-DPOMEROL_BUILD_STATIC=ON` to compile static instead of shared libraries.
   - ` make`

@@ -4,13 +4,24 @@ using std::stringstream;
 
 namespace Pomerol{
 
-FieldOperatorPart::FieldOperatorPart(
-        const IndexClassification &IndexInfo, const StatesClassification &S, const HamiltonianPart &HFrom,  const HamiltonianPart &HTo, ParticleIndex PIndex) :
+void prune_if_real(RowMajorMatrixType<true> &, RealType) {}
+void prune_if_real(RowMajorMatrixType<false> & a, RealType tol) {
+  a.prune(tol);
+}
+
+template<bool Complex>
+FieldOperatorPart<Complex>::FieldOperatorPart(
+        const IndexClassification<Complex> &IndexInfo,
+        const StatesClassification<Complex> &S,
+        const HamiltonianPart<Complex> &HFrom,
+        const HamiltonianPart<Complex> &HTo,
+        ParticleIndex PIndex) :
         ComputableObject(), IndexInfo(IndexInfo), S(S), HFrom(HFrom), HTo(HTo), PIndex(PIndex),
         MatrixElementTolerance(1e-8)
 {}
 
-void FieldOperatorPart::compute()
+template<bool Complex>
+void FieldOperatorPart<Complex>::compute()
 {
     if ( Status >= Computed ) return;
     BlockNumber to = HTo.getBlockNumber();
@@ -19,8 +30,8 @@ void FieldOperatorPart::compute()
     const std::vector<FockState>& toStates = S.getFockStates(to);
     const std::vector<FockState>& fromStates = S.getFockStates(from);
 
-    MatrixType RightMat(fromStates.size(), fromStates.size());
-    MatrixType LeftMat(toStates.size(), fromStates.size());
+    MatrixType<Complex> RightMat(fromStates.size(), fromStates.size());
+    MatrixType<Complex> LeftMat(toStates.size(), fromStates.size());
     RightMat.setZero();
     LeftMat.setZero();
 
@@ -32,23 +43,15 @@ void FieldOperatorPart::compute()
     for (std::vector<FockState>::const_iterator CurrentState = fromStates.begin();
                                                 CurrentState < fromStates.end(); CurrentState++) {
 	    FockState K=*CurrentState;
-        std::map<FockState, MelemType> result1 = O->actRight(K);
+        std::map<FockState, MelemType<Complex>> result1 = O->actRight(K);
         if (result1.size()) {
             FockState L=result1.begin()->first;
-            #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
-            int sign = int(std::real(result1.begin()->second));
-            #else
-            int sign = result1.begin()->second;
-            #endif
+            int sign = int(real(result1.begin()->second));
 	        if ( L!=ERROR_FOCK_STATE && std::abs(sign)>std::numeric_limits<RealType>::epsilon() ) {
 		        InnerQuantumState l=S.getInnerState(L), k=S.getInnerState(K);
 
                 for (InnerQuantumState n=0; n<toStates.size(); n++) {
-#ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
-                    LeftMat(n,k) = std::conj(HTo.getMatrixElement(l,n));
-#else
-                    LeftMat(n,k) = HTo.getMatrixElement(l,n);
-#endif
+                    LeftMat(n,k) = conj(HTo.getMatrixElement(l,n));
                 }
 
                 for (InnerQuantumState m=0; m<fromStates.size(); m++) {
@@ -68,85 +71,123 @@ void FieldOperatorPart::compute()
     elementsRowMajor = (LeftMat * RightMat).sparseView(MatrixElementTolerance);
 #endif
 
-    #ifndef POMEROL_COMPLEX_MATRIX_ELEMENTS
-    elementsRowMajor.prune(MatrixElementTolerance);
-    #endif
+    prune_if_real(elementsRowMajor, MatrixElementTolerance);
     elementsColMajor = elementsRowMajor;
     Status = Computed;
 }
 
-const ColMajorMatrixType& FieldOperatorPart::getColMajorValue(void) const
+template<bool Complex>
+const ColMajorMatrixType<Complex>& FieldOperatorPart<Complex>::getColMajorValue(void) const
 {
     return elementsColMajor;
 }
 
-const RowMajorMatrixType& FieldOperatorPart::getRowMajorValue(void) const
+template<bool Complex>
+const RowMajorMatrixType<Complex>& FieldOperatorPart<Complex>::getRowMajorValue(void) const
 {
     return elementsRowMajor;
 }
 
-void FieldOperatorPart::print_to_screen() const  //print to screen C and CX
+template<bool Complex>
+void FieldOperatorPart<Complex>::print_to_screen() const  //print to screen C and CX
 {
     BlockNumber to   = HTo.getBlockNumber();
     BlockNumber from = HFrom.getBlockNumber();
     INFO(S.getQuantumNumbers(from) << "->" << S.getQuantumNumbers(to));
     for (size_t P=0; P<elementsColMajor.outerSize(); ++P)
-	for (ColMajorMatrixType::InnerIterator it(elementsColMajor,P); it; ++it) {
+    for(typename ColMajorMatrixType<Complex>::InnerIterator it(elementsColMajor,P); it; ++it) {
 	    FockState N = S.getFockState(to, it.row());
 	    FockState M = S.getFockState(from, it.col());
 	    INFO(N <<" " << M << " : " << it.value());
-        }
+    }
 }
 
-BlockNumber FieldOperatorPart::getLeftIndex(void) const
+template<bool Complex>
+BlockNumber FieldOperatorPart<Complex>::getLeftIndex(void) const
 {
     return HTo.getBlockNumber();
 }
 
-BlockNumber FieldOperatorPart::getRightIndex(void) const
+template<bool Complex>
+BlockNumber FieldOperatorPart<Complex>::getRightIndex(void) const
 {
     return HFrom.getBlockNumber();
 }
 
 // Specialized methods
 
-AnnihilationOperatorPart::AnnihilationOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S,
-                                                  const HamiltonianPart &HFrom, const HamiltonianPart &HTo, ParticleIndex PIndex) :
-    FieldOperatorPart(IndexInfo,S,HFrom,HTo,PIndex)
+template<bool Complex>
+AnnihilationOperatorPart<Complex>::AnnihilationOperatorPart(const IndexClassification<Complex> &IndexInfo,
+                                                            const StatesClassification<Complex> &S,
+                                                            const HamiltonianPart<Complex> &HFrom,
+                                                            const HamiltonianPart<Complex> &HTo,
+                                                            ParticleIndex PIndex) :
+    FieldOperatorPart<Complex>(IndexInfo,S,HFrom,HTo,PIndex)
 {
-    O = new Pomerol::OperatorPresets::C(PIndex);
+    this->O = new Pomerol::OperatorPresets::C<Complex>(PIndex);
 }
 
-CreationOperatorPart::CreationOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S,
-                                                  const HamiltonianPart &HFrom, const HamiltonianPart &HTo, ParticleIndex PIndex) :
-    FieldOperatorPart(IndexInfo,S,HFrom,HTo,PIndex)
+template<bool Complex>
+CreationOperatorPart<Complex>::CreationOperatorPart(const IndexClassification<Complex> &IndexInfo,
+                                                    const StatesClassification<Complex> &S,
+                                                    const HamiltonianPart<Complex> &HFrom,
+                                                    const HamiltonianPart<Complex> &HTo,
+                                                    ParticleIndex PIndex) :
+    FieldOperatorPart<Complex>(IndexInfo,S,HFrom,HTo,PIndex)
 {
-    O = new Pomerol::OperatorPresets::Cdag(PIndex);
+    this->O = new Pomerol::OperatorPresets::Cdag<Complex>(PIndex);
 }
 
-const CreationOperatorPart& AnnihilationOperatorPart::transpose() const
+template<bool Complex>
+const CreationOperatorPart<Complex>& AnnihilationOperatorPart<Complex>::transpose() const
 {
-    CreationOperatorPart *CX = new CreationOperatorPart(IndexInfo, S, HTo, HFrom, PIndex); // swapped h_to and h_from
-    CX->elementsRowMajor = elementsRowMajor.transpose();
-    CX->elementsColMajor = elementsColMajor.transpose();
+    CreationOperatorPart<Complex> *CX = new CreationOperatorPart<Complex>(this->IndexInfo,
+                                                                          this->S,
+                                                                          this->HTo,
+                                                                          this->HFrom,
+                                                                          this->PIndex); // swapped h_to and h_from
+    CX->elementsRowMajor = this->elementsRowMajor.transpose();
+    CX->elementsColMajor = this->elementsColMajor.transpose();
     return *CX;
 }
 
-const AnnihilationOperatorPart& CreationOperatorPart::transpose() const
+template<bool Complex>
+const AnnihilationOperatorPart<Complex>& CreationOperatorPart<Complex>::transpose() const
 {
-    AnnihilationOperatorPart *C = new AnnihilationOperatorPart(IndexInfo, S, HTo, HFrom, PIndex); // swapped h_to and h_from
-    C->elementsRowMajor = elementsRowMajor.transpose();
-    C->elementsColMajor = elementsColMajor.transpose();
+    AnnihilationOperatorPart<Complex> *C = new AnnihilationOperatorPart<Complex>(this->IndexInfo,
+                                                                                 this->S,
+                                                                                 this->HTo,
+                                                                                 this->HFrom,
+                                                                                 this->PIndex); // swapped h_to and h_from
+    C->elementsRowMajor = this->elementsRowMajor.transpose();
+    C->elementsColMajor = this->elementsColMajor.transpose();
     return *C;
 }
 
-QuadraticOperatorPart::QuadraticOperatorPart(const IndexClassification &IndexInfo, const StatesClassification &S,
-                                             const HamiltonianPart &HFrom, const HamiltonianPart &HTo,
-                                             ParticleIndex PIndex1, ParticleIndex PIndex2) :
-        FieldOperatorPart(IndexInfo,S,HFrom,HTo,9999), Index1(PIndex1), Index2(PIndex2)
+template<bool Complex>
+QuadraticOperatorPart<Complex>::QuadraticOperatorPart(const IndexClassification<Complex> &IndexInfo,
+                                                      const StatesClassification<Complex> &S,
+                                                      const HamiltonianPart<Complex> &HFrom,
+                                                      const HamiltonianPart<Complex> &HTo,
+                                                      ParticleIndex PIndex1, ParticleIndex PIndex2) :
+        FieldOperatorPart<Complex>(IndexInfo,S,HFrom,HTo,9999), Index1(PIndex1), Index2(PIndex2)
         // Index=9999 dummy
 {
-    O = new Pomerol::OperatorPresets::N_offdiag(PIndex1, PIndex2);
+    this->O = new Pomerol::OperatorPresets::N_offdiag<Complex>(PIndex1, PIndex2);
 }
+
+// Explicit instantiations: Real case
+
+template class FieldOperatorPart<false>;
+template class AnnihilationOperatorPart<false>;
+template class CreationOperatorPart<false>;
+template class QuadraticOperatorPart<false>;
+
+// Explicit instantiations: Complex case
+
+template class FieldOperatorPart<true>;
+template class AnnihilationOperatorPart<true>;
+template class CreationOperatorPart<true>;
+template class QuadraticOperatorPart<true>;
 
 } // end of namespace Pomerol
