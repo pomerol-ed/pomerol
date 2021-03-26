@@ -74,6 +74,7 @@ add_this_package(${pomerol_sources})
 
 # Dependencies
 add_eigen3()
+add_libcommute()
 add_mpi()
 add_boost()
 add_testing()

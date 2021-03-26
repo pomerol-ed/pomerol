@@ -140,6 +140,13 @@ macro(add_boost) # usage: add_boost(component1 component2...)
   target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
 endmacro(add_boost)
 
+# libcommute
+macro(add_libcommute)
+  find_package(libcommute 0.6.1 CONFIG REQUIRED)
+  message(STATUS "Found libcommute version ${libcommute_VERSION}")
+  target_link_libraries(${PROJECT_NAME} PUBLIC libcommute)
+endmacro(add_libcommute)
+
 # Compile tests in "test" subdir
 macro(add_testing)
 option(Testing "Enable testing" ON)
