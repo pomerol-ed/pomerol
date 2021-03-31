@@ -51,13 +51,6 @@ typedef double RealType;
 /** Complex type. */
 typedef std::complex<double> ComplexType;
 
-/** Matrix element type. */
-#ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
-typedef ComplexType MelemType;
-#else
-typedef RealType MelemType;
-#endif
-
 /** Index represents a combination of spin, orbital, and lattice indices **/
 typedef unsigned int ParticleIndex;
 
@@ -81,8 +74,7 @@ typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign
 /** Dense real matrix. */
 typedef Eigen::Matrix<RealType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> RealMatrixType;
 typedef Eigen::Matrix<RealType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> LowerTriangularRealMatrixType;
-/** Default Matrix Type comes from MelemType. */
-typedef Eigen::Matrix<MelemType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> MatrixType;
+typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> MatrixType;
 
 /** Dense complex vector. */
 typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,1,Eigen::AutoAlign> ComplexVectorType;
@@ -90,13 +82,12 @@ typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,1,Eigen::AutoAlign> ComplexVect
 typedef Eigen::Matrix<RealType,Eigen::Dynamic,1,Eigen::AutoAlign> RealVectorType;
 /** Dense vector of integers. */
 typedef Eigen::Matrix<int,Eigen::Dynamic,1,Eigen::AutoAlign> IntVectorType;
-/** Default vector type comes from MelemType. */
-typedef Eigen::Matrix<MelemType,Eigen::Dynamic,1,Eigen::AutoAlign> VectorType;
+typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,1,Eigen::AutoAlign> VectorType;
 
 /** Sparse complex matrix */
-typedef Eigen::SparseMatrix<MelemType,Eigen::ColMajor> ColMajorMatrixType;
-typedef Eigen::SparseMatrix<MelemType,Eigen::RowMajor> RowMajorMatrixType;
-typedef Eigen::DynamicSparseMatrix<MelemType,Eigen::ColMajor> DynamicSparseMatrixType;
+typedef Eigen::SparseMatrix<ComplexType,Eigen::ColMajor> ColMajorMatrixType;
+typedef Eigen::SparseMatrix<ComplexType,Eigen::RowMajor> RowMajorMatrixType;
+typedef Eigen::DynamicSparseMatrix<ComplexType,Eigen::ColMajor> DynamicSparseMatrixType;
 //typedef Eigen::Triplet<RealType> RealTypeTriplet;
 //typedef Eigen::Triplet<ComplexType> ComplexTypeTriplet;
 

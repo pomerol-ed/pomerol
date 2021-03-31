@@ -8,12 +8,6 @@
 
 #include "../pomerol/Misc.h"
 
-#ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
-#define MPI_MELEM_DATATYPE MPI_CXX_DOUBLE_COMPLEX
-#else
-#define MPI_MELEM_DATATYPE MPI_DOUBLE
-#endif
-
 namespace pMPI {
 
 // Size of communicator 'Comm'

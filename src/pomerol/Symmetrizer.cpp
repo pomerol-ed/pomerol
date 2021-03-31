@@ -104,11 +104,11 @@ const char* Symmetrizer::IndexPermutation::exEqualIndices::what() const throw(){
 // Symmetrizer::QuantumNumbers
 //
 
-Symmetrizer::QuantumNumbers::QuantumNumbers(int amount):amount(amount),numbers( std::vector<MelemType>(amount) ),NumbersHash(numbers_hash_generator(numbers))
+Symmetrizer::QuantumNumbers::QuantumNumbers(int amount):amount(amount),numbers( std::vector<ComplexType>(amount) ),NumbersHash(numbers_hash_generator(numbers))
 {
 };
 
-bool Symmetrizer::QuantumNumbers::set ( int pos, MelemType val )
+bool Symmetrizer::QuantumNumbers::set ( int pos, ComplexType val )
 {
     if (pos<amount) {
         numbers[pos] = val;

@@ -50,19 +50,19 @@ int main(int argc, char* argv[])
     DEBUG(N.commutes(N));
 
     FockState ket(IndexSize,3);
-    std::map<FockState, MelemType> map1=NN->actRight(ket);
-    for ( std::map<FockState, MelemType>::iterator it1=map1.begin(); it1!=map1.end(); it1++) {
+    std::map<FockState, ComplexType> map1=NN->actRight(ket);
+    for ( std::map<FockState, ComplexType>::iterator it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
-        MelemType Value= it1->second;
+        ComplexType Value= it1->second;
         INFO("<" << bra << "| N |" << ket << "> = " << Value );
         }
-    if ( map1.size()!=1 && N.getMatrixElement(ket,ket)!=MelemType(2)) return EXIT_FAILURE;
+    if ( map1.size()!=1 && N.getMatrixElement(ket,ket)!=ComplexType(2)) return EXIT_FAILURE;
     ket = FockState(IndexSize, 7);
     INFO ( "<" << ket << "| N |" << ket << "> = " << N.getMatrixElement(ket));
-    if ( std::abs(N.getMatrixElement(ket) - MelemType(3)) >std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;
+    if ( std::abs(N.getMatrixElement(ket) - ComplexType(3)) >std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;
     ket = FockState(IndexSize, 8);
     INFO ( "<" << ket << "| N |" << ket << "> = " << N.getMatrixElement(ket));
-    if ( std::abs(N.getMatrixElement(ket) - MelemType(1)) >std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;
+    if ( std::abs(N.getMatrixElement(ket) - ComplexType(1)) >std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;
     ket = FockState(IndexSize, 10);
     INFO ( "<" << ket << "| N |" << ket << "> = " << N.getMatrixElement(ket));
     INFO ( "<" << ket << "| N |" << ket << "> = " << NN->getMatrixElement(ket,ket));

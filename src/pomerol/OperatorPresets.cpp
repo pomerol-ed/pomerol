@@ -14,19 +14,19 @@ N::N(ParticleIndex Nmodes):Operator(),Nmodes(Nmodes)
     };
 };
     
-std::map<FockState,MelemType> N::actRight(const FockState &ket) const
+std::map<FockState,ComplexType> N::actRight(const FockState &ket) const
 {
-    std::map<FockState,MelemType> output;
+    std::map<FockState,ComplexType> output;
     output[ket]=this->getMatrixElement(ket);
     return output;
 }
 
-MelemType N::getMatrixElement(const FockState &bra, const FockState &ket) const
+ComplexType N::getMatrixElement(const FockState &bra, const FockState &ket) const
 {
     return (bra!=ket)?0:getMatrixElement(ket);
 }
 
-MelemType N::getMatrixElement(const FockState &ket) const
+ComplexType N::getMatrixElement(const FockState &ket) const
 {
     return ket.count();
 }
@@ -62,7 +62,7 @@ void Sz::generateTerms()
     }
 }
 
-MelemType Sz::getMatrixElement(const FockState &ket) const
+ComplexType Sz::getMatrixElement(const FockState &ket) const
 {
     int up_value=0, down_value=0;
     std::vector<ParticleIndex>::const_iterator it_up=SpinUpIndices.begin(), it_down=SpinDownIndices.begin();
@@ -71,14 +71,14 @@ MelemType Sz::getMatrixElement(const FockState &ket) const
     return 0.5*(up_value-down_value);
 }
 
-MelemType Sz::getMatrixElement(const FockState &bra, const FockState &ket) const
+ComplexType Sz::getMatrixElement(const FockState &bra, const FockState &ket) const
 {
     return (bra!=ket)?0:getMatrixElement(ket);
 }
 
-std::map<FockState,MelemType> Sz::actRight(const FockState &ket) const
+std::map<FockState,ComplexType> Sz::actRight(const FockState &ket) const
 {
-    std::map<FockState,MelemType> output;
+    std::map<FockState,ComplexType> output;
     output[ket]=this->getMatrixElement(ket);
     return output;
 }

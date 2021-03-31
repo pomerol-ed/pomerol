@@ -26,15 +26,15 @@ void HamiltonianPart::prepare()
 
     H.resize(BlockSize,BlockSize);
     H.setZero();
-    std::map<FockState,MelemType>::const_iterator melem_it;
+    std::map<FockState,ComplexType>::const_iterator melem_it;
 
     for(InnerQuantumState right_st=0; right_st<BlockSize; right_st++)
     {
         FockState ket = S.getFockState(Block,right_st);
-        std::map<FockState,MelemType> mapStates = F.actRight(ket);
+        std::map<FockState,ComplexType> mapStates = F.actRight(ket);
         for (melem_it=mapStates.begin(); melem_it!=mapStates.end(); melem_it++) {
             FockState bra = melem_it -> first;
-            MelemType melem = melem_it -> second;
+            ComplexType melem = melem_it -> second;
             //DEBUG("<" << bra << "|" << melem << "|" << F << "|" << ket << ">");
             InnerQuantumState left_st = S.getInnerState(bra);
 //            if (left_st > right_st) { ERROR("!"); exit(1); };
@@ -52,16 +52,10 @@ void HamiltonianPart::compute()		//method of diagonalization classificated part 
 {
     if (Status >= Computed) return;
     if (H.rows() == 1) {
-        #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
         assert (std::abs(H(0,0) - std::real(H(0,0))) < std::numeric_limits<RealType>::epsilon());
-        #endif
         Eigenvalues.resize(1);
-        #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
-	    Eigenvalues << std::real(H(0,0));
-        #else
-	    Eigenvalues << H(0,0);
-        #endif
-	    H(0,0) = 1;
+        Eigenvalues << std::real(H(0,0));
+        H(0,0) = 1;
         }
     else {
 	    Eigen::SelfAdjointEigenSolver<MatrixType> Solver(H,Eigen::ComputeEigenvectors);
@@ -72,7 +66,7 @@ void HamiltonianPart::compute()		//method of diagonalization classificated part 
 }
 
 
-MelemType HamiltonianPart::getMatrixElement(InnerQuantumState m, InnerQuantumState n) const	//return  H(m,n)
+ComplexType HamiltonianPart::getMatrixElement(InnerQuantumState m, InnerQuantumState n) const	//return  H(m,n)
 {
     return H(m,n);
 }

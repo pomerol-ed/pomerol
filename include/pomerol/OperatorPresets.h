@@ -18,9 +18,9 @@ private:
     const ParticleIndex Nmodes;
 public:
     N(ParticleIndex Nmodes);
-    std::map <FockState,MelemType> actRight(const FockState &ket) const;
-    MelemType getMatrixElement(const FockState &bra, const FockState &ket) const;
-    MelemType getMatrixElement(const FockState &ket) const;
+    std::map <FockState,ComplexType> actRight(const FockState &ket) const;
+    ComplexType getMatrixElement(const FockState &bra, const FockState &ket) const;
+    ComplexType getMatrixElement(const FockState &ket) const;
 };
 
 class Sz : public Operator {
@@ -32,9 +32,9 @@ private:
 public:
     Sz(ParticleIndex Nmodes, const std::vector<ParticleIndex> & SpinUpIndices); 
     Sz(const std::vector<ParticleIndex> & SpinUpIndices, const std::vector<ParticleIndex> & SpinDownIndices);
-    std::map <FockState,MelemType> actRight(const FockState &ket) const;
-    MelemType getMatrixElement(const FockState &bra, const FockState &ket) const;
-    MelemType getMatrixElement(const FockState &ket) const;
+    std::map <FockState,ComplexType> actRight(const FockState &ket) const;
+    ComplexType getMatrixElement(const FockState &bra, const FockState &ket) const;
+    ComplexType getMatrixElement(const FockState &ket) const;
 };
 
  

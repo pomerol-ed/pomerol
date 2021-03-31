@@ -32,23 +32,15 @@ void FieldOperatorPart::compute()
     for (std::vector<FockState>::const_iterator CurrentState = fromStates.begin();
                                                 CurrentState < fromStates.end(); CurrentState++) {
 	    FockState K=*CurrentState;
-        std::map<FockState, MelemType> result1 = O->actRight(K);
+        std::map<FockState, ComplexType> result1 = O->actRight(K);
         if (result1.size()) {
             FockState L=result1.begin()->first;
-            #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
             int sign = int(std::real(result1.begin()->second));
-            #else
-            int sign = result1.begin()->second;
-            #endif
 	        if ( L!=ERROR_FOCK_STATE && std::abs(sign)>std::numeric_limits<RealType>::epsilon() ) {
 		        InnerQuantumState l=S.getInnerState(L), k=S.getInnerState(K);
 
                 for (InnerQuantumState n=0; n<toStates.size(); n++) {
-#ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
                     LeftMat(n,k) = std::conj(HTo.getMatrixElement(l,n));
-#else
-                    LeftMat(n,k) = HTo.getMatrixElement(l,n);
-#endif
                 }
 
                 for (InnerQuantumState m=0; m<fromStates.size(); m++) {
@@ -68,9 +60,6 @@ void FieldOperatorPart::compute()
     elementsRowMajor = (LeftMat * RightMat).sparseView(MatrixElementTolerance);
 #endif
 
-    #ifndef POMEROL_COMPLEX_MATRIX_ELEMENTS
-    elementsRowMajor.prune(MatrixElementTolerance);
-    #endif
     elementsColMajor = elementsRowMajor;
     Status = Computed;
 }
