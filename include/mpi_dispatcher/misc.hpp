@@ -11,12 +11,14 @@
 
 namespace pMPI {
 
-template<typename T> MPI_Datatype mpi_datatype();
+template<typename T> struct mpi_datatype {};
 
-template<> MPI_Datatype mpi_datatype<Pomerol::RealType>() { return MPI_DOUBLE; }
-template<> MPI_Datatype mpi_datatype<Pomerol::ComplexType>() {
-  return MPI_CXX_DOUBLE_COMPLEX;
-}
+template<> struct mpi_datatype<Pomerol::RealType> {
+    static MPI_Datatype get() { return MPI_DOUBLE; }
+};
+template<> struct mpi_datatype<Pomerol::ComplexType> {
+    static MPI_Datatype get() { return MPI_CXX_DOUBLE_COMPLEX; }
+};
 
 // Size of communicator 'Comm'
 inline int size(const MPI_Comm &Comm) {

@@ -19,11 +19,6 @@
 
 namespace Pomerol{
 
-/** \typedef
- * A pair of left and right indices of a part in a Field Operator. Each part is a non-vanishing worldline in an operator
- */
-typedef std::pair<BlockNumber,BlockNumber> BlockMapping;
-
 /** This class is a parent class for creation/annihilation operators which act
  * on all blocks of quantum states */
 template<bool Complex = false>

@@ -18,12 +18,13 @@ namespace Pomerol{
  * block of the Hamiltonian.
  */
 
+template<bool Complex = false>
 class DensityMatrixPart : public Thermal
 {
     /** A reference to a states classification object. */
-    const StatesClassification& S;
+    const StatesClassification<Complex>& S;
     /** A reference to a part of a Hamiltonian. */
-    const HamiltonianPart& hpart;
+    const HamiltonianPart<Complex>& hpart;
 
     /** The ground energy of the Hamiltonian.
      * It is subtracted from all energy levels to avoid
@@ -46,16 +47,19 @@ public:
      * \param[in] beta The inverse temperature.
      * \param[in] GroundEnergy The ground state energy of the Hamiltonian.
      */
-    DensityMatrixPart(const StatesClassification &S, const HamiltonianPart& hpart, RealType beta, RealType GroundEnergy);
+    DensityMatrixPart(const StatesClassification<Complex> &S,
+                      const HamiltonianPart<Complex>& hpart,
+                      RealType beta,
+                      RealType GroundEnergy);
 
     /** Compute unnormalized weights (diagonal matrix elements)
-     * 
+     *
      * \return The partial partition function.
      */
     RealType computeUnnormalized(void);
 
     /** Divide all the weights by the partition function.
-     * 
+     *
      * \param[in] Z The partition function.
      */
     void normalize(RealType Z);
@@ -83,6 +87,9 @@ public:
     /** Returns true if this part has not been truncated. */
     bool isRetained() const;
 };
+
+extern template class DensityMatrixPart<false>;
+extern template class DensityMatrixPart<true>;
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H

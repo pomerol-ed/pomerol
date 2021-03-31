@@ -2,33 +2,41 @@
 
 namespace Pomerol{
 
-GFContainer::GFContainer ( const IndexClassification& IndexInfo,
-                           const StatesClassification& S,
-                           const Hamiltonian &H, const DensityMatrix &DM,
-                           const FieldOperatorContainer& Operators) :
-    IndexContainer2<GreensFunction,GFContainer>(this,IndexInfo),
+template<bool Complex>
+GFContainer<Complex>::GFContainer (const IndexClassification<Complex>& IndexInfo,
+                                   const StatesClassification<Complex>& S,
+                                   const Hamiltonian<Complex> &H,
+                                   const DensityMatrix<Complex> &DM,
+                                   const FieldOperatorContainer<Complex>& Operators) :
+    ContainerBase(this,IndexInfo),
     Thermal(DM), S(S), H(H), DM(DM), Operators(Operators)
 {}
 
-void GFContainer::prepareAll(const std::set<IndexCombination2>& InitialIndices)
+template<bool Complex>
+void GFContainer<Complex>::prepareAll(const std::set<IndexCombination2>& InitialIndices)
 {
-    fill(InitialIndices);
-    for(std::map<IndexCombination2,GFPointer>::iterator iter = ElementsMap.begin();
-        iter != ElementsMap.end(); iter++)
+    ContainerBase::fill(InitialIndices);
+    for(auto iter = ContainerBase::ElementsMap.begin(); iter != ContainerBase::ElementsMap.end(); iter++)
         (iter->second)->prepare();
 }
 
-void GFContainer::computeAll()
+template<bool Complex>
+void GFContainer<Complex>::computeAll()
 {
-    for(std::map<IndexCombination2,GFPointer>::iterator iter = ElementsMap.begin();
-        iter != ElementsMap.end(); iter++)
+    for(auto iter = ContainerBase::ElementsMap.begin(); iter != ContainerBase::ElementsMap.end(); iter++)
         (iter->second)->compute();
 }
 
-GreensFunction* GFContainer::createElement(const IndexCombination2& Indices) const
+template<bool Complex>
+auto GFContainer<Complex>::createElement(const IndexCombination2& Indices) const -> ElementT*
 {
-    return new GreensFunction(S,H, Operators.getAnnihilationOperator(Indices.Index1),
-                                   Operators.getCreationOperator(Indices.Index2),DM);
+    return new ElementT(S,
+                        H,
+                        Operators.getAnnihilationOperator(Indices.Index1),
+                        Operators.getCreationOperator(Indices.Index2),DM);
 }
+
+template class GFContainer<false>;
+template class GFContainer<true>;
 
 } // end of namespace Pomerol

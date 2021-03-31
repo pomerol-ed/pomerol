@@ -18,7 +18,7 @@ namespace Pomerol {
 template<typename ElementType, typename SourceObject>
 class IndexContainer2 {
 protected:
-    const IndexClassification& IndexInfo;
+    const IndexClassification<ElementType::ISComplex>& IndexInfo;
     std::map<IndexCombination2,std::shared_ptr<ElementType> > ElementsMap;
 
     SourceObject* pSource;
@@ -27,7 +27,8 @@ protected:
 
 public:
 
-    IndexContainer2<ElementType,SourceObject>(SourceObject* pSource, const IndexClassification& IndexInfo);
+    IndexContainer2<ElementType,SourceObject>(SourceObject* pSource,
+                                              const IndexClassification<ElementType::ISComplex>& IndexInfo);
 
     void fill(std::set<IndexCombination2> InitialIndices = std::set<IndexCombination2>());
     ElementType& set(const IndexCombination2& Indices);
@@ -43,7 +44,8 @@ public:
 // IndexContainer2 //
 /////////////////////
 template<typename ElementType, typename SourceObject>
-IndexContainer2<ElementType,SourceObject>::IndexContainer2(SourceObject* pSource, const IndexClassification& IndexInfo) :
+IndexContainer2<ElementType,SourceObject>::IndexContainer2(SourceObject* pSource,
+                                                           const IndexClassification<ElementType::ISComplex>& IndexInfo) :
     IndexInfo(IndexInfo), pSource(pSource)
 {}
 

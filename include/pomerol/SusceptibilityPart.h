@@ -26,21 +26,22 @@ namespace Pomerol{
  * Every part describes all transitions allowed by selection rules
  * between a given pair of Hamiltonian blocks.
  */
+template<bool Complex = false>
 class SusceptibilityPart : public Thermal
 {
     /** A reference to a part of a Hamiltonian (inner index iterates through it). */
-    const HamiltonianPart& HpartInner;
+    const HamiltonianPart<Complex>& HpartInner;
     /** A reference to a part of a Hamiltonian (outer index iterates through it). */
-    const HamiltonianPart& HpartOuter;
+    const HamiltonianPart<Complex>& HpartOuter;
     /** A reference to a part of a density matrix (the part corresponding to HpartInner). */
-    const DensityMatrixPart& DMpartInner;
+    const DensityMatrixPart<Complex>& DMpartInner;
     /** A reference to a part of a density matrix (the part corresponding to HpartOuter). */
-    const DensityMatrixPart& DMpartOuter;
+    const DensityMatrixPart<Complex>& DMpartOuter;
 
     /** A reference to a part of a quadratic operator. */
-    const QuadraticOperatorPart& A;
+    const QuadraticOperatorPart<Complex>& A;
     /** A reference to a part of a quadratic operator. */
-    const QuadraticOperatorPart& B;
+    const QuadraticOperatorPart<Complex>& B;
 
     /** Every term is a fraction \f$ \frac{R}{z - P} \f$. */
     struct Term {
@@ -105,7 +106,7 @@ class SusceptibilityPart : public Thermal
     const RealType MatrixElementTolerance; // 1e-8;
 
     /** BOSON: The weight of zero-energy pole. **/
-    MelemType ZeroPoleWeight;
+    MelemType<Complex> ZeroPoleWeight;
 
 public:
 
@@ -117,9 +118,12 @@ public:
      * \param[in] DMpartInner A reference to a part of the density matrix (inner index).
      * \param[in] DMpartOuter A reference to a part of the density matrix (outer index).
      */
-    SusceptibilityPart(const QuadraticOperatorPart& A, const QuadraticOperatorPart& B,
-                       const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
-                       const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter);
+    SusceptibilityPart(const QuadraticOperatorPart<Complex>& A,
+                       const QuadraticOperatorPart<Complex>& B,
+                       const HamiltonianPart<Complex>& HpartInner,
+                       const HamiltonianPart<Complex>& HpartOuter,
+                       const DensityMatrixPart<Complex>& DMpartInner,
+                       const DensityMatrixPart<Complex>& DMpartOuter);
 
     /** Iterates over all matrix elements and fills the list of terms. */
     void compute(void);
@@ -144,22 +148,29 @@ public:
     const RealType ReduceTolerance;
 };
 
-std::ostream& operator<< (std::ostream& out, const SusceptibilityPart::Term& T);
+template<bool Complex>
+std::ostream& operator<< (std::ostream& out, const typename SusceptibilityPart<Complex>::Term& T);
 
 // Inline call operators
 // BOSON: bosononic Matsubara frequency
-inline ComplexType SusceptibilityPart::operator()(long MatsubaraNumber) const {
+template<bool Complex>
+inline ComplexType SusceptibilityPart<Complex>::operator()(long MatsubaraNumber) const {
     return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber)); }
 
-inline ComplexType SusceptibilityPart::operator()(ComplexType z) const {
+template<bool Complex>
+inline ComplexType SusceptibilityPart<Complex>::operator()(ComplexType z) const {
     // BOSON: add contribution of zero-energy pole
     ComplexType ZeroPole = abs(z) < 1e-15 ? ZeroPoleWeight*beta : 0;
     return Terms(z) + ZeroPole;
 }
 
-inline ComplexType SusceptibilityPart::of_tau(RealType tau) const {
+template<bool Complex>
+inline ComplexType SusceptibilityPart<Complex>::of_tau(RealType tau) const {
     return Terms(tau, beta) + ZeroPoleWeight;
 }
+
+extern template class SusceptibilityPart<false>;
+extern template class SusceptibilityPart<true>;
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_SUSCEPTIBILITYPART_H

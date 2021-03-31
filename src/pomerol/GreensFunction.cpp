@@ -2,36 +2,42 @@
 
 namespace Pomerol{
 
-GreensFunction::GreensFunction(const StatesClassification& S, const Hamiltonian& H, 
-                               const AnnihilationOperator& C, const CreationOperator& CX,
-                               const DensityMatrix& DM) :
+template<bool Complex>
+GreensFunction<Complex>::GreensFunction(const StatesClassification<Complex>& S,
+                                        const Hamiltonian<Complex>& H,
+                                        const AnnihilationOperator<Complex>& C,
+                                        const CreationOperator<Complex>& CX,
+                                        const DensityMatrix<Complex>& DM) :
     Thermal(DM.beta), ComputableObject(), S(S), H(H), C(C), CX(CX), DM(DM), Vanishing(true)
 {
 }
 
-GreensFunction::GreensFunction(const GreensFunction& GF) :
+template<bool Complex>
+GreensFunction<Complex>::GreensFunction(const GreensFunction& GF) :
     Thermal(GF.beta), ComputableObject(GF), S(GF.S), H(GF.H), C(GF.C), CX(GF.CX), DM(GF.DM), Vanishing(GF.Vanishing)
 {
-    for(std::list<GreensFunctionPart*>::const_iterator iter = GF.parts.begin(); iter != GF.parts.end(); iter++)
-        parts.push_back(new GreensFunctionPart(**iter));
+    for(auto iter = GF.parts.begin(); iter != GF.parts.end(); iter++)
+        parts.push_back(new PartT(**iter));
 }
 
-GreensFunction::~GreensFunction()
+template<bool Complex>
+GreensFunction<Complex>::~GreensFunction()
 {
-    for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+    for(auto iter = parts.begin(); iter != parts.end(); iter++)
         delete *iter;
 }
 
-void GreensFunction::prepare(void)
+template<bool Complex>
+void GreensFunction<Complex>::prepare(void)
 {
     if(Status>=Prepared) return;
 
     // Find out non-trivial blocks of C and CX.
-    FieldOperator::BlocksBimap const& CNontrivialBlocks = C.getBlockMapping();
-    FieldOperator::BlocksBimap const& CXNontrivialBlocks = CX.getBlockMapping();
+    typename FieldOperator<Complex>::BlocksBimap const& CNontrivialBlocks = C.getBlockMapping();
+    typename FieldOperator<Complex>::BlocksBimap const& CXNontrivialBlocks = CX.getBlockMapping();
 
-    FieldOperator::BlocksBimap::left_const_iterator Citer = CNontrivialBlocks.left.begin();
-    FieldOperator::BlocksBimap::right_const_iterator CXiter = CXNontrivialBlocks.right.begin();
+    typename FieldOperator<Complex>::BlocksBimap::left_const_iterator Citer = CNontrivialBlocks.left.begin();
+    typename FieldOperator<Complex>::BlocksBimap::right_const_iterator CXiter = CXNontrivialBlocks.right.begin();
 
     while(Citer != CNontrivialBlocks.left.end() && CXiter != CXNontrivialBlocks.right.end()){
         // <Cleft|C|Cright><CXleft|CX|CXright>
@@ -40,15 +46,14 @@ void GreensFunction::prepare(void)
         BlockNumber CXleft = CXiter->second;
         BlockNumber CXright = CXiter->first;
 
-
         // Select a relevant 'world stripe' (sequence of blocks).
         if(Cleft == CXright && Cright == CXleft){
         //DEBUG(S.getQuantumNumbers(Cleft) << "|" << S.getQuantumNumbers(Cright) << "||" << S.getQuantumNumbers(CXleft) << "|" << S.getQuantumNumbers(CXright) );
             // check if retained blocks are included. If not, do not push.
             if ( DM.isRetained(Cleft) || DM.isRetained(Cright) )
-                parts.push_back(new GreensFunctionPart(
-                              (AnnihilationOperatorPart&)C.getPartFromLeftIndex(Cleft),
-                              (CreationOperatorPart&)CX.getPartFromRightIndex(CXright),
+                parts.push_back(new PartT(
+                              (AnnihilationOperatorPart<Complex>&)C.getPartFromLeftIndex(Cleft),
+                              (CreationOperatorPart<Complex>&)CX.getPartFromRightIndex(CXright),
                               H.getPart(Cright), H.getPart(Cleft),
                               DM.getPart(Cright), DM.getPart(Cleft)));
         }
@@ -64,19 +69,21 @@ void GreensFunction::prepare(void)
     Status = Prepared;
 }
 
-void GreensFunction::compute()
+template<bool Complex>
+void GreensFunction<Complex>::compute()
 {
     if(Status>=Computed) return;
     if(Status<Prepared) prepare();
 
     if(Status<Computed){
-        for(std::list<GreensFunctionPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
+        for(auto iter = parts.begin(); iter != parts.end(); iter++)
             (*iter)->compute();
     }
     Status = Computed;
 }
 
-unsigned short GreensFunction::getIndex(size_t Position) const
+template<bool Complex>
+unsigned short GreensFunction<Complex>::getIndex(size_t Position) const
 {
     switch(Position){
         case 0: return C.getIndex();
@@ -87,7 +94,8 @@ unsigned short GreensFunction::getIndex(size_t Position) const
     return C.getIndex();
 }
 
-bool GreensFunction::isVanishing(void) const
+template<bool Complex>
+bool GreensFunction<Complex>::isVanishing(void) const
 {
     return Vanishing;
 }

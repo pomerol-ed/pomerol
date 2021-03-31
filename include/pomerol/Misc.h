@@ -112,12 +112,12 @@ enum spin {down, up};
 static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
 
 /** Real part **/
-RealType real(RealType x) { return x; }
-RealType real(ComplexType x) { return std::real(x); }
+inline RealType real(RealType x) { return x; }
+inline RealType real(ComplexType x) { return std::real(x); }
 
 /** Complex conjugate */
-RealType conj(RealType x) { return x; }
-ComplexType conj(ComplexType x) { return std::conj(x); }
+inline RealType conj(RealType x) { return x; }
+inline ComplexType conj(ComplexType x) { return std::conj(x); }
 
 /** Generalized 'square' function. */
 template<typename T> inline T sqr(T x) { return x*x; }

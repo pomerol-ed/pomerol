@@ -2,23 +2,28 @@
 
 namespace Pomerol{
 
-EnsembleAverage::EnsembleAverage(const StatesClassification& S, const Hamiltonian& H,
-                                 const QuadraticOperator& A, const DensityMatrix& DM) :
+template<bool Complex>
+EnsembleAverage<Complex>::EnsembleAverage(const StatesClassification<Complex>& S,
+                                          const Hamiltonian<Complex>& H,
+                                          const QuadraticOperator<Complex>& A,
+                                          const DensityMatrix<Complex>& DM) :
     Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), DM(DM), result(0)
 {}
 
-EnsembleAverage::EnsembleAverage(const EnsembleAverage& EA) :
+template<bool Complex>
+EnsembleAverage<Complex>::EnsembleAverage(const EnsembleAverage& EA) :
     Thermal(EA.beta), ComputableObject(EA), S(EA.S), H(EA.H), A(EA.A), DM(EA.DM), result(EA.result)
 {}
 
-void EnsembleAverage::prepare(void)
+template<bool Complex>
+void EnsembleAverage<Complex>::prepare(void)
 {
     if(Status>=Prepared) return;
 
     // Find out non-trivial blocks of A.
-    FieldOperator::BlocksBimap const& ANontrivialBlocks = A.getBlockMapping();
+    typename FieldOperator<Complex>::BlocksBimap const& ANontrivialBlocks = A.getBlockMapping();
 
-    for(FieldOperator::BlocksBimap::left_const_iterator Aiter = ANontrivialBlocks.left.begin(); Aiter != ANontrivialBlocks.left.end(); Aiter++){
+    for(auto Aiter = ANontrivialBlocks.left.begin(); Aiter != ANontrivialBlocks.left.end(); Aiter++){
         // <Aleft|A|Aright>
         BlockNumber Aleft = Aiter->first;
         BlockNumber Aright = Aiter->second;
@@ -28,7 +33,7 @@ void EnsembleAverage::prepare(void)
             DEBUG(S.getQuantumNumbers(Aleft) << "|" << S.getQuantumNumbers(Aright) );
             // check if retained blocks are included. If not, do not push.
             if ( DM.isRetained(Aleft) ){
-                result += compute((QuadraticOperatorPart&)A.getPartFromLeftIndex(Aleft),
+                result += compute((QuadraticOperatorPart<Complex>&)A.getPartFromLeftIndex(Aleft),
                                   H.getPart(Aleft), DM.getPart(Aleft));
 //                EnsembleAveragePart part((QuadraticOperatorPart&)A.getPartFromLeftIndex(Aleft),
 //                                         H.getPart(Aleft), DM.getPart(Aleft));
@@ -42,12 +47,13 @@ void EnsembleAverage::prepare(void)
 }
 
 // This function is called directly in prepare()
-ComplexType EnsembleAverage::compute(const QuadraticOperatorPart& Apart,
-                                     const HamiltonianPart& Hpart,
-                                     const DensityMatrixPart& DMpart)
+template<bool Complex>
+ComplexType EnsembleAverage<Complex>::compute(const QuadraticOperatorPart<Complex>& Apart,
+                                     const HamiltonianPart<Complex>& Hpart,
+                                     const DensityMatrixPart<Complex>& DMpart)
 {
     // Blocks (submatrices) of A
-    const RowMajorMatrixType& Amatrix = Apart.getRowMajorValue();
+    const RowMajorMatrixType<Complex>& Amatrix = Apart.getRowMajorValue();
 
     // Sum up <index1|A|index1> * weight(index1)
     ComplexType result_part = 0;
@@ -55,5 +61,8 @@ ComplexType EnsembleAverage::compute(const QuadraticOperatorPart& Apart,
         result_part += Amatrix.coeff(index1, index1) * DMpart.getWeight(index1);
     return result_part;
 }
+
+template class EnsembleAverage<false>;
+template class EnsembleAverage<true>;
 
 } // end of namespace Pomerol

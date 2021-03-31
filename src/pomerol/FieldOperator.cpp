@@ -114,7 +114,7 @@ void CreationOperator<Complex>::prepare(void)
             Base::parts.push_back(Part);
             Base::mapPartsFromRight[RightIndex]=Size;
             Base::mapPartsFromLeft[LeftIndex]=Size;
-            Base::LeftRightBlocks.insert(BlockMapping(LeftIndex,RightIndex));
+            Base::LeftRightBlocks.insert(typename Base::BlockMapping(LeftIndex,RightIndex));
             Size++;
         }
     }
@@ -140,7 +140,7 @@ void AnnihilationOperator<Complex>::prepare()
             Base::parts.push_back(Part);
             Base::mapPartsFromRight[RightIndex]=Size;
             Base::mapPartsFromLeft[LeftIndex]=Size;
-            Base::LeftRightBlocks.insert(BlockMapping(LeftIndex,RightIndex));
+            Base::LeftRightBlocks.insert(typename Base::BlockMapping(LeftIndex,RightIndex));
             Size++;
         }
     }
@@ -217,7 +217,7 @@ void QuadraticOperator<Complex>::prepare(void)
             Base::parts.push_back(Part);
             Base::mapPartsFromRight[RightIndex]=Size;
             Base::mapPartsFromLeft[LeftIndex]=Size;
-            Base::LeftRightBlocks.insert(BlockMapping(LeftIndex,RightIndex));
+            Base::LeftRightBlocks.insert(typename Base::BlockMapping(LeftIndex,RightIndex));
             Size++;
         }
     }

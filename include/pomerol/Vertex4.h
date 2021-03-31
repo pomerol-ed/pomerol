@@ -14,13 +14,14 @@
 
 namespace Pomerol{
 
+template<bool Complex = false>
 class Vertex4 : public Thermal, public ComputableObject {
 
-    TwoParticleGF &Chi4;
-    GreensFunction &G13;
-    GreensFunction &G24;
-    GreensFunction &G14;
-    GreensFunction &G23;
+    TwoParticleGF<Complex> &Chi4;
+    GreensFunction<Complex> &G13;
+    GreensFunction<Complex> &G24;
+    GreensFunction<Complex> &G14;
+    GreensFunction<Complex> &G23;
 
     /** Storage for precomputed values. */
     mutable MatsubaraContainer4<Vertex4> Storage;
@@ -29,9 +30,9 @@ class Vertex4 : public Thermal, public ComputableObject {
 
 public:
 
-    Vertex4(TwoParticleGF& Chi4,
-            GreensFunction& G13, GreensFunction& G24,
-            GreensFunction& G14, GreensFunction& G23);
+    Vertex4(TwoParticleGF<Complex>& Chi4,
+            GreensFunction<Complex>& G13, GreensFunction<Complex>& G24,
+            GreensFunction<Complex>& G14, GreensFunction<Complex>& G23);
 
     void compute(long NumberOfMatsubaras = 0);
 
@@ -40,6 +41,9 @@ public:
 
     bool isVanishing(void) const;
 };
+
+extern template class Vertex4<false>;
+extern template class Vertex4<true>;
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_VERTEX4_H

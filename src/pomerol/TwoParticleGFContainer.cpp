@@ -25,28 +25,34 @@
 
 namespace Pomerol{
 
-TwoParticleGFContainer::TwoParticleGFContainer(const IndexClassification& IndexInfo, const StatesClassification &S,
-                                               const Hamiltonian &H, const DensityMatrix &DM, const FieldOperatorContainer& Operators) :
-    IndexContainer4<TwoParticleGF,TwoParticleGFContainer>(this,IndexInfo), Thermal(DM),
+template<bool Complex>
+TwoParticleGFContainer<Complex>::TwoParticleGFContainer(const IndexClassification<Complex>& IndexInfo,
+                                                        const StatesClassification<Complex> &S,
+                                                        const Hamiltonian<Complex> &H,
+                                                        const DensityMatrix<Complex> &DM,
+                                                        const FieldOperatorContainer<Complex>& Operators) :
+    ContainerBase(this, IndexInfo), Thermal(DM),
     S(S),H(H),DM(DM), Operators(Operators),
     ReduceResonanceTolerance (1e-8),//1e-16),
     CoefficientTolerance (1e-16),//1e-16),
     MultiTermCoefficientTolerance (1e-5)//1e-5),
 {}
 
-void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& InitialIndices)
+template<bool Complex>
+void TwoParticleGFContainer<Complex>::prepareAll(const std::set<IndexCombination4>& InitialIndices)
 {
-    fill(InitialIndices);
-    for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
-        iter != ElementsMap.end(); iter++) {
-        static_cast<TwoParticleGF&>(iter->second).ReduceResonanceTolerance = ReduceResonanceTolerance;
-        static_cast<TwoParticleGF&>(iter->second).CoefficientTolerance = CoefficientTolerance;
-        static_cast<TwoParticleGF&>(iter->second).MultiTermCoefficientTolerance = MultiTermCoefficientTolerance;
-        static_cast<TwoParticleGF&>(iter->second).prepare();
-       };
+    ContainerBase::fill(InitialIndices);
+    for(auto iter = ContainerBase::ElementsMap.begin();
+        iter != ContainerBase::ContainerBaseElementsMap.end(); iter++) {
+        static_cast<ElementT&>(iter->second).ReduceResonanceTolerance = ReduceResonanceTolerance;
+        static_cast<ElementT&>(iter->second).CoefficientTolerance = CoefficientTolerance;
+        static_cast<ElementT&>(iter->second).MultiTermCoefficientTolerance = MultiTermCoefficientTolerance;
+        static_cast<ElementT&>(iter->second).prepare();
+    };
 }
 
-std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll(bool clearTerms, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const MPI_Comm& comm, bool split)
+template<bool Complex>
+std::map<IndexCombination4, std::vector<ComplexType> > TwoParticleGFContainer<Complex>::computeAll(bool clearTerms, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const MPI_Comm& comm, bool split)
 {
     if (split)
         return computeAll_split(clearTerms, freqs, comm);
@@ -54,18 +60,20 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
         return computeAll_nosplit(clearTerms, freqs, comm);
 }
 
-std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const MPI_Comm& comm)
+template<bool Complex>
+std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer<Complex>::computeAll_nosplit(bool clearTerms, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const MPI_Comm& comm)
 {
     std::map<IndexCombination4,std::vector<ComplexType> > out;
-    for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
-        iter != ElementsMap.end(); iter++) {
+    for(auto iter = ContainerBase::ElementsMap.begin();
+        iter != ContainerBase::ElementsMap.end(); iter++) {
         INFO("Computing 2PGF for " << iter->first);
-        out.insert(std::make_pair(iter->first, static_cast<TwoParticleGF&>(iter->second).compute(clearTerms, freqs, comm)));
-        };
+        out.insert(std::make_pair(iter->first, static_cast<ElementT&>(iter->second).compute(clearTerms, freqs, comm)));
+    };
     return out;
 }
 
-std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_split(bool clearTerms, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const MPI_Comm& comm)
+template<bool Complex>
+std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer<Complex>::computeAll_split(bool clearTerms, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const MPI_Comm& comm)
 {
     std::map<IndexCombination4,std::vector<ComplexType> > out;
     std::map<IndexCombination4,std::vector<ComplexType> > storage;
@@ -74,8 +82,8 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
     int rank = pMPI::rank(comm);
 
     // split communicator
-    size_t ncomponents = NonTrivialElements.size();
-    size_t ncolors = std::min(comm_size, int(NonTrivialElements.size()));
+    size_t ncomponents = ContainerBase::NonTrivialElements.size();
+    size_t ncolors = std::min(comm_size, int(ContainerBase::NonTrivialElements.size()));
     RealType color_size = 1.0*comm_size/ncolors;
     std::map<int,int> proc_colors;
     std::map<int,int> elem_colors;
@@ -103,12 +111,12 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
     MPI_Comm comm_split;
     MPI_Comm_split(comm, proc_colors[rank], rank, &comm_split);
 
-    for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
+    for(auto iter = ContainerBase::NonTrivialElements.begin(); iter != ContainerBase::NonTrivialElements.end(); iter++, comp++) {
         bool calc = (elem_colors[comp] == proc_colors[rank]);
         if (calc) {
             INFO("C" << elem_colors[comp] << "p" << rank << ": computing 2PGF for " << iter->first);
             if (calc)
-                storage[iter->first] = static_cast<TwoParticleGF&>(*(iter->second)).compute(clearTerms, freqs, comm_split);
+                storage[iter->first] = static_cast<ElementT&>(*(iter->second)).compute(clearTerms, freqs, comm_split);
         }
     }
     MPI_Barrier(comm);
@@ -116,9 +124,9 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
     if (!rank)
         INFO_NONEWLINE("Distributing 2PGF container...");
     comp = 0;
-    for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
+    for(auto iter = ContainerBase::NonTrivialElements.begin(); iter != ContainerBase::NonTrivialElements.end(); iter++, comp++) {
         int sender = color_roots[elem_colors[comp]];
-        TwoParticleGF& chi = *((iter)->second);
+        ElementT& chi = *((iter)->second);
         for (size_t p = 0; p < chi.parts.size(); p++) {
             chi.parts[p]->NonResonantTerms.broadcast(comm, sender);
             chi.parts[p]->ResonantTerms.broadcast(comm, sender);
@@ -137,7 +145,7 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
             out[iter->first] = freq_data;
 
             if (rank != sender) {
-                chi.setStatus(TwoParticleGF::Computed);
+                chi.setStatus(ElementT::Computed);
             }
         }
     }
@@ -146,14 +154,15 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
     return out;
 }
 
-TwoParticleGF* TwoParticleGFContainer::createElement(const IndexCombination4& Indices) const
+template<bool Complex>
+auto TwoParticleGFContainer<Complex>::createElement(const IndexCombination4& Indices) const -> ElementT*
 {
-    const AnnihilationOperator &C1 = Operators.getAnnihilationOperator(Indices.Index1);
-    const AnnihilationOperator &C2 = Operators.getAnnihilationOperator(Indices.Index2);
-    const CreationOperator     &CX3 = Operators.getCreationOperator   (Indices.Index3);
-    const CreationOperator     &CX4 = Operators.getCreationOperator   (Indices.Index4);
+    const AnnihilationOperator<Complex> &C1 = Operators.getAnnihilationOperator(Indices.Index1);
+    const AnnihilationOperator<Complex> &C2 = Operators.getAnnihilationOperator(Indices.Index2);
+    const CreationOperator<Complex> &CX3 = Operators.getCreationOperator   (Indices.Index3);
+    const CreationOperator<Complex> &CX4 = Operators.getCreationOperator   (Indices.Index4);
 
-    return new TwoParticleGF(S,H,C1,C2,CX3,CX4,DM);
+    return new ElementT(S,H,C1,C2,CX3,CX4,DM);
 }
 
 } // end of namespace Pomerol

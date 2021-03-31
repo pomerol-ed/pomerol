@@ -25,21 +25,22 @@ namespace Pomerol{
  * Every part describes all transitions allowed by selection rules
  * between a given pair of Hamiltonian blocks.
  */
+template<bool Complex = false>
 class GreensFunctionPart : public Thermal
 {
     /** A reference to a part of a Hamiltonian (inner index iterates through it). */
-    const HamiltonianPart& HpartInner;
+    const HamiltonianPart<Complex>& HpartInner;
     /** A reference to a part of a Hamiltonian (outer index iterates through it). */
-    const HamiltonianPart& HpartOuter;
+    const HamiltonianPart<Complex>& HpartOuter;
     /** A reference to a part of a density matrix (the part corresponding to HpartInner). */
-    const DensityMatrixPart& DMpartInner;
+    const DensityMatrixPart<Complex>& DMpartInner;
     /** A reference to a part of a density matrix (the part corresponding to HpartOuter). */
-    const DensityMatrixPart& DMpartOuter;
+    const DensityMatrixPart<Complex>& DMpartOuter;
 
     /** A reference to a part of an annihilation operator. */
-    const AnnihilationOperatorPart& C;
+    const AnnihilationOperatorPart<Complex>& C;
     /** A reference to a part of a creation operator. */
-    const CreationOperatorPart& CX;
+    const CreationOperatorPart<Complex>& CX;
 
     /** Every term is a fraction \f$ \frac{R}{z - P} \f$. */
     struct Term {
@@ -91,11 +92,14 @@ class GreensFunctionPart : public Thermal
         */
         Term& operator+=(const Term& AnotherTerm);
     };
-    /** A stream insertion operator for type GreensTerm.
+    /** A stream insertion operator for type Term.
      * \param[in] out An output stream to insert to.
      * \param[in] Term A term to be inserted.
      */
-    friend std::ostream& operator<< (std::ostream& out, const Term& T);
+    friend std::ostream& operator<< (std::ostream& out, const Term& T) {
+        out << T.Residue << "/(z - " << T.Pole << ")";
+        return out;
+    }
 
     /** A list of all terms. */
     TermList<Term> Terms;
@@ -113,9 +117,12 @@ public:
      * \param[in] DMpartInner A reference to a part of the density matrix (inner index).
      * \param[in] DMpartOuter A reference to a part of the density matrix (outer index).
      */
-    GreensFunctionPart(const AnnihilationOperatorPart& C, const CreationOperatorPart& CX,
-                       const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
-                       const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter);
+    GreensFunctionPart(const AnnihilationOperatorPart<Complex>& C,
+                       const CreationOperatorPart<Complex>& CX,
+                       const HamiltonianPart<Complex>& HpartInner,
+                       const HamiltonianPart<Complex>& HpartOuter,
+                       const DensityMatrixPart<Complex>& DMpartInner,
+                       const DensityMatrixPart<Complex>& DMpartOuter);
 
     /** Iterates over all matrix elements and fills the list of terms. */
     void compute(void);
@@ -140,19 +147,23 @@ public:
     const RealType ReduceTolerance;
 };
 
-std::ostream& operator<< (std::ostream& out, const GreensFunctionPart::Term& T);
-
 // Inline call operators
-inline ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const {
+template<bool Complex>
+inline ComplexType GreensFunctionPart<Complex>::operator()(long MatsubaraNumber) const {
     return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1)); }
 
-inline ComplexType GreensFunctionPart::operator()(ComplexType z) const {
+template<bool Complex>
+inline ComplexType GreensFunctionPart<Complex>::operator()(ComplexType z) const {
     return Terms(z);
 }
 
-inline ComplexType GreensFunctionPart::of_tau(RealType tau) const {
+template<bool Complex>
+inline ComplexType GreensFunctionPart<Complex>::of_tau(RealType tau) const {
     return Terms(tau, beta);
 }
+
+extern template class GreensFunctionPart<false>;
+extern template class GreensFunctionPart<true>;
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_GREENSFUNCTIONPART_H

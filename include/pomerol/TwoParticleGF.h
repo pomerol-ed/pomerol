@@ -37,26 +37,31 @@ namespace Pomerol{
  * take place inside the parts). Every part corresponds to a 'world-stripe', a sequence of 4
  * matrix blocks.
  */
+template<bool Complex = false>
 class TwoParticleGF : public Thermal, public ComputableObject {
 
     /** A reference to a states classification object. */
-    const StatesClassification& S;
+    const StatesClassification<Complex>& S;
     /** A reference to a Hamiltonian. */
-    const Hamiltonian& H;
+    const Hamiltonian<Complex>& H;
     /** A reference to the first annihilation operator. */
-    const AnnihilationOperator& C1;
+    const AnnihilationOperator<Complex>& C1;
     /** A reference to the second annihilation operator. */
-    const AnnihilationOperator& C2;
+    const AnnihilationOperator<Complex>& C2;
     /** A reference to the first creation operator. */
-    const CreationOperator& CX3;
+    const CreationOperator<Complex>& CX3;
     /** A reference to the second creation operator. */
-    const CreationOperator& CX4;
+    const CreationOperator<Complex>& CX4;
     /** A reference to a density matrix. */
-    const DensityMatrix& DM;
+    const DensityMatrix<Complex>& DM;
 
 public:
+
+    static constexpr bool ISComplex = Complex;
+    using PartT = TwoParticleGFPart<Complex>;
+
     /** A list of pointers to parts. */
-    std::vector<TwoParticleGFPart*> parts;
+    std::vector<PartT*> parts;
 protected:
 
     /** A flag to determine whether this GF is identical to zero */
@@ -67,7 +72,7 @@ protected:
      * \param[in] OperatorPosition The number of the position of the operator.
      * \param[in] LeftIndex A left block index referring to the part needed.
      */
-    const FieldOperatorPart& OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const;
+    const FieldOperatorPart<Complex>& OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const;
     /** Chooses an operator standing at a specified position in a given permutation and
      * returns a left block index corresponding to the right block index. May return ERROR_BLOCK_NUMBER if
      * the operator does not have such a (non-zero) block.
@@ -102,10 +107,10 @@ public:
      * \param[in] CX4 A reference to the second creation operator.
      * \param[in] DM A reference to a density matrix.
      */
-    TwoParticleGF(const StatesClassification& S, const Hamiltonian& H,
-            const AnnihilationOperator& C1, const AnnihilationOperator& C2,
-            const CreationOperator& CX3, const CreationOperator& CX4,
-            const DensityMatrix& DM);
+    TwoParticleGF(const StatesClassification<Complex>& S, const Hamiltonian<Complex>& H,
+            const AnnihilationOperator<Complex>& C1, const AnnihilationOperator<Complex>& C2,
+            const CreationOperator<Complex>& CX3, const CreationOperator<Complex>& CX4,
+            const DensityMatrix<Complex>& DM);
     /** Destructor. */
     ~TwoParticleGF();
 
@@ -148,13 +153,14 @@ public:
     unsigned short getPermutationNumber(const Permutation3& in);
 };
 
-inline ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const {
+template<bool Complex>
+inline ComplexType TwoParticleGF<Complex>::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const {
     if(Vanishing) {
         return 0.0;
         }
     else {
         ComplexType Value = 0;
-        for(std::vector<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){
+        for(auto iter = parts.begin(); iter != parts.end(); iter++){
         //if ((*iter)->getStatus() < (*iter)->Computed) { ERROR("TwoParticleGF must be computed to get value."); throw (exStatusMismatch()); };
             Value += (**iter)(z1,z2,z3);
             }
@@ -162,11 +168,15 @@ inline ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, Com
          };
 }
 
-inline ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const {
+template<bool Complex>
+inline ComplexType TwoParticleGF<Complex>::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const {
     return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber1+1),
                    MatsubaraSpacing*RealType(2*MatsubaraNumber2+1),
                    MatsubaraSpacing*RealType(2*MatsubaraNumber3+1));
 }
+
+extern template class TwoParticleGF<false>;
+extern template class TwoParticleGF<true>;
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGF_H

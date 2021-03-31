@@ -50,7 +50,7 @@ void Hamiltonian<Complex>::prepare(const MPI_Comm& comm)
 
             MPI_Bcast(parts[p]->H.data(),
                       parts[p]->H.size(),
-                      pMPI::mpi_datatype<MelemType<Complex>>(),
+                      pMPI::mpi_datatype<MelemType<Complex>>::get(),
                       rank,
                       comm
                      );
@@ -59,7 +59,7 @@ void Hamiltonian<Complex>::prepare(const MPI_Comm& comm)
             parts[p]->H.resize(mat_rows, mat_rows);
             MPI_Bcast(parts[p]->H.data(),
                       mat_rows * mat_rows,
-                      pMPI::mpi_datatype<MelemType<Complex>>(),
+                      pMPI::mpi_datatype<MelemType<Complex>>::get(),
                       job_map[p],
                       comm
                      );
@@ -93,7 +93,7 @@ void Hamiltonian<Complex>::compute(const MPI_Comm& comm)
             }
             MPI_Bcast(parts[p]->H.data(),
                       parts[p]->H.size(),
-                      pMPI::mpi_datatype<MelemType<Complex>>(),
+                      pMPI::mpi_datatype<MelemType<Complex>>::get(),
                       rank,
                       comm
                     );
@@ -107,7 +107,7 @@ void Hamiltonian<Complex>::compute(const MPI_Comm& comm)
             parts[p]->Eigenvalues.resize(parts[p]->H.rows());
             MPI_Bcast(parts[p]->H.data(),
                       parts[p]->H.size(),
-                      pMPI::mpi_datatype<MelemType<Complex>>(),
+                      pMPI::mpi_datatype<MelemType<Complex>>::get(),
                       job_map[p],
                       comm);
             MPI_Bcast(parts[p]->Eigenvalues.data(),

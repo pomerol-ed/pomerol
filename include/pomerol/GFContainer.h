@@ -18,15 +18,20 @@
 
 namespace Pomerol{
 
-typedef std::shared_ptr<GreensFunction> GFPointer;
-
-class GFContainer: public IndexContainer2<GreensFunction,GFContainer>, public Thermal
+template<bool Complex = false>
+class GFContainer: public IndexContainer2<GreensFunction<Complex>, GFContainer<Complex>>, public Thermal
 {
 
 public:
-    GFContainer(const IndexClassification& IndexInfo,
-                const StatesClassification &S,
-                const Hamiltonian &H, const DensityMatrix &DM, const FieldOperatorContainer& Operators);
+
+    using ElementT = GreensFunction<Complex>;
+    using ContainerBase = IndexContainer2<ElementT, GFContainer<Complex>>;
+
+    GFContainer(const IndexClassification<Complex>& IndexInfo,
+                const StatesClassification<Complex> &S,
+                const Hamiltonian<Complex> &H,
+                const DensityMatrix<Complex> &DM,
+                const FieldOperatorContainer<Complex>& Operators);
 
 
     void prepareAll(const std::set<IndexCombination2>& InitialIndices = std::set<IndexCombination2>());
@@ -34,15 +39,18 @@ public:
 
 protected:
 
-    friend class IndexContainer2<GreensFunction,GFContainer>;
-    GreensFunction* createElement(const IndexCombination2& Indices) const;
+    friend ContainerBase;
+    ElementT* createElement(const IndexCombination2& Indices) const;
 
-    const StatesClassification &S;
+    const StatesClassification<Complex> &S;
 
-    const Hamiltonian &H;
-    const DensityMatrix &DM;
-    const FieldOperatorContainer &Operators;
+    const Hamiltonian<Complex> &H;
+    const DensityMatrix<Complex> &DM;
+    const FieldOperatorContainer<Complex> &Operators;
 };
+
+extern template class GFContainer<false>;
+extern template class GFContainer<true>;
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_GFCONTAINER_H

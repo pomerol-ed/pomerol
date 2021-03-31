@@ -51,16 +51,16 @@ struct ElementWithPermFreq
 template<typename ElementType, typename SourceObject>
 class IndexContainer4 {
 protected:
-    const IndexClassification& IndexInfo;
+    const IndexClassification<ElementType::ISComplex>& IndexInfo;
 
     SourceObject* pSource;
 
     const std::set<IndexCombination4> enumerateInitialIndices(void) const;
 
 public:
-    std::map<IndexCombination4,ElementWithPermFreq<ElementType> > ElementsMap;
+    std::map<IndexCombination4, ElementWithPermFreq<ElementType> > ElementsMap;
     std::map<IndexCombination4, std::shared_ptr<ElementType>  > NonTrivialElements;
-    IndexContainer4<ElementType,SourceObject>(SourceObject* pSource, const IndexClassification& IndexInfo);
+    IndexContainer4<ElementType,SourceObject>(SourceObject* pSource, const IndexClassification<ElementType::ISComplex>& IndexInfo);
 
     void fill(std::set<IndexCombination4> InitialIndices = std::set<IndexCombination4>());
     ElementWithPermFreq<ElementType>& set(const IndexCombination4& Indices);
@@ -106,7 +106,8 @@ ElementWithPermFreq<ElementType>::operator ElementType&()
 /////////////////////
 template<typename ElementType, typename SourceObject>
 inline
-IndexContainer4<ElementType,SourceObject>::IndexContainer4(SourceObject* pSource, const IndexClassification& IndexInfo) :
+IndexContainer4<ElementType,SourceObject>::IndexContainer4(SourceObject* pSource,
+                                                           const IndexClassification<ElementType::ISComplex>& IndexInfo) :
     IndexInfo(IndexInfo), pSource(pSource)
 {}
 

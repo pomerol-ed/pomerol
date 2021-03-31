@@ -34,11 +34,15 @@
 
 namespace Pomerol{
 
-typedef std::shared_ptr<TwoParticleGF> GF2Pointer;
 
-class TwoParticleGFContainer: public IndexContainer4<TwoParticleGF,TwoParticleGFContainer>, public Thermal
+template<bool Complex = false>
+class TwoParticleGFContainer: public IndexContainer4<TwoParticleGF<Complex>, TwoParticleGFContainer<Complex>>, public Thermal
 {
 public:
+
+    using ElementT = TwoParticleGF<Complex>;
+    using ContainerBase = IndexContainer4<ElementT, TwoParticleGFContainer<Complex>>;
+
     /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
     RealType ReduceResonanceTolerance;
     /** Minimal magnitude of the coefficient of a term to take it into account. default = 1e-16. */
@@ -47,8 +51,11 @@ public:
     RealType MultiTermCoefficientTolerance;
 
 
-    TwoParticleGFContainer(const IndexClassification& IndexInfo, const StatesClassification &S,
-                           const Hamiltonian &H, const DensityMatrix &DM, const FieldOperatorContainer& Operators);
+    TwoParticleGFContainer(const IndexClassification<Complex>& IndexInfo,
+                           const StatesClassification<Complex> &S,
+                           const Hamiltonian<Complex> &H,
+                           const DensityMatrix<Complex> &DM,
+                           const FieldOperatorContainer<Complex>& Operators);
 
     void prepareAll(const std::set<IndexCombination4>& InitialIndices = std::set<IndexCombination4>());
     std::map<IndexCombination4,std::vector<ComplexType> > computeAll(
@@ -70,14 +77,14 @@ public:
 
 protected:
 
-    friend class IndexContainer4<TwoParticleGF,TwoParticleGFContainer>;
-    TwoParticleGF* createElement(const IndexCombination4& Indices) const;
+    friend ContainerBase;
+    ElementT* createElement(const IndexCombination4& Indices) const;
 
-    const StatesClassification &S;
+    const StatesClassification<Complex> &S;
 
-    const Hamiltonian &H;
-    const DensityMatrix &DM;
-    const FieldOperatorContainer &Operators;
+    const Hamiltonian<Complex> &H;
+    const DensityMatrix<Complex> &DM;
+    const FieldOperatorContainer<Complex> &Operators;
 };
 
 } // end of namespace Pomerol

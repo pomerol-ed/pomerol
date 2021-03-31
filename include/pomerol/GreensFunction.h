@@ -22,27 +22,34 @@ namespace Pomerol{
 /** This class represents a thermal Green's function in the Matsubara representation.
  *
  * Exact definition:
- * 
+ *
  * \f[
  *      G(\omega_n) = -\int_0^\beta \langle\mathbf{T}c_i(\tau)c^+_j(0)\rangle e^{i\omega_n\tau} d\tau
  * \f]
- * 
+ *
  * It is actually a container class for a collection of parts (most of real calculations
  * take place inside the parts). A pair of parts, one part of an annihilation operator and
  * another from a creation operator, corresponds to a part of the Green's function.
  */
+template<bool Complex = false>
 class GreensFunction : public Thermal, public ComputableObject {
 
+public:
+
+    static constexpr bool ISComplex = Complex;
+    using PartT = GreensFunctionPart<Complex>;
+
+private:
     /** A reference to a states classification object. */
-    const StatesClassification& S;
+    const StatesClassification<Complex>& S;
     /** A reference to a Hamiltonian. */
-    const Hamiltonian& H;
+    const Hamiltonian<Complex>& H;
     /** A reference to an annihilation operator. */
-    const AnnihilationOperator& C;
+    const AnnihilationOperator<Complex>& C;
     /** A reference to a creation operator. */
-    const CreationOperator& CX;
+    const CreationOperator<Complex>& CX;
     /** A reference to a density matrix. */
-    const DensityMatrix& DM;
+    const DensityMatrix<Complex>& DM;
 
     /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
     bool Vanishing;
@@ -50,7 +57,7 @@ class GreensFunction : public Thermal, public ComputableObject {
     /** A list of pointers to parts (every part corresponds to a part of the annihilation operator
      * and a part of the creation operator).
      */
-    std::list<GreensFunctionPart*> parts;
+    std::list<PartT*> parts;
 
 public:
      /** Constructor.
@@ -60,8 +67,11 @@ public:
      * \param[in] CX A reference to a creation operator.
      * \param[in] DM A reference to a density matrix.
      */
-    GreensFunction(const StatesClassification& S, const Hamiltonian& H,
-                   const AnnihilationOperator& C, const CreationOperator& CX, const DensityMatrix& DM);
+    GreensFunction(const StatesClassification<Complex>& S,
+                   const Hamiltonian<Complex>& H,
+                   const AnnihilationOperator<Complex>& C,
+                   const CreationOperator<Complex>& CX,
+                   const DensityMatrix<Complex>& DM);
     /** Copy-constructor.
      * \param[in] GF GreensFunction object to be copied.
      */
@@ -99,24 +109,27 @@ public:
     bool isVanishing(void) const;
 };
 
-inline ComplexType GreensFunction::operator()(long int MatsubaraNumber) const {
+template<bool Complex>
+inline ComplexType GreensFunction<Complex>::operator()(long int MatsubaraNumber) const {
     return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1)); }
 
-inline ComplexType GreensFunction::operator()(ComplexType z) const {
+template<bool Complex>
+inline ComplexType GreensFunction<Complex>::operator()(ComplexType z) const {
     if(Vanishing) return 0;
     else {
         ComplexType Value = 0;
-        for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+        for(auto iter = parts.begin(); iter != parts.end(); iter++)
             Value += (**iter)(z);
         return Value;
     };
 }
 
-inline ComplexType GreensFunction::of_tau(RealType tau) const {
+template<bool Complex>
+inline ComplexType GreensFunction<Complex>::of_tau(RealType tau) const {
     if(Vanishing) return 0;
     else {
         ComplexType Value = 0;
-        for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+        for(auto iter = parts.begin(); iter != parts.end(); iter++)
             Value += (*iter)->of_tau(tau);
         return Value;
     };

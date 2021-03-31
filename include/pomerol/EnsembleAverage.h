@@ -22,7 +22,7 @@ namespace Pomerol{
 /** This class represents the ensemble average of a quadratic operator.
  *
  * Exact definition:
- * 
+ *
  * \f[
  *      \langle A \rangle = \langle c_i^{\dag} c_j \rangle
  * \f]
@@ -32,21 +32,24 @@ namespace Pomerol{
  *   EA.prepare()
  *   EA.getResult()
  */
+template<bool Complex = false>
 class EnsembleAverage : public Thermal, public ComputableObject {
 
     /** A reference to a states classification object. */
-    const StatesClassification& S;
+    const StatesClassification<Complex>& S;
     /** A reference to a Hamiltonian. */
-    const Hamiltonian& H;
+    const Hamiltonian<Complex>& H;
     /** A reference to a bosonic operator. */
-    const QuadraticOperator& A;
+    const QuadraticOperator<Complex>& A;
     /** A reference to a density matrix. */
-    const DensityMatrix& DM;
+    const DensityMatrix<Complex>& DM;
 
     ComplexType result;
 
     /** Returns the contribution to the ensemble average from a part. Called in prepare() */
-    ComplexType compute(const QuadraticOperatorPart& Apart, const HamiltonianPart& Hpart, const DensityMatrixPart& DMpart);
+    ComplexType compute(const QuadraticOperatorPart<Complex>& Apart,
+                        const HamiltonianPart<Complex>& Hpart,
+                        const DensityMatrixPart<Complex>& DMpart);
 
 public:
      /** Constructor.
@@ -55,8 +58,8 @@ public:
      * \param[in] A A reference to a quadratic operator.
      * \param[in] DM A reference to a density matrix.
      */
-     EnsembleAverage(const StatesClassification& S, const Hamiltonian& H,
-                     const QuadraticOperator& A, const DensityMatrix& DM);
+     EnsembleAverage(const StatesClassification<Complex>& S, const Hamiltonian<Complex>& H,
+                     const QuadraticOperator<Complex>& A, const DensityMatrix<Complex>& DM);
     /** Copy-constructor.
      * \param[in] EA EnsembleAverage object to be copied.
      */
@@ -67,8 +70,10 @@ public:
 
     /** Returns the ensemble average */
     ComplexType getResult(){ return result; };
-
 };
+
+extern template class EnsembleAverage<false>;
+extern template class EnsembleAverage<true>;
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_ENSEMBLEAVERAGE_H

@@ -7,7 +7,7 @@
 #ifndef __INCLUDE_TWOPARTICLEGFPART_H
 #define __INCLUDE_TWOPARTICLEGFPART_H
 
-#include <mpi.h>
+#include "mpi_dispatcher/misc.hpp"
 
 #include"Misc.h"
 #include"StatesClassification.h"
@@ -18,13 +18,17 @@
 
 namespace Pomerol{
 
+template<bool Complex> class TwoParticleGF;
+template<bool Complex> class TwoParticleGFContainer;
+
 /** This class represents a part of a two-particle Green's function.
  * Every part describes one 'world stripe' of four operators.
  */
+template<bool Complex = false>
 class TwoParticleGFPart : public Thermal, ComputableObject {
 
-friend class TwoParticleGF;
-friend class TwoParticleGFContainer;
+friend class TwoParticleGF<Complex>;
+friend class TwoParticleGFContainer<Complex>;
 
 public:
 
@@ -38,7 +42,7 @@ public:
      * \f]
      * otherwise.
      */
-    struct NonResonantTerm{
+    struct NonResonantTerm {
         /** Coefficient \f$ C \f$. */
         ComplexType Coeff;
 
@@ -110,9 +114,6 @@ public:
         * \param[in] AnotherTerm Another term to add to this.
         */
         NonResonantTerm& operator+=(const NonResonantTerm& AnotherTerm);
-
-        /** Create and commit an MPI datatype for NonResonantTerm */
-        static MPI_Datatype mpi_datatype();
     };
 
 
@@ -201,39 +202,36 @@ public:
         * \param[in] AnotherTerm Another term to add to this.
         */
         ResonantTerm& operator+=(const ResonantTerm& AnotherTerm);
-
-        /** Create and commit an MPI datatype for ResonantTerm */
-        static MPI_Datatype mpi_datatype();
     };
 
 private:
 
     /** A reference to a part of the first operator. */
-    const FieldOperatorPart& O1;
+    const FieldOperatorPart<Complex>& O1;
     /** A reference to a part of the second operator. */
-    const FieldOperatorPart& O2;
+    const FieldOperatorPart<Complex>& O2;
     /** A reference to a part of the third operator. */
-    const FieldOperatorPart& O3;
+    const FieldOperatorPart<Complex>& O3;
     /** A reference to a part of the fourth (creation) operator. */
-    const CreationOperatorPart& CX4;
+    const CreationOperatorPart<Complex>& CX4;
 
     /** A reference to the first part of a Hamiltonian. */
-    const HamiltonianPart& Hpart1;
+    const HamiltonianPart<Complex>& Hpart1;
     /** A reference to the second part of a Hamiltonian. */
-    const HamiltonianPart& Hpart2;
+    const HamiltonianPart<Complex>& Hpart2;
     /** A reference to the third part of a Hamiltonian. */
-    const HamiltonianPart& Hpart3;
+    const HamiltonianPart<Complex>& Hpart3;
     /** A reference to the fourth part of a Hamiltonian. */
-    const HamiltonianPart& Hpart4;
+    const HamiltonianPart<Complex>& Hpart4;
 
     /** A reference to the first part of a density matrix (the part corresponding to Hpart1). */
-    const DensityMatrixPart& DMpart1;
+    const DensityMatrixPart<Complex>& DMpart1;
     /** A reference to the second part of a density matrix (the part corresponding to Hpart2). */
-    const DensityMatrixPart& DMpart2;
+    const DensityMatrixPart<Complex>& DMpart2;
     /** A reference to the third part of a density matrix (the part corresponding to Hpart3). */
-    const DensityMatrixPart& DMpart3;
+    const DensityMatrixPart<Complex>& DMpart3;
     /** A reference to the fourth part of a density matrix (the part corresponding to Hpart4). */
-    const DensityMatrixPart& DMpart4;
+    const DensityMatrixPart<Complex>& DMpart4;
 
     /** A permutation of the operators for this part. */
     Permutation3 Permutation;
@@ -312,12 +310,12 @@ public:
      * \param[in] DMpart4 A reference to the fourth part of a density matrix.
      * \param[in] Permutation A permutation of the operators for this part.
      */
-    TwoParticleGFPart(const FieldOperatorPart& O1, const FieldOperatorPart& O2,
-                      const FieldOperatorPart& O3, const CreationOperatorPart& CX4,
-                      const HamiltonianPart& Hpart1, const HamiltonianPart& Hpart2,
-                      const HamiltonianPart& Hpart3, const HamiltonianPart& Hpart4,
-                      const DensityMatrixPart& DMpart1, const DensityMatrixPart& DMpart2,
-                      const DensityMatrixPart& DMpart3, const DensityMatrixPart& DMpart4,
+    TwoParticleGFPart(const FieldOperatorPart<Complex>& O1, const FieldOperatorPart<Complex>& O2,
+                      const FieldOperatorPart<Complex>& O3, const CreationOperatorPart<Complex>& CX4,
+                      const HamiltonianPart<Complex>& Hpart1, const HamiltonianPart<Complex>& Hpart2,
+                      const HamiltonianPart<Complex>& Hpart3, const HamiltonianPart<Complex>& Hpart4,
+                      const DensityMatrixPart<Complex>& DMpart1, const DensityMatrixPart<Complex>& DMpart2,
+                      const DensityMatrixPart<Complex>& DMpart3, const DensityMatrixPart<Complex>& DMpart4,
                 Permutation3 Permutation);
 
     /** Actually computes the part. */
@@ -353,15 +351,15 @@ public:
     const TermList<TwoParticleGFPart::NonResonantTerm>& getNonResonantTerms() const;
 };
 
-inline
-ComplexType TwoParticleGFPart::NonResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
+template<bool Complex>
+inline ComplexType TwoParticleGFPart<Complex>::NonResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
 {
     return isz4 ?   Coeff / ((z1-Poles[0])*(z1+z2+z3-Poles[0]-Poles[1]-Poles[2])*(z3-Poles[2])) :
                     Coeff / ((z1-Poles[0])*(z2-Poles[1])*(z3-Poles[2]));
 }
 
-inline
-ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3, RealType KroneckerSymbolTolerance) const
+template<bool Complex>
+inline ComplexType TwoParticleGFPart<Complex>::ResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3, RealType KroneckerSymbolTolerance) const
 {
     ComplexType Diff;
     if(isz1z2){
@@ -375,5 +373,29 @@ ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexT
     }
 }
 
+extern template class TwoParticleGFPart<false>;
+extern template class TwoParticleGFPart<true>;
+
 } // end of namespace Pomerol
+
+namespace pMPI {
+
+/** Create and commit an MPI datatype for NonResonantTerm */
+template<> struct mpi_datatype<Pomerol::TwoParticleGFPart<false>::NonResonantTerm> {
+    static MPI_Datatype get();
+};
+template<> struct mpi_datatype<Pomerol::TwoParticleGFPart<true>::NonResonantTerm> {
+    static MPI_Datatype get();
+};
+
+/** Create and commit an MPI datatype for ResonantTerm */
+template<> struct mpi_datatype<Pomerol::TwoParticleGFPart<false>::ResonantTerm> {
+    static MPI_Datatype get();
+};
+template<> struct mpi_datatype<Pomerol::TwoParticleGFPart<true>::ResonantTerm> {
+    static MPI_Datatype get();
+};
+
+} // end of namespace Pomerol::pMPI
+
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGFPART_H

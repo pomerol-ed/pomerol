@@ -1,6 +1,6 @@
 /** \file include/pomerol/DensityMatrix.h
 ** \brief Density matrix of the grand canonical ensemble.
-** 
+**
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
@@ -21,14 +21,21 @@ namespace Pomerol{
  * the Hamiltonian and the parts of the density matrix itself, since the density matrix
  * is a function of \f$ \hat H \f$.
  */
+template<bool Complex = false>
 class DensityMatrix : public Thermal, public ComputableObject
 {
+public:
+
+    using PartT = DensityMatrixPart<Complex>;
+
+private:
+
     /** A reference to a states classification object. */
-    const StatesClassification& S;
+    const StatesClassification<Complex>& S;
     /** A reference to a Hamiltonian defining the grand canonical ensemble. */
-    const Hamiltonian &H;
+    const Hamiltonian<Complex> &H;
     /** A vector of pointers to parts (every part corresponds to a part of the Hamiltonian). */
-    std::vector<DensityMatrixPart*> parts;
+    std::vector<PartT*> parts;
 
 public:
     /** Constructor.
@@ -36,7 +43,7 @@ public:
      * \param[in] H A reference to a Hamiltonian.
      * \param[in] beta The inverse temperature.
      */
-    DensityMatrix(const StatesClassification& S, const Hamiltonian& H, RealType beta);
+    DensityMatrix(const StatesClassification<Complex>& S, const Hamiltonian<Complex>& H, RealType beta);
     /** Destructor. */
     ~DensityMatrix();
 
@@ -49,11 +56,11 @@ public:
     /** Returns a part of the density matrix.
     * \param[in] in A set of the quantum numbers to be resolved into a part number.
     */
-    const DensityMatrixPart& getPart(const QuantumNumbers &in) const;
+    const PartT& getPart(const QuantumNumbers<Complex> &in) const;
     /** Returns a part of the density matrix.
      * \param[in] in A part number.
      */
-    const DensityMatrixPart& getPart(BlockNumber in) const;
+    const PartT& getPart(BlockNumber in) const;
 
     /** Returns the value of the density matrix corresponding to a specified quantum state.
      * \param[in] state A quantum state.
@@ -76,6 +83,9 @@ public:
     /** Return true if the block has not been truncated. Always true if function truncateBlocks has not been called. */
     bool isRetained(BlockNumber in) const;
 };
+
+extern template class DensityMatrix<false>;
+extern template class DensityMatrix<true>;
 
 }; // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H

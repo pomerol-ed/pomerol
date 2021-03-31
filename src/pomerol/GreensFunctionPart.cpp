@@ -2,33 +2,35 @@
 
 namespace Pomerol{
 
-GreensFunctionPart::Term::Term(ComplexType Residue, RealType Pole) :
+template<bool Complex>
+GreensFunctionPart<Complex>::Term::Term(ComplexType Residue, RealType Pole) :
     Residue(Residue), Pole(Pole) {};
-ComplexType GreensFunctionPart::Term::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
 
-ComplexType GreensFunctionPart::Term::operator()(RealType tau, RealType beta) const {
+template<bool Complex>
+ComplexType GreensFunctionPart<Complex>::Term::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
+
+template<bool Complex>
+ComplexType GreensFunctionPart<Complex>::Term::operator()(RealType tau, RealType beta) const {
     return Pole > 0 ? -Residue*exp(-tau*Pole)/(1 + exp(-beta*Pole)) :
                       -Residue*exp((beta-tau)*Pole)/(exp(beta*Pole) + 1);
 }
 
-inline
-GreensFunctionPart::Term& GreensFunctionPart::Term::operator+=(const Term& AnotherTerm)
+template<bool Complex>
+inline auto GreensFunctionPart<Complex>::Term::operator+=(const Term& AnotherTerm) -> Term&
 {
     Residue += AnotherTerm.Residue;
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& out, const GreensFunctionPart::Term& T)
-{
-    out << T.Residue << "/(z - " << T.Pole << ")";
-    return out;
-}
-
-GreensFunctionPart::GreensFunctionPart( const AnnihilationOperatorPart& C, const CreationOperatorPart& CX,
-                                        const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
-                                        const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
+template<bool Complex>
+GreensFunctionPart<Complex>::GreensFunctionPart(const AnnihilationOperatorPart<Complex>& C,
+                                                const CreationOperatorPart<Complex>& CX,
+                                                const HamiltonianPart<Complex>& HpartInner,
+                                                const HamiltonianPart<Complex>& HpartOuter,
+                                                const DensityMatrixPart<Complex>& DMpartInner,
+                                                const DensityMatrixPart<Complex>& DMpartOuter) :
                                         Thermal(DMpartInner),
-                                        Terms(Term::Compare(1e-8), Term::IsNegligible(1e-8)),
+                                        Terms(typename Term::Compare(1e-8), typename Term::IsNegligible(1e-8)),
                                         HpartInner(HpartInner), HpartOuter(HpartOuter),
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
                                         C(C), CX(CX),
@@ -37,21 +39,22 @@ GreensFunctionPart::GreensFunctionPart( const AnnihilationOperatorPart& C, const
                                         ReduceTolerance(1e-8)
 {}
 
-void GreensFunctionPart::compute(void)
+template<bool Complex>
+void GreensFunctionPart<Complex>::compute(void)
 {
     Terms.clear();
 
     // Blocks (submatrices) of C and CX
-    const RowMajorMatrixType& Cmatrix = C.getRowMajorValue();
-    const ColMajorMatrixType& CXmatrix = CX.getColMajorValue();
+    const RowMajorMatrixType<Complex>& Cmatrix = C.getRowMajorValue();
+    const ColMajorMatrixType<Complex>& CXmatrix = CX.getColMajorValue();
     QuantumState outerSize = Cmatrix.outerSize();
 
     // Iterate over all values of the outer index.
     // TODO: should be optimized - skip empty rows of Cmatrix and empty columns of CXmatrix.
     for(QuantumState index1=0; index1<outerSize; ++index1){
         // <index1|C|Cinner><CXinner|CX|index1>
-        RowMajorMatrixType::InnerIterator Cinner(Cmatrix,index1);
-        ColMajorMatrixType::InnerIterator CXinner(CXmatrix,index1);
+        typename RowMajorMatrixType<Complex>::InnerIterator Cinner(Cmatrix,index1);
+        typename ColMajorMatrixType<Complex>::InnerIterator CXinner(CXmatrix,index1);
 
         // While we are not at the last column of Cmatrix or at the last row of CXmatrix.
         while(Cinner && CXinner){
@@ -81,5 +84,8 @@ void GreensFunctionPart::compute(void)
 
     assert(Terms.check_terms());
 }
+
+template class GreensFunctionPart<false>;
+template class GreensFunctionPart<true>;
 
 } // end of namespace Pomerol

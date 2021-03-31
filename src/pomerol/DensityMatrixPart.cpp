@@ -1,11 +1,17 @@
 #include "pomerol/DensityMatrixPart.h"
 
 namespace Pomerol{
-DensityMatrixPart::DensityMatrixPart(const StatesClassification &S, const HamiltonianPart& hpart, RealType beta, RealType GroundEnergy) :
+
+template<bool Complex>
+DensityMatrixPart<Complex>::DensityMatrixPart(const StatesClassification<Complex> &S,
+                                              const HamiltonianPart<Complex>& hpart,
+                                              RealType beta,
+                                              RealType GroundEnergy) :
     Thermal(beta), S(S), hpart(hpart), GroundEnergy(GroundEnergy), weights(hpart.getSize()), retained(true)
 {}
 
-RealType DensityMatrixPart::computeUnnormalized(void)
+template<bool Complex>
+RealType DensityMatrixPart<Complex>::computeUnnormalized(void)
 {
     Z_part = 0;
     QuantumState partSize = weights.size();
@@ -17,18 +23,21 @@ RealType DensityMatrixPart::computeUnnormalized(void)
     return Z_part;
 }
 
-void DensityMatrixPart::normalize(RealType Z)
+template<bool Complex>
+void DensityMatrixPart<Complex>::normalize(RealType Z)
 {
     weights /= Z;
     Z_part /= Z;
 }
 
-RealType DensityMatrixPart::getPartialZ(void) const
+template<bool Complex>
+RealType DensityMatrixPart<Complex>::getPartialZ(void) const
 {
     return Z_part;
 }
 
-RealType DensityMatrixPart::getAverageEnergy(void) const
+template<bool Complex>
+RealType DensityMatrixPart<Complex>::getAverageEnergy(void) const
 {
     RealType E=0.;
     InnerQuantumState partSize = weights.size();
@@ -38,12 +47,13 @@ RealType DensityMatrixPart::getAverageEnergy(void) const
     return E;
 };
 
-RealType DensityMatrixPart::getAverageOccupancy(void) const
+template<bool Complex>
+RealType DensityMatrixPart<Complex>::getAverageOccupancy(void) const
 {
     RealType n=0.;
     InnerQuantumState partSize = weights.size();
     for(InnerQuantumState s = 0; s < partSize; ++s){
-        VectorType CurrentEigenState = hpart.getEigenState(s);
+        VectorType<Complex> CurrentEigenState = hpart.getEigenState(s);
         for (InnerQuantumState fi=0; (long) fi < CurrentEigenState.size(); ++fi)
             n += weights(s)*
 		    S.getFockState(hpart.getBlockNumber(),fi).count()*
@@ -52,12 +62,13 @@ RealType DensityMatrixPart::getAverageOccupancy(void) const
     return n;
 };
 
-RealType DensityMatrixPart::getAverageOccupancy(ParticleIndex i) const
+template<bool Complex>
+RealType DensityMatrixPart<Complex>::getAverageOccupancy(ParticleIndex i) const
 {
     RealType n=0.;
     InnerQuantumState partSize = weights.size();
     for(InnerQuantumState s = 0; s < partSize; ++s){
-        VectorType CurrentEigenState = hpart.getEigenState(s);
+        VectorType<Complex> CurrentEigenState = hpart.getEigenState(s);
         for (InnerQuantumState fi=0; (long) fi < CurrentEigenState.size(); ++fi)
             n += weights(s)*
 		    S.getFockState(hpart.getBlockNumber(),fi).test(i)*
@@ -66,14 +77,13 @@ RealType DensityMatrixPart::getAverageOccupancy(ParticleIndex i) const
     return n;
 };
 
-
-
-RealType DensityMatrixPart::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const
+template<bool Complex>
+RealType DensityMatrixPart<Complex>::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const
 {
     RealType NN=0.;
     QuantumState partSize = weights.size();
     for(InnerQuantumState s = 0; s < partSize; ++s){ // s is an EigenState number
-        VectorType CurrentEigenState = hpart.getEigenState(s);
+        VectorType<Complex> CurrentEigenState = hpart.getEigenState(s);
         for (InnerQuantumState fi=0; (long) fi < CurrentEigenState.size(); ++fi)
             NN += weights(s)*
 		    S.getFockState(hpart.getBlockNumber(),fi)[i]*
@@ -83,12 +93,14 @@ RealType DensityMatrixPart::getAverageDoubleOccupancy(ParticleIndex i, ParticleI
     return NN;
 };
 
-RealType DensityMatrixPart::getWeight(InnerQuantumState s) const
+template<bool Complex>
+RealType DensityMatrixPart<Complex>::getWeight(InnerQuantumState s) const
 {
     return weights(s);
 }
 
-void DensityMatrixPart::truncate(RealType Tolerance)
+template<bool Complex>
+void DensityMatrixPart<Complex>::truncate(RealType Tolerance)
 {
     retained = false;
     InnerQuantumState partSize = weights.size();
@@ -99,9 +111,13 @@ void DensityMatrixPart::truncate(RealType Tolerance)
         }
 }
 
-bool DensityMatrixPart::isRetained() const
+template<bool Complex>
+bool DensityMatrixPart<Complex>::isRetained() const
 {
     return retained;
 }
+
+template class DensityMatrixPart<false>;
+template class DensityMatrixPart<true>;
 
 } // end of namespace Pomerol

@@ -24,7 +24,7 @@ namespace Pomerol{
 /** This class represents a dynamical susceptibility in the Matsubara representation.
  *
  * Exact definition:
- * 
+ *
  * \f[
  *      \chi(\omega_n) = \int_0^\beta \langle\mathbf{T} A(\tau) B(0)\rangle e^{i\omega_n\tau} d\tau
  * \f]
@@ -41,18 +41,25 @@ namespace Pomerol{
  * take place inside the parts). A pair of parts, one part of an annihilation operator and
  * another from a creation operator, corresponds to a part of the Green's function.
  */
+template<bool Complex = false>
 class Susceptibility : public Thermal, public ComputableObject {
 
+public:
+
+    using PartT = SusceptibilityPart<Complex>;
+
+private:
+
     /** A reference to a states classification object. */
-    const StatesClassification& S;
+    const StatesClassification<Complex>& S;
     /** A reference to a Hamiltonian. */
-    const Hamiltonian& H;
+    const Hamiltonian<Complex>& H;
     /** A reference to a quadratic operator. */
-    const QuadraticOperator& A;
+    const QuadraticOperator<Complex>& A;
     /** A reference to a quadratic operator. */
-    const QuadraticOperator& B;
+    const QuadraticOperator<Complex>& B;
     /** A reference to a density matrix. */
-    const DensityMatrix& DM;
+    const DensityMatrix<Complex>& DM;
 
     /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
     bool Vanishing;
@@ -60,7 +67,7 @@ class Susceptibility : public Thermal, public ComputableObject {
     /** A list of pointers to parts (every part corresponds to a part of the quadratic operator A
      * and a part of the quadratic operator B).
      */
-    std::list<SusceptibilityPart*> parts;
+    std::list<PartT*> parts;
 
     /** Subtract disconnected part <A><B> */
     bool SubtractDisconnected;
@@ -76,8 +83,11 @@ public:
      * \param[in] B A reference to a quadratic operator.
      * \param[in] DM A reference to a density matrix.
      */
-    Susceptibility(const StatesClassification& S, const Hamiltonian& H,
-                   const QuadraticOperator& A, const QuadraticOperator& B, const DensityMatrix& DM);
+    Susceptibility(const StatesClassification<Complex>& S,
+                   const Hamiltonian<Complex>& H,
+                   const QuadraticOperator<Complex>& A,
+                   const QuadraticOperator<Complex>& B,
+                   const DensityMatrix<Complex>& DM);
     /** Copy-constructor.
      * \param[in] GF Susceptibility object to be copied.
      */
@@ -105,7 +115,7 @@ public:
      * \param[in] EA_A Predefined EnsembleAverage class for operator A.
      * \param[in] EA_B Predefined EnsembleAverage class for operator B.
      */
-    void subtractDisconnected(EnsembleAverage &EA_A, EnsembleAverage &EA_B);
+    void subtractDisconnected(EnsembleAverage<Complex> &EA_A, EnsembleAverage<Complex> &EA_B);
 
      /** Returns the value of the Green's function calculated at a given frequency.
      * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
@@ -126,13 +136,15 @@ public:
 };
 
 // BOSON: bosononic Matsubara frequency
-inline ComplexType Susceptibility::operator()(long int MatsubaraNumber) const {
+template<bool Complex>
+inline ComplexType Susceptibility<Complex>::operator()(long int MatsubaraNumber) const {
     return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber)); }
 
-inline ComplexType Susceptibility::operator()(ComplexType z) const {
+template<bool Complex>
+inline ComplexType Susceptibility<Complex>::operator()(ComplexType z) const {
     ComplexType Value = 0;
     if(!Vanishing) {
-        for(std::list<SusceptibilityPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+        for(auto iter = parts.begin(); iter != parts.end(); iter++)
             Value += (**iter)(z);
     }
     if(SubtractDisconnected)
@@ -140,10 +152,11 @@ inline ComplexType Susceptibility::operator()(ComplexType z) const {
     return Value;
 }
 
-inline ComplexType Susceptibility::of_tau(RealType tau) const {
+template<bool Complex>
+inline ComplexType Susceptibility<Complex>::of_tau(RealType tau) const {
     ComplexType Value = 0;
     if(!Vanishing) {
-        for(std::list<SusceptibilityPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
+        for(auto iter = parts.begin(); iter != parts.end(); iter++)
             Value += (*iter)->of_tau(tau);
     }
     if(SubtractDisconnected)
@@ -151,6 +164,8 @@ inline ComplexType Susceptibility::of_tau(RealType tau) const {
     return Value;
 }
 
+extern template class Susceptibility<false>;
+extern template class Susceptibility<true>;
+
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_SUSCEPTIBILITY_H
-

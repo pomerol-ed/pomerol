@@ -2,34 +2,40 @@
 
 namespace Pomerol{
 
-SusceptibilityPart::Term::Term(ComplexType Residue, RealType Pole) :
+template<bool Complex>
+SusceptibilityPart<Complex>::Term::Term(ComplexType Residue, RealType Pole) :
     Residue(Residue), Pole(Pole) {};
-// BOSON: minus sign before Residue according to the definition \chi(tau) = < A(tau) B >
-ComplexType SusceptibilityPart::Term::operator()(ComplexType Frequency) const { return -Residue/(Frequency - Pole); }
 
-ComplexType SusceptibilityPart::Term::operator()(RealType tau, RealType beta) const {
+// BOSON: minus sign before Residue according to the definition \chi(tau) = < A(tau) B >
+template<bool Complex>
+ComplexType SusceptibilityPart<Complex>::Term::operator()(ComplexType Frequency) const { return -Residue/(Frequency - Pole); }
+
+template<bool Complex>
+ComplexType SusceptibilityPart<Complex>::Term::operator()(RealType tau, RealType beta) const {
     return Pole > 0 ? Residue*exp(-tau*Pole)/(1 - exp(-beta*Pole)) :
                       Residue*exp((beta-tau)*Pole)/(exp(beta*Pole) - 1);
 }
 
-inline
-SusceptibilityPart::Term& SusceptibilityPart::Term::operator+=(const Term& AnotherTerm)
+template<bool Complex>
+inline auto SusceptibilityPart<Complex>::Term::operator+=(const Term& AnotherTerm) -> Term&
 {
     Residue += AnotherTerm.Residue;
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& out, const SusceptibilityPart::Term& T)
+template<bool Complex>
+std::ostream& operator<<(std::ostream& out, typename SusceptibilityPart<Complex>::Term const& T)
 {
     out << T.Residue << "/(z - " << T.Pole << ")";
     return out;
 }
 
-SusceptibilityPart::SusceptibilityPart( const QuadraticOperatorPart& A, const QuadraticOperatorPart& B,
-                                        const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
-                                        const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
+template<bool Complex>
+SusceptibilityPart<Complex>::SusceptibilityPart( const QuadraticOperatorPart<Complex>& A, const QuadraticOperatorPart<Complex>& B,
+                                        const HamiltonianPart<Complex>& HpartInner, const HamiltonianPart<Complex>& HpartOuter,
+                                        const DensityMatrixPart<Complex>& DMpartInner, const DensityMatrixPart<Complex>& DMpartOuter) :
                                         Thermal(DMpartInner),
-                                        Terms(Term::Compare(1e-8), Term::IsNegligible(1e-8)),
+                                        Terms(typename Term::Compare(1e-8), typename Term::IsNegligible(1e-8)),
                                         HpartInner(HpartInner), HpartOuter(HpartOuter),
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
                                         A(A), B(B),
@@ -39,21 +45,22 @@ SusceptibilityPart::SusceptibilityPart( const QuadraticOperatorPart& A, const Qu
                                         ZeroPoleWeight(0)
 {}
 
-void SusceptibilityPart::compute(void)
+template<bool Complex>
+void SusceptibilityPart<Complex>::compute(void)
 {
     Terms.clear();
 
     // Blocks (submatrices) of A and B
-    const RowMajorMatrixType& Amatrix = A.getRowMajorValue();
-    const ColMajorMatrixType& Bmatrix = B.getColMajorValue();
+    RowMajorMatrixType<Complex> const& Amatrix = A.getRowMajorValue();
+    ColMajorMatrixType<Complex> const& Bmatrix = B.getColMajorValue();
     QuantumState outerSize = Amatrix.outerSize();
 
     // Iterate over all values of the outer index.
     // TODO: should be optimized - skip empty rows of Amatrix and empty columns of Bmatrix.
     for(QuantumState index1=0; index1<outerSize; ++index1){
         // <index1|A|Ainner><Binner|B|index1>
-        RowMajorMatrixType::InnerIterator Ainner(Amatrix,index1);
-        ColMajorMatrixType::InnerIterator Binner(Bmatrix,index1);
+        typename RowMajorMatrixType<Complex>::InnerIterator Ainner(Amatrix,index1);
+        typename ColMajorMatrixType<Complex>::InnerIterator Binner(Bmatrix,index1);
 
         // While we are not at the last column of Amatrix or at the last row of Bmatrix.
         while(Ainner && Binner){
@@ -89,5 +96,8 @@ void SusceptibilityPart::compute(void)
 
     assert(Terms.check_terms());
 }
+
+template class SusceptibilityPart<false>;
+template class SusceptibilityPart<true>;
 
 } // end of namespace Pomerol
