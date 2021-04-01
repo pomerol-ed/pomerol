@@ -38,36 +38,37 @@ configure_file("${PROJECT_SOURCE_DIR}/include/pomerol/first_include.h.in"
 install(FILES "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h"
         DESTINATION include/pomerol)
 
+# TODO
 set (pomerol_sources
     mpi_dispatcher/mpi_dispatcher
     pomerol/Misc
-    pomerol/Lattice
-    pomerol/LatticePresets
-    pomerol/Index
-    pomerol/IndexClassification
-    pomerol/Operator
-    pomerol/OperatorPresets
-    pomerol/IndexHamiltonian
-    pomerol/Symmetrizer
-    pomerol/StatesClassification
-    pomerol/HamiltonianPart
-    pomerol/Hamiltonian
-    pomerol/Thermal
-    pomerol/FieldOperatorPart
-    pomerol/FieldOperator
-    pomerol/FieldOperatorContainer
-    pomerol/DensityMatrixPart
-    pomerol/DensityMatrix
-    pomerol/GreensFunctionPart
-    pomerol/GreensFunction
-    pomerol/GFContainer
-    pomerol/TwoParticleGFPart
-    pomerol/TwoParticleGF
-    pomerol/TwoParticleGFContainer
-    pomerol/Vertex4
-    pomerol/SusceptibilityPart
-    pomerol/Susceptibility
-    pomerol/EnsembleAverage
+#    pomerol/Lattice
+#    pomerol/LatticePresets
+#    pomerol/Index
+#    pomerol/IndexClassification
+#    pomerol/Operator
+#    pomerol/OperatorPresets
+#    pomerol/IndexHamiltonian
+#    pomerol/Symmetrizer
+#    pomerol/StatesClassification
+#    pomerol/HamiltonianPart
+#    pomerol/Hamiltonian
+#    pomerol/Thermal
+#    pomerol/FieldOperatorPart
+#    pomerol/FieldOperator
+#    pomerol/FieldOperatorContainer
+#    pomerol/DensityMatrixPart
+#    pomerol/DensityMatrix
+#    pomerol/GreensFunctionPart
+#    pomerol/GreensFunction
+#    pomerol/GFContainer
+#    pomerol/TwoParticleGFPart
+#    pomerol/TwoParticleGF
+#    pomerol/TwoParticleGFContainer
+#    pomerol/Vertex4
+#    pomerol/SusceptibilityPart
+#    pomerol/Susceptibility
+#    pomerol/EnsembleAverage
 )
 
 add_this_package(${pomerol_sources})
