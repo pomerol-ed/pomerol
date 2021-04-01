@@ -18,7 +18,7 @@
 #include<map>
 #include<iomanip>
 
-#include<boost/dynamic_bitset.hpp>
+#include <libcommute/loperator/state_vector.hpp>
 
 #define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 #include<Eigen/Core>
@@ -32,9 +32,7 @@
 #include <omp.h>
 #endif
 
-#define REALTYPE_DOUBLE
-
-namespace Pomerol{
+namespace Pomerol {
 
 #define MSG_PREFIX            __FILE__ << ":" << __LINE__ << ": "
 #ifndef NDEBUG
@@ -54,15 +52,14 @@ typedef std::complex<double> ComplexType;
 /** Index represents a combination of spin, orbital, and lattice indices **/
 typedef unsigned int ParticleIndex;
 
-/** Fock State representation. */
-typedef boost::dynamic_bitset<> FockState;
-const FockState ERROR_FOCK_STATE = FockState(); // A state with the size==0 is an error state
+// FIXME
+//const FockState ERROR_FOCK_STATE = {}; // A state with the size==0 is an error state
 
 /** Each Quantum State in the finite system is associated with a number.
  * This works for any basis, including Fock and Hamiltonian eigenbasis.
  * The Fock States are converted naturally from bitsets to ints.
  **/
-typedef unsigned long QuantumState;
+using QuantumState = libcommute::sv_index_type;
 
 /** Index represents a combination of spin, orbital, and lattice indices **/
 typedef unsigned int ParticleIndex;

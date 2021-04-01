@@ -50,7 +50,7 @@ set (pomerol_sources
 #    pomerol/OperatorPresets
 #    pomerol/IndexHamiltonian
 #    pomerol/Symmetrizer
-#    pomerol/StatesClassification
+    pomerol/StatesClassification
 #    pomerol/HamiltonianPart
 #    pomerol/Hamiltonian
 #    pomerol/Thermal

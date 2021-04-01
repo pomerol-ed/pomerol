@@ -68,7 +68,7 @@ public:
 
     /** Return all information about the given index. */
     IndexInfo const& getInfo(ParticleIndex in) const {
-        if(in >= InfoToIndices.size()) throw exWrongIndex();
+        if(in >= InfoToIndices.size()) throw exWrongIndex(in);
         return IndicesToInfo[in];
     }
 
@@ -87,6 +87,7 @@ public:
     /** Exception - wrong index. */
     class exWrongIndex : public std::exception {
         std::string msg;
+    public:
         exWrongIndex(ParticleIndex index) :
           msg("Wrong index " + std::to_string(index)) {}
         virtual const char* what() const noexcept override {
