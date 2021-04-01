@@ -8,7 +8,7 @@ namespace Pomerol {
 
 // 2-index presets
 
-Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, const std::string& Label2, ComplexType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     Lattice::Term *T = new Term(2);
     bool OperatorSequence[2] = { 1, 0 };
@@ -23,12 +23,12 @@ Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, cons
     return T;
 };
 
-Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital, unsigned short spin)
+Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, const std::string& Label2, ComplexType Value, unsigned short orbital, unsigned short spin)
 {
     return Hopping(Label1, Label2, Value, orbital, orbital, spin, spin);
 }
 
-Lattice::Term* Lattice::Term::Presets::Level ( const std::string& Label, MelemType Value, unsigned short orbital, unsigned short spin)
+Lattice::Term* Lattice::Term::Presets::Level ( const std::string& Label, ComplexType Value, unsigned short orbital, unsigned short spin)
 {
     Lattice::Term *T = new Term(2);
     bool OperatorSequence[2] = { 1, 0 };
@@ -45,7 +45,7 @@ Lattice::Term* Lattice::Term::Presets::Level ( const std::string& Label, MelemTy
 
 // 4-index presets
 
-Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label1, const std::string& Label2,  MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label1, const std::string& Label2,  ComplexType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     if (Label1 == Label2 && spin1 == spin2 && orbital1 == orbital2) {
         ERROR("NupNdown terms should have different sites or spin or orbital components. Returning simple Level term.");
@@ -64,22 +64,22 @@ Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label1, con
     return T;
 }
 
-Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, ComplexType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     return NupNdown(Label, Label, Value, orbital1, orbital2, spin1, spin2);
 }
 
-Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2 )
+Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, ComplexType Value, unsigned short orbital1, unsigned short orbital2 )
 {
     return NupNdown(Label, Label, Value, orbital1, orbital2, up, down);
 };
 
-Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, MelemType Value, unsigned short Orbital, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, ComplexType Value, unsigned short Orbital, unsigned short spin1, unsigned short spin2 )
 {
     return NupNdown(Label, Label, Value, Orbital, Orbital, spin1, spin2);
 };
 
-Lattice::Term* Lattice::Term::Presets::Spinflip ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::Spinflip ( const std::string& Label, ComplexType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     if (orbital1 == orbital2 || spin1 == spin2) { ERROR("Spinflips should have different spins and orbitals"); throw (exWrongIndices()); }
     Lattice::Term *T = new Term(4);
@@ -95,7 +95,7 @@ Lattice::Term* Lattice::Term::Presets::Spinflip ( const std::string& Label, Mele
     return T;
 }
 
-Lattice::Term* Lattice::Term::Presets::PairHopping ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
+Lattice::Term* Lattice::Term::Presets::PairHopping ( const std::string& Label, ComplexType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
 {
     if (orbital1 == orbital2 || spin1 == spin2) { ERROR("Pair hopping terms should have different spins and orbitals"); throw (exWrongIndices()); }
     Lattice::Term *T = new Term(4);
@@ -111,7 +111,7 @@ Lattice::Term* Lattice::Term::Presets::PairHopping ( const std::string& Label, M
     return T;
 }
 
-Lattice::Term* Lattice::Term::Presets::SplusSminus ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital)
+Lattice::Term* Lattice::Term::Presets::SplusSminus ( const std::string& Label1, const std::string& Label2, ComplexType Value, unsigned short orbital)
 {
     Term *T = new Term(4);
     bool order[4]              =      { 1,     0,     1,     0 };
@@ -126,7 +126,7 @@ Lattice::Term* Lattice::Term::Presets::SplusSminus ( const std::string& Label1, 
     return T;
 }
 
-Lattice::Term* Lattice::Term::Presets::SminusSplus ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital)
+Lattice::Term* Lattice::Term::Presets::SminusSplus ( const std::string& Label1, const std::string& Label2, ComplexType Value, unsigned short orbital)
 {
     Term *T = SplusSminus(Label1, Label2, Value, orbital);
     unsigned short Spins[4]    =      { down, up, up, down  };
@@ -144,7 +144,7 @@ const char* Lattice::Term::Presets::exWrongIndices::what() const throw(){
 // LatticePresets
 //
 
-void LatticePresets::addCoulombS(Lattice *L, const std::string& Label, MelemType U, MelemType Level)
+void LatticePresets::addCoulombS(Lattice *L, const std::string& Label, ComplexType U, ComplexType Level)
 {
     if (L->Sites.find(Label)==L->Sites.end()) throw (Lattice::exWrongLabel());
     unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
@@ -158,7 +158,7 @@ void LatticePresets::addCoulombS(Lattice *L, const std::string& Label, MelemType
        };
 };
 
-void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, MelemType U, MelemType U_p, MelemType J, MelemType Level)
+void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, ComplexType U, ComplexType U_p, ComplexType J, ComplexType Level)
 {
     if (L->Sites.find(Label)==L->Sites.end()) throw (Lattice::exWrongLabel());
     unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
@@ -184,12 +184,12 @@ void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, MelemType
         };
 };
 
-void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, MelemType U, MelemType J, MelemType Level)
+void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, ComplexType U, ComplexType J, ComplexType Level)
 {
     addCoulombP(L, Label, U, U-2.0*J, J, Level);
 }
 
-void LatticePresets::addLevel(Lattice *L, const std::string& Label, MelemType Level)
+void LatticePresets::addLevel(Lattice *L, const std::string& Label, ComplexType Level)
 {
     if (L->Sites.find(Label)==L->Sites.end()) throw (Lattice::exWrongLabel());
     unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
@@ -200,7 +200,7 @@ void LatticePresets::addLevel(Lattice *L, const std::string& Label, MelemType Le
             };
 }
 
-void LatticePresets::addMagnetization(Lattice *L, const std::string& Label, MelemType Magnetization)
+void LatticePresets::addMagnetization(Lattice *L, const std::string& Label, ComplexType Magnetization)
 {
     if (L->Sites.find(Label)==L->Sites.end()) { ERROR("No site" << Label << "found."); throw (Lattice::exWrongLabel()); };
     unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
@@ -212,7 +212,7 @@ void LatticePresets::addMagnetization(Lattice *L, const std::string& Label, Mele
         };
 }
 
-void LatticePresets::addSzSz ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType ExchJ)
+void LatticePresets::addSzSz ( Lattice *L, const std::string& Label1, const std::string& Label2, ComplexType ExchJ)
 {
 
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
@@ -235,7 +235,7 @@ void LatticePresets::addSzSz ( Lattice *L, const std::string& Label1, const std:
         };
 }
 
-void LatticePresets::addSS ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType ExchJ)
+void LatticePresets::addSS ( Lattice *L, const std::string& Label1, const std::string& Label2, ComplexType ExchJ)
 {
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
     if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
@@ -251,7 +251,7 @@ void LatticePresets::addSS ( Lattice *L, const std::string& Label1, const std::s
         };
 }
 
-void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin1, unsigned short Spin2)
+void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, ComplexType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin1, unsigned short Spin2)
 {
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
     if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
@@ -259,19 +259,15 @@ void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const s
         ERROR("Orbital or Spin index mismatch"); throw ( Lattice::Term::Presets::exWrongIndices() );
         };
     L->addTerm(Lattice::Term::Presets::Hopping(Label1, Label2, t, Orbital1, Orbital2, Spin1, Spin2));
-    #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
     L->addTerm(Lattice::Term::Presets::Hopping(Label2, Label1, conj(t), Orbital2, Orbital1, Spin2, Spin1)); // Hermite conjugate
-    #else
-    L->addTerm(Lattice::Term::Presets::Hopping(Label2, Label1, t, Orbital2, Orbital1, Spin2, Spin1));
-    #endif
 }
 
-void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin)
+void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, ComplexType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin)
 {
     addHopping(L,Label1, Label2, t, Orbital1, Orbital2, Spin, Spin);
 }
 
-void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType t, unsigned short Orbital1, unsigned short Orbital2)
+void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, ComplexType t, unsigned short Orbital1, unsigned short Orbital2)
 {
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site " << Label1 << " found."); throw (Lattice::exWrongLabel()); };
     if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site " << Label2 << " found."); throw (Lattice::exWrongLabel()); };
@@ -283,7 +279,7 @@ void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const s
     for (int z=0; z<Spins; ++z) addHopping(L, Label1, Label2, t, Orbital1, Orbital2, z, z);
 }
 
-void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType t)
+void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, ComplexType t)
 {
     if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
     if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };

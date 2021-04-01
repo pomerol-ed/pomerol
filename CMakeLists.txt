@@ -16,14 +16,6 @@ fix_rpath()
 set_linking_type()
 compiler_quirks()
 
-#Use complex Matrix elements
-option(POMEROL_COMPLEX_MATRIX_ELEMENTS "Use complex matrix elements" OFF)
-if (POMEROL_COMPLEX_MATRIX_ELEMENTS)
-    message(STATUS "Using complex matrix elements")
-else (POMEROL_COMPLEX_MATRIX_ELEMENTS)
-    message(STATUS "Using real matrix elements")
-endif (POMEROL_COMPLEX_MATRIX_ELEMENTS)
-
 # Enable/Disable and find OpenMP
 option(POMEROL_USE_OPENMP "Use OpenMP" TRUE)
 if (POMEROL_USE_OPENMP)

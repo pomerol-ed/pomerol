@@ -61,9 +61,9 @@ public:
     InnerQuantumState getSize(void) const;
 
     /** Get the matrix element of the HamiltonianPart by the number of states inside the part. */ 
-    MelemType getMatrixElement(InnerQuantumState m, InnerQuantumState n) const; //return H(m,n)
+    ComplexType getMatrixElement(InnerQuantumState m, InnerQuantumState n) const; //return H(m,n)
     /** Get the matrix element of the Hamiltonian within two given FockStates. */
-    MelemType getMatrixElement(FockState m, FockState n) const; //return H(m,n)
+    ComplexType getMatrixElement(FockState m, FockState n) const; //return H(m,n)
 
     /** Get the eigenvalue of the H matrix.
      * \param[in] Number of eigenvalue. */

@@ -30,10 +30,10 @@ public:
      * \param[in] orbital \f$\alpha'\f$ - orbital of site \f$j\f$, which is connected by this term.
      * \param[in] spin \f$\sigma\f$ - spins of sites, which are connected by this term.
      */
-    static Term* Hopping     ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 , unsigned short spin2);
+    static Term* Hopping     ( const std::string& Label1, const std::string& Label2, ComplexType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 , unsigned short spin2);
 
     /** A shortcut to hopping Lattice::Term \f$ t c^{\dagger}_{i\alpha\sigma}c_{j\alpha\sigma}, j \neq i \f$ */
-    static Term* Hopping     ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital, unsigned short spin);
+    static Term* Hopping     ( const std::string& Label1, const std::string& Label2, ComplexType Value, unsigned short orbital, unsigned short spin);
 
     /** Generates a single energy level term \f$\varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma} \f$ on a local site for a given spin and orbital. 
      * \param[in] Label \f$i\f$ - site affected by this Lattice::Term.
@@ -41,7 +41,7 @@ public:
      * \param[in] orbital \f$\alpha\f$ - affected orbital of the site.
      * \param[in] spin \f$\sigma\f$ - affected spin component.
      */
-    static Term* Level       ( const std::string& Label, MelemType Value, unsigned short orbital, unsigned short spin);
+    static Term* Level       ( const std::string& Label, ComplexType Value, unsigned short orbital, unsigned short spin);
 
     /** Generates a local density-density 4-point term \f$ U n_{i\alpha\sigma}n_{j\alpha'\sigma'} \f$.
      * \param[in] Label1 \f$i\f$ - site affected by this Lattice::Term.
@@ -52,14 +52,14 @@ public:
      * \param[in] spin1 \f$\sigma\f$ - the spin component affected by the first density operator.
      * \param[in] spin2 \f$\sigma'\f$ - the spin component affected by the second density operator.
      */
-    static Term* NupNdown    ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2);
+    static Term* NupNdown    ( const std::string& Label1, const std::string& Label2, ComplexType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2);
 
     /** A shortcut to Pomerol::Lattice::Term::Presets::NupNdown \f$ U n_{i\alpha\uparrow}n_{j\alpha'\downarrow'} \f$ term for \f$i=j\f$. */
-    static Term* NupNdown    ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2);
+    static Term* NupNdown    ( const std::string& Label, ComplexType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2);
     /** A shortcut to Pomerol::Lattice::Term::Presets::NupNdown \f$ U n_{i\alpha\uparrow}n_{i\alpha'\downarrow'} \f$ term for spin1 = \f$\uparrow\f$, spin2 = \f$\downarrow\f$. */
-    static Term* NupNdown    ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2);
+    static Term* NupNdown    ( const std::string& Label, ComplexType Value, unsigned short orbital1, unsigned short orbital2);
     /** A shortcut to Pomerol::Lattice::Term::Presets::NupNdown \f$ U n_{i\alpha\uparrow}n_{i\alpha\downarrow'} \f$ term for the same orbital \f$m=m'\f$ and default parameters spin1 = \f$\uparrow\f$, spin2 = \f$\downarrow\f$. */
-    static Term* NupNdown    ( const std::string& Label, MelemType Value, unsigned short orbital, unsigned short spin1 = up, unsigned short spin2 = down);
+    static Term* NupNdown    ( const std::string& Label, ComplexType Value, unsigned short orbital, unsigned short spin1 = up, unsigned short spin2 = down);
 
 
     /** Generates a spinflip \f$ J c^\dagger_{i\alpha\sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha'\sigma}c_{i\alpha\sigma'}, \alpha \neq \alpha', \sigma \neq \sigma' \f$ term.
@@ -70,7 +70,7 @@ public:
      * \param[in] spin1 \f$\sigma\f$ - first affected spin component. By default set to \f$\uparrow\f$.
      * \param[in] spin2 \f$\sigma'\f$ - second affected spin component. By default set to \f$\downarrow\f$.
      */
-    static Term* Spinflip ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 = up, unsigned short spin2 = down);
+    static Term* Spinflip ( const std::string& Label, ComplexType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 = up, unsigned short spin2 = down);
 
 
     /** Generates a pair-hopping \f$ J c^\dagger_{i\alpha\sigma}c^\dagger_{i\alpha\sigma'}c_{i\alpha'\sigma}c_{i\alpha'\sigma'}, \alpha \neq \alpha', \sigma \neq \sigma' \f$ term.
@@ -81,11 +81,11 @@ public:
      * \param[in] spin1 \f$\sigma\f$ - first affected spin component. By default set to \f$\uparrow\f$.
      * \param[in] spin2 \f$\sigma'\f$ - second affected spin component. By default set to \f$\downarrow\f$.
      */
-    static Term* PairHopping (const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 = up, unsigned short spin2 = down);
+    static Term* PairHopping (const std::string& Label, ComplexType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1 = up, unsigned short spin2 = down);
 
 
-    static Term* SplusSminus ( const std::string& label1, const std::string& label2, MelemType Value, unsigned short orbital); 
-    static Term* SminusSplus ( const std::string& label1, const std::string& label2, MelemType Value, unsigned short orbital);
+    static Term* SplusSminus ( const std::string& label1, const std::string& label2, ComplexType Value, unsigned short orbital); 
+    static Term* SminusSplus ( const std::string& label1, const std::string& label2, ComplexType Value, unsigned short orbital);
 
     /** Exception: wrong indices. */
     class exWrongIndices : public std::exception { 
@@ -104,7 +104,7 @@ public:
      * \param[in] U \f$U\f$ - value of the onsite Coulomb interaction.
      * \param[in] Level \f$\varepsilon\f$ - the local energy level on the site.
      */
-    static void addCoulombS(Lattice *L, const std::string& label, MelemType U, MelemType Level);
+    static void addCoulombS(Lattice *L, const std::string& label, ComplexType U, ComplexType Level);
 
     /** Adds an interaction with the hamiltonian \f[ U \sum_{\alpha, \sigma > \sigma'} n_{i\alpha\sigma}n_{i\alpha\sigma'} + U' \sum_{\alpha\neq\alpha',\sigma > \sigma'} n_{i\alpha\sigma} n_{i\alpha'\sigma'} + \frac{U'-J}{2} \sum_{\alpha\neq\alpha',\sigma} n_{i\alpha\sigma} n_{i\alpha'\sigma} - J \sum_{\alpha\neq\alpha',\sigma > \sigma'} (c^\dagger_{i\alpha \sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha'\sigma}c_{i\alpha\sigma'} + c^\dagger_{i\alpha'\sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha\sigma}c_{i\alpha\sigma'}) to the specified site. \f] 
      * \param[in] L A pointer to the Lattice to add the site.
@@ -114,23 +114,23 @@ public:
      * \param[in] J \f$J\f$ - Kanamori J, value of the Hund's coupling.
      * \param[in] Level \f$\varepsilon\f$ - the local energy level on the site.
      */
-    static void addCoulombP(Lattice *L, const std::string& label, MelemType U, MelemType U_p, MelemType J, MelemType Level);
+    static void addCoulombP(Lattice *L, const std::string& label, ComplexType U, ComplexType U_p, ComplexType J, ComplexType Level);
     /** A shortcut to Lattice::Presets::addPSite with \f$U'=U-2J\f$, i.e. U_p = U - 2.0* J */
-    static void addCoulombP(Lattice *L, const std::string& label, MelemType U, MelemType J, MelemType Level);
+    static void addCoulombP(Lattice *L, const std::string& label, ComplexType U, ComplexType J, ComplexType Level);
 
     /** Adds a magnetic \f$ \sum\limits_\alpha mH \frac{1}{2} (n_{i\alpha\uparrow} - n_{i\alpha\downarrow}) \f$ splitting to a given site. Valid only for 2 spins.
      * \param[in] L A pointer to the Lattice to add the terms. 
      * \param[in] label \f$i\f$ - label of the site.
      * \param[in] Magnetization \f$mH\f$ - magnetization to add.
      */
-    static void addMagnetization( Lattice *L, const std::string& label, MelemType Magnetization);
+    static void addMagnetization( Lattice *L, const std::string& label, ComplexType Magnetization);
 
     /** Adds a level \f$ \sum\limits_{\alpha, \sigma} \varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma} \f$.
      * \param[in] L A pointer to the Lattice to add the terms.
      * \param[in] label \f$i\f$ - label of the site.
      * \param[in] Level \f$\varepsilon\f$ - energy level to add.
      */
-    static void addLevel ( Lattice *L, const std::string& label, MelemType Level);
+    static void addLevel ( Lattice *L, const std::string& label, ComplexType Level);
 
     /** Adds a SzSz \f[ \sum\limits_{\alpha} J \frac{1}{2}(n_{i\alpha\uparrow} - n_{i\alpha\downarrow})\frac{1}{2}(n_{j\alpha\uparrow} - n_{j\alpha\downarrow}) \f]
      * interaction terms. Valid only for 2 spins 
@@ -141,7 +141,7 @@ public:
      * \param[in] Orbitals Total amount of orbitals on the site. By default equal to 1.
      * \param[in] Spins Total amount of spin components on the site. By default equal to 2. Works only for 2 spins.
      */
-    static void addSzSz ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType ExchJ);
+    static void addSzSz ( Lattice *L, const std::string& Label1, const std::string& Label2, ComplexType ExchJ);
 
     /** Adds a spin-spin \f[ \sum\limits_{\alpha} J \hat S_{i\alpha} \hat S_{j\alpha} \f]
      * interaction terms. Valid only for 2 spins 
@@ -150,7 +150,7 @@ public:
      * \param[in] Label2 \f$j\f$ - label of the second connected site. Site can be choosen the same as the first site.
      * \param[in] ExchJ \f$J\f$ - magnetic exchange constant.
      */
-    static void addSS ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType ExchJ);
+    static void addSS ( Lattice *L, const std::string& Label1, const std::string& Label2, ComplexType ExchJ);
 
     /** Adds a hopping \f$ t c^{\dagger}_{i\alpha\sigma}c_{j\alpha'\sigma'} \f$ term to the Lattice. This is a safe method : indices are checked to belong to the lattice.
      * \param[in] L A pointer to the Lattice to add the terms. 
@@ -162,13 +162,13 @@ public:
      * \param[in] Spin1 \f$\sigma\f$ - spin component of the first site
      * \param[in] Spin2 \f$\sigma\f$ - spin component of the second site
      */
-    static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, MelemType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short spin1, unsigned short spin2 );
+    static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, ComplexType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short spin1, unsigned short spin2 );
     /** A shortcut to addHopping \f$ t c^{\dagger}_{i\alpha\sigma}c_{j\alpha\sigma} \f$ */
-    static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, MelemType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short spin );
+    static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, ComplexType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short spin );
     /** A shortcut to addHopping \f$ \sum_{\sigma} t c^{\dagger}_{i\alpha\sigma}c_{j\alpha\sigma} \f$ */
-    static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, MelemType t, unsigned short Orbital1, unsigned short Orbital2 );
+    static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, ComplexType t, unsigned short Orbital1, unsigned short Orbital2 );
     /** A shortcut to addHopping \f$ \sum_{\sigma\alpha} t c^{\dagger}_{i\alpha\sigma}c_{j\alpha\sigma} \f$ */
-    static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, MelemType t );
+    static void addHopping ( Lattice *L, const std::string &label1, const std::string& label2, ComplexType t );
 };
 
 }; // end of namespace Pomerol

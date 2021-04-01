@@ -105,7 +105,7 @@ class SusceptibilityPart : public Thermal
     const RealType MatrixElementTolerance; // 1e-8;
 
     /** BOSON: The weight of zero-energy pole. **/
-    MelemType ZeroPoleWeight;
+    ComplexType ZeroPoleWeight;
 
 public:
 

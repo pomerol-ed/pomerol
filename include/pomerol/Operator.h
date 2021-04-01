@@ -38,9 +38,9 @@ class Operator :
     boost::addable<Operator,
     boost::subtractable<Operator,
     boost::multipliable<Operator,
-    boost::addable2<Operator, MelemType,
-    boost::subtractable2<Operator, MelemType,
-    boost::multipliable2<Operator, MelemType
+    boost::addable2<Operator, ComplexType,
+    boost::subtractable2<Operator, ComplexType,
+    boost::multipliable2<Operator, ComplexType
     > > > > > >
 {
 
@@ -96,7 +96,7 @@ public:
     bool operator==(monomial_t const& m1, monomial_t const& m2);
 
     // Map of all monomials with coefficients
-    typedef std::map<monomial_t,MelemType> monomials_map_t;
+    typedef std::map<monomial_t,ComplexType> monomials_map_t;
     // Print Operator itself
     friend std::ostream& operator<<(std::ostream& os, Operator const& op)
     {
@@ -120,7 +120,7 @@ public:
     //const_iterator cbegin() const { return monomials.cbegin(); }
     //const_iterator cend() const { return monomials.cend(); }
 
-    // Algebraic operations involving MelemType constants
+    // Algebraic operations involving ComplexType constants
     Operator operator-() const
     {
         Operator tmp(*this);
@@ -129,7 +129,7 @@ public:
         return tmp;
     }
 
-    Operator& operator+=(const MelemType alpha)
+    Operator& operator+=(const ComplexType alpha)
     {
         bool is_new_monomial;
         monomials_map_t::iterator it;
@@ -141,7 +141,7 @@ public:
         return *this;
     }
 
-    Operator& operator-=(const MelemType alpha)
+    Operator& operator-=(const ComplexType alpha)
     {
         bool is_new_monomial;
         monomials_map_t::iterator it;
@@ -154,12 +154,12 @@ public:
     }
 
     friend
-    Operator operator-(const MelemType alpha, Operator const& op)
+    Operator operator-(const ComplexType alpha, Operator const& op)
     {
         return -op + alpha;
     }
 
-    Operator& operator*= (const MelemType alpha)
+    Operator& operator*= (const ComplexType alpha)
     {
         if(std::abs(alpha) < 100*std::numeric_limits<RealType>::epsilon()){
             monomials.clear();
@@ -223,17 +223,17 @@ public:
      * \param[in] ket A state to the right of the operator.
      * \param[out] Resulting matrix element.
      */
-    virtual MelemType getMatrixElement(const FockState &bra, const FockState &ket) const;
+    virtual ComplexType getMatrixElement(const FockState &bra, const FockState &ket) const;
 
     /** Returns the matrix element of an operator between two states represented by a linear combination of FockState's. */
-    virtual MelemType getMatrixElement( const VectorType & bra, const VectorType &ket, const std::vector<FockState> &states) const;
+    virtual ComplexType getMatrixElement( const VectorType & bra, const VectorType &ket, const std::vector<FockState> &states) const;
 
     /** Returns a result of acting of an operator on a state to the right of the operator.
      * \param[in] ket A state to act on.
      * \param[out] A map of states and corresponding matrix elements, which are the result of an action.
      */
-    static std::tuple<FockState,MelemType> actRight(const monomial_t &in, const FockState &ket);
-    virtual std::map<FockState, MelemType> actRight(const FockState &ket) const;
+    static std::tuple<FockState,ComplexType> actRight(const monomial_t &in, const FockState &ket);
+    virtual std::map<FockState, ComplexType> actRight(const FockState &ket) const;
 
     /** Returns an operator that is a commutator of the current operator and another one
      * \param[in] rhs An operator to calculate a commutator with.
@@ -269,7 +269,7 @@ protected:
     monomials_map_t monomials;
 
     // Normalize a monomial and insert into a map
-    static void normalize_and_insert(monomial_t & m, MelemType coeff, monomials_map_t & target)
+    static void normalize_and_insert(monomial_t & m, ComplexType coeff, monomials_map_t & target)
     {
         // The normalization is done by employing a simple bubble sort algorithms.
         // Apart from sorting elements this function keeps track of the sign and

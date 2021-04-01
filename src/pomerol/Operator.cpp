@@ -27,9 +27,9 @@ Operator Operator::getAntiCommutator(const Operator &rhs) const
     return (*this)*rhs + rhs*(*this);
 }
 
-std::tuple<FockState,MelemType> Operator::actRight(const monomial_t &in, const FockState &ket)
+std::tuple<FockState,ComplexType> Operator::actRight(const monomial_t &in, const FockState &ket)
 {
-    if (in.size()==0) return std::make_tuple(ket, MelemType(1));
+    if (in.size()==0) return std::make_tuple(ket, ComplexType(1));
     //DEBUG(in << "|" << ket << ">");
     //ParticleIndex prev_pos_ = ket.size(); // Here we'll store the index of the last operator to speed up sign counting
     ParticleIndex prev_pos_ = 0;
@@ -51,35 +51,35 @@ std::tuple<FockState,MelemType> Operator::actRight(const monomial_t &in, const F
             //prev_pos_ = 0;
 
         }
-    return std::make_tuple(bra, MelemType(sign));
+    return std::make_tuple(bra, ComplexType(sign));
 }
 
 
 template <class R>
 inline bool __is_zero(std::pair<FockState,R> in){return (std::abs(in.second)<std::numeric_limits<RealType>::epsilon());};
 
-std::map<FockState, MelemType> Operator::actRight(const FockState &ket) const
+std::map<FockState, ComplexType> Operator::actRight(const FockState &ket) const
 {
-    std::map<FockState, MelemType> result1;
-    for (std::map<monomial_t,MelemType>::const_iterator it = monomials.begin(); it!=monomials.end(); it++)
+    std::map<FockState, ComplexType> result1;
+    for (std::map<monomial_t,ComplexType>::const_iterator it = monomials.begin(); it!=monomials.end(); it++)
         {
             FockState bra;
-            MelemType melem;
+            ComplexType melem;
             std::tie(bra,melem) = actRight(it->first,ket);
             //if (std::abs(melem)>1e-8) DEBUG(bra << "|*" << melem);
             if (bra!=ERROR_FOCK_STATE && std::abs(melem)>std::numeric_limits<RealType>::epsilon())
                 result1[bra]+=melem*(it->second);
         };
     // C++11 remove_if has a different behaviour, so this is a hck around. */
-    std::map<FockState, MelemType> result2;
-    std::remove_copy_if(result1.begin(), result1.end(), std::inserter(result2, result2.end()), __is_zero<MelemType> );//__is_zero<MelemType>);
+    std::map<FockState, ComplexType> result2;
+    std::remove_copy_if(result1.begin(), result1.end(), std::inserter(result2, result2.end()), __is_zero<ComplexType> );//__is_zero<ComplexType>);
     return result2;
 }
 
 
-MelemType Operator::getMatrixElement( const FockState & bra, const FockState &ket) const
+ComplexType Operator::getMatrixElement( const FockState & bra, const FockState &ket) const
 {
-    std::map<FockState, MelemType> output = this->actRight(ket);
+    std::map<FockState, ComplexType> output = this->actRight(ket);
     if (output.find(bra)==output.end())
         return 0;
     else {
@@ -87,29 +87,25 @@ MelemType Operator::getMatrixElement( const FockState & bra, const FockState &ke
         }
 }
 
-MelemType Operator::getMatrixElement( const VectorType & bra, const VectorType &ket, const std::vector<FockState> &states) const
+ComplexType Operator::getMatrixElement( const VectorType & bra, const VectorType &ket, const std::vector<FockState> &states) const
 {
     if (bra.size()!=ket.size() || bra.size()!=states.size()) throw (exMelemVanishes());
-    MelemType melem = 0.0;
+    ComplexType melem = 0.0;
     for (int i=0; i<ket.size(); ++i) {
         FockState current_state = states[i];
-        MelemType overlap = ket[i];
+        ComplexType overlap = ket[i];
         if (std::abs(overlap)>std::numeric_limits<RealType>::epsilon()) {
             //DEBUG(overlap << "," << current_state);
-            std::map<FockState, MelemType> map1 = this->actRight(current_state);
-            for (std::map<FockState, MelemType>::const_iterator it = map1.begin(); it!= map1.end(); it++) {
+            std::map<FockState, ComplexType> map1 = this->actRight(current_state);
+            for (std::map<FockState, ComplexType>::const_iterator it = map1.begin(); it!= map1.end(); it++) {
                 FockState result_state = it->first;
-                MelemType melem2 = it->second;
+                ComplexType melem2 = it->second;
                 //DEBUG("\t<" << result_state << "|" << melem2);
                 std::vector<FockState>::const_iterator it1 = std::find(states.begin(), states.end(), result_state);
-                MelemType overlap2;
+                ComplexType overlap2;
                 if (it1 != states.end() ) {
                     size_t j = std::distance(states.begin(), it1);
-                #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
                     overlap2 = std::conj(bra(j));
-                #else
-                    overlap2 = bra(j);
-                #endif
                     }
                 else overlap2 = 0.0;
                 //DEBUG(overlap2);

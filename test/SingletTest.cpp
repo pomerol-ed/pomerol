@@ -173,7 +173,7 @@ int main(int argc, char* argv[])
         for (size_t i=0; i<State.size(); ++i) { if (!is_equal(State(i),0.0,1e-3)) INFO_NONEWLINE(State(i) << "*|" << blockstates[i] << "> + "); }; INFO("");
         //RealType s2val = S2.getMatrixElement(State,State,blockstates);
         //RealType szszval = SzSz.getMatrixElement(State,State,blockstates);
-        MelemType splussminusval = SplusSminus.getMatrixElement(State,State,blockstates);
+        ComplexType splussminusval = SplusSminus.getMatrixElement(State,State,blockstates);
 
         //INFO("<S^2> = " << s2val);
         //INFO("<SzSz> = " << szszval);

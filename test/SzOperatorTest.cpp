@@ -50,10 +50,10 @@ int main(int argc, char* argv[])
     OperatorPresets::Sz Sz(IndexSize,SpinUpIndices);
 
     FockState ket(IndexSize,3);
-    std::map<FockState, MelemType> map1=Sz.actRight(ket);
-    for ( std::map<FockState, MelemType>::iterator it1=map1.begin(); it1!=map1.end(); it1++) {
+    std::map<FockState, ComplexType> map1=Sz.actRight(ket);
+    for ( std::map<FockState, ComplexType>::iterator it1=map1.begin(); it1!=map1.end(); it1++) {
         FockState bra = it1->first;
-        MelemType Value= it1->second;
+        ComplexType Value= it1->second;
         INFO("<" << bra << "| Sz |" << ket << "> = " << Value );
         }
     if ( map1.size()!=1 && std::abs(Sz.getMatrixElement(ket,ket)+1.0)>std::numeric_limits<double>::epsilon()) return EXIT_FAILURE;

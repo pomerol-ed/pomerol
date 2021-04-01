@@ -35,7 +35,7 @@ Lattice::Term::Term (unsigned int N):N(N)
 };
 
 
-Lattice::Term::Term(unsigned int N, bool * OperatorSequence_, MelemType Value_, std::string * SiteLabels_, unsigned short * Orbitals_, unsigned short *Spins_):
+Lattice::Term::Term(unsigned int N, bool * OperatorSequence_, ComplexType Value_, std::string * SiteLabels_, unsigned short * Orbitals_, unsigned short *Spins_):
 N(N)
 {
   OperatorSequence.assign( OperatorSequence_, OperatorSequence_+N );

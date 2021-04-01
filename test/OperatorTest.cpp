@@ -45,22 +45,22 @@ int main(int argc, char* argv[])
    a1[0]=1;
    a1[1]=0;
    FockState res_state;
-   MelemType result;
-   std::map<FockState, MelemType> out;
+   ComplexType result;
+   std::map<FockState, ComplexType> out;
 
    Operator IT2 = Cdag(1);
    out=IT2.actRight(a1);
    res_state = out.begin()->first;
    result = out.begin()->second;
    INFO ( IT2 << "|" << a1 << "> =" << result << "|" << res_state << ">");
-   if (result != MelemType(-1)) return EXIT_FAILURE;
+   if (result != ComplexType(-1)) return EXIT_FAILURE;
 
    Operator IT3 = C(0);
    out=IT3.actRight(a1);
    res_state = out.begin()->first;
    result = out.begin()->second;
    INFO ( IT3 << "|" << a1 << "> =" << result << "|" << res_state << ">");
-   if (result != MelemType(1)) return EXIT_FAILURE;
+   if (result != ComplexType(1)) return EXIT_FAILURE;
    if (res_state == ERROR_FOCK_STATE) DEBUG("Term vanishes");
 
    INFO(IT3 << "*" << IT2 << " = " << IT3*IT2);

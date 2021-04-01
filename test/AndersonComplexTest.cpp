@@ -102,8 +102,8 @@ bool run_test(ComplexType J /* spin-flip amplitude */) {
     // Reference
     GF_ref ref(J);
 
-    BOOST_FOREACH(spin s1, all_spins){
-    BOOST_FOREACH(spin s2, all_spins){
+    for(spin s1 : all_spins){
+    for(spin s2 : all_spins){
         INFO("s1 = " << s1 << " s2 = " << s2);
         ParticleIndex index1 = IndexInfo.getIndex("C",0,s1);
         ParticleIndex index2 = IndexInfo.getIndex("C",0,s2);
@@ -124,7 +124,7 @@ int main(int argc, char* argv[]) {
 
     MPI_Init(&argc, &argv);
 
-    return (
+    bool result =
      run_test(ComplexType( 0.1,0)) &&
      run_test(ComplexType(-0.1,0)) &&
      run_test(ComplexType(0, 0.1)) &&
@@ -132,6 +132,9 @@ int main(int argc, char* argv[]) {
      run_test(ComplexType(0.1, 0.1)) &&
      run_test(ComplexType(0.1,-0.1)) &&
      run_test(ComplexType(-0.1,0.1)) &&
-     run_test(ComplexType(-0.1,-0.1))
-     ) ? EXIT_SUCCESS : EXIT_FAILURE;
+     run_test(ComplexType(-0.1,-0.1));
+
+     MPI_Finalize();
+
+     return result ? EXIT_SUCCESS : EXIT_FAILURE;
 }
