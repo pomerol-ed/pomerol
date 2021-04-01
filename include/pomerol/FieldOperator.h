@@ -58,7 +58,7 @@ protected:
     BlocksBimap LeftRightBlocks;
 
     /** Return the resulting BlockNumber of states obtained by this operator, acting on states from another block.
-     * If no BlockNumber found returns ERROR_BLOCK_NUMBER.
+     * If no BlockNumber found returns INVALID_BLOCK_NUMBER.
      * \param[in] RightIndex The BlockNumber of states on right hand side of the FieldOperator.
      */
     virtual BlockNumber mapsTo(BlockNumber RightIndex) const;

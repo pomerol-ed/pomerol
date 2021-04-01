@@ -83,7 +83,7 @@ void CreationOperator::prepare(void)
     for (BlockNumber RightIndex=0; RightIndex<S.NumberOfBlocks(); RightIndex++){
         BlockNumber LeftIndex = mapsTo(RightIndex);
         //DEBUG(RightIndex << "->" << LeftIndex);
-        if (LeftIndex.isCorrect()){
+        if (LeftIndex != INVALID_BLOCK_NUMBER){
             FieldOperatorPart *Part = new CreationOperatorPart(IndexInfo, S,
                                     H.getPart(RightIndex),H.getPart(LeftIndex),Index);
             parts.push_back(Part);
@@ -103,7 +103,7 @@ void AnnihilationOperator::prepare()
     size_t Size = parts.size();
     for (BlockNumber RightIndex=0;RightIndex<S.NumberOfBlocks();RightIndex++){
         BlockNumber LeftIndex = mapsTo(RightIndex);
-        if (LeftIndex.isCorrect()){
+        if (LeftIndex != INVALID_BLOCK_NUMBER){
             FieldOperatorPart *Part = new AnnihilationOperatorPart(IndexInfo, S,
                                     H.getPart(RightIndex),H.getPart(LeftIndex), Index);
             parts.push_back(Part);
@@ -122,7 +122,7 @@ BlockNumber FieldOperator::getRightIndex(BlockNumber LeftIndex) const
     if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
 
     BlocksBimap::left_const_iterator it =  LeftRightBlocks.left.find(LeftIndex);
-    return (it != LeftRightBlocks.left.end()) ? it->second : ERROR_BLOCK_NUMBER;
+    return (it != LeftRightBlocks.left.end()) ? it->second : INVALID_BLOCK_NUMBER;
 }
 
 BlockNumber FieldOperator::getLeftIndex(BlockNumber RightIndex) const
@@ -130,7 +130,7 @@ BlockNumber FieldOperator::getLeftIndex(BlockNumber RightIndex) const
     if (Status < Prepared) { ERROR("FieldOperator is not prepared yet."); throw (exStatusMismatch()); }
 
     BlocksBimap::right_const_iterator it =  LeftRightBlocks.right.find(RightIndex);
-    return (it != LeftRightBlocks.right.end()) ? it->second : ERROR_BLOCK_NUMBER;
+    return (it != LeftRightBlocks.right.end()) ? it->second : INVALID_BLOCK_NUMBER;
 }
 
 BlockNumber FieldOperator::mapsTo(BlockNumber RightIndex) const
@@ -142,13 +142,13 @@ BlockNumber FieldOperator::mapsTo(BlockNumber RightIndex) const
         result = O->actRight(*state_it);
         found = (result.size()>0);
         }
-    return (found)?S.getBlockNumber(result.begin()->first):ERROR_BLOCK_NUMBER;
+    return (found)?S.getBlockNumber(result.begin()->first):INVALID_BLOCK_NUMBER;
 }
 
 QuantumNumbers FieldOperator::mapsTo(const QuantumNumbers& in) const
 {
     BlockNumber out = this->mapsTo(S.getBlockNumber(in));
-    if ( out == ERROR_BLOCK_NUMBER) throw (QuantumNumbers::exWrongNumbers());
+    if ( out == INVALID_BLOCK_NUMBER) throw (QuantumNumbers::exWrongNumbers());
     return S.getQuantumNumbers(out);
 }
 
@@ -165,7 +165,7 @@ void QuadraticOperator::prepare(void)
     size_t Size = parts.size();
     for (BlockNumber RightIndex=0; RightIndex<S.NumberOfBlocks(); RightIndex++){
         BlockNumber LeftIndex = mapsTo(RightIndex);
-        if (LeftIndex.isCorrect()){
+        if (LeftIndex != INVALID_BLOCK_NUMBER){
             FieldOperatorPart *Part = new QuadraticOperatorPart(IndexInfo, S,
                     H.getPart(RightIndex), H.getPart(LeftIndex), Index1, Index2);
             parts.push_back(Part);

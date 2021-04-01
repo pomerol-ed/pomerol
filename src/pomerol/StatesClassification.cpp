@@ -4,9 +4,6 @@
 
 namespace Pomerol{
 
-bool BlockNumber::operator<(const BlockNumber& rhs) const {return number<rhs.number;}
-bool BlockNumber::operator==(const BlockNumber& rhs) const {return number==rhs.number;}
-
 //
 // StatesClassification
 //
@@ -55,7 +52,7 @@ void StatesClassification::compute()
 BlockNumber StatesClassification::getBlockNumber(QuantumNumbers in) const
 {
     if ( Status < Computed ) { ERROR("StatesClassification is not computed yet."); throw (exStatusMismatch()); };
-    return (QuantumToBlock.count(in))?QuantumToBlock.find(in)->second:ERROR_BLOCK_NUMBER;
+    return (QuantumToBlock.count(in))?QuantumToBlock.find(in)->second:INVALID_BLOCK_NUMBER;
 }
 
 const unsigned long StatesClassification::getNumberOfStates() const

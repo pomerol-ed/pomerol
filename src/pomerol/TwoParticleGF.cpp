@@ -33,7 +33,7 @@ BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t Operato
         case 0: return C1.getLeftIndex(RightIndex);
         case 1: return C2.getLeftIndex(RightIndex);
         case 2: return CX3.getLeftIndex(RightIndex);
-        default: return ERROR_BLOCK_NUMBER;
+        default: return INVALID_BLOCK_NUMBER;
     }
 }
 
@@ -43,7 +43,7 @@ BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t Operat
         case 0: return C1.getRightIndex(LeftIndex);
         case 1: return C2.getRightIndex(LeftIndex);
         case 2: return CX3.getRightIndex(LeftIndex);
-        default: return ERROR_BLOCK_NUMBER;
+        default: return INVALID_BLOCK_NUMBER;
     }
 }
 
@@ -77,7 +77,9 @@ void TwoParticleGF::prepare()
                   // < LeftIndices[2]| O_3 | LeftIndices[3] >
                   // < LeftIndices[3] | CX4 | LeftIndices[0] >
                   // Select a relevant 'world stripe' (sequence of blocks).
-                  if(getRightIndex(p,1,LeftIndices[1]) == LeftIndices[2] && LeftIndices[1].isCorrect() && LeftIndices[2].isCorrect()){
+                  if(getRightIndex(p,1,LeftIndices[1]) == LeftIndices[2] &&
+                      (LeftIndices[1] != INVALID_BLOCK_NUMBER) &&
+                      (LeftIndices[2] != INVALID_BLOCK_NUMBER)) {
                       { // check if retained blocks are included. If not, do not push.
                           bool include_block_retained=false;
                           for(int k=0; k<4; k++)
