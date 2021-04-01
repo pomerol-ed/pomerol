@@ -28,8 +28,8 @@
 //#include "Lattice.h"
 //#include "LatticePresets.h"
 //#include "Index.h"
-//#include "Operators.h"
-//#include "IndexClassification.h"
+#include "Operators.h"
+#include "IndexClassification.h"
 //#include "Operator.h"
 //#include "OperatorPresets.h"
 //#include "IndexHamiltonian.h"
@@ -58,6 +58,24 @@ void print_section (const std::string& str)
 
 int main(int argc, char* argv[])
 {
+
+    using namespace Operators;
+
+    auto H_ = -0.5 * (n("A", 0, up) + n("A", 0, down)) + 1.0 * n("A", 0, up) * n("A", 0, down);
+    H_ += -1.1 * (n("B", 0, up) + n("B", 0, down)) + 2.0 * n("B", 0, up) * n("B", 0, down);
+    H_ += -0.7 * (n("C", 0, up) + n("C", 0, down)) + 3.0 * n("C", 0, up) * n("C", 0, down);
+    H_ += -1.1 * (n("D", 0, up) + n("D", 0, down)) + 4.0 * n("D", 0, up) * n("D", 0, down);
+    for(spin s : {up, down}) {
+        H_ += -1.3 * c_dag("A", 0, s) * c("B", 0, s) + hc;
+        H_ += -0.45 * c_dag("B", 0, s) * c("C", 0, s) + hc;
+        H_ += -0.127 * c_dag("C", 0, s) * c("D", 0, s) + hc;
+        H_ += -0.255 * c_dag("A", 0, s) * c("D", 0, s) + hc;
+    }
+
+    auto IndexInfo = MakeIndexClassification(H_);
+
+    IndexInfo.printIndices();
+
 /*  MPI_Init(&argc, &argv);
 
     Lattice L;
