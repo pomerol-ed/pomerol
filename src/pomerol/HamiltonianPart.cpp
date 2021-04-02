@@ -1,130 +1,118 @@
-#include"pomerol/HamiltonianPart.h"
-#include"pomerol/StatesClassification.h"
-#include<sstream>
-#include<Eigen/Eigenvalues>
+#include "pomerol/LibcommuteEigen.h"
+#include "pomerol/HamiltonianPart.h"
+
+#include <libcommute/loperator/mapped_basis_view.hpp>
+
+#include <Eigen/Eigenvalues>
+
+#include <limits>
+#include <sstream>
 
 #ifdef ENABLE_SAVE_PLAINTEXT
 #include<boost/filesystem.hpp>
 #include<boost/filesystem/fstream.hpp>
 #endif
 
+//
 // class HamiltonianPart
+//
 
-namespace Pomerol{
+namespace Pomerol {
 
-HamiltonianPart::HamiltonianPart(const IndexClassification& IndexInfo, const IndexHamiltonian &F, const StatesClassification &S, const BlockNumber& Block):
-    ComputableObject(),
-    IndexInfo(IndexInfo),
-    F(F), S(S),
-    Block(Block), QN(S.getQuantumNumbers(Block))
+template<bool Complex>
+void HamiltonianPart<Complex>::prepare()
 {
-}
+    if(Status >= Prepared) return;
 
-void HamiltonianPart::prepare()
-{
-    size_t BlockSize = S.getBlockSize(Block);
+    auto BlockSize = S.getBlockSize(Block);
+    H.resize(BlockSize, BlockSize);
 
-    H.resize(BlockSize,BlockSize);
-    H.setZero();
-    std::map<FockState,ComplexType>::const_iterator melem_it;
+    auto mapper = libcommute::basis_mapper(S.getFockStates(Block));
 
-    for(InnerQuantumState right_st=0; right_st<BlockSize; right_st++)
-    {
-        FockState ket = S.getFockState(Block,right_st);
-        std::map<FockState,ComplexType> mapStates = F.actRight(ket);
-        for (melem_it=mapStates.begin(); melem_it!=mapStates.end(); melem_it++) {
-            FockState bra = melem_it -> first;
-            ComplexType melem = melem_it -> second;
-            //DEBUG("<" << bra << "|" << melem << "|" << F << "|" << ket << ">");
-            InnerQuantumState left_st = S.getInnerState(bra);
-//            if (left_st > right_st) { ERROR("!"); exit(1); };
-            H(left_st,right_st) = melem;
-        }
+    VectorType<Complex> ket = VectorType<Complex>::Zero(BlockSize);
+    auto ket_view = mapper.make_const_view(ket);
+
+    for(InnerQuantumState st = 0; st < BlockSize; ++st) {
+        auto bra_view = mapper.make_view_no_ref(H.col(st));
+        ket(st) = 1.0;
+        HOp(ket_view, bra_view);
+        ket(st) = .0;
     }
 
-//    H.triangularView<Eigen::Lower>() = H.triangularView<Eigen::Upper>().transpose();
-//    assert(MatrixType(H.triangularView<Eigen::Lower>()) == MatrixType(H.triangularView<Eigen::Upper>().transpose()));
-    assert((H.adjoint() - H).array().abs().maxCoeff() < 100*std::numeric_limits<RealType>::epsilon());
+    assert((H.adjoint() - H).array().abs().maxCoeff()
+           < 100*std::numeric_limits<RealType>::epsilon());
+
     Status = Prepared;
 }
 
-void HamiltonianPart::compute()		//method of diagonalization classificated part of Hamiltonian
+template<bool Complex>
+void HamiltonianPart<Complex>::compute()		//method of diagonalization classificated part of Hamiltonian
 {
     if (Status >= Computed) return;
+
     if (H.rows() == 1) {
         assert (std::abs(H(0,0) - std::real(H(0,0))) < std::numeric_limits<RealType>::epsilon());
         Eigenvalues.resize(1);
         Eigenvalues << std::real(H(0,0));
         H(0,0) = 1;
-        }
-    else {
-	    Eigen::SelfAdjointEigenSolver<MatrixType> Solver(H,Eigen::ComputeEigenvectors);
-	    H = Solver.eigenvectors();
-	    Eigenvalues = Solver.eigenvalues();	// eigenvectors are ready
+    } else {
+        Eigen::SelfAdjointEigenSolver<MatrixType<Complex>> Solver(H,Eigen::ComputeEigenvectors);
+        H = Solver.eigenvectors();
+        Eigenvalues = Solver.eigenvalues();	// eigenvectors are ready
     }
     Status = Computed;
 }
 
-
-ComplexType HamiltonianPart::getMatrixElement(InnerQuantumState m, InnerQuantumState n) const	//return  H(m,n)
+template<bool Complex>
+MelemType<Complex> HamiltonianPart<Complex>::getMatrixElement(InnerQuantumState m, InnerQuantumState n) const
 {
     return H(m,n);
 }
 
-RealType HamiltonianPart::getEigenValue(InnerQuantumState state) const // return Eigenvalues(state)
+template<bool Complex>
+RealType HamiltonianPart<Complex>::getEigenValue(InnerQuantumState state) const
 {
-    if ( Status < Computed ) throw (exStatusMismatch());
+    if (Status < Computed) throw exStatusMismatch();
     return Eigenvalues(state);
 }
 
-const RealVectorType& HamiltonianPart::getEigenValues() const
+template<bool Complex>
+const RealVectorType& HamiltonianPart<Complex>::getEigenValues() const
 {
-    if ( Status < Computed ) throw (exStatusMismatch());
+    if (Status < Computed) throw exStatusMismatch();
     return Eigenvalues;
 }
 
-InnerQuantumState HamiltonianPart::getSize(void) const
+template<bool Complex>
+InnerQuantumState HamiltonianPart<Complex>::getSize(void) const
 {
     return S.getBlockSize(Block);
 }
 
-BlockNumber HamiltonianPart::getBlockNumber(void) const
-{
-    return S.getBlockNumber(QN);
-}
-
-QuantumNumbers HamiltonianPart::getQuantumNumbers(void) const
-{
-    return QN;
-}
-
-
-
-void HamiltonianPart::print_to_screen() const
+template<bool Complex>
+void HamiltonianPart<Complex>::print_to_screen() const
 {
     INFO(H << std::endl);
 }
 
-const MatrixType& HamiltonianPart::getMatrix() const
+template<bool Complex>
+VectorType<Complex> HamiltonianPart<Complex>::getEigenState(InnerQuantumState state) const
 {
-    return H;
-}
-
-VectorType HamiltonianPart::getEigenState(InnerQuantumState state) const
-{
-    if ( Status < Computed ) throw (exStatusMismatch());
+    if (Status < Computed) throw exStatusMismatch();
     return H.col(state);
 }
 
-RealType HamiltonianPart::getMinimumEigenvalue() const
+template<bool Complex>
+RealType HamiltonianPart<Complex>::getMinimumEigenvalue() const
 {
-    if ( Status < Computed ) throw (exStatusMismatch());
+    if (Status < Computed) throw exStatusMismatch();
     return Eigenvalues.minCoeff();
 }
 
-bool HamiltonianPart::reduce(RealType ActualCutoff)
+template<bool Complex>
+bool HamiltonianPart<Complex>::reduce(RealType ActualCutoff)
 {
-    if ( Status < Computed ) throw (exStatusMismatch());
+    if (Status < Computed) throw exStatusMismatch();
     InnerQuantumState counter=0;
     for (counter=0; (counter< (unsigned int)Eigenvalues.size() && Eigenvalues[counter]<=ActualCutoff); ++counter){};
     std::cout << "Left " << counter << " eigenvalues : " << std::endl;
@@ -138,7 +126,8 @@ bool HamiltonianPart::reduce(RealType ActualCutoff)
 }
 
 #ifdef ENABLE_SAVE_PLAINTEXT
-bool HamiltonianPart::savetxt(const boost::filesystem::path &path1)
+template<bool Complex>
+bool HamiltonianPart<Complex>::savetxt(const boost::filesystem::path &path1)
 {
     boost::filesystem::create_directory(path1);
     boost::filesystem::fstream out;
@@ -162,6 +151,9 @@ bool HamiltonianPart::savetxt(const boost::filesystem::path &path1)
     return true;
 }
 #endif
+
+template class HamiltonianPart<false>;
+template class HamiltonianPart<true>;
 
 } // end of namespace Pomerol
 

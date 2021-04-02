@@ -34,8 +34,8 @@
 //#include "IndexHamiltonian.h"
 #include "Symmetrizer.h"
 #include "StatesClassification.h"
-//#include "HamiltonianPart.h"
-//#include "Hamiltonian.h"
+#include "HamiltonianPart.h"
+#include "Hamiltonian.h"
 //#include "FieldOperatorContainer.h"
 //#include "GFContainer.h"
 
@@ -58,44 +58,10 @@ void print_section (const std::string& str)
 int main(int argc, char* argv[])
 {
 
-    // TODO: Rework Lattice and LatticePresets
+    MPI_Init(&argc, &argv);
 
-    using namespace Operators;
-
-    auto HExpr = -0.5 * (n("A", 0, up) + n("A", 0, down)) + 1.0 * n("A", 0, up) * n("A", 0, down);
-    HExpr += -1.1 * (n("B", 0, up) + n("B", 0, down)) + 2.0 * n("B", 0, up) * n("B", 0, down);
-    HExpr += -0.7 * (n("C", 0, up) + n("C", 0, down)) + 3.0 * n("C", 0, up) * n("C", 0, down);
-    HExpr += -1.1 * (n("D", 0, up) + n("D", 0, down)) + 4.0 * n("D", 0, up) * n("D", 0, down);
-    for(spin s : {up, down}) {
-        HExpr += -1.3 * c_dag("A", 0, s) * c("B", 0, s) + hc;
-        HExpr += -0.45 * c_dag("B", 0, s) * c("C", 0, s) + hc;
-        HExpr += -0.127 * c_dag("C", 0, s) * c("D", 0, s) + hc;
-        HExpr += -0.255 * c_dag("A", 0, s) * c("D", 0, s) + hc;
-    }
-
-    auto IndexInfo = MakeIndexClassification(HExpr);
-
-    IndexInfo.printIndices();
-
-    auto Symm = MakeSymmetrizer(IndexInfo, HExpr);
-    Symm.compute();
-
-    StatesClassification S;
-    S.compute(Symm);
-
-    // FIXME: Remove
-    for(int i = 0; i < S.getNumberOfStates(); i++) {
-      std::cout << i << ": " << S.getBlockNumber(i) << "/" << S.getInnerState(i) << std::endl;
-    }
-    for(int b = 0; b < S.getNumberOfBlocks(); b++) {
-      std::cout << "size(block("  << b << ")) = " << S.getBlockSize(b);
-      std::cout << "; states = ";
-      for(auto const& s : S.getFockStates(b)) std::cout << s << ", ";
-      std::cout << std::endl;
-    }
-
-/*  MPI_Init(&argc, &argv);
-
+    // TODO: Remove Lattice (?) and rework LatticePresets
+    /*
     Lattice L;
     L.addSite(new Lattice::Site("A",1,2));
     LatticePresets::addCoulombS(&L, "A", 1.0, -0.5);
@@ -116,29 +82,54 @@ int main(int argc, char* argv[])
     L.printTerms(2);
     INFO("Terms with 4 operators");
     L.printTerms(4);
+    */
 
-    IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
+    using namespace Operators;
+
+    auto HExpr = -0.5 * (n("A", 0, up) + n("A", 0, down)) + 1.0 * n("A", 0, up) * n("A", 0, down);
+    HExpr += -1.1 * (n("B", 0, up) + n("B", 0, down)) + 2.0 * n("B", 0, up) * n("B", 0, down);
+    HExpr += -0.7 * (n("C", 0, up) + n("C", 0, down)) + 3.0 * n("C", 0, up) * n("C", 0, down);
+    HExpr += -1.1 * (n("D", 0, up) + n("D", 0, down)) + 4.0 * n("D", 0, up) * n("D", 0, down);
+    for(spin s : {up, down}) {
+        HExpr += -1.3 * c_dag("A", 0, s) * c("B", 0, s) + hc;
+        HExpr += -0.45 * c_dag("B", 0, s) * c("C", 0, s) + hc;
+        HExpr += -0.127 * c_dag("C", 0, s) * c("D", 0, s) + hc;
+        HExpr += -0.255 * c_dag("A", 0, s) * c("D", 0, s) + hc;
+    }
+
+    auto IndexInfo = MakeIndexClassification(HExpr);
     print_section("Indices");
     IndexInfo.printIndices();
 
-    print_section("Matrix element storage");
-    IndexHamiltonian Storage(&L,IndexInfo);
-    Storage.prepare();
-    INFO("Terms");
-    INFO(Storage);
+    INFO("Hamiltonian");
+    INFO(HExpr);
 
-    Symmetrizer Symm(IndexInfo, Storage);
+    auto Symm = MakeSymmetrizer(IndexInfo, HExpr);
     Symm.compute();
 
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
+    StatesClassification S;
+    S.compute(Symm);
 
-    Hamiltonian H(IndexInfo, Storage, S);
-    H.prepare();
+    // FIXME: Remove
+    for(int i = 0; i < S.getNumberOfStates(); i++) {
+      std::cout << i << ": " << S.getBlockNumber(i) << "/" << S.getInnerState(i) << std::endl;
+    }
+    for(int b = 0; b < S.getNumberOfBlocks(); b++) {
+      std::cout << "size(block("  << b << ")) = " << S.getBlockSize(b);
+      std::cout << "; states = ";
+      for(auto const& s : S.getFockStates(b)) std::cout << s << ", ";
+      std::cout << std::endl;
+    }
+
+    Hamiltonian H(S);
+    H.prepare(HExpr, Symm, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
-    INFO("The value of ground energy is " << H.getGroundEnergy());
+    if(pMPI::rank(MPI_COMM_WORLD) == 0) {
+        INFO("Energy levels " << H.getEigenValues());
+        INFO("The value of ground energy is " << H.getGroundEnergy());
+    }
 
+/*
     RealType beta = 10.0;
 
     DensityMatrix rho(S,H,beta);
@@ -181,8 +172,9 @@ int main(int argc, char* argv[])
         DEBUG(GF(n) << " " << GF_ref(n));
         result = (result && compare(GF(n),GF_ref(n)));
     }
-    MPI_Finalize();
 
     return result ? EXIT_SUCCESS : EXIT_FAILURE;
     */
+
+    MPI_Finalize();
 }

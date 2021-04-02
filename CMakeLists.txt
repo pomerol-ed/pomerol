@@ -45,14 +45,11 @@ set (pomerol_sources
 #    pomerol/Lattice
 #    pomerol/LatticePresets
 #    pomerol/Index
-#    pomerol/IndexClassification
 #    pomerol/Operator
 #    pomerol/OperatorPresets
-#    pomerol/IndexHamiltonian
-#    pomerol/Symmetrizer
     pomerol/StatesClassification
-#    pomerol/HamiltonianPart
-#    pomerol/Hamiltonian
+    pomerol/HamiltonianPart
+    pomerol/Hamiltonian
 #    pomerol/Thermal
 #    pomerol/FieldOperatorPart
 #    pomerol/FieldOperator
