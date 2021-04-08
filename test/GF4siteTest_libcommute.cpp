@@ -36,6 +36,7 @@
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
 #include "Hamiltonian.h"
+#include "DensityMatrix.h"
 //#include "FieldOperatorContainer.h"
 //#include "GFContainer.h"
 
@@ -129,13 +130,13 @@ int main(int argc, char* argv[])
         INFO("The value of ground energy is " << H.getGroundEnergy());
     }
 
-/*
     RealType beta = 10.0;
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
     rho.compute();
     for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i));
+/*
 
     FieldOperatorContainer Operators(IndexInfo, S, H);
     Operators.prepareAll();

@@ -1,6 +1,6 @@
 /** \file include/pomerol/DensityMatrix.h
 ** \brief Density matrix of the grand canonical ensemble.
-** 
+**
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
@@ -12,6 +12,9 @@
 #include "IndexClassification.h"
 #include "Hamiltonian.h"
 #include "DensityMatrixPart.h"
+
+#include <memory>
+#include <vector>
 
 namespace Pomerol{
 
@@ -28,7 +31,7 @@ class DensityMatrix : public Thermal, public ComputableObject
     /** A reference to a Hamiltonian defining the grand canonical ensemble. */
     const Hamiltonian &H;
     /** A vector of pointers to parts (every part corresponds to a part of the Hamiltonian). */
-    std::vector<DensityMatrixPart*> parts;
+    std::vector<std::shared_ptr<DensityMatrixPart>> parts;
 
 public:
     /** Constructor.
@@ -38,7 +41,7 @@ public:
      */
     DensityMatrix(const StatesClassification& S, const Hamiltonian& H, RealType beta);
     /** Destructor. */
-    ~DensityMatrix();
+    ~DensityMatrix() = default;
 
     /** Allocates resources for the parts. */
     void prepare(void);
@@ -46,10 +49,6 @@ public:
     /** Actually computes the parts. */
     void compute(void);
 
-    /** Returns a part of the density matrix.
-    * \param[in] in A set of the quantum numbers to be resolved into a part number.
-    */
-    const DensityMatrixPart& getPart(const QuantumNumbers &in) const;
     /** Returns a part of the density matrix.
      * \param[in] in A part number.
      */
@@ -60,12 +59,13 @@ public:
      */
     RealType getWeight(QuantumState state) const;
 
+    // TODO
     /** Returns the average energy. */
     RealType getAverageEnergy() const;
     /** Returns the total average occupancy. */
-    RealType getAverageOccupancy() const;
+    //RealType getAverageOccupancy() const;
     /** Returns the average occupancy at site i. */
-    RealType getAverageOccupancy(ParticleIndex i) const;
+    //RealType getAverageOccupancy(ParticleIndex i) const;
 
     /** Returns an averaged value of the double occupancy. */
     RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const;

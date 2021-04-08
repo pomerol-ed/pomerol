@@ -1,20 +1,15 @@
 #include "pomerol/DensityMatrixPart.h"
 
 namespace Pomerol{
-DensityMatrixPart::DensityMatrixPart(const StatesClassification &S, const HamiltonianPart& hpart, RealType beta, RealType GroundEnergy) :
-    Thermal(beta), S(S), hpart(hpart), GroundEnergy(GroundEnergy), weights(hpart.getSize()), retained(true)
+
+DensityMatrixPart::DensityMatrixPart(const StatesClassification &S, const Hamiltonian& H, BlockNumber Block, RealType beta, RealType GroundEnergy) :
+    Thermal(beta), S(S), H(H), Block(Block), GroundEnergy(GroundEnergy), weights(H.getBlockSize(Block)), retained(true)
 {}
 
 RealType DensityMatrixPart::computeUnnormalized(void)
 {
-    Z_part = 0;
-    QuantumState partSize = weights.size();
-    for(InnerQuantumState s = 0; s < partSize; ++s){
-        // The non-normalized weight is <=1 for any state.
-        weights(s) = exp(-beta*(hpart.getEigenValue(s)-GroundEnergy));
-        Z_part += weights(s);
-    }
-    return Z_part;
+    weights = exp(-beta*(H.getEigenValues(Block).array() - GroundEnergy));
+    return weights.sum();
 }
 
 void DensityMatrixPart::normalize(RealType Z)
@@ -23,21 +18,13 @@ void DensityMatrixPart::normalize(RealType Z)
     Z_part /= Z;
 }
 
-RealType DensityMatrixPart::getPartialZ(void) const
+RealType DensityMatrixPart::getAverageEnergy() const
 {
-    return Z_part;
+    return weights.dot(H.getEigenValues(Block));
 }
 
-RealType DensityMatrixPart::getAverageEnergy(void) const
-{
-    RealType E=0.;
-    InnerQuantumState partSize = weights.size();
-    for(InnerQuantumState s = 0; s < partSize; ++s){
-        E += weights(s)*hpart.getEigenValue(s);
-    }
-    return E;
-};
-
+// TODO
+/*
 RealType DensityMatrixPart::getAverageOccupancy(void) const
 {
     RealType n=0.;
@@ -66,8 +53,6 @@ RealType DensityMatrixPart::getAverageOccupancy(ParticleIndex i) const
     return n;
 };
 
-
-
 RealType DensityMatrixPart::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const
 {
     RealType NN=0.;
@@ -82,6 +67,7 @@ RealType DensityMatrixPart::getAverageDoubleOccupancy(ParticleIndex i, ParticleI
     }
     return NN;
 };
+*/
 
 RealType DensityMatrixPart::getWeight(InnerQuantumState s) const
 {

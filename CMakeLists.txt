@@ -50,12 +50,12 @@ set (pomerol_sources
     pomerol/StatesClassification
     pomerol/HamiltonianPart
     pomerol/Hamiltonian
-#    pomerol/Thermal
+    pomerol/Thermal
 #    pomerol/FieldOperatorPart
 #    pomerol/FieldOperator
 #    pomerol/FieldOperatorContainer
-#    pomerol/DensityMatrixPart
-#    pomerol/DensityMatrix
+    pomerol/DensityMatrixPart
+    pomerol/DensityMatrix
 #    pomerol/GreensFunctionPart
 #    pomerol/GreensFunction
 #    pomerol/GFContainer
