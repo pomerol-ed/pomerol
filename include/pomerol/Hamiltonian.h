@@ -58,20 +58,51 @@ public:
     void reduce(const RealType Cutoff);
 
     bool isComplex() const { return Complex; }
-    RealPartType & getRealPart(BlockNumber in) {
-        return *std::static_pointer_cast<RealPartType>(parts[in]);
+
+    InnerQuantumState getBlockSize(BlockNumber Block) const;
+
+    template<typename F>
+    auto visitPart(BlockNumber Block, F && f) ->
+        typename std::result_of<F(RealPartType &)>::type
+    {
+        if(Complex)
+            return f(*std::static_pointer_cast<ComplexPartType>(parts[Block]));
+        else
+            return f(*std::static_pointer_cast<RealPartType>(parts[Block]));
     }
-    RealPartType const& getRealPart(BlockNumber in) const {
-        return *std::static_pointer_cast<RealPartType>(parts[in]);
+    template<typename F>
+    auto visitPart(BlockNumber Block, F && f) const ->
+        typename std::result_of<F(RealPartType const&)>::type
+    {
+        if(Complex)
+            return f(*std::static_pointer_cast<const ComplexPartType>(parts[Block]));
+        else
+            return f(*std::static_pointer_cast<const RealPartType>(parts[Block]));
     }
-    ComplexPartType & getComplexPart(BlockNumber in) {
-        return *std::static_pointer_cast<ComplexPartType>(parts[in]);
+
+    template<typename F>
+    void visitAllParts(F &&f)
+    {
+        for(BlockNumber Block = 0; Block < parts.size(); ++Block) {
+            if(Complex)
+                f(Block, *std::static_pointer_cast<ComplexPartType>(parts[Block]));
+            else
+                f(Block, *std::static_pointer_cast<RealPartType>(parts[Block]));
+        }
     }
-    ComplexPartType const& getComplexPart(BlockNumber in) const {
-        return *std::static_pointer_cast<ComplexPartType>(parts[in]);
+    template<typename F>
+    void visitAllParts(F &&f) const
+    {
+        for(BlockNumber Block = 0; Block < parts.size(); ++Block) {
+            if(Complex)
+                f(Block, *std::static_pointer_cast<const ComplexPartType>(parts[Block]));
+            else
+                f(Block, *std::static_pointer_cast<const RealPartType>(parts[Block]));
+        }
     }
 
     RealType getEigenValue(unsigned long state) const;
+    RealVectorType const& getEigenValues(BlockNumber Block) const;
     RealVectorType getEigenValues() const;
     RealType getGroundEnergy() const { return GroundEnergy; }
 
