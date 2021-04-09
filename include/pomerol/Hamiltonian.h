@@ -18,7 +18,7 @@
 #include "Operators.h"
 #include "IndexClassification.h"
 #include "StatesClassification.h"
-#include "Symmetrizer.h"
+#include "HilbertSpace.h"
 #include "HamiltonianPart.h"
 
 #ifdef ENABLE_SAVE_PLAINTEXT
@@ -52,7 +52,7 @@ public:
 
     template<typename ScalarType, typename... IndexTypes>
     void prepare(const Operators::expression<ScalarType, IndexTypes...> &H,
-                 const Symmetrizer<ScalarType, IndexTypes...> &Symm,
+                 const HilbertSpace<ScalarType, IndexTypes...> &Symm,
                  const MPI_Comm &comm = MPI_COMM_WORLD);
     void compute(const MPI_Comm &comm = MPI_COMM_WORLD);
     void reduce(const RealType Cutoff);
@@ -122,7 +122,7 @@ private:
 template<typename ScalarType,
          typename... IndexTypes>
 void Hamiltonian::prepare(Operators::expression<ScalarType, IndexTypes...> const& H,
-                          const Symmetrizer<ScalarType, IndexTypes...> &Symm,
+                          const HilbertSpace<ScalarType, IndexTypes...> &HS,
                           const MPI_Comm &comm) {
 
     if (Status >= Prepared) return;
@@ -135,9 +135,9 @@ void Hamiltonian::prepare(Operators::expression<ScalarType, IndexTypes...> const
     int rank = pMPI::rank(comm);
     if (!rank) INFO_NONEWLINE("Preparing Hamiltonian parts...");
 
-    auto const& HilbertSpace = Symm.getHilbertSpace();
+    auto const& FullHilbertSpace = HS.getFullHilbertSpace();
 
-    libcommute::loperator<ScalarType, libcommute::fermion> HOp(H, HilbertSpace);
+    libcommute::loperator<ScalarType, libcommute::fermion> HOp(H, FullHilbertSpace);
     for (BlockNumber CurrentBlock = 0; CurrentBlock < NumberOfBlocks; ++CurrentBlock) {
         parts[CurrentBlock].reset(new HamiltonianPart<C>(HOp, S, CurrentBlock));
     }

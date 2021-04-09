@@ -23,19 +23,19 @@
 namespace Pomerol {
 
 template<typename ScalarType, typename... IndexTypes>
-class Symmetrizer : public ComputableObject {
+class HilbertSpace : public ComputableObject {
 
 public:
 
     using OperatorType = Operators::expression<ScalarType, IndexTypes...>;
-    using HilbertSpaceType = libcommute::hilbert_space<IndexTypes...>;
+    using FullHilbertSpaceType = libcommute::hilbert_space<IndexTypes...>;
     using SpacePartitionType = libcommute::space_partition;
 
 private:
 
     IndexClassification<IndexTypes...> const& IndexInfo;
 
-    HilbertSpaceType HilbertSpace;
+    FullHilbertSpaceType FullHilbertSpace;
 
     libcommute::loperator<ScalarType, libcommute::fermion> HamiltonianLOp;
 
@@ -43,20 +43,20 @@ private:
 
 public:
 
-    Symmetrizer(const IndexClassification<IndexTypes...> &IndexInfo,
-                const OperatorType& Hamiltonian) :
+    HilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
+                 const OperatorType& Hamiltonian) :
       IndexInfo(IndexInfo),
-      HilbertSpace(InitHilbertSpace(IndexInfo)),
-      HamiltonianLOp(Hamiltonian, HilbertSpace)
+      FullHilbertSpace(InitFullHilbertSpace(IndexInfo)),
+      HamiltonianLOp(Hamiltonian, FullHilbertSpace)
     {}
 
     void compute() {
         if(Status >= Computed) return;
-        partition.reset(new libcommute::space_partition(HamiltonianLOp, HilbertSpace));
+        partition.reset(new libcommute::space_partition(HamiltonianLOp, FullHilbertSpace));
         Status = Computed;
     }
 
-    HilbertSpaceType const& getHilbertSpace() const { return HilbertSpace; }
+    FullHilbertSpaceType const& getFullHilbertSpace() const { return FullHilbertSpace; }
     SpacePartitionType const& getSpacePartition() const {
         if(Status < Computed)
             throw std::runtime_error("Hilbert space partition has not been computed");
@@ -65,20 +65,20 @@ public:
 
 private:
 
-  HilbertSpaceType InitHilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo) {
-      HilbertSpaceType hs;
+  FullHilbertSpaceType InitFullHilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo) {
+      FullHilbertSpaceType FullHS;
       for(ParticleIndex p = 0; p < IndexInfo.getIndexSize(); ++p) {
-          hs.add(libcommute::elementary_space_fermion<IndexTypes...>(IndexInfo.getInfo(p)));
+          FullHS.add(libcommute::elementary_space_fermion<IndexTypes...>(IndexInfo.getInfo(p)));
       }
-      return hs;
+      return FullHS;
   }
 };
 
 template<typename ScalarType, typename... IndexTypes>
-Symmetrizer<ScalarType, IndexTypes...>
-MakeSymmetrizer(const IndexClassification<IndexTypes...> &IndexInfo,
-                const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian) {
-  return Symmetrizer<ScalarType, IndexTypes...>(IndexInfo, Hamiltonian);
+HilbertSpace<ScalarType, IndexTypes...>
+MakeHilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
+                 const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian) {
+  return HilbertSpace<ScalarType, IndexTypes...>(IndexInfo, Hamiltonian);
 }
 
 }; // end of namespace Pomerol

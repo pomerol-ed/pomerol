@@ -32,7 +32,7 @@
 #include "IndexClassification.h"
 //#include "OperatorPresets.h"
 //#include "IndexHamiltonian.h"
-#include "Symmetrizer.h"
+#include "HilbertSpace.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
 #include "Hamiltonian.h"
@@ -105,11 +105,11 @@ int main(int argc, char* argv[])
     INFO("Hamiltonian");
     INFO(HExpr);
 
-    auto Symm = MakeSymmetrizer(IndexInfo, HExpr);
-    Symm.compute();
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
 
     StatesClassification S;
-    S.compute(Symm);
+    S.compute(HS);
 
     // FIXME: Remove
     for(int i = 0; i < S.getNumberOfStates(); i++) {
@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
     }
 
     Hamiltonian H(S);
-    H.prepare(HExpr, Symm, MPI_COMM_WORLD);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
     if(pMPI::rank(MPI_COMM_WORLD) == 0) {
         INFO("Energy levels " << H.getEigenValues());

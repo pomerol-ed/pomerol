@@ -10,13 +10,15 @@
 #define __INCLUDE_STATESCLASSIFICATION_H
 
 #include "Misc.h"
-#include "Symmetrizer.h"
+#include "HilbertSpace.h"
 
 #include <exception>
 #include <string>
 #include <vector>
 
-namespace Pomerol{
+// TODO: Re-add functionality to classify many-body states by their quantum numbers
+
+namespace Pomerol {
 
 /** Index of a block (sector) within a many-body Hilbert space */
 using BlockNumber = int;
@@ -50,10 +52,10 @@ public:
     // (Operators::expression<ScalarType, IndexTypes...> objects) and fill lists
     // of quantum numbers.
     template<typename ScalarType, typename... IndexTypes>
-    void compute(Symmetrizer<ScalarType, IndexTypes...> const& Symm) {
+    void compute(HilbertSpace<ScalarType, IndexTypes...> const& Symm) {
         if(Status == Computed) return;
-        auto const& HilbertSpace = Symm.getHilbertSpace();
-        auto Dim = HilbertSpace.dim();
+        auto const& FullHilbertSpace = Symm.getFullHilbertSpace();
+        auto Dim = FullHilbertSpace.dim();
         if(Symm.getStatus() == Computed) { // Multiple blocks revealed by Symm
             InitMultipleBlocks(Symm.getSpacePartition());
         } else { // Just one block
