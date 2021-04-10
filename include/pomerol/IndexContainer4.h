@@ -51,7 +51,7 @@ struct ElementWithPermFreq
 template<typename ElementType, typename SourceObject>
 class IndexContainer4 {
 protected:
-    const IndexClassification& IndexInfo;
+    ParticleIndex NumIndices;
 
     SourceObject* pSource;
 
@@ -60,7 +60,11 @@ protected:
 public:
     std::map<IndexCombination4,ElementWithPermFreq<ElementType> > ElementsMap;
     std::map<IndexCombination4, std::shared_ptr<ElementType>  > NonTrivialElements;
-    IndexContainer4<ElementType,SourceObject>(SourceObject* pSource, const IndexClassification& IndexInfo);
+
+    template<typename... IndexTypes>
+    IndexContainer4(SourceObject* pSource, const IndexClassification<IndexTypes...>& IndexInfo) :
+        NumIndices(IndexInfo.getIndexSize()), pSource(pSource)
+    {}
 
     void fill(std::set<IndexCombination4> InitialIndices = std::set<IndexCombination4>());
     ElementWithPermFreq<ElementType>& set(const IndexCombination4& Indices);
@@ -104,12 +108,6 @@ ElementWithPermFreq<ElementType>::operator ElementType&()
 /////////////////////
 // IndexContainer4 //
 /////////////////////
-template<typename ElementType, typename SourceObject>
-inline
-IndexContainer4<ElementType,SourceObject>::IndexContainer4(SourceObject* pSource, const IndexClassification& IndexInfo) :
-    IndexInfo(IndexInfo), pSource(pSource)
-{}
-
 template<typename ElementType, typename SourceObject>
 inline
 bool IndexContainer4<ElementType,SourceObject>::isInContainer(const IndexCombination4& Indices) const
@@ -249,11 +247,10 @@ const std::set<IndexCombination4> IndexContainer4<ElementType,SourceObject>::enu
 {
     std::set<IndexCombination4> AllIndices;
 
-    ParticleIndex Size = IndexInfo.getIndexSize();
-    for(ParticleIndex Index1=0; Index1<Size; ++Index1)
-    for(ParticleIndex Index2=Index1; Index2<Size; ++Index2)
-        for(ParticleIndex Index3=0; Index3<Size; ++Index3)
-        for(ParticleIndex Index4=Index3; Index4<Size; ++Index4)
+    for(ParticleIndex Index1=0; Index1<NumIndices; ++Index1)
+    for(ParticleIndex Index2=Index1; Index2<NumIndices; ++Index2)
+        for(ParticleIndex Index3=0; Index3<NumIndices; ++Index3)
+        for(ParticleIndex Index4=Index3; Index4<NumIndices; ++Index4)
             AllIndices.insert(IndexCombination4(Index1,Index2,Index3,Index4));
 
     return AllIndices;

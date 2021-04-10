@@ -44,21 +44,20 @@ set (pomerol_sources
     pomerol/Misc
 #    pomerol/Lattice
 #    pomerol/LatticePresets
-#    pomerol/Index
-#    pomerol/Operator
+    pomerol/Index
 #    pomerol/OperatorPresets
     pomerol/StatesClassification
     pomerol/HamiltonianPart
     pomerol/Hamiltonian
     pomerol/Thermal
-#    pomerol/FieldOperatorPart
-#    pomerol/FieldOperator
-#    pomerol/FieldOperatorContainer
+    pomerol/MonomialOperatorPart
+    pomerol/MonomialOperator
+    pomerol/FieldOperatorContainer
     pomerol/DensityMatrixPart
     pomerol/DensityMatrix
-#    pomerol/GreensFunctionPart
-#    pomerol/GreensFunction
-#    pomerol/GFContainer
+    pomerol/GreensFunctionPart
+    pomerol/GreensFunction
+    pomerol/GFContainer
 #    pomerol/TwoParticleGFPart
 #    pomerol/TwoParticleGF
 #    pomerol/TwoParticleGFContainer

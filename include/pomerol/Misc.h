@@ -89,9 +89,10 @@ template<bool Complex>
 using VectorType = Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic,1,Eigen::AutoAlign>;
 
 /** Sparse complex matrix */
-typedef Eigen::SparseMatrix<ComplexType,Eigen::ColMajor> ColMajorMatrixType;
-typedef Eigen::SparseMatrix<ComplexType,Eigen::RowMajor> RowMajorMatrixType;
-typedef Eigen::DynamicSparseMatrix<ComplexType,Eigen::ColMajor> DynamicSparseMatrixType;
+template<bool Complex>
+using ColMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::ColMajor>;
+template<bool Complex>
+using RowMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::RowMajor>;
 //typedef Eigen::Triplet<RealType> RealTypeTriplet;
 //typedef Eigen::Triplet<ComplexType> ComplexTypeTriplet;
 

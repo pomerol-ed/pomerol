@@ -23,7 +23,7 @@ struct element_type<Eigen::Block<XprType, BlockRows, BlockCols, InnerPanel>> {
 
 template<typename Derived>
 inline auto get_element(Eigen::DenseBase<Derived> const& sv, sv_index_type n) ->
-  typename Eigen::DenseBase<Derived>::Scalar const&
+  typename Eigen::DenseBase<Derived>::Scalar
 {
     return sv(n);
 }

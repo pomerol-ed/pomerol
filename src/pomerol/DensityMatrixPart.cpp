@@ -3,7 +3,7 @@
 namespace Pomerol{
 
 DensityMatrixPart::DensityMatrixPart(const StatesClassification &S, const Hamiltonian& H, BlockNumber Block, RealType beta, RealType GroundEnergy) :
-    Thermal(beta), S(S), H(H), Block(Block), GroundEnergy(GroundEnergy), weights(H.getBlockSize(Block)), retained(true)
+    Thermal(beta), H(H), Block(Block), GroundEnergy(GroundEnergy), weights(H.getBlockSize(Block)), retained(true)
 {}
 
 RealType DensityMatrixPart::computeUnnormalized(void)

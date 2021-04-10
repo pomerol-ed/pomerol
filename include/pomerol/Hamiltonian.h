@@ -49,12 +49,14 @@ public:
 
     template<typename ScalarType, typename... IndexTypes>
     void prepare(const Operators::expression<ScalarType, IndexTypes...> &H,
-                 const HilbertSpace<ScalarType, IndexTypes...> &HS,
+                 const HilbertSpace<IndexTypes...> &HS,
                  const MPI_Comm &comm = MPI_COMM_WORLD);
     void compute(const MPI_Comm &comm = MPI_COMM_WORLD);
     void reduce(const RealType Cutoff);
 
     bool isComplex() const { return Complex; }
+
+    const HamiltonianPart& getPart(BlockNumber Block) const { return parts[Block]; }
 
     InnerQuantumState getBlockSize(BlockNumber Block) const;
 
@@ -78,10 +80,9 @@ private:
     template<bool C> void computeImpl(const MPI_Comm& comm);
 };
 
-template<typename ScalarType,
-         typename... IndexTypes>
+template<typename ScalarType, typename... IndexTypes>
 void Hamiltonian::prepare(Operators::expression<ScalarType, IndexTypes...> const& H,
-                          const HilbertSpace<ScalarType, IndexTypes...> &HS,
+                          const HilbertSpace<IndexTypes...> &HS,
                           const MPI_Comm &comm) {
 
     if (Status >= Prepared) return;

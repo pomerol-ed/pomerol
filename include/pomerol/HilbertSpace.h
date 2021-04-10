@@ -19,15 +19,15 @@
 
 #include <memory>
 #include <stdexcept>
+#include <type_traits>
 
 namespace Pomerol {
 
-template<typename ScalarType, typename... IndexTypes>
+template<typename... IndexTypes>
 class HilbertSpace : public ComputableObject {
 
 public:
 
-    using OperatorType = Operators::expression<ScalarType, IndexTypes...>;
     using FullHilbertSpaceType = libcommute::hilbert_space<IndexTypes...>;
     using SpacePartitionType = libcommute::space_partition;
 
@@ -37,30 +37,62 @@ private:
 
     FullHilbertSpaceType FullHilbertSpace;
 
-    libcommute::loperator<ScalarType, libcommute::fermion> HamiltonianLOp;
+    bool HamiltonianComplex;
 
-    std::unique_ptr<SpacePartitionType> partition = nullptr;
+    template<bool Complex>
+    using LOperatorType = libcommute::loperator<MelemType<Complex>, libcommute::fermion>;
+    std::shared_ptr<void> HOp;
+
+    std::unique_ptr<SpacePartitionType> Partition = nullptr;
 
 public:
 
+    template<typename ScalarType>
     HilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
-                 const OperatorType& Hamiltonian) :
+                 const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian) :
       IndexInfo(IndexInfo),
       FullHilbertSpace(InitFullHilbertSpace(IndexInfo)),
-      HamiltonianLOp(Hamiltonian, FullHilbertSpace)
+      HamiltonianComplex(std::is_same<ScalarType, ComplexType>::value),
+      HOp(std::make_shared<libcommute::loperator<ScalarType, libcommute::fermion>>(Hamiltonian, FullHilbertSpace))
     {}
 
     void compute() {
         if(Status >= Computed) return;
-        partition.reset(new libcommute::space_partition(HamiltonianLOp, FullHilbertSpace));
+
+        // Phase I of auto-partition algorithm
+        if(HamiltonianComplex) {
+            auto const& op = *std::static_pointer_cast<LOperatorType<true>>(HOp);
+            Partition.reset(new libcommute::space_partition(op, FullHilbertSpace));
+        } else {
+            auto const& op = *std::static_pointer_cast<LOperatorType<false>>(HOp);
+            Partition.reset(new libcommute::space_partition(op, FullHilbertSpace));
+        }
+        // Phase II of auto-partition algorithm
+        for(ParticleIndex in = 0; in < IndexInfo.getIndexSize(); ++in) {
+            auto const& info = IndexInfo.getInfo(in);
+            using Operators::c_dag;
+            using Operators::c;
+            using Operators::detail::apply;
+            auto Cd = libcommute::loperator<double, libcommute::fermion>(
+                apply(c_dag<double, IndexTypes...>, info),
+                FullHilbertSpace
+            );
+            auto C = libcommute::loperator<double, libcommute::fermion>(
+                apply(c<double, IndexTypes...>, info),
+                FullHilbertSpace
+            );
+            Partition->merge_subspaces(Cd, C, FullHilbertSpace, false);
+        }
+
         Status = Computed;
     }
 
+    IndexClassification<IndexTypes...> const& getIndexInfo() const { return IndexInfo; }
     FullHilbertSpaceType const& getFullHilbertSpace() const { return FullHilbertSpace; }
     SpacePartitionType const& getSpacePartition() const {
         if(Status < Computed)
             throw std::runtime_error("Hilbert space partition has not been computed");
-        return *partition;
+        return *Partition;
     }
 
 private:
@@ -75,10 +107,10 @@ private:
 };
 
 template<typename ScalarType, typename... IndexTypes>
-HilbertSpace<ScalarType, IndexTypes...>
+HilbertSpace<IndexTypes...>
 MakeHilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
                  const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian) {
-  return HilbertSpace<ScalarType, IndexTypes...>(IndexInfo, Hamiltonian);
+  return HilbertSpace<IndexTypes...>(IndexInfo, Hamiltonian);
 }
 
 }; // end of namespace Pomerol

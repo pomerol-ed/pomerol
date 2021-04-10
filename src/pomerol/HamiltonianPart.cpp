@@ -23,7 +23,7 @@ namespace Pomerol {
 template<bool Complex>
 void HamiltonianPart::initHMatrix() {
     InnerQuantumState BlockSize = S.getBlockSize(Block);
-    HMatrix.reset(new MatrixType<Complex>(BlockSize, BlockSize));
+    HMatrix = std::make_shared<MatrixType<Complex>>(BlockSize, BlockSize);
 }
 
 void HamiltonianPart::prepare()

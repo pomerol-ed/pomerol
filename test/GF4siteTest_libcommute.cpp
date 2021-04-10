@@ -27,18 +27,16 @@
 #include "Misc.h"
 //#include "Lattice.h"
 //#include "LatticePresets.h"
-//#include "Index.h"
 #include "Operators.h"
 #include "IndexClassification.h"
 //#include "OperatorPresets.h"
-//#include "IndexHamiltonian.h"
 #include "HilbertSpace.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
 #include "Hamiltonian.h"
 #include "DensityMatrix.h"
-//#include "FieldOperatorContainer.h"
-//#include "GFContainer.h"
+#include "FieldOperatorContainer.h"
+#include "GFContainer.h"
 
 #include<cstdlib>
 
@@ -136,21 +134,24 @@ int main(int argc, char* argv[])
     rho.prepare();
     rho.compute();
     for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i));
-/*
 
-    FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepareAll();
+
+    FieldOperatorContainer Operators(IndexInfo, HS, S, H);
+    Operators.prepareAll(HS);
     Operators.computeAll();
 
-    FieldOperator::BlocksBimap c_map = Operators.getCreationOperator(0).getBlockMapping();
-    for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
-        {
-            INFO(c_map_it->first << "->" << c_map_it->second);
-        }
+    auto c_map = Operators.getCreationOperator(0).getBlockMapping();
+    for (auto c_map_it = c_map.right.begin(); c_map_it != c_map.right.end(); c_map_it++)
+    {
+        INFO(c_map_it->first << "->" << c_map_it->second);
+    }
 
-    ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
-    //ParticleIndex up_index = IndexInfo.getIndex("A",0,up);
-    GreensFunction GF(S,H,Operators.getAnnihilationOperator(down_index), Operators.getCreationOperator(down_index), rho);
+    ParticleIndex down_index = IndexInfo.getIndex("A", 0, down);
+    GreensFunction GF(S,
+                      H,
+                      Operators.getAnnihilationOperator(down_index),
+                      Operators.getCreationOperator(down_index),
+                      rho);
 
     GF.prepare();
     GF.compute();
@@ -174,8 +175,7 @@ int main(int argc, char* argv[])
         result = (result && compare(GF(n),GF_ref(n)));
     }
 
-    return result ? EXIT_SUCCESS : EXIT_FAILURE;
-    */
-
     MPI_Finalize();
+
+    return result ? EXIT_SUCCESS : EXIT_FAILURE;
 }

@@ -20,8 +20,6 @@ namespace Pomerol{
 
 class DensityMatrixPart : public Thermal
 {
-    /** A reference to a states classification object. */
-    const StatesClassification& S;
     /** A reference to a part of a Hamiltonian. */
     const Hamiltonian& H;
     BlockNumber Block;

@@ -142,7 +142,7 @@ endmacro(add_boost)
 
 # libcommute
 macro(add_libcommute)
-  find_package(libcommute 0.6.1 CONFIG REQUIRED)
+  find_package(libcommute 0.6.2 CONFIG REQUIRED)
   message(STATUS "Found libcommute version ${libcommute_VERSION}")
   target_link_libraries(${PROJECT_NAME} PUBLIC libcommute)
 endmacro(add_libcommute)

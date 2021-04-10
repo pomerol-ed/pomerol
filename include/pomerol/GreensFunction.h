@@ -7,26 +7,27 @@
 #ifndef __INCLUDE_GREENSFUNCTION_H
 #define __INCLUDE_GREENSFUNCTION_H
 
-#include <sstream>
-
 #include"Misc.h"
 #include"Thermal.h"
 #include"ComputableObject.h"
 #include"StatesClassification.h"
-#include"FieldOperator.h"
+#include"MonomialOperator.h"
 #include"DensityMatrix.h"
 #include"GreensFunctionPart.h"
+
+#include <sstream>
+#include <vector>
 
 namespace Pomerol{
 
 /** This class represents a thermal Green's function in the Matsubara representation.
  *
  * Exact definition:
- * 
+ *
  * \f[
  *      G(\omega_n) = -\int_0^\beta \langle\mathbf{T}c_i(\tau)c^+_j(0)\rangle e^{i\omega_n\tau} d\tau
  * \f]
- * 
+ *
  * It is actually a container class for a collection of parts (most of real calculations
  * take place inside the parts). A pair of parts, one part of an annihilation operator and
  * another from a creation operator, corresponds to a part of the Green's function.
@@ -50,7 +51,7 @@ class GreensFunction : public Thermal, public ComputableObject {
     /** A list of pointers to parts (every part corresponds to a part of the annihilation operator
      * and a part of the creation operator).
      */
-    std::list<GreensFunctionPart*> parts;
+    std::vector<GreensFunctionPart> parts;
 
 public:
      /** Constructor.
@@ -66,8 +67,6 @@ public:
      * \param[in] GF GreensFunction object to be copied.
      */
     GreensFunction(const GreensFunction& GF);
-    /** Destructor. */
-    ~GreensFunction();
 
     /** Chooses relevant parts of C and CX and allocates resources for the parts of the Green's function. */
     void prepare(void);
@@ -106,20 +105,20 @@ inline ComplexType GreensFunction::operator()(ComplexType z) const {
     if(Vanishing) return 0;
     else {
         ComplexType Value = 0;
-        for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
-            Value += (**iter)(z);
+        for(auto iter = parts.begin(); iter != parts.end(); iter++)
+            Value += (*iter)(z);
         return Value;
-    };
+    }
 }
 
 inline ComplexType GreensFunction::of_tau(RealType tau) const {
     if(Vanishing) return 0;
     else {
         ComplexType Value = 0;
-        for(std::list<GreensFunctionPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
-            Value += (*iter)->of_tau(tau);
+        for(auto iter = parts.begin(); iter != parts.end(); iter++)
+            Value += iter->of_tau(tau);
         return Value;
-    };
+    }
 }
 
 } // end of namespace Pomerol

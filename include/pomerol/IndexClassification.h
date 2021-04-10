@@ -44,26 +44,35 @@ public:
             for(auto const& g : mon.monomial)
                 InfoToIndices.emplace(g.indices(), 0);
         }
-
-        IndicesToInfo.reserve(InfoToIndices.size());
-        for(auto it = InfoToIndices.begin(); it != InfoToIndices.end(); ++it) {
-            it->second = IndicesToInfo.size();
-            IndicesToInfo.push_back(it->first);
-        }
+        UpdateMaps();
     }
     IndexClassification() = default;
+
+    void addInfo(const IndexInfo& info) {
+      InfoToIndices.emplace(info, 0);
+      UpdateMaps();
+    }
+
+    void addInfo(IndexTypes... indices) {
+      InfoToIndices.emplace(IndexInfo{indices...}, 0);
+      UpdateMaps();
+    }
 
     /** Checks if the index belongs to the space of indices
      * \param[in] in Index to check. */
     bool checkIndex(ParticleIndex in) const { return in < InfoToIndices.size(); }
 
     /** Returns a ParticleIndex, which corresponds to a given site, orbital and spin. */
-    ParticleIndex getIndex(const IndexClassification::IndexInfo& info) const {
+    ParticleIndex getIndex(const IndexInfo& info) const {
         auto it = InfoToIndices.find(info);
         if(it != InfoToIndices.end())
             return it->second;
         else
-            throw exWrongIndex();
+            throw exWrongIndex(0); // FIXME
+    }
+
+    ParticleIndex getIndex(IndexTypes... info) const {
+        return getIndex(std::make_tuple(info...));
     }
 
     /** Return all information about the given index. */
@@ -94,6 +103,17 @@ public:
           return msg.c_str();
         }
     };
+
+private:
+
+    void UpdateMaps() {
+        IndicesToInfo.clear();
+        IndicesToInfo.reserve(InfoToIndices.size());
+        for(auto it = InfoToIndices.begin(); it != InfoToIndices.end(); ++it) {
+            it->second = IndicesToInfo.size();
+            IndicesToInfo.push_back(it->first);
+        }
+    }
 };
 
 template<typename ScalarType, typename... IndexTypes>
