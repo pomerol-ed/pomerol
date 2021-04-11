@@ -15,6 +15,7 @@
 #include <libcommute/algebra_ids.hpp>
 #include <libcommute/loperator/loperator.hpp>
 
+#include <memory>
 #include <type_traits>
 
 #ifdef ENABLE_SAVE_PLAINTEXT
@@ -24,11 +25,13 @@
 namespace Pomerol{
 
 /** HamiltonianPart is a class, which stores and diagonalizes the block of the Hamiltonian, which corresponds to a set of given quantum numbers. */
-template<bool Complex>
 class HamiltonianPart : public ComputableObject {
 
-    using LOperatorType = libcommute::loperator<MelemType<Complex>, libcommute::fermion>;
-    const LOperatorType &HOp;
+    bool Complex;
+
+    template<bool C>
+    using LOperatorType = libcommute::loperator<MelemType<C>, libcommute::fermion>;
+    const void* HOp;
 
     const StatesClassification &S;
 
@@ -37,7 +40,7 @@ class HamiltonianPart : public ComputableObject {
 
     /** A matrix filled with matrix elements of HamiltonianPart in the space of FockState's.
      *  After diagonalization it stores the eigenfunctions of the problem in a rows of H. */
-    MatrixType<Complex> H;
+    std::shared_ptr<void> HMatrix = nullptr;
     /** A vector of eigenvalues of the HamiltonianPart. */
     RealVectorType Eigenvalues;
 
@@ -50,23 +53,25 @@ public:
      * \param[in] F IndexHamiltonian object. Provides all Terms required to fill the Hamiltonian part.
      * \param[in] S StatesClassification object. Provides information about Fock States of the problem.
      * \param[in] Block The BlockNumber of current part. It is a genuine id of the part. */
-    HamiltonianPart(const LOperatorType &HOp, const StatesClassification &S, BlockNumber Block) :
-        HOp(HOp), S(S), Block(Block) {}
+    template<typename ScalarType>
+    HamiltonianPart(const libcommute::loperator<ScalarType, libcommute::fermion> &HOp,
+                    const StatesClassification &S,
+                    BlockNumber Block) :
+        Complex(std::is_same<ScalarType, ComplexType>::value),
+        HOp(&HOp), S(S), Block(Block)
+    {}
 
     /** Fill in the H matrix. */
-    void prepare(void);
+    void prepare();
     /** Diagonalize the H matrix and get EigenValues. */
-    void compute(void);
+    void compute();
 
     bool reduce(RealType ActualCutoff); // Useless now
 
-    /** Return the total dimensionality of the H matrix. This corresponds to the one in StatesClassfication. */
-    InnerQuantumState getSize(void) const;
+    bool isComplex() const { return Complex; }
 
-    /** Get the matrix element of the HamiltonianPart by the number of states inside the part. */
-    MelemType<Complex> getMatrixElementInBlock(InnerQuantumState m, InnerQuantumState n) const; //return H(m,n)
-    /** Get the matrix element of the Hamiltonian within two given FockStates. */
-    MelemType<Complex> getMatrixElement(QuantumState m, QuantumState n) const; //return H(m,n)
+    /** Return the total dimensionality of the H matrix. This corresponds to the one in StatesClassfication. */
+    InnerQuantumState getSize() const;
 
     /** Get the eigenvalue of the H matrix.
      * \param[in] Number of eigenvalue. */
@@ -76,12 +81,16 @@ public:
     const RealVectorType& getEigenValues() const;
 
     /** Return the hamiltonian part matrix. */
-    const MatrixType<Complex>& getMatrix() const { return H; }
+    template<bool Complex>
+    const MatrixType<Complex>& getMatrix() const;
+    template<bool Complex>
+    MatrixType<Complex>& getMatrix();
 
     /** Return the lowest Eigenvalue of the current part. */
     RealType getMinimumEigenvalue() const;
     /** Return the eigenstate of the H matrix.
      * \param[in] Number of eigenvalue. */
+    template<bool Complex>
     VectorType<Complex> getEigenState(InnerQuantumState state) const;
 
     /** Return the BlockNumber associated with the Hamiltonian part. */
@@ -96,10 +105,13 @@ public:
     #ifdef ENABLE_SAVE_PLAINTEXT
     bool savetxt(const boost::filesystem::path &path1);
     #endif
-};
 
-extern template class HamiltonianPart<false>;
-extern template class HamiltonianPart<true>;
+private:
+
+    template<bool Complex> void initHMatrix();
+    template<bool Complex> void prepareImpl();
+    template<bool Complex> void computeImpl();
+};
 
 } // end of namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_HAMILTONIANPART_H

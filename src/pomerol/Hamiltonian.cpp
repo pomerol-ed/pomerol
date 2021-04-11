@@ -10,16 +10,61 @@
 namespace Pomerol {
 
 template<bool Complex>
-void Hamiltonian::compute_impl(const MPI_Comm& comm) {
+void Hamiltonian::prepareImpl(libcommute::loperator<MelemType<Complex>, libcommute::fermion> HOp,
+                              const MPI_Comm& comm)
+{
+    BlockNumber NumberOfBlocks = S.getNumberOfBlocks();
+    int rank = pMPI::rank(comm);
+    if (!rank) INFO_NONEWLINE("Preparing Hamiltonian parts...");
 
-    using PartType = HamiltonianPart<Complex>;
+    parts.reserve(NumberOfBlocks);
+    for (BlockNumber CurrentBlock = 0; CurrentBlock < NumberOfBlocks; ++CurrentBlock) {
+        parts.emplace_back(HOp, S, CurrentBlock);
+    }
+
+    pMPI::mpi_skel<pMPI::PrepareWrap<HamiltonianPart>> skel;
+    skel.parts.resize(parts.size());
+    for (size_t p = 0; p < parts.size(); ++p) {
+        skel.parts[p] = pMPI::PrepareWrap<HamiltonianPart>(parts[p]);
+    }
+    std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm,false);
+    MPI_Barrier(comm);
+
+    MPI_Datatype H_dt = Complex ? MPI_CXX_DOUBLE_COMPLEX : MPI_DOUBLE;
+
+    for (size_t p = 0; p < parts.size(); ++p) {
+        auto & part = parts[p];
+        if (rank == job_map[p]) {
+            if (part.Status != HamiltonianPart::Prepared) {
+                ERROR ("Worker" << rank << " didn't calculate part" << p);
+                throw std::logic_error("Worker didn't calculate this part.");
+            }
+            auto & H = part.getMatrix<Complex>();
+            MPI_Bcast(H.data(), H.size(), H_dt, rank, comm);
+        } else {
+            part.initHMatrix<Complex>();
+            auto & H = part.getMatrix<Complex>();
+            MPI_Bcast(H.data(), H.rows() * H.cols(), H_dt, job_map[p], comm);
+            part.Status = HamiltonianPart::Prepared;
+        }
+    }
+}
+
+template void Hamiltonian::prepareImpl<true>(libcommute::loperator<ComplexType, libcommute::fermion>,
+                                             const MPI_Comm&);
+template void Hamiltonian::prepareImpl<false>(libcommute::loperator<RealType, libcommute::fermion>,
+                                              const MPI_Comm&);
+
+template<bool Complex>
+void Hamiltonian::computeImpl(const MPI_Comm& comm)
+{
 
     // Create a "skeleton" class with pointers to part that can call a compute method
-    pMPI::mpi_skel<pMPI::ComputeWrap<PartType>> skel;
+    pMPI::mpi_skel<pMPI::ComputeWrap<HamiltonianPart>> skel;
     skel.parts.resize(parts.size());
     for (size_t p = 0; p < parts.size(); p++) {
-      auto part = std::static_pointer_cast<PartType>(parts[p]);
-      skel.parts[p] = pMPI::ComputeWrap<PartType>(*part, part->getSize());
+      auto & part = parts[p];
+      skel.parts[p] = pMPI::ComputeWrap<HamiltonianPart>(part, part.getSize());
     }
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true);
     int rank = pMPI::rank(comm);
@@ -28,29 +73,30 @@ void Hamiltonian::compute_impl(const MPI_Comm& comm) {
     MPI_Barrier(comm);
     MPI_Datatype H_dt = Complex ? MPI_CXX_DOUBLE_COMPLEX : MPI_DOUBLE;
     for (size_t p = 0; p < parts.size(); ++p) {
-        auto part = std::static_pointer_cast<PartType>(parts[p]);
+        auto & part = parts[p];
+        auto & H = part.getMatrix<Complex>();
         if (rank == job_map[p]){
-            if (part->Status != PartType::Computed) {
+            if (part.Status != HamiltonianPart::Computed) {
                 ERROR ("Worker" << rank << " didn't calculate part" << p);
                 throw std::logic_error("Worker didn't calculate this part.");
             }
-            MPI_Bcast(part->H.data(), part->H.size(), H_dt, rank, comm);
-            MPI_Bcast(part->Eigenvalues.data(),
-                      part->Eigenvalues.size(),
+            MPI_Bcast(H.data(), H.size(), H_dt, rank, comm);
+            MPI_Bcast(part.Eigenvalues.data(),
+                      part.Eigenvalues.size(),
                       MPI_DOUBLE,
                       rank,
                       comm
                     );
         } else {
-            part->Eigenvalues.resize(part->H.rows());
-            MPI_Bcast(part->H.data(), part->H.size(), H_dt, job_map[p], comm);
-            MPI_Bcast(part->Eigenvalues.data(),
-                      part->Eigenvalues.size(),
+            part.Eigenvalues.resize(H.rows());
+            MPI_Bcast(H.data(), H.size(), H_dt, job_map[p], comm);
+            MPI_Bcast(part.Eigenvalues.data(),
+                      part.Eigenvalues.size(),
                       MPI_DOUBLE,
                       job_map[p],
                       comm
                      );
-            part->Status = PartType::Computed;
+            part.Status = HamiltonianPart::Computed;
         }
     }
 }
@@ -60,9 +106,9 @@ void Hamiltonian::compute(const MPI_Comm& comm)
     if (Status >= Computed) return;
 
     if(Complex)
-        compute_impl<true>(comm);
+        computeImpl<true>(comm);
     else
-        compute_impl<false>(comm);
+        computeImpl<false>(comm);
 
     computeGroundEnergy();
     Status = Computed;
@@ -71,70 +117,43 @@ void Hamiltonian::compute(const MPI_Comm& comm)
 void Hamiltonian::reduce(const RealType Cutoff)
 {
     std::cout << "Performing EV cutoff at " << Cutoff << " level" << std::endl;
-    struct {
-        RealType ActualCutoff;
-        void operator()(BlockNumber, RealPartType & p) { p.reduce(ActualCutoff); }
-        void operator()(BlockNumber, ComplexPartType & p) { p.reduce(ActualCutoff); }
-    } visitor;
-    visitor.ActualCutoff = GroundEnergy + Cutoff;
-    visitAllParts(visitor);
+    for(auto & part : parts)
+        part.reduce(GroundEnergy + Cutoff);
 }
 
 InnerQuantumState Hamiltonian::getBlockSize(BlockNumber Block) const
 {
-    struct {
-        InnerQuantumState operator()(RealPartType const& p) { return p.getSize(); }
-        InnerQuantumState operator()(ComplexPartType const& p) { return p.getSize(); }
-    } visitor;
-    return visitPart(Block, visitor);
+    return parts[Block].getSize();
 }
 
 void Hamiltonian::computeGroundEnergy()
 {
-    struct {
-        RealVectorType lev;
-        void operator()(BlockNumber b, RealPartType & p) { lev(b) = p.getMinimumEigenvalue(); }
-        void operator()(BlockNumber b, ComplexPartType & p) { lev(b) = p.getMinimumEigenvalue(); }
-    } visitor;
-    visitor.lev.resize(S.getNumberOfBlocks());
-    visitAllParts(visitor);
-    GroundEnergy = visitor.lev.minCoeff();
+    RealVectorType lev(S.getNumberOfBlocks());
+    for(BlockNumber b = 0; b < parts.size(); ++b)
+        lev(b) = parts[b].getMinimumEigenvalue();
+    GroundEnergy = lev.minCoeff();
 }
 
 RealType Hamiltonian::getEigenValue(QuantumState state) const
 {
-    struct {
-        InnerQuantumState InnerState;
-        RealType operator()(RealPartType const& p) { return p.getEigenValue(InnerState); }
-        RealType operator()(ComplexPartType const& p) { return p.getEigenValue(InnerState); }
-    } visitor {S.getInnerState(state)};
-    return visitPart(S.getBlockNumber(state), visitor);
+    return parts[S.getBlockNumber(state)].getEigenValue(S.getInnerState(state));
 }
 
 RealVectorType const& Hamiltonian::getEigenValues(BlockNumber Block) const
 {
-    struct {
-        RealVectorType const& operator()(RealPartType const& p) { return p.getEigenValues(); }
-        RealVectorType const& operator()(ComplexPartType const& p) { return p.getEigenValues(); }
-    } visitor;
-    return visitPart(Block, visitor);
+    return parts[Block].getEigenValues();
 }
 
 RealVectorType Hamiltonian::getEigenValues() const
 {
-    struct {
-        RealVectorType out;
-        size_t copied_size = 0;
-        void add_ev_chunk(RealVectorType const& ev) {
-            out.segment(copied_size, ev.size()) = ev;
-            copied_size += ev.size();
-        }
-        void operator()(BlockNumber, RealPartType const& p) { add_ev_chunk(p.getEigenValues()); }
-        void operator()(BlockNumber, ComplexPartType const& p) { add_ev_chunk(p.getEigenValues()); }
-    } visitor;
-    visitor.out.resize(S.getNumberOfStates());
-    visitAllParts(visitor);
-    return visitor.out;
+    RealVectorType out(S.getNumberOfStates());
+    size_t copied_size = 0;
+    for(auto const& part : parts) {
+        auto const& ev = part.getEigenValues();
+        out.segment(copied_size, ev.size()) = ev;
+        copied_size += ev.size();
+    }
+    return out;
 }
 
 #ifdef ENABLE_SAVE_PLAINTEXT
