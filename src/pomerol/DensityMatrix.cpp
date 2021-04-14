@@ -15,7 +15,7 @@ void DensityMatrix::prepare(void)
     // There is one-to-one correspondence between parts of the Hamiltonian
     // and parts of the density matrix itself.
     for(BlockNumber Block = 0; Block < NumOfBlocks; Block++)
-        parts.emplace_back(new DensityMatrixPart(S, H, Block, beta, GroundEnergy));
+        parts.emplace_back(new DensityMatrixPart(S, H.getPart(Block), beta, GroundEnergy));
     Status = Prepared;
 }
 

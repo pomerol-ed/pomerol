@@ -2,13 +2,13 @@
 
 namespace Pomerol{
 
-DensityMatrixPart::DensityMatrixPart(const StatesClassification &S, const Hamiltonian& H, BlockNumber Block, RealType beta, RealType GroundEnergy) :
-    Thermal(beta), H(H), Block(Block), GroundEnergy(GroundEnergy), weights(H.getBlockSize(Block)), retained(true)
+DensityMatrixPart::DensityMatrixPart(const StatesClassification &S, const HamiltonianPart& H, RealType beta, RealType GroundEnergy) :
+    Thermal(beta), H(H), GroundEnergy(GroundEnergy), weights(H.getSize()), retained(true)
 {}
 
 RealType DensityMatrixPart::computeUnnormalized(void)
 {
-    weights = exp(-beta*(H.getEigenValues(Block).array() - GroundEnergy));
+    weights = exp(-beta*(H.getEigenValues().array() - GroundEnergy));
     return weights.sum();
 }
 
@@ -20,7 +20,7 @@ void DensityMatrixPart::normalize(RealType Z)
 
 RealType DensityMatrixPart::getAverageEnergy() const
 {
-    return weights.dot(H.getEigenValues(Block));
+    return weights.dot(H.getEigenValues());
 }
 
 // TODO
