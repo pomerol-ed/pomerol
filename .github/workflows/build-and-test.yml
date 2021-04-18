@@ -29,13 +29,27 @@ jobs:
            sudo apt-get update -q
            sudo apt-get install -y libeigen3-dev libopenmpi-dev libboost-all-dev
            sudo apt-get install -y ${{ matrix.compiler.name }}
+
+    - name: Install libcommute
+      run: |
+           git clone https://github.com/krivenko/libcommute
+           mkdir libcommute.build && cd libcommute.build
+           cmake ../libcommute                                                 \
+              -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/libcommute.ins        \
+              -DTESTS=OFF                                                      \
+              -DEXAMPLES=OFF
+           make install
+
     - name: Build
       env:
         CXX: ${{ matrix.compiler.cxx }}
       run: |
            mkdir build
            cd build
-           cmake -DTesting=ON -DProgs=ON -Dprogs_list="anderson;hubbard2d" ..
+           cmake -Dlibcommute_DIR=${GITHUB_WORKSPACE}/libcommute.ins/lib/cmake \
+                 -DTesting=ON                                                  \
+                 -DProgs=ON                                                    \
+                 -Dprogs_list="anderson;hubbard2d" ..
            make VERBOSE=1
 
     - name: Run unit tests
