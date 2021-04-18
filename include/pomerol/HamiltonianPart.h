@@ -108,9 +108,9 @@ public:
 
 private:
 
-    template<bool Complex> void initHMatrix();
-    template<bool Complex> void prepareImpl();
-    template<bool Complex> void computeImpl();
+    template<bool C> void initHMatrix();
+    template<bool C> void prepareImpl();
+    template<bool C> void computeImpl();
 };
 
 } // end of namespace Pomerol

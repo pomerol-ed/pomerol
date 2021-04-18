@@ -86,11 +86,11 @@ public:
     bool isComplex() const { return Complex; }
 
     /** Returns the row ordered sparse matrix of matrix elements. */
-    template<bool Complex> RowMajorMatrixType<Complex>& getRowMajorValue();
-    template<bool Complex> const RowMajorMatrixType<Complex>& getRowMajorValue() const;
+    template<bool C> RowMajorMatrixType<C>& getRowMajorValue();
+    template<bool C> const RowMajorMatrixType<C>& getRowMajorValue() const;
     /** Returns the column ordered sparse matrix of matrix elements. */
-    template<bool Complex> ColMajorMatrixType<Complex>& getColMajorValue();
-    template<bool Complex> const ColMajorMatrixType<Complex>& getColMajorValue() const;
+    template<bool C> ColMajorMatrixType<C>& getColMajorValue();
+    template<bool C> const ColMajorMatrixType<C>& getColMajorValue() const;
     /** Returns the right hand side index. */
     BlockNumber getRightIndex() const;
     /** Returns the left hand side index. */

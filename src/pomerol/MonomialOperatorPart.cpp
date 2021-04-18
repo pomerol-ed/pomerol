@@ -129,14 +129,14 @@ void MonomialOperatorPart::print_to_screen() const
         print_to_screenImpl<false>();
 }
 
-template<bool Complex>
+template<bool C>
 void MonomialOperatorPart::print_to_screenImpl() const {
     BlockNumber to   = HTo.getBlockNumber();
     BlockNumber from = HFrom.getBlockNumber();
-    auto const& mat = getColMajorValue<Complex>();
+    auto const& mat = getColMajorValue<C>();
 
     for(size_t P = 0; P < mat.outerSize(); ++P)
-    for(typename ColMajorMatrixType<Complex>::InnerIterator it(mat, P); it; ++it) {
+    for(typename ColMajorMatrixType<C>::InnerIterator it(mat, P); it; ++it) {
         QuantumState N = S.getFockState(to, it.row());
         QuantumState M = S.getFockState(from, it.col());
         INFO(N <<" " << M << " : " << it.value());
