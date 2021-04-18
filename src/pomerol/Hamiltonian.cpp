@@ -9,8 +9,8 @@
 
 namespace Pomerol {
 
-template<bool Complex>
-void Hamiltonian::prepareImpl(libcommute::loperator<MelemType<Complex>, libcommute::fermion> HOp,
+template<bool C>
+void Hamiltonian::prepareImpl(libcommute::loperator<MelemType<C>, libcommute::fermion> HOp,
                               const MPI_Comm& comm)
 {
     BlockNumber NumberOfBlocks = S.getNumberOfBlocks();
@@ -30,7 +30,7 @@ void Hamiltonian::prepareImpl(libcommute::loperator<MelemType<Complex>, libcommu
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm,false);
     MPI_Barrier(comm);
 
-    MPI_Datatype H_dt = Complex ? MPI_CXX_DOUBLE_COMPLEX : MPI_DOUBLE;
+    MPI_Datatype H_dt = C ? MPI_CXX_DOUBLE_COMPLEX : MPI_DOUBLE;
 
     for (size_t p = 0; p < parts.size(); ++p) {
         auto & part = parts[p];
@@ -39,11 +39,11 @@ void Hamiltonian::prepareImpl(libcommute::loperator<MelemType<Complex>, libcommu
                 ERROR ("Worker" << rank << " didn't calculate part" << p);
                 throw std::logic_error("Worker didn't calculate this part.");
             }
-            auto & H = part.getMatrix<Complex>();
+            auto & H = part.getMatrix<C>();
             MPI_Bcast(H.data(), H.size(), H_dt, rank, comm);
         } else {
-            part.initHMatrix<Complex>();
-            auto & H = part.getMatrix<Complex>();
+            part.initHMatrix<C>();
+            auto & H = part.getMatrix<C>();
             MPI_Bcast(H.data(), H.rows() * H.cols(), H_dt, job_map[p], comm);
             part.Status = HamiltonianPart::Prepared;
         }
@@ -55,7 +55,7 @@ template void Hamiltonian::prepareImpl<true>(libcommute::loperator<ComplexType, 
 template void Hamiltonian::prepareImpl<false>(libcommute::loperator<RealType, libcommute::fermion>,
                                               const MPI_Comm&);
 
-template<bool Complex>
+template<bool C>
 void Hamiltonian::computeImpl(const MPI_Comm& comm)
 {
 
@@ -71,10 +71,10 @@ void Hamiltonian::computeImpl(const MPI_Comm& comm)
 
     // Start distributing data
     MPI_Barrier(comm);
-    MPI_Datatype H_dt = Complex ? MPI_CXX_DOUBLE_COMPLEX : MPI_DOUBLE;
+    MPI_Datatype H_dt = C ? MPI_CXX_DOUBLE_COMPLEX : MPI_DOUBLE;
     for (size_t p = 0; p < parts.size(); ++p) {
         auto & part = parts[p];
-        auto & H = part.getMatrix<Complex>();
+        auto & H = part.getMatrix<C>();
         if (rank == job_map[p]){
             if (part.Status != HamiltonianPart::Computed) {
                 ERROR ("Worker" << rank << " didn't calculate part" << p);

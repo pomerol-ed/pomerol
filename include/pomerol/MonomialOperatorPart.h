@@ -105,8 +105,8 @@ public:
 
 private:
 
-    template<bool Complex, bool HComplex> void computeImpl();
-    template<bool Complex> void print_to_screenImpl() const;
+    template<bool C, bool HC> void computeImpl();
+    template<bool C> void print_to_screenImpl() const;
 };
 
 } // end of namespace Pomerol
