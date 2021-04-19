@@ -16,7 +16,7 @@
 #include"Misc.h"
 #include"StatesClassification.h"
 #include"HamiltonianPart.h"
-#include"FieldOperator.h"
+#include"MonomialOperatorPart.h"
 #include"DensityMatrixPart.h"
 #include"TermList.h"
 
@@ -38,9 +38,9 @@ class SusceptibilityPart : public Thermal
     const DensityMatrixPart& DMpartOuter;
 
     /** A reference to a part of a quadratic operator. */
-    const QuadraticOperatorPart& A;
+    const MonomialOperatorPart& A;
     /** A reference to a part of a quadratic operator. */
-    const QuadraticOperatorPart& B;
+    const MonomialOperatorPart& B;
 
     /** Every term is a fraction \f$ \frac{R}{z - P} \f$. */
     struct Term {
@@ -117,12 +117,12 @@ public:
      * \param[in] DMpartInner A reference to a part of the density matrix (inner index).
      * \param[in] DMpartOuter A reference to a part of the density matrix (outer index).
      */
-    SusceptibilityPart(const QuadraticOperatorPart& A, const QuadraticOperatorPart& B,
+    SusceptibilityPart(const MonomialOperatorPart& A, const MonomialOperatorPart& B,
                        const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
                        const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter);
 
     /** Iterates over all matrix elements and fills the list of terms. */
-    void compute(void);
+    void compute();
 
     /** Returns a sum of all the terms with a substituted frequency.
     * \param[in] z Input frequency
@@ -142,6 +142,10 @@ public:
     const RealType ReduceResonanceTolerance;
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
     const RealType ReduceTolerance;
+
+private:
+
+    template<bool AComplex, bool BComplex> void computeImpl();
 };
 
 std::ostream& operator<< (std::ostream& out, const SusceptibilityPart::Term& T);

@@ -14,7 +14,7 @@
 #include"Thermal.h"
 #include"ComputableObject.h"
 #include"StatesClassification.h"
-#include"FieldOperator.h"
+#include"MonomialOperator.h"
 #include"DensityMatrix.h"
 
 namespace Pomerol{
@@ -22,7 +22,7 @@ namespace Pomerol{
 /** This class represents the ensemble average of a quadratic operator.
  *
  * Exact definition:
- * 
+ *
  * \f[
  *      \langle A \rangle = \langle c_i^{\dag} c_j \rangle
  * \f]
@@ -39,14 +39,15 @@ class EnsembleAverage : public Thermal, public ComputableObject {
     /** A reference to a Hamiltonian. */
     const Hamiltonian& H;
     /** A reference to a bosonic operator. */
-    const QuadraticOperator& A;
+    const MonomialOperator& A;
     /** A reference to a density matrix. */
     const DensityMatrix& DM;
 
     ComplexType result;
 
     /** Returns the contribution to the ensemble average from a part. Called in prepare() */
-    ComplexType compute(const QuadraticOperatorPart& Apart, const HamiltonianPart& Hpart, const DensityMatrixPart& DMpart);
+    template<bool Complex>
+    ComplexType computeImpl(const MonomialOperatorPart& Apart, const DensityMatrixPart& DMpart);
 
 public:
      /** Constructor.
@@ -56,14 +57,14 @@ public:
      * \param[in] DM A reference to a density matrix.
      */
      EnsembleAverage(const StatesClassification& S, const Hamiltonian& H,
-                     const QuadraticOperator& A, const DensityMatrix& DM);
+                     const MonomialOperator& A, const DensityMatrix& DM);
     /** Copy-constructor.
      * \param[in] EA EnsembleAverage object to be copied.
      */
     EnsembleAverage(const EnsembleAverage& EA);
 
     /** Compute the ensemble average of A by choosing relevant parts of A and sum up each contribution. */
-    void prepare();
+    void compute();
 
     /** Returns the ensemble average */
     ComplexType getResult(){ return result; };

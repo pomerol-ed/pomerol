@@ -62,9 +62,9 @@ set (pomerol_sources
     pomerol/TwoParticleGF
     pomerol/TwoParticleGFContainer
     pomerol/Vertex4
-#    pomerol/SusceptibilityPart
-#    pomerol/Susceptibility
-#    pomerol/EnsembleAverage
+    pomerol/SusceptibilityPart
+    pomerol/Susceptibility
+    pomerol/EnsembleAverage
 )
 
 add_this_package(${pomerol_sources})
