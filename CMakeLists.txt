@@ -45,7 +45,6 @@ set (pomerol_sources
 #    pomerol/Lattice
 #    pomerol/LatticePresets
     pomerol/Index
-#    pomerol/OperatorPresets
     pomerol/StatesClassification
     pomerol/HamiltonianPart
     pomerol/Hamiltonian

@@ -12,7 +12,6 @@
 #include "HilbertSpace.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
-//#include "OperatorPresets.h"
 
 #include <libcommute/algebra_ids.hpp>
 #include <libcommute/loperator/loperator.hpp>

@@ -15,6 +15,7 @@
 #include <tuple>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 namespace Pomerol {
 namespace Operators {
@@ -81,6 +82,31 @@ auto apply(F && f, ArgsT && args) ->
     return apply_impl(std::forward<F>(f), std::forward<ArgsT>(args), make_seq<ArgsT>());
 }
 
+} // end of namespace Pomerol::Operators::detail
+
+//
+// Operator presets
+//
+
+template<typename... IndexTypes>
+expression<double, IndexTypes...>
+N(const std::vector<std::tuple<IndexTypes...>> &Indices) {
+    expression<double, IndexTypes...> res;
+    for(auto const& i : Indices)
+        res += detail::apply(n<double, IndexTypes...>, i);
+    return res;
+}
+
+template<typename... IndexTypes>
+expression<double, IndexTypes...>
+Sz(const std::vector<std::tuple<IndexTypes...>> &SpinUpIndices,
+   const std::vector<std::tuple<IndexTypes...>> &SpinDownIndices) {
+    expression<double, IndexTypes...> res;
+    for(auto const& i : SpinUpIndices)
+        res += 0.5 * detail::apply(n<double, IndexTypes...>, i);
+    for(auto const& i : SpinDownIndices)
+        res -= 0.5 * detail::apply(n<double, IndexTypes...>, i);
+    return res;
 }
 
 } // end of namespace Pomerol::Operators
