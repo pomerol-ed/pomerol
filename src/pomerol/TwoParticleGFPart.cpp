@@ -9,8 +9,9 @@ std::mutex ResonantTerm_mpi_datatype_mutex;
 namespace Pomerol{
 
 // Make the lagging index catch up or outrun the leading index.
-inline bool chaseIndices(RowMajorMatrixType::InnerIterator& index1_iter,
-                         ColMajorMatrixType::InnerIterator& index2_iter)
+template<bool Complex>
+inline bool chaseIndices(typename RowMajorMatrixType<Complex>::InnerIterator& index1_iter,
+                         typename ColMajorMatrixType<Complex>::InnerIterator& index2_iter)
 {
     InnerQuantumState index1 = index1_iter.index();
     InnerQuantumState index2 = index2_iter.index();
@@ -128,8 +129,8 @@ MPI_Datatype TwoParticleGFPart::ResonantTerm::mpi_datatype() {
 // TwoParticleGFPart
 //
 TwoParticleGFPart::TwoParticleGFPart(
-                const FieldOperatorPart& O1, const FieldOperatorPart& O2,
-                const FieldOperatorPart& O3, const CreationOperatorPart& CX4,
+                const MonomialOperatorPart& O1, const MonomialOperatorPart& O2,
+                const MonomialOperatorPart& O3, const MonomialOperatorPart& CX4,
                 const HamiltonianPart& Hpart1, const HamiltonianPart& Hpart2,
                 const HamiltonianPart& Hpart3, const HamiltonianPart& Hpart4,
                 const DensityMatrixPart& DMpart1, const DensityMatrixPart& DMpart2,
@@ -150,6 +151,15 @@ TwoParticleGFPart::TwoParticleGFPart(
 
 void TwoParticleGFPart::compute()
 {
+    if(O1.isComplex() || O2.isComplex() || O3.isComplex() || CX4.isComplex())
+        computeImpl<true>();
+    else
+        computeImpl<false>();
+}
+
+template<bool Complex>
+void TwoParticleGFPart::computeImpl()
+{
     NonResonantTerms.clear();
     ResonantTerms.clear();
 
@@ -158,10 +168,10 @@ void TwoParticleGFPart::compute()
     // <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
     // Iterate over all values of |1><1| and |3><3|
     // Chase indices |2> and <2|, |4> and <4|.
-    const RowMajorMatrixType& O1matrix = O1.getRowMajorValue();
-    const ColMajorMatrixType& O2matrix = O2.getColMajorValue();
-    const RowMajorMatrixType& O3matrix = O3.getRowMajorValue();
-    const ColMajorMatrixType& CX4matrix = CX4.getColMajorValue();
+    const RowMajorMatrixType<Complex>& O1matrix = O1.getRowMajorValue<Complex>();
+    const ColMajorMatrixType<Complex>& O2matrix = O2.getColMajorValue<Complex>();
+    const RowMajorMatrixType<Complex>& O3matrix = O3.getRowMajorValue<Complex>();
+    const ColMajorMatrixType<Complex>& CX4matrix = CX4.getColMajorValue<Complex>();
 
     InnerQuantumState index1;
     InnerQuantumState index1Max = CX4matrix.outerSize(); // One can not make a cutoff in external index for evaluating 2PGF
@@ -174,11 +184,11 @@ void TwoParticleGFPart::compute()
 
     for(index1=0; index1<index1Max; ++index1)
     for(index3=0; index3<index3Max; ++index3){
-        ColMajorMatrixType::InnerIterator index4bra_iter(CX4matrix,index1);
-        RowMajorMatrixType::InnerIterator index4ket_iter(O3matrix,index3);
+        typename ColMajorMatrixType<Complex>::InnerIterator index4bra_iter(CX4matrix, index1);
+        typename RowMajorMatrixType<Complex>::InnerIterator index4ket_iter(O3matrix, index3);
         Index4List.clear();
         while (index4bra_iter && index4ket_iter){
-            if(chaseIndices(index4ket_iter,index4bra_iter)){
+            if(chaseIndices<Complex>(index4ket_iter,index4bra_iter)){
                 Index4List.push_back(index4bra_iter.index());
                 ++index4bra_iter;
                 ++index4ket_iter;
@@ -192,10 +202,10 @@ void TwoParticleGFPart::compute()
             RealType weight1 = DMpart1.getWeight(index1);
             RealType weight3 = DMpart3.getWeight(index3);
 
-            ColMajorMatrixType::InnerIterator index2bra_iter(O2matrix,index3);
-            RowMajorMatrixType::InnerIterator index2ket_iter(O1matrix,index1);
+            typename ColMajorMatrixType<Complex>::InnerIterator index2bra_iter(O2matrix,index3);
+            typename RowMajorMatrixType<Complex>::InnerIterator index2ket_iter(O1matrix,index1);
             while (index2bra_iter && index2ket_iter){
-                if (chaseIndices(index2ket_iter,index2bra_iter)){
+                if (chaseIndices<Complex>(index2ket_iter,index2bra_iter)){
 
                     InnerQuantumState index2 = index2ket_iter.index();
                     RealType E2 = Hpart2.getEigenValue(index2);

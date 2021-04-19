@@ -58,9 +58,9 @@ set (pomerol_sources
     pomerol/GreensFunctionPart
     pomerol/GreensFunction
     pomerol/GFContainer
-#    pomerol/TwoParticleGFPart
-#    pomerol/TwoParticleGF
-#    pomerol/TwoParticleGFContainer
+    pomerol/TwoParticleGFPart
+    pomerol/TwoParticleGF
+    pomerol/TwoParticleGFContainer
 #    pomerol/Vertex4
 #    pomerol/SusceptibilityPart
 #    pomerol/Susceptibility
