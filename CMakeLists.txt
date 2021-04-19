@@ -61,7 +61,7 @@ set (pomerol_sources
     pomerol/TwoParticleGFPart
     pomerol/TwoParticleGF
     pomerol/TwoParticleGFContainer
-#    pomerol/Vertex4
+    pomerol/Vertex4
 #    pomerol/SusceptibilityPart
 #    pomerol/Susceptibility
 #    pomerol/EnsembleAverage
