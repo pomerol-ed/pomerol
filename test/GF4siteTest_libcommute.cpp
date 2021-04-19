@@ -85,15 +85,15 @@ int main(int argc, char* argv[])
 
     using namespace Operators;
 
-    auto HExpr = -0.5 * (n("A", 0, up) + n("A", 0, down)) + 1.0 * n("A", 0, up) * n("A", 0, down);
-    HExpr += -1.1 * (n("B", 0, up) + n("B", 0, down)) + 2.0 * n("B", 0, up) * n("B", 0, down);
-    HExpr += -0.7 * (n("C", 0, up) + n("C", 0, down)) + 3.0 * n("C", 0, up) * n("C", 0, down);
-    HExpr += -1.1 * (n("D", 0, up) + n("D", 0, down)) + 4.0 * n("D", 0, up) * n("D", 0, down);
+    auto HExpr = -0.5 * (n("A", up) + n("A", down)) + 1.0 * n("A", up) * n("A", down);
+    HExpr += -1.1 * (n("B", up) + n("B", down)) + 2.0 * n("B", up) * n("B", down);
+    HExpr += -0.7 * (n("C", up) + n("C", down)) + 3.0 * n("C", up) * n("C", down);
+    HExpr += -1.1 * (n("D", up) + n("D", down)) + 4.0 * n("D", up) * n("D", down);
     for(spin s : {up, down}) {
-        HExpr += -1.3 * c_dag("A", 0, s) * c("B", 0, s) + hc;
-        HExpr += -0.45 * c_dag("B", 0, s) * c("C", 0, s) + hc;
-        HExpr += -0.127 * c_dag("C", 0, s) * c("D", 0, s) + hc;
-        HExpr += -0.255 * c_dag("A", 0, s) * c("D", 0, s) + hc;
+        HExpr += -1.3 * c_dag("A", s) * c("B", s) + hc;
+        HExpr += -0.45 * c_dag("B", s) * c("C", s) + hc;
+        HExpr += -0.127 * c_dag("C", s) * c("D", s) + hc;
+        HExpr += -0.255 * c_dag("A", s) * c("D", s) + hc;
     }
 
     auto IndexInfo = MakeIndexClassification(HExpr);
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
         INFO(c_map_it->first << "->" << c_map_it->second);
     }
 
-    ParticleIndex down_index = IndexInfo.getIndex("A", 0, down);
+    ParticleIndex down_index = IndexInfo.getIndex("A", down);
     GreensFunction GF(S,
                       H,
                       Operators.getAnnihilationOperator(down_index),
