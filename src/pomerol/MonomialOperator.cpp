@@ -1,7 +1,8 @@
-#include "pomerol/LibcommuteEigen.h"
 #include "pomerol/MonomialOperator.h"
 
 #include "mpi_dispatcher/mpi_skel.hpp"
+
+#include <libcommute/loperator/state_vector_eigen3.hpp>
 
 namespace Pomerol {
 

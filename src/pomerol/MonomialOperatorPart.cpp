@@ -1,6 +1,6 @@
-#include "pomerol/LibcommuteEigen.h"
 #include "pomerol/MonomialOperatorPart.h"
 
+#include <libcommute/loperator/state_vector_eigen3.hpp>
 #include <libcommute/loperator/mapped_basis_view.hpp>
 
 namespace Pomerol {

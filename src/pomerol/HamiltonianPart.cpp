@@ -1,6 +1,6 @@
-#include "pomerol/LibcommuteEigen.h"
 #include "pomerol/HamiltonianPart.h"
 
+#include <libcommute/loperator/state_vector_eigen3.hpp>
 #include <libcommute/loperator/mapped_basis_view.hpp>
 
 #include <Eigen/Eigenvalues>
