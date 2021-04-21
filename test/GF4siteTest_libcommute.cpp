@@ -25,11 +25,9 @@
 */
 
 #include "Misc.h"
-//#include "Lattice.h"
-//#include "LatticePresets.h"
+#include "LatticePresets.h"
 #include "Operators.h"
 #include "IndexClassification.h"
-//#include "OperatorPresets.h"
 #include "HilbertSpace.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
@@ -38,63 +36,32 @@
 #include "FieldOperatorContainer.h"
 #include "GFContainer.h"
 
-#include<cstdlib>
+#include <cstdlib>
 
 using namespace Pomerol;
 
-bool compare(ComplexType a, ComplexType b)
+void print_section(const std::string& str)
 {
-    return abs(a-b) < 1e-5;
-}
-
-void print_section (const std::string& str)
-{
-  std::cout << std::string(str.size(),'=') << std::endl;
-  std::cout << str << std::endl;
-  std::cout << std::string(str.size(),'=') << std::endl;
+    std::cout << std::string(str.size(),'=') << std::endl;
+    std::cout << str << std::endl;
+    std::cout << std::string(str.size(),'=') << std::endl;
 }
 
 int main(int argc, char* argv[])
 {
-
     MPI_Init(&argc, &argv);
 
-    // TODO: Remove Lattice (?) and rework LatticePresets
-    /*
-    Lattice L;
-    L.addSite(new Lattice::Site("A",1,2));
-    LatticePresets::addCoulombS(&L, "A", 1.0, -0.5);
-    L.addSite(new Lattice::Site("B",1,2));
-    LatticePresets::addCoulombS(&L, "B", 2.0, -1.1);
-    L.addSite(new Lattice::Site("C",1,2));
-    LatticePresets::addCoulombS(&L, "C", 3.0, -0.7);
-    L.addSite(new Lattice::Site("D",1,2));
-    LatticePresets::addCoulombS(&L, "D", 4.0, -1.1);
+    using namespace LatticePresets;
 
-    LatticePresets::addHopping(&L, "A","B", -1.3);
-    LatticePresets::addHopping(&L, "B","C", -0.45);
-    LatticePresets::addHopping(&L, "C","D", -0.127);
-    LatticePresets::addHopping(&L, "A","D", -0.255);
-    INFO("Sites");
-    L.printSites();
-    INFO("Terms with 2 operators");
-    L.printTerms(2);
-    INFO("Terms with 4 operators");
-    L.printTerms(4);
-    */
+    auto HExpr = CoulombS("A", 1.0, -0.5);
+    HExpr += CoulombS("B", 2.0, -1.1);
+    HExpr += CoulombS("C", 3.0, -0.7);
+    HExpr += CoulombS("D", 4.0, -1.1);
 
-    using namespace Operators;
-
-    auto HExpr = -0.5 * (n("A", up) + n("A", down)) + 1.0 * n("A", up) * n("A", down);
-    HExpr += -1.1 * (n("B", up) + n("B", down)) + 2.0 * n("B", up) * n("B", down);
-    HExpr += -0.7 * (n("C", up) + n("C", down)) + 3.0 * n("C", up) * n("C", down);
-    HExpr += -1.1 * (n("D", up) + n("D", down)) + 4.0 * n("D", up) * n("D", down);
-    for(spin s : {up, down}) {
-        HExpr += -1.3 * c_dag("A", s) * c("B", s) + hc;
-        HExpr += -0.45 * c_dag("B", s) * c("C", s) + hc;
-        HExpr += -0.127 * c_dag("C", s) * c("D", s) + hc;
-        HExpr += -0.255 * c_dag("A", s) * c("D", s) + hc;
-    }
+    HExpr += Hopping("A", "B", -1.3);
+    HExpr += Hopping("B", "C", -0.45);
+    HExpr += Hopping("C", "D", -0.127);
+    HExpr += Hopping("A", "D", -0.255);
 
     auto IndexInfo = MakeIndexClassification(HExpr);
     print_section("Indices");
@@ -108,17 +75,6 @@ int main(int argc, char* argv[])
 
     StatesClassification S;
     S.compute(HS);
-
-    // FIXME: Remove
-    for(int i = 0; i < S.getNumberOfStates(); i++) {
-      std::cout << i << ": " << S.getBlockNumber(i) << "/" << S.getInnerState(i) << std::endl;
-    }
-    for(int b = 0; b < S.getNumberOfBlocks(); b++) {
-      std::cout << "size(block("  << b << ")) = " << S.getBlockSize(b);
-      std::cout << "; states = ";
-      for(auto const& s : S.getFockStates(b)) std::cout << s << ", ";
-      std::cout << std::endl;
-    }
 
     Hamiltonian H(S);
     H.prepare(HExpr, HS, MPI_COMM_WORLD);
@@ -146,7 +102,7 @@ int main(int argc, char* argv[])
         INFO(c_map_it->first << "->" << c_map_it->second);
     }
 
-    ParticleIndex down_index = IndexInfo.getIndex("A", down);
+    ParticleIndex down_index = IndexInfo.getIndex("A", 0, down);
     GreensFunction GF(S,
                       H,
                       Operators.getAnnihilationOperator(down_index),
@@ -170,6 +126,10 @@ int main(int argc, char* argv[])
               2.68929175e-05  -0.158732731*I;
 
     bool result = true;
+    auto compare = [](ComplexType a, ComplexType b) {
+        return std::abs(a - b) < 1e-5;
+    };
+
     for(int n = 0; n<10; ++n) {
         DEBUG(GF(n) << " " << GF_ref(n));
         result = (result && compare(GF(n),GF_ref(n)));

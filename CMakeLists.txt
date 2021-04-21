@@ -38,12 +38,10 @@ configure_file("${PROJECT_SOURCE_DIR}/include/pomerol/first_include.h.in"
 install(FILES "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h"
         DESTINATION include/pomerol)
 
-# TODO
 set (pomerol_sources
     mpi_dispatcher/mpi_dispatcher
     pomerol/Misc
-#    pomerol/Lattice
-#    pomerol/LatticePresets
+    pomerol/LatticePresets
     pomerol/Index
     pomerol/StatesClassification
     pomerol/HamiltonianPart
