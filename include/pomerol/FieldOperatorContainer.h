@@ -44,8 +44,9 @@ public:
                            std::set<ParticleIndex> in = {})
     {
         if(in.empty()) {
-            for (ParticleIndex p = 0; p < IndexInfo.getIndexSize(); ++p)
+            for (ParticleIndex p = 0; p < IndexInfo.getIndexSize(); ++p) {
                 in.insert(p);
+            }
         }
         for(auto p : in) {
             mapCreationOperators.emplace(p, CreationOperator(IndexInfo, HS, S, H, p));

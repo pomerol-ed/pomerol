@@ -5,7 +5,6 @@
 #include "mpi_dispatcher/mpi_skel.hpp"
 
 #include "pomerol/Misc.h"
-#include "pomerol/Lattice.h"
 #include "pomerol/LatticePresets.h"
 #include "pomerol/Index.h"
 #include "pomerol/IndexClassification.h"

@@ -72,7 +72,7 @@ public:
             auto const& info = IndexInfo.getInfo(in);
             using Operators::c_dag;
             using Operators::c;
-            using Operators::detail::apply;
+            using Operators::Detail::apply;
             auto Cd = libcommute::loperator<double, libcommute::fermion>(
                 apply(c_dag<double, IndexTypes...>, info),
                 FullHilbertSpace

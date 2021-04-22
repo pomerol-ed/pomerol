@@ -10,7 +10,7 @@ void FieldOperatorContainer::computeAll()
 
         auto & c = mapAnnihilationOperators.find(cdag_it->first)->second;
 
-        auto cdag_block_map = cdag_it->second.getBlockMapping();
+        const auto & cdag_block_map = cdag_it->second.getBlockMapping();
         for(auto cdag_map_it = cdag_block_map.right.begin(); cdag_map_it != cdag_block_map.right.end(); ++cdag_map_it) {
             auto & cPart = c.getPartFromRightIndex(cdag_map_it->second);
             auto & cdagPart = cdag.getPartFromRightIndex(cdag_map_it->first);

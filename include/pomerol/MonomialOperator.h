@@ -50,9 +50,9 @@ protected:
 
     friend class FieldOperatorContainer;
 
-    bool Complex;
-
     /** A reference an Operator object (OperatorPresets::C or Cdag). */
+    bool MOpComplex;
+
     template<bool Complex>
     using LOperatorType = libcommute::loperator<MelemType<Complex>, libcommute::fermion>;
     std::shared_ptr<void> MOp;
@@ -61,6 +61,8 @@ protected:
     const LOperatorType<Complex>& getMOp() const {
         return *std::static_pointer_cast<LOperatorType<Complex>>(MOp);
     }
+
+    bool Complex;
 
     /** A reference to a StatesClassification object */
     const StatesClassification &S;
@@ -91,8 +93,9 @@ public:
                      HilbertSpace<IndexTypes...> const& HS,
                      const StatesClassification &S,
                      const Hamiltonian &H) :
-        Complex(std::is_same<ScalarType, ComplexType>::value || H.isComplex()),
+        MOpComplex(std::is_same<ScalarType, ComplexType>::value),
         MOp(std::make_shared<libcommute::loperator<ScalarType, libcommute::fermion>>(MO, HS.getFullHilbertSpace())),
+        Complex(MOpComplex || H.isComplex()),
         S(S), H(H), Partition(HS.getSpacePartition()) {
             if(MO.size() > 1)
                 throw std::runtime_error("Only monomial expressions are supported");
@@ -120,7 +123,7 @@ public:
         if (Status >= Prepared) return;
 
         auto const& FullHS = HS.getFullHilbertSpace();
-        auto Connections = Complex ?
+        auto Connections = MOpComplex ?
             Partition.find_connections(getMOp<true>(), FullHS) :
             Partition.find_connections(getMOp<false>(), FullHS);
 
@@ -130,7 +133,7 @@ public:
             mapPartsFromLeft.emplace(Conn.second, parts.size());
             LeftRightBlocks.insert(BlockMapping(Conn.second, Conn.first));
 
-            if(Complex)
+            if(MOpComplex)
                 parts.emplace_back(getMOp<true>(), S, H.getPart(Conn.first), H.getPart(Conn.second));
             else
                 parts.emplace_back(getMOp<false>(), S, H.getPart(Conn.first), H.getPart(Conn.second));
@@ -160,7 +163,7 @@ public:
                      const Hamiltonian &H,
                      ParticleIndex Index) :
     MonomialOperator(
-        Operators::detail::apply(Operators::c_dag<double, IndexTypes...>,
+        Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>,
                                  HS.getIndexInfo().getInfo(Index)
                                  ),
         HS, S, H
@@ -189,7 +192,7 @@ public:
                          const Hamiltonian &H,
                          ParticleIndex Index) :
     MonomialOperator(
-        Operators::detail::apply(Operators::c<double, IndexTypes...>,
+        Operators::Detail::apply(Operators::c<double, IndexTypes...>,
                                  HS.getIndexInfo().getInfo(Index)
                                  ),
         HS, S, H
@@ -219,10 +222,10 @@ public:
                       const Hamiltonian &H,
                       ParticleIndex Index1, ParticleIndex Index2) :
     MonomialOperator(
-        Operators::detail::apply(Operators::c_dag<double, IndexTypes...>,
+        Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>,
                                  HS.getIndexInfo().getInfo(Index1)
                                  ) *
-        Operators::detail::apply(Operators::c<double, IndexTypes...>,
+        Operators::Detail::apply(Operators::c<double, IndexTypes...>,
                                  HS.getIndexInfo().getInfo(Index2)
                                  ),
         HS, S, H

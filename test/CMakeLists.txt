@@ -2,35 +2,27 @@ include_directories (${CMAKE_SOURCE_DIR}/include/pomerol)
 enable_testing()
 
 # Pomerol tests
-# TODO
-#set (tests
+set (tests
 #OperatorTest
 #IndexPermutationTest
 #CCdagOperatorTest
-#NOperatorTest
-#SzOperatorTest
 #HamiltonianPartTest01
 ##SingletTest
 #HamiltonianTest
 #FieldOperatorPartTest
 #FieldOperatorTest
-#GF1siteTest
-#GF2siteTest
-#AndersonTest
-#AndersonComplexTest
-#GF4siteTest
-#GF4siteTest_libcommute
-#GFContainerTest
+GF1siteTest
+GF2siteTest
+GF4siteTest
+AndersonTest
+AndersonComplexTest
+GFContainerTest
 #TwoParticleGFContainerTest
 #Vertex4Test
-#AndersonTest02
-#AndersonTest03
+AndersonTest02
+AndersonTest03
 #EnsembleAverage1siteTest
 #Susceptibility1siteTest
-#)
-
-set (tests
-GF4siteTest_libcommute
 )
 
 foreach (test ${tests})

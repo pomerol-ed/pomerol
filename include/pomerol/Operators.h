@@ -27,7 +27,7 @@ using libcommute::static_indices::c;
 using libcommute::static_indices::c_dag;
 using libcommute::static_indices::n;
 
-namespace detail {
+namespace Detail {
 
 //
 // A C++11 compatible implementation of std::index_sequence
@@ -71,7 +71,7 @@ template<size_t N, typename T>
 using element_t = typename std::tuple_element<N, typename std::decay<T>::type>::type;
 
 template<typename F, typename ArgsT, size_t... Is>
-auto apply_impl(F && f, ArgsT && args, detail::index_sequence<Is...>) ->
+auto apply_impl(F && f, ArgsT && args, index_sequence<Is...>) ->
     decltype(f(static_cast<element_t<Is, ArgsT>>(std::get<Is>(std::forward<ArgsT>(args)))...)) {
     return f(static_cast<element_t<Is, ArgsT>>(std::get<Is>(std::forward<ArgsT>(args)))...);
 }
@@ -93,7 +93,7 @@ expression<double, IndexTypes...>
 N(const std::vector<std::tuple<IndexTypes...>> &Indices) {
     expression<double, IndexTypes...> res;
     for(auto const& i : Indices)
-        res += detail::apply(n<double, IndexTypes...>, i);
+        res += Detail::apply(n<double, IndexTypes...>, i);
     return res;
 }
 
@@ -103,9 +103,9 @@ Sz(const std::vector<std::tuple<IndexTypes...>> &SpinUpIndices,
    const std::vector<std::tuple<IndexTypes...>> &SpinDownIndices) {
     expression<double, IndexTypes...> res;
     for(auto const& i : SpinUpIndices)
-        res += 0.5 * detail::apply(n<double, IndexTypes...>, i);
+        res += 0.5 * Detail::apply(n<double, IndexTypes...>, i);
     for(auto const& i : SpinDownIndices)
-        res -= 0.5 * detail::apply(n<double, IndexTypes...>, i);
+        res -= 0.5 * Detail::apply(n<double, IndexTypes...>, i);
     return res;
 }
 

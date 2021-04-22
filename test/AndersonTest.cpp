@@ -1,17 +1,18 @@
-#include <Misc.h>
-#include <Lattice.h>
-#include <LatticePresets.h>
-#include <Index.h>
-#include <IndexClassification.h>
-#include <Operator.h>
-#include <OperatorPresets.h>
-#include <IndexHamiltonian.h>
-#include <Symmetrizer.h>
-#include <StatesClassification.h>
-#include <HamiltonianPart.h>
-#include <Hamiltonian.h>
-#include <FieldOperatorContainer.h>
-#include <GFContainer.h>
+#include "Misc.h"
+#include "LatticePresets.h"
+#include "Operators.h"
+#include "IndexClassification.h"
+#include "HilbertSpace.h"
+#include "StatesClassification.h"
+#include "HamiltonianPart.h"
+#include "Hamiltonian.h"
+#include "DensityMatrix.h"
+#include "FieldOperatorContainer.h"
+#include "GFContainer.h"
+
+#include "./Utility.h"
+
+#include <vector>
 
 using namespace Pomerol;
 
@@ -26,57 +27,47 @@ int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
 
-    Lattice L;
-    // Correlated site
-    L.addSite(new Lattice::Site("C",1,2));
-    // Bath sites
-    L.addSite(new Lattice::Site("0",1,2));
-    //L.addSite(new Lattice::Site("1",1,2));
+    using namespace LatticePresets;
 
-    LatticePresets::addCoulombS(&L, "C", U, -mu);
-/*
-    LatticePresets::addMagnetization(&L, "C", 2*h);
-    LatticePresets::addLevel(&L, "0", -epsilon);
-    LatticePresets::addLevel(&L, "1", epsilon);
-    LatticePresets::addHopping(&L, "C", "0", V);
-    LatticePresets::addHopping(&L, "C", "1", V);
-*/
-    IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
-    INFO("Indices");
+    auto HExpr = CoulombS("C", U, -mu);
+    HExpr += Magnetization("C", 2*h);
+    HExpr += Level("0", -epsilon);
+    HExpr += Level("1", epsilon);
+    HExpr += Hopping("C", "0", V);
+    HExpr += Hopping("C", "1", V);
+
+    auto IndexInfo = MakeIndexClassification(HExpr);
+    print_section("Indices");
     IndexInfo.printIndices();
 
-    IndexHamiltonian HStorage(&L,IndexInfo);
-    HStorage.prepare();
+    INFO("Hamiltonian");
+    INFO(HExpr);
 
-    Symmetrizer Symm(IndexInfo, HStorage);
-    //Symm.compute(true);
-    Symm.compute(false);
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
+    StatesClassification S;
+    S.compute(HS);
 
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
-
-    Hamiltonian H(IndexInfo, HStorage, S);
-    H.prepare();
-    for (BlockNumber i=0; i<S.NumberOfBlocks(); i++) {
-        INFO(S.getQuantumNumbers(i));
-        std::vector<FockState> st = S.getFockStates(i);
+    Hamiltonian H(S);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
+    for (BlockNumber i=0; i < S.getNumberOfBlocks(); i++) {
+        std::vector<QuantumState> st = S.getFockStates(i);
         for (int i=0; i<st.size(); ++i) INFO(st[i]);
         INFO("");
     };
 
     H.compute(MPI_COMM_WORLD);
 
-    DensityMatrix rho(S,H,beta);
+    DensityMatrix rho(S, H, beta);
     rho.prepare();
     rho.compute();
 
-    FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepareAll();
+    FieldOperatorContainer Operators(IndexInfo, HS, S, H);
+    Operators.prepareAll(HS);
     Operators.computeAll();
 
-    ParticleIndex down_index = IndexInfo.getIndex("C",0,down);
-    ParticleIndex up_index = IndexInfo.getIndex("C",0,up);
+    ParticleIndex down_index = IndexInfo.getIndex("C", 0, down);
+    ParticleIndex up_index = IndexInfo.getIndex("C", 0, up);
 
     DEBUG(down_index);
     DEBUG(up_index);
@@ -86,12 +77,12 @@ int main(int argc, char* argv[])
         INFO("C^+_"<<i);
     }
 
-    GreensFunction GF_down(S,H,
+    GreensFunction GF_down(S, H,
         Operators.getAnnihilationOperator(down_index),
         Operators.getCreationOperator(down_index),
     rho);
 
-    GreensFunction GF_up(S,H,
+    GreensFunction GF_up(S, H,
         Operators.getAnnihilationOperator(up_index),
         Operators.getCreationOperator(up_index),
     rho);

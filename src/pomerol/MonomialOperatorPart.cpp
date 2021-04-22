@@ -8,17 +8,21 @@ namespace Pomerol {
 void MonomialOperatorPart::compute()
 {
     if(Status >= Computed) return;
-    if(isComplex() && HFrom.isComplex())
+    if(MOpComplex && HFrom.isComplex())
         computeImpl<true, true>();
-    else if(isComplex() && !HFrom.isComplex())
+    else if(MOpComplex && !HFrom.isComplex())
         computeImpl<true, false>();
+    else if(!MOpComplex && HFrom.isComplex())
+        computeImpl<false, true>();
     else
         computeImpl<false, false>();
     Status = Computed;
 }
 
-template<bool C, bool HC>
+template<bool MOpC, bool HC>
 void MonomialOperatorPart::computeImpl() {
+    constexpr bool C = MOpC || HC;
+
     BlockNumber to = HTo.getBlockNumber();
     BlockNumber from = HFrom.getBlockNumber();
 
@@ -37,7 +41,7 @@ void MonomialOperatorPart::computeImpl() {
 
     auto const& U = HFrom.getMatrix<HC>();
 
-    auto const& MOp_ = *static_cast<const LOperatorType<C>*>(MOp);
+    auto const& MOp_ = *static_cast<const LOperatorType<MOpC>*>(MOp);
 
     for(InnerQuantumState st = 0; st < fromStates.size(); ++st) {
         auto fromView = fromMapper.make_const_view_no_ref(U.col(st));
@@ -68,14 +72,16 @@ void MonomialOperatorPart::computeImpl() {
 
 void MonomialOperatorPart::setFromAdjoint(const MonomialOperatorPart &part) {
     assert(isComplex() == part.isComplex());
+    assert(getLeftIndex() == part.getRightIndex());
+    assert(getRightIndex() == part.getLeftIndex());
     if(Status >= Computed) return;
 
     if(isComplex()) {
         elementsRowMajor = std::make_shared<RowMajorMatrixType<true>>(part.getColMajorValue<true>().adjoint());
-        elementsColMajor = std::make_shared<RowMajorMatrixType<true>>(part.getRowMajorValue<true>().adjoint());
+        elementsColMajor = std::make_shared<ColMajorMatrixType<true>>(part.getRowMajorValue<true>().adjoint());
     } else {
         elementsRowMajor = std::make_shared<RowMajorMatrixType<false>>(part.getColMajorValue<false>().adjoint());
-        elementsColMajor = std::make_shared<RowMajorMatrixType<false>>(part.getRowMajorValue<false>().adjoint());
+        elementsColMajor = std::make_shared<ColMajorMatrixType<false>>(part.getRowMajorValue<false>().adjoint());
     }
 
     Status = Computed;

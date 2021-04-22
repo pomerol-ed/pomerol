@@ -36,9 +36,11 @@ protected:
     using LOperatorType = libcommute::loperator<MelemType<C>, libcommute::fermion>;
 
 private:
-    bool Complex;
 
+    bool MOpComplex;
     const void* MOp;
+
+    bool Complex;
 
     /** A reference to the StateClassification object. */
     const StatesClassification &S;
@@ -70,8 +72,9 @@ public:
                          const StatesClassification &S,
                          const HamiltonianPart &HFrom,
                          const HamiltonianPart &HTo) :
-      Complex(std::is_same<ScalarType, ComplexType>::value || HFrom.isComplex() || HTo.isComplex()),
-      MOp(&MOp), S(S), HFrom(HFrom), HTo(HTo)
+      MOpComplex(std::is_same<ScalarType, ComplexType>::value), MOp(&MOp),
+      Complex(MOpComplex || HFrom.isComplex() || HTo.isComplex()),
+      S(S), HFrom(HFrom), HTo(HTo)
     {}
 
     /** Compute all the matrix elements. Changes the Status of the object to Computed. */
