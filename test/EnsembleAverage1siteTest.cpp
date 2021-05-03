@@ -26,19 +26,16 @@
 */
 
 #include "Misc.h"
-#include "Lattice.h"
 #include "LatticePresets.h"
 #include "Index.h"
 #include "IndexClassification.h"
-#include "Operator.h"
-#include "OperatorPresets.h"
-#include "IndexHamiltonian.h"
-#include "Symmetrizer.h"
+#include "Operators.h"
 #include "StatesClassification.h"
-#include "HamiltonianPart.h"
 #include "Hamiltonian.h"
 #include "FieldOperatorContainer.h"
 #include "EnsembleAverage.h"
+
+#include "./Utility.h"
 
 #include <cmath>
 #include <cstdlib>
@@ -54,11 +51,6 @@ bool compare(ComplexType a, ComplexType b)
 {
     return std::abs(a-b) < 1e-14;
 }
-bool compare(RealType a, RealType b)
-{
-    return std::abs(a-b) < 1e-14;
-}
-
 
 // Exact result
 struct ExactResult{
@@ -77,50 +69,30 @@ struct ExactResult{
     }
 };
 
-void print_section (const std::string& str)
-{
-  std::cout << std::string(str.size(),'=') << std::endl;
-  std::cout << str << std::endl;
-  std::cout << std::string(str.size(),'=') << std::endl;
-}
-
 int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
 
-    Lattice L;
-    L.addSite(new Lattice::Site("A",1,2));
+    using namespace LatticePresets;
 
     // h_field (n_down - n_up)
     // addHopping double-counts diagonal term, and divide h_field by 2.
-    LatticePresets::addHopping(&L, "A", "A", -h_field/2., 0, 0, up);  // up
-    LatticePresets::addHopping(&L, "A", "A", h_field/2., 0, 0, down);  // down
+    auto HExpr = CoulombS("A", U, -mu) + Magnetization("A", -h_field);
 
-    LatticePresets::addCoulombS(&L, "A", U, -mu);
-    print_section("Sites");
-    L.printSites();
-    print_section("Terms");
-    L.printTerms(2);
-    INFO("Terms with 4 operators");
-    L.printTerms(4);
+    INFO("Hamiltonian");
+    INFO(HExpr);
 
-
-    IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
+    auto IndexInfo = MakeIndexClassification(HExpr);
     print_section("Indices");
     IndexInfo.printIndices();
 
-    IndexHamiltonian Storage(&L,IndexInfo);
-    Storage.prepare();
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
+    StatesClassification S;
+    S.compute(HS);
 
-    Symmetrizer Symm(IndexInfo, Storage);
-    Symm.compute();
-
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
-
-    Hamiltonian H(IndexInfo, Storage, S);
-    H.prepare();
+    Hamiltonian H(S);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
 
     RealType beta = 10.0;
@@ -129,31 +101,27 @@ int main(int argc, char* argv[])
     rho.prepare();
     rho.compute();
 
-    FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepareAll();
+    FieldOperatorContainer Operators(IndexInfo, HS, S, H);
+    Operators.prepareAll(HS);
     Operators.computeAll();
 
     ParticleIndex dn_index = IndexInfo.getIndex("A",0,down);
     ParticleIndex up_index = IndexInfo.getIndex("A",0,up);
 
     // quadratic operators, c^+ c
-    QuadraticOperator s_plus(IndexInfo, S, H, up_index, dn_index);
-    QuadraticOperator s_minus(IndexInfo, S, H, dn_index, up_index);
-    QuadraticOperator n_up(IndexInfo, S, H, up_index, up_index);
-    QuadraticOperator n_dn(IndexInfo, S, H, dn_index, dn_index);
+    QuadraticOperator s_plus(IndexInfo, HS, S, H, up_index, dn_index);
+    QuadraticOperator s_minus(IndexInfo, HS, S, H, dn_index, up_index);
+    QuadraticOperator n_up(IndexInfo, HS, S, H, up_index, up_index);
+    QuadraticOperator n_dn(IndexInfo, HS, S, H, dn_index, dn_index);
 
     std::vector<QuadraticOperator*> quad_ops{&s_plus, &s_minus, &n_up, &n_dn};
     for(auto op : quad_ops){
-        op->prepare();
+        op->prepare(HS);
         op->compute();
     }
 
     // for print
-    std::vector< std::string > names;
-    names.emplace_back(std::string("< S_+ >"));
-    names.emplace_back(std::string("< S_- >"));
-    names.emplace_back(std::string("< n_up >"));
-    names.emplace_back(std::string("< n_down >"));
+    std::vector<std::string> names = {"< S_+ >", "< S_- >", "< n_up >", "< n_down >"};
 
     // reference data
     ExactResult Exact(beta);
@@ -164,7 +132,7 @@ int main(int argc, char* argv[])
     for(int i=0; i<quad_ops.size(); i++){
         print_section(names[i]);
         EnsembleAverage EA(S,H, *quad_ops[i], rho);
-        EA.prepare();
+        EA.compute();
 
         // check if results are correct
         INFO(EA.getResult() << " == " << Refs[i]);

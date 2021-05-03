@@ -83,8 +83,6 @@ public:
      * \param[in] GF Susceptibility object to be copied.
      */
     Susceptibility(const Susceptibility& Chi);
-    /** Destructor. */
-    ~Susceptibility();
 
     /** Chooses relevant parts of A and B and allocates resources for the parts of the Green's function. */
     void prepare(void);

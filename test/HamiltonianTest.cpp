@@ -25,14 +25,10 @@
 */
 
 #include "Misc.h"
-#include "Lattice.h"
 #include "LatticePresets.h"
 #include "Index.h"
 #include "IndexClassification.h"
-#include "Operator.h"
-#include "OperatorPresets.h"
-#include "IndexHamiltonian.h"
-#include "Symmetrizer.h"
+#include "Operators.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
 #include "Hamiltonian.h"
@@ -43,27 +39,23 @@ int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
 
-    Lattice L;
-    L.addSite(new Lattice::Site("A",1,2));
-    L.addSite(new Lattice::Site("B",1,2));
-    LatticePresets::addCoulombS(&L, "A", 1.0, -0.5);
-    LatticePresets::addCoulombS(&L, "B", 2.0, -1.0);
-    LatticePresets::addHopping(&L, "A", "B", -1.0);
+    using namespace LatticePresets;
 
-    IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
+    auto HExpr = CoulombS("A", 1.0, -0.5);
+    HExpr += CoulombS("B", 2.0, -1.0);
+    HExpr += Hopping("A", "B", -1.0);
 
-    IndexHamiltonian Storage(&L,IndexInfo);
-    Storage.prepare();
+    auto IndexInfo = MakeIndexClassification(HExpr);
 
-    Symmetrizer Symm(IndexInfo, Storage);
-    Symm.compute();
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
+    StatesClassification S;
+    S.compute(HS);
 
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
+    Hamiltonian H(S);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
+    H.compute(MPI_COMM_WORLD);
 
-    Hamiltonian H(IndexInfo, Storage, S);
-    H.prepare();
     H.getPart(BlockNumber(4)).print_to_screen();
     H.compute(MPI_COMM_WORLD);
     H.getPart(BlockNumber(4)).print_to_screen();

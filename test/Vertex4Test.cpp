@@ -25,16 +25,11 @@
 */
 
 #include "Misc.h"
-#include "Lattice.h"
 #include "LatticePresets.h"
 #include "Index.h"
 #include "IndexClassification.h"
-#include "Operator.h"
-#include "OperatorPresets.h"
-#include "IndexHamiltonian.h"
-#include "Symmetrizer.h"
+#include "Operators.h"
 #include "StatesClassification.h"
-#include "HamiltonianPart.h"
 #include "Hamiltonian.h"
 #include "FieldOperatorContainer.h"
 #include "GFContainer.h"
@@ -112,25 +107,20 @@ int main(int argc, char* argv[])
 
     U = 1.0;
 
-    Lattice L;
-    L.addSite(new Lattice::Site("A",1,2));
-    LatticePresets::addCoulombS(&L, "A", U, -U/2.);
+    using namespace LatticePresets;
 
-    IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
+    auto HExpr = CoulombS("A", U, -U/2);
+
+    auto IndexInfo = MakeIndexClassification(HExpr);
     IndexInfo.printIndices();
 
-    IndexHamiltonian Storage(&L,IndexInfo);
-    Storage.prepare();
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
+    StatesClassification S;
+    S.compute(HS);
 
-    Symmetrizer Symm(IndexInfo, Storage);
-    Symm.compute();
-
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
-
-    Hamiltonian H(IndexInfo, Storage, S);
-    H.prepare();
+    Hamiltonian H(S);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
 
     srand(time(NULL));
@@ -140,8 +130,8 @@ int main(int argc, char* argv[])
     rho.prepare();
     rho.compute();
 
-    FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepareAll();
+    FieldOperatorContainer Operators(IndexInfo, HS, S, H);
+    Operators.prepareAll(HS);
     Operators.computeAll();
 
 
