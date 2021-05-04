@@ -78,28 +78,21 @@ void quantum_model::compute() {
   using gftools::bmatsubara_grid;
   using gftools::real_grid;
 
-  IndexClassification IndexInfo(Lat.getSiteMap());
-  IndexInfo.prepare(false); // Create index space
+  IndexInfoType IndexInfo = MakeIndexClassification(HExpr);
   if (!rank) {
     print_section("Indices");
     IndexInfo.printIndices();
   };
 
-  print_section("Matrix element storage");
-  IndexHamiltonian Storage(&Lat,IndexInfo);
-  Storage.prepare(); // Write down the Hamiltonian as a symbolic formula
-  print_section("Terms");
-  mpi_cout << Storage << std::endl;
+  auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+  HS.compute();
 
-  Symmetrizer Symm(IndexInfo, Storage);
-  Symm.compute(); // Find symmetries of the problem
+  StatesClassification S;
+  S.compute(HS);
 
-  StatesClassification S(IndexInfo,Symm); // Introduce Fock space and classify states to blocks
-  S.compute();
-
-  Hamiltonian H(IndexInfo, Storage, S); // Hamiltonian in the basis of Fock Space
-  H.prepare(); // enter the Hamiltonian matrices
-  H.compute(); // compute eigenvalues and eigenvectors
+  Hamiltonian H(S);
+  H.prepare(HExpr, HS, MPI_COMM_WORLD);
+  H.compute(MPI_COMM_WORLD);
 
   if(!rank) {
     gftools::grid_object<double, gftools::enum_grid> evals1(gftools::enum_grid(0, S.getNumberOfStates()));
@@ -112,28 +105,11 @@ void quantum_model::compute() {
   rho.prepare();
   rho.compute(); // evaluate thermal weights with respect to ground energy, i.e exp(-beta(e-e_0))/Z
 
-  mpi_cout << "<N> = " << rho.getAverageOccupancy() << std::endl; // get average total particle number
-  mpi_cout << "<H> = " << rho.getAverageEnergy() << std::endl; // get average energy
   std::pair<ParticleIndex, ParticleIndex> pair = get_node(IndexInfo);
   ParticleIndex d0 = pair.first;//IndexInfo.getIndex("A",0,down); // find the indices of the impurity, i.e. spin up index
   ParticleIndex u0 = pair.second;//IndexInfo.getIndex("A",0,up);
-  mpi_cout << "<N_{" << IndexInfo.getInfo(u0) << "}N_{"<< IndexInfo.getInfo(u0) << "}> = "
-           << rho.getAverageDoubleOccupancy(u0,d0) << std::endl; // get double occupancy
-
-  for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {
-    mpi_cout << "<N_{" << IndexInfo.getInfo(i) << "[" << i <<"]}> = "
-             << rho.getAverageOccupancy(i) << std::endl; // get average total particle number
-  }
-
-  if (!rank) {
-    double n_av = rho.getAverageOccupancy();
-    gftools::num_io<double>(n_av).savetxt("N_T.dat");
-  }
 
   // Green's function calculation starts here
-
-  // Create a container for c and c^+ in the eigenstate basis
-  FieldOperatorContainer Operators(IndexInfo, S, H);
 
   if (calc_gf) {
     print_section("1-particle Green's functions calc");
@@ -154,7 +130,9 @@ void quantum_model::compute() {
     f.insert(d0);
     prepare_indices(d0, u0, indices2, f, IndexInfo);
 
-    Operators.prepareAll(f);
+    // Create a container for c and c^+ in the eigenstate basis
+    FieldOperatorContainer Operators(IndexInfo, HS, S, H, f);
+    Operators.prepareAll(HS);
     Operators.computeAll(); // evaluate c, c^+ for chosen indices
 
     GFContainer G(IndexInfo,S,H,rho,Operators);
