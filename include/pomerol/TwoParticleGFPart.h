@@ -12,11 +12,11 @@
 #include"Misc.h"
 #include"StatesClassification.h"
 #include"HamiltonianPart.h"
-#include"FieldOperatorPart.h"
+#include"MonomialOperatorPart.h"
 #include"DensityMatrixPart.h"
 #include"TermList.h"
 
-namespace Pomerol{
+namespace Pomerol {
 
 /** This class represents a part of a two-particle Green's function.
  * Every part describes one 'world stripe' of four operators.
@@ -209,13 +209,13 @@ public:
 private:
 
     /** A reference to a part of the first operator. */
-    const FieldOperatorPart& O1;
+    const MonomialOperatorPart& O1;
     /** A reference to a part of the second operator. */
-    const FieldOperatorPart& O2;
+    const MonomialOperatorPart& O2;
     /** A reference to a part of the third operator. */
-    const FieldOperatorPart& O3;
+    const MonomialOperatorPart& O3;
     /** A reference to a part of the fourth (creation) operator. */
-    const CreationOperatorPart& CX4;
+    const MonomialOperatorPart& CX4;
 
     /** A reference to the first part of a Hamiltonian. */
     const HamiltonianPart& Hpart1;
@@ -296,6 +296,8 @@ private:
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. default = 1e-5. */
     RealType MultiTermCoefficientTolerance;
 
+    template<bool Complex> void computeImpl();
+
 public:
     /** Constructor.
      * \param[in] O1 A reference to a part of the first operator.
@@ -312,8 +314,8 @@ public:
      * \param[in] DMpart4 A reference to the fourth part of a density matrix.
      * \param[in] Permutation A permutation of the operators for this part.
      */
-    TwoParticleGFPart(const FieldOperatorPart& O1, const FieldOperatorPart& O2,
-                      const FieldOperatorPart& O3, const CreationOperatorPart& CX4,
+    TwoParticleGFPart(const MonomialOperatorPart& O1, const MonomialOperatorPart& O2,
+                      const MonomialOperatorPart& O3, const MonomialOperatorPart& CX4,
                       const HamiltonianPart& Hpart1, const HamiltonianPart& Hpart2,
                       const HamiltonianPart& Hpart3, const HamiltonianPart& Hpart4,
                       const DensityMatrixPart& DMpart1, const DensityMatrixPart& DMpart2,

@@ -8,7 +8,7 @@
 #define __INCLUDE_DENSITYMATRIXPART_H
 
 #include "Thermal.h"
-#include "HamiltonianPart.h"
+#include "Hamiltonian.h"
 
 namespace Pomerol{
 
@@ -20,10 +20,8 @@ namespace Pomerol{
 
 class DensityMatrixPart : public Thermal
 {
-    /** A reference to a states classification object. */
-    const StatesClassification& S;
     /** A reference to a part of a Hamiltonian. */
-    const HamiltonianPart& hpart;
+    const HamiltonianPart& H;
 
     /** The ground energy of the Hamiltonian.
      * It is subtracted from all energy levels to avoid
@@ -46,16 +44,16 @@ public:
      * \param[in] beta The inverse temperature.
      * \param[in] GroundEnergy The ground state energy of the Hamiltonian.
      */
-    DensityMatrixPart(const StatesClassification &S, const HamiltonianPart& hpart, RealType beta, RealType GroundEnergy);
+    DensityMatrixPart(const StatesClassification &S, const HamiltonianPart& H, RealType beta, RealType GroundEnergy);
 
     /** Compute unnormalized weights (diagonal matrix elements)
-     * 
+     *
      * \return The partial partition function.
      */
-    RealType computeUnnormalized(void);
+    RealType computeUnnormalized();
 
     /** Divide all the weights by the partition function.
-     * 
+     *
      * \param[in] Z The partition function.
      */
     void normalize(RealType Z);
@@ -66,16 +64,17 @@ public:
     RealType getWeight(InnerQuantumState s) const;
 
     /** Returns an averaged value of the energy. */
-    RealType getAverageEnergy(void) const;
+    RealType getAverageEnergy() const;
 
-    RealType getAverageOccupancy() const;
+    // TODO
+    //RealType getAverageOccupancy() const;
     /** Returns the average occupancy at site i. */
-    RealType getAverageOccupancy(ParticleIndex i) const;
+    //RealType getAverageOccupancy(ParticleIndex i) const;
     /** Returns an averaged value of the double occupancy. */
-    RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const;
+    //RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const;
 
     /** Returns the partition function of this part. */
-    RealType getPartialZ(void) const;
+    RealType getPartialZ() const { return Z_part; }
 
     /** Truncates this part if it does not include any states having larger weight than Tolerance. */
     void truncate(RealType Tolerance);

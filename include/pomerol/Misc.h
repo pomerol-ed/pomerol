@@ -17,8 +17,9 @@
 #include<list>
 #include<map>
 #include<iomanip>
+#include<type_traits>
 
-#include<boost/dynamic_bitset.hpp>
+#include <libcommute/loperator/state_vector.hpp>
 
 #define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 #include<Eigen/Core>
@@ -32,9 +33,7 @@
 #include <omp.h>
 #endif
 
-#define REALTYPE_DOUBLE
-
-namespace Pomerol{
+namespace Pomerol {
 
 #define MSG_PREFIX            __FILE__ << ":" << __LINE__ << ": "
 #ifndef NDEBUG
@@ -54,15 +53,14 @@ typedef std::complex<double> ComplexType;
 /** Index represents a combination of spin, orbital, and lattice indices **/
 typedef unsigned int ParticleIndex;
 
-/** Fock State representation. */
-typedef boost::dynamic_bitset<> FockState;
-const FockState ERROR_FOCK_STATE = FockState(); // A state with the size==0 is an error state
+// FIXME
+//const FockState ERROR_FOCK_STATE = {}; // A state with the size==0 is an error state
 
 /** Each Quantum State in the finite system is associated with a number.
  * This works for any basis, including Fock and Hamiltonian eigenbasis.
  * The Fock States are converted naturally from bitsets to ints.
  **/
-typedef unsigned long QuantumState;
+using QuantumState = libcommute::sv_index_type;
 
 /** Index represents a combination of spin, orbital, and lattice indices **/
 typedef unsigned int ParticleIndex;
@@ -74,7 +72,12 @@ typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign
 /** Dense real matrix. */
 typedef Eigen::Matrix<RealType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> RealMatrixType;
 typedef Eigen::Matrix<RealType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> LowerTriangularRealMatrixType;
-typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> MatrixType;
+
+template<bool Complex>
+using MelemType = typename std::conditional<Complex, ComplexType, RealType>::type;
+
+template<bool Complex>
+using MatrixType = Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor>;
 
 /** Dense complex vector. */
 typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,1,Eigen::AutoAlign> ComplexVectorType;
@@ -82,17 +85,21 @@ typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,1,Eigen::AutoAlign> ComplexVect
 typedef Eigen::Matrix<RealType,Eigen::Dynamic,1,Eigen::AutoAlign> RealVectorType;
 /** Dense vector of integers. */
 typedef Eigen::Matrix<int,Eigen::Dynamic,1,Eigen::AutoAlign> IntVectorType;
-typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,1,Eigen::AutoAlign> VectorType;
+template<bool Complex>
+using VectorType = Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic,1,Eigen::AutoAlign>;
 
 /** Sparse complex matrix */
-typedef Eigen::SparseMatrix<ComplexType,Eigen::ColMajor> ColMajorMatrixType;
-typedef Eigen::SparseMatrix<ComplexType,Eigen::RowMajor> RowMajorMatrixType;
-typedef Eigen::DynamicSparseMatrix<ComplexType,Eigen::ColMajor> DynamicSparseMatrixType;
+template<bool Complex>
+using ColMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::ColMajor>;
+template<bool Complex>
+using RowMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::RowMajor>;
 //typedef Eigen::Triplet<RealType> RealTypeTriplet;
 //typedef Eigen::Triplet<ComplexType> ComplexTypeTriplet;
 
 /** Possible spin projections are \b down and \b up */
-enum spin {down, up};
+enum spin : unsigned short {down, up};
+
+std::ostream & operator<<(std::ostream & os, spin s);
 
 /** A short name for imaginary unit. */
 static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems

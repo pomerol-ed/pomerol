@@ -7,6 +7,7 @@
 #ifndef __INCLUDE_INDEXCONTAINER2_H
 #define __INCLUDE_INDEXCONTAINER2_H
 
+#include"Index.h"
 #include"IndexClassification.h"
 
 #include <memory>
@@ -18,16 +19,19 @@ namespace Pomerol {
 template<typename ElementType, typename SourceObject>
 class IndexContainer2 {
 protected:
-    const IndexClassification& IndexInfo;
+    ParticleIndex NumIndices;
     std::map<IndexCombination2,std::shared_ptr<ElementType> > ElementsMap;
 
     SourceObject* pSource;
 
-    const std::set<IndexCombination2> enumerateInitialIndices(void) const;
+    const std::set<IndexCombination2> enumerateInitialIndices() const;
 
 public:
 
-    IndexContainer2<ElementType,SourceObject>(SourceObject* pSource, const IndexClassification& IndexInfo);
+    template<typename... IndexTypes>
+    IndexContainer2(SourceObject* pSource, const IndexClassification<IndexTypes...>& IndexInfo) :
+        NumIndices(IndexInfo.getIndexSize()), pSource(pSource)
+    {}
 
     void fill(std::set<IndexCombination2> InitialIndices = std::set<IndexCombination2>());
     ElementType& set(const IndexCombination2& Indices);
@@ -42,11 +46,6 @@ public:
 /////////////////////
 // IndexContainer2 //
 /////////////////////
-template<typename ElementType, typename SourceObject>
-IndexContainer2<ElementType,SourceObject>::IndexContainer2(SourceObject* pSource, const IndexClassification& IndexInfo) :
-    IndexInfo(IndexInfo), pSource(pSource)
-{}
-
 template<typename ElementType, typename SourceObject>
 bool IndexContainer2<ElementType,SourceObject>::isInContainer(const IndexCombination2& Indices) const
 {
@@ -126,9 +125,8 @@ const std::set<IndexCombination2> IndexContainer2<ElementType,SourceObject>::enu
 {
     std::set<IndexCombination2> AllIndices;
 
-    ParticleIndex Size = IndexInfo.getIndexSize();
-    for(ParticleIndex Index1=0; Index1<Size; ++Index1)
-    for(ParticleIndex Index2=0; Index2<Size; ++Index2)
+    for(ParticleIndex Index1=0; Index1<NumIndices; ++Index1)
+    for(ParticleIndex Index2=0; Index2<NumIndices; ++Index2)
         AllIndices.insert(IndexCombination2(Index1,Index2));
 
     return AllIndices;

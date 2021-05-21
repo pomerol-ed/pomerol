@@ -25,21 +25,16 @@
 */
 
 #include "Misc.h"
-#include "Lattice.h"
 #include "LatticePresets.h"
 #include "Index.h"
 #include "IndexClassification.h"
-#include "Operator.h"
-#include "OperatorPresets.h"
-#include "IndexHamiltonian.h"
-#include "Symmetrizer.h"
+#include "Operators.h"
 #include "StatesClassification.h"
-#include "HamiltonianPart.h"
 #include "Hamiltonian.h"
 #include "FieldOperatorContainer.h"
 #include "GFContainer.h"
 
-#include<cstdlib>
+#include <cstdlib>
 
 using namespace Pomerol;
 
@@ -69,24 +64,19 @@ int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
 
-    Lattice L;
-    L.addSite(new Lattice::Site("A",1,2));
-    LatticePresets::addCoulombS(&L, "A", 1.0, -0.4);
+    using namespace LatticePresets;
 
-    IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
+    auto HExpr = CoulombS("A", 1.0, -0.4);
 
-    IndexHamiltonian Storage(&L,IndexInfo);
-    Storage.prepare();
+    auto IndexInfo = MakeIndexClassification(HExpr);
 
-    Symmetrizer Symm(IndexInfo, Storage);
-    Symm.compute();
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
+    StatesClassification S;
+    S.compute(HS);
 
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
-
-    Hamiltonian H(IndexInfo, Storage, S);
-    H.prepare();
+    Hamiltonian H(S);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
 
     srand (time(NULL));
@@ -96,8 +86,8 @@ int main(int argc, char* argv[])
     rho.prepare();
     rho.compute();
 
-    FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepareAll();
+    FieldOperatorContainer Operators(IndexInfo, HS, S, H);
+    Operators.prepareAll(HS);
     Operators.computeAll();
 
     GFContainer G(IndexInfo,S,H,rho,Operators);

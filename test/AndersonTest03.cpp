@@ -14,21 +14,21 @@
 
 #include <pomerol.h>
 
+#include "./Utility.h"
+
 using namespace Pomerol;
 
 /* Auxiliary routines - implemented in the bottom. */
-bool compare(ComplexType a, ComplexType b);
-void print_section (const std::string& str);
 template <typename F1, typename F2>
-    bool is_equal ( F1 x, F2 y, RealType tolerance = 1e-7);
-template <typename T1> void savetxt(std::string fname, T1 in);
-struct my_logic_error;
+bool is_equal ( F1 x, F2 y, RealType tolerance)
+{
+    return std::abs(x-y) < tolerance;
+}
 
 int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
 
-    Lattice Lat;
     print_section("Anderson ");
 
     int wn;
@@ -50,51 +50,38 @@ int main(int argc, char* argv[])
 
     INFO("Diagonalization of 1+" << L << " sites");
 
-    /* Add sites */
-    Lat.addSite(new Lattice::Site("A",1,2));
-    LatticePresets::addCoulombS(&Lat, "A", U, -mu);
+    using namespace LatticePresets;
+
+    auto HExpr = CoulombS("A", U, -mu);
 
     std::vector<std::string> names(L);
     for (size_t i=0; i<L; i++)
         {
             std::stringstream s; s << i;
-            names[i]="b"+s.str();
-            Lat.addSite(new Lattice::Site(names[i],1,2));
-            LatticePresets::addHopping(&Lat, "A", names[i], hoppings[i]);
-            LatticePresets::addLevel(&Lat, names[i], levels[i]);
+            names[i] = "b" + s.str();
+            HExpr += Hopping("A", names[i], hoppings[i]);
+            HExpr += Level(names[i], levels[i]);
         };
-
-    INFO("Sites");
-    Lat.printSites();
 
     int rank = pMPI::rank(MPI_COMM_WORLD);
     if (!rank) {
-        INFO("Terms with 2 operators");
-        Lat.printTerms(2);
-
-        INFO("Terms with 4 operators");
-        Lat.printTerms(4);
+        INFO("Hamiltonian");
+        INFO(HExpr);
     }
 
-    IndexClassification IndexInfo(Lat.getSiteMap());
-    IndexInfo.prepare(false);
-    if (!rank) { print_section("Indices"); IndexInfo.printIndices(); };
-    int index_size = IndexInfo.getIndexSize();
+    auto IndexInfo = MakeIndexClassification(HExpr);
+    if (!rank) {
+        print_section("Indices");
+        IndexInfo.printIndices();
+    }
 
-    print_section("Matrix element storage");
-    IndexHamiltonian Storage(&Lat,IndexInfo);
-    Storage.prepare();
-    print_section("Terms");
-    if (!rank) INFO(Storage);
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
+    StatesClassification S;
+    S.compute(HS);
 
-    Symmetrizer Symm(IndexInfo, Storage);
-    Symm.compute();
-
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
-
-    Hamiltonian H(IndexInfo, Storage, S);
-    H.prepare(MPI_COMM_WORLD);
+    Hamiltonian H(S);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
 
     RealVectorType evals (H.getEigenValues());
@@ -103,10 +90,6 @@ int main(int argc, char* argv[])
     DensityMatrix rho(S,H,beta);
     rho.prepare();
     rho.compute();
-
-    INFO("<N> = " << rho.getAverageOccupancy());
-
-    FieldOperatorContainer Operators(IndexInfo, S, H);
 
     if (calc_gf) {
         INFO("1-particle Green's functions calc");
@@ -118,7 +101,9 @@ int main(int argc, char* argv[])
         f.insert(d0);
 
         indices2.insert(IndexCombination2(d0,d0));
-        Operators.prepareAll(f);
+
+        FieldOperatorContainer Operators(IndexInfo, HS, S, H, f);
+        Operators.prepareAll(HS);
         Operators.computeAll();
         GFContainer G(IndexInfo,S,H,rho,Operators);
 
@@ -141,17 +126,16 @@ int main(int argc, char* argv[])
             Chi4.prepareAll(indices4);
             MPI_Barrier(MPI_COMM_WORLD);
 
-            std::vector<ComplexType> chi_uuuu_vals(10);
-            chi_uuuu_vals[0] = -2.342841271771e+01;
-            chi_uuuu_vals[1] = 0.000000000000e+00;
-            chi_uuuu_vals[2] = 6.932231165814e-03;
-            chi_uuuu_vals[3] = 2.037522082872e-03;
-            chi_uuuu_vals[4] = -2.150424835716e-03;
-            chi_uuuu_vals[5] = -4.384848776411e-03;
-            chi_uuuu_vals[6] = -5.253420668000e-03;
-            chi_uuuu_vals[7] = -5.370700986029e-03;
-            chi_uuuu_vals[8] = -5.126175681822e-03;
-            chi_uuuu_vals[9] = -4.732777836189e-03;
+            std::vector<ComplexType> chi_uuuu_vals = {-2.342841271771e+01,
+                                                       0.000000000000e+00,
+                                                       6.932231165814e-03,
+                                                       2.037522082872e-03,
+                                                      -2.150424835716e-03,
+                                                      -4.384848776411e-03,
+                                                      -5.253420668000e-03,
+                                                      -5.370700986029e-03,
+                                                      -5.126175681822e-03,
+                                                      -4.732777836189e-03};
             std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > freqs(chi_uuuu_vals.size());
 
             ComplexType Omega = I*2.*M_PI/beta;
@@ -164,7 +148,7 @@ int main(int argc, char* argv[])
 
             std::map<IndexCombination4, std::vector<ComplexType> > data_freqs = Chi4.computeAll(true, freqs, MPI_COMM_WORLD, true);
             TwoParticleGF& chi_uuuu = Chi4(IndexCombination4(u0,u0,u0,u0));
-            const TwoParticleGF& chi_udud = Chi4(IndexCombination4(u0,u0,u0,u0));
+            const TwoParticleGF& chi_udud = Chi4(IndexCombination4(u0,d0,u0,d0));
             const TwoParticleGF& chi_dddd = Chi4(IndexCombination4(d0,d0,d0,d0));
 
             //std::vector<ComplexType> chi_uuuu_out = chi_uuuu.compute(true, freqs, comm);
@@ -189,26 +173,3 @@ int main(int argc, char* argv[])
     MPI_Finalize();
     return EXIT_SUCCESS;
 }
-
-
-void print_section (const std::string& str)
-{
-    if (!pMPI::rank(MPI_COMM_WORLD)) {
-        std::cout << std::string(str.size(),'=') << std::endl;
-        std::cout << str << std::endl;
-        std::cout << std::string(str.size(),'=') << std::endl;
-        };
-}
-
-template <typename F1, typename F2>
-bool is_equal ( F1 x, F2 y, RealType tolerance)
-{
-    return (std::abs(x-y)<tolerance);
-}
-
-template <typename T1> void savetxt(std::string fname, T1 in){std::ofstream out(fname.c_str()); out << in << std::endl; out.close();};
-
-struct my_logic_error : public std::logic_error { my_logic_error (const std::string& what_arg):logic_error(what_arg){}; };
-
-
-

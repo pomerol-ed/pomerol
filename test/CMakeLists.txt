@@ -3,21 +3,13 @@ enable_testing()
 
 # Pomerol tests
 set (tests
-OperatorTest
-IndexPermutationTest
-CCdagOperatorTest
-NOperatorTest
-SzOperatorTest
-HamiltonianPartTest01
-#SingletTest
 HamiltonianTest
-FieldOperatorPartTest
-FieldOperatorTest
+MonomialOperatorPartTest
 GF1siteTest
 GF2siteTest
+GF4siteTest
 AndersonTest
 AndersonComplexTest
-GF4siteTest
 GFContainerTest
 TwoParticleGFContainerTest
 Vertex4Test

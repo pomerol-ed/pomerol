@@ -42,17 +42,21 @@ class quantum_model {
 
 public:
 
+  using IndexInfoType = Pomerol::IndexClassification<std::string,
+                                                     unsigned short,
+                                                     Pomerol::spin>;
+
   quantum_model(int argc, char* argv[], const std::string &prog_desc);
   ~quantum_model();
 
   void parse_args(int argc, char* argv[]);
 
-  virtual void init_lattice() = 0;
+  virtual void init_hamiltonian() = 0;
 
   void compute();
 
   virtual std::pair<Pomerol::ParticleIndex, Pomerol::ParticleIndex>
-  get_node(const Pomerol::IndexClassification &IndexInfo) = 0;
+  get_node(const IndexInfoType &IndexInfo) = 0;
 
   double FMatsubara(int n, double beta){ return M_PI/beta*(2.*n+1); }
   double BMatsubara(int n, double beta){ return M_PI/beta*(2.*n); }
@@ -61,7 +65,7 @@ public:
                                Pomerol::ParticleIndex u0,
                                std::set<Pomerol::IndexCombination2> &indices2,
                                std::set<Pomerol::ParticleIndex> & f,
-                               const Pomerol::IndexClassification &IndexInfo) = 0;
+                               const IndexInfoType &IndexInfo) = 0;
 private:
 
   // Simulation parameters
@@ -94,7 +98,7 @@ protected:
   MPI_Comm comm;
   int rank;
 
-  Pomerol::Lattice Lat;
+  Pomerol::LatticePresets::RealExpr HExpr;
 
   void print_section (const std::string& str)
   {

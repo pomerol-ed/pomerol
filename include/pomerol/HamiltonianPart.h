@@ -12,6 +12,12 @@
 #include "IndexClassification.h"
 #include "StatesClassification.h"
 
+#include <libcommute/algebra_ids.hpp>
+#include <libcommute/loperator/loperator.hpp>
+
+#include <memory>
+#include <type_traits>
+
 #ifdef ENABLE_SAVE_PLAINTEXT
 #include <boost/filesystem/path.hpp>
 #endif
@@ -21,73 +27,77 @@ namespace Pomerol{
 /** HamiltonianPart is a class, which stores and diagonalizes the block of the Hamiltonian, which corresponds to a set of given quantum numbers. */
 class HamiltonianPart : public ComputableObject {
 
-    /** A reference to the IndexClassification object. */
-    const IndexClassification &IndexInfo;
-    /** A reference to the IndexHamiltonian object. */
-    const IndexHamiltonian &F;
-    /** A reference to the StateClassification object. */
+    bool Complex;
+
+    template<bool C>
+    using LOperatorType = libcommute::loperator<MelemType<C>, libcommute::fermion>;
+    const void* HOp;
+
     const StatesClassification &S;
 
     /** The number of Block. Defined in StatesClassification. */
     BlockNumber Block;
-    /** QuantumNumbers of the block. Consructed in Symmetrizer and defined in StatesClassification. */
-    QuantumNumbers QN;
 
     /** A matrix filled with matrix elements of HamiltonianPart in the space of FockState's.
      *  After diagonalization it stores the eigenfunctions of the problem in a rows of H. */
-    MatrixType H;                
+    std::shared_ptr<void> HMatrix = nullptr;
     /** A vector of eigenvalues of the HamiltonianPart. */
-    RealVectorType Eigenvalues;      
+    RealVectorType Eigenvalues;
 
     friend class Hamiltonian;
 
 public:
 
     /** Constructor.
-     * \param[in] IndexInfo IndexClassification object. Provides information about the indices in the problem. 
+     * \param[in] IndexInfo IndexClassification object. Provides information about the indices in the problem.
      * \param[in] F IndexHamiltonian object. Provides all Terms required to fill the Hamiltonian part.
      * \param[in] S StatesClassification object. Provides information about Fock States of the problem.
      * \param[in] Block The BlockNumber of current part. It is a genuine id of the part. */
-    HamiltonianPart(const IndexClassification &IndexInfo, const IndexHamiltonian &F, const StatesClassification &S, const BlockNumber& Block);
+    template<typename ScalarType>
+    HamiltonianPart(const libcommute::loperator<ScalarType, libcommute::fermion> &HOp,
+                    const StatesClassification &S,
+                    BlockNumber Block) :
+        Complex(std::is_same<ScalarType, ComplexType>::value),
+        HOp(&HOp), S(S), Block(Block)
+    {}
 
     /** Fill in the H matrix. */
-    void prepare(void);
+    void prepare();
     /** Diagonalize the H matrix and get EigenValues. */
-    void compute(void);
-    
+    void compute();
+
     bool reduce(RealType ActualCutoff); // Useless now
 
-    /** Return the total dimensionality of the H matrix. This corresponds to the one in StatesClassfication. */
-    InnerQuantumState getSize(void) const;
+    bool isComplex() const { return Complex; }
 
-    /** Get the matrix element of the HamiltonianPart by the number of states inside the part. */ 
-    ComplexType getMatrixElement(InnerQuantumState m, InnerQuantumState n) const; //return H(m,n)
-    /** Get the matrix element of the Hamiltonian within two given FockStates. */
-    ComplexType getMatrixElement(FockState m, FockState n) const; //return H(m,n)
+    /** Return the total dimensionality of the H matrix. This corresponds to the one in StatesClassfication. */
+    InnerQuantumState getSize() const;
 
     /** Get the eigenvalue of the H matrix.
      * \param[in] Number of eigenvalue. */
-    RealType getEigenValue(InnerQuantumState state) const; 
+    RealType getEigenValue(InnerQuantumState state) const;
 
     /** Returns calculated eigenvalues. */
-    const RealVectorType& getEigenValues() const; 
+    const RealVectorType& getEigenValues() const;
 
     /** Return the hamiltonian part matrix. */
-    const MatrixType& getMatrix() const;
+    template<bool Complex>
+    const MatrixType<Complex>& getMatrix() const;
+    template<bool Complex>
+    MatrixType<Complex>& getMatrix();
 
     /** Return the lowest Eigenvalue of the current part. */
-    RealType getMinimumEigenvalue() const;        
+    RealType getMinimumEigenvalue() const;
     /** Return the eigenstate of the H matrix.
      * \param[in] Number of eigenvalue. */
-    VectorType getEigenState(InnerQuantumState state) const;
+    template<bool Complex>
+    VectorType<Complex> getEigenState(InnerQuantumState state) const;
 
-    /** Return the QuantumNumbers associated with the Hamiltonian part. */
-    QuantumNumbers getQuantumNumbers() const; 
     /** Return the BlockNumber associated with the Hamiltonian part. */
-    BlockNumber getBlockNumber() const;
+    BlockNumber getBlockNumber() const { return Block; }
 
     /** Print the part of hamiltonian to screen. */
-    void print_to_screen() const; 
+    void print_to_screen() const;
 
     /** Save the data to the file.
      * \param[in] path Path to the file.
@@ -95,6 +105,12 @@ public:
     #ifdef ENABLE_SAVE_PLAINTEXT
     bool savetxt(const boost::filesystem::path &path1);
     #endif
+
+private:
+
+    template<bool C> void initHMatrix();
+    template<bool C> void prepareImpl();
+    template<bool C> void computeImpl();
 };
 
 } // end of namespace Pomerol

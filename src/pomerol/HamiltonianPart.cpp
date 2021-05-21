@@ -1,144 +1,170 @@
-#include"pomerol/HamiltonianPart.h"
-#include"pomerol/StatesClassification.h"
-#include<sstream>
-#include<Eigen/Eigenvalues>
+#include "pomerol/HamiltonianPart.h"
+
+#include <libcommute/loperator/state_vector_eigen3.hpp>
+#include <libcommute/loperator/mapped_basis_view.hpp>
+
+#include <Eigen/Eigenvalues>
+
+#include <limits>
+#include <sstream>
+#include <stdexcept>
 
 #ifdef ENABLE_SAVE_PLAINTEXT
 #include<boost/filesystem.hpp>
 #include<boost/filesystem/fstream.hpp>
 #endif
 
+//
 // class HamiltonianPart
+//
 
-namespace Pomerol{
+namespace Pomerol {
 
-HamiltonianPart::HamiltonianPart(const IndexClassification& IndexInfo, const IndexHamiltonian &F, const StatesClassification &S, const BlockNumber& Block):
-    ComputableObject(),
-    IndexInfo(IndexInfo),
-    F(F), S(S),
-    Block(Block), QN(S.getQuantumNumbers(Block))
-{
+template<bool C>
+void HamiltonianPart::initHMatrix() {
+    InnerQuantumState BlockSize = S.getBlockSize(Block);
+    HMatrix = std::make_shared<MatrixType<C>>(BlockSize, BlockSize);
 }
 
 void HamiltonianPart::prepare()
 {
-    size_t BlockSize = S.getBlockSize(Block);
-
-    H.resize(BlockSize,BlockSize);
-    H.setZero();
-    std::map<FockState,ComplexType>::const_iterator melem_it;
-
-    for(InnerQuantumState right_st=0; right_st<BlockSize; right_st++)
-    {
-        FockState ket = S.getFockState(Block,right_st);
-        std::map<FockState,ComplexType> mapStates = F.actRight(ket);
-        for (melem_it=mapStates.begin(); melem_it!=mapStates.end(); melem_it++) {
-            FockState bra = melem_it -> first;
-            ComplexType melem = melem_it -> second;
-            //DEBUG("<" << bra << "|" << melem << "|" << F << "|" << ket << ">");
-            InnerQuantumState left_st = S.getInnerState(bra);
-//            if (left_st > right_st) { ERROR("!"); exit(1); };
-            H(left_st,right_st) = melem;
-        }
-    }
-
-//    H.triangularView<Eigen::Lower>() = H.triangularView<Eigen::Upper>().transpose();
-//    assert(MatrixType(H.triangularView<Eigen::Lower>()) == MatrixType(H.triangularView<Eigen::Upper>().transpose()));
-    assert((H.adjoint() - H).array().abs().maxCoeff() < 100*std::numeric_limits<RealType>::epsilon());
+    if(Status >= Prepared) return;
+    if(Complex)
+        prepareImpl<true>();
+    else
+        prepareImpl<false>();
     Status = Prepared;
 }
 
-void HamiltonianPart::compute()		//method of diagonalization classificated part of Hamiltonian
+template<bool C> void HamiltonianPart::prepareImpl()
 {
-    if (Status >= Computed) return;
-    if (H.rows() == 1) {
-        assert (std::abs(H(0,0) - std::real(H(0,0))) < std::numeric_limits<RealType>::epsilon());
-        Eigenvalues.resize(1);
-        Eigenvalues << std::real(H(0,0));
-        H(0,0) = 1;
-        }
-    else {
-	    Eigen::SelfAdjointEigenSolver<MatrixType> Solver(H,Eigen::ComputeEigenvectors);
-	    H = Solver.eigenvectors();
-	    Eigenvalues = Solver.eigenvalues();	// eigenvectors are ready
+    initHMatrix<C>();
+
+    auto const& HOp_ = *static_cast<const LOperatorType<C>*>(HOp);
+    auto & HMatrix_ = *std::static_pointer_cast<MatrixType<C>>(HMatrix);
+
+    auto mapper = libcommute::basis_mapper(S.getFockStates(Block));
+
+    auto BlockSize = S.getBlockSize(Block);
+    VectorType<C> ket = VectorType<C>::Zero(BlockSize);
+    auto ket_view = mapper.make_const_view(ket);
+
+    for(InnerQuantumState st = 0; st < BlockSize; ++st) {
+        auto bra_view = mapper.make_view_no_ref(HMatrix_.col(st));
+        ket(st) = 1.0;
+        HOp_(ket_view, bra_view);
+        ket(st) = .0;
     }
+
+    assert((HMatrix_.adjoint() - HMatrix_).array().abs().maxCoeff()
+           < 100*std::numeric_limits<RealType>::epsilon());
+}
+
+void HamiltonianPart::compute()
+{
+    if(Status >= Computed) return;
+    if(Complex)
+        computeImpl<true>();
+    else
+        computeImpl<false>();
     Status = Computed;
 }
 
-
-ComplexType HamiltonianPart::getMatrixElement(InnerQuantumState m, InnerQuantumState n) const	//return  H(m,n)
+template<bool C> void HamiltonianPart::computeImpl()
 {
-    return H(m,n);
+    auto & HMatrix_ = *std::static_pointer_cast<MatrixType<C>>(HMatrix);
+    if (HMatrix_.rows() == 1) {
+        assert (std::abs(HMatrix_(0,0) - std::real(HMatrix_(0,0))) < std::numeric_limits<RealType>::epsilon());
+        Eigenvalues.resize(1);
+        Eigenvalues << std::real(HMatrix_(0,0));
+        HMatrix_(0,0) = 1;
+    } else {
+        Eigen::SelfAdjointEigenSolver<MatrixType<C>> Solver(HMatrix_, Eigen::ComputeEigenvectors);
+        HMatrix_ = Solver.eigenvectors();
+        Eigenvalues = Solver.eigenvalues(); // eigenvectors are ready
+    }
 }
 
-RealType HamiltonianPart::getEigenValue(InnerQuantumState state) const // return Eigenvalues(state)
+template<bool C> const MatrixType<C>& HamiltonianPart::getMatrix() const {
+    if(C != isComplex())
+        throw std::runtime_error("Stored matrix type mismatch (real/complex)");
+    return *std::static_pointer_cast<const MatrixType<C>>(HMatrix);
+}
+template const MatrixType<true>& HamiltonianPart::getMatrix<true>() const;
+template const MatrixType<false>& HamiltonianPart::getMatrix<false>() const;
+
+template<bool C> MatrixType<C>& HamiltonianPart::getMatrix() {
+    if(C != isComplex())
+        throw std::runtime_error("Stored matrix type mismatch (real/complex)");
+    return *std::static_pointer_cast<MatrixType<C>>(HMatrix);
+}
+template MatrixType<true>& HamiltonianPart::getMatrix<true>();
+template MatrixType<false>& HamiltonianPart::getMatrix<false>();
+
+RealType HamiltonianPart::getEigenValue(InnerQuantumState state) const
 {
-    if ( Status < Computed ) throw (exStatusMismatch());
+    if (Status < Computed) throw exStatusMismatch();
     return Eigenvalues(state);
 }
 
 const RealVectorType& HamiltonianPart::getEigenValues() const
 {
-    if ( Status < Computed ) throw (exStatusMismatch());
+    if (Status < Computed) throw exStatusMismatch();
     return Eigenvalues;
 }
 
-InnerQuantumState HamiltonianPart::getSize(void) const
+InnerQuantumState HamiltonianPart::getSize() const
 {
     return S.getBlockSize(Block);
 }
 
-BlockNumber HamiltonianPart::getBlockNumber(void) const
-{
-    return S.getBlockNumber(QN);
-}
-
-QuantumNumbers HamiltonianPart::getQuantumNumbers(void) const
-{
-    return QN;
-}
-
-
-
 void HamiltonianPart::print_to_screen() const
 {
-    INFO(H << std::endl);
+    if(Complex)
+        INFO(*std::static_pointer_cast<MatrixType<true>>(HMatrix) << std::endl);
+    else
+        INFO(*std::static_pointer_cast<MatrixType<false>>(HMatrix) << std::endl);
 }
 
-const MatrixType& HamiltonianPart::getMatrix() const
+template<bool C>
+VectorType<C> HamiltonianPart::getEigenState(InnerQuantumState state) const
 {
-    return H;
-}
-
-VectorType HamiltonianPart::getEigenState(InnerQuantumState state) const
-{
-    if ( Status < Computed ) throw (exStatusMismatch());
-    return H.col(state);
+    if (Status < Computed) throw exStatusMismatch();
+    if(C != isComplex())
+        throw std::runtime_error("Stored matrix type mismatch (real/complex)");
+    return std::static_pointer_cast<MatrixType<C>>(HMatrix)->col(state);
 }
 
 RealType HamiltonianPart::getMinimumEigenvalue() const
 {
-    if ( Status < Computed ) throw (exStatusMismatch());
+    if (Status < Computed) throw exStatusMismatch();
     return Eigenvalues.minCoeff();
 }
 
 bool HamiltonianPart::reduce(RealType ActualCutoff)
 {
-    if ( Status < Computed ) throw (exStatusMismatch());
+    if (Status < Computed) throw exStatusMismatch();
     InnerQuantumState counter=0;
     for (counter=0; (counter< (unsigned int)Eigenvalues.size() && Eigenvalues[counter]<=ActualCutoff); ++counter){};
     std::cout << "Left " << counter << " eigenvalues : " << std::endl;
-    if (counter)
-	{std::cout << Eigenvalues.head(counter) << std::endl << "_________" << std::endl;
-	Eigenvalues = Eigenvalues.head(counter);
-	H = H.topLeftCorner(counter,counter);
-	return true;
-    }
-    else return false;
+
+    if (counter) {
+        std::cout << Eigenvalues.head(counter) << std::endl << "_________" << std::endl;
+        Eigenvalues = Eigenvalues.head(counter);
+        if(Complex) {
+            auto & HMatrix_ = *std::static_pointer_cast<MatrixType<true>>(HMatrix);
+            HMatrix_ = HMatrix_.topLeftCorner(counter,counter);
+        } else {
+            auto & HMatrix_ = *std::static_pointer_cast<MatrixType<false>>(HMatrix);
+            HMatrix_ = HMatrix_.topLeftCorner(counter,counter);
+        }
+      return true;
+    } else
+        return false;
 }
 
 #ifdef ENABLE_SAVE_PLAINTEXT
-bool HamiltonianPart::savetxt(const boost::filesystem::path &path1)
+bool HamiltonianPart<C>::savetxt(const boost::filesystem::path &path1)
 {
     boost::filesystem::create_directory(path1);
     boost::filesystem::fstream out;

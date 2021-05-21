@@ -1,6 +1,8 @@
 // Include the pomerol library
 #include <pomerol.h>
 
+#include "./Utility.h"
+
 using namespace Pomerol;
 
 // Parameters
@@ -61,49 +63,43 @@ bool run_test(ComplexType J /* spin-flip amplitude */) {
 
     INFO("J = " << J);
 
-    Lattice L;
+    using namespace LatticePresets;
+
     // Add a site with a name "C", that has 1 orbital and 2 spins.
-    L.addSite(new Lattice::Site("C",1,2));
 
-    LatticePresets::addCoulombS(&L, "C", U, -mu);
-    LatticePresets::addHopping(&L, "C", "C", J, 0, 0, up, down);
+    ComplexExpr HExpr = CoulombS("C", U, -mu);
+    HExpr += Hopping("C", "C", J, 0, 0, up, down);
 
-    IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
-    IndexInfo.printIndices();
+    int rank = pMPI::rank(MPI_COMM_WORLD);
 
-    IndexHamiltonian HStorage(&L,IndexInfo);
-    HStorage.prepare();
+    auto IndexInfo = MakeIndexClassification(HExpr);
+    if (!rank) {
+        print_section("Indices");
+        IndexInfo.printIndices();
+    }
 
-    Symmetrizer Symm(IndexInfo, HStorage);
-    Symm.compute(true);
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
+    StatesClassification S;
+    S.compute(HS);
 
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
-
-    Hamiltonian H(IndexInfo, HStorage, S);
-    H.prepare();
+    Hamiltonian H(S);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
     rho.compute();
 
-    FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepareAll();
+    FieldOperatorContainer Operators(IndexInfo, HS, S, H);
+    Operators.prepareAll(HS);
     Operators.computeAll();
-
-    IndexInfo.printIndices();
-
-    std::vector<spin> all_spins;
-    all_spins.push_back(down);
-    all_spins.push_back(up);
 
     // Reference
     GF_ref ref(J);
 
-    for(spin s1 : all_spins){
-    for(spin s2 : all_spins){
+    for(spin s1 : {down, up}){
+    for(spin s2 : {down, up}){
         INFO("s1 = " << s1 << " s2 = " << s2);
         ParticleIndex index1 = IndexInfo.getIndex("C",0,s1);
         ParticleIndex index2 = IndexInfo.getIndex("C",0,s2);

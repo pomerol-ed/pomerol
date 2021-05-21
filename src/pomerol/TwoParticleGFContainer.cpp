@@ -25,15 +25,6 @@
 
 namespace Pomerol{
 
-TwoParticleGFContainer::TwoParticleGFContainer(const IndexClassification& IndexInfo, const StatesClassification &S,
-                                               const Hamiltonian &H, const DensityMatrix &DM, const FieldOperatorContainer& Operators) :
-    IndexContainer4<TwoParticleGF,TwoParticleGFContainer>(this,IndexInfo), Thermal(DM),
-    S(S),H(H),DM(DM), Operators(Operators),
-    ReduceResonanceTolerance (1e-8),//1e-16),
-    CoefficientTolerance (1e-16),//1e-16),
-    MultiTermCoefficientTolerance (1e-5)//1e-5),
-{}
-
 void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& InitialIndices)
 {
     fill(InitialIndices);

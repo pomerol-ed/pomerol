@@ -14,7 +14,7 @@
 #include"Thermal.h"
 #include"ComputableObject.h"
 #include"StatesClassification.h"
-#include"FieldOperator.h"
+#include"MonomialOperator.h"
 #include"DensityMatrix.h"
 #include"SusceptibilityPart.h"
 #include"EnsembleAverage.h"
@@ -24,7 +24,7 @@ namespace Pomerol{
 /** This class represents a dynamical susceptibility in the Matsubara representation.
  *
  * Exact definition:
- * 
+ *
  * \f[
  *      \chi(\omega_n) = \int_0^\beta \langle\mathbf{T} A(\tau) B(0)\rangle e^{i\omega_n\tau} d\tau
  * \f]
@@ -48,9 +48,9 @@ class Susceptibility : public Thermal, public ComputableObject {
     /** A reference to a Hamiltonian. */
     const Hamiltonian& H;
     /** A reference to a quadratic operator. */
-    const QuadraticOperator& A;
+    const MonomialOperator& A;
     /** A reference to a quadratic operator. */
-    const QuadraticOperator& B;
+    const MonomialOperator& B;
     /** A reference to a density matrix. */
     const DensityMatrix& DM;
 
@@ -60,7 +60,7 @@ class Susceptibility : public Thermal, public ComputableObject {
     /** A list of pointers to parts (every part corresponds to a part of the quadratic operator A
      * and a part of the quadratic operator B).
      */
-    std::list<SusceptibilityPart*> parts;
+    std::vector<SusceptibilityPart> parts;
 
     /** Subtract disconnected part <A><B> */
     bool SubtractDisconnected;
@@ -77,13 +77,11 @@ public:
      * \param[in] DM A reference to a density matrix.
      */
     Susceptibility(const StatesClassification& S, const Hamiltonian& H,
-                   const QuadraticOperator& A, const QuadraticOperator& B, const DensityMatrix& DM);
+                   const MonomialOperator& A, const MonomialOperator& B, const DensityMatrix& DM);
     /** Copy-constructor.
      * \param[in] GF Susceptibility object to be copied.
      */
     Susceptibility(const Susceptibility& Chi);
-    /** Destructor. */
-    ~Susceptibility();
 
     /** Chooses relevant parts of A and B and allocates resources for the parts of the Green's function. */
     void prepare(void);
@@ -132,8 +130,8 @@ inline ComplexType Susceptibility::operator()(long int MatsubaraNumber) const {
 inline ComplexType Susceptibility::operator()(ComplexType z) const {
     ComplexType Value = 0;
     if(!Vanishing) {
-        for(std::list<SusceptibilityPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
-            Value += (**iter)(z);
+        for(auto iter = parts.begin(); iter != parts.end(); iter++)
+            Value += (*iter)(z);
     }
     if(SubtractDisconnected)
         if( abs(z) < 1e-15 )  Value -= ave_A * ave_B * beta;  // only for n=0
@@ -143,8 +141,8 @@ inline ComplexType Susceptibility::operator()(ComplexType z) const {
 inline ComplexType Susceptibility::of_tau(RealType tau) const {
     ComplexType Value = 0;
     if(!Vanishing) {
-        for(std::list<SusceptibilityPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++)
-            Value += (*iter)->of_tau(tau);
+        for(auto iter = parts.begin(); iter != parts.end(); iter++)
+            Value += iter->of_tau(tau);
     }
     if(SubtractDisconnected)
         Value -= ave_A * ave_B;

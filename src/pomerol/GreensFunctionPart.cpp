@@ -24,7 +24,7 @@ std::ostream& operator<<(std::ostream& out, const GreensFunctionPart::Term& T)
     return out;
 }
 
-GreensFunctionPart::GreensFunctionPart( const AnnihilationOperatorPart& C, const CreationOperatorPart& CX,
+GreensFunctionPart::GreensFunctionPart( const MonomialOperatorPart& C, const MonomialOperatorPart& CX,
                                         const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
                                         const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
                                         Thermal(DMpartInner),
@@ -37,21 +37,28 @@ GreensFunctionPart::GreensFunctionPart( const AnnihilationOperatorPart& C, const
                                         ReduceTolerance(1e-8)
 {}
 
-void GreensFunctionPart::compute(void)
+void GreensFunctionPart::compute()
 {
+    if(C.isComplex() || CX.isComplex())
+        computeImpl<true>();
+    else
+        computeImpl<false>();
+}
+
+template<bool Complex> void GreensFunctionPart::computeImpl() {
     Terms.clear();
 
     // Blocks (submatrices) of C and CX
-    const RowMajorMatrixType& Cmatrix = C.getRowMajorValue();
-    const ColMajorMatrixType& CXmatrix = CX.getColMajorValue();
+    const RowMajorMatrixType<Complex>& Cmatrix = C.template getRowMajorValue<Complex>();
+    const ColMajorMatrixType<Complex>& CXmatrix = CX.template getColMajorValue<Complex>();
     QuantumState outerSize = Cmatrix.outerSize();
 
     // Iterate over all values of the outer index.
     // TODO: should be optimized - skip empty rows of Cmatrix and empty columns of CXmatrix.
     for(QuantumState index1=0; index1<outerSize; ++index1){
         // <index1|C|Cinner><CXinner|CX|index1>
-        RowMajorMatrixType::InnerIterator Cinner(Cmatrix,index1);
-        ColMajorMatrixType::InnerIterator CXinner(CXmatrix,index1);
+        typename RowMajorMatrixType<Complex>::InnerIterator Cinner(Cmatrix,index1);
+        typename ColMajorMatrixType<Complex>::InnerIterator CXinner(CXmatrix,index1);
 
         // While we are not at the last column of Cmatrix or at the last row of CXmatrix.
         while(Cinner && CXinner){

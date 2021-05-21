@@ -16,7 +16,7 @@
 #include"Misc.h"
 #include"ComputableObject.h"
 #include"StatesClassification.h"
-#include"FieldOperator.h"
+#include"MonomialOperator.h"
 #include"DensityMatrix.h"
 #include"TwoParticleGFPart.h"
 
@@ -67,9 +67,9 @@ protected:
      * \param[in] OperatorPosition The number of the position of the operator.
      * \param[in] LeftIndex A left block index referring to the part needed.
      */
-    const FieldOperatorPart& OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const;
+    const MonomialOperatorPart& OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const;
     /** Chooses an operator standing at a specified position in a given permutation and
-     * returns a left block index corresponding to the right block index. May return ERROR_BLOCK_NUMBER if
+     * returns a left block index corresponding to the right block index. May return INVALID_BLOCK_NUMBER if
      * the operator does not have such a (non-zero) block.
      * \param[in] PermutationNumber The number of the permutation.
      * \param[in] OperatorPosition The number of the position of the operator.
@@ -77,7 +77,7 @@ protected:
      */
     BlockNumber getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber RightIndex) const;
     /** Chooses an operator standing at a specified position in a given permutation and
-     * returns a right block index corresponding to the left block index. May return ERROR_BLOCK_NUMBER if
+     * returns a right block index corresponding to the left block index. May return INVALID_BLOCK_NUMBER if
      * the operator does not have such a (non-zero) block.
      * \param[in] PermutationNumber The number of the permutation.
      * \param[in] OperatorPosition The number of the position of the operator.

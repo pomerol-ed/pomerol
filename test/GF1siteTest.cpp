@@ -25,31 +25,25 @@
 */
 
 #include "Misc.h"
-#include "Lattice.h"
 #include "LatticePresets.h"
-#include "Index.h"
+#include "Operators.h"
 #include "IndexClassification.h"
-#include "Operator.h"
-#include "OperatorPresets.h"
-#include "IndexHamiltonian.h"
-#include "Symmetrizer.h"
+#include "HilbertSpace.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
 #include "Hamiltonian.h"
+#include "DensityMatrix.h"
 #include "FieldOperatorContainer.h"
 #include "GFContainer.h"
 
-#include<cstdlib>
+#include "./Utility.h"
+
+#include <cstdlib>
 
 using namespace Pomerol;
 
 RealType U = 1.0;
 RealType mu = 0.4;
-
-bool compare(ComplexType a, ComplexType b)
-{
-    return abs(a-b) < 1e-14;
-}
 
 // Reference Green's function
 ComplexType Gref(int n, RealType beta)
@@ -65,74 +59,70 @@ ComplexType Gref(int n, RealType beta)
     return (w0+w1)/(I*omega+mu) + (w1+w2)/(I*omega+mu-U);
 }
 
-void print_section (const std::string& str)
-{
-  std::cout << std::string(str.size(),'=') << std::endl;
-  std::cout << str << std::endl;
-  std::cout << std::string(str.size(),'=') << std::endl;
-}
-
 int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
 
-    Lattice L;
-    L.addSite(new Lattice::Site("A",1,2));
+    using namespace LatticePresets;
 
-    LatticePresets::addCoulombS(&L, "A", U, -mu);
-    print_section("Sites");
-    L.printSites();
-    print_section("Terms");
-    L.printTerms(2);
-    INFO("Terms with 4 operators");
-    L.printTerms(4);
+    auto HExpr = CoulombS("A", U, -mu);
 
-
-    IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
+    auto IndexInfo = MakeIndexClassification(HExpr);
     print_section("Indices");
     IndexInfo.printIndices();
 
-    IndexHamiltonian Storage(&L,IndexInfo);
-    Storage.prepare();
+    INFO("Hamiltonian");
+    INFO(HExpr);
 
-    Symmetrizer Symm(IndexInfo, Storage);
-    Symm.compute();
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
+    StatesClassification S;
+    S.compute(HS);
 
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
-
-    Hamiltonian H(IndexInfo, Storage, S);
-    H.prepare();
+    Hamiltonian H(S);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
+    if(pMPI::rank(MPI_COMM_WORLD) == 0) {
+        INFO("Energy levels " << H.getEigenValues());
+        INFO("The value of ground energy is " << H.getGroundEnergy());
+    }
 
     RealType beta = 10.0;
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
     rho.compute();
+    for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i));
 
-    FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepareAll();
+    FieldOperatorContainer Operators(IndexInfo, HS, S, H);
+    Operators.prepareAll(HS);
     Operators.computeAll();
 
     ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
 
-    FieldOperator::BlocksBimap c_map = Operators.getCreationOperator(down_index).getBlockMapping();
-    for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
-        {
-            INFO(c_map_it->first << "->" << c_map_it->second);
-        }
+    auto c_map = Operators.getCreationOperator(down_index).getBlockMapping();
+    for (auto c_map_it = c_map.right.begin(); c_map_it != c_map.right.end(); c_map_it++)
+    {
+        INFO(c_map_it->first << "->" << c_map_it->second);
+    }
 
-    GreensFunction GF(S,H,Operators.getAnnihilationOperator(down_index), Operators.getCreationOperator(down_index), rho);
+    GreensFunction GF(S,
+                      H,
+                      Operators.getAnnihilationOperator(down_index),
+                      Operators.getCreationOperator(down_index),
+                      rho);
 
     GF.prepare();
     GF.compute();
 
+    auto compare = [](ComplexType a, ComplexType b) {
+        return std::abs(a - b) < 1e-14;
+    };
+
     bool result = true;
-    for(int n = 0; n<100; ++n) {
+    for(int n = 0; n < 100; ++n) {
         INFO(GF(n) << " == " << Gref(n,beta));
-        result = (result && compare(GF(n),Gref(n,beta)));
+        result = result && compare(GF(n), Gref(n,beta));
     }
 
     MPI_Finalize();

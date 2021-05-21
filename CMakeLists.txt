@@ -41,20 +41,14 @@ install(FILES "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h"
 set (pomerol_sources
     mpi_dispatcher/mpi_dispatcher
     pomerol/Misc
-    pomerol/Lattice
     pomerol/LatticePresets
     pomerol/Index
-    pomerol/IndexClassification
-    pomerol/Operator
-    pomerol/OperatorPresets
-    pomerol/IndexHamiltonian
-    pomerol/Symmetrizer
     pomerol/StatesClassification
     pomerol/HamiltonianPart
     pomerol/Hamiltonian
     pomerol/Thermal
-    pomerol/FieldOperatorPart
-    pomerol/FieldOperator
+    pomerol/MonomialOperatorPart
+    pomerol/MonomialOperator
     pomerol/FieldOperatorContainer
     pomerol/DensityMatrixPart
     pomerol/DensityMatrix
@@ -74,6 +68,7 @@ add_this_package(${pomerol_sources})
 
 # Dependencies
 add_eigen3()
+add_libcommute()
 add_mpi()
 add_boost()
 add_testing()

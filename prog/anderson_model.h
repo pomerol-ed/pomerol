@@ -39,11 +39,11 @@ public:
     L = levels.size();
     mpi_cout << "Diagonalization of 1+" << L << " sites" << std::endl;
 
-    init_lattice();
+    init_hamiltonian();
   }
 
   virtual std::pair<ParticleIndex, ParticleIndex>
-  get_node(const IndexClassification & IndexInfo) override {
+  get_node(const IndexInfoType & IndexInfo) override {
     ParticleIndex d0 = IndexInfo.getIndex("A",0,down);
     ParticleIndex u0 = IndexInfo.getIndex("A",0,up);
     return std::make_pair(d0, u0);
@@ -53,36 +53,23 @@ public:
                                ParticleIndex u0,
                                std::set<IndexCombination2> &indices2,
                                std::set<ParticleIndex>& f,
-                               const IndexClassification &IndexInfo) override {
+                               const IndexInfoType &IndexInfo) override {
     indices2.insert(IndexCombination2(d0, d0)); // evaluate only G_{\down \down}
   }
 
-  virtual void init_lattice() override {
-    /* Add sites */
-    Lat.addSite(new Lattice::Site("A",1,2));
-    LatticePresets::addCoulombS(&Lat,
-                                "A",
-                                args::get(args_options.U),
-                                args::get(args_options.ed));
+  virtual void init_hamiltonian() override {
+    HExpr += LatticePresets::CoulombS("A",
+                                      args::get(args_options.U),
+                                      args::get(args_options.ed));
 
     std::vector<std::string> names(L);
     for (size_t i=0; i<L; i++) {
       names[i] = "b" + std::to_string(i);
-      Lat.addSite(new Lattice::Site(names[i],1,2));
-      LatticePresets::addHopping(&Lat, "A", names[i], hoppings[i]);
-      LatticePresets::addLevel(&Lat, names[i], levels[i]);
+      HExpr += LatticePresets::Hopping("A", names[i], hoppings[i]);
+      HExpr += LatticePresets::Level(names[i], levels[i]);
     }
 
-    mpi_cout << "Sites" << std::endl;
-    if (!rank) Lat.printSites();
-
-    if (!rank) {
-      mpi_cout << "Terms with 2 operators" << std::endl;
-      Lat.printTerms(2);
-
-      mpi_cout << "Terms with 4 operators" << std::endl;
-      Lat.printTerms(4);
-    }
+    if (!rank) mpi_cout << "Hamiltonian:\n" << HExpr << std::endl;
   }
 
   struct {

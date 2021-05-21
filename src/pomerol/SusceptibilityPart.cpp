@@ -25,7 +25,7 @@ std::ostream& operator<<(std::ostream& out, const SusceptibilityPart::Term& T)
     return out;
 }
 
-SusceptibilityPart::SusceptibilityPart( const QuadraticOperatorPart& A, const QuadraticOperatorPart& B,
+SusceptibilityPart::SusceptibilityPart( const MonomialOperatorPart& A, const MonomialOperatorPart& B,
                                         const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
                                         const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
                                         Thermal(DMpartInner),
@@ -39,21 +39,37 @@ SusceptibilityPart::SusceptibilityPart( const QuadraticOperatorPart& A, const Qu
                                         ZeroPoleWeight(0)
 {}
 
-void SusceptibilityPart::compute(void)
+void SusceptibilityPart::compute()
+{
+    if(A.isComplex()) {
+        if(B.isComplex())
+            computeImpl<true, true>();
+        else
+            computeImpl<true, false>();
+    } else {
+        if(B.isComplex())
+            computeImpl<false, true>();
+        else
+            computeImpl<false, false>();
+    }
+}
+
+template<bool AComplex, bool BComplex>
+void SusceptibilityPart::computeImpl()
 {
     Terms.clear();
 
     // Blocks (submatrices) of A and B
-    const RowMajorMatrixType& Amatrix = A.getRowMajorValue();
-    const ColMajorMatrixType& Bmatrix = B.getColMajorValue();
+    const RowMajorMatrixType<AComplex>& Amatrix = A.getRowMajorValue<AComplex>();
+    const ColMajorMatrixType<BComplex>& Bmatrix = B.getColMajorValue<BComplex>();
     QuantumState outerSize = Amatrix.outerSize();
 
     // Iterate over all values of the outer index.
     // TODO: should be optimized - skip empty rows of Amatrix and empty columns of Bmatrix.
     for(QuantumState index1=0; index1<outerSize; ++index1){
         // <index1|A|Ainner><Binner|B|index1>
-        RowMajorMatrixType::InnerIterator Ainner(Amatrix,index1);
-        ColMajorMatrixType::InnerIterator Binner(Bmatrix,index1);
+        typename RowMajorMatrixType<AComplex>::InnerIterator Ainner(Amatrix,index1);
+        typename ColMajorMatrixType<BComplex>::InnerIterator Binner(Bmatrix,index1);
 
         // While we are not at the last column of Amatrix or at the last row of Bmatrix.
         while(Ainner && Binner){

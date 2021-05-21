@@ -25,95 +25,70 @@
 */
 
 #include "Misc.h"
-#include "Lattice.h"
 #include "LatticePresets.h"
-#include "Index.h"
+#include "Operators.h"
 #include "IndexClassification.h"
-#include "Operator.h"
-#include "OperatorPresets.h"
-#include "IndexHamiltonian.h"
-#include "Symmetrizer.h"
+#include "HilbertSpace.h"
 #include "StatesClassification.h"
 #include "HamiltonianPart.h"
 #include "Hamiltonian.h"
+#include "DensityMatrix.h"
 #include "FieldOperatorContainer.h"
 #include "GFContainer.h"
 
-#include<cstdlib>
+#include "./Utility.h"
+
+#include <cstdlib>
+#include <tuple>
+#include <vector>
 
 using namespace Pomerol;
 
 RealType U = 1.0;
 RealType mu = 0.5;
 
-bool compare(ComplexType a, ComplexType b)
-{
-    return abs(a-b) < 1e-5;
-}
-
-// Reference Green's function
-
-void print_section (const std::string& str)
-{
-  std::cout << std::string(str.size(),'=') << std::endl;
-  std::cout << str << std::endl;
-  std::cout << std::string(str.size(),'=') << std::endl;
-}
-
 int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
 
-    Lattice L;
-    L.addSite(new Lattice::Site("A",1,2));
-    LatticePresets::addCoulombS(&L, "A", U, -mu);
-    L.addSite(new Lattice::Site("B",1,2));
-    LatticePresets::addCoulombS(&L, "B", U, -mu);
+    using namespace LatticePresets;
 
-    LatticePresets::addHopping(&L, "A","B", -1.0);
-    INFO("Sites");
-    L.printSites();
-    INFO("Terms");
-    L.printTerms(2);
-    INFO("Terms with 4 operators");
-    L.printTerms(4);
+    auto HExpr = CoulombS("A", U, -mu);
+    HExpr += CoulombS("B", U, -mu);
+    HExpr += Hopping("A","B", -1.0);
 
-    IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
+    auto IndexInfo = MakeIndexClassification(HExpr);
     print_section("Indices");
     IndexInfo.printIndices();
-    ParticleIndex NModes = IndexInfo.getIndexSize();
 
-    std::vector<ParticleIndex> SpinUpIndices;
-    for (ParticleIndex i=0; i<NModes; i++) if (IndexInfo.getInfo(i).Spin) SpinUpIndices.push_back(i);
+    auto A_dn = IndexInfo.getInfo(0);
+    auto A_up = IndexInfo.getInfo(1);
+    auto B_dn = IndexInfo.getInfo(2);
+    auto B_up = IndexInfo.getInfo(3);
 
-    print_section("Matrix element storage");
-    IndexHamiltonian Storage(&L,IndexInfo);
-    Storage.prepare();
-    INFO("Terms");
-    INFO(Storage);
+    auto N = Operators::N(std::vector<decltype(A_up)>{A_up, A_dn, B_up, B_dn});
+    INFO("N = " << N);
 
-    ParticleIndex IndexSize = IndexInfo.getIndexSize();
-    OperatorPresets::Sz Sz(IndexSize, SpinUpIndices);
-    INFO("Sz terms");
-    Sz.printAllTerms();
-    OperatorPresets::N N(IndexSize);
-    INFO("N terms");
-    N.printAllTerms();
-    if (!(Sz.commutes(N))) return EXIT_FAILURE;
+    auto Sz = Operators::Sz(std::vector<decltype(A_up)>{A_up, B_up},
+                            std::vector<decltype(A_dn)>{A_dn, B_dn});
+    INFO("Sz = " << Sz);
 
-    if (!(Storage.commutes(N))) return EXIT_FAILURE;
+    if(Sz * N != N * Sz) return EXIT_FAILURE;
+    if(HExpr * N != N * HExpr) return EXIT_FAILURE;
     INFO("H commutes with N");
-    if (!(Storage.commutes(Sz))) return EXIT_FAILURE;
+    if(HExpr * Sz != Sz * HExpr) return EXIT_FAILURE;
     INFO("H commutes with Sz");
-    Symmetrizer Symm(IndexInfo, Storage);
-    Symm.compute();
 
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
+    INFO("Hamiltonian");
+    INFO(HExpr);
 
-    Hamiltonian H(IndexInfo, Storage, S);
-    H.prepare();
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
+    StatesClassification S;
+    S.compute(HS);
+
+    Hamiltonian H(S);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.getPart(BlockNumber(4)).print_to_screen();
     H.getPart(BlockNumber(5)).print_to_screen();
     H.compute(MPI_COMM_WORLD);
@@ -128,19 +103,21 @@ int main(int argc, char* argv[])
     rho.compute();
     for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i));
 
-    FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepareAll();
+    FieldOperatorContainer Operators(IndexInfo, HS, S, H);
+    Operators.prepareAll(HS);
     Operators.computeAll();
 
-    ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
+    auto c_map = Operators.getCreationOperator(0).getBlockMapping();
+    for(auto c_map_it = c_map.right.begin(); c_map_it != c_map.right.end(); c_map_it++)
+    {
+        INFO(c_map_it->first << "->" << c_map_it->second);
+    }
 
-    FieldOperator::BlocksBimap c_map = Operators.getCreationOperator(0).getBlockMapping();
-    for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
-        {
-            INFO(c_map_it->first << "->" << c_map_it->second);
-        }
-
-    GreensFunction GF(S,H,Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), rho);
+    GreensFunction GF(S,
+                      H,
+                      Operators.getAnnihilationOperator(0),
+                      Operators.getCreationOperator(0),
+                      rho);
 
     GF.prepare();
     GF.compute();
@@ -158,9 +135,15 @@ int main(int argc, char* argv[])
              -1.61950993e-01*I;
 
     bool result = true;
+    auto compare = [](ComplexType a, ComplexType b) {
+        // The tolerance has to be fairly large as Pomerol discards
+        // some contributions to the GF.
+        return std::abs(a - b) < 1e-8;
+    };
+
     for(int n = 0; n<10; ++n) {
         INFO(GF(n) << " == " << G_ref(n));
-        result = (result && compare(GF(n),G_ref(n)));
+        result = result && compare(GF(n), G_ref(n));
     }
 
     MPI_Finalize();

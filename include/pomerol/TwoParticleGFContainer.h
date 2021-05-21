@@ -28,6 +28,7 @@
 #include <mpi.h>
 
 #include"Misc.h"
+#include"Index.h"
 #include"TwoParticleGF.h"
 #include"FieldOperatorContainer.h"
 #include"IndexContainer4.h"
@@ -46,9 +47,18 @@ public:
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. default = 1e-5. */
     RealType MultiTermCoefficientTolerance;
 
-
-    TwoParticleGFContainer(const IndexClassification& IndexInfo, const StatesClassification &S,
-                           const Hamiltonian &H, const DensityMatrix &DM, const FieldOperatorContainer& Operators);
+    template<typename... IndexTypes>
+    TwoParticleGFContainer(const IndexClassification<IndexTypes...>& IndexInfo,
+                           const StatesClassification &S,
+                           const Hamiltonian &H,
+                           const DensityMatrix &DM,
+                           const FieldOperatorContainer& Operators) :
+        IndexContainer4<TwoParticleGF, TwoParticleGFContainer>(this, IndexInfo), Thermal(DM),
+        S(S), H(H), DM(DM), Operators(Operators),
+        ReduceResonanceTolerance (1e-8),//1e-16),
+        CoefficientTolerance (1e-16),//1e-16),
+        MultiTermCoefficientTolerance (1e-5)//1e-5),
+    {}
 
     void prepareAll(const std::set<IndexCombination4>& InitialIndices = std::set<IndexCombination4>());
     std::map<IndexCombination4,std::vector<ComplexType> > computeAll(

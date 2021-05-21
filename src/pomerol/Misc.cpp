@@ -1,7 +1,17 @@
 #include "pomerol/Misc.h"
 
 namespace Pomerol {
-    //////////////////
+
+//////////
+// spin //
+//////////
+std::ostream & operator<<(std::ostream & os, spin s)
+{
+    return os << (s == up ? "up" : "dn");
+}
+
+
+//////////////////
 // Permutation3 //
 //////////////////
 bool Permutation3::operator==(const Permutation3& rhs) const
@@ -55,4 +65,4 @@ const Permutation4 permutations4[24] = {
     {{3,0,1,2},-1},  {{3,0,2,1}, 1},  {{3,1,0,2}, 1},  {{3,1,2,0},-1},  {{3,2,0,1},-1},  {{3,2,1,0}, 1}
 };
 
-} 
+}

@@ -33,7 +33,7 @@ BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t Operato
         case 0: return C1.getLeftIndex(RightIndex);
         case 1: return C2.getLeftIndex(RightIndex);
         case 2: return CX3.getLeftIndex(RightIndex);
-        default: return ERROR_BLOCK_NUMBER;
+        default: return INVALID_BLOCK_NUMBER;
     }
 }
 
@@ -43,11 +43,11 @@ BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t Operat
         case 0: return C1.getRightIndex(LeftIndex);
         case 1: return C2.getRightIndex(LeftIndex);
         case 2: return CX3.getRightIndex(LeftIndex);
-        default: return ERROR_BLOCK_NUMBER;
+        default: return INVALID_BLOCK_NUMBER;
     }
 }
 
-const FieldOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const
+const MonomialOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const
 {
     switch(permutations3[PermutationNumber].perm[OperatorPosition]){
         case 0: return C1.getPartFromLeftIndex(LeftIndex);
@@ -63,8 +63,8 @@ void TwoParticleGF::prepare()
     if(Status>=Prepared) return;
 
     // Find out non-trivial blocks of CX4.
-    FieldOperator::BlocksBimap const& CX4NontrivialBlocks = CX4.getBlockMapping();
-    for(FieldOperator::BlocksBimap::right_const_iterator outer_iter = CX4NontrivialBlocks.right.begin();
+    MonomialOperator::BlocksBimap const& CX4NontrivialBlocks = CX4.getBlockMapping();
+    for(MonomialOperator::BlocksBimap::right_const_iterator outer_iter = CX4NontrivialBlocks.right.begin();
         outer_iter != CX4NontrivialBlocks.right.end(); outer_iter++){ // Iterate over the outermost index.
             for(size_t p=0; p<6; ++p){ // Choose a permutation
                   BlockNumber LeftIndices[4];
@@ -77,7 +77,9 @@ void TwoParticleGF::prepare()
                   // < LeftIndices[2]| O_3 | LeftIndices[3] >
                   // < LeftIndices[3] | CX4 | LeftIndices[0] >
                   // Select a relevant 'world stripe' (sequence of blocks).
-                  if(getRightIndex(p,1,LeftIndices[1]) == LeftIndices[2] && LeftIndices[1].isCorrect() && LeftIndices[2].isCorrect()){
+                  if(getRightIndex(p,1,LeftIndices[1]) == LeftIndices[2] &&
+                      (LeftIndices[1] != INVALID_BLOCK_NUMBER) &&
+                      (LeftIndices[2] != INVALID_BLOCK_NUMBER)) {
                       { // check if retained blocks are included. If not, do not push.
                           bool include_block_retained=false;
                           for(int k=0; k<4; k++)
@@ -95,7 +97,7 @@ void TwoParticleGF::prepare()
                             OperatorPartAtPosition(p,0,LeftIndices[0]),
                             OperatorPartAtPosition(p,1,LeftIndices[1]),
                             OperatorPartAtPosition(p,2,LeftIndices[2]),
-                            (CreationOperatorPart&)CX4.getPartFromLeftIndex(LeftIndices[3]),
+                            (MonomialOperatorPart&)CX4.getPartFromLeftIndex(LeftIndices[3]),
                             H.getPart(LeftIndices[0]), H.getPart(LeftIndices[1]), H.getPart(LeftIndices[2]), H.getPart(LeftIndices[3]),
                             DM.getPart(LeftIndices[0]), DM.getPart(LeftIndices[1]), DM.getPart(LeftIndices[2]), DM.getPart(LeftIndices[3]),
                       permutations3[p]));

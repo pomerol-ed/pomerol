@@ -36,17 +36,17 @@ public:
     size_x = args::get(args_options.x);
     size_y = args::get(args_options.y);
 
-    init_lattice();
+    init_hamiltonian();
   }
 
   virtual std::pair<ParticleIndex, ParticleIndex>
-  get_node(const IndexClassification &IndexInfo) override {
+  get_node(const IndexInfoType &IndexInfo) override {
     ParticleIndex d0 = IndexInfo.getIndex("S0",0,down);
     ParticleIndex u0 = IndexInfo.getIndex("S0",0,up);
     return std::make_pair(d0, u0);
   };
 
-  virtual void init_lattice() override {
+  virtual void init_hamiltonian() override {
     int L = size_x*size_y;
     INFO("Diagonalization of " << L << "=" << size_x << "*" << size_y << " sites");
 
@@ -55,15 +55,9 @@ public:
     for (size_t y=0; y<size_y; y++) {
       for (size_t x = 0; x < size_x; x++) {
         auto i = SiteIndexF(x, y);
-        std::stringstream s;
-        s << i;
-        names[i] = "S" + s.str();
-        Lat.addSite(new Lattice::Site(names[i], 1, 2));
+        names[i] = "S" + std::to_string(i);
       }
     }
-
-    INFO("Sites");
-    Lat.printSites();
 
     /* Add interaction on each site*/
     double U = args::get(args_options.U);
@@ -71,7 +65,7 @@ public:
     if(std::isnan(mu)) mu = U / 2;
 
     for (size_t i=0; i<L; i++)
-      LatticePresets::addCoulombS(&Lat, names[i], U, -mu);
+      HExpr += LatticePresets::CoulombS(names[i], U, -mu);
 
     /* Add hopping */
     double t = args::get(args_options.t);
@@ -86,30 +80,25 @@ public:
         auto pos_dia_left  = SiteIndexF((x+1)%size_x,(y-1)%size_y);
         std::cout<<pos_dia_right<<" "<<pos_dia_left<<std::endl;
         if (size_x > 1)
-          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_right]), std::max(names[pos], names[pos_right]), -t);
+          HExpr += LatticePresets::Hopping(std::min(names[pos], names[pos_right]), std::max(names[pos], names[pos_right]), -t);
         if (size_y > 1)
-          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_up]), std::max(names[pos], names[pos_up]), -t);
+          HExpr += LatticePresets::Hopping(std::min(names[pos], names[pos_up]), std::max(names[pos], names[pos_up]), -t);
         if (std::abs(tp)>1e-10 && size_x > 1 && size_y>1) {
-          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_dia_right]), std::max(names[pos], names[pos_dia_right]), tp);
-          LatticePresets::addHopping(&Lat, std::min(names[pos], names[pos_dia_left]), std::max(names[pos], names[pos_dia_left]), tp);
+          HExpr += LatticePresets::Hopping(std::min(names[pos], names[pos_dia_right]), std::max(names[pos], names[pos_dia_right]), tp);
+          HExpr += LatticePresets::Hopping(std::min(names[pos], names[pos_dia_left]), std::max(names[pos], names[pos_dia_left]), tp);
         }
       }
     }
 
     auto rank = pMPI::rank(comm);
-    if (!rank) {
-      INFO("Terms with 2 operators");
-      Lat.printTerms(2);
-      INFO("Terms with 4 operators");
-      Lat.printTerms(4);
-    }
+    if (!rank) mpi_cout << "Hamiltonian:\n" << HExpr << std::endl;
   }
 
   virtual void prepare_indices(ParticleIndex d0,
                                ParticleIndex u0,
                                std::set<IndexCombination2> &indices2,
                                std::set<ParticleIndex>& f,
-                               const IndexClassification &IndexInfo) override {
+                               const IndexInfoType &IndexInfo) override {
     for (size_t x=0; x<size_x; x++) {
       ParticleIndex ind = IndexInfo.getIndex(names[SiteIndexF(x,0)],0,down);
       f.insert(ind);
