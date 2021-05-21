@@ -15,7 +15,7 @@ void DensityMatrix::prepare(void)
     // There is one-to-one correspondence between parts of the Hamiltonian
     // and parts of the density matrix itself.
     for(BlockNumber Block = 0; Block < NumOfBlocks; Block++)
-        parts.emplace_back(new DensityMatrixPart(S, H.getPart(Block), beta, GroundEnergy));
+        parts.emplace_back(S, H.getPart(Block), beta, GroundEnergy);
     Status = Prepared;
 }
 
@@ -26,11 +26,11 @@ void DensityMatrix::compute(void)
     // A total partition function is a sum over partition functions of
     // all non-normalized parts.
     for(auto iter = parts.begin(); iter != parts.end(); iter++)
-        Z += (*iter)->computeUnnormalized();
+        Z += iter->computeUnnormalized();
 
     // Divide the density matrix by Z.
     for(auto iter = parts.begin(); iter != parts.end(); iter++)
-        (*iter)->normalize(Z);
+        iter->normalize(Z);
     Status = Computed;
 }
 
@@ -40,12 +40,12 @@ RealType DensityMatrix::getWeight(QuantumState state) const
     BlockNumber BlockNumber = S.getBlockNumber(state);
     InnerQuantumState InnerState = S.getInnerState(state);
 
-    return parts[BlockNumber]->getWeight(InnerState);
+    return parts[BlockNumber].getWeight(InnerState);
 }
 
 const DensityMatrixPart& DensityMatrix::getPart(BlockNumber in) const
 {
-    return *parts[in];
+    return parts[in];
 }
 
 RealType DensityMatrix::getAverageEnergy() const
@@ -53,7 +53,7 @@ RealType DensityMatrix::getAverageEnergy() const
     if ( Status < Computed ) { ERROR("DensityMatrix is not computed yet."); throw (exStatusMismatch()); };
     RealType E = 0;
     for(auto iter = parts.begin(); iter != parts.end(); iter++)
-    E += (*iter)->getAverageEnergy();
+    E += iter->getAverageEnergy();
     return E;
 };
 
@@ -64,7 +64,7 @@ RealType DensityMatrix::getAverageOccupancy() const
     if ( Status < Computed ) { ERROR("DensityMatrix is not computed yet."); throw (exStatusMismatch()); };
     RealType n = 0;
     for(auto iter = parts.begin(); iter != parts.end(); iter++)
-    n += (*iter)->getAverageOccupancy();
+    n += iter->getAverageOccupancy();
     return n;
 };
 
@@ -73,7 +73,7 @@ RealType DensityMatrix::getAverageOccupancy(ParticleIndex i) const
     if ( Status < Computed ) { ERROR("DensityMatrix is not computed yet."); throw (exStatusMismatch()); };
     RealType n = 0;
     for(auto iter = parts.begin(); iter != parts.end(); iter++)
-    n += (*iter)->getAverageOccupancy(i);
+    n += iter->getAverageOccupancy(i);
     return n;
 };
 
@@ -82,7 +82,7 @@ RealType DensityMatrix::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex
     if ( Status < Computed ) { ERROR("DensityMatrix is not computed yet."); throw (exStatusMismatch()); };
     RealType NN = 0;
     for(auto iter = parts.begin(); iter != parts.end(); iter++)
-    NN += (*iter)->getAverageDoubleOccupancy(i,j);
+    NN += iter->getAverageDoubleOccupancy(i,j);
     return NN;
 };
 */
@@ -90,7 +90,7 @@ RealType DensityMatrix::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex
 void DensityMatrix::truncateBlocks(RealType Tolerance, bool verbose)
 {
     for(auto iter = parts.begin(); iter != parts.end(); iter++)
-        (*iter)->truncate(Tolerance);
+        iter->truncate(Tolerance);
 
     if(verbose){
         // count retained blocks and states included in those blocks
@@ -107,7 +107,7 @@ void DensityMatrix::truncateBlocks(RealType Tolerance, bool verbose)
 
 bool DensityMatrix::isRetained(BlockNumber in) const
 {
-    return parts[in]->isRetained();
+    return parts[in].isRetained();
 }
 
 } // end of namespace Pomerol

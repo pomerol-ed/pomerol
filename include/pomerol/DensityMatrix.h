@@ -13,7 +13,6 @@
 #include "Hamiltonian.h"
 #include "DensityMatrixPart.h"
 
-#include <memory>
 #include <vector>
 
 namespace Pomerol{
@@ -31,7 +30,7 @@ class DensityMatrix : public Thermal, public ComputableObject
     /** A reference to a Hamiltonian defining the grand canonical ensemble. */
     const Hamiltonian &H;
     /** A vector of pointers to parts (every part corresponds to a part of the Hamiltonian). */
-    std::vector<std::shared_ptr<DensityMatrixPart>> parts;
+    std::vector<DensityMatrixPart> parts;
 
 public:
     /** Constructor.

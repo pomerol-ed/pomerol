@@ -8,7 +8,6 @@
 #ifndef __INCLUDE_SUSCEPTIBILITY_H
 #define __INCLUDE_SUSCEPTIBILITY_H
 
-#include <memory>
 #include <sstream>
 
 #include"Misc.h"
@@ -61,7 +60,7 @@ class Susceptibility : public Thermal, public ComputableObject {
     /** A list of pointers to parts (every part corresponds to a part of the quadratic operator A
      * and a part of the quadratic operator B).
      */
-    std::vector<std::unique_ptr<SusceptibilityPart>> parts;
+    std::vector<SusceptibilityPart> parts;
 
     /** Subtract disconnected part <A><B> */
     bool SubtractDisconnected;
@@ -132,7 +131,7 @@ inline ComplexType Susceptibility::operator()(ComplexType z) const {
     ComplexType Value = 0;
     if(!Vanishing) {
         for(auto iter = parts.begin(); iter != parts.end(); iter++)
-            Value += (**iter)(z);
+            Value += (*iter)(z);
     }
     if(SubtractDisconnected)
         if( abs(z) < 1e-15 )  Value -= ave_A * ave_B * beta;  // only for n=0
@@ -143,7 +142,7 @@ inline ComplexType Susceptibility::of_tau(RealType tau) const {
     ComplexType Value = 0;
     if(!Vanishing) {
         for(auto iter = parts.begin(); iter != parts.end(); iter++)
-            Value += (*iter)->of_tau(tau);
+            Value += iter->of_tau(tau);
     }
     if(SubtractDisconnected)
         Value -= ave_A * ave_B;

@@ -15,7 +15,7 @@ Susceptibility::Susceptibility(const Susceptibility& Chi) :
     Vanishing(Chi.Vanishing), ave_A(Chi.ave_A), ave_B(Chi.ave_B), SubtractDisconnected(Chi.SubtractDisconnected)
 {
     for(auto iter = Chi.parts.begin(); iter != Chi.parts.end(); iter++)
-        parts.emplace_back(new SusceptibilityPart(**iter));
+        parts.emplace_back(*iter);
 }
 
 void Susceptibility::prepare(void)
@@ -41,11 +41,11 @@ void Susceptibility::prepare(void)
         if(Aleft == Bright && Aright == Bleft){
             // check if retained blocks are included. If not, do not push.
             if ( DM.isRetained(Aleft) || DM.isRetained(Aright) )
-                parts.emplace_back(new SusceptibilityPart(
+                parts.emplace_back(
                               (MonomialOperatorPart&)A.getPartFromLeftIndex(Aleft),
                               (MonomialOperatorPart&)B.getPartFromRightIndex(Bright),
                               H.getPart(Aright), H.getPart(Aleft),
-                              DM.getPart(Aright), DM.getPart(Aleft)));
+                              DM.getPart(Aright), DM.getPart(Aleft));
         }
 
         unsigned long AleftInt = Aleft;
@@ -66,7 +66,7 @@ void Susceptibility::compute()
 
     if(Status<Computed){
         for(auto iter = parts.begin(); iter != parts.end(); iter++)
-            (*iter)->compute();
+            iter->compute();
     }
     Status = Computed;
 }
