@@ -3,10 +3,6 @@
 
 #include <algorithm>
 
-#ifdef ENABLE_SAVE_PLAINTEXT
-#include<boost/filesystem.hpp>
-#endif
-
 namespace Pomerol {
 
 template<bool C>
@@ -155,20 +151,5 @@ RealVectorType Hamiltonian::getEigenValues() const
     }
     return out;
 }
-
-#ifdef ENABLE_SAVE_PLAINTEXT
-bool Hamiltonian::savetxt(const boost::filesystem::path &path)
-{
-    BlockNumber NumberOfBlocks = parts.size();
-    boost::filesystem::create_directory(path);
-    for (BlockNumber CurrentBlock=0; CurrentBlock<NumberOfBlocks; CurrentBlock++) {
-        std::stringstream tmp;
-        tmp << "part" << S.getQuantumNumbers(CurrentBlock);
-        boost::filesystem::path out = path / boost::filesystem::path (tmp.str());
-	    parts[CurrentBlock]->savetxt(out);
-        }
-    return true;
-}
-#endif
 
 } // end of namespace Pomerol

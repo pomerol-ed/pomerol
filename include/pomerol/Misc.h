@@ -25,10 +25,6 @@
 #include<Eigen/Core>
 #include<Eigen/Sparse>
 
-#ifdef ENABLE_SAVE_PLAINTEXT
-#include <boost/filesystem.hpp>
-#endif
-
 #ifdef POMEROL_USE_OPENMP
 #include <omp.h>
 #endif

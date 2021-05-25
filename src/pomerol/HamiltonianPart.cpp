@@ -9,11 +9,6 @@
 #include <sstream>
 #include <stdexcept>
 
-#ifdef ENABLE_SAVE_PLAINTEXT
-#include<boost/filesystem.hpp>
-#include<boost/filesystem/fstream.hpp>
-#endif
-
 //
 // class HamiltonianPart
 //
@@ -162,32 +157,6 @@ bool HamiltonianPart::reduce(RealType ActualCutoff)
     } else
         return false;
 }
-
-#ifdef ENABLE_SAVE_PLAINTEXT
-bool HamiltonianPart<C>::savetxt(const boost::filesystem::path &path1)
-{
-    boost::filesystem::create_directory(path1);
-    boost::filesystem::fstream out;
-    if (Status >= Computed) {
-        out.open(path1 / boost::filesystem::path("evals.dat"),std::ios_base::out);
-        out << Eigenvalues << std::endl;
-        out.close();
-        out.open(path1 / boost::filesystem::path("evals_shift.dat"),std::ios_base::out);
-        out << __num_format<RealVectorType>(Eigenvalues - RealMatrixType::Identity(Eigenvalues.size(),Eigenvalues.size()).diagonal()*getMinimumEigenvalue()) << std::endl;
-        out.close();
-        };
-    if (Status >= Prepared) {
-        out.open(path1 / boost::filesystem::path("evecs.dat"),std::ios_base::out);
-        out << H << std::endl;
-        out.close();
-        };
-    out.open(path1 / boost::filesystem::path("info.dat"),std::ios_base::out);
-    out << "Quantum numbers: " << QN << std::endl;
-    out << "Block number:    " << Block << std::endl;
-    out.close();
-    return true;
-}
-#endif
 
 } // end of namespace Pomerol
 

@@ -98,13 +98,6 @@ public:
     /** Returns the left hand side index. */
     BlockNumber getLeftIndex() const;
 
-    #ifdef ENABLE_SAVE_PLAINTEXT
-    /** Save the data to the file.
-     * \param[in] path Path to the file.
-     */
-    bool savetxt(const boost::filesystem::path &path);
-    #endif
-
 private:
 
     template<bool C, bool HC> void computeImpl();

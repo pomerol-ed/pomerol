@@ -21,10 +21,6 @@
 #include "HilbertSpace.h"
 #include "HamiltonianPart.h"
 
-#ifdef ENABLE_SAVE_PLAINTEXT
-#include <boost/filesystem/path.hpp>
-#endif
-
 namespace Pomerol{
 
 /** This class represents a Hamiltonian, written as a matrix of matrix elements in a Fock basis.
@@ -64,13 +60,6 @@ public:
     RealVectorType const& getEigenValues(BlockNumber Block) const;
     RealVectorType getEigenValues() const;
     RealType getGroundEnergy() const { return GroundEnergy; }
-
-    /** Save the data to the directory.
-     * \param[in] path Path to the directory.
-     */
-    #ifdef ENABLE_SAVE_PLAINTEXT
-    bool savetxt(const boost::filesystem::path &path);
-    #endif
 
 private:
     void computeGroundEnergy();

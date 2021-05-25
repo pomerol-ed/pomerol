@@ -18,10 +18,6 @@
 #include <memory>
 #include <type_traits>
 
-#ifdef ENABLE_SAVE_PLAINTEXT
-#include <boost/filesystem/path.hpp>
-#endif
-
 namespace Pomerol{
 
 /** HamiltonianPart is a class, which stores and diagonalizes the block of the Hamiltonian, which corresponds to a set of given quantum numbers. */
@@ -98,13 +94,6 @@ public:
 
     /** Print the part of hamiltonian to screen. */
     void print_to_screen() const;
-
-    /** Save the data to the file.
-     * \param[in] path Path to the file.
-     */
-    #ifdef ENABLE_SAVE_PLAINTEXT
-    bool savetxt(const boost::filesystem::path &path1);
-    #endif
 
 private:
 
