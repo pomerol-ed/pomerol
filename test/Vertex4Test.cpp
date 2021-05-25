@@ -36,6 +36,8 @@
 #include "TwoParticleGFContainer.h"
 #include "Vertex4.h"
 
+#include "./Utility.h"
+
 #include<cstdlib>
 
 using namespace Pomerol;

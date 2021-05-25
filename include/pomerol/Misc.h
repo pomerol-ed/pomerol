@@ -12,11 +12,6 @@
 
 #include<iostream>
 #include<complex>
-#include<string>
-#include<vector>
-#include<list>
-#include<map>
-#include<iomanip>
 #include<type_traits>
 
 #include <libcommute/loperator/state_vector.hpp>
@@ -42,15 +37,12 @@ namespace Pomerol {
 #define ERROR(MSG)            std::cerr << MSG_PREFIX << MSG << std::endl
 
 /** Real floating point type. */
-typedef double RealType;
+using RealType = double;
 /** Complex type. */
-typedef std::complex<double> ComplexType;
+using ComplexType = std::complex<double>;
 
 /** Index represents a combination of spin, orbital, and lattice indices **/
-typedef unsigned int ParticleIndex;
-
-// FIXME
-//const FockState ERROR_FOCK_STATE = {}; // A state with the size==0 is an error state
+using ParticleIndex = unsigned int;
 
 /** Each Quantum State in the finite system is associated with a number.
  * This works for any basis, including Fock and Hamiltonian eigenbasis.
@@ -59,15 +51,10 @@ typedef unsigned int ParticleIndex;
 using QuantumState = libcommute::sv_index_type;
 
 /** Index represents a combination of spin, orbital, and lattice indices **/
-typedef unsigned int ParticleIndex;
-
-enum OperatorStatistics {fermion, boson};
+using ParticleIndex = unsigned int;
 
 /** Dense complex matrix. */
-typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> ComplexMatrixType;
-/** Dense real matrix. */
-typedef Eigen::Matrix<RealType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> RealMatrixType;
-typedef Eigen::Matrix<RealType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor> LowerTriangularRealMatrixType;
+using ComplexMatrixType = Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor>;
 
 template<bool Complex>
 using MelemType = typename std::conditional<Complex, ComplexType, RealType>::type;
@@ -76,11 +63,10 @@ template<bool Complex>
 using MatrixType = Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor>;
 
 /** Dense complex vector. */
-typedef Eigen::Matrix<ComplexType,Eigen::Dynamic,1,Eigen::AutoAlign> ComplexVectorType;
+using ComplexVectorType = Eigen::Matrix<ComplexType,Eigen::Dynamic,1,Eigen::AutoAlign>;
 /** Dense real vector. */
-typedef Eigen::Matrix<RealType,Eigen::Dynamic,1,Eigen::AutoAlign> RealVectorType;
-/** Dense vector of integers. */
-typedef Eigen::Matrix<int,Eigen::Dynamic,1,Eigen::AutoAlign> IntVectorType;
+using RealVectorType = Eigen::Matrix<RealType,Eigen::Dynamic,1,Eigen::AutoAlign>;
+
 template<bool Complex>
 using VectorType = Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic,1,Eigen::AutoAlign>;
 
@@ -89,8 +75,6 @@ template<bool Complex>
 using ColMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::ColMajor>;
 template<bool Complex>
 using RowMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::RowMajor>;
-//typedef Eigen::Triplet<RealType> RealTypeTriplet;
-//typedef Eigen::Triplet<ComplexType> ComplexTypeTriplet;
 
 /** Possible spin projections are \b down and \b up */
 enum spin : unsigned short {down, up};
@@ -99,28 +83,6 @@ std::ostream & operator<<(std::ostream & os, spin s);
 
 /** A short name for imaginary unit. */
 static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
-
-/** Generalized 'square' function. */
-template<typename T> inline T sqr(T x) { return x*x; }
-
-/** */
-#define DUMP_FLOATING_POINT_NUMBERS    10
-
-//@{
-/** Do-It-Once environment from A. Rubtsov
-**
-** When you want a piece of code to run exactly once, just write:
-** \verbatim
-do_once
-    ... your code goes here...
-end_do_once
-\endverbatim
-**/
-#define do_once { static bool done_once=false; if (!done_once) {done_once=true;
-#define end_do_once }; };
-//@}
-
-#define CHECK_MATSUBARA_NUM(num,num_of_matsubaras)	(num) < (num_of_matsubaras) && (num) >= -(num_of_matsubaras)
 
 /** Permutation of 3 elements */
 struct Permutation3 {
@@ -141,38 +103,6 @@ struct Permutation4 {
     friend std::ostream& operator<<(std::ostream& out, const Permutation4 &p);
 };
 extern const Permutation4 permutations4[24];
-
-/** A tool to wrap the input and output of values. */
-template <typename T> struct __num_format;
-template <typename T> std::ostream& operator<<(std::ostream& lhs, const __num_format<T> &in);
-template <typename T> std::istream& operator>>(std::istream& lhs, __num_format<T> &out);
-template <typename T>
-struct __num_format {
-    static const int _prec = 12;
-    T _v;
-    __num_format(T v):_v(v){};
-    operator T(){return _v;};
-/*    void savetxt(const std::string& filename) {
-        std::cout << "Saving " << typeid(*this).name() << " to " << filename << std::endl;
-        std::ofstream out; out.open(filename.c_str()); out << *this << std::endl; out.close();
-    };
-*/
-    friend std::ostream& operator<< <>(std::ostream& lhs, const __num_format<T> &in);
-    friend std::istream& operator>> <>(std::istream& lhs, __num_format<T> &out);
-};
-
-template <typename T>
-inline std::ostream& operator<<(std::ostream& lhs, const __num_format<T> &in) {lhs << std::setprecision(in._prec) << in._v; return lhs;};
-template <typename T>
-inline std::istream& operator>>(std::istream& lhs, __num_format<T> &out) {lhs >> out._v; return lhs;};
-template <>
-inline std::ostream& operator<<(std::ostream& lhs, const __num_format<ComplexType> &in){lhs << std::setprecision(in._prec) << real(in._v) << " " << imag(in._v); return lhs;};
-template <>
-inline std::istream& operator>>(std::istream& lhs, __num_format<ComplexType> &out){RealType re,im; lhs >> re; lhs >> im; out._v = re+I*im; return lhs;};
-
-/*template <class T>
-inline bool __is_zero(const T& in, RealType threshold = std::numeric_limits<RealType>::epsilon()){return (std::abs(in)<threshold);};
-*/
 
 } // end of namespace Pomerol
 
