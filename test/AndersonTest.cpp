@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 
     auto IndexInfo = MakeIndexClassification(HExpr);
     print_section("Indices");
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
 
     INFO("Hamiltonian");
     INFO(HExpr);
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
     DEBUG(down_index);
     DEBUG(up_index);
 
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
     for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {
         INFO("C^+_"<<i);
     }

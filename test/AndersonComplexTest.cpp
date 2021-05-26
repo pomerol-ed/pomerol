@@ -75,7 +75,7 @@ bool run_test(ComplexType J /* spin-flip amplitude */) {
     auto IndexInfo = MakeIndexClassification(HExpr);
     if (!rank) {
         print_section("Indices");
-        IndexInfo.printIndices();
+        std::cout << IndexInfo << std::endl;
     }
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);

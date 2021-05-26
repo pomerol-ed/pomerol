@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
     INFO(HExpr);
     auto IndexInfo = MakeIndexClassification(HExpr);
     print_section("Indices");
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
     HS.compute();

@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 
     auto IndexInfo = MakeIndexClassification(HExpr);
     print_section("Indices");
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
 
     auto A_dn = IndexInfo.getInfo(0);
     auto A_up = IndexInfo.getInfo(1);

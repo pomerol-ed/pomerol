@@ -15,8 +15,10 @@
 #include <map>
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <tuple>
 #include <vector>
+#include <stdexcept>
 
 namespace Pomerol {
 
@@ -49,13 +51,13 @@ public:
     IndexClassification() = default;
 
     void addInfo(const IndexInfo& info) {
-      InfoToIndices.emplace(info, 0);
-      UpdateMaps();
+        InfoToIndices.emplace(info, 0);
+        UpdateMaps();
     }
 
     void addInfo(IndexTypes... indices) {
-      InfoToIndices.emplace(IndexInfo{indices...}, 0);
-      UpdateMaps();
+        InfoToIndices.emplace(IndexInfo{indices...}, 0);
+        UpdateMaps();
     }
 
     /** Checks if the index belongs to the space of indices
@@ -67,8 +69,11 @@ public:
         auto it = InfoToIndices.find(info);
         if(it != InfoToIndices.end())
             return it->second;
-        else
-            throw exWrongIndex(0); // FIXME
+        else {
+            std::stringstream ss;
+            libcommute::print_tuple(ss, info);
+            throw std::runtime_error("Wrong indices " + ss.str());
+        }
     }
 
     ParticleIndex getIndex(IndexTypes... info) const {
@@ -77,7 +82,8 @@ public:
 
     /** Return all information about the given index. */
     IndexInfo const& getInfo(ParticleIndex in) const {
-        if(in >= InfoToIndices.size()) throw exWrongIndex(in);
+        if(in >= InfoToIndices.size())
+            throw std::runtime_error("Wrong particle index " + std::to_string(in));
         return IndicesToInfo[in];
     }
 
@@ -85,33 +91,23 @@ public:
     const ParticleIndex getIndexSize() const { return InfoToIndices.size(); }
 
     /** Print all Indices to the information stream */
-    void printIndices() {
-        for(ParticleIndex i=0; i<InfoToIndices.size(); ++i) {
-            std::cout << "Index " << i << " = (";
-            libcommute::print_tuple(std::cout, IndicesToInfo[i]);
-            std::cout << ")" << std::endl;
+    friend std::ostream & operator<<(std::ostream & os, const IndexClassification &ic) {
+        for(ParticleIndex i=0; i<ic.InfoToIndices.size(); ++i) {
+            os << "Index " << i << " = (";
+            libcommute::print_tuple(os, ic.IndicesToInfo[i]);
+            os << ")" << std::endl;
         }
+        return os;
     }
-
-    /** Exception - wrong index. */
-    class exWrongIndex : public std::exception {
-        std::string msg;
-    public:
-        exWrongIndex(ParticleIndex index) :
-          msg("Wrong index " + std::to_string(index)) {}
-        virtual const char* what() const noexcept override {
-          return msg.c_str();
-        }
-    };
 
 private:
 
     void UpdateMaps() {
         IndicesToInfo.clear();
         IndicesToInfo.reserve(InfoToIndices.size());
-        for(auto it = InfoToIndices.begin(); it != InfoToIndices.end(); ++it) {
-            it->second = IndicesToInfo.size();
-            IndicesToInfo.push_back(it->first);
+        for(auto & ii : InfoToIndices) {
+            ii.second = IndicesToInfo.size();
+            IndicesToInfo.emplace_back(ii.first);
         }
     }
 };

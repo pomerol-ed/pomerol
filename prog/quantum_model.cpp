@@ -81,7 +81,7 @@ void quantum_model::compute() {
   IndexInfoType IndexInfo = MakeIndexClassification(HExpr);
   if (!rank) {
     print_section("Indices");
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
   };
 
   auto HS = MakeHilbertSpace(IndexInfo, HExpr);

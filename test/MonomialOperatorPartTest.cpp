@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
     HExpr += Hopping("A", "B", -1.0);
 
     auto IndexInfo = MakeIndexClassification(HExpr);
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
     HS.compute();

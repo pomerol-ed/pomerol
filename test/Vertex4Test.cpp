@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
     auto HExpr = CoulombS("A", U, -U/2);
 
     auto IndexInfo = MakeIndexClassification(HExpr);
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
     HS.compute();
