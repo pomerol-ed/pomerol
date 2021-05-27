@@ -74,12 +74,12 @@ int main(int argc, char* argv[])
     HamiltonianPart HpartRHS(LOperatorType(HExpr, HS.getFullHilbertSpace()), S, test_block);
     HpartRHS.prepare();
     HpartRHS.compute();
-    HpartRHS.print_to_screen();
+    INFO(HpartRHS);
 
     HamiltonianPart HpartLHS(LOperatorType(HExpr, HS.getFullHilbertSpace()), S, result_block);
     HpartLHS.prepare();
     HpartLHS.compute();
-    HpartLHS.print_to_screen();
+    INFO(HpartLHS);
 
     auto cdag1op = LOperatorType(Operators::c_dag("B", (unsigned short)0, up), HS.getFullHilbertSpace());
     MonomialOperatorPart Cdag1(cdag1op, S, HpartRHS, HpartLHS);

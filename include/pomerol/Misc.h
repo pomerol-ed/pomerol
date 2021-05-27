@@ -15,6 +15,8 @@
 #include<type_traits>
 
 #include <libcommute/loperator/state_vector.hpp>
+#include <libcommute/loperator/loperator.hpp>
+#include <libcommute/algebra_ids.hpp>
 
 #define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 #include<Eigen/Core>
@@ -58,6 +60,9 @@ using ComplexMatrixType = Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynami
 
 template<bool Complex>
 using MelemType = typename std::conditional<Complex, ComplexType, RealType>::type;
+
+template<bool Complex>
+using LOperatorType = libcommute::loperator<MelemType<Complex>, libcommute::fermion>;
 
 template<bool Complex>
 using MatrixType = Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor>;

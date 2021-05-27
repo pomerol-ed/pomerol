@@ -9,6 +9,7 @@
 #define __INCLUDE_HAMILTONIANPART_H
 
 #include "Misc.h"
+#include "ComputableObject.h"
 #include "IndexClassification.h"
 #include "StatesClassification.h"
 
@@ -16,27 +17,27 @@
 #include <libcommute/loperator/loperator.hpp>
 
 #include <memory>
+#include <iostream>
 #include <type_traits>
 
-namespace Pomerol{
+namespace Pomerol {
 
 /** HamiltonianPart is a class, which stores and diagonalizes the block of the Hamiltonian, which corresponds to a set of given quantum numbers. */
 class HamiltonianPart : public ComputableObject {
-
-    bool Complex;
-
-    template<bool C>
-    using LOperatorType = libcommute::loperator<MelemType<C>, libcommute::fermion>;
-    const void* HOp;
 
     const StatesClassification &S;
 
     /** The number of Block. Defined in StatesClassification. */
     BlockNumber Block;
 
+    bool Complex;
+
+    const void* HOp;
+
     /** A matrix filled with matrix elements of HamiltonianPart in the space of FockState's.
      *  After diagonalization it stores the eigenfunctions of the problem in a rows of H. */
     std::shared_ptr<void> HMatrix = nullptr;
+
     /** A vector of eigenvalues of the HamiltonianPart. */
     RealVectorType Eigenvalues;
 
@@ -53,8 +54,7 @@ public:
     HamiltonianPart(const libcommute::loperator<ScalarType, libcommute::fermion> &HOp,
                     const StatesClassification &S,
                     BlockNumber Block) :
-        Complex(std::is_same<ScalarType, ComplexType>::value),
-        HOp(&HOp), S(S), Block(Block)
+         S(S), Block(Block), Complex(std::is_same<ScalarType, ComplexType>::value), HOp(&HOp)
     {}
 
     /** Fill in the H matrix. */
@@ -62,7 +62,7 @@ public:
     /** Diagonalize the H matrix and get EigenValues. */
     void compute();
 
-    bool reduce(RealType ActualCutoff); // Useless now
+    bool reduce(RealType ActualCutoff);
 
     bool isComplex() const { return Complex; }
 
@@ -77,13 +77,12 @@ public:
     const RealVectorType& getEigenValues() const;
 
     /** Return the hamiltonian part matrix. */
-    template<bool Complex>
-    const MatrixType<Complex>& getMatrix() const;
-    template<bool Complex>
-    MatrixType<Complex>& getMatrix();
+    template<bool Complex> const MatrixType<Complex>& getMatrix() const;
+    template<bool Complex> MatrixType<Complex>& getMatrix();
 
     /** Return the lowest Eigenvalue of the current part. */
     RealType getMinimumEigenvalue() const;
+
     /** Return the eigenstate of the H matrix.
      * \param[in] Number of eigenvalue. */
     template<bool Complex>
@@ -93,7 +92,15 @@ public:
     BlockNumber getBlockNumber() const { return Block; }
 
     /** Print the part of hamiltonian to screen. */
-    void print_to_screen() const;
+    friend std::ostream & operator<<(std::ostream & os, const HamiltonianPart& part)
+    {
+        if(part.isComplex())
+            os << part.getMatrix<true>() << std::endl;
+        else
+            os << part.getMatrix<false>() << std::endl;
+
+        return os;
+    }
 
 private:
 

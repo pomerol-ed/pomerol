@@ -8,20 +8,19 @@
 #ifndef __INCLUDE_HAMILTONIAN_H
 #define __INCLUDE_HAMILTONIAN_H
 
-#include <memory>
+#include <vector>
 #include <type_traits>
 
 #include "mpi_dispatcher/misc.hpp"
-#include "mpi_dispatcher/mpi_skel.hpp"
 
 #include "Misc.h"
+#include "ComputableObject.h"
 #include "Operators.h"
-#include "IndexClassification.h"
 #include "StatesClassification.h"
 #include "HilbertSpace.h"
 #include "HamiltonianPart.h"
 
-namespace Pomerol{
+namespace Pomerol {
 
 /** This class represents a Hamiltonian, written as a matrix of matrix elements in a Fock basis.
  * It is a container for several hamiltonian parts, each for single defined QuantumNumbers and a corresponding BlockNumber.
@@ -38,6 +37,7 @@ class Hamiltonian : public ComputableObject
     const StatesClassification& S;
     /** A value of the ground energy - needed for further renormalization */
     RealType GroundEnergy;
+
 public:
 
     /** Constructor. */
@@ -64,8 +64,7 @@ public:
 private:
     void computeGroundEnergy();
 
-    template<bool C> void prepareImpl(libcommute::loperator<MelemType<C>, libcommute::fermion> HOp,
-                                      const MPI_Comm& comm);
+    template<bool C> void prepareImpl(const LOperatorType<C> &HOp, const MPI_Comm& comm);
     template<bool C> void computeImpl(const MPI_Comm& comm);
 };
 
@@ -74,13 +73,13 @@ void Hamiltonian::prepare(Operators::expression<ScalarType, IndexTypes...> const
                           const HilbertSpace<IndexTypes...> &HS,
                           const MPI_Comm &comm) {
 
-    if (Status >= Prepared) return;
+    if(getStatus() >= Prepared) return;
 
     Complex = std::is_same<ScalarType, ComplexType>::value;
     libcommute::loperator<ScalarType, libcommute::fermion> HOp(H, HS.getFullHilbertSpace());
     prepareImpl<std::is_same<ScalarType, ComplexType>::value>(HOp, comm);
 
-    Status = Prepared;
+    setStatus(Prepared);
 }
 
 } // end of namespace Pomerol

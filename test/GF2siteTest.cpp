@@ -89,11 +89,11 @@ int main(int argc, char* argv[])
 
     Hamiltonian H(S);
     H.prepare(HExpr, HS, MPI_COMM_WORLD);
-    H.getPart(BlockNumber(4)).print_to_screen();
-    H.getPart(BlockNumber(5)).print_to_screen();
+    INFO(H.getPart(BlockNumber(4)));
+    INFO(H.getPart(BlockNumber(5)));
     H.compute(MPI_COMM_WORLD);
-    H.getPart(BlockNumber(4)).print_to_screen();
-    H.getPart(BlockNumber(5)).print_to_screen();
+    INFO(H.getPart(BlockNumber(4)));
+    INFO(H.getPart(BlockNumber(5)));
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
     RealType beta = 10.0;

@@ -56,9 +56,9 @@ int main(int argc, char* argv[])
     H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
 
-    H.getPart(BlockNumber(4)).print_to_screen();
+    INFO(H.getPart(BlockNumber(4)));
     H.compute(MPI_COMM_WORLD);
-    H.getPart(BlockNumber(4)).print_to_screen();
+    INFO(H.getPart(BlockNumber(4)));
     RealType E = -2.8860009;
     RealType E_calc = H.getGroundEnergy();
     INFO("Lowest energy level is " << E_calc);
