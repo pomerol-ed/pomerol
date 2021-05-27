@@ -9,6 +9,7 @@
 #define __INCLUDE_FIELDOPERATOR_H
 
 #include"Misc.h"
+#include"ComputableObject.h"
 #include"StatesClassification.h"
 #include"HilbertSpace.h"
 #include"Hamiltonian.h"
@@ -24,7 +25,6 @@
 #include <stdexcept>
 #include <type_traits>
 #include <unordered_map>
-#include <utility>
 #include <vector>
 
 namespace Pomerol {
@@ -32,7 +32,7 @@ namespace Pomerol {
 /** \typedef
  * A pair of left and right indices of a part in a Field Operator. Each part is a non-vanishing worldline in an operator
  */
-typedef std::pair<BlockNumber, BlockNumber> BlockMapping;
+using BlockMapping = std::pair<BlockNumber, BlockNumber>;
 
 /** This class is a parent class for creation/annihilation operators which act
  * on all blocks of quantum states */
@@ -40,11 +40,11 @@ class MonomialOperator : public ComputableObject
 {
 public:
 
-    typedef boost::bimaps::bimap<
+    using BlocksBimap = boost::bimaps::bimap<
         boost::bimaps::set_of<BlockNumber>,
         boost::bimaps::set_of<BlockNumber>
-    > BlocksBimap;
-    typedef BlocksBimap::value_type BlockMapping;
+    >;
+    using BlockMapping = BlocksBimap::value_type;
 
 protected:
 
@@ -53,12 +53,11 @@ protected:
     /** A reference an Operator object (OperatorPresets::C or Cdag). */
     bool MOpComplex;
 
-    template<bool Complex>
-    using LOperatorType = libcommute::loperator<MelemType<Complex>, libcommute::fermion>;
     std::shared_ptr<void> MOp;
 
     template<bool Complex>
     const LOperatorType<Complex>& getMOp() const {
+        assert(MOpComplex == Complex);
         return *std::static_pointer_cast<LOperatorType<Complex>>(MOp);
     }
 
@@ -120,7 +119,7 @@ public:
     /** Virtual method for assigning world-lines */
     template<typename... IndexTypes>
     void prepare(HilbertSpace<IndexTypes...> const& HS) {
-        if (Status >= Prepared) return;
+        if(getStatus() >= Prepared) return;
 
         auto const& FullHS = HS.getFullHilbertSpace();
         auto Connections = MOpComplex ?
@@ -231,6 +230,9 @@ public:
         HS, S, H
     ), Index1(Index1), Index2(Index2)
     {}
+
+    ParticleIndex getCXXIndex() const { return Index1; }
+    ParticleIndex getCIndex() const { return Index2; }
 };
 
 } // end of namespace Pomerol

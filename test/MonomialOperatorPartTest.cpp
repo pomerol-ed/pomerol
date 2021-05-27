@@ -84,12 +84,12 @@ int main(int argc, char* argv[])
     auto cdag1op = LOperatorType(Operators::c_dag("B", (unsigned short)0, up), HS.getFullHilbertSpace());
     MonomialOperatorPart Cdag1(cdag1op, S, HpartRHS, HpartLHS);
     Cdag1.compute();
-    Cdag1.print_to_screen();
+    INFO(Cdag1);
 
     auto c1op = LOperatorType(Operators::c("B", (unsigned short)0, up), HS.getFullHilbertSpace());
     MonomialOperatorPart C1(c1op, S, HpartLHS, HpartRHS);
     C1.compute();
-    C1.print_to_screen();
+    INFO(C1);
 
     // Check transposition
 

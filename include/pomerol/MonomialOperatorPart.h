@@ -17,6 +17,7 @@
 #include <libcommute/loperator/loperator.hpp>
 
 #include <memory>
+#include <ostream>
 
 namespace Pomerol {
 
@@ -29,11 +30,6 @@ namespace Pomerol {
  */
 class MonomialOperatorPart : public ComputableObject {
     friend class FieldOperatorContainer;
-    friend class FieldOperator;
-
-protected:
-    template<bool C>
-    using LOperatorType = libcommute::loperator<MelemType<C>, libcommute::fermion>;
 
 private:
 
@@ -55,7 +51,6 @@ protected:
     /** Copy of the Storage of the matrix elements of the operator. Column ordered sparse matrix. */
     std::shared_ptr<void> elementsColMajor;
     /** The tolerance with which the matrix elements are evaluated. */
-    //static
     const RealType MatrixElementTolerance = 1e-8;
 
 public:
@@ -82,9 +77,6 @@ public:
 
     void setFromAdjoint(const MonomialOperatorPart &part);
 
-    /** Print all matrix elements of the operator to screen. */
-    void print_to_screen() const;
-
     bool isComplex() const { return Complex; }
 
     /** Returns the row ordered sparse matrix of matrix elements. */
@@ -94,14 +86,23 @@ public:
     template<bool C> ColMajorMatrixType<C>& getColMajorValue();
     template<bool C> const ColMajorMatrixType<C>& getColMajorValue() const;
     /** Returns the right hand side index. */
-    BlockNumber getRightIndex() const;
+    BlockNumber getRightIndex() const { return HFrom.getBlockNumber(); }
     /** Returns the left hand side index. */
-    BlockNumber getLeftIndex() const;
+    BlockNumber getLeftIndex() const { return HTo.getBlockNumber(); }
+
+    friend std::ostream & operator<<(std::ostream & os, const MonomialOperatorPart &part)
+    {
+        if(part.isComplex())
+            part.streamOutputImpl<true>(os);
+        else
+            part.streamOutputImpl<false>(os);
+        return os;
+    }
 
 private:
 
     template<bool C, bool HC> void computeImpl();
-    template<bool C> void print_to_screenImpl() const;
+    template<bool C> void streamOutputImpl(std::ostream & os) const;
 };
 
 } // end of namespace Pomerol

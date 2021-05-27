@@ -25,11 +25,12 @@ namespace Pomerol {
  */
 class FieldOperatorContainer
 {
-private:
+
     /** A map which gives a link to the CreationOperator for a given index */
     std::unordered_map<ParticleIndex, CreationOperator> mapCreationOperators;
     /** A map which gives a link to the AnnihilationOperator for a given index */
     std::unordered_map<ParticleIndex, AnnihilationOperator> mapAnnihilationOperators;
+
 public:
     /** Constructor.
      * \param[in] S A reference to a states classification object.
