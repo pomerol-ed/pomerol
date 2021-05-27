@@ -12,8 +12,6 @@
 #include "Misc.h"
 #include "HilbertSpace.h"
 
-#include <exception>
-#include <string>
 #include <vector>
 
 // TODO: Re-add functionality to classify many-body states by their quantum numbers
@@ -26,7 +24,7 @@ using BlockNumber = int;
 constexpr BlockNumber INVALID_BLOCK_NUMBER = -1;
 
 /** InnerQuantumState labels the states inside of the block of Fock States. Has no physical meaning. */
-typedef unsigned long InnerQuantumState;
+using InnerQuantumState = unsigned long;
 
 /** This class handles all information about Fock states.
  *  It makes a classification of Fock states into blocks.
@@ -40,9 +38,6 @@ class StatesClassification : public ComputableObject {
     /** Index all states to belong to a block. */
     std::vector<BlockNumber> StateBlockIndex;
 
-    // TODO: Consider storing lists of quantum numbers. Are they going to be
-    // useful for anything except for informational screen output?
-
 public:
 
     StatesClassification() = default;
@@ -52,12 +47,12 @@ public:
     // (Operators::expression<ScalarType, IndexTypes...> objects) and fill lists
     // of quantum numbers.
     template<typename ScalarType, typename... IndexTypes>
-    void compute(HilbertSpace<ScalarType, IndexTypes...> const& Symm) {
+    void compute(HilbertSpace<ScalarType, IndexTypes...> const& HS) {
         if(Status == Computed) return;
-        auto const& FullHilbertSpace = Symm.getFullHilbertSpace();
+        auto const& FullHilbertSpace = HS.getFullHilbertSpace();
         auto Dim = FullHilbertSpace.dim();
-        if(Symm.getStatus() == Computed) { // Multiple blocks revealed by Symm
-            InitMultipleBlocks(Symm.getSpacePartition());
+        if(HS.getStatus() == Computed) { // Multiple blocks revealed by HS
+            InitMultipleBlocks(HS.getSpacePartition());
         } else { // Just one block
             InitSingleBlock(Dim);
         }
@@ -95,16 +90,6 @@ public:
      * \param[in] state FockState for which the correspondence is required
      */
     InnerQuantumState getInnerState(QuantumState in) const;
-
-    /** Exception - wrong state. */
-    class exWrongState : public std::exception {
-        std::string msg;
-    public:
-        exWrongState(QuantumState in) : msg("Wrong state " + std::to_string(in)) {}
-        virtual const char* what() const noexcept override {
-            return msg.c_str();
-        }
-    };
 
 private:
 
