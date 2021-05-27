@@ -4,25 +4,36 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include "Misc.h"
-
 #ifndef __INCLUDE_COMPUTABLEOBJECT_H
 #define __INCLUDE_COMPUTABLEOBJECT_H
 
-namespace Pomerol{
+#include "Misc.h"
+
+#include <exception>
+
+namespace Pomerol {
 
 struct ComputableObject {
     /** Computation statuses of the object. */
     enum {Constructed, Prepared, Computed};
 protected:
     /** Current status of an object */
-    unsigned int Status;
+    unsigned int Status = Constructed;
 public:
-    ComputableObject():Status(Constructed){}
+    ComputableObject() = default;
+
     /** Returns the current status of an object */
     unsigned int getStatus() const { return Status; }
-    void setStatus(unsigned int Status_in){if (Status_in>Computed) throw (exStatusMismatch()); Status = Status_in;};
-    class exStatusMismatch : public std::exception { virtual const char* what() const throw() { return "Object status mismatch"; } };
+    void setStatus(unsigned int Status_in){
+        if(Status_in > Computed) throw exStatusMismatch();
+        Status = Status_in;
+    }
+
+    class exStatusMismatch : public std::exception {
+        virtual const char* what() const noexcept override {
+            return "Object status mismatch";
+        }
+    };
 };
 
 } // end of namespace Pomerol

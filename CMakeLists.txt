@@ -46,7 +46,6 @@ set (pomerol_sources
     pomerol/StatesClassification
     pomerol/HamiltonianPart
     pomerol/Hamiltonian
-    pomerol/Thermal
     pomerol/MonomialOperatorPart
     pomerol/MonomialOperator
     pomerol/FieldOperatorContainer
