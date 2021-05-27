@@ -3,7 +3,6 @@
 #include <stdexcept>
 
 namespace Pomerol {
-
 namespace LatticePresets {
 
 using Operators::c_dag;
@@ -306,8 +305,8 @@ RealExpr SS(const std::string& Label1, const std::string& Label2, RealType ExchJ
 {
     RealExpr res = SzSz(Label1, Label2, ExchJ, NOrbitals);
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
-        LatticePresets::SplusSminus(Label1, Label2, ExchJ/2., Orbital);
-        LatticePresets::SminusSplus(Label1, Label2, ExchJ/2., Orbital);
+        LatticePresets::SplusSminus(Label1, Label2, ExchJ / 2., Orbital);
+        LatticePresets::SminusSplus(Label1, Label2, ExchJ / 2., Orbital);
     }
     return res;
 }
@@ -316,11 +315,11 @@ ComplexExpr SS(const std::string& Label1, const std::string& Label2, ComplexType
 {
     ComplexExpr res = SzSz(Label1, Label2, ExchJ, NOrbitals);
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
-        LatticePresets::SplusSminus(Label1, Label2, ExchJ/2., Orbital);
-        LatticePresets::SminusSplus(Label1, Label2, ExchJ/2., Orbital);
+        LatticePresets::SplusSminus(Label1, Label2, ExchJ / 2., Orbital);
+        LatticePresets::SminusSplus(Label1, Label2, ExchJ / 2., Orbital);
     }
     return res;
 }
 
-} // end of namespace Pomerol::LatticePresets
-} // end of namespace Pomerol
+} // namespace Pomerol::LatticePresets
+} // namespace Pomerol

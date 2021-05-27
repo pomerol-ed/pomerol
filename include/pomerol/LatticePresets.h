@@ -158,8 +158,7 @@ namespace LatticePresets {
     RealExpr SS(const std::string& Label1, const std::string& Label2, RealType ExchJ, unsigned short NOrbitals = 1);
     ComplexExpr SS(const std::string& Label1, const std::string& Label2, ComplexType ExchJ, unsigned short NOrbitals = 1);
 
-}; // end of namespace OperatorPresets
-
-}; // end of namespace Pomerol
+} // namespace Pomerol::LatticePresets
+} // namespace Pomerol
 
 #endif // endif : ifndef __INCLUDE_LATTICE_SITES_PRESETS_H
