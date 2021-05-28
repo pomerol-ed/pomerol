@@ -6,12 +6,13 @@
 #ifndef __INCLUDE_TERMLIST_H
 #define __INCLUDE_TERMLIST_H
 
-#include <set>
-#include <utility>
-
 #include "mpi_dispatcher/misc.hpp"
 
 #include "Misc.h"
+
+#include <set>
+#include <utility>
+#include <vector>
 
 namespace Pomerol {
 
@@ -45,15 +46,15 @@ public:
      * \param[in] term Term to be added
      */
     void add_term(TermType const& term) {
-        typename std::set<TermType, Compare>::iterator it = data.find(term);
+        auto it = data.find(term);
         if(it == data.end()) { // new term
-            data.insert(term);
+            data.emplace(term);
         } else {               // similar term
             TermType sum = *it;
             sum += term;
             data.erase(*it);
             if(!is_negligible(sum, data.size() + 1))
-                data.insert(sum);
+                data.emplace(sum);
         }
     }
 
@@ -76,7 +77,7 @@ public:
     ComplexType operator()(Args&&... args) const {
         ComplexType res = 0;
         for(auto const& t : data)
-          res += t(std::forward<Args>(args)...);
+            res += t(std::forward<Args>(args)...);
         return res;
     }
 
@@ -103,13 +104,13 @@ public:
     /** Check that all terms in the container are properly ordered and are not negligible */
     bool check_terms() {
         if(size() == 0) return true;
-        typename std::set<TermType>::const_iterator prev_it = data.begin();
+        auto prev_it = data.begin();
         if(is_negligible(*prev_it, data.size() + 1)) return false;
         if(size() == 1) return true;
 
         Compare const& compare = data.key_comp();
 
-        typename std::set<TermType>::const_iterator it = prev_it;
+        auto it = prev_it;
         for(++it; it != data.end(); ++it, ++prev_it) {
             if(is_negligible(*it, data.size() + 1) || !compare(*prev_it, *it))
                 return false;
