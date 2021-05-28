@@ -29,7 +29,6 @@ struct MPIWorker
     bool is_finished();
     bool is_working();
 
-
     JobId current_job() const { return current_job_; };
 
 protected:
@@ -68,4 +67,4 @@ private:
     void fill_stack_();
 };
 
-} // end of namespace pMPI
+} // namespace pMPI

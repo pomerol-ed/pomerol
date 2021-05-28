@@ -6,8 +6,6 @@
 
 #include <mpi.h>
 
-#include "../pomerol/Misc.h"
-
 namespace pMPI {
 
 // Size of communicator 'Comm'
