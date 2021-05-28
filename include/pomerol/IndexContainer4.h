@@ -29,8 +29,10 @@
 
 #include"IndexClassification.h"
 
+#include <map>
 #include <memory>
 #include <set>
+#include <utility>
 
 namespace Pomerol {
 
@@ -58,8 +60,8 @@ protected:
     const std::set<IndexCombination4> enumerateInitialIndices(void) const;
 
 public:
-    std::map<IndexCombination4,ElementWithPermFreq<ElementType> > ElementsMap;
-    std::map<IndexCombination4, std::shared_ptr<ElementType>  > NonTrivialElements;
+    std::map<IndexCombination4,ElementWithPermFreq<ElementType>> ElementsMap;
+    std::map<IndexCombination4, std::shared_ptr<ElementType>> NonTrivialElements;
 
     template<typename... IndexTypes>
     IndexContainer4(SourceObject* pSource, const IndexClassification<IndexTypes...>& IndexInfo) :
@@ -75,7 +77,7 @@ public:
 
     ElementWithPermFreq<ElementType>& operator()(const IndexCombination4& Indices);
     ElementWithPermFreq<ElementType>& operator()(ParticleIndex Index1, ParticleIndex Index2,
-                                                ParticleIndex Index3, ParticleIndex Index4);
+                                                 ParticleIndex Index3, ParticleIndex Index4);
 };
 
 /////////////////////////
@@ -135,16 +137,14 @@ void IndexContainer4<ElementType,SourceObject>::fill(std::set<IndexCombination4>
     // remove existing elements
     ElementsMap.clear();
 
-    std::set<IndexCombination4> II;
-    if(InitialIndices.size()==0)           // If there are no indices provided,
-        II = enumerateInitialIndices(); // Enumerate all possible combinations.
-    else
-        II = InitialIndices;    // Otherwise use provided indices.
+    std::set<IndexCombination4> II = InitialIndices.empty() ?
+                                     enumerateInitialIndices() :
+                                     std::move(InitialIndices);
 
-    for(typename std::set<IndexCombination4>::iterator iter = II.begin();
-        iter != II.end(); iter++){
-        if(!isInContainer(*iter))
-            set(*iter);
+    for(auto const& ic : II) {
+        if(!isInContainer(ic)) {
+            set(ic);
+        }
     }
 }
 
@@ -152,12 +152,8 @@ template<typename ElementType, typename SourceObject>
 inline
 ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::set(const IndexCombination4& Indices)
 {
-    // TODO: rewrite this method entirely (merge with fill()?)
     std::shared_ptr<ElementType> pElement(pSource->createElement(Indices));
-    typename std::map<IndexCombination4,ElementWithPermFreq<ElementType> >::iterator iter =
-        ElementsMap.insert(
-            std::pair<IndexCombination4,ElementWithPermFreq<ElementType> >
-                (Indices,ElementWithPermFreq<ElementType>(pElement,permutations4[0]))).first;
+    auto iter = ElementsMap.emplace(Indices, ElementWithPermFreq<ElementType>(pElement,permutations4[0])).first;
 
     DEBUG("IndexContainer4::fill() at " << this << ": " <<
         "added an element with indices " << Indices <<
@@ -167,15 +163,12 @@ ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::set
     bool SameCIndices = (Indices.Index1==Indices.Index2);
     bool SameCXIndices = (Indices.Index3==Indices.Index4);
 
-    NonTrivialElements.insert(std::make_pair(Indices,pElement));
+    NonTrivialElements.emplace(Indices, pElement);
 
     if(!SameCIndices){
         IndexCombination4 Indices2134(Indices.Index2,Indices.Index1,Indices.Index3,Indices.Index4);
         if(!isInContainer(Indices2134)){
-            ElementsMap.insert(
-            std::pair<IndexCombination4,ElementWithPermFreq<ElementType> >(
-                Indices2134,
-                ElementWithPermFreq<ElementType>(pElement,permutations4[6])));
+            ElementsMap.emplace(Indices2134, ElementWithPermFreq<ElementType>(pElement,permutations4[6]));
             DEBUG("IndexContainer4::fill() at " << this << ": " <<
                 "added an element with indices " << Indices <<
                 " and frequency permutation " << permutations4[6] <<
@@ -185,10 +178,7 @@ ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::set
     if(!SameCXIndices){
         IndexCombination4 Indices1243(Indices.Index1,Indices.Index2,Indices.Index4,Indices.Index3);
         if(!isInContainer(Indices1243)){
-            ElementsMap.insert(
-                std::pair<IndexCombination4,ElementWithPermFreq<ElementType> >(
-                Indices1243,
-                ElementWithPermFreq<ElementType>(pElement,permutations4[1])));
+            ElementsMap.emplace(Indices1243, ElementWithPermFreq<ElementType>(pElement,permutations4[1]));
             DEBUG("IndexContainer4::fill() at " << this << ": " <<
                 "added an element with indices " << Indices <<
                 " and frequency permutation " << permutations4[1] <<
@@ -198,10 +188,7 @@ ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::set
     if(!SameCIndices && !SameCXIndices){
         IndexCombination4 Indices2143(Indices.Index2,Indices.Index1,Indices.Index4,Indices.Index3);
         if(!isInContainer(Indices2143)){
-            ElementsMap.insert(
-                std::pair<IndexCombination4,ElementWithPermFreq<ElementType> >(
-                Indices2143,
-                ElementWithPermFreq<ElementType>(pElement,permutations4[7])));
+            ElementsMap.emplace(Indices2143, ElementWithPermFreq<ElementType>(pElement,permutations4[7]));
             DEBUG("IndexContainer4::fill() at " << this << ": " <<
                 "added an element with indices " << Indices <<
                 " and frequency permutation " << permutations4[7] <<
@@ -217,8 +204,7 @@ inline
 ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::operator()
     (const IndexCombination4& Indices)
 {
-    typename std::map<IndexCombination4,ElementWithPermFreq<ElementType> >::iterator iter
-        = ElementsMap.find(Indices);
+    auto iter = ElementsMap.find(Indices);
 
     if(iter == ElementsMap.end()){
         DEBUG("IndexContainer4 at " << this << ": " <<
@@ -248,10 +234,10 @@ const std::set<IndexCombination4> IndexContainer4<ElementType,SourceObject>::enu
     std::set<IndexCombination4> AllIndices;
 
     for(ParticleIndex Index1=0; Index1<NumIndices; ++Index1)
-    for(ParticleIndex Index2=Index1; Index2<NumIndices; ++Index2)
-        for(ParticleIndex Index3=0; Index3<NumIndices; ++Index3)
-        for(ParticleIndex Index4=Index3; Index4<NumIndices; ++Index4)
-            AllIndices.insert(IndexCombination4(Index1,Index2,Index3,Index4));
+        for(ParticleIndex Index2=Index1; Index2<NumIndices; ++Index2)
+            for(ParticleIndex Index3=0; Index3<NumIndices; ++Index3)
+                for(ParticleIndex Index4=Index3; Index4<NumIndices; ++Index4)
+                    AllIndices.emplace(Index1, Index2, Index3, Index4);
 
     return AllIndices;
 }
