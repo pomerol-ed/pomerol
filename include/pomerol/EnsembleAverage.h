@@ -8,8 +8,6 @@
 #ifndef __INCLUDE_ENSEMBLEAVERAGE_H
 #define __INCLUDE_ENSEMBLEAVERAGE_H
 
-#include <sstream>
-
 #include"Misc.h"
 #include"Thermal.h"
 #include"ComputableObject.h"
@@ -17,7 +15,7 @@
 #include"MonomialOperator.h"
 #include"DensityMatrix.h"
 
-namespace Pomerol{
+namespace Pomerol {
 
 /** This class represents the ensemble average of a quadratic operator.
  *
@@ -43,7 +41,7 @@ class EnsembleAverage : public Thermal, public ComputableObject {
     /** A reference to a density matrix. */
     const DensityMatrix& DM;
 
-    ComplexType result;
+    ComplexType Result = 0;
 
     /** Returns the contribution to the ensemble average from a part. Called in prepare() */
     template<bool Complex>
@@ -67,9 +65,9 @@ public:
     void compute();
 
     /** Returns the ensemble average */
-    ComplexType getResult(){ return result; };
-
+    ComplexType getResult() const { return Result; };
 };
 
-} // end of namespace Pomerol
+} // namespace Pomerol
+
 #endif // endif :: #ifndef __INCLUDE_ENSEMBLEAVERAGE_H
