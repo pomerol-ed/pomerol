@@ -15,7 +15,7 @@
 
 #include <vector>
 
-namespace Pomerol{
+namespace Pomerol {
 
 /** This class represents a density matrix \f$ \rho = \exp(-\beta \hat H)/Z \f$.
  * It is actually a container class for a collection of parts (all real calculations
@@ -58,13 +58,8 @@ public:
      */
     RealType getWeight(QuantumState state) const;
 
-    // TODO
     /** Returns the average energy. */
     RealType getAverageEnergy() const;
-    /** Returns the total average occupancy. */
-    //RealType getAverageOccupancy() const;
-    /** Returns the average occupancy at site i. */
-    //RealType getAverageOccupancy(ParticleIndex i) const;
 
     /** Returns an averaged value of the double occupancy. */
     RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const;
@@ -76,5 +71,5 @@ public:
     bool isRetained(BlockNumber in) const;
 };
 
-}; // end of namespace Pomerol
+}; // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H

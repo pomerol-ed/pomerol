@@ -10,7 +10,7 @@
 #include "Thermal.h"
 #include "Hamiltonian.h"
 
-namespace Pomerol{
+namespace Pomerol {
 
 /** This class represents a part of a density matrix.
  * It is responsible for calculations of exponential weights
@@ -36,7 +36,7 @@ class DensityMatrixPart : public Thermal
     RealType Z_part;
 
     /** It is true if this part has not been truncated. */
-    bool retained;
+    bool Retained = true;
 
 public:
     /** Constructor.
@@ -44,7 +44,7 @@ public:
      * \param[in] beta The inverse temperature.
      * \param[in] GroundEnergy The ground state energy of the Hamiltonian.
      */
-    DensityMatrixPart(const StatesClassification &S, const HamiltonianPart& H, RealType beta, RealType GroundEnergy);
+    DensityMatrixPart(const HamiltonianPart& H, RealType beta, RealType GroundEnergy);
 
     /** Compute unnormalized weights (diagonal matrix elements)
      *
@@ -66,13 +66,6 @@ public:
     /** Returns an averaged value of the energy. */
     RealType getAverageEnergy() const;
 
-    // TODO
-    //RealType getAverageOccupancy() const;
-    /** Returns the average occupancy at site i. */
-    //RealType getAverageOccupancy(ParticleIndex i) const;
-    /** Returns an averaged value of the double occupancy. */
-    //RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const;
-
     /** Returns the partition function of this part. */
     RealType getPartialZ() const { return Z_part; }
 
@@ -80,8 +73,8 @@ public:
     void truncate(RealType Tolerance);
 
     /** Returns true if this part has not been truncated. */
-    bool isRetained() const;
+    bool isRetained() const { return Retained; }
 };
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H
