@@ -15,10 +15,9 @@
 #include"DensityMatrix.h"
 #include"GreensFunctionPart.h"
 
-#include <sstream>
 #include <vector>
 
-namespace Pomerol{
+namespace Pomerol {
 
 /** This class represents a thermal Green's function in the Matsubara representation.
  *
@@ -46,7 +45,7 @@ class GreensFunction : public Thermal, public ComputableObject {
     const DensityMatrix& DM;
 
     /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
-    bool Vanishing;
+    bool Vanishing = true;
 
     /** A list of pointers to parts (every part corresponds to a part of the annihilation operator
      * and a part of the creation operator).
@@ -95,18 +94,19 @@ public:
      */
     ComplexType of_tau(RealType tau) const;
 
-    bool isVanishing(void) const;
+    bool isVanishing(void) const { return Vanishing; }
 };
 
 inline ComplexType GreensFunction::operator()(long int MatsubaraNumber) const {
-    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1)); }
+    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1));
+}
 
 inline ComplexType GreensFunction::operator()(ComplexType z) const {
     if(Vanishing) return 0;
     else {
         ComplexType Value = 0;
-        for(auto iter = parts.begin(); iter != parts.end(); iter++)
-            Value += (*iter)(z);
+        for(auto const& p : parts)
+            Value += p(z);
         return Value;
     }
 }
@@ -115,8 +115,8 @@ inline ComplexType GreensFunction::of_tau(RealType tau) const {
     if(Vanishing) return 0;
     else {
         ComplexType Value = 0;
-        for(auto iter = parts.begin(); iter != parts.end(); iter++)
-            Value += iter->of_tau(tau);
+        for(auto const& p : parts)
+            Value += p.of_tau(tau);
         return Value;
     }
 }

@@ -20,8 +20,6 @@
 
 namespace Pomerol {
 
-typedef std::shared_ptr<GreensFunction> GFPointer;
-
 class GFContainer: public IndexContainer2<GreensFunction,GFContainer>, public Thermal
 {
 
@@ -42,7 +40,7 @@ public:
 protected:
 
     friend class IndexContainer2<GreensFunction,GFContainer>;
-    GreensFunction* createElement(const IndexCombination2& Indices) const;
+    std::shared_ptr<GreensFunction> createElement(const IndexCombination2& Indices) const;
 
     const StatesClassification &S;
 
@@ -51,5 +49,5 @@ protected:
     const FieldOperatorContainer &Operators;
 };
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_GFCONTAINER_H
