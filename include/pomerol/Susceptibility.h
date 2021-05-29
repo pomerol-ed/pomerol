@@ -8,8 +8,6 @@
 #ifndef __INCLUDE_SUSCEPTIBILITY_H
 #define __INCLUDE_SUSCEPTIBILITY_H
 
-#include <sstream>
-
 #include"Misc.h"
 #include"Thermal.h"
 #include"ComputableObject.h"
@@ -19,7 +17,10 @@
 #include"SusceptibilityPart.h"
 #include"EnsembleAverage.h"
 
-namespace Pomerol{
+#include <cmath>
+#include <vector>
+
+namespace Pomerol {
 
 /** This class represents a dynamical susceptibility in the Matsubara representation.
  *
@@ -55,7 +56,7 @@ class Susceptibility : public Thermal, public ComputableObject {
     const DensityMatrix& DM;
 
     /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
-    bool Vanishing;
+    bool Vanishing = true;
 
     /** A list of pointers to parts (every part corresponds to a part of the quadratic operator A
      * and a part of the quadratic operator B).
@@ -63,10 +64,10 @@ class Susceptibility : public Thermal, public ComputableObject {
     std::vector<SusceptibilityPart> parts;
 
     /** Subtract disconnected part <A><B> */
-    bool SubtractDisconnected;
+    bool SubtractDisconnected = false;
 
     /** <A>, <B> */
-    ComplexType ave_A, ave_B;
+    ComplexType ave_A = {}, ave_B = {};
 
 public:
      /** Constructor.
@@ -84,7 +85,7 @@ public:
     Susceptibility(const Susceptibility& Chi);
 
     /** Chooses relevant parts of A and B and allocates resources for the parts of the Green's function. */
-    void prepare(void);
+    void prepare();
     /** Actually computes the parts and fills the internal cache of precomputed values.
      * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
      */
@@ -120,7 +121,7 @@ public:
      */
     ComplexType of_tau(RealType tau) const;
 
-    bool isVanishing(void) const;
+    bool isVanishing() const { return Vanishing; }
 };
 
 // BOSON: bosononic Matsubara frequency
@@ -130,25 +131,25 @@ inline ComplexType Susceptibility::operator()(long int MatsubaraNumber) const {
 inline ComplexType Susceptibility::operator()(ComplexType z) const {
     ComplexType Value = 0;
     if(!Vanishing) {
-        for(auto iter = parts.begin(); iter != parts.end(); iter++)
-            Value += (*iter)(z);
+        for(auto const& p : parts)
+            Value += p(z);
     }
-    if(SubtractDisconnected)
-        if( abs(z) < 1e-15 )  Value -= ave_A * ave_B * beta;  // only for n=0
+    if(SubtractDisconnected && std::abs(z) < 1e-15)
+            Value -= ave_A * ave_B * beta;  // only for n=0
     return Value;
 }
 
 inline ComplexType Susceptibility::of_tau(RealType tau) const {
     ComplexType Value = 0;
     if(!Vanishing) {
-        for(auto iter = parts.begin(); iter != parts.end(); iter++)
-            Value += iter->of_tau(tau);
+        for(auto const& p : parts)
+            Value += p.of_tau(tau);
     }
     if(SubtractDisconnected)
         Value -= ave_A * ave_B;
     return Value;
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_SUSCEPTIBILITY_H
 

@@ -8,11 +8,6 @@
 #ifndef __INCLUDE_SUSCEPTIBILITYPART_H
 #define __INCLUDE_SUSCEPTIBILITYPART_H
 
-#include<iomanip>
-#include<cmath>
-
-#include <mpi.h>
-
 #include"Misc.h"
 #include"StatesClassification.h"
 #include"HamiltonianPart.h"
@@ -20,7 +15,12 @@
 #include"DensityMatrixPart.h"
 #include"TermList.h"
 
-namespace Pomerol{
+#include <mpi.h>
+
+#include <cmath>
+#include <ostream>
+
+namespace Pomerol {
 
 /** This class represents a part of a dynamical susceptibility.
  * Every part describes all transitions allowed by selection rules
@@ -52,7 +52,7 @@ class SusceptibilityPart : public Thermal
         /** Comparator object for terms */
         struct Compare {
             const double Tolerance;
-            Compare(double Tolerance) : Tolerance(Tolerance) {}
+            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             bool operator()(Term const& t1, Term const& t2) const {
                 return t2.Pole - t1.Pole >= Tolerance;
             }
@@ -61,7 +61,7 @@ class SusceptibilityPart : public Thermal
         /** Does term have a negligible residue? */
         struct IsNegligible {
             double Tolerance;
-            IsNegligible(double Tolerance) : Tolerance(Tolerance) {}
+            IsNegligible(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             bool operator()(Term const& t, size_t ToleranceDivisor) const {
                 return std::abs(t.Residue) < Tolerance / ToleranceDivisor;
             }
@@ -96,16 +96,19 @@ class SusceptibilityPart : public Thermal
      * \param[in] out An output stream to insert to.
      * \param[in] Term A term to be inserted.
      */
-    friend std::ostream& operator<< (std::ostream& out, const Term& T);
+    friend std::ostream& operator<<(std::ostream& os, const Term& T)
+    {
+        return os << T.Residue << "/(z - " << T.Pole << ")";
+    }
 
     /** A list of all terms. */
     TermList<Term> Terms;
 
     /** A matrix element with magnitude less than this value is treated as zero. */
-    const RealType MatrixElementTolerance; // 1e-8;
+    const RealType MatrixElementTolerance = 1e-8;
 
     /** BOSON: The weight of zero-energy pole. **/
-    ComplexType ZeroPoleWeight;
+    ComplexType ZeroPoleWeight = 0;
 
 public:
 
@@ -139,16 +142,14 @@ public:
     ComplexType of_tau(RealType tau) const;
 
     /** A difference in energies with magnitude less than this value is treated as zero. */
-    const RealType ReduceResonanceTolerance;
+    const RealType ReduceResonanceTolerance = 1e-8;
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
-    const RealType ReduceTolerance;
+    const RealType ReduceTolerance = 1e-8;
 
 private:
 
     template<bool AComplex, bool BComplex> void computeImpl();
 };
-
-std::ostream& operator<< (std::ostream& out, const SusceptibilityPart::Term& T);
 
 // Inline call operators
 // BOSON: bosononic Matsubara frequency
@@ -157,7 +158,7 @@ inline ComplexType SusceptibilityPart::operator()(long MatsubaraNumber) const {
 
 inline ComplexType SusceptibilityPart::operator()(ComplexType z) const {
     // BOSON: add contribution of zero-energy pole
-    ComplexType ZeroPole = abs(z) < 1e-15 ? ZeroPoleWeight*beta : 0;
+    ComplexType ZeroPole = std::abs(z) < 1e-15 ? ZeroPoleWeight*beta : 0;
     return Terms(z) + ZeroPole;
 }
 
@@ -165,5 +166,5 @@ inline ComplexType SusceptibilityPart::of_tau(RealType tau) const {
     return Terms(tau, beta) + ZeroPoleWeight;
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_SUSCEPTIBILITYPART_H
