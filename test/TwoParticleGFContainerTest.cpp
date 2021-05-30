@@ -72,7 +72,6 @@ ComplexType gamma4ref_uuuu(int n1, int n2, int n3)
 
     RealType omega1 = w(n1);
     RealType omega2 = w(n2);
-    RealType omega3 = w(n3);
 
     Value = -beta*(delta(n1,n3)-delta(n2,n3))*sqr(0.5*U)*
             (1. + sqr(0.5*U/omega1))*

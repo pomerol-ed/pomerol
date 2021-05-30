@@ -16,7 +16,6 @@
 using namespace Pomerol;
 
 quantum_model::quantum_model(int argc, char* argv[], const std::string &prog_desc) :
-  comm(MPI_COMM_WORLD),
   args_parser(prog_desc),
   args_options{{args_parser, "help", "Display this help menu", {'h', "help"}},
                {args_parser, "beta", "Inverse temperature", {"beta"}, 1.0},
@@ -33,7 +32,8 @@ quantum_model::quantum_model(int argc, char* argv[], const std::string &prog_des
                {args_parser, "tol", "Energy resonance resolution in 2PGF", {"2pgf.reduce_tol"}, 1e-5},
                {args_parser, "tol", "Tolerance on nominators in 2PGF", {"2pgf.coeff_tol"}, 1e-12},
                {args_parser, "tol", "How often to reduce terms in 2PGF", {"2pgf.multiterm_tol"}, 1e-6}
-  } {
+  },
+  comm(MPI_COMM_WORLD) {
   MPI_Init(&argc, &argv);
   rank = pMPI::rank(comm);
   // Print defaults in the usage message
