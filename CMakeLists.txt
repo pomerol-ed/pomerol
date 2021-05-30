@@ -42,7 +42,6 @@ set (pomerol_sources
     mpi_dispatcher/mpi_dispatcher
     pomerol/Misc
     pomerol/LatticePresets
-    pomerol/Index
     pomerol/StatesClassification
     pomerol/HamiltonianPart
     pomerol/Hamiltonian
