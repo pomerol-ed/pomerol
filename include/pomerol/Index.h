@@ -63,6 +63,6 @@ struct IndexCombination4
     friend std::ostream& operator<<(std::ostream& output, const IndexCombination4& out);
 };
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 
 #endif // #ifndef __INCLUDE_INDEX_H

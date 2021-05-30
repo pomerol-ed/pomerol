@@ -66,4 +66,4 @@ BlockNumber MonomialOperator::getLeftIndex(BlockNumber RightIndex) const
     return (it != LeftRightBlocks.right.end()) ? it->second : INVALID_BLOCK_NUMBER;
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol

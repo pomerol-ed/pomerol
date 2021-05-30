@@ -71,5 +71,5 @@ public:
     const AnnihilationOperator& getAnnihilationOperator(ParticleIndex in) const;
 };
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_FIELDOPERATORCONTAINER_H

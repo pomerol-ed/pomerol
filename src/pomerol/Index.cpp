@@ -55,4 +55,4 @@ std::ostream& operator<<(std::ostream& output,const IndexCombination4& out)
     return output;
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol

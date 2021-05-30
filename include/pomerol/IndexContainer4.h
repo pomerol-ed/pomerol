@@ -57,7 +57,7 @@ protected:
 
     SourceObject* pSource;
 
-    const std::set<IndexCombination4> enumerateInitialIndices(void) const;
+    const std::set<IndexCombination4> enumerateInitialIndices() const;
 
 public:
     std::map<IndexCombination4,ElementWithPermFreq<ElementType>> ElementsMap;
@@ -119,8 +119,8 @@ bool IndexContainer4<ElementType,SourceObject>::isInContainer(const IndexCombina
 
 template<typename ElementType, typename SourceObject>
 inline
-bool IndexContainer4<ElementType,SourceObject>::isInContainer(  ParticleIndex Index1, ParticleIndex Index2,
-                                                                ParticleIndex Index3, ParticleIndex Index4) const
+bool IndexContainer4<ElementType,SourceObject>::isInContainer(ParticleIndex Index1, ParticleIndex Index2,
+                                                              ParticleIndex Index3, ParticleIndex Index4) const
 {
     return isInContainer(IndexCombination4(Index1,Index2,Index3,Index4));
 }
@@ -229,7 +229,7 @@ ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::ope
 
 template<typename ElementType, typename SourceObject>
 inline
-const std::set<IndexCombination4> IndexContainer4<ElementType,SourceObject>::enumerateInitialIndices(void) const
+const std::set<IndexCombination4> IndexContainer4<ElementType,SourceObject>::enumerateInitialIndices() const
 {
     std::set<IndexCombination4> AllIndices;
 
@@ -242,5 +242,5 @@ const std::set<IndexCombination4> IndexContainer4<ElementType,SourceObject>::enu
     return AllIndices;
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_INDEXCONTAINER4_H

@@ -119,5 +119,5 @@ public:
     }
 };
 
-}
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_TERMLIST_H

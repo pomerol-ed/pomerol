@@ -36,5 +36,5 @@ public:
     };
 };
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif

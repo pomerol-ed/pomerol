@@ -159,5 +159,5 @@ inline ComplexType GreensFunctionPart::of_tau(RealType tau) const {
     return Terms(tau, beta);
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_GREENSFUNCTIONPART_H

@@ -33,4 +33,4 @@ ComplexType Vertex4::operator()(long MatsubaraNumber1, long MatsubaraNumber2, lo
     return Storage(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol

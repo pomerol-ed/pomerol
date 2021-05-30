@@ -22,4 +22,4 @@ inline int rank(const MPI_Comm &Comm) {
     return r;
 }
 
-} // end of namespace pMPI
+} // namespace pMPI

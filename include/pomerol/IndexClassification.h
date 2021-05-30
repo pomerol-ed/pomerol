@@ -118,5 +118,5 @@ MakeIndexClassification(Operators::expression<ScalarType, IndexTypes...> const& 
   return IndexClassification<IndexTypes...>(H);
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef #__INCLUDE_INDEXCLASSIFICATION_H

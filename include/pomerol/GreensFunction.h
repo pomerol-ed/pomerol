@@ -68,7 +68,7 @@ public:
     GreensFunction(const GreensFunction& GF);
 
     /** Chooses relevant parts of C and CX and allocates resources for the parts of the Green's function. */
-    void prepare(void);
+    void prepare();
     /** Actually computes the parts and fills the internal cache of precomputed values.
      * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
      */
@@ -94,7 +94,7 @@ public:
      */
     ComplexType of_tau(RealType tau) const;
 
-    bool isVanishing(void) const { return Vanishing; }
+    bool isVanishing() const { return Vanishing; }
 };
 
 inline ComplexType GreensFunction::operator()(long int MatsubaraNumber) const {
@@ -121,6 +121,6 @@ inline ComplexType GreensFunction::of_tau(RealType tau) const {
     }
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_GREENSFUNCTION_H
 

@@ -151,4 +151,4 @@ RealVectorType Hamiltonian::getEigenValues() const
     return out;
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol

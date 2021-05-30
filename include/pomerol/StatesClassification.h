@@ -97,5 +97,5 @@ private:
     void InitMultipleBlocks(libcommute::space_partition const& partition);
 };
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_STATESCLASSIFICATION_H

@@ -150,4 +150,4 @@ void MonomialOperatorPart::streamOutputImpl(std::ostream & os) const {
 template void MonomialOperatorPart::streamOutputImpl<true>(std::ostream & os) const;
 template void MonomialOperatorPart::streamOutputImpl<false>(std::ostream & os) const;
 
-} // end of namespace Pomerol
+} // namespace Pomerol

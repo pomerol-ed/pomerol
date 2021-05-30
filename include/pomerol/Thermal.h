@@ -19,6 +19,6 @@ struct Thermal {
     Thermal(RealType beta) : beta(beta), MatsubaraSpacing(I * M_PI / beta) {}
 };
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_THERMAL_H
 

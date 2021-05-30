@@ -109,5 +109,5 @@ private:
     template<bool C> void computeImpl();
 };
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_HAMILTONIANPART_H

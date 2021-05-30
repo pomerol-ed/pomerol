@@ -43,10 +43,10 @@ public:
     ~DensityMatrix() = default;
 
     /** Allocates resources for the parts. */
-    void prepare(void);
+    void prepare();
 
     /** Actually computes the parts. */
-    void compute(void);
+    void compute();
 
     /** Returns a part of the density matrix.
      * \param[in] in A part number.

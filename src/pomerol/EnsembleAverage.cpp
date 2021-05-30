@@ -53,4 +53,4 @@ ComplexType EnsembleAverage::computeImpl(const MonomialOperatorPart& Apart,
     return result_part;
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol

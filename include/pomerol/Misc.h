@@ -109,7 +109,7 @@ struct Permutation4 {
 };
 extern const Permutation4 permutations4[24];
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 
 /**
  * \mainpage

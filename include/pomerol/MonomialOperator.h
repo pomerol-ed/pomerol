@@ -235,5 +235,5 @@ public:
     ParticleIndex getCIndex() const { return Index2; }
 };
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifdef __INCLUDE_FIELDOPERATOR_H

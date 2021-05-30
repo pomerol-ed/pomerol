@@ -6,7 +6,7 @@ DensityMatrix::DensityMatrix(const StatesClassification& S, const Hamiltonian& H
     Thermal(beta), ComputableObject(), S(S), H(H)
 {}
 
-void DensityMatrix::prepare(void)
+void DensityMatrix::prepare()
 {
     if(getStatus() >= Prepared) return;
     BlockNumber NumOfBlocks = S.getNumberOfBlocks();
@@ -19,7 +19,7 @@ void DensityMatrix::prepare(void)
     setStatus(Prepared);
 }
 
-void DensityMatrix::compute(void)
+void DensityMatrix::compute()
 {
     if(getStatus() >= Computed) return;
     RealType Z = 0;

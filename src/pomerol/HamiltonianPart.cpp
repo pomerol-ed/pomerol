@@ -153,5 +153,5 @@ bool HamiltonianPart::reduce(RealType ActualCutoff)
         return false;
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 

@@ -82,4 +82,4 @@ template<bool Complex> void GreensFunctionPart::computeImpl() {
     assert(Terms.check_terms());
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol

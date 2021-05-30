@@ -113,6 +113,6 @@ MakeHilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
   return HilbertSpace<IndexTypes...>(IndexInfo, Hamiltonian);
 }
 
-}; // end of namespace Pomerol
+}; // namespace Pomerol
 
 #endif //  endif :: #ifndef __INCLUDE_SYMMETRIZER_H

@@ -19,7 +19,7 @@ GreensFunction::GreensFunction(const GreensFunction& GF) :
         parts.emplace_back(part);
 }
 
-void GreensFunction::prepare(void)
+void GreensFunction::prepare()
 {
     if(getStatus() >= Prepared) return;
 

@@ -82,6 +82,6 @@ void Hamiltonian::prepare(Operators::expression<ScalarType, IndexTypes...> const
     setStatus(Prepared);
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_HAMILTONIAN_H
 

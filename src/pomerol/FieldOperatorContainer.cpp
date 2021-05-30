@@ -38,4 +38,4 @@ const AnnihilationOperator& FieldOperatorContainer::getAnnihilationOperator(Part
         return it->second;
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol

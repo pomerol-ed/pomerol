@@ -82,7 +82,7 @@ auto apply(F && f, ArgsT && args) ->
     return apply_impl(std::forward<F>(f), std::forward<ArgsT>(args), make_seq<ArgsT>());
 }
 
-} // end of namespace Pomerol::Operators::detail
+} // namespace Pomerol::Operators::detail
 
 //
 // Operator presets
@@ -109,7 +109,7 @@ Sz(const std::vector<std::tuple<IndexTypes...>> &SpinUpIndices,
     return res;
 }
 
-} // end of namespace Pomerol::Operators
-} // end of namespace Pomerol
+} // namespace Pomerol::Operators
+} // namespace Pomerol
 
 #endif // endif :: #ifndef __INCLUDE_OPERATORS_H

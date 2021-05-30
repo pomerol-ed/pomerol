@@ -119,7 +119,7 @@ ElementType& IndexContainer2<ElementType, SourceObject>::operator()
 
 template<typename ElementType, typename SourceObject>
 inline
-std::set<IndexCombination2> IndexContainer2<ElementType,SourceObject>::enumerateInitialIndices(void) const
+std::set<IndexCombination2> IndexContainer2<ElementType,SourceObject>::enumerateInitialIndices() const
 {
     std::set<IndexCombination2> AllIndices;
 

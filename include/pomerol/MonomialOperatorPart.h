@@ -105,5 +105,5 @@ private:
     template<bool C> void streamOutputImpl(std::ostream & os) const;
 };
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifdef __INCLUDE_FIELDOPERATORPART_H

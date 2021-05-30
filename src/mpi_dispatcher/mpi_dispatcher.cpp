@@ -162,4 +162,4 @@ void MPIMaster::check_workers()
     }
 }
 
-} // end of namespace MPI
+} // namespace MPI
