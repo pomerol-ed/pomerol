@@ -1,7 +1,6 @@
 #include "pomerol/Vertex4.h"
-#include <Eigen/LU> 
 
-namespace Pomerol{
+namespace Pomerol {
 
 Vertex4::Vertex4(TwoParticleGF& Chi4,
                  GreensFunction& G13, GreensFunction& G24,
@@ -12,8 +11,9 @@ Vertex4::Vertex4(TwoParticleGF& Chi4,
 
 void Vertex4::compute(long NumberOfMatsubaras)
 {
-    Storage.fill(this,NumberOfMatsubaras);
-    Status = Computed;
+    if(getStatus() >= Computed) return;
+    Storage.fill(this, NumberOfMatsubaras);
+    setStatus(Computed);
 }
 
 ComplexType Vertex4::value(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
@@ -30,16 +30,7 @@ ComplexType Vertex4::value(long MatsubaraNumber1, long MatsubaraNumber2, long Ma
 
 ComplexType Vertex4::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
 {
-    //if(isVanishing())
-    //    return 0.0;
-    //else
-        return Storage(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
-}
-
-bool Vertex4::isVanishing(void) const
-{
-    // TODO: We need a smarter mechanism to detect this.
-    return false;
+    return Storage(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
 }
 
 } // end of namespace Pomerol
