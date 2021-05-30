@@ -7,14 +7,16 @@
 #ifndef __INCLUDE_TWOPARTICLEGFPART_H
 #define __INCLUDE_TWOPARTICLEGFPART_H
 
-#include <mpi.h>
-
 #include"Misc.h"
 #include"StatesClassification.h"
 #include"HamiltonianPart.h"
 #include"MonomialOperatorPart.h"
 #include"DensityMatrixPart.h"
 #include"TermList.h"
+
+#include <mpi.h>
+
+#include <cmath>
 
 namespace Pomerol {
 
@@ -38,7 +40,7 @@ public:
      * \f]
      * otherwise.
      */
-    struct NonResonantTerm{
+    struct NonResonantTerm {
         /** Coefficient \f$ C \f$. */
         ComplexType Coeff;
 
@@ -54,7 +56,7 @@ public:
         /** Comparator object for terms */
         struct Compare {
             double Tolerance;
-            Compare(double Tolerance) : Tolerance(Tolerance) {}
+            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             bool real_eq(RealType x1, RealType x2) const {
                 return std::abs(x1 - x2) < Tolerance;
             }
@@ -75,7 +77,7 @@ public:
         /** Does term have a negligible residue? */
         struct IsNegligible {
             double Tolerance;
-            IsNegligible(double Tolerance) : Tolerance(Tolerance) {}
+            IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
             bool operator()(NonResonantTerm const& t, size_t ToleranceDivisor) const {
                 return std::abs(t.Coeff) < Tolerance / ToleranceDivisor;
             }
@@ -84,7 +86,8 @@ public:
             }
         };
 
-        NonResonantTerm(){};
+        NonResonantTerm() = default;
+
         /** Constructor.
         * \param[in] Coeff Numerator of the term.
         * \param[in] P1 Pole P1.
@@ -92,10 +95,10 @@ public:
         * \param[in] P3 Pole P3.
         * \param[in] isz4 Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term?
         */
-        inline NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4):
+        inline NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4) :
             Coeff(Coeff), isz4(isz4)
         {
-            Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight=1;
+            Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight = 1;
         }
 
         /** Returns a contribution to the two-particle Green's function made by this term.
@@ -114,7 +117,6 @@ public:
         /** Create and commit an MPI datatype for NonResonantTerm */
         static MPI_Datatype mpi_datatype();
     };
-
 
     /** A resonant term has the following form:
      * \f[
@@ -143,7 +145,7 @@ public:
         /** Comparator object for terms */
         struct Compare {
             double Tolerance;
-            Compare(double Tolerance) : Tolerance(Tolerance) {}
+            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             bool real_eq(RealType x1, RealType x2) const {
                 return std::abs(x1 - x2) < Tolerance;
             }
@@ -164,7 +166,7 @@ public:
         /** Does term have a negligible residue? */
         struct IsNegligible {
             double Tolerance;
-            IsNegligible(double Tolerance) : Tolerance(Tolerance) {}
+            IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
             bool operator()(ResonantTerm const& t, size_t ToleranceDivisor) const {
                 return std::abs(t.ResCoeff) < Tolerance / ToleranceDivisor &&
                        std::abs(t.NonResCoeff) < Tolerance / ToleranceDivisor;
@@ -174,7 +176,8 @@ public:
             }
         };
 
-        ResonantTerm(){};
+        ResonantTerm() = default;
+
         /** Constructor.
         * \param[in] ResCoeff Numerator of the term for a resonant case.
         * \param[in] NonResCoeff Numerator of the term for a non-resonant case.
@@ -290,11 +293,11 @@ private:
                       RealType Wi, RealType Wj, RealType Wk, RealType Wl);
 
     /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
-    RealType ReduceResonanceTolerance;
+    RealType ReduceResonanceTolerance = 1e-8;
     /** Minimal magnitude of the coefficient of a term to take it into account. default = 1e-16. */
-    RealType CoefficientTolerance;
+    RealType CoefficientTolerance = 1e-16;
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. default = 1e-5. */
-    RealType MultiTermCoefficientTolerance;
+    RealType MultiTermCoefficientTolerance = 1e-5;
 
     template<bool Complex> void computeImpl();
 
@@ -320,7 +323,7 @@ public:
                       const HamiltonianPart& Hpart3, const HamiltonianPart& Hpart4,
                       const DensityMatrixPart& DMpart1, const DensityMatrixPart& DMpart2,
                       const DensityMatrixPart& DMpart3, const DensityMatrixPart& DMpart4,
-                Permutation3 Permutation);
+                      Permutation3 Permutation);
 
     /** Actually computes the part. */
     void compute();
@@ -342,40 +345,40 @@ public:
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
     /** Returns the number of resonant terms in the cache. */
-    size_t getNumResonantTerms() const;
+    size_t getNumResonantTerms() const { return ResonantTerms.size(); }
     /** Returns the number of non-resonant terms in the cache. */
-    size_t getNumNonResonantTerms() const;
+    size_t getNumNonResonantTerms() const { return NonResonantTerms.size(); }
 
     /** Returns a Permutation3 of the current part */
-    const Permutation3& getPermutation() const;
+    const Permutation3& getPermutation() const { return Permutation; }
 
     /** Return the list of Resonant Terms */
-    const TermList<TwoParticleGFPart::ResonantTerm>& getResonantTerms() const;
+    const TermList<TwoParticleGFPart::ResonantTerm>& getResonantTerms() const { return ResonantTerms; }
     /** Return the list of NonResonantTerms */
-    const TermList<TwoParticleGFPart::NonResonantTerm>& getNonResonantTerms() const;
+    const TermList<TwoParticleGFPart::NonResonantTerm>& getNonResonantTerms() const { return NonResonantTerms; }
 };
 
 inline
 ComplexType TwoParticleGFPart::NonResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
 {
-    return isz4 ?   Coeff / ((z1-Poles[0])*(z1+z2+z3-Poles[0]-Poles[1]-Poles[2])*(z3-Poles[2])) :
-                    Coeff / ((z1-Poles[0])*(z2-Poles[1])*(z3-Poles[2]));
+    return isz4 ? Coeff / ((z1-Poles[0])*(z1+z2+z3-Poles[0]-Poles[1]-Poles[2])*(z3-Poles[2])) :
+                  Coeff / ((z1-Poles[0])*(z2-Poles[1])*(z3-Poles[2]));
 }
 
 inline
 ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3, RealType KroneckerSymbolTolerance) const
 {
     ComplexType Diff;
-    if(isz1z2){
+    if(isz1z2) {
         Diff = z1 + z2 - Poles[0] - Poles[1];
-        return (abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff/Diff) )
+        return (std::abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff/Diff) )
                 /((z1-Poles[0])*(z3-Poles[2]));
     } else {
         Diff = z2 + z3 - Poles[1] - Poles[2];
-        return (abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff/Diff) )
+        return (std::abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff/Diff) )
                 /((z1-Poles[0])*(z3-Poles[2]));
     }
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGFPART_H

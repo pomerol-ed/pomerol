@@ -7,12 +7,6 @@
 #ifndef __INCLUDE_TWOPARTICLEGF_H
 #define __INCLUDE_TWOPARTICLEGF_H
 
-#include <sstream>
-#include <tuple>
-#include <iomanip>
-
-#include <mpi.h>
-
 #include"Misc.h"
 #include"ComputableObject.h"
 #include"StatesClassification.h"
@@ -20,7 +14,15 @@
 #include"DensityMatrix.h"
 #include"TwoParticleGFPart.h"
 
-namespace Pomerol{
+#include <mpi.h>
+
+#include <tuple>
+#include <vector>
+
+namespace Pomerol {
+
+using FreqTuple = std::tuple<ComplexType, ComplexType, ComplexType>;
+using FreqVec = std::vector<FreqTuple>;
 
 /** This class represents a thermal Green's function in the Matsubara representation.
  *
@@ -39,6 +41,8 @@ namespace Pomerol{
  */
 class TwoParticleGF : public Thermal, public ComputableObject {
 
+friend class TwoParticleGFContainer;
+
     /** A reference to a states classification object. */
     const StatesClassification& S;
     /** A reference to a Hamiltonian. */
@@ -54,13 +58,15 @@ class TwoParticleGF : public Thermal, public ComputableObject {
     /** A reference to a density matrix. */
     const DensityMatrix& DM;
 
-public:
+private:
+
     /** A list of pointers to parts. */
-    std::vector<TwoParticleGFPart*> parts;
+    std::vector<TwoParticleGFPart> parts;
+
 protected:
 
     /** A flag to determine whether this GF is identical to zero */
-    bool Vanishing;
+    bool Vanishing = true;
 
     /** Extracts a part of the operator standing at a specified position in a given permutation.
      * \param[in] PermutationNumber The number of the permutation.
@@ -87,11 +93,11 @@ protected:
 
 public:
     /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
-    RealType ReduceResonanceTolerance;
+    RealType ReduceResonanceTolerance = 1e-8;
     /** Minimal magnitude of the coefficient of a term to take it into account. default = 1e-16. */
-    RealType CoefficientTolerance;
+    RealType CoefficientTolerance = 1e-16;
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. default = 1e-5. */
-    RealType MultiTermCoefficientTolerance;
+    RealType MultiTermCoefficientTolerance = 1e-5;
 
     /** Constructor.
      * \param[in] S A reference to a states classification object.
@@ -106,8 +112,6 @@ public:
             const AnnihilationOperator& C1, const AnnihilationOperator& C2,
             const CreationOperator& CX3, const CreationOperator& CX4,
             const DensityMatrix& DM);
-    /** Destructor. */
-    ~TwoParticleGF();
 
     /** Chooses relevant parts of C1, C2, CX3 and CX4 and allocates resources for the parts. */
     void prepare();
@@ -117,7 +121,7 @@ public:
      */
     std::vector<ComplexType> compute(
         bool clear = false,
-        std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs  = std::vector<std::tuple<ComplexType, ComplexType, ComplexType> >(),
+        FreqVec const& freqs = {},
         const MPI_Comm& comm = MPI_COMM_WORLD
     );
 
@@ -139,10 +143,8 @@ public:
      */
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
-    //void fillContainer(MatsubaraContainer& d, const std::vector<TwoParticleGFPart::NonResonantTerm>& NonResonantTerms, const std::vector<TwoParticleGFPart::ResonantTerm>& ResonantTerms, Permutation3 Permutation);
-
     /** Returns true, if GF is identical to zero */
-    bool isVanishing(void) const;
+    bool isVanishing() const { return Vanishing; }
 
     /** Returns the number of current permutation in permutations3 */
     unsigned short getPermutationNumber(const Permutation3& in);
@@ -150,16 +152,14 @@ public:
 
 inline ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const {
     if(Vanishing) {
-        return 0.0;
-        }
-    else {
+        return 0;
+    } else {
         ComplexType Value = 0;
-        for(std::vector<TwoParticleGFPart*>::const_iterator iter = parts.begin(); iter != parts.end(); iter++){
-        //if ((*iter)->getStatus() < (*iter)->Computed) { ERROR("TwoParticleGF must be computed to get value."); throw (exStatusMismatch()); };
-            Value += (**iter)(z1,z2,z3);
-            }
+        for(auto const& p : parts) {
+            Value += p(z1,z2,z3);
+        }
         return Value;
-         };
+    }
 }
 
 inline ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const {
@@ -168,5 +168,5 @@ inline ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long Matsuba
                    MatsubaraSpacing*RealType(2*MatsubaraNumber3+1));
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 #endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGF_H

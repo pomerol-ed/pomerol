@@ -2,11 +2,13 @@
 
 #include <cstddef>
 #include <mutex>
+#include <vector>
+#include <stdexcept>
 
 std::mutex NonResonantTerm_mpi_datatype_mutex;
 std::mutex ResonantTerm_mpi_datatype_mutex;
 
-namespace Pomerol{
+namespace Pomerol {
 
 // Make the lagging index catch up or outrun the leading index.
 template<bool Complex>
@@ -30,11 +32,12 @@ inline bool chaseIndices(typename RowMajorMatrixType<Complex>::InnerIterator& in
 // TwoParticleGFPart::NonResonantTerm
 //
 TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator+=(
-                    const NonResonantTerm& AnotherTerm)
+    const NonResonantTerm& AnotherTerm)
 {
-    long combinedWeight=Weight + AnotherTerm.Weight;
-    for (unsigned short p=0; p<3; ++p) Poles[p]= (Weight*Poles[p] + AnotherTerm.Weight*AnotherTerm.Poles[p])/combinedWeight;
-    Weight=combinedWeight;
+    long combinedWeight = Weight + AnotherTerm.Weight;
+    for(unsigned short p = 0; p < 3; ++p)
+        Poles[p] = (Weight*Poles[p] + AnotherTerm.Weight*AnotherTerm.Poles[p])/combinedWeight;
+    Weight = combinedWeight;
     Coeff += AnotherTerm.Coeff;
     return *this;
 }
@@ -138,19 +141,18 @@ TwoParticleGFPart::TwoParticleGFPart(
                 Permutation3 Permutation) :
     Thermal(DMpart1),
     ComputableObject(),
-    NonResonantTerms(NonResonantTerm::Compare(1e-8), NonResonantTerm::IsNegligible(1e-16)),
-    ResonantTerms(ResonantTerm::Compare(1e-8), ResonantTerm::IsNegligible(1e-16)),
     O1(O1), O2(O2), O3(O3), CX4(CX4),
     Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
     DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
     Permutation(Permutation),
-    ReduceResonanceTolerance(1e-8),
-    CoefficientTolerance (1e-16),
-    MultiTermCoefficientTolerance (1e-5)
+    NonResonantTerms(NonResonantTerm::Compare(), NonResonantTerm::IsNegligible()),
+    ResonantTerms(ResonantTerm::Compare(), ResonantTerm::IsNegligible())
 {}
 
 void TwoParticleGFPart::compute()
 {
+    if(getStatus() >= Computed) return;
+
     if(O1.isComplex() || O2.isComplex() || O3.isComplex() || CX4.isComplex())
         computeImpl<true>();
     else
@@ -195,7 +197,7 @@ void TwoParticleGFPart::computeImpl()
             }
         };
 
-        if (!Index4List.empty())
+        if(!Index4List.empty())
         {
             RealType E1 = Hpart1.getEigenValue(index1);
             RealType E3 = Hpart3.getEigenValue(index3);
@@ -204,8 +206,8 @@ void TwoParticleGFPart::computeImpl()
 
             typename ColMajorMatrixType<Complex>::InnerIterator index2bra_iter(O2matrix,index3);
             typename RowMajorMatrixType<Complex>::InnerIterator index2ket_iter(O1matrix,index1);
-            while (index2bra_iter && index2ket_iter){
-                if (chaseIndices<Complex>(index2ket_iter,index2bra_iter)){
+            while(index2bra_iter && index2ket_iter) {
+                if(chaseIndices<Complex>(index2ket_iter,index2bra_iter)) {
 
                     InnerQuantumState index2 = index2ket_iter.index();
                     RealType E2 = Hpart2.getEigenValue(index2);
@@ -229,18 +231,18 @@ void TwoParticleGFPart::computeImpl()
                     }
                     ++index2bra_iter;
                     ++index2ket_iter;
-                };
+                }
             }
-        };
+        }
     }
 
-    std::cout << "Total " << NonResonantTerms.size() << "+" << ResonantTerms.size() << "="
-              << NonResonantTerms.size() + ResonantTerms.size() << " terms" << std::endl << std::flush;
+    INFO("Total " << NonResonantTerms.size() << "+" << ResonantTerms.size() << "="
+                  << NonResonantTerms.size() + ResonantTerms.size() << " terms");
 
     assert(NonResonantTerms.check_terms());
     assert(ResonantTerms.check_terms());
 
-    Status = Computed;
+    setStatus(Computed);
 }
 
 inline
@@ -254,40 +256,25 @@ void TwoParticleGFPart::addMultiterm(ComplexType Coeff, RealType beta,
 
     // Non-resonant part of the multiterm
     ComplexType CoeffZ2 = -Coeff*(Wj + Wk);
-    if(abs(CoeffZ2) > CoefficientTolerance)
+    if(std::abs(CoeffZ2) > CoefficientTolerance)
         NonResonantTerms.add_term(
             NonResonantTerm(CoeffZ2,P1,P2,P3,false));
     ComplexType CoeffZ4 = Coeff*(Wi + Wl);
-    if(abs(CoeffZ4) > CoefficientTolerance)
+    if(std::abs(CoeffZ4) > CoefficientTolerance)
         NonResonantTerms.add_term(
             NonResonantTerm(CoeffZ4,P1,P2,P3,true));
 
     // Resonant part of the multiterm
     ComplexType CoeffZ1Z2Res = Coeff*beta*Wi;
     ComplexType CoeffZ1Z2NonRes = Coeff*(Wk - Wi);
-    if(abs(CoeffZ1Z2Res) > CoefficientTolerance || abs(CoeffZ1Z2NonRes) > CoefficientTolerance)
+    if(std::abs(CoeffZ1Z2Res) > CoefficientTolerance || abs(CoeffZ1Z2NonRes) > CoefficientTolerance)
         ResonantTerms.add_term(
             ResonantTerm(CoeffZ1Z2Res,CoeffZ1Z2NonRes,P1,P2,P3,true));
     ComplexType CoeffZ2Z3Res = -Coeff*beta*Wj;
     ComplexType CoeffZ2Z3NonRes = Coeff*(Wj - Wl);
-    if(abs(CoeffZ2Z3Res) > CoefficientTolerance || abs(CoeffZ2Z3NonRes) > CoefficientTolerance)
+    if(std::abs(CoeffZ2Z3Res) > CoefficientTolerance || abs(CoeffZ2Z3NonRes) > CoefficientTolerance)
         ResonantTerms.add_term(
             ResonantTerm(CoeffZ2Z3Res,CoeffZ2Z3NonRes,P1,P2,P3,false));
-}
-
-size_t TwoParticleGFPart::getNumNonResonantTerms() const
-{
-    return NonResonantTerms.size();
-}
-
-size_t TwoParticleGFPart::getNumResonantTerms() const
-{
-    return ResonantTerms.size();
-}
-
-const Permutation3& TwoParticleGFPart::getPermutation() const
-{
-    return Permutation;
 }
 
 ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const
@@ -302,35 +289,25 @@ ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraN
 
 ComplexType TwoParticleGFPart::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
 {
-    ComplexType Frequencies[3] = {  z1, z2, -z3 };
+    ComplexType Frequencies[3] = {z1, z2, -z3};
 
     z1 = Frequencies[Permutation.perm[0]];
     z2 = Frequencies[Permutation.perm[1]];
     z3 = Frequencies[Permutation.perm[2]];
 
-    if (Status != Computed) {
+    if (getStatus() != Computed) {
         throw std::logic_error("2PGFPart : Calling operator() on uncomputed container, did you purge all the terms when called compute()");
     }
 
     return NonResonantTerms(z1, z2, z3) + ResonantTerms(z1, z2, z3, ReduceResonanceTolerance);
 }
 
-const TermList<TwoParticleGFPart::ResonantTerm>& TwoParticleGFPart::getResonantTerms() const
-{
-    return ResonantTerms;
-}
-
-const TermList<TwoParticleGFPart::NonResonantTerm>& TwoParticleGFPart::getNonResonantTerms() const
-{
-    return NonResonantTerms;
-}
-
 void TwoParticleGFPart::clear()
 {
     NonResonantTerms.clear();
     ResonantTerms.clear();
-    Status = Constructed;
+    setStatus(Constructed);
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol
 
