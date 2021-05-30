@@ -3,9 +3,8 @@
 **
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-
-#ifndef __INCLUDE_COMPUTABLEOBJECT_H
-#define __INCLUDE_COMPUTABLEOBJECT_H
+#ifndef POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_H
+#define POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_H
 
 #include "Misc.h"
 
@@ -37,4 +36,5 @@ public:
 };
 
 } // namespace Pomerol
-#endif
+
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_H

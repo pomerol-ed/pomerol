@@ -1,9 +1,8 @@
 /** \file include/mpi_dispatcher/mpi_skel.hpp
 ** \brief Declares mpi_skel - a structure to simplify master-slave calculations
 */
-
-#ifndef __INCLUDE_MPISKEL_H
-#define __INCLUDE_MPISKEL_H
+#ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MPI_SKEL_H
+#define POMEROL_INCLUDE_MPI_DISPATCHER_MPI_SKEL_H
 
 #include "misc.hpp"
 #include "mpi_dispatcher.hpp"
@@ -126,4 +125,4 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const MPI_Comm& co
 
 } // namespace pMPI
 
-#endif
+#endif // #ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MPI_SKEL_H

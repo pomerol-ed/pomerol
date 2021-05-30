@@ -5,8 +5,8 @@
 ** \author    Andrey Antipov (antipov@shg.ru)
 */
 
-#ifndef __INCLUDE_INDEX_H
-#define __INCLUDE_INDEX_H
+#ifndef POMEROL_INCLUDE_POMEROL_INDEX_H
+#define POMEROL_INCLUDE_POMEROL_INDEX_H
 
 #include"Misc.h"
 
@@ -65,4 +65,4 @@ struct IndexCombination4
 
 } // namespace Pomerol
 
-#endif // #ifndef __INCLUDE_INDEX_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_INDEX_H

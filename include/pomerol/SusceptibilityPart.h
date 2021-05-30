@@ -5,8 +5,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 ** \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
 */
-#ifndef __INCLUDE_SUSCEPTIBILITYPART_H
-#define __INCLUDE_SUSCEPTIBILITYPART_H
+#ifndef POMEROL_INCLUDE_SUSCEPTIBILITYPART_H
+#define POMEROL_INCLUDE_SUSCEPTIBILITYPART_H
 
 #include"Misc.h"
 #include"StatesClassification.h"
@@ -167,4 +167,5 @@ inline ComplexType SusceptibilityPart::of_tau(RealType tau) const {
 }
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_SUSCEPTIBILITYPART_H
+
+#endif // #ifndef POMEROL_INCLUDE_SUSCEPTIBILITYPART_H

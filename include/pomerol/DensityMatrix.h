@@ -4,9 +4,8 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-
-#ifndef __INCLUDE_DENSITYMATRIX_H
-#define __INCLUDE_DENSITYMATRIX_H
+#ifndef POMEROL_INCLUDE_POMEROL_DENSITYMATRIX_H
+#define POMEROL_INCLUDE_POMEROL_DENSITYMATRIX_H
 
 #include "StatesClassification.h"
 #include "IndexClassification.h"
@@ -71,5 +70,6 @@ public:
     bool isRetained(BlockNumber in) const;
 };
 
-}; // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H
+} // namespace Pomerol
+
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_DENSITYMATRIX_H

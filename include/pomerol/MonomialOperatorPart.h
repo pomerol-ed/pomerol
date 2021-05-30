@@ -4,9 +4,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-
-#ifndef __INCLUDE_FIELDOPERATORPART_H
-#define __INCLUDE_FIELDOPERATORPART_H
+#ifndef POMEROL_INCLUDE_MONOMIALOPERATORPART_H
+#define POMEROL_INCLUDE_MONOMIALOPERATORPART_H
 
 #include "Misc.h"
 #include "HilbertSpace.h"
@@ -106,4 +105,5 @@ private:
 };
 
 } // namespace Pomerol
-#endif // endif :: #ifdef __INCLUDE_FIELDOPERATORPART_H
+
+#endif // #ifndef POMEROL_INCLUDE_MONOMIALOPERATORPART_H

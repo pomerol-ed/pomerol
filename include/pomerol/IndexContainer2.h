@@ -3,9 +3,8 @@
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-
-#ifndef __INCLUDE_INDEXCONTAINER2_H
-#define __INCLUDE_INDEXCONTAINER2_H
+#ifndef POMEROL_INCLUDE_POMEROL_INDEXCONTAINER2_H
+#define POMEROL_INCLUDE_POMEROL_INDEXCONTAINER2_H
 
 #include"Index.h"
 #include"IndexClassification.h"
@@ -132,4 +131,5 @@ std::set<IndexCombination2> IndexContainer2<ElementType,SourceObject>::enumerate
 
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_INDEXCONTAINER2_H
+
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_INDEXCONTAINER2_H

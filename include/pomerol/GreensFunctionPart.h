@@ -4,8 +4,8 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#ifndef __INCLUDE_GREENSFUNCTIONPART_H
-#define __INCLUDE_GREENSFUNCTIONPART_H
+#ifndef POMEROL_INCLUDE_POMEROL_GREENSFUNCTIONPART_H
+#define POMEROL_INCLUDE_POMEROL_GREENSFUNCTIONPART_H
 
 #include"Misc.h"
 #include"StatesClassification.h"
@@ -160,4 +160,5 @@ inline ComplexType GreensFunctionPart::of_tau(RealType tau) const {
 }
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_GREENSFUNCTIONPART_H
+
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_GREENSFUNCTIONPART_H

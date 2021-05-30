@@ -2,8 +2,8 @@
 // Created by iskakoff on 05/12/16.
 //
 
-#ifndef POMEROL_HUBBARD2D_MODEL_H
-#define POMEROL_HUBBARD2D_MODEL_H
+#ifndef POMEROL_PROG_HUBBARD2D_MODEL_H
+#define POMEROL_PROG_HUBBARD2D_MODEL_H
 
 #include <cmath>
 #include <limits>
@@ -124,4 +124,4 @@ private:
   size_t SiteIndexF(size_t x, size_t y) { return y * size_x + x; }
 };
 
-#endif //POMEROL_HUBBARD2D_MODEL_H
+#endif // #ifndef POMEROL_PROG_HUBBARD2D_MODEL_H

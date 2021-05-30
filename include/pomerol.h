@@ -1,5 +1,5 @@
-#ifndef __INCLUDE_POMEROL_H_19f82k
-#define __INCLUDE_POMEROL_H_19f82k
+#ifndef POMEROL_INCLUDE_POMEROL_H
+#define POMEROL_INCLUDE_POMEROL_H
 
 #include "mpi_dispatcher/mpi_dispatcher.hpp"
 #include "mpi_dispatcher/mpi_skel.hpp"
@@ -20,4 +20,4 @@
 #include "pomerol/Susceptibility.h"
 #include "pomerol/EnsembleAverage.h"
 
-#endif
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_H

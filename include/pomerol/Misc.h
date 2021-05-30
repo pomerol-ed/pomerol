@@ -4,9 +4,8 @@
 ** \author    Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author    Andrey Antipov (antipov@shg.ru)
 */
-
-#ifndef __INCLUDE_MISC_H
-#define __INCLUDE_MISC_H
+#ifndef POMEROL_INCLUDE_POMEROL_MISC_H
+#define POMEROL_INCLUDE_POMEROL_MISC_H
 
 #include<pomerol/first_include.h>
 
@@ -177,5 +176,5 @@ extern const Permutation4 permutations4[24];
  *
  */
 
-#endif // #ifndef __INCLUDE_MISC_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_MISC_H
 

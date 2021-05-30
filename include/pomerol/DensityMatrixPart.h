@@ -4,8 +4,8 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#ifndef __INCLUDE_DENSITYMATRIXPART_H
-#define __INCLUDE_DENSITYMATRIXPART_H
+#ifndef POMEROL_INCLUDE_POMEROL_DENSITYMATRIXPART_H
+#define POMEROL_INCLUDE_POMEROL_DENSITYMATRIXPART_H
 
 #include "Thermal.h"
 #include "Hamiltonian.h"
@@ -77,4 +77,5 @@ public:
 };
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_DENSITYMATRIXPART_H
+
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_DENSITYMATRIXPART_H

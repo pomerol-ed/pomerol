@@ -4,8 +4,8 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#ifndef __INCLUDE_TWOPARTICLEGF_H
-#define __INCLUDE_TWOPARTICLEGF_H
+#ifndef POMEROL_INCLUDE_TWOPARTICLEGF_H
+#define POMEROL_INCLUDE_TWOPARTICLEGF_H
 
 #include"Misc.h"
 #include"ComputableObject.h"
@@ -169,4 +169,5 @@ inline ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long Matsuba
 }
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGF_H
+
+#endif // #ifndef POMEROL_INCLUDE_TWOPARTICLEGF_H

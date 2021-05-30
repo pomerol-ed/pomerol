@@ -1,3 +1,6 @@
+#ifndef POMEROL_TEST_UTILITY_H
+#define POMEROL_TEST_UTILITY_H
+
 #include <mpi_dispatcher/misc.hpp>
 
 #include <iostream>
@@ -14,3 +17,5 @@ void print_section(const std::string& str)
         std::cout << std::string(str.size(), '=') << std::endl;
     }
 }
+
+#endif // #ifndef POMEROL_TEST_UTILITY_H

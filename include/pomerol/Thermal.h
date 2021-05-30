@@ -3,8 +3,8 @@
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-#ifndef __INCLUDE_THERMAL_H
-#define __INCLUDE_THERMAL_H
+#ifndef POMEROL_INCLUDE_THERMAL_H
+#define POMEROL_INCLUDE_THERMAL_H
 
 #include "Misc.h"
 
@@ -20,5 +20,5 @@ struct Thermal {
 };
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_THERMAL_H
 
+#endif // #ifndef POMEROL_INCLUDE_THERMAL_H

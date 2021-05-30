@@ -4,8 +4,8 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#ifndef __INCLUDE_VERTEX4_H
-#define __INCLUDE_VERTEX4_H
+#ifndef POMEROL_INCLUDE_VERTEX4_H
+#define POMEROL_INCLUDE_VERTEX4_H
 
 #include"Misc.h"
 #include"GFContainer.h"
@@ -40,4 +40,5 @@ public:
 };
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_VERTEX4_H
+
+#endif // #ifndef POMEROL_INCLUDE_VERTEX4_H

@@ -4,9 +4,8 @@
 ** \author Andrey Antipov(Andrey.E.Antipov@gmail.com)
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-
-#ifndef __INCLUDE_HAMILTONIAN_H
-#define __INCLUDE_HAMILTONIAN_H
+#ifndef POMEROL_INCLUDE_POMEROL_HAMILTONIAN_H
+#define POMEROL_INCLUDE_POMEROL_HAMILTONIAN_H
 
 #include <vector>
 #include <type_traits>
@@ -83,5 +82,6 @@ void Hamiltonian::prepare(Operators::expression<ScalarType, IndexTypes...> const
 }
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_HAMILTONIAN_H
+
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_HAMILTONIAN_H
 

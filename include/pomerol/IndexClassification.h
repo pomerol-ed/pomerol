@@ -3,9 +3,8 @@
 **
 **  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-
-#ifndef __INCLUDE_INDEXCLASSIFICATION_H
-#define __INCLUDE_INDEXCLASSIFICATION_H
+#ifndef POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_H
+#define POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_H
 
 #include "Misc.h"
 #include "Operators.h"
@@ -119,4 +118,5 @@ MakeIndexClassification(Operators::expression<ScalarType, IndexTypes...> const& 
 }
 
 } // namespace Pomerol
-#endif // endif :: #ifndef #__INCLUDE_INDEXCLASSIFICATION_H
+
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_H

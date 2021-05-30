@@ -3,8 +3,8 @@
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-#ifndef __INCLUDE_TERMLIST_H
-#define __INCLUDE_TERMLIST_H
+#ifndef POMEROL_INCLUDE_TERMLIST_H
+#define POMEROL_INCLUDE_TERMLIST_H
 
 #include "mpi_dispatcher/misc.hpp"
 
@@ -120,4 +120,5 @@ public:
 };
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_TERMLIST_H
+
+#endif // #ifndef POMEROL_INCLUDE_TERMLIST_H

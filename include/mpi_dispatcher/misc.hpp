@@ -1,8 +1,8 @@
 /** \file include/mpi_dispatcher/misc.hpp
 ** \brief Miscellaneous MPI-related definitions.
 */
-
-#pragma once
+#ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MISC_H
+#define POMEROL_INCLUDE_MPI_DISPATCHER_MISC_H
 
 #include <mpi.h>
 
@@ -23,3 +23,5 @@ inline int rank(const MPI_Comm &Comm) {
 }
 
 } // namespace pMPI
+
+#endif // #ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MISC_H

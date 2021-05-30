@@ -3,9 +3,8 @@
 **
 **  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-
-#ifndef __INCLUDE_SYMMETRIZER_H
-#define __INCLUDE_SYMMETRIZER_H
+#ifndef POMEROL_INCLUDE_POMEROL_HILBERTSPACE_H
+#define POMEROL_INCLUDE_POMEROL_HILBERTSPACE_H
 
 #include "Misc.h"
 #include "IndexClassification.h"
@@ -113,6 +112,6 @@ MakeHilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
   return HilbertSpace<IndexTypes...>(IndexInfo, Hamiltonian);
 }
 
-}; // namespace Pomerol
+} // namespace Pomerol
 
-#endif //  endif :: #ifndef __INCLUDE_SYMMETRIZER_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_HILBERTSPACE_H

@@ -4,10 +4,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-
-
-#ifndef __INCLUDE_GFCONTAINER_H
-#define __INCLUDE_GFCONTAINER_H
+#ifndef POMEROL_INCLUDE_POMEROL_GFCONTAINER_H
+#define POMEROL_INCLUDE_POMEROL_GFCONTAINER_H
 
 #include"Misc.h"
 #include"Index.h"
@@ -50,4 +48,5 @@ protected:
 };
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_GFCONTAINER_H
+
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_GFCONTAINER_H

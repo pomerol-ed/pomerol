@@ -5,8 +5,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 ** \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
 */
-#ifndef __INCLUDE_ENSEMBLEAVERAGE_H
-#define __INCLUDE_ENSEMBLEAVERAGE_H
+#ifndef POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_H
+#define POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_H
 
 #include"Misc.h"
 #include"Thermal.h"
@@ -70,4 +70,4 @@ public:
 
 } // namespace Pomerol
 
-#endif // endif :: #ifndef __INCLUDE_ENSEMBLEAVERAGE_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_H

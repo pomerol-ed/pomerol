@@ -4,9 +4,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-
-#ifndef __INCLUDE_LATTICE_SITES_PRESETS_H
-#define __INCLUDE_LATTICE_SITES_PRESETS_H
+#ifndef POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_H
+#define POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_H
 
 #include "Misc.h"
 #include "Operators.h"
@@ -161,4 +160,4 @@ namespace LatticePresets {
 } // namespace Pomerol::LatticePresets
 } // namespace Pomerol
 
-#endif // endif : ifndef __INCLUDE_LATTICE_SITES_PRESETS_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_H

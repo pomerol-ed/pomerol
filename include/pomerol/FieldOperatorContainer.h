@@ -4,9 +4,8 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-
-#ifndef __INCLUDE_FIELDOPERATORCONTAINER_H
-#define __INCLUDE_FIELDOPERATORCONTAINER_H
+#ifndef POMEROL_INCLUDE_POMEROL_FIELDOPERATORCONTAINER_H
+#define POMEROL_INCLUDE_POMEROL_FIELDOPERATORCONTAINER_H
 
 #include"Misc.h"
 #include"IndexClassification.h"
@@ -72,4 +71,5 @@ public:
 };
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_FIELDOPERATORCONTAINER_H
+
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_FIELDOPERATORCONTAINER_H

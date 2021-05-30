@@ -4,9 +4,8 @@
 **
 **  \author    Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-
-#ifndef __INCLUDE_OPERATORS_H
-#define __INCLUDE_OPERATORS_H
+#ifndef POMEROL_INCLUDE_OPERATORS_H
+#define POMEROL_INCLUDE_OPERATORS_H
 
 #include <libcommute/expression/expression.hpp>
 #include <libcommute/expression/factories.hpp>
@@ -112,4 +111,4 @@ Sz(const std::vector<std::tuple<IndexTypes...>> &SpinUpIndices,
 } // namespace Pomerol::Operators
 } // namespace Pomerol
 
-#endif // endif :: #ifndef __INCLUDE_OPERATORS_H
+#endif // #ifndef POMEROL_INCLUDE_OPERATORS_H

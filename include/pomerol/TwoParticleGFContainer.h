@@ -17,10 +17,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
-
-
-#ifndef __INCLUDE_TWOPARTICLEGFCONTAINER_H
-#define __INCLUDE_TWOPARTICLEGFCONTAINER_H
+#ifndef POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_H
+#define POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_H
 
 #include"Misc.h"
 #include"Index.h"
@@ -88,4 +86,5 @@ protected:
 };
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_TWOPARTICLEGFCONTAINER_H
+
+#endif // #ifndef POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_H

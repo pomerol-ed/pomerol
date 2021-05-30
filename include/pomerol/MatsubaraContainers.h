@@ -4,8 +4,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-#ifndef __INCLUDE_MATSUBARACONTAINERS_H
-#define __INCLUDE_MATSUBARACONTAINERS_H
+#ifndef POMEROL_INCLUDE_POMEROL_MATSUBARACONTAINERS_H
+#define POMEROL_INCLUDE_POMEROL_MATSUBARACONTAINERS_H
 
 #include"Misc.h"
 
@@ -128,4 +128,5 @@ ComplexType MatsubaraContainer4<SourceObject>::operator()(long MatsubaraNumber1,
 }
 
 } // namespace Pomerol
-#endif // endif :: #ifndef __INCLUDE_MATSUBARACONTAINERS_H
+
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_MATSUBARACONTAINERS_H
