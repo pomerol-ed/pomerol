@@ -7,7 +7,7 @@
 #ifndef POMEROL_INCLUDE_POMEROL_MISC_H
 #define POMEROL_INCLUDE_POMEROL_MISC_H
 
-#include<pomerol/first_include.h>
+#include<pomerol/Version.h>
 
 #include<iostream>
 #include<complex>
