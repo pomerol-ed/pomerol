@@ -14,9 +14,9 @@ MPIWorker::MPIWorker(const MPI_Comm &comm, WorkerId boss):
     Comm(comm),
     id(rank(comm)),
     boss(boss),
+    current_job_(-1),
     req(MPI_REQUEST_NULL),
-    Status(pMPI::Pending),
-    current_job_(-1)
+    Status(pMPI::Pending)
 {
   MPI_Irecv(&current_job_, 1, MPI_INT, boss, MPI_ANY_TAG, comm, &req);
 }
@@ -60,12 +60,12 @@ void MPIWorker::report_job_done()
 
 void MPIMaster::fill_stack_()
 {
-    for (int i=Ntasks-1; i>=0; i--) {
-      JobStack.push(task_numbers[i]);
+    for(int i = Ntasks - 1; i >= 0; --i) {
+        JobStack.emplace(task_numbers[i]);
     }
-    for (int p=Nprocs-1; p>=0; p--) {
+    for(int p = Nprocs - 1; p >= 0; --p) {
         WorkerIndices[worker_pool[p]] = p;
-        WorkerStack.push(worker_pool[p]);
+        WorkerStack.emplace(worker_pool[p]);
     }
 }
 
@@ -85,11 +85,11 @@ inline std::vector<WorkerId> _autorange_workers(const MPI_Comm &comm, bool inclu
 
     std::vector<WorkerId> out;
     size_t Nprocs(size - int(!include_boss));
-    if (!Nprocs)
+    if(!Nprocs)
         throw std::logic_error("No workers to evaluate");
-    for (size_t p=0; p<size; p++) {
-        if (include_boss || rank != p) {
-            out.push_back(p);
+    for(size_t p = 0; p < size; ++p) {
+        if(include_boss || rank != p) {
+            out.emplace_back(p);
         }
     }
     return out;
@@ -142,7 +142,7 @@ void MPIMaster::order()
 
 void MPIMaster::check_workers()
 {
-    for (size_t i = 0; i < Nprocs; i++) {
+    for(size_t i = 0; i < Nprocs; ++i) {
         if(wait_statuses[i] == MPI_REQUEST_NULL) continue;
 
         int req_completed = 0;
@@ -151,9 +151,9 @@ void MPIMaster::check_workers()
             WorkerStack.push(worker_pool[i]);
         }
     }
-    if (JobStack.empty() && WorkerStack.size() >= Nprocs) {
-        for (size_t i = 0; i < Nprocs; i++) {
-            if (!workers_finish[i]) {
+    if(JobStack.empty() && WorkerStack.size() >= Nprocs) {
+        for(size_t i = 0; i < Nprocs; ++i) {
+            if(!workers_finish[i]) {
                 MPI_Send(nullptr, 0, MPI_INT, worker_pool[i], pMPI::Finish, Comm);
                 // to prevent double sending of Finish command that could overlap with other communication
                 workers_finish[i] = true;
@@ -162,4 +162,4 @@ void MPIMaster::check_workers()
     }
 }
 
-} // end of namespace MPI
+} // namespace MPI

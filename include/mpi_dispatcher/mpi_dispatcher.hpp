@@ -2,8 +2,8 @@
 ** \brief Implementation of a master-slave computation using unblocked MPI Communication that allows to utilize
 ** master as a computation node
 */
-
-#pragma once
+#ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MPI_DISPATCHER_H
+#define POMEROL_INCLUDE_MPI_DISPATCHER_MPI_DISPATCHER_H
 
 #include <mpi.h>
 
@@ -28,7 +28,6 @@ struct MPIWorker
     void report_job_done();
     bool is_finished();
     bool is_working();
-
 
     JobId current_job() const { return current_job_; };
 
@@ -68,4 +67,6 @@ private:
     void fill_stack_();
 };
 
-} // end of namespace pMPI
+} // namespace pMPI
+
+#endif // #ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MPI_DISPATCHER_H

@@ -26,10 +26,10 @@
 */
 
 #ifdef POMEROL_ANDERSON
-#include "anderson_model.h"
+#include "anderson_model.hpp"
 #endif
 #ifdef POMEROL_HUBBARD2D
-#include "hubbard2d_model.h"
+#include "hubbard2d_model.hpp"
 #endif
 
 int main(int argc, char* argv[])

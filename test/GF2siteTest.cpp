@@ -24,19 +24,19 @@
 ** \author Igor Krivenko (igor@shg.ru)
 */
 
-#include "Misc.h"
-#include "LatticePresets.h"
-#include "Operators.h"
-#include "IndexClassification.h"
-#include "HilbertSpace.h"
-#include "StatesClassification.h"
-#include "HamiltonianPart.h"
-#include "Hamiltonian.h"
-#include "DensityMatrix.h"
-#include "FieldOperatorContainer.h"
-#include "GFContainer.h"
+#include "Misc.hpp"
+#include "LatticePresets.hpp"
+#include "Operators.hpp"
+#include "IndexClassification.hpp"
+#include "HilbertSpace.hpp"
+#include "StatesClassification.hpp"
+#include "HamiltonianPart.hpp"
+#include "Hamiltonian.hpp"
+#include "DensityMatrix.hpp"
+#include "FieldOperatorContainer.hpp"
+#include "GFContainer.hpp"
 
-#include "./Utility.h"
+#include "./Utility.hpp"
 
 #include <cstdlib>
 #include <tuple>
@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 
     auto IndexInfo = MakeIndexClassification(HExpr);
     print_section("Indices");
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
 
     auto A_dn = IndexInfo.getInfo(0);
     auto A_up = IndexInfo.getInfo(1);
@@ -89,11 +89,11 @@ int main(int argc, char* argv[])
 
     Hamiltonian H(S);
     H.prepare(HExpr, HS, MPI_COMM_WORLD);
-    H.getPart(BlockNumber(4)).print_to_screen();
-    H.getPart(BlockNumber(5)).print_to_screen();
+    INFO(H.getPart(BlockNumber(4)));
+    INFO(H.getPart(BlockNumber(5)));
     H.compute(MPI_COMM_WORLD);
-    H.getPart(BlockNumber(4)).print_to_screen();
-    H.getPart(BlockNumber(5)).print_to_screen();
+    INFO(H.getPart(BlockNumber(4)));
+    INFO(H.getPart(BlockNumber(5)));
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
     RealType beta = 10.0;

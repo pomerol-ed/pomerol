@@ -33,20 +33,18 @@ else(POMEROL_USE_OPENMP)
     message(STATUS "OpenMP disabled")
 endif(POMEROL_USE_OPENMP)
 
-configure_file("${PROJECT_SOURCE_DIR}/include/pomerol/first_include.h.in"
-               "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h")
-install(FILES "${PROJECT_BINARY_DIR}/include/pomerol/first_include.h"
+configure_file("${PROJECT_SOURCE_DIR}/include/pomerol/Version.hpp.in"
+               "${PROJECT_BINARY_DIR}/include/pomerol/Version.hpp")
+install(FILES "${PROJECT_BINARY_DIR}/include/pomerol/Version.hpp"
         DESTINATION include/pomerol)
 
 set (pomerol_sources
     mpi_dispatcher/mpi_dispatcher
     pomerol/Misc
     pomerol/LatticePresets
-    pomerol/Index
     pomerol/StatesClassification
     pomerol/HamiltonianPart
     pomerol/Hamiltonian
-    pomerol/Thermal
     pomerol/MonomialOperatorPart
     pomerol/MonomialOperator
     pomerol/FieldOperatorContainer

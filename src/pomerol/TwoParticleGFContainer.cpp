@@ -19,25 +19,25 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "pomerol/TwoParticleGFContainer.h"
+#include "pomerol/TwoParticleGFContainer.hpp"
 
 #include "mpi_dispatcher/misc.hpp"
 
-namespace Pomerol{
+namespace Pomerol {
 
 void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& InitialIndices)
 {
     fill(InitialIndices);
-    for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
-        iter != ElementsMap.end(); iter++) {
-        static_cast<TwoParticleGF&>(iter->second).ReduceResonanceTolerance = ReduceResonanceTolerance;
-        static_cast<TwoParticleGF&>(iter->second).CoefficientTolerance = CoefficientTolerance;
-        static_cast<TwoParticleGF&>(iter->second).MultiTermCoefficientTolerance = MultiTermCoefficientTolerance;
-        static_cast<TwoParticleGF&>(iter->second).prepare();
-       };
+    for(auto & el : ElementsMap) {
+        auto & g = static_cast<TwoParticleGF&>(el.second);
+        g.ReduceResonanceTolerance = ReduceResonanceTolerance;
+        g.CoefficientTolerance = CoefficientTolerance;
+        g.MultiTermCoefficientTolerance = MultiTermCoefficientTolerance;
+        g.prepare();
+    }
 }
 
-std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll(bool clearTerms, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const MPI_Comm& comm, bool split)
+std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::computeAll(bool clearTerms, FreqVec const& freqs, const MPI_Comm& comm, bool split)
 {
     if (split)
         return computeAll_split(clearTerms, freqs, comm);
@@ -45,21 +45,20 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
         return computeAll_nosplit(clearTerms, freqs, comm);
 }
 
-std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const MPI_Comm& comm)
+std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, FreqVec const& freqs, const MPI_Comm& comm)
 {
-    std::map<IndexCombination4,std::vector<ComplexType> > out;
-    for(std::map<IndexCombination4,ElementWithPermFreq<TwoParticleGF> >::iterator iter = ElementsMap.begin();
-        iter != ElementsMap.end(); iter++) {
-        INFO("Computing 2PGF for " << iter->first);
-        out.insert(std::make_pair(iter->first, static_cast<TwoParticleGF&>(iter->second).compute(clearTerms, freqs, comm)));
-        };
+    std::map<IndexCombination4, std::vector<ComplexType>> out;
+    for(auto & el : ElementsMap) {
+        INFO("Computing 2PGF for " << el.first);
+        out.emplace(el.first, static_cast<TwoParticleGF&>(el.second).compute(clearTerms, freqs, comm));
+    }
     return out;
 }
 
-std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_split(bool clearTerms, std::vector<std::tuple<ComplexType, ComplexType, ComplexType> > const& freqs, const MPI_Comm& comm)
+std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::computeAll_split(bool clearTerms, FreqVec const& freqs, const MPI_Comm& comm)
 {
-    std::map<IndexCombination4,std::vector<ComplexType> > out;
-    std::map<IndexCombination4,std::vector<ComplexType> > storage;
+    std::map<IndexCombination4, std::vector<ComplexType>> out;
+    std::map<IndexCombination4, std::vector<ComplexType>> storage;
 
     int comm_size = pMPI::size(comm);
     int rank = pMPI::rank(comm);
@@ -67,24 +66,23 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
     // split communicator
     size_t ncomponents = NonTrivialElements.size();
     size_t ncolors = std::min(comm_size, int(NonTrivialElements.size()));
-    RealType color_size = 1.0*comm_size/ncolors;
+    RealType color_size = 1.0*comm_size / ncolors;
     std::map<int,int> proc_colors;
     std::map<int,int> elem_colors;
     std::map<int,int> color_roots;
-    bool calc = false;
-    for (size_t p=0; p<comm_size; p++) {
+    for (size_t p = 0; p < comm_size; ++p) {
         int color = int (1.0*p / color_size);
         proc_colors[p] = color;
-        color_roots[color]=p;
+        color_roots[color] = p;
     }
-    for (size_t i=0; i<ncomponents; i++) {
-        int color = i*ncolors/ncomponents;
+    for(size_t i=0; i < ncomponents; ++i) {
+        int color = i * ncolors / ncomponents;
         elem_colors[i] = color;
-    };
+    }
 
-    if (!rank) {
+    if(!rank) {
         INFO("Splitting " << ncomponents << " components in " << ncolors << " communicators");
-        for (size_t i=0; i<ncomponents; i++)
+        for (size_t i = 0; i < ncomponents; ++i)
             INFO("2pgf " << i << " color: " << elem_colors[i] << " color_root: "
                          << color_roots[elem_colors[i]]);
     }
@@ -111,8 +109,8 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
         int sender = color_roots[elem_colors[comp]];
         TwoParticleGF& chi = *((iter)->second);
         for (size_t p = 0; p < chi.parts.size(); p++) {
-            chi.parts[p]->NonResonantTerms.broadcast(comm, sender);
-            chi.parts[p]->ResonantTerms.broadcast(comm, sender);
+            chi.parts[p].NonResonantTerms.broadcast(comm, sender);
+            chi.parts[p].ResonantTerms.broadcast(comm, sender);
             std::vector<ComplexType> freq_data;
             long freq_data_size;
             if (rank == sender) {
@@ -137,14 +135,14 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
     return out;
 }
 
-TwoParticleGF* TwoParticleGFContainer::createElement(const IndexCombination4& Indices) const
+std::shared_ptr<TwoParticleGF> TwoParticleGFContainer::createElement(const IndexCombination4& Indices) const
 {
     const AnnihilationOperator &C1 = Operators.getAnnihilationOperator(Indices.Index1);
     const AnnihilationOperator &C2 = Operators.getAnnihilationOperator(Indices.Index2);
     const CreationOperator     &CX3 = Operators.getCreationOperator   (Indices.Index3);
     const CreationOperator     &CX4 = Operators.getCreationOperator   (Indices.Index4);
 
-    return new TwoParticleGF(S,H,C1,C2,CX3,CX4,DM);
+    return std::make_shared<TwoParticleGF>(S, H, C1, C2, CX3, CX4, DM);
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol

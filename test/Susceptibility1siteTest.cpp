@@ -25,17 +25,17 @@
 ** \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
 */
 
-#include "Misc.h"
-#include "LatticePresets.h"
-#include "Index.h"
-#include "IndexClassification.h"
-#include "Operators.h"
-#include "StatesClassification.h"
-#include "Hamiltonian.h"
-#include "FieldOperatorContainer.h"
-#include "Susceptibility.h"
+#include "Misc.hpp"
+#include "LatticePresets.hpp"
+#include "Index.hpp"
+#include "IndexClassification.hpp"
+#include "Operators.hpp"
+#include "StatesClassification.hpp"
+#include "Hamiltonian.hpp"
+#include "FieldOperatorContainer.hpp"
+#include "Susceptibility.hpp"
 
-#include "./Utility.h"
+#include "./Utility.hpp"
 
 #include <cmath>
 #include <cstdlib>
@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
     INFO(HExpr);
     auto IndexInfo = MakeIndexClassification(HExpr);
     print_section("Indices");
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
     HS.compute();

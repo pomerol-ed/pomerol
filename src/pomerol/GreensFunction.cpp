@@ -1,11 +1,14 @@
-#include "pomerol/GreensFunction.h"
+#include "pomerol/GreensFunction.hpp"
 
-namespace Pomerol{
+#include <cassert>
+#include <stdexcept>
+
+namespace Pomerol {
 
 GreensFunction::GreensFunction(const StatesClassification& S, const Hamiltonian& H,
                                const AnnihilationOperator& C, const CreationOperator& CX,
                                const DensityMatrix& DM) :
-    Thermal(DM.beta), ComputableObject(), S(S), H(H), C(C), CX(CX), DM(DM), Vanishing(true)
+    Thermal(DM.beta), ComputableObject(), S(S), H(H), C(C), CX(CX), DM(DM)
 {
 }
 
@@ -13,19 +16,19 @@ GreensFunction::GreensFunction(const GreensFunction& GF) :
     Thermal(GF.beta), ComputableObject(GF), S(GF.S), H(GF.H), C(GF.C), CX(GF.CX), DM(GF.DM), Vanishing(GF.Vanishing)
 {
     for(auto const& part: GF.parts)
-        parts.push_back(part);
+        parts.emplace_back(part);
 }
 
-void GreensFunction::prepare(void)
+void GreensFunction::prepare()
 {
-    if(Status>=Prepared) return;
+    if(getStatus() >= Prepared) return;
 
     // Find out non-trivial blocks of C and CX.
     MonomialOperator::BlocksBimap const& CNontrivialBlocks = C.getBlockMapping();
     MonomialOperator::BlocksBimap const& CXNontrivialBlocks = CX.getBlockMapping();
 
-    MonomialOperator::BlocksBimap::left_const_iterator Citer = CNontrivialBlocks.left.begin();
-    MonomialOperator::BlocksBimap::right_const_iterator CXiter = CXNontrivialBlocks.right.begin();
+    auto Citer = CNontrivialBlocks.left.begin();
+    auto CXiter = CXNontrivialBlocks.right.begin();
 
     while(Citer != CNontrivialBlocks.left.end() && CXiter != CXNontrivialBlocks.right.end()){
         // <Cleft|C|Cright><CXleft|CX|CXright>
@@ -36,14 +39,13 @@ void GreensFunction::prepare(void)
 
         // Select a relevant 'world stripe' (sequence of blocks).
         if(Cleft == CXright && Cright == CXleft){
-        //DEBUG(S.getQuantumNumbers(Cleft) << "|" << S.getQuantumNumbers(Cright) << "||" << S.getQuantumNumbers(CXleft) << "|" << S.getQuantumNumbers(CXright) );
             // check if retained blocks are included. If not, do not push.
             if (DM.isRetained(Cleft) || DM.isRetained(Cright)) {
-                parts.push_back(GreensFunctionPart(
+                parts.emplace_back(
                               C.getPartFromLeftIndex(Cleft),
                               CX.getPartFromRightIndex(CXright),
                               H.getPart(Cright), H.getPart(Cleft),
-                              DM.getPart(Cright), DM.getPart(Cleft)));
+                              DM.getPart(Cright), DM.getPart(Cleft));
             }
         }
 
@@ -53,21 +55,24 @@ void GreensFunction::prepare(void)
         if(CleftInt <= CXrightInt) Citer++;
         if(CleftInt >= CXrightInt) CXiter++;
     }
-    if (parts.size() > 0) Vanishing = false;
+    if(!parts.empty())
+        Vanishing = false;
 
-    Status = Prepared;
+    setStatus(Prepared);
 }
 
 void GreensFunction::compute()
 {
-    if(Status>=Computed) return;
-    if(Status<Prepared) prepare();
+    if(getStatus() >= Computed) return;
+    if(getStatus() < Prepared)
+        prepare();
 
-    if(Status<Computed){
-        for(auto iter = parts.begin(); iter != parts.end(); iter++)
-            iter->compute();
+    if(getStatus() < Computed){
+        for(auto & p : parts)
+            p.compute();
     }
-    Status = Computed;
+
+    setStatus(Computed);
 }
 
 unsigned short GreensFunction::getIndex(size_t Position) const
@@ -81,9 +86,4 @@ unsigned short GreensFunction::getIndex(size_t Position) const
     return C.getIndex();
 }
 
-bool GreensFunction::isVanishing(void) const
-{
-    return Vanishing;
-}
-
-} // end of namespace Pomerol
+} // namespace Pomerol

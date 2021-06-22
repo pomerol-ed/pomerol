@@ -12,9 +12,9 @@
 #include <cstdlib>
 #include <fstream>
 
-#include <pomerol.h>
+#include <pomerol.hpp>
 
-#include "./Utility.h"
+#include "./Utility.hpp"
 
 using namespace Pomerol;
 
@@ -31,7 +31,6 @@ int main(int argc, char* argv[])
 
     print_section("Anderson ");
 
-    int wn;
     RealType U=0.5, mu = 0.25, beta = 26, reduce_tol = 1e-5, coeff_tol = 1e-8;
     bool calc_gf = true, calc_2pgf = true;
     size_t L=2;
@@ -72,7 +71,7 @@ int main(int argc, char* argv[])
     auto IndexInfo = MakeIndexClassification(HExpr);
     if (!rank) {
         print_section("Indices");
-        IndexInfo.printIndices();
+        std::cout << IndexInfo << std::endl;
     }
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
@@ -140,7 +139,6 @@ int main(int argc, char* argv[])
                                                       -4.732777836189e-03};
 
             const TwoParticleGF& chi_uuuu = Chi4(IndexCombination4(u0,u0,u0,u0));
-            const TwoParticleGF& chi_udud = Chi4(IndexCombination4(u0,d0,u0,d0));
             const TwoParticleGF& chi_dddd = Chi4(IndexCombination4(d0,d0,d0,d0));
 
             ComplexType Omega = I*2.*M_PI/beta;
@@ -151,9 +149,11 @@ int main(int argc, char* argv[])
                 ComplexType chi_uuuu_val =  chi_uuuu(omega+Omega, w_p, omega);
                 ComplexType chi_dddd_val =  chi_dddd(omega+Omega, w_p, omega);
 
-                std::cout << "(" << imag(omega+Omega) << "," << imag(w_p) << "," << imag(omega) << "): " << std::flush;
-                bool success = is_equal(chi_uuuu_val, chi_uuuu_vals[v], 1e-6);
+                std::cout << "(" << imag(omega+Omega) << "," << imag(w_p) << "," << imag(omega) << "): " << std::endl << std::flush;
+                bool success = is_equal(chi_uuuu_val, chi_uuuu_vals[v], 1e-6) &&
+                               is_equal(chi_dddd_val, chi_uuuu_vals[v], 1e-6);
                 std::cout << "uuuu: " << chi_uuuu_val << " == (exact_uuuu) " << chi_uuuu_vals[v] << " == " << std::boolalpha << success << std::endl;
+                std::cout << "dddd: " << chi_dddd_val << " == (exact_dddd) " << chi_uuuu_vals[v] << " == " << std::boolalpha << success << std::endl;
                 if (!success) {
                     MPI_Finalize();
                     return EXIT_FAILURE;

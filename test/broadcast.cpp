@@ -4,7 +4,7 @@
 
 #include <mpi_dispatcher/misc.hpp>
 
-#include <pomerol/TwoParticleGFPart.h>
+#include <pomerol/TwoParticleGFPart.hpp>
 
 namespace Pomerol {
 

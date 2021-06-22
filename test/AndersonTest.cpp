@@ -1,16 +1,16 @@
-#include "Misc.h"
-#include "LatticePresets.h"
-#include "Operators.h"
-#include "IndexClassification.h"
-#include "HilbertSpace.h"
-#include "StatesClassification.h"
-#include "HamiltonianPart.h"
-#include "Hamiltonian.h"
-#include "DensityMatrix.h"
-#include "FieldOperatorContainer.h"
-#include "GFContainer.h"
+#include "Misc.hpp"
+#include "LatticePresets.hpp"
+#include "Operators.hpp"
+#include "IndexClassification.hpp"
+#include "HilbertSpace.hpp"
+#include "StatesClassification.hpp"
+#include "HamiltonianPart.hpp"
+#include "Hamiltonian.hpp"
+#include "DensityMatrix.hpp"
+#include "FieldOperatorContainer.hpp"
+#include "GFContainer.hpp"
 
-#include "./Utility.h"
+#include "./Utility.hpp"
 
 #include <vector>
 
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 
     auto IndexInfo = MakeIndexClassification(HExpr);
     print_section("Indices");
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
 
     INFO("Hamiltonian");
     INFO(HExpr);
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
     DEBUG(down_index);
     DEBUG(up_index);
 
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
     for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {
         INFO("C^+_"<<i);
     }

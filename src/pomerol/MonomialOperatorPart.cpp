@@ -1,13 +1,17 @@
-#include "pomerol/MonomialOperatorPart.h"
+#include "pomerol/MonomialOperatorPart.hpp"
 
 #include <libcommute/loperator/state_vector_eigen3.hpp>
 #include <libcommute/loperator/mapped_basis_view.hpp>
+
+#include <iostream>
+#include <vector>
 
 namespace Pomerol {
 
 void MonomialOperatorPart::compute()
 {
-    if(Status >= Computed) return;
+    if(getStatus() >= Computed) return;
+
     if(MOpComplex && HFrom.isComplex())
         computeImpl<true, true>();
     else if(MOpComplex && !HFrom.isComplex())
@@ -16,7 +20,8 @@ void MonomialOperatorPart::compute()
         computeImpl<false, true>();
     else
         computeImpl<false, false>();
-    Status = Computed;
+
+    setStatus(Computed);
 }
 
 template<bool MOpC, bool HC>
@@ -74,7 +79,8 @@ void MonomialOperatorPart::setFromAdjoint(const MonomialOperatorPart &part) {
     assert(isComplex() == part.isComplex());
     assert(getLeftIndex() == part.getRightIndex());
     assert(getRightIndex() == part.getLeftIndex());
-    if(Status >= Computed) return;
+
+    if(getStatus() >= Computed) return;
 
     if(isComplex()) {
         elementsRowMajor = std::make_shared<RowMajorMatrixType<true>>(part.getColMajorValue<true>().adjoint());
@@ -84,7 +90,7 @@ void MonomialOperatorPart::setFromAdjoint(const MonomialOperatorPart &part) {
         elementsColMajor = std::make_shared<ColMajorMatrixType<false>>(part.getRowMajorValue<false>().adjoint());
     }
 
-    Status = Computed;
+    setStatus(Computed);
 }
 
 template<bool C>
@@ -127,36 +133,21 @@ const RowMajorMatrixType<C>& MonomialOperatorPart::getRowMajorValue() const
 template const RowMajorMatrixType<true>& MonomialOperatorPart::getRowMajorValue<true>() const;
 template const RowMajorMatrixType<false>& MonomialOperatorPart::getRowMajorValue<false>() const;
 
-void MonomialOperatorPart::print_to_screen() const
-{
-    if(Complex)
-        print_to_screenImpl<true>();
-    else
-        print_to_screenImpl<false>();
-}
-
 template<bool C>
-void MonomialOperatorPart::print_to_screenImpl() const {
+void MonomialOperatorPart::streamOutputImpl(std::ostream & os) const {
     BlockNumber to   = HTo.getBlockNumber();
     BlockNumber from = HFrom.getBlockNumber();
     auto const& mat = getColMajorValue<C>();
 
-    for(size_t P = 0; P < mat.outerSize(); ++P)
-    for(typename ColMajorMatrixType<C>::InnerIterator it(mat, P); it; ++it) {
-        QuantumState N = S.getFockState(to, it.row());
-        QuantumState M = S.getFockState(from, it.col());
-        INFO(N <<" " << M << " : " << it.value());
+    for(size_t P = 0; P < mat.outerSize(); ++P) {
+        for(typename ColMajorMatrixType<C>::InnerIterator it(mat, P); it; ++it) {
+            QuantumState N = S.getFockState(to, it.row());
+            QuantumState M = S.getFockState(from, it.col());
+            os << N << " " << M << " : " << it.value() << std::endl;
+        }
     }
 }
+template void MonomialOperatorPart::streamOutputImpl<true>(std::ostream & os) const;
+template void MonomialOperatorPart::streamOutputImpl<false>(std::ostream & os) const;
 
-BlockNumber MonomialOperatorPart::getLeftIndex() const
-{
-    return HTo.getBlockNumber();
-}
-
-BlockNumber MonomialOperatorPart::getRightIndex() const
-{
-    return HFrom.getBlockNumber();
-}
-
-} // end of namespace Pomerol
+} // namespace Pomerol

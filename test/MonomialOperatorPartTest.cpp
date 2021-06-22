@@ -24,14 +24,14 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include "Misc.h"
-#include "LatticePresets.h"
-#include "Index.h"
-#include "IndexClassification.h"
-#include "Operators.h"
-#include "StatesClassification.h"
-#include "HamiltonianPart.h"
-#include "MonomialOperator.h"
+#include "Misc.hpp"
+#include "LatticePresets.hpp"
+#include "Index.hpp"
+#include "IndexClassification.hpp"
+#include "Operators.hpp"
+#include "StatesClassification.hpp"
+#include "HamiltonianPart.hpp"
+#include "MonomialOperator.hpp"
 
 #include <Eigen/Dense>
 
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
     HExpr += Hopping("A", "B", -1.0);
 
     auto IndexInfo = MakeIndexClassification(HExpr);
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
     HS.compute();
@@ -74,22 +74,22 @@ int main(int argc, char* argv[])
     HamiltonianPart HpartRHS(LOperatorType(HExpr, HS.getFullHilbertSpace()), S, test_block);
     HpartRHS.prepare();
     HpartRHS.compute();
-    HpartRHS.print_to_screen();
+    INFO(HpartRHS);
 
     HamiltonianPart HpartLHS(LOperatorType(HExpr, HS.getFullHilbertSpace()), S, result_block);
     HpartLHS.prepare();
     HpartLHS.compute();
-    HpartLHS.print_to_screen();
+    INFO(HpartLHS);
 
     auto cdag1op = LOperatorType(Operators::c_dag("B", (unsigned short)0, up), HS.getFullHilbertSpace());
     MonomialOperatorPart Cdag1(cdag1op, S, HpartRHS, HpartLHS);
     Cdag1.compute();
-    Cdag1.print_to_screen();
+    INFO(Cdag1);
 
     auto c1op = LOperatorType(Operators::c("B", (unsigned short)0, up), HS.getFullHilbertSpace());
     MonomialOperatorPart C1(c1op, S, HpartLHS, HpartRHS);
     C1.compute();
-    C1.print_to_screen();
+    INFO(C1);
 
     // Check transposition
 

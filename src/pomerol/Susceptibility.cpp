@@ -1,26 +1,25 @@
-#include "pomerol/Susceptibility.h"
+#include "pomerol/Susceptibility.hpp"
 
-namespace Pomerol{
+namespace Pomerol {
 
 Susceptibility::Susceptibility(const StatesClassification& S, const Hamiltonian& H,
                                const MonomialOperator& A, const MonomialOperator& B,
                                const DensityMatrix& DM) :
-    Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), B(B), DM(DM), Vanishing(true),
-    ave_A(0), ave_B(0), SubtractDisconnected(false)
+    Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), B(B), DM(DM)
 {
 }
 
 Susceptibility::Susceptibility(const Susceptibility& Chi) :
     Thermal(Chi.beta), ComputableObject(Chi), S(Chi.S), H(Chi.H), A(Chi.A), B(Chi.B), DM(Chi.DM),
-    Vanishing(Chi.Vanishing), ave_A(Chi.ave_A), ave_B(Chi.ave_B), SubtractDisconnected(Chi.SubtractDisconnected)
+    Vanishing(Chi.Vanishing), SubtractDisconnected(Chi.SubtractDisconnected), ave_A(Chi.ave_A), ave_B(Chi.ave_B)
 {
-    for(auto iter = Chi.parts.begin(); iter != Chi.parts.end(); iter++)
-        parts.emplace_back(*iter);
+    for(auto const& p : Chi.parts)
+        parts.emplace_back(p);
 }
 
-void Susceptibility::prepare(void)
+void Susceptibility::prepare()
 {
-    if(Status>=Prepared) return;
+    if(getStatus() >= Prepared) return;
 
     // Find out non-trivial blocks of A and B.
     MonomialOperator::BlocksBimap const& ANontrivialBlocks = A.getBlockMapping();
@@ -35,7 +34,6 @@ void Susceptibility::prepare(void)
         BlockNumber Aright = Aiter->second;
         BlockNumber Bleft = Biter->second;
         BlockNumber Bright = Biter->first;
-
 
         // Select a relevant 'world stripe' (sequence of blocks).
         if(Aleft == Bright && Aright == Bleft){
@@ -54,21 +52,23 @@ void Susceptibility::prepare(void)
         if(AleftInt <= BrightInt) Aiter++;
         if(AleftInt >= BrightInt) Biter++;
     }
-    if (parts.size() > 0) Vanishing = false;
 
-    Status = Prepared;
+    if(!parts.empty())
+        Vanishing = false;
+
+    setStatus(Prepared);
 }
 
 void Susceptibility::compute()
 {
-    if(Status>=Computed) return;
-    if(Status<Prepared) prepare();
+    if(getStatus() >= Computed) return;
+    if(getStatus() < Prepared) prepare();
 
-    if(Status<Computed){
-        for(auto iter = parts.begin(); iter != parts.end(); iter++)
-            iter->compute();
+    if(getStatus() < Computed){
+        for(auto & p : parts)
+            p.compute();
     }
-    Status = Computed;
+    setStatus(Computed);
 }
 
 void Susceptibility::subtractDisconnected()
@@ -92,9 +92,4 @@ void Susceptibility::subtractDisconnected(EnsembleAverage &EA_A, EnsembleAverage
     subtractDisconnected(EA_A.getResult(), EA_B.getResult());
 }
 
-bool Susceptibility::isVanishing(void) const
-{
-    return Vanishing;
-}
-
-} // end of namespace Pomerol
+} // namespace Pomerol

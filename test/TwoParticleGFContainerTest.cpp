@@ -24,17 +24,19 @@
 ** \author Igor Krivenko (igor@shg.ru)
 */
 
-#include "Misc.h"
-#include "LatticePresets.h"
-#include "Index.h"
-#include "IndexClassification.h"
-#include "Operators.h"
-#include "StatesClassification.h"
-#include "HamiltonianPart.h"
-#include "Hamiltonian.h"
-#include "FieldOperatorContainer.h"
-#include "GFContainer.h"
-#include "TwoParticleGFContainer.h"
+#include "Misc.hpp"
+#include "LatticePresets.hpp"
+#include "Index.hpp"
+#include "IndexClassification.hpp"
+#include "Operators.hpp"
+#include "StatesClassification.hpp"
+#include "HamiltonianPart.hpp"
+#include "Hamiltonian.hpp"
+#include "FieldOperatorContainer.hpp"
+#include "GFContainer.hpp"
+#include "TwoParticleGFContainer.hpp"
+
+#include "./Utility.hpp"
 
 #include<cstdlib>
 
@@ -70,7 +72,6 @@ ComplexType gamma4ref_uuuu(int n1, int n2, int n3)
 
     RealType omega1 = w(n1);
     RealType omega2 = w(n2);
-    RealType omega3 = w(n3);
 
     Value = -beta*(delta(n1,n3)-delta(n2,n3))*sqr(0.5*U)*
             (1. + sqr(0.5*U/omega1))*
@@ -111,7 +112,7 @@ int main(int argc, char* argv[])
     auto HExpr = CoulombS("A", U, -U/2);
 
     auto IndexInfo = MakeIndexClassification(HExpr);
-    IndexInfo.printIndices();
+    std::cout << IndexInfo << std::endl;
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
     HS.compute();

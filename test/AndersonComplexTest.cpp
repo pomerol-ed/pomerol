@@ -1,7 +1,7 @@
 // Include the pomerol library
-#include <pomerol.h>
+#include <pomerol.hpp>
 
-#include "./Utility.h"
+#include "./Utility.hpp"
 
 using namespace Pomerol;
 
@@ -13,9 +13,9 @@ double beta = 10;
 struct GF_ref {
     std::vector<double> E;
     std::vector<double> w;
-    double Z;
+    double Z = 0;
     double phi;
-    GF_ref(ComplexType J) : phi(std::arg(J)), Z(0) {
+    GF_ref(ComplexType J) : phi(std::arg(J)) {
         E.push_back(0);
         E.push_back(-mu-std::abs(J));
         E.push_back(-mu+std::abs(J));
@@ -75,7 +75,7 @@ bool run_test(ComplexType J /* spin-flip amplitude */) {
     auto IndexInfo = MakeIndexClassification(HExpr);
     if (!rank) {
         print_section("Indices");
-        IndexInfo.printIndices();
+        std::cout << IndexInfo << std::endl;
     }
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);

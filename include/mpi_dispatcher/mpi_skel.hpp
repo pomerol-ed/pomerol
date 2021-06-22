@@ -1,17 +1,19 @@
 /** \file include/mpi_dispatcher/mpi_skel.hpp
 ** \brief Declares mpi_skel - a structure to simplify master-slave calculations
 */
-
-#ifndef __INCLUDE_MPISKEL_H
-#define __INCLUDE_MPISKEL_H
+#ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MPI_SKEL_H
+#define POMEROL_INCLUDE_MPI_DISPATCHER_MPI_SKEL_H
 
 #include "misc.hpp"
 #include "mpi_dispatcher.hpp"
 
 #include <algorithm>
+#include <iostream>
+#include <map>
 #include <memory>
 #include <numeric>
 #include <tuple>
+#include <vector>
 
 namespace pMPI {
 
@@ -19,18 +21,20 @@ template <typename PartType>
 struct ComputeWrap {
     PartType *x;
     int complexity;
-    ComputeWrap(PartType &y, int complexity = 1):x(&y),complexity(complexity){}
-    void run(){x->compute();}
-    ComputeWrap(){}
+
+    ComputeWrap() = default;
+    ComputeWrap(PartType &y, int complexity = 1) : x(&y), complexity(complexity) {}
+    void run(){ x->compute(); }
 };
 
 template <typename PartType>
 struct PrepareWrap {
     PartType *x;
     int complexity;
-    PrepareWrap(PartType &y, int complexity = 1):x(&y),complexity(complexity){}
-    void run(){x->prepare();}
-    PrepareWrap(){}
+
+    PrepareWrap() = default;
+    PrepareWrap(PartType &y, int complexity = 1) : x(&y), complexity(complexity) {}
+    void run(){ x->prepare(); }
 };
 
 template <typename WrapType>
@@ -76,12 +80,12 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const MPI_Comm& co
             JobId p = worker.current_job();
             if (VerboseOutput)
                 std::cout << "[" << p+1 << "/" << parts.size()<< "] P" << rank
-                                 << " : part " << p
-                                 << " [" << parts[p].complexity << "] run;" << std::endl;
+                          << " : part " << p
+                          << " [" << parts[p].complexity << "] run;" << std::endl;
             parts[p].run();
             worker.report_job_done();
         }
-        if (rank == ROOT) disp->check_workers(); // check if there are free workers
+        if(rank == ROOT) disp->check_workers(); // check if there are free workers
     }
 
     // at this moment all communication is finished
@@ -113,11 +117,12 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const MPI_Comm& co
         MPI_Bcast(jobs.data(), n_jobs, MPI_INT, ROOT, comm);
         std::vector<pMPI::WorkerId> workers(n_jobs);
         MPI_Bcast(workers.data(), n_jobs, MPI_INT, ROOT, comm);
-        for (size_t i = 0; i < n_jobs; ++i) job_map[jobs[i]] = workers[i];
+        for (size_t i = 0; i < n_jobs; ++i)
+            job_map[jobs[i]] = workers[i];
     }
     return job_map;
 }
 
-}; // end of namespace pMPI
+} // namespace pMPI
 
-#endif
+#endif // #ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MPI_SKEL_H

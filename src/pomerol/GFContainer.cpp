@@ -1,26 +1,29 @@
-#include "pomerol/GFContainer.h"
+#include "pomerol/GFContainer.hpp"
 
 namespace Pomerol{
 
 void GFContainer::prepareAll(const std::set<IndexCombination2>& InitialIndices)
 {
     fill(InitialIndices);
-    for(std::map<IndexCombination2,GFPointer>::iterator iter = ElementsMap.begin();
-        iter != ElementsMap.end(); iter++)
-        (iter->second)->prepare();
+    for(auto & el : ElementsMap)
+        el.second->prepare();
 }
 
 void GFContainer::computeAll()
 {
-    for(std::map<IndexCombination2,GFPointer>::iterator iter = ElementsMap.begin();
-        iter != ElementsMap.end(); iter++)
-        (iter->second)->compute();
+    for(auto & el : ElementsMap)
+        el.second->compute();
 }
 
-GreensFunction* GFContainer::createElement(const IndexCombination2& Indices) const
+std::shared_ptr<GreensFunction> GFContainer::createElement(const IndexCombination2& Indices) const
 {
-    return new GreensFunction(S,H, Operators.getAnnihilationOperator(Indices.Index1),
-                                   Operators.getCreationOperator(Indices.Index2),DM);
+    return std::make_shared<GreensFunction>(
+        S,
+        H,
+        Operators.getAnnihilationOperator(Indices.Index1),
+        Operators.getCreationOperator(Indices.Index2),
+        DM
+    );
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol
