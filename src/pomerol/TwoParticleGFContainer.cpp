@@ -19,7 +19,7 @@
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "pomerol/TwoParticleGFContainer.h"
+#include "pomerol/TwoParticleGFContainer.hpp"
 
 #include "mpi_dispatcher/misc.hpp"
 

@@ -1,4 +1,4 @@
-#include "pomerol/Susceptibility.h"
+#include "pomerol/Susceptibility.hpp"
 
 namespace Pomerol {
 

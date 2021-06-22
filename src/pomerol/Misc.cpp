@@ -1,4 +1,4 @@
-#include "pomerol/Misc.h"
+#include "pomerol/Misc.hpp"
 
 namespace Pomerol {
 

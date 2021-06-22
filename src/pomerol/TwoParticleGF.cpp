@@ -1,4 +1,4 @@
-#include "pomerol/TwoParticleGF.h"
+#include "pomerol/TwoParticleGF.hpp"
 
 #include "mpi_dispatcher/mpi_skel.hpp"
 

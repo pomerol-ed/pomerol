@@ -1,4 +1,4 @@
-#include "pomerol/SusceptibilityPart.h"
+#include "pomerol/SusceptibilityPart.hpp"
 
 #include <cassert>
 

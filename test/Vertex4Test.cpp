@@ -24,19 +24,19 @@
 ** \author Igor Krivenko (igor@shg.ru)
 */
 
-#include "Misc.h"
-#include "LatticePresets.h"
-#include "Index.h"
-#include "IndexClassification.h"
-#include "Operators.h"
-#include "StatesClassification.h"
-#include "Hamiltonian.h"
-#include "FieldOperatorContainer.h"
-#include "GFContainer.h"
-#include "TwoParticleGFContainer.h"
-#include "Vertex4.h"
+#include "Misc.hpp"
+#include "LatticePresets.hpp"
+#include "Index.hpp"
+#include "IndexClassification.hpp"
+#include "Operators.hpp"
+#include "StatesClassification.hpp"
+#include "Hamiltonian.hpp"
+#include "FieldOperatorContainer.hpp"
+#include "GFContainer.hpp"
+#include "TwoParticleGFContainer.hpp"
+#include "Vertex4.hpp"
 
-#include "./Utility.h"
+#include "./Utility.hpp"
 
 #include<cstdlib>
 

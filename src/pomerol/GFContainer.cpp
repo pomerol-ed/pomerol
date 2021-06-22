@@ -1,4 +1,4 @@
-#include "pomerol/GFContainer.h"
+#include "pomerol/GFContainer.hpp"
 
 namespace Pomerol{
 

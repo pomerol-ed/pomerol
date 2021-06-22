@@ -1,4 +1,4 @@
-#include "pomerol/MonomialOperator.h"
+#include "pomerol/MonomialOperator.hpp"
 
 #include "mpi_dispatcher/mpi_skel.hpp"
 

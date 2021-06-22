@@ -1,4 +1,4 @@
-#include "pomerol/EnsembleAverage.h"
+#include "pomerol/EnsembleAverage.hpp"
 
 namespace Pomerol{
 

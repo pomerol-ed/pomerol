@@ -1,4 +1,4 @@
-#include "pomerol/TwoParticleGFPart.h"
+#include "pomerol/TwoParticleGFPart.hpp"
 
 #include <cstddef>
 #include <mutex>

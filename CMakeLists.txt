@@ -33,9 +33,9 @@ else(POMEROL_USE_OPENMP)
     message(STATUS "OpenMP disabled")
 endif(POMEROL_USE_OPENMP)
 
-configure_file("${PROJECT_SOURCE_DIR}/include/pomerol/Version.h.in"
-               "${PROJECT_BINARY_DIR}/include/pomerol/Version.h")
-install(FILES "${PROJECT_BINARY_DIR}/include/pomerol/Version.h"
+configure_file("${PROJECT_SOURCE_DIR}/include/pomerol/Version.hpp.in"
+               "${PROJECT_BINARY_DIR}/include/pomerol/Version.hpp")
+install(FILES "${PROJECT_BINARY_DIR}/include/pomerol/Version.hpp"
         DESTINATION include/pomerol)
 
 set (pomerol_sources

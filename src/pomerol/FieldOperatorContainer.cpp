@@ -1,4 +1,4 @@
-#include "pomerol/FieldOperatorContainer.h"
+#include "pomerol/FieldOperatorContainer.hpp"
 
 namespace Pomerol {
 

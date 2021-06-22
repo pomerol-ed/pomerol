@@ -1,4 +1,4 @@
-#include "pomerol/Vertex4.h"
+#include "pomerol/Vertex4.hpp"
 
 namespace Pomerol {
 

@@ -1,4 +1,4 @@
-#include "pomerol/GreensFunctionPart.h"
+#include "pomerol/GreensFunctionPart.hpp"
 
 #include <cassert>
 

@@ -1,4 +1,4 @@
-#include "pomerol/LatticePresets.h"
+#include "pomerol/LatticePresets.hpp"
 
 #include <stdexcept>
 

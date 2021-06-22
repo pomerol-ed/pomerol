@@ -1,4 +1,4 @@
-#include "pomerol/StatesClassification.h"
+#include "pomerol/StatesClassification.hpp"
 
 #include <algorithm>
 #include <string>

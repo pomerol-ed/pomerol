@@ -24,14 +24,14 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include "Misc.h"
-#include "LatticePresets.h"
-#include "Index.h"
-#include "IndexClassification.h"
-#include "Operators.h"
-#include "StatesClassification.h"
-#include "HamiltonianPart.h"
-#include "Hamiltonian.h"
+#include "Misc.hpp"
+#include "LatticePresets.hpp"
+#include "Index.hpp"
+#include "IndexClassification.hpp"
+#include "Operators.hpp"
+#include "StatesClassification.hpp"
+#include "HamiltonianPart.hpp"
+#include "Hamiltonian.hpp"
 
 using namespace Pomerol;
 

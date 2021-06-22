@@ -1,4 +1,4 @@
-#include "pomerol/MonomialOperatorPart.h"
+#include "pomerol/MonomialOperatorPart.hpp"
 
 #include <libcommute/loperator/state_vector_eigen3.hpp>
 #include <libcommute/loperator/mapped_basis_view.hpp>

@@ -170,7 +170,7 @@ endmacro(add_progs)
 
 macro(add_prog name def)
     set(prog_name "${name}.${PROJECT_NAME}")
-    add_executable(${prog_name} "main.cpp" "quantum_model.cpp" "anderson_model.h" "hubbard2d_model.h")
+    add_executable(${prog_name} "main.cpp" "quantum_model.cpp" "anderson_model.hpp" "hubbard2d_model.hpp")
     target_link_libraries(${prog_name} ${PROJECT_NAME} ${BOOST_EXTRA_LIBS})
     set_target_properties(${prog_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
     install ( TARGETS ${prog_name} DESTINATION bin )

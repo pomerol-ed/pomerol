@@ -1,4 +1,4 @@
-#include "pomerol/DensityMatrixPart.h"
+#include "pomerol/DensityMatrixPart.hpp"
 
 namespace Pomerol {
 

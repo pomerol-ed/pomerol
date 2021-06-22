@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <tuple>
 
-#include "quantum_model.h"
+#include "quantum_model.hpp"
 
 #undef DEBUG
 #include <gftools.hpp>

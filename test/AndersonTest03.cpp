@@ -12,9 +12,9 @@
 #include <cstdlib>
 #include <fstream>
 
-#include <pomerol.h>
+#include <pomerol.hpp>
 
-#include "./Utility.h"
+#include "./Utility.hpp"
 
 using namespace Pomerol;
 
