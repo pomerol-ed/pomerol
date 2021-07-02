@@ -24,7 +24,6 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include "Misc.hpp"
 #include "LatticePresets.hpp"
 #include "Index.hpp"
 #include "IndexClassification.hpp"
@@ -33,12 +32,12 @@
 #include "HamiltonianPart.hpp"
 #include "Hamiltonian.hpp"
 
+#undef INFO // Catch2 has its own INFO() macro
+#include "catch2/catch.hpp"
+
 using namespace Pomerol;
 
-int main(int argc, char* argv[])
-{
-    MPI_Init(&argc, &argv);
-
+TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
     using namespace LatticePresets;
 
     auto HExpr = CoulombS("A", 1.0, -0.5);
@@ -59,15 +58,9 @@ int main(int argc, char* argv[])
     INFO(H.getPart(BlockNumber(4)));
     H.compute(MPI_COMM_WORLD);
     INFO(H.getPart(BlockNumber(4)));
-    RealType E = -2.8860009;
-    RealType E_calc = H.getGroundEnergy();
-    INFO("Lowest energy level is " << E_calc);
-    if (std::abs(E-E_calc) > 1e-7) {
-      MPI_Finalize();
-      return EXIT_FAILURE;
-    }
 
-    MPI_Finalize();
-    return EXIT_SUCCESS;
+    RealType E_ref = -2.8860009;
+    RealType E = H.getGroundEnergy();
+
+    REQUIRE(E == Approx(E_ref).epsilon(1e-7));
 }
-

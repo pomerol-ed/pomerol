@@ -69,13 +69,19 @@ add_eigen3()
 add_libcommute()
 add_mpi()
 add_boost()
-add_testing()
 
 # Build executables
 option(Progs "Build executables" OFF)
 if (Progs)
     add_subdirectory(prog)
 endif (Progs)
+
+# Enable using tests
+option(Testing "Enable testing" ON)
+if (Testing)
+    enable_testing()
+    add_subdirectory(test)
+endif(Testing)
 
 set(DOXYFILE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/pomerol")
 set(DOXYFILE_EXTRA_SOURCES "${DOXYFILE_EXTRA_SOURCES} ${CMAKE_SOURCE_DIR}/src/mpi_dispatcher")
