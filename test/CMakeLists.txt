@@ -6,7 +6,6 @@ include_directories (${CMAKE_SOURCE_DIR}/include/pomerol)
 # Pomerol tests
 set (tests
 HamiltonianTest
-#MonomialOperatorPartTest
 #GF1siteTest
 #GF2siteTest
 #GF4siteTest

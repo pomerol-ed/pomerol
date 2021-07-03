@@ -31,6 +31,7 @@
 #include "StatesClassification.hpp"
 #include "HamiltonianPart.hpp"
 #include "Hamiltonian.hpp"
+#include "MonomialOperator.hpp"
 
 #undef INFO // Catch2 has its own INFO() macro
 #include "catch2/catch.hpp"
@@ -45,6 +46,7 @@ TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
     HExpr += Hopping("A", "B", -1.0);
 
     auto IndexInfo = MakeIndexClassification(HExpr);
+    INFO(IndexInfo);
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
     HS.compute();
@@ -59,8 +61,53 @@ TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
     H.compute(MPI_COMM_WORLD);
     INFO(H.getPart(BlockNumber(4)));
 
-    RealType E_ref = -2.8860009;
-    RealType E = H.getGroundEnergy();
+    SECTION("Ground state energy") {
+        RealType E_ref = -2.8860009;
+        RealType E = H.getGroundEnergy();
 
-    REQUIRE(E == Approx(E_ref).epsilon(1e-7));
+        REQUIRE(E == Approx(E_ref).margin(1e-7));
+    }
+
+    SECTION("Monomial operators") {
+        ParticleIndex op_index = IndexInfo.getIndex("B", 0, up);
+        BlockNumber test_block = 4;
+
+        CreationOperator op(IndexInfo, HS, S, H, op_index);
+        op.prepare(HS);
+        op.compute();
+        BlockNumber result_block = op.getLeftIndex(test_block);
+
+        INFO("Acting with rotated cdag_" << op_index << " on block " << test_block << " and receiving " << result_block);
+
+        using LOperatorType = libcommute::loperator<RealType, libcommute::fermion>;
+
+        HamiltonianPart HpartRHS(LOperatorType(HExpr, HS.getFullHilbertSpace()), S, test_block);
+        HpartRHS.prepare();
+        HpartRHS.compute();
+        INFO(HpartRHS);
+
+        HamiltonianPart HpartLHS(LOperatorType(HExpr, HS.getFullHilbertSpace()), S, result_block);
+        HpartLHS.prepare();
+        HpartLHS.compute();
+        INFO(HpartLHS);
+
+        auto cdag1op = LOperatorType(Operators::c_dag("B", (unsigned short)0, up), HS.getFullHilbertSpace());
+        MonomialOperatorPart Cdag1(cdag1op, S, HpartRHS, HpartLHS);
+        Cdag1.compute();
+        INFO(Cdag1);
+
+        auto c1op = LOperatorType(Operators::c("B", (unsigned short)0, up), HS.getFullHilbertSpace());
+        MonomialOperatorPart C1(c1op, S, HpartLHS, HpartRHS);
+        C1.compute();
+        INFO(C1);
+
+        // Check transposition
+        auto diff1 = (Cdag1.getRowMajorValue<false>() - C1.getColMajorValue<false>().transpose()).eval();
+        diff1.prune(1e-12);
+        REQUIRE(diff1.nonZeros() == 0);
+
+        auto diff2 = (Cdag1.getColMajorValue<false>() - C1.getRowMajorValue<false>().transpose()).eval();
+        diff2.prune(1e-12);
+        REQUIRE(diff2.nonZeros() == 0);
+    }
 }
