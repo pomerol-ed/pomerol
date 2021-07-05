@@ -33,6 +33,7 @@
 #include "DensityMatrix.hpp"
 #include "FieldOperatorContainer.hpp"
 #include "GreensFunction.hpp"
+#include "GFContainer.hpp"
 
 #undef INFO // Catch2 has its own INFO() macro
 #include "catch2/catch.hpp"
@@ -109,5 +110,28 @@ TEST_CASE("Green's function of a Hubbard atom", "[GF1site]") {
         auto ref = G_ref(n);
         REQUIRE(result.real() == Approx(ref.real()).margin(1e-14));
         REQUIRE(result.imag() == Approx(ref.imag()).margin(1e-14));
+    }
+
+    SECTION("GFContainer") {
+        GFContainer G(IndexInfo,S,H,rho,Operators);
+
+        std::set<IndexCombination2> indices;
+        indices.insert(IndexCombination2(0,0));
+        indices.insert(IndexCombination2(0,1));
+        indices.insert(IndexCombination2(1,0));
+        indices.insert(IndexCombination2(1,1));
+
+        G.prepareAll(indices);
+        G.computeAll();
+
+        for(int n = -100; n < 100; ++n) {
+            auto ref = G_ref(n);
+            REQUIRE(G(0,0)(n).real() == Approx(ref.real()).margin(1e-14));
+            REQUIRE(G(0,0)(n).imag() == Approx(ref.imag()).margin(1e-14));
+            REQUIRE(G(0,1)(n) == .0);
+            REQUIRE(G(1,0)(n) == .0);
+            REQUIRE(G(1,1)(n).real() == Approx(ref.real()).margin(1e-14));
+            REQUIRE(G(1,1)(n).imag() == Approx(ref.imag()).margin(1e-14));
+        }
     }
 }
