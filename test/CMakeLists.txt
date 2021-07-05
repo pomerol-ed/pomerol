@@ -9,7 +9,7 @@ HamiltonianTest
 GF1siteTest
 GF2siteTest
 GF4siteTest
-#AndersonTest
+AndersonTest
 #AndersonComplexTest
 #TwoParticleGFContainerTest
 #Vertex4Test
