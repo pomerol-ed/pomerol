@@ -25,26 +25,36 @@
 */
 
 #include "Misc.hpp"
-#include "LatticePresets.hpp"
 #include "Operators.hpp"
+#include "LatticePresets.hpp"
 #include "IndexClassification.hpp"
 #include "HilbertSpace.hpp"
 #include "StatesClassification.hpp"
-#include "HamiltonianPart.hpp"
 #include "Hamiltonian.hpp"
 #include "DensityMatrix.hpp"
 #include "FieldOperatorContainer.hpp"
-#include "GFContainer.hpp"
+#include "GreensFunction.hpp"
 
-#include "./Utility.hpp"
-
-#include <cstdlib>
+#undef INFO // Catch2 has its own INFO() macro
+#include "catch2/catch.hpp"
 
 using namespace Pomerol;
 
-int main(int argc, char* argv[])
-{
-    MPI_Init(&argc, &argv);
+TEST_CASE("Green's function of a Hubbard plaquette", "[GF4site]") {
+    RealType beta = 10.0;
+
+    // Reference Green's function
+    ComplexVectorType G_ref(10);
+    G_ref <<  0.00515461461  -0.191132319*I,
+             -0.0129218293   -0.35749415*I,
+             -0.0063208255   -0.364571553*I,
+             -0.00244599255  -0.326995909*I,
+             -0.000938220077 -0.285235829*I,
+             -0.000360621591 -0.248974505*I,
+             -0.000129046261 -0.219206946*I,
+             -3.20102701e-05 -0.194983212*I,
+              9.51503858e-06 -0.175149329*I,
+              2.68929175e-05 -0.158732731*I;
 
     using namespace LatticePresets;
 
@@ -57,83 +67,55 @@ int main(int argc, char* argv[])
     HExpr += Hopping("B", "C", -0.45);
     HExpr += Hopping("C", "D", -0.127);
     HExpr += Hopping("A", "D", -0.255);
+    INFO("Hamiltonian\n" << HExpr);
 
     auto IndexInfo = MakeIndexClassification(HExpr);
-    print_section("Indices");
-    std::cout << IndexInfo << std::endl;
-
-    INFO("Hamiltonian");
-    INFO(HExpr);
+    INFO("Indices\n" << IndexInfo);
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
     HS.compute();
-
     StatesClassification S;
     S.compute(HS);
 
     Hamiltonian H(S);
     H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
-    if(pMPI::rank(MPI_COMM_WORLD) == 0) {
-        INFO("Energy levels " << H.getEigenValues());
-        INFO("The value of ground energy is " << H.getGroundEnergy());
-    }
-
-    RealType beta = 10.0;
+    INFO("Energy levels " << H.getEigenValues());
+    INFO("The value of ground energy is " << H.getGroundEnergy());
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
     rho.compute();
-    for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i));
-
+    for(QuantumState i = 0; i < S.getNumberOfStates(); ++i)
+        INFO("Weight " << i << " = " << rho.getWeight(i));
 
     FieldOperatorContainer Operators(IndexInfo, HS, S, H);
     Operators.prepareAll(HS);
     Operators.computeAll();
 
-    auto c_map = Operators.getCreationOperator(0).getBlockMapping();
-    for (auto c_map_it = c_map.right.begin(); c_map_it != c_map.right.end(); c_map_it++)
+    ParticleIndex A_down_index = IndexInfo.getIndex("A", 0, down);
+
+    auto const& c_map = Operators.getCreationOperator(A_down_index).getBlockMapping();
+    for(auto c_map_it = c_map.right.begin(); c_map_it != c_map.right.end(); c_map_it++)
     {
         INFO(c_map_it->first << "->" << c_map_it->second);
     }
 
-    ParticleIndex down_index = IndexInfo.getIndex("A", 0, down);
     GreensFunction GF(S,
                       H,
-                      Operators.getAnnihilationOperator(down_index),
-                      Operators.getCreationOperator(down_index),
+                      Operators.getAnnihilationOperator(A_down_index),
+                      Operators.getCreationOperator(A_down_index),
                       rho);
 
     GF.prepare();
     GF.compute();
 
-    ComplexVectorType GF_ref(10);
-
-    // Exact reference results
-    GF_ref <<  0.00515461461  -0.191132319*I,
-              -0.0129218293   -0.35749415*I,
-              -0.0063208255   -0.364571553*I,
-              -0.00244599255  -0.326995909*I,
-              -0.000938220077 -0.285235829*I,
-              -0.000360621591 -0.248974505*I,
-              -0.000129046261 -0.219206946*I,
-              -3.20102701e-05 -0.194983212*I,
-               9.51503858e-06 -0.175149329*I,
-               2.68929175e-05 -0.158732731*I;
-
-    bool result = true;
-    auto compare = [](ComplexType a, ComplexType b) {
+    for(int n = 0; n < G_ref.size(); ++n) {
+        auto result = GF(n);
+        auto ref = G_ref[n];
         // The tolerance has to be fairly large as Pomerol discards
         // some contributions to the GF.
-        return std::abs(a - b) < 1e-6;
-    };
-
-    for(int n = 0; n<10; ++n) {
-        DEBUG(GF(n) << " " << GF_ref(n));
-        result = result && compare(GF(n), GF_ref(n));
+        REQUIRE(result.real() == Approx(ref.real()).margin(1e-6));
+        REQUIRE(result.imag() == Approx(ref.imag()).margin(1e-6));
     }
-
-    MPI_Finalize();
-
-    return result ? EXIT_SUCCESS : EXIT_FAILURE;
 }

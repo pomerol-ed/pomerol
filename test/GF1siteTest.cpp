@@ -26,53 +26,45 @@
 
 #include "Misc.hpp"
 #include "LatticePresets.hpp"
-#include "Operators.hpp"
 #include "IndexClassification.hpp"
 #include "HilbertSpace.hpp"
 #include "StatesClassification.hpp"
-#include "HamiltonianPart.hpp"
 #include "Hamiltonian.hpp"
 #include "DensityMatrix.hpp"
 #include "FieldOperatorContainer.hpp"
-#include "GFContainer.hpp"
+#include "GreensFunction.hpp"
 
-#include "./Utility.hpp"
-
-#include <cstdlib>
+#undef INFO // Catch2 has its own INFO() macro
+#include "catch2/catch.hpp"
 
 using namespace Pomerol;
 
-RealType U = 1.0;
-RealType mu = 0.4;
+TEST_CASE("Green's function of a Hubbard atom", "[GF1site]") {
+    RealType U = 1.0;
+    RealType mu = 0.4;
+    RealType beta = 10.0;
 
-// Reference Green's function
-ComplexType Gref(int n, RealType beta)
-{
-    RealType omega = M_PI*(2*n+1)/beta;
+    // Reference Green's function
+    auto G_ref = [U,mu,beta](int n)
+    {
+        RealType omega = M_PI*(2*n+1)/beta;
 
-    RealType w0 = 1.0;
-    RealType w1 = exp(beta*mu);
-    RealType w2 = exp(-beta*(-2*mu+U));
-    RealType Z = w0 + 2*w1 +w2;
-    w0 /= Z; w1 /= Z; w2 /= Z;
+        RealType w0 = 1.0;
+        RealType w1 = exp(beta*mu);
+        RealType w2 = exp(-beta*(-2*mu+U));
+        RealType Z = w0 + 2*w1 +w2;
+        w0 /= Z; w1 /= Z; w2 /= Z;
 
-    return (w0+w1)/(I*omega+mu) + (w1+w2)/(I*omega+mu-U);
-}
-
-int main(int argc, char* argv[])
-{
-    MPI_Init(&argc, &argv);
+        return (w0+w1)/(I*omega+mu) + (w1+w2)/(I*omega+mu-U);
+    };
 
     using namespace LatticePresets;
 
     auto HExpr = CoulombS("A", U, -mu);
+    INFO("Hamiltonian\n" << HExpr);
 
     auto IndexInfo = MakeIndexClassification(HExpr);
-    print_section("Indices");
-    std::cout << IndexInfo << std::endl;
-
-    INFO("Hamiltonian");
-    INFO(HExpr);
+    INFO("Indices\n" << IndexInfo);
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
     HS.compute();
@@ -82,17 +74,14 @@ int main(int argc, char* argv[])
     Hamiltonian H(S);
     H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
-    if(pMPI::rank(MPI_COMM_WORLD) == 0) {
-        INFO("Energy levels " << H.getEigenValues());
-        INFO("The value of ground energy is " << H.getGroundEnergy());
-    }
-
-    RealType beta = 10.0;
+    INFO("Energy levels " << H.getEigenValues());
+    INFO("The value of ground energy is " << H.getGroundEnergy());
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
     rho.compute();
-    for (QuantumState i=0; i<S.getNumberOfStates(); ++i) INFO(rho.getWeight(i));
+    for(QuantumState i = 0; i < S.getNumberOfStates(); ++i)
+        INFO("Weight " << i << " = " << rho.getWeight(i));
 
     FieldOperatorContainer Operators(IndexInfo, HS, S, H);
     Operators.prepareAll(HS);
@@ -100,7 +89,7 @@ int main(int argc, char* argv[])
 
     ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
 
-    auto c_map = Operators.getCreationOperator(down_index).getBlockMapping();
+    auto const& c_map = Operators.getCreationOperator(down_index).getBlockMapping();
     for (auto c_map_it = c_map.right.begin(); c_map_it != c_map.right.end(); c_map_it++)
     {
         INFO(c_map_it->first << "->" << c_map_it->second);
@@ -115,17 +104,10 @@ int main(int argc, char* argv[])
     GF.prepare();
     GF.compute();
 
-    auto compare = [](ComplexType a, ComplexType b) {
-        return std::abs(a - b) < 1e-14;
-    };
-
-    bool result = true;
     for(int n = 0; n < 100; ++n) {
-        INFO(GF(n) << " == " << Gref(n,beta));
-        result = result && compare(GF(n), Gref(n,beta));
+        auto result = GF(n);
+        auto ref = G_ref(n);
+        REQUIRE(result.real() == Approx(ref.real()).margin(1e-14));
+        REQUIRE(result.imag() == Approx(ref.imag()).margin(1e-14));
     }
-
-    MPI_Finalize();
-
-    return result ? EXIT_SUCCESS : EXIT_FAILURE;
 }
