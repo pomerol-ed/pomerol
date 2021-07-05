@@ -11,10 +11,9 @@ GF2siteTest
 GF4siteTest
 AndersonTest
 AndersonComplexTest
+Anderson2PGFTest
 #TwoParticleGFContainerTest
 #Vertex4Test
-#AndersonTest02
-#AndersonTest03
 #EnsembleAverage1siteTest
 #Susceptibility1siteTest
 )
