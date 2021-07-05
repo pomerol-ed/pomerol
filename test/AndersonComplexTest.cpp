@@ -1,7 +1,18 @@
-// Include the pomerol library
-#include <pomerol.hpp>
+#include "Misc.hpp"
+#include "LatticePresets.hpp"
+#include "IndexClassification.hpp"
+#include "HilbertSpace.hpp"
+#include "StatesClassification.hpp"
+#include "Hamiltonian.hpp"
+#include "DensityMatrix.hpp"
+#include "FieldOperatorContainer.hpp"
+#include "GreensFunction.hpp"
 
-#include "./Utility.hpp"
+#undef INFO // Catch2 has its own INFO() macro
+#include "catch2/catch.hpp"
+
+#include <cmath>
+#include <vector>
 
 using namespace Pomerol;
 
@@ -10,17 +21,15 @@ double mu = 1.2;
 double U = 2.0;
 double beta = 10;
 
+// Reference Green's function
 struct GF_ref {
-    std::vector<double> E;
-    std::vector<double> w;
-    double Z = 0;
-    double phi;
-    GF_ref(ComplexType J) : phi(std::arg(J)) {
-        E.push_back(0);
-        E.push_back(-mu-std::abs(J));
-        E.push_back(-mu+std::abs(J));
-        E.push_back(-2*mu+U);
-
+    RealType phi;
+    std::vector<RealType> E;
+    std::vector<RealType> w;
+    RealType Z = 0;
+    GF_ref(ComplexType J) :
+        phi(std::arg(J)),
+        E{0, -mu-std::abs(J), -mu+std::abs(J), -2*mu+U} {
         for(int i = 0; i < E.size(); ++i) {
             w.push_back(std::exp(-beta*E[i]));
             Z += w.back();
@@ -59,24 +68,27 @@ struct GF_ref {
     }
 };
 
-bool run_test(ComplexType J /* spin-flip amplitude */) {
+TEST_CASE("Bare Anderson atom with complex spin mixing", "[AndersonComplex]") {
 
-    INFO("J = " << J);
+    // Execute this test case for a few values of 'J'
+    auto J = GENERATE(ComplexType(0.1, 0),
+                      ComplexType(-0.1, 0),
+                      ComplexType(0, 0.1),
+                      ComplexType(0,-0.1),
+                      ComplexType(0.1, 0.1),
+                      ComplexType(0.1,-0.1),
+                      ComplexType(-0.1,0.1),
+                      ComplexType(-0.1,-0.1)
+                      );
 
     using namespace LatticePresets;
 
-    // Add a site with a name "C", that has 1 orbital and 2 spins.
-
     ComplexExpr HExpr = CoulombS("C", U, -mu);
     HExpr += Hopping("C", "C", J, 0, 0, up, down);
-
-    int rank = pMPI::rank(MPI_COMM_WORLD);
+    INFO("Hamiltonian\n" << HExpr);
 
     auto IndexInfo = MakeIndexClassification(HExpr);
-    if (!rank) {
-        print_section("Indices");
-        std::cout << IndexInfo << std::endl;
-    }
+    INFO("Indices\n" << IndexInfo);
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
     HS.compute();
@@ -86,8 +98,10 @@ bool run_test(ComplexType J /* spin-flip amplitude */) {
     Hamiltonian H(S);
     H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
+    INFO("Energy levels " << H.getEigenValues());
+    INFO("The value of ground energy is " << H.getGroundEnergy());
 
-    DensityMatrix rho(S,H,beta);
+    DensityMatrix rho(S, H, beta);
     rho.prepare();
     rho.compute();
 
@@ -96,41 +110,25 @@ bool run_test(ComplexType J /* spin-flip amplitude */) {
     Operators.computeAll();
 
     // Reference
-    GF_ref ref(J);
+    GF_ref G_ref(J);
 
     for(spin s1 : {down, up}){
-    for(spin s2 : {down, up}){
-        INFO("s1 = " << s1 << " s2 = " << s2);
-        ParticleIndex index1 = IndexInfo.getIndex("C",0,s1);
-        ParticleIndex index2 = IndexInfo.getIndex("C",0,s2);
-        GreensFunction GF(S,H,
-            Operators.getAnnihilationOperator(index1),
-            Operators.getCreationOperator(index2),
-        rho);
-        GF.prepare();
-        GF.compute();
+        for(spin s2 : {down, up}){
+            ParticleIndex index1 = IndexInfo.getIndex("C",0,s1);
+            ParticleIndex index2 = IndexInfo.getIndex("C",0,s2);
+            GreensFunction GF(S,H,
+                Operators.getAnnihilationOperator(index1),
+                Operators.getCreationOperator(index2),
+            rho);
+            GF.prepare();
+            GF.compute();
 
-        for (int n=0; n<10; ++n)
-            if(std::abs(GF(n) - ref(s1,s2,n)) > 1e-10) return false;
-    }}
-    return true;
-}
-
-int main(int argc, char* argv[]) {
-
-    MPI_Init(&argc, &argv);
-
-    bool result =
-     run_test(ComplexType( 0.1,0)) &&
-     run_test(ComplexType(-0.1,0)) &&
-     run_test(ComplexType(0, 0.1)) &&
-     run_test(ComplexType(0,-0.1)) &&
-     run_test(ComplexType(0.1, 0.1)) &&
-     run_test(ComplexType(0.1,-0.1)) &&
-     run_test(ComplexType(-0.1,0.1)) &&
-     run_test(ComplexType(-0.1,-0.1));
-
-     MPI_Finalize();
-
-     return result ? EXIT_SUCCESS : EXIT_FAILURE;
+            for(int n = 0; n < 10; ++n) {
+                auto result = GF(n);
+                auto ref = G_ref(s1, s2, n);
+                REQUIRE(result.real() == Approx(ref.real()).margin(1e-12));
+                REQUIRE(result.imag() == Approx(ref.imag()).margin(1e-12));
+            }
+        }
+    }
 }

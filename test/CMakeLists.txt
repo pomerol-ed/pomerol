@@ -10,7 +10,7 @@ GF1siteTest
 GF2siteTest
 GF4siteTest
 AndersonTest
-#AndersonComplexTest
+AndersonComplexTest
 #TwoParticleGFContainerTest
 #Vertex4Test
 #AndersonTest02
