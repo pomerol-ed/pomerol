@@ -9,8 +9,7 @@
 #include "FieldOperatorContainer.hpp"
 #include "TwoParticleGFContainer.hpp"
 
-#undef INFO // Catch2 has its own INFO() macro
-#include "catch2/catch.hpp"
+#include "catch2/catch-pomerol.hpp"
 
 #include <cmath>
 #include <string>
@@ -109,10 +108,8 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
             auto ref = chi_ref[i];
             ComplexType chi_uuuu_val =  chi_uuuu(omega+Omega, w_p, omega);
             ComplexType chi_dddd_val =  chi_dddd(omega+Omega, w_p, omega);
-            REQUIRE(chi_uuuu_val.real() == Approx(ref).margin(1e-6));
-            REQUIRE(chi_uuuu_val.imag() == Approx(0).margin(1e-6));
-            REQUIRE(chi_dddd_val.real() == Approx(ref).margin(1e-6));
-            REQUIRE(chi_dddd_val.imag() == Approx(0).margin(1e-6));
+            REQUIRE_THAT(chi_uuuu_val, IsCloseTo(ref, 1e-6));
+            REQUIRE_THAT(chi_dddd_val, IsCloseTo(ref, 1e-6));
         }
     }
 
@@ -135,10 +132,8 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
             auto ref = chi_ref[i];
             ComplexType chi_uuuu_val =  chi_uuuu[i];
             ComplexType chi_dddd_val =  chi_dddd[i];
-            REQUIRE(chi_uuuu_val.real() == Approx(ref).margin(1e-6));
-            REQUIRE(chi_uuuu_val.imag() == Approx(0).margin(1e-6));
-            REQUIRE(chi_dddd_val.real() == Approx(ref).margin(1e-6));
-            REQUIRE(chi_dddd_val.imag() == Approx(0).margin(1e-6));
+            REQUIRE_THAT(chi_uuuu_val, IsCloseTo(ref, 1e-6));
+            REQUIRE_THAT(chi_dddd_val, IsCloseTo(ref, 1e-6));
         }
     }
 }

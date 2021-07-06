@@ -35,8 +35,7 @@
 #include "GreensFunction.hpp"
 #include "GFContainer.hpp"
 
-#undef INFO // Catch2 has its own INFO() macro
-#include "catch2/catch.hpp"
+#include "catch2/catch-pomerol.hpp"
 
 using namespace Pomerol;
 
@@ -108,8 +107,7 @@ TEST_CASE("Green's function of a Hubbard atom", "[GF1site]") {
     for(int n = 0; n < 100; ++n) {
         auto result = GF(n);
         auto ref = G_ref(n);
-        REQUIRE(result.real() == Approx(ref.real()).margin(1e-14));
-        REQUIRE(result.imag() == Approx(ref.imag()).margin(1e-14));
+        REQUIRE_THAT(result, IsCloseTo(ref, 1e-14));
     }
 
     SECTION("GFContainer") {
@@ -126,12 +124,10 @@ TEST_CASE("Green's function of a Hubbard atom", "[GF1site]") {
 
         for(int n = -100; n < 100; ++n) {
             auto ref = G_ref(n);
-            REQUIRE(G(0,0)(n).real() == Approx(ref.real()).margin(1e-14));
-            REQUIRE(G(0,0)(n).imag() == Approx(ref.imag()).margin(1e-14));
-            REQUIRE(G(0,1)(n) == .0);
-            REQUIRE(G(1,0)(n) == .0);
-            REQUIRE(G(1,1)(n).real() == Approx(ref.real()).margin(1e-14));
-            REQUIRE(G(1,1)(n).imag() == Approx(ref.imag()).margin(1e-14));
+            REQUIRE_THAT(G(0,0)(n), IsCloseTo(ref, 1e-14));
+            REQUIRE_THAT(G(0,1)(n), IsCloseTo(0, 1e-14));
+            REQUIRE_THAT(G(1,0)(n), IsCloseTo(0, 1e-14));
+            REQUIRE_THAT(G(1,1)(n), IsCloseTo(ref, 1e-14));
         }
     }
 }

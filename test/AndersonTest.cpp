@@ -9,7 +9,7 @@
 #include "GreensFunction.hpp"
 
 #undef INFO // Catch2 has its own INFO() macro
-#include "catch2/catch.hpp"
+#include "catch2/catch-pomerol.hpp"
 
 using namespace Pomerol;
 
@@ -94,15 +94,9 @@ TEST_CASE("Anderson model with 2 bath sites", "[Anderson]") {
     GF_down.compute(); GF_up.compute();
 
     for(int n = 0; n < G_ref_up.size(); ++n) {
-        auto result = GF_up(n);
-        auto ref = G_ref_up[n];
-        REQUIRE(result.real() == Approx(ref.real()).margin(1e-12));
-        REQUIRE(result.imag() == Approx(ref.imag()).margin(1e-12));
+        REQUIRE_THAT(GF_up(n), IsCloseTo(G_ref_up[n], 1e-8));
     }
     for(int n = 0; n < G_ref_down.size(); ++n) {
-        auto result = GF_down(n);
-        auto ref = G_ref_down[n];
-        REQUIRE(result.real() == Approx(ref.real()).margin(1e-12));
-        REQUIRE(result.imag() == Approx(ref.imag()).margin(1e-12));
+        REQUIRE_THAT(GF_down(n), IsCloseTo(G_ref_down[n], 1e-8));
     }
 }

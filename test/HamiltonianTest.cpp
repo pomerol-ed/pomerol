@@ -33,8 +33,7 @@
 #include "Hamiltonian.hpp"
 #include "MonomialOperator.hpp"
 
-#undef INFO // Catch2 has its own INFO() macro
-#include "catch2/catch.hpp"
+#include "catch2/catch-pomerol.hpp"
 
 using namespace Pomerol;
 
@@ -65,7 +64,7 @@ TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
         RealType E_ref = -2.8860009;
         RealType E = H.getGroundEnergy();
 
-        REQUIRE(E == Approx(E_ref).margin(1e-7));
+        REQUIRE_THAT(E, IsCloseTo(E_ref, 1e-7));
     }
 
     SECTION("Monomial operators") {

@@ -8,8 +8,7 @@
 #include "FieldOperatorContainer.hpp"
 #include "GreensFunction.hpp"
 
-#undef INFO // Catch2 has its own INFO() macro
-#include "catch2/catch.hpp"
+#include "catch2/catch-pomerol.hpp"
 
 #include <cmath>
 #include <vector>
@@ -126,8 +125,7 @@ TEST_CASE("Bare Anderson atom with complex spin mixing", "[AndersonComplex]") {
             for(int n = 0; n < 10; ++n) {
                 auto result = GF(n);
                 auto ref = G_ref(s1, s2, n);
-                REQUIRE(result.real() == Approx(ref.real()).margin(1e-12));
-                REQUIRE(result.imag() == Approx(ref.imag()).margin(1e-12));
+                REQUIRE_THAT(result, IsCloseTo(ref, 1e-12));
             }
         }
     }

@@ -35,8 +35,7 @@
 #include "FieldOperatorContainer.hpp"
 #include "GreensFunction.hpp"
 
-#undef INFO // Catch2 has its own INFO() macro
-#include "catch2/catch.hpp"
+#include "catch2/catch-pomerol.hpp"
 
 using namespace Pomerol;
 
@@ -126,7 +125,6 @@ TEST_CASE("Green's function of a Hubbard dimer", "[GF2site]") {
         auto ref = G_ref[n];
         // The tolerance has to be fairly large as Pomerol discards
         // some contributions to the GF.
-        REQUIRE(result.real() == Approx(ref.real()).margin(1e-8));
-        REQUIRE(result.imag() == Approx(ref.imag()).margin(1e-8));
+        REQUIRE_THAT(result, IsCloseTo(ref, 1e-8));
     }
 }
