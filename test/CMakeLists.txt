@@ -13,8 +13,7 @@ AndersonTest
 AndersonComplexTest
 Anderson2PGFTest
 Vertex4Test
-#EnsembleAverage1siteTest
-#Susceptibility1siteTest
+SusceptibilityTest
 )
 
 foreach (test ${tests})
