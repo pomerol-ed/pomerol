@@ -29,8 +29,7 @@ foreach (test ${tests})
     )
 endforeach(test)
 
-# mpi_dispatcher_test mpi_dispatcher_test_nomaster
-set(mpi_tests BroadcastTest)
+set(mpi_tests BroadcastTest MPIDispatcherTest)
 foreach (test ${mpi_tests})
     set(test_src ${test}.cpp)
     add_executable(${test} ${test_src})
