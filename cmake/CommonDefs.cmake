@@ -147,16 +147,6 @@ macro(add_libcommute)
   target_link_libraries(${PROJECT_NAME} PUBLIC libcommute)
 endmacro(add_libcommute)
 
-# Compile tests in "test" subdir
-macro(add_testing)
-option(Testing "Enable testing" ON)
-if (Testing)
-    include(EnableGtests) #defined in common/cmake
-    enable_testing()
-    add_subdirectory(test)
-endif(Testing)
-endmacro(add_testing)
-
 # Build executables in "prog" subdirectory
 macro(add_progs)
   foreach(src_ ${ARGV})

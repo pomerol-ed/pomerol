@@ -24,7 +24,6 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include "Misc.hpp"
 #include "LatticePresets.hpp"
 #include "Index.hpp"
 #include "IndexClassification.hpp"
@@ -32,13 +31,13 @@
 #include "StatesClassification.hpp"
 #include "HamiltonianPart.hpp"
 #include "Hamiltonian.hpp"
+#include "MonomialOperator.hpp"
+
+#include "catch2/catch-pomerol.hpp"
 
 using namespace Pomerol;
 
-int main(int argc, char* argv[])
-{
-    MPI_Init(&argc, &argv);
-
+TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
     using namespace LatticePresets;
 
     auto HExpr = CoulombS("A", 1.0, -0.5);
@@ -46,6 +45,7 @@ int main(int argc, char* argv[])
     HExpr += Hopping("A", "B", -1.0);
 
     auto IndexInfo = MakeIndexClassification(HExpr);
+    INFO(IndexInfo);
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
     HS.compute();
@@ -59,15 +59,54 @@ int main(int argc, char* argv[])
     INFO(H.getPart(BlockNumber(4)));
     H.compute(MPI_COMM_WORLD);
     INFO(H.getPart(BlockNumber(4)));
-    RealType E = -2.8860009;
-    RealType E_calc = H.getGroundEnergy();
-    INFO("Lowest energy level is " << E_calc);
-    if (std::abs(E-E_calc) > 1e-7) {
-      MPI_Finalize();
-      return EXIT_FAILURE;
+
+    SECTION("Ground state energy") {
+        RealType E_ref = -2.8860009;
+        RealType E = H.getGroundEnergy();
+
+        REQUIRE_THAT(E, IsCloseTo(E_ref, 1e-7));
     }
 
-    MPI_Finalize();
-    return EXIT_SUCCESS;
-}
+    SECTION("Monomial operators") {
+        ParticleIndex op_index = IndexInfo.getIndex("B", 0, up);
+        BlockNumber test_block = 4;
 
+        CreationOperator op(IndexInfo, HS, S, H, op_index);
+        op.prepare(HS);
+        op.compute();
+        BlockNumber result_block = op.getLeftIndex(test_block);
+
+        INFO("Acting with rotated cdag_" << op_index << " on block " << test_block << " and receiving " << result_block);
+
+        using LOperatorType = libcommute::loperator<RealType, libcommute::fermion>;
+
+        HamiltonianPart HpartRHS(LOperatorType(HExpr, HS.getFullHilbertSpace()), S, test_block);
+        HpartRHS.prepare();
+        HpartRHS.compute();
+        INFO(HpartRHS);
+
+        HamiltonianPart HpartLHS(LOperatorType(HExpr, HS.getFullHilbertSpace()), S, result_block);
+        HpartLHS.prepare();
+        HpartLHS.compute();
+        INFO(HpartLHS);
+
+        auto cdag1op = LOperatorType(Operators::c_dag("B", (unsigned short)0, up), HS.getFullHilbertSpace());
+        MonomialOperatorPart Cdag1(cdag1op, S, HpartRHS, HpartLHS);
+        Cdag1.compute();
+        INFO(Cdag1);
+
+        auto c1op = LOperatorType(Operators::c("B", (unsigned short)0, up), HS.getFullHilbertSpace());
+        MonomialOperatorPart C1(c1op, S, HpartLHS, HpartRHS);
+        C1.compute();
+        INFO(C1);
+
+        // Check transposition
+        auto diff1 = (Cdag1.getRowMajorValue<false>() - C1.getColMajorValue<false>().transpose()).eval();
+        diff1.prune(1e-12);
+        REQUIRE(diff1.nonZeros() == 0);
+
+        auto diff2 = (Cdag1.getColMajorValue<false>() - C1.getRowMajorValue<false>().transpose()).eval();
+        diff2.prune(1e-12);
+        REQUIRE(diff2.nonZeros() == 0);
+    }
+}

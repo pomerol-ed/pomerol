@@ -26,94 +26,73 @@
 
 #include "Misc.hpp"
 #include "LatticePresets.hpp"
-#include "Index.hpp"
 #include "IndexClassification.hpp"
-#include "Operators.hpp"
+#include "HilbertSpace.hpp"
 #include "StatesClassification.hpp"
 #include "Hamiltonian.hpp"
+#include "DensityMatrix.hpp"
 #include "FieldOperatorContainer.hpp"
 #include "GFContainer.hpp"
 #include "TwoParticleGFContainer.hpp"
 #include "Vertex4.hpp"
 
-#include "./Utility.hpp"
+#include "catch2/catch-pomerol.hpp"
 
-#include<cstdlib>
+#include <cmath>
+
+// Generalized 'square' function.
+template<typename T> inline T sqr(T x) { return x*x; }
 
 using namespace Pomerol;
 
-RealType U;
-RealType beta;
+TEST_CASE("Two-particle vertex of a single Hubbard atom", "[Vertex4]") {
+    // Parameters
+    RealType U = 1.0;
+    RealType beta = 40;
+    int n_iw = 4;
 
-bool compare(ComplexType a, ComplexType b, RealType tol = 1e-5)
-{
-    INFO("TEST: " << a << "?=" << b);
-    return abs(a-b) < tol;
-}
+    // Auxiliary functions
+    auto w = [beta](int n) { return M_PI * (2 * n + 1) / beta; };
+    auto delta = [](int n1, int n2) { return n1 == n2 ? 1.0 : 0.0; };
+    auto deltam = [](int n1, int n2) { return n1 + n2==-1 ? 1.0 : 0.0; };
 
-RealType delta(int n1, int n2)
-{
-    return (n1 == n2 ? 1.0 : 0.0);
-}
+    // Reference gamma4(up,up,up,up)
+    auto Gamma4uuuu_ref = [&](int n1, int n2, int n3)
+    {
+        RealType omega1 = w(n1);
+        RealType omega2 = w(n2);
 
-RealType deltam(int n1, int n2)
-{
-    return (n1+n2==-1 ? 1.0 : 0.0);
-}
+        return -beta*(delta(n1,n3)-delta(n2,n3))*sqr(0.5*U)*
+                (1. + sqr(0.5*U/omega1))*
+                (1. + sqr(0.5*U/omega2));
+    };
 
-inline RealType w(int n)
-{
-    return M_PI*(2*n+1)/beta;
-}
+    // Reference gamma4(up,down,up,down)
+    auto Gamma4udud_ref = [&](int n1, int n2, int n3)
+    {
+        RealType omega1 = w(n1);
+        RealType omega2 = w(n2);
+        RealType omega3 = w(n3);
+        RealType omega4 = omega1+omega2-omega3;
 
-// Reference gamma4(up,up,up,up)
-ComplexType gamma4ref_uuuu(int n1, int n2, int n3)
-{
-    ComplexType Value = 0;
+        RealType w = 1.0/(1.0+std::exp(beta*0.5*U));
 
-    RealType omega1 = w(n1);
-    RealType omega2 = w(n2);
+        ComplexType Value = U;
+        Value += -0.125*U*U*U*(sqr(omega1)+sqr(omega2)+sqr(omega3)+sqr(omega4))/(omega1*omega2*omega3*omega4);
+        Value += -0.1875*U*U*U*U*U/(omega1*omega2*omega3*omega4);
+        Value += -beta*(2*deltam(n1,n2)+delta(n1,n3))*w*sqr(0.5*U)*(1.0+sqr(0.5*U/omega2))*(1.0+sqr(0.5*U/omega3));
+        Value += beta*(2*delta(n2,n3)+delta(n1,n3))*(1-w)*sqr(0.5*U)*(1.0+sqr(0.5*U/omega1))*(1.0+sqr(0.5*U/omega2));
 
-    Value = -beta*(delta(n1,n3)-delta(n2,n3))*sqr(0.5*U)*
-            (1. + sqr(0.5*U/omega1))*
-            (1. + sqr(0.5*U/omega2));
-
-    return Value;
-}
-
-// Reference gamma4(up,down,up,down)
-ComplexType gamma4ref_udud(int n1, int n2, int n3)
-{
-    ComplexType Value = 0;
-
-    RealType omega1 = w(n1);
-    RealType omega2 = w(n2);
-    RealType omega3 = w(n3);
-    RealType omega4 = omega1+omega2-omega3;
-
-    RealType w = 1.0/(1.0+exp(beta*0.5*U));
-
-    Value += U;
-    Value += -0.125*U*U*U*(sqr(omega1)+sqr(omega2)+sqr(omega3)+sqr(omega4))/(omega1*omega2*omega3*omega4);
-    Value += -0.1875*U*U*U*U*U/(omega1*omega2*omega3*omega4);
-    Value += -beta*(2*deltam(n1,n2)+delta(n1,n3))*w*sqr(0.5*U)*(1.0+sqr(0.5*U/omega2))*(1.0+sqr(0.5*U/omega3));
-    Value += beta*(2*delta(n2,n3)+delta(n1,n3))*(1-w)*sqr(0.5*U)*(1.0+sqr(0.5*U/omega1))*(1.0+sqr(0.5*U/omega2));
-
-    return Value;
-}
-
-int main(int argc, char* argv[])
-{
-    MPI_Init(&argc, &argv);
-
-    U = 1.0;
+        return Value;
+    };
 
     using namespace LatticePresets;
 
     auto HExpr = CoulombS("A", U, -U/2);
+    INFO("Hamiltonian\n" << HExpr);
 
     auto IndexInfo = MakeIndexClassification(HExpr);
-    std::cout << IndexInfo << std::endl;
+    INFO("Indices\n" << IndexInfo);
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
     HS.compute();
@@ -123,9 +102,8 @@ int main(int argc, char* argv[])
     Hamiltonian H(S);
     H.prepare(HExpr, HS, MPI_COMM_WORLD);
     H.compute(MPI_COMM_WORLD);
-
-    srand(time(NULL));
-    beta = 40.0 ;//+ 10.0*RealType(rand())/RAND_MAX;
+    INFO("Energy levels " << H.getEigenValues());
+    INFO("The value of ground energy is " << H.getGroundEnergy());
 
     DensityMatrix rho(S,H,beta);
     rho.prepare();
@@ -135,42 +113,60 @@ int main(int argc, char* argv[])
     Operators.prepareAll(HS);
     Operators.computeAll();
 
+    GFContainer G(IndexInfo,S,H,rho,Operators);
+    G.prepareAll();
+    G.computeAll();
 
-    GreensFunction GF(S,H,Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0), rho);
-    GF.prepare();
-    GF.compute();
+    TwoParticleGFContainer Chi(IndexInfo,S,H,rho,Operators);
+    Chi.ReduceResonanceTolerance = 1e-4;
+    Chi.CoefficientTolerance = 1e-12;
+    Chi.prepareAll();
+    Chi.computeAll();
+    MPI_Barrier(MPI_COMM_WORLD);
 
-    TwoParticleGF Chi_uuuu(S,H,Operators.getAnnihilationOperator(0), Operators.getAnnihilationOperator(0), Operators.getCreationOperator(0),
-                      Operators.getCreationOperator(0), rho);
-    Chi_uuuu.CoefficientTolerance = 1e-12;
-    Chi_uuuu.prepare();
-    Chi_uuuu.compute();
+    ParticleIndex up_index = IndexInfo.getIndex("A", 0, up);
+    ParticleIndex down_index = IndexInfo.getIndex("A", 0, down);
 
-    ComplexType l,r;
-    l = Chi_uuuu(0,0,0); r = gamma4ref_uuuu(0,0,0)*GF(0)*GF(0);
-    if (!compare(l,r)) { MPI_Finalize(); return EXIT_FAILURE; }
-    l = Chi_uuuu(2,5,2); r = gamma4ref_uuuu(2,5,2)*GF(2)*GF(5)*GF(5)*GF(2) - beta*GF(2)*GF(5);
-    if (!compare(l,r)) { MPI_Finalize(); return EXIT_FAILURE; }
-    l = Chi_uuuu(-10,-9,-10); r = gamma4ref_uuuu(-10,-9,-10)*GF(-10)*GF(-9)*GF(-10)*GF(-9) - beta*GF(-10)*GF(-9);
-    if (!compare(l,r)) { MPI_Finalize(); return EXIT_FAILURE; }
-    INFO("PASSED SUSC TEST");
+    SECTION("\\chi_{\\up\\up\\up\\up} and \\Gamma_{\\up\\up\\up\\up}") {
+        GreensFunction const& GF = G(up_index, up_index);
+        TwoParticleGF const& Chi_uuuu = Chi(IndexCombination4(up_index,up_index,up_index,up_index));
+        Vertex4 Gamma4_uuuu(Chi_uuuu,GF,GF,GF,GF);
+        for(int n1 = -n_iw; n1 < n_iw; ++n1) {
+            for(int n2 = -n_iw; n2 < n_iw; ++n2) {
+                for(int n3 = -n_iw; n3 < n_iw; ++n3) {
+                    int n4 = n1+n2-n3;
+                    INFO(n1 << " " << n2 << " " << n3 << " " << n1+n2-n3);
 
-    Vertex4 Gamma4_uuuu(Chi_uuuu,GF,GF,GF,GF);
-    l = Gamma4_uuuu.value(2,5,2); r = gamma4ref_uuuu(2,5,2)*GF(2)*GF(5)*GF(5)*GF(2);
-    if (!compare(l,r)) { MPI_Finalize(); return EXIT_FAILURE; }
-    l = Gamma4_uuuu.value(-10,-9,-10); r = gamma4ref_uuuu(-10,-9,-10)*GF(-10)*GF(-9)*GF(-9)*GF(-10);
-    if (!compare(l,r)) { MPI_Finalize(); return EXIT_FAILURE; }
+                    ComplexType chi_value = Chi_uuuu(n1,n2,n3);
+                    ComplexType chi_ref = Gamma4uuuu_ref(n1,n2,n3)*GF(n1)*GF(n2)*GF(n3)*GF(n4)
+                                        + beta*GF(n1)*GF(n2)*delta(n1,n4)
+                                        - beta*GF(n1)*GF(n2)*delta(n1,n3);
+                    REQUIRE_THAT(chi_value, IsCloseTo(chi_ref, 1e-6));
 
-    bool success = true;
-     for(int n1 = -10; n1<10; ++n1)
-     for(int n2 = -10; n2<10; ++n2)
-     for(int n3 = -10; n3<10; ++n3){
-         l = Gamma4_uuuu.value(n1,n2,n3);
-         r = gamma4ref_uuuu(n1,n2,n3)*GF(n1)*GF(n2)*GF(n3)*GF(n1+n2-n3);
-         INFO(n1 << " " << n2 << " " << n3 << " " << n1+n2-n3 << " : " << l << " == " << r);
-         success = success && compare(l,r);
+                    ComplexType Gamma_value = Gamma4_uuuu.value(n1,n2,n3);
+                    ComplexType Gamma_ref = Gamma4uuuu_ref(n1,n2,n3)*GF(n1)*GF(n2)*GF(n3)*GF(n4);
+                    REQUIRE_THAT(Gamma_value, IsCloseTo(Gamma_ref, 1e-6));
+                }
+            }
+        }
     }
 
-    MPI_Finalize();
-    return success ? EXIT_SUCCESS : EXIT_FAILURE;
+    SECTION("\\chi_{\\up\\down\\up\\down}") {
+        GreensFunction const& GF_up = G(up_index, up_index);
+        GreensFunction const& GF_down = G(down_index, down_index);
+        TwoParticleGF const& Chi_udud = Chi(IndexCombination4(up_index,down_index,up_index,down_index));
+        for(int n1 = -n_iw; n1 < n_iw; ++n1) {
+            for(int n2 = -n_iw; n2 < n_iw; ++n2) {
+                for(int n3 = -n_iw; n3 < n_iw; ++n3) {
+                    int n4 = n1+n2-n3;
+                    INFO(n1 << " " << n2 << " " << n3 << " " << n1+n2-n3);
+
+                    ComplexType chi_value = Chi_udud(n1,n2,n3);
+                    ComplexType chi_ref = Gamma4udud_ref(n1,n2,n3)*GF_up(n1)*GF_down(n2)*GF_up(n3)*GF_down(n4)
+                                        - beta*GF_up(n1)*GF_down(n2)*delta(n1,n3);
+                    REQUIRE_THAT(chi_value, IsCloseTo(chi_ref, 1e-6));
+                }
+            }
+        }
+    }
 }
