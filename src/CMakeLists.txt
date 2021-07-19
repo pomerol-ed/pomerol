@@ -1,25 +1,25 @@
 set(SOURCES
-    mpi_dispatcher/mpi_dispatcher
-    pomerol/Misc
-    pomerol/LatticePresets
-    pomerol/StatesClassification
-    pomerol/HamiltonianPart
-    pomerol/Hamiltonian
-    pomerol/MonomialOperatorPart
-    pomerol/MonomialOperator
-    pomerol/FieldOperatorContainer
-    pomerol/DensityMatrixPart
-    pomerol/DensityMatrix
-    pomerol/GreensFunctionPart
-    pomerol/GreensFunction
-    pomerol/GFContainer
-    pomerol/TwoParticleGFPart
-    pomerol/TwoParticleGF
-    pomerol/TwoParticleGFContainer
-    pomerol/Vertex4
-    pomerol/SusceptibilityPart
-    pomerol/Susceptibility
-    pomerol/EnsembleAverage
+    mpi_dispatcher/mpi_dispatcher.cpp
+    pomerol/Misc.cpp
+    pomerol/LatticePresets.cpp
+    pomerol/StatesClassification.cpp
+    pomerol/HamiltonianPart.cpp
+    pomerol/Hamiltonian.cpp
+    pomerol/MonomialOperatorPart.cpp
+    pomerol/MonomialOperator.cpp
+    pomerol/FieldOperatorContainer.cpp
+    pomerol/DensityMatrixPart.cpp
+    pomerol/DensityMatrix.cpp
+    pomerol/GreensFunctionPart.cpp
+    pomerol/GreensFunction.cpp
+    pomerol/GFContainer.cpp
+    pomerol/TwoParticleGFPart.cpp
+    pomerol/TwoParticleGF.cpp
+    pomerol/TwoParticleGFContainer.cpp
+    pomerol/Vertex4.cpp
+    pomerol/SusceptibilityPart.cpp
+    pomerol/Susceptibility.cpp
+    pomerol/EnsembleAverage.cpp
 )
 
 add_library(${PROJECT_NAME} ${SOURCES})
