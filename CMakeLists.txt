@@ -48,7 +48,7 @@ if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR
 endif()
 
 # Enable/disable and find OpenMP
-option(USE_OPENMP "Use OpenMP" TRUE)
+option(USE_OPENMP "Use OpenMP" ON)
 if(USE_OPENMP)
     find_package(OpenMP)
 else()
