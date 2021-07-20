@@ -60,8 +60,11 @@ using ComplexMatrixType = Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynami
 template<bool Complex>
 using MelemType = typename std::conditional<Complex, ComplexType, RealType>::type;
 
+template<typename ScalarType>
+using LOperatorType = libcommute::loperator<ScalarType, libcommute::fermion>;
+
 template<bool Complex>
-using LOperatorType = libcommute::loperator<MelemType<Complex>, libcommute::fermion>;
+using LOperatorTypeRC = libcommute::loperator<MelemType<Complex>, libcommute::fermion>;
 
 template<bool Complex>
 using MatrixType = Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor>;

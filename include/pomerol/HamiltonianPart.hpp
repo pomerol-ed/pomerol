@@ -50,7 +50,7 @@ public:
      * \param[in] S StatesClassification object. Provides information about Fock States of the problem.
      * \param[in] Block The BlockNumber of current part. It is a genuine id of the part. */
     template<typename ScalarType>
-    HamiltonianPart(const libcommute::loperator<ScalarType, libcommute::fermion> &HOp,
+    HamiltonianPart(const LOperatorType<ScalarType> &HOp,
                     const StatesClassification &S,
                     BlockNumber Block) :
          S(S), Block(Block), Complex(std::is_same<ScalarType, ComplexType>::value), HOp(&HOp)

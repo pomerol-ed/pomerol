@@ -55,9 +55,9 @@ protected:
     std::shared_ptr<void> MOp;
 
     template<bool Complex>
-    const LOperatorType<Complex>& getMOp() const {
+    const LOperatorTypeRC<Complex>& getMOp() const {
         assert(MOpComplex == Complex);
-        return *std::static_pointer_cast<LOperatorType<Complex>>(MOp);
+        return *std::static_pointer_cast<LOperatorTypeRC<Complex>>(MOp);
     }
 
     bool Complex;
@@ -92,7 +92,7 @@ public:
                      const StatesClassification &S,
                      const Hamiltonian &H) :
         MOpComplex(std::is_same<ScalarType, ComplexType>::value),
-        MOp(std::make_shared<libcommute::loperator<ScalarType, libcommute::fermion>>(MO, HS.getFullHilbertSpace())),
+        MOp(std::make_shared<LOperatorType<ScalarType>>(MO, HS.getFullHilbertSpace())),
         Complex(MOpComplex || H.isComplex()),
         S(S), H(H), Partition(HS.getSpacePartition()) {
             if(MO.size() > 1)

@@ -62,7 +62,7 @@ public:
      * \param[in] PIndex Index of the field operator.
      */
     template<typename ScalarType>
-    MonomialOperatorPart(const libcommute::loperator<ScalarType, libcommute::fermion> & MOp,
+    MonomialOperatorPart(const LOperatorType<ScalarType> & MOp,
                          const StatesClassification &S,
                          const HamiltonianPart &HFrom,
                          const HamiltonianPart &HTo) :

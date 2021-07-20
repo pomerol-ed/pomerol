@@ -38,8 +38,6 @@ private:
 
     bool HamiltonianComplex;
 
-    template<bool Complex>
-    using LOperatorType = libcommute::loperator<MelemType<Complex>, libcommute::fermion>;
     std::shared_ptr<void> HOp;
 
     std::unique_ptr<SpacePartitionType> Partition = nullptr;
@@ -52,7 +50,7 @@ public:
       IndexInfo(IndexInfo),
       FullHilbertSpace(InitFullHilbertSpace(IndexInfo)),
       HamiltonianComplex(std::is_same<ScalarType, ComplexType>::value),
-      HOp(std::make_shared<libcommute::loperator<ScalarType, libcommute::fermion>>(Hamiltonian, FullHilbertSpace))
+      HOp(std::make_shared<LOperatorType<ScalarType>>(Hamiltonian, FullHilbertSpace))
     {}
 
     void compute() {
@@ -60,10 +58,10 @@ public:
 
         // Phase I of auto-partition algorithm
         if(HamiltonianComplex) {
-            auto const& op = *std::static_pointer_cast<LOperatorType<true>>(HOp);
+            auto const& op = *std::static_pointer_cast<LOperatorTypeRC<true>>(HOp);
             Partition.reset(new libcommute::space_partition(op, FullHilbertSpace));
         } else {
-            auto const& op = *std::static_pointer_cast<LOperatorType<false>>(HOp);
+            auto const& op = *std::static_pointer_cast<LOperatorTypeRC<false>>(HOp);
             Partition.reset(new libcommute::space_partition(op, FullHilbertSpace));
         }
         // Phase II of auto-partition algorithm
@@ -72,11 +70,11 @@ public:
             using Operators::c_dag;
             using Operators::c;
             using Operators::Detail::apply;
-            auto Cd = libcommute::loperator<double, libcommute::fermion>(
+            auto Cd = LOperatorType<RealType>(
                 apply(c_dag<double, IndexTypes...>, info),
                 FullHilbertSpace
             );
-            auto C = libcommute::loperator<double, libcommute::fermion>(
+            auto C = LOperatorType<RealType>(
                 apply(c<double, IndexTypes...>, info),
                 FullHilbertSpace
             );

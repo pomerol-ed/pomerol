@@ -37,7 +37,7 @@ template<bool C> void HamiltonianPart::prepareImpl()
 {
     initHMatrix<C>();
 
-    auto const& HOp_ = *static_cast<const LOperatorType<C>*>(HOp);
+    auto const& HOp_ = *static_cast<const LOperatorTypeRC<C>*>(HOp);
     auto & HMatrix_ = getMatrix<C>();
 
     auto mapper = libcommute::basis_mapper(S.getFockStates(Block));

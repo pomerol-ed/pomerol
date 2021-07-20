@@ -63,7 +63,7 @@ public:
 private:
     void computeGroundEnergy();
 
-    template<bool C> void prepareImpl(const LOperatorType<C> &HOp, const MPI_Comm& comm);
+    template<bool C> void prepareImpl(const LOperatorTypeRC<C> &HOp, const MPI_Comm& comm);
     template<bool C> void computeImpl(const MPI_Comm& comm);
 };
 
@@ -75,7 +75,7 @@ void Hamiltonian::prepare(Operators::expression<ScalarType, IndexTypes...> const
     if(getStatus() >= Prepared) return;
 
     Complex = std::is_same<ScalarType, ComplexType>::value;
-    libcommute::loperator<ScalarType, libcommute::fermion> HOp(H, HS.getFullHilbertSpace());
+    LOperatorType<ScalarType> HOp(H, HS.getFullHilbertSpace());
     prepareImpl<std::is_same<ScalarType, ComplexType>::value>(HOp, comm);
 
     setStatus(Prepared);

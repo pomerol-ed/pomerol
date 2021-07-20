@@ -46,7 +46,7 @@ void MonomialOperatorPart::computeImpl() {
 
     auto const& U = HFrom.getMatrix<HC>();
 
-    auto const& MOp_ = *static_cast<const LOperatorType<MOpC>*>(MOp);
+    auto const& MOp_ = *static_cast<const LOperatorTypeRC<MOpC>*>(MOp);
 
     for(InnerQuantumState st = 0; st < fromStates.size(); ++st) {
         auto fromView = fromMapper.make_const_view_no_ref(U.col(st));

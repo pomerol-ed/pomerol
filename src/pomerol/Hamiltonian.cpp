@@ -8,7 +8,7 @@
 namespace Pomerol {
 
 template<bool C>
-void Hamiltonian::prepareImpl(const LOperatorType<C> &HOp, const MPI_Comm& comm)
+void Hamiltonian::prepareImpl(const LOperatorTypeRC<C> &HOp, const MPI_Comm& comm)
 {
     BlockNumber NumberOfBlocks = S.getNumberOfBlocks();
     int rank = pMPI::rank(comm);
@@ -47,8 +47,8 @@ void Hamiltonian::prepareImpl(const LOperatorType<C> &HOp, const MPI_Comm& comm)
     }
 }
 
-template void Hamiltonian::prepareImpl<true>(const LOperatorType<true> &p, const MPI_Comm&);
-template void Hamiltonian::prepareImpl<false>(const LOperatorType<false> &, const MPI_Comm&);
+template void Hamiltonian::prepareImpl<true>(const LOperatorTypeRC<true> &p, const MPI_Comm&);
+template void Hamiltonian::prepareImpl<false>(const LOperatorTypeRC<false> &, const MPI_Comm&);
 
 template<bool C>
 void Hamiltonian::computeImpl(const MPI_Comm& comm)

@@ -78,24 +78,24 @@ TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
 
         INFO("Acting with rotated cdag_" << op_index << " on block " << test_block << " and receiving " << result_block);
 
-        using LOperatorType = libcommute::loperator<RealType, libcommute::fermion>;
+        using LOperatorT = LOperatorType<RealType>;
 
-        HamiltonianPart HpartRHS(LOperatorType(HExpr, HS.getFullHilbertSpace()), S, test_block);
+        HamiltonianPart HpartRHS(LOperatorT(HExpr, HS.getFullHilbertSpace()), S, test_block);
         HpartRHS.prepare();
         HpartRHS.compute();
         INFO(HpartRHS);
 
-        HamiltonianPart HpartLHS(LOperatorType(HExpr, HS.getFullHilbertSpace()), S, result_block);
+        HamiltonianPart HpartLHS(LOperatorT(HExpr, HS.getFullHilbertSpace()), S, result_block);
         HpartLHS.prepare();
         HpartLHS.compute();
         INFO(HpartLHS);
 
-        auto cdag1op = LOperatorType(Operators::c_dag("B", (unsigned short)0, up), HS.getFullHilbertSpace());
+        auto cdag1op = LOperatorT(Operators::c_dag("B", (unsigned short)0, up), HS.getFullHilbertSpace());
         MonomialOperatorPart Cdag1(cdag1op, S, HpartRHS, HpartLHS);
         Cdag1.compute();
         INFO(Cdag1);
 
-        auto c1op = LOperatorType(Operators::c("B", (unsigned short)0, up), HS.getFullHilbertSpace());
+        auto c1op = LOperatorT(Operators::c("B", (unsigned short)0, up), HS.getFullHilbertSpace());
         MonomialOperatorPart C1(c1op, S, HpartLHS, HpartRHS);
         C1.compute();
         INFO(C1);
