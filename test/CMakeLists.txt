@@ -22,7 +22,8 @@ foreach(test ${tests})
         ${MPIEXEC_NUMPROC_FLAG} 1
         ${MPIEXEC_PREFLAGS} ${test} ${MPIEXEC_POSTFLAGS})
     add_test(NAME ${test} COMMAND "${MPIEXEC}" ${test_parameters})
-    target_link_libraries(${test} ${PROJECT_NAME} ${MPI_CXX_LIBRARIES} catch2)
+    target_link_libraries(${test} PRIVATE
+                          ${PROJECT_NAME} ${MPI_CXX_LIBRARIES} catch2)
 endforeach(test)
 
 set(mpi_tests BroadcastTest MPIDispatcherTest)
