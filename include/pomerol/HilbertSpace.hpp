@@ -16,8 +16,11 @@
 #include <libcommute/loperator/loperator.hpp>
 #include <libcommute/loperator/space_partition.hpp>
 
+#include <map>
 #include <memory>
 #include <stdexcept>
+#include <sstream>
+#include <tuple>
 #include <type_traits>
 
 namespace Pomerol {
@@ -42,13 +45,50 @@ private:
 
     std::unique_ptr<SpacePartitionType> Partition = nullptr;
 
+    struct boson_es_constructor_from_map {
+        const std::map<std::tuple<IndexTypes...>, unsigned int> &bits_per_boson;
+
+        boson_es_constructor_from_map(
+            const std::map<std::tuple<IndexTypes...>, unsigned int> &bits_per_boson
+        ) : bits_per_boson(bits_per_boson) {}
+
+        inline std::unique_ptr<libcommute::elementary_space<IndexTypes...>>
+        operator()(libcommute::generator<IndexTypes...> const& g) const {
+            using namespace libcommute;
+            if(is_fermion(g)) {
+                return make_unique<elementary_space_fermion<IndexTypes...>>(g.indices());
+            } else if(is_boson(g)) {
+                auto it = bits_per_boson.find(g.indices());
+                unsigned int bits = (it == bits_per_boson.end()) ? 1 : it->second;
+                return make_unique<elementary_space_boson<IndexTypes...>>(
+                    bits, g.indices()
+                );
+            } else {
+                std::stringstream ss;
+                ss << "Unexpected algebra generator " << g;
+                throw std::runtime_error(ss.str());
+            }
+        }
+    };
+
 public:
 
     template<typename ScalarType>
     HilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
-                 const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian) :
+                 const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian,
+                 unsigned int bits_per_boson = 1) :
       IndexInfo(IndexInfo),
-      FullHilbertSpace(InitFullHilbertSpace(IndexInfo)),
+      FullHilbertSpace(Hamiltonian, libcommute::boson_es_constructor(bits_per_boson)),
+      HamiltonianComplex(std::is_same<ScalarType, ComplexType>::value),
+      HOp(std::make_shared<LOperatorType<ScalarType>>(Hamiltonian, FullHilbertSpace))
+    {}
+
+    template<typename ScalarType>
+    HilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
+                 const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian,
+                 const std::map<std::tuple<IndexTypes...>, unsigned int> &bits_per_boson_map) :
+      IndexInfo(IndexInfo),
+      FullHilbertSpace(Hamiltonian, boson_es_constructor_from_map(bits_per_boson_map)),
       HamiltonianComplex(std::is_same<ScalarType, ComplexType>::value),
       HOp(std::make_shared<LOperatorType<ScalarType>>(Hamiltonian, FullHilbertSpace))
     {}
@@ -91,23 +131,22 @@ public:
             throw std::runtime_error("Hilbert space partition has not been computed");
         return *Partition;
     }
-
-private:
-
-  FullHilbertSpaceType InitFullHilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo) {
-      FullHilbertSpaceType FullHS;
-      for(ParticleIndex p = 0; p < IndexInfo.getIndexSize(); ++p) {
-          FullHS.add(libcommute::elementary_space_fermion<IndexTypes...>(IndexInfo.getInfo(p)));
-      }
-      return FullHS;
-  }
 };
 
 template<typename ScalarType, typename... IndexTypes>
 HilbertSpace<IndexTypes...>
 MakeHilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
-                 const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian) {
-  return HilbertSpace<IndexTypes...>(IndexInfo, Hamiltonian);
+                 const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian,
+                 unsigned int bits_per_boson = 1) {
+  return HilbertSpace<IndexTypes...>(IndexInfo, Hamiltonian, bits_per_boson);
+}
+
+template<typename ScalarType, typename... IndexTypes>
+HilbertSpace<IndexTypes...>
+MakeHilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
+                 const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian,
+                 const std::map<std::tuple<IndexTypes...>, unsigned int> &bits_per_boson_map) {
+  return HilbertSpace<IndexTypes...>(IndexInfo, Hamiltonian, bits_per_boson_map);
 }
 
 } // namespace Pomerol

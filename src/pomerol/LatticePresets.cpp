@@ -8,11 +8,17 @@ namespace LatticePresets {
 using Operators::c_dag;
 using Operators::c;
 using Operators::n;
+using Operators::a_dag;
+using Operators::a;
 
 // spin
 std::ostream & operator<<(std::ostream & os, spin s)
 {
-    return os << (s == up ? "up" : "dn");
+    switch(s) {
+      case undef: return os;
+      case up: return os << "up";
+      case down: return os << "dn";
+    }
 }
 
 //
@@ -325,6 +331,40 @@ ComplexExpr SS(const std::string& Label1, const std::string& Label2, ComplexType
         LatticePresets::SminusSplus(Label1, Label2, ExchJ / 2., Orbital);
     }
     return res;
+}
+
+RealExpr BosonLevel(const std::string& Label, RealType Value, unsigned short ExtraIndex)
+{
+    return Value * a_dag(Label, ExtraIndex, undef) * a(Label, ExtraIndex, undef);
+}
+
+ComplexExpr BosonLevel(const std::string& Label, ComplexType Value, unsigned short ExtraIndex)
+{
+    return Value * a_dag(Label, ExtraIndex, undef) * a(Label, ExtraIndex, undef);
+}
+
+RealExpr BosonInteraction(const std::string& Label, RealType Value, unsigned short ExtraIndex)
+{
+    auto nb = a_dag(Label, ExtraIndex, undef) * a(Label, ExtraIndex, undef);
+    return 0.5 * Value * nb * (nb - 1.0);
+}
+
+ComplexExpr BosonInteraction(const std::string& Label, ComplexType Value, unsigned short ExtraIndex)
+{
+    auto nb = a_dag(Label, ExtraIndex, undef) * a(Label, ExtraIndex, undef);
+    return 0.5 * Value * nb * (nb - 1.0);
+}
+
+RealExpr HolsteinInteraction(const std::string& Label, RealType Value, unsigned short Orbital, unsigned short BosonExtraIndex)
+{
+    auto N = n(Label, Orbital, up) + n(Label, Orbital, down);
+    return Value * N * (a_dag(Label, BosonExtraIndex, undef) + a(Label, BosonExtraIndex, undef));
+}
+
+ComplexExpr HolsteinInteraction(const std::string& Label, ComplexType Value, unsigned short Orbital, unsigned short BosonExtraIndex)
+{
+    auto N = n(Label, Orbital, up) + n(Label, Orbital, down);
+    return Value * N * (a_dag(Label, BosonExtraIndex, undef) + a(Label, BosonExtraIndex, undef));
 }
 
 } // namespace Pomerol::LatticePresets
