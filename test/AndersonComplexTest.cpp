@@ -14,6 +14,7 @@
 #include <vector>
 
 using namespace Pomerol;
+using LatticePresets::spin;
 
 // Parameters
 double mu = 1.2;
@@ -38,6 +39,9 @@ struct GF_ref {
 
     ComplexType operator()(spin s1, spin s2, int n) const {
         ComplexType iw = ComplexType(0,M_PI*(2*n+1)/beta);
+
+        using LatticePresets::up;
+        using LatticePresets::down;
 
         ComplexType res = 0;
         if(s1 == up && s2 == up) {

@@ -10,10 +10,17 @@
 #include "Misc.hpp"
 #include "Operators.hpp"
 
+#include <ostream>
+
 namespace Pomerol {
 
 /** This is a set of presets of different Terms, most commonly used while writing a Hamiltonian. */
 namespace LatticePresets {
+
+    /** Possible spin projections are \b down and \b up */
+    enum spin : unsigned short {down, up};
+
+    std::ostream & operator<<(std::ostream & os, spin s);
 
     using RealExpr = Operators::expression<RealType, std::string, unsigned short, spin>;
     using ComplexExpr = Operators::expression<ComplexType, std::string, unsigned short, spin>;

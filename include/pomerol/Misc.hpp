@@ -83,11 +83,6 @@ using ColMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::ColMaj
 template<bool Complex>
 using RowMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::RowMajor>;
 
-/** Possible spin projections are \b down and \b up */
-enum spin : unsigned short {down, up};
-
-std::ostream & operator<<(std::ostream & os, spin s);
-
 /** A short name for imaginary unit. */
 static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
 

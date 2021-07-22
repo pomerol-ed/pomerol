@@ -9,6 +9,12 @@ using Operators::c_dag;
 using Operators::c;
 using Operators::n;
 
+// spin
+std::ostream & operator<<(std::ostream & os, spin s)
+{
+    return os << (s == up ? "up" : "dn");
+}
+
 //
 // 2-index presets
 //
@@ -251,8 +257,8 @@ RealExpr Magnetization(const std::string& Label, RealType Magnetization, unsigne
 {
     RealExpr res;
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
-        res += LatticePresets::Level(Label, Magnetization, Orbital, Pomerol::up);
-        res += LatticePresets::Level(Label, -Magnetization, Orbital, Pomerol::down);
+        res += LatticePresets::Level(Label, Magnetization, Orbital, up);
+        res += LatticePresets::Level(Label, -Magnetization, Orbital, down);
     }
     return res;
 }
@@ -261,8 +267,8 @@ ComplexExpr Magnetization(const std::string& Label, ComplexType Magnetization, u
 {
     ComplexExpr res;
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
-        res += LatticePresets::Level(Label, Magnetization, Orbital, Pomerol::up);
-        res += LatticePresets::Level(Label, -Magnetization, Orbital, Pomerol::down);
+        res += LatticePresets::Level(Label, Magnetization, Orbital, up);
+        res += LatticePresets::Level(Label, -Magnetization, Orbital, down);
     }
     return res;
 }

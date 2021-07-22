@@ -2,15 +2,6 @@
 
 namespace Pomerol {
 
-//////////
-// spin //
-//////////
-std::ostream & operator<<(std::ostream & os, spin s)
-{
-    return os << (s == up ? "up" : "dn");
-}
-
-
 //////////////////
 // Permutation3 //
 //////////////////

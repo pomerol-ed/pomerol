@@ -44,8 +44,8 @@ public:
 
   virtual std::pair<ParticleIndex, ParticleIndex>
   get_node(const IndexInfoType & IndexInfo) override {
-    ParticleIndex d0 = IndexInfo.getIndex("A",0,down);
-    ParticleIndex u0 = IndexInfo.getIndex("A",0,up);
+    ParticleIndex d0 = IndexInfo.getIndex("A",0,LatticePresets::down);
+    ParticleIndex u0 = IndexInfo.getIndex("A",0,LatticePresets::up);
     return std::make_pair(d0, u0);
   }
 
