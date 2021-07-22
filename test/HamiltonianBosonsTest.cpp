@@ -108,7 +108,8 @@ TEST_CASE("Hamiltonian of an isolated Hubbard-Holstein atom",
 
     SECTION("bits_per_boson_map") {
         std::map<decltype(HExpr)::index_types, unsigned int> bits_per_boson_map;
-        bits_per_boson_map[{"A", 0, undef}] = bits_per_boson;
+        auto boson_indices = decltype(HExpr)::index_types("A", 0, undef);
+        bits_per_boson_map[boson_indices] = bits_per_boson;
         auto HS = MakeHilbertSpace(IndexInfo, HExpr, bits_per_boson_map);
         HS.compute();
         StatesClassification S;
