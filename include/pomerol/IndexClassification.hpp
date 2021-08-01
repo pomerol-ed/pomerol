@@ -41,9 +41,12 @@ public:
      */
     template<typename ScalarType>
     IndexClassification(Operators::expression<ScalarType, IndexTypes...> const& H) {
+        // Collect indices of fermionic operators in the Hamiltonian
         for(auto const& mon : H) {
-            for(auto const& g : mon.monomial)
-                InfoToIndices.emplace(g.indices(), 0);
+            for(auto const& g : mon.monomial) {
+                if(libcommute::is_fermion(g))
+                    InfoToIndices.emplace(g.indices(), 0);
+            }
         }
         UpdateMaps();
     }

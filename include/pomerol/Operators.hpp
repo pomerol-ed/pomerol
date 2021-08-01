@@ -25,6 +25,8 @@ using libcommute::hc;
 using libcommute::static_indices::c;
 using libcommute::static_indices::c_dag;
 using libcommute::static_indices::n;
+using libcommute::static_indices::a;
+using libcommute::static_indices::a_dag;
 
 namespace Detail {
 
@@ -67,21 +69,30 @@ make_index_sequence<std::tuple_size<typename std::decay<T>::type>::value>
 make_seq() { return {}; }
 
 template<size_t N, typename T>
-using element_t = typename std::tuple_element<N, typename std::decay<T>::type>::type;
+using element_t =
+typename std::tuple_element<N, typename std::decay<T>::type>::type;
 
 template<typename F, typename ArgsT, size_t... Is>
 auto apply_impl(F && f, ArgsT && args, index_sequence<Is...>) ->
-    decltype(f(static_cast<element_t<Is, ArgsT>>(std::get<Is>(std::forward<ArgsT>(args)))...)) {
-    return f(static_cast<element_t<Is, ArgsT>>(std::get<Is>(std::forward<ArgsT>(args)))...);
+    decltype(f(static_cast<element_t<Is, ArgsT>>(
+        std::get<Is>(std::forward<ArgsT>(args))
+    )...)) {
+    return f(static_cast<element_t<Is, ArgsT>>(
+        std::get<Is>(std::forward<ArgsT>(args))
+    )...);
 }
 
 template<typename F, typename ArgsT>
 auto apply(F && f, ArgsT && args) ->
-    decltype(apply_impl(std::forward<F>(f), std::forward<ArgsT>(args), make_seq<ArgsT>())) {
-    return apply_impl(std::forward<F>(f), std::forward<ArgsT>(args), make_seq<ArgsT>());
+    decltype(apply_impl(std::forward<F>(f),
+                        std::forward<ArgsT>(args),
+                        make_seq<ArgsT>())) {
+    return apply_impl(std::forward<F>(f),
+                      std::forward<ArgsT>(args),
+                      make_seq<ArgsT>());
 }
 
-} // namespace Pomerol::Operators::detail
+} // namespace Pomerol::Operators::Detail
 
 //
 // Operator presets

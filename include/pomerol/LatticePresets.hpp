@@ -10,10 +10,17 @@
 #include "Misc.hpp"
 #include "Operators.hpp"
 
+#include <ostream>
+
 namespace Pomerol {
 
 /** This is a set of presets of different Terms, most commonly used while writing a Hamiltonian. */
 namespace LatticePresets {
+
+    /** Possible spin projections are \b down and \b up */
+    enum spin : short {undef = -1, down = 0, up = 1};
+
+    std::ostream & operator<<(std::ostream & os, spin s);
 
     using RealExpr = Operators::expression<RealType, std::string, unsigned short, spin>;
     using ComplexExpr = Operators::expression<ComplexType, std::string, unsigned short, spin>;
@@ -156,6 +163,31 @@ namespace LatticePresets {
      */
     RealExpr SS(const std::string& Label1, const std::string& Label2, RealType ExchJ, unsigned short NOrbitals = 1);
     ComplexExpr SS(const std::string& Label1, const std::string& Label2, ComplexType ExchJ, unsigned short NOrbitals = 1);
+
+    //
+    // Bosons
+    //
+
+    /** Generates a single energy level term \f$\varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma} \f$ on a local site for a given spin and orbital.
+     * \param[in] Label \f$i\f$ - site affected by this Lattice::Term.
+     * \param[in] Value \f$\varepsilon\f$ - the energy level.
+     * \param[in] orbital \f$\alpha\f$ - affected orbital of the site.
+     * \param[in] spin \f$\sigma\f$ - affected spin component.
+     */
+    RealExpr BosonLevel(const std::string& Label, RealType Value, unsigned short ExtraIndex);
+    ComplexExpr BosonLevel(const std::string& Label, ComplexType Value, unsigned short ExtraIndex);
+
+    /**
+     * TODO: Bose-Hubbard interaction term
+     */
+    RealExpr BosonInteraction(const std::string& Label, RealType Value, unsigned short ExtraIndex);
+    ComplexExpr BosonInteraction(const std::string& Label, ComplexType Value, unsigned short ExtraIndex);
+
+    /**
+     * TODO: Holstein coupling
+     */
+    RealExpr HolsteinInteraction(const std::string& Label, RealType Value, unsigned short Orbital, unsigned short BosonExtraIndex);
+    ComplexExpr HolsteinInteraction(const std::string& Label, ComplexType Value, unsigned short Orbital, unsigned short BosonExtraIndex);
 
 } // namespace Pomerol::LatticePresets
 } // namespace Pomerol

@@ -5,6 +5,7 @@ target_include_directories(catch2 PRIVATE ${MPI_CXX_INCLUDE_PATH})
 # Pomerol tests
 set(tests
     HamiltonianTest
+    HamiltonianBosonsTest
     GF1siteTest
     GF2siteTest
     GF4siteTest

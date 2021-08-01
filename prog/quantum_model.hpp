@@ -42,9 +42,11 @@ class quantum_model {
 
 public:
 
-  using IndexInfoType = Pomerol::IndexClassification<std::string,
-                                                     unsigned short,
-                                                     Pomerol::spin>;
+  using IndexInfoType = Pomerol::IndexClassification<
+      std::string,
+      unsigned short,
+      Pomerol::LatticePresets::spin
+  >;
 
   quantum_model(int argc, char* argv[], const std::string &prog_desc);
   ~quantum_model();

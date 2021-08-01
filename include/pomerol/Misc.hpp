@@ -61,10 +61,10 @@ template<bool Complex>
 using MelemType = typename std::conditional<Complex, ComplexType, RealType>::type;
 
 template<typename ScalarType>
-using LOperatorType = libcommute::loperator<ScalarType, libcommute::fermion>;
+using LOperatorType = libcommute::loperator<ScalarType, libcommute::fermion, libcommute::boson>;
 
 template<bool Complex>
-using LOperatorTypeRC = libcommute::loperator<MelemType<Complex>, libcommute::fermion>;
+using LOperatorTypeRC = libcommute::loperator<MelemType<Complex>, libcommute::fermion, libcommute::boson>;
 
 template<bool Complex>
 using MatrixType = Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor>;
@@ -82,11 +82,6 @@ template<bool Complex>
 using ColMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::ColMajor>;
 template<bool Complex>
 using RowMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::RowMajor>;
-
-/** Possible spin projections are \b down and \b up */
-enum spin : unsigned short {down, up};
-
-std::ostream & operator<<(std::ostream & os, spin s);
 
 /** A short name for imaginary unit. */
 static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
