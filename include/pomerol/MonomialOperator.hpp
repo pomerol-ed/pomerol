@@ -20,6 +20,7 @@
 
 #include <boost/bimap.hpp>
 
+#include <cstddef>
 #include <memory>
 #include <stdexcept>
 #include <type_traits>
@@ -70,9 +71,9 @@ protected:
 
     const libcommute::space_partition &Partition;
     /** A map between non-vanishing parts (internal numbering) and their R.H.S. BlockNumbers  */
-    std::unordered_map<size_t, BlockNumber> mapPartsFromRight;
+    std::unordered_map<std::size_t, BlockNumber> mapPartsFromRight;
     /** A map between non-vanishing parts (internal numbering) and their L.H.S. BlockNumbers  */
-    std::unordered_map<size_t, BlockNumber> mapPartsFromLeft;
+    std::unordered_map<std::size_t, BlockNumber> mapPartsFromLeft;
 
     BlocksBimap LeftRightBlocks;
 

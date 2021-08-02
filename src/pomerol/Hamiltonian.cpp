@@ -2,6 +2,7 @@
 
 #include "mpi_dispatcher/mpi_skel.hpp"
 
+#include <cstddef>
 #include <map>
 #include <stdexcept>
 
@@ -21,7 +22,7 @@ void Hamiltonian::prepareImpl(const LOperatorTypeRC<C> &HOp, const MPI_Comm& com
 
     pMPI::mpi_skel<pMPI::PrepareWrap<HamiltonianPart>> skel;
     skel.parts.resize(parts.size());
-    for(size_t p = 0; p < parts.size(); ++p) {
+    for(std::size_t p = 0; p < parts.size(); ++p) {
         skel.parts[p] = pMPI::PrepareWrap<HamiltonianPart>(parts[p]);
     }
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, false);
@@ -29,7 +30,7 @@ void Hamiltonian::prepareImpl(const LOperatorTypeRC<C> &HOp, const MPI_Comm& com
 
     MPI_Datatype H_dt = C ? MPI_CXX_DOUBLE_COMPLEX : MPI_DOUBLE;
 
-    for(size_t p = 0; p < parts.size(); ++p) {
+    for(std::size_t p = 0; p < parts.size(); ++p) {
         auto & part = parts[p];
         if (rank == job_map[p]) {
             if (part.getStatus() != HamiltonianPart::Prepared) {
@@ -56,7 +57,7 @@ void Hamiltonian::computeImpl(const MPI_Comm& comm)
     // Create a "skeleton" class with pointers to part that can call a compute method
     pMPI::mpi_skel<pMPI::ComputeWrap<HamiltonianPart>> skel;
     skel.parts.resize(parts.size());
-    for (size_t p = 0; p < parts.size(); p++) {
+    for (std::size_t p = 0; p < parts.size(); p++) {
       auto & part = parts[p];
       skel.parts[p] = pMPI::ComputeWrap<HamiltonianPart>(part, part.getSize());
     }
@@ -66,7 +67,7 @@ void Hamiltonian::computeImpl(const MPI_Comm& comm)
     // Start distributing data
     MPI_Barrier(comm);
     MPI_Datatype H_dt = C ? MPI_CXX_DOUBLE_COMPLEX : MPI_DOUBLE;
-    for (size_t p = 0; p < parts.size(); ++p) {
+    for (std::size_t p = 0; p < parts.size(); ++p) {
         auto & part = parts[p];
         auto & H = part.getMatrix<C>();
         if (rank == job_map[p]){
@@ -142,7 +143,7 @@ RealVectorType const& Hamiltonian::getEigenValues(BlockNumber Block) const
 RealVectorType Hamiltonian::getEigenValues() const
 {
     RealVectorType out(S.getNumberOfStates());
-    size_t copied_size = 0;
+    std::size_t copied_size = 0;
     for(auto const& part : parts) {
         auto const& ev = part.getEigenValues();
         out.segment(copied_size, ev.size()) = ev;

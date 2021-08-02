@@ -17,7 +17,7 @@ TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H
 {
 }
 
-BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber RightIndex) const
+BlockNumber TwoParticleGF::getLeftIndex(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber RightIndex) const
 {
     switch(permutations3[PermutationNumber].perm[OperatorPosition]) {
         case 0: return C1.getLeftIndex(RightIndex);
@@ -27,7 +27,7 @@ BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t Operato
     }
 }
 
-BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const
+BlockNumber TwoParticleGF::getRightIndex(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const
 {
     switch(permutations3[PermutationNumber].perm[OperatorPosition]) {
         case 0: return C1.getRightIndex(LeftIndex);
@@ -37,7 +37,7 @@ BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t Operat
     }
 }
 
-const MonomialOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const
+const MonomialOperatorPart& TwoParticleGF::OperatorPartAtPosition(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const
 {
     switch(permutations3[PermutationNumber].perm[OperatorPosition]){
         case 0: return C1.getPartFromLeftIndex(LeftIndex);
@@ -56,7 +56,7 @@ void TwoParticleGF::prepare()
     MonomialOperator::BlocksBimap const& CX4NontrivialBlocks = CX4.getBlockMapping();
     for(auto outer_iter = CX4NontrivialBlocks.right.begin();
         outer_iter != CX4NontrivialBlocks.right.end(); outer_iter++){ // Iterate over the outermost index.
-            for(size_t p = 0; p < 6; ++p) { // Choose a permutation
+            for(std::size_t p = 0; p < 6; ++p) { // Choose a permutation
                   BlockNumber LeftIndices[4];
                   LeftIndices[0] = outer_iter->first;
                   LeftIndices[3] = outer_iter->second;
@@ -157,7 +157,7 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs
         bool fill_container = !freqs.empty();
         skel.parts.reserve(parts.size());
         m_data.resize(freqs.size(), 0.0);
-        for (size_t i = 0; i < parts.size(); ++i) {
+        for (std::size_t i = 0; i < parts.size(); ++i) {
             skel.parts.emplace_back(freqs, m_data, parts[i], clear, fill_container, 1);
         }
         std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
@@ -174,7 +174,7 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs
 
         // Optionally distribute terms to other processes
         if (!clear) {
-            for(size_t p = 0; p < parts.size(); ++p) {
+            for(std::size_t p = 0; p < parts.size(); ++p) {
                 parts[p].NonResonantTerms.broadcast(comm, job_map[p]);
                 parts[p].ResonantTerms.broadcast(comm, job_map[p]);
                 parts[p].setStatus(TwoParticleGFPart::Computed);
@@ -188,7 +188,7 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs
     return m_data;
 }
 
-ParticleIndex TwoParticleGF::getIndex(size_t Position) const
+ParticleIndex TwoParticleGF::getIndex(std::size_t Position) const
 {
     switch(Position){
         case 0: return C1.getIndex();

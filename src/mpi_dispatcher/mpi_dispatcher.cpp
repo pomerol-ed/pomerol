@@ -86,10 +86,10 @@ inline std::vector<WorkerId> _autorange_workers(const MPI_Comm &comm, bool inclu
     int rank = pMPI::rank(comm);
 
     std::vector<WorkerId> out;
-    size_t Nprocs(size - int(!include_boss));
+    std::size_t Nprocs(size - int(!include_boss));
     if(!Nprocs)
         throw std::logic_error("No workers to evaluate");
-    for(size_t p = 0; p < size; ++p) {
+    for(std::size_t p = 0; p < size; ++p) {
         if(include_boss || rank != p) {
             out.emplace_back(p);
         }
@@ -97,7 +97,7 @@ inline std::vector<WorkerId> _autorange_workers(const MPI_Comm &comm, bool inclu
     return out;
 }
 
-inline std::vector<JobId> _autorange_tasks(size_t ntasks)
+inline std::vector<JobId> _autorange_tasks(std::size_t ntasks)
 {
     std::vector<JobId> out(ntasks);
     std::iota(out.begin(), out.end(), 0);
@@ -115,7 +115,7 @@ MPIMaster::MPIMaster(const MPI_Comm &comm, std::vector<WorkerId> worker_pool, st
     fill_stack_();
 }
 
-MPIMaster::MPIMaster(const MPI_Comm &comm, size_t ntasks, bool include_boss):
+MPIMaster::MPIMaster(const MPI_Comm &comm, std::size_t ntasks, bool include_boss):
     MPIMaster(comm, _autorange_workers(comm, include_boss), _autorange_tasks(ntasks))
 {}
 
@@ -144,7 +144,7 @@ void MPIMaster::order()
 
 void MPIMaster::check_workers()
 {
-    for(size_t i = 0; i < Nprocs; ++i) {
+    for(std::size_t i = 0; i < Nprocs; ++i) {
         if(wait_statuses[i] == MPI_REQUEST_NULL) continue;
 
         int req_completed = 0;
@@ -154,7 +154,7 @@ void MPIMaster::check_workers()
         }
     }
     if(JobStack.empty() && WorkerStack.size() >= Nprocs) {
-        for(size_t i = 0; i < Nprocs; ++i) {
+        for(std::size_t i = 0; i < Nprocs; ++i) {
             if(!workers_finish[i]) {
                 MPI_Send(nullptr, 0, MPI_INT, worker_pool[i], pMPI::Finish, Comm);
                 // to prevent double sending of Finish command that could overlap with other communication

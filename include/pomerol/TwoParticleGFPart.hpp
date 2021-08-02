@@ -19,6 +19,7 @@
 #include "mpi_dispatcher/misc.hpp"
 
 #include <complex>
+#include <cstddef>
 
 namespace Pomerol {
 
@@ -80,7 +81,7 @@ public:
         struct IsNegligible {
             double Tolerance;
             IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
-            bool operator()(NonResonantTerm const& t, size_t ToleranceDivisor) const {
+            bool operator()(NonResonantTerm const& t, std::size_t ToleranceDivisor) const {
                 return std::abs(t.Coeff) < Tolerance / ToleranceDivisor;
             }
             void broadcast(const MPI_Comm &comm, int root) {
@@ -169,7 +170,7 @@ public:
         struct IsNegligible {
             double Tolerance;
             IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
-            bool operator()(ResonantTerm const& t, size_t ToleranceDivisor) const {
+            bool operator()(ResonantTerm const& t, std::size_t ToleranceDivisor) const {
                 return std::abs(t.ResCoeff) < Tolerance / ToleranceDivisor &&
                        std::abs(t.NonResCoeff) < Tolerance / ToleranceDivisor;
             }
@@ -347,9 +348,9 @@ public:
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
     /** Returns the number of resonant terms in the cache. */
-    size_t getNumResonantTerms() const { return ResonantTerms.size(); }
+    std::size_t getNumResonantTerms() const { return ResonantTerms.size(); }
     /** Returns the number of non-resonant terms in the cache. */
-    size_t getNumNonResonantTerms() const { return NonResonantTerms.size(); }
+    std::size_t getNumNonResonantTerms() const { return NonResonantTerms.size(); }
 
     /** Returns a Permutation3 of the current part */
     const Permutation3& getPermutation() const { return Permutation; }

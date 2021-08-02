@@ -7,6 +7,7 @@
 
 #include <mpi.h>
 
+#include <cstddef>
 #include <map>
 #include <stack>
 #include <vector>
@@ -40,7 +41,7 @@ protected:
 struct MPIMaster
 {
     MPI_Comm Comm;
-    size_t Ntasks, Nprocs;
+    std::size_t Ntasks, Nprocs;
 
     std::stack<JobId> JobStack;
     std::stack<WorkerId> WorkerStack;
@@ -49,14 +50,14 @@ struct MPIMaster
     std::vector<JobId> task_numbers;
 
     std::vector<WorkerId> worker_pool;
-    std::map<size_t, WorkerId> WorkerIndices;
+    std::map<std::size_t, WorkerId> WorkerIndices;
 
     std::vector<MPI_Request> wait_statuses;
     std::vector<bool> workers_finish;
 
     MPIMaster(const MPI_Comm &comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers);
     MPIMaster(const MPI_Comm &comm, std::vector<JobId> task_numbers, bool include_boss = true);
-    MPIMaster(const MPI_Comm &comm, size_t ntasks, bool include_boss = true);
+    MPIMaster(const MPI_Comm &comm, std::size_t ntasks, bool include_boss = true);
 
     void order_worker(WorkerId worker_id, JobId job);
     void order();

@@ -4,6 +4,7 @@
 #include "catch2/catch-pomerol.hpp"
 
 #include <chrono>
+#include <cstddef>
 #include <memory>
 #include <random>
 #include <thread>
@@ -21,7 +22,7 @@ struct dumb_task_type {
 TEST_CASE("Test mpi_dispatcher", "[mpi_dispatcher]") {
     std::random_device rd;
     std::mt19937 gen(100000);
-    size_t ROOT = 0;
+    std::size_t ROOT = 0;
     int rank = pMPI::rank(MPI_COMM_WORLD);
 
     SECTION("With MPIMaster") {

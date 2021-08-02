@@ -22,6 +22,7 @@
 #endif
 
 #include <complex>
+#include <cstddef>
 #include <iostream>
 #include <type_traits>
 
@@ -88,7 +89,7 @@ static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent lin
 
 /** Permutation of 3 elements */
 struct Permutation3 {
-    const size_t perm[3];
+    const std::size_t perm[3];
     const int sign;
     bool operator==(const Permutation3& rhs) const;
     bool operator!=(const Permutation3& rhs) const;
@@ -98,7 +99,7 @@ extern const Permutation3 permutations3[6];
 
 /** Permutation of 4 elements */
 struct Permutation4 {
-    const size_t perm[4];
+    const std::size_t perm[4];
     const int sign;
     bool operator==(const Permutation4& rhs) const;
     bool operator!=(const Permutation4& rhs) const;

@@ -16,6 +16,7 @@
 #include "StatesClassification.hpp"
 #include "Thermal.hpp"
 
+#include <cstddef>
 #include <vector>
 
 namespace Pomerol {
@@ -78,7 +79,7 @@ public:
     /** Returns the 'bit' (index) of the operator C or CX.
      * \param[in] Position Use C for Position==0 and CX for Position==1.
      */
-    unsigned short getIndex(size_t Position) const;
+    unsigned short getIndex(std::size_t Position) const;
 
      /** Returns the value of the Green's function calculated at a given frequency.
      * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).

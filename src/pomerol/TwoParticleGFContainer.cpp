@@ -22,6 +22,7 @@
 #include "pomerol/TwoParticleGFContainer.hpp"
 
 #include <cmath>
+#include <cstddef>
 
 namespace Pomerol {
 
@@ -64,25 +65,25 @@ std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::com
     int rank = pMPI::rank(comm);
 
     // split communicator
-    size_t ncomponents = NonTrivialElements.size();
-    size_t ncolors = std::min(comm_size, int(NonTrivialElements.size()));
+    std::size_t ncomponents = NonTrivialElements.size();
+    std::size_t ncolors = std::min(comm_size, int(NonTrivialElements.size()));
     RealType color_size = 1.0*comm_size / ncolors;
     std::map<int,int> proc_colors;
     std::map<int,int> elem_colors;
     std::map<int,int> color_roots;
-    for (size_t p = 0; p < comm_size; ++p) {
+    for (std::size_t p = 0; p < comm_size; ++p) {
         int color = int (1.0*p / color_size);
         proc_colors[p] = color;
         color_roots[color] = p;
     }
-    for(size_t i=0; i < ncomponents; ++i) {
+    for(std::size_t i=0; i < ncomponents; ++i) {
         int color = i * ncolors / ncomponents;
         elem_colors[i] = color;
     }
 
     if(!rank) {
         INFO("Splitting " << ncomponents << " components in " << ncolors << " communicators");
-        for (size_t i = 0; i < ncomponents; ++i)
+        for (std::size_t i = 0; i < ncomponents; ++i)
             INFO("2pgf " << i << " color: " << elem_colors[i] << " color_root: "
                          << color_roots[elem_colors[i]]);
     }
@@ -108,7 +109,7 @@ std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::com
     for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
         int sender = color_roots[elem_colors[comp]];
         TwoParticleGF& chi = *((iter)->second);
-        for (size_t p = 0; p < chi.parts.size(); p++) {
+        for (std::size_t p = 0; p < chi.parts.size(); p++) {
             chi.parts[p].NonResonantTerms.broadcast(comm, sender);
             chi.parts[p].ResonantTerms.broadcast(comm, sender);
             std::vector<ComplexType> freq_data;

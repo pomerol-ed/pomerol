@@ -165,7 +165,7 @@ void quantum_model::compute() {
     if (calc_2pgf) {
       print_section("2-Particle Green's function calc");
 
-      std::vector<size_t> indices_2pgf = args::get(args_options._2pgf_indices);
+      std::vector<std::size_t> indices_2pgf = args::get(args_options._2pgf_indices);
 
       if (indices_2pgf.size() != 4)
         throw std::logic_error("Need 4 indices for 2PGF");
@@ -218,7 +218,7 @@ void quantum_model::compute() {
         mpi_cout << "Saving 2PGF " << index_comb << std::endl;
         grid_object<std::complex<double>, bmatsubara_grid, fmatsubara_grid, fmatsubara_grid> full_vertex(std::forward_as_tuple(bgrid, fgrid, fgrid));
         grid_object<std::complex<double>, fmatsubara_grid, fmatsubara_grid> full_vertex_1freq(std::forward_as_tuple(fgrid, fgrid));
-        size_t w_ind = 0;
+        std::size_t w_ind = 0;
         for (auto W : bgrid.points()) {
           for (auto w3 : fgrid.points()) {
             for (auto w2 : fgrid.points()) {

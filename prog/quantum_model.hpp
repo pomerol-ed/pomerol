@@ -9,6 +9,7 @@
 
 #include "args.hxx"
 
+#include <cstddef>
 #include <iostream>
 #include <set>
 #include <sstream>
@@ -91,7 +92,7 @@ protected:
     args::ValueFlag<int> wf_max;
     args::ValueFlag<int> wb_min;
     args::ValueFlag<int> wb_max;
-    args::ValueFlag<std::vector<size_t>, VectorReader> _2pgf_indices;
+    args::ValueFlag<std::vector<std::size_t>, VectorReader> _2pgf_indices;
     args::ValueFlag<double> _2pgf_reduce_tol;
     args::ValueFlag<double> _2pgf_coeff_tol;
     args::ValueFlag<double> _2pgf_multiterm_tol;

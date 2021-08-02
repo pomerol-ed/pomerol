@@ -18,6 +18,7 @@
 
 #include "mpi_dispatcher/misc.hpp"
 
+#include <cstddef>
 #include <tuple>
 #include <vector>
 
@@ -75,7 +76,7 @@ protected:
      * \param[in] OperatorPosition The number of the position of the operator.
      * \param[in] LeftIndex A left block index referring to the part needed.
      */
-    const MonomialOperatorPart& OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const;
+    const MonomialOperatorPart& OperatorPartAtPosition(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const;
     /** Chooses an operator standing at a specified position in a given permutation and
      * returns a left block index corresponding to the right block index. May return INVALID_BLOCK_NUMBER if
      * the operator does not have such a (non-zero) block.
@@ -83,7 +84,7 @@ protected:
      * \param[in] OperatorPosition The number of the position of the operator.
      * \param[in] RightIndex A right block index.
      */
-    BlockNumber getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber RightIndex) const;
+    BlockNumber getLeftIndex(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber RightIndex) const;
     /** Chooses an operator standing at a specified position in a given permutation and
      * returns a right block index corresponding to the left block index. May return INVALID_BLOCK_NUMBER if
      * the operator does not have such a (non-zero) block.
@@ -91,7 +92,7 @@ protected:
      * \param[in] OperatorPosition The number of the position of the operator.
      * \param[in] LeftIndex A left block index.
      */
-    BlockNumber getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const; //!< return right index of an operator at current position for a current permutation
+    BlockNumber getRightIndex(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const; //!< return right index of an operator at current position for a current permutation
 
 public:
     /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
@@ -130,7 +131,7 @@ public:
     /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
      * \param[in] Position Zero-based number of the operator to use.
      */
-    ParticleIndex getIndex(size_t Position) const;
+    ParticleIndex getIndex(std::size_t Position) const;
 
     /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values).
     * \param[in] z1 Frequency 1

@@ -8,6 +8,7 @@
 #include "mpi_dispatcher.hpp"
 
 #include <algorithm>
+#include <cstddef>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -55,7 +56,7 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const MPI_Comm& co
                   << comm_size << " procs." << std::endl;
     }
 
-    const size_t ROOT = 0;
+    const std::size_t ROOT = 0;
     std::unique_ptr<pMPI::MPIMaster> disp;
 
     if (rank == ROOT) {
@@ -117,7 +118,7 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const MPI_Comm& co
         MPI_Bcast(jobs.data(), n_jobs, MPI_INT, ROOT, comm);
         std::vector<pMPI::WorkerId> workers(n_jobs);
         MPI_Bcast(workers.data(), n_jobs, MPI_INT, ROOT, comm);
-        for (size_t i = 0; i < n_jobs; ++i)
+        for (std::size_t i = 0; i < n_jobs; ++i)
             job_map[jobs[i]] = workers[i];
     }
     return job_map;

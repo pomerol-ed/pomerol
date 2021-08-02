@@ -4,6 +4,7 @@
 #include <libcommute/loperator/mapped_basis_view.hpp>
 
 #include <cassert>
+#include <cstddef>
 #include <iostream>
 #include <stdexcept>
 #include <vector>
@@ -141,7 +142,7 @@ void MonomialOperatorPart::streamOutputImpl(std::ostream & os) const {
     BlockNumber from = HFrom.getBlockNumber();
     auto const& mat = getColMajorValue<C>();
 
-    for(size_t P = 0; P < mat.outerSize(); ++P) {
+    for(std::size_t P = 0; P < mat.outerSize(); ++P) {
         for(typename ColMajorMatrixType<C>::InnerIterator it(mat, P); it; ++it) {
             QuantumState N = S.getFockState(to, it.row());
             QuantumState M = S.getFockState(from, it.col());

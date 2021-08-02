@@ -75,7 +75,7 @@ void GreensFunction::compute()
     setStatus(Computed);
 }
 
-unsigned short GreensFunction::getIndex(size_t Position) const
+unsigned short GreensFunction::getIndex(std::size_t Position) const
 {
     switch(Position){
         case 0: return C.getIndex();

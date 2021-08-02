@@ -18,6 +18,7 @@
 #include "mpi_dispatcher/misc.hpp"
 
 #include <complex>
+#include <cstddef>
 #include <ostream>
 
 namespace Pomerol {
@@ -62,7 +63,7 @@ class SusceptibilityPart : public Thermal
         struct IsNegligible {
             double Tolerance;
             IsNegligible(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
-            bool operator()(Term const& t, size_t ToleranceDivisor) const {
+            bool operator()(Term const& t, std::size_t ToleranceDivisor) const {
                 return std::abs(t.Residue) < Tolerance / ToleranceDivisor;
             }
             void broadcast(const MPI_Comm &comm, int root) {

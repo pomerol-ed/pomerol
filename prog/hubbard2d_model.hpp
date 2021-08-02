@@ -8,6 +8,7 @@
 #include "quantum_model.hpp"
 
 #include <cmath>
+#include <cstddef>
 #include <iostream>
 #include <limits>
 #include <set>
@@ -57,8 +58,8 @@ public:
 
     /* Add sites */
     names.resize(L);
-    for (size_t y=0; y<size_y; y++) {
-      for (size_t x = 0; x < size_x; x++) {
+    for (std::size_t y=0; y<size_y; y++) {
+      for (std::size_t x = 0; x < size_x; x++) {
         auto i = SiteIndexF(x, y);
         names[i] = "S" + std::to_string(i);
       }
@@ -69,15 +70,15 @@ public:
     double mu = args::get(args_options.mu);
     if(std::isnan(mu)) mu = U / 2;
 
-    for (size_t i=0; i<L; i++)
+    for (std::size_t i=0; i<L; i++)
       HExpr += LatticePresets::CoulombS(names[i], U, -mu);
 
     /* Add hopping */
     double t = args::get(args_options.t);
     double tp = args::get(args_options.tp);
 
-    for (size_t y=0; y<size_y; y++) {
-      for (size_t x=0; x<size_x; x++) {
+    for (std::size_t y=0; y<size_y; y++) {
+      for (std::size_t x=0; x<size_x; x++) {
         auto pos = SiteIndexF(x,y);
         auto pos_right = SiteIndexF((x+1)%size_x,y); /*if (x == size_x - 1) pos_right = SiteIndexF(0,y); */
         auto pos_up = SiteIndexF(x,(y+1)%size_y);
@@ -104,7 +105,7 @@ public:
                                std::set<IndexCombination2> &indices2,
                                std::set<ParticleIndex>& f,
                                const IndexInfoType &IndexInfo) override {
-    for (size_t x=0; x<size_x; x++) {
+    for (std::size_t x=0; x<size_x; x++) {
       ParticleIndex ind = IndexInfo.getIndex(names[SiteIndexF(x,0)],0,LatticePresets::down);
       f.insert(ind);
       indices2.insert(IndexCombination2(d0,ind));
@@ -126,7 +127,7 @@ private:
   int size_y;
   std::vector<std::string> names;
 
-  size_t SiteIndexF(size_t x, size_t y) { return y * size_x + x; }
+  std::size_t SiteIndexF(std::size_t x, std::size_t y) { return y * size_x + x; }
 };
 
 #endif // #ifndef POMEROL_PROG_HUBBARD2D_MODEL_H

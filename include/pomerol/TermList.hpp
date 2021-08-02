@@ -10,6 +10,7 @@
 
 #include "mpi_dispatcher/misc.hpp"
 
+#include <cstddef>
 #include <set>
 #include <utility>
 #include <vector>

@@ -7,6 +7,7 @@
 
 #include "quantum_model.hpp"
 
+#include <cstddef>
 #include <iostream>
 #include <set>
 #include <string>
@@ -69,7 +70,7 @@ public:
                                       args::get(args_options.ed));
 
     std::vector<std::string> names(L);
-    for (size_t i=0; i<L; i++) {
+    for (std::size_t i=0; i<L; i++) {
       names[i] = "b" + std::to_string(i);
       HExpr += LatticePresets::Hopping("A", names[i], hoppings[i]);
       HExpr += LatticePresets::Level(names[i], levels[i]);
@@ -85,7 +86,7 @@ public:
     args::ValueFlag<std::vector<double>, VectorReader> hoppings;
   } args_options;
 
-  size_t L;
+  std::size_t L;
   std::vector<double> levels;
   std::vector<double> hoppings;
 };
