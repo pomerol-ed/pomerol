@@ -7,10 +7,12 @@
 #ifndef POMEROL_INCLUDE_VERTEX4_H
 #define POMEROL_INCLUDE_VERTEX4_H
 
-#include"Misc.hpp"
-#include"GFContainer.hpp"
-#include"TwoParticleGF.hpp"
-#include"MatsubaraContainers.hpp"
+#include "ComputableObject.hpp"
+#include "MatsubaraContainers.hpp"
+#include "Misc.hpp"
+#include "GreensFunction.hpp"
+#include "Thermal.hpp"
+#include "TwoParticleGF.hpp"
 
 namespace Pomerol {
 

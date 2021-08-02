@@ -24,18 +24,20 @@
 ** \author Igor Krivenko (igor@shg.ru)
 */
 
-#include <pomerol/Misc.hpp>
-#include <pomerol/Operators.hpp>
-#include <pomerol/LatticePresets.hpp>
-#include <pomerol/IndexClassification.hpp>
-#include <pomerol/HilbertSpace.hpp>
-#include <pomerol/StatesClassification.hpp>
-#include <pomerol/Hamiltonian.hpp>
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>
 #include <pomerol/GreensFunction.hpp>
+#include <pomerol/Hamiltonian.hpp>
+#include <pomerol/HilbertSpace.hpp>
+#include <pomerol/IndexClassification.hpp>
+#include <pomerol/LatticePresets.hpp>
+#include <pomerol/Misc.hpp>
+#include <pomerol/Operators.hpp>
+#include <pomerol/StatesClassification.hpp>
 
 #include "catch2/catch-pomerol.hpp"
+
+#include <vector>
 
 using namespace Pomerol;
 

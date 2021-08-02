@@ -7,8 +7,10 @@
 #ifndef POMEROL_INCLUDE_STATESCLASSIFICATION_H
 #define POMEROL_INCLUDE_STATESCLASSIFICATION_H
 
-#include "Misc.hpp"
 #include "HilbertSpace.hpp"
+#include "Misc.hpp"
+
+#include <libcommute/loperator/space_partition.hpp>
 
 #include <vector>
 

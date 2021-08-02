@@ -1,10 +1,14 @@
 #include "pomerol/HamiltonianPart.hpp"
 
+// clang-format off
 #include <libcommute/loperator/state_vector_eigen3.hpp>
 #include <libcommute/loperator/mapped_basis_view.hpp>
+// clang-format on
 
 #include <Eigen/Eigenvalues>
 
+#include <cassert>
+#include <complex>
 #include <limits>
 #include <sstream>
 #include <stdexcept>

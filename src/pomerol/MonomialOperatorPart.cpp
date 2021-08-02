@@ -3,7 +3,9 @@
 #include <libcommute/loperator/state_vector_eigen3.hpp>
 #include <libcommute/loperator/mapped_basis_view.hpp>
 
+#include <cassert>
 #include <iostream>
+#include <stdexcept>
 #include <vector>
 
 namespace Pomerol {

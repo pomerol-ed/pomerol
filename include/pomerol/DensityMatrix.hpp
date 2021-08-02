@@ -7,10 +7,13 @@
 #ifndef POMEROL_INCLUDE_POMEROL_DENSITYMATRIX_H
 #define POMEROL_INCLUDE_POMEROL_DENSITYMATRIX_H
 
-#include "StatesClassification.hpp"
-#include "IndexClassification.hpp"
-#include "Hamiltonian.hpp"
+#include "ComputableObject.hpp"
 #include "DensityMatrixPart.hpp"
+#include "Hamiltonian.hpp"
+#include "IndexClassification.hpp"
+#include "Misc.hpp"
+#include "StatesClassification.hpp"
+#include "Thermal.hpp"
 
 #include <vector>
 

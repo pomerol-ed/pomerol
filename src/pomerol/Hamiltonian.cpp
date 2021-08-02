@@ -1,7 +1,7 @@
 #include "pomerol/Hamiltonian.hpp"
+
 #include "mpi_dispatcher/mpi_skel.hpp"
 
-#include <algorithm>
 #include <map>
 #include <stdexcept>
 

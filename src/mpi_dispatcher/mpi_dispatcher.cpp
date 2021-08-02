@@ -1,7 +1,9 @@
 #include "mpi_dispatcher/misc.hpp"
 #include "mpi_dispatcher/mpi_dispatcher.hpp"
 
+#include <functional>
 #include <numeric>
+#include <stdexcept>
 #include <utility>
 
 namespace pMPI {

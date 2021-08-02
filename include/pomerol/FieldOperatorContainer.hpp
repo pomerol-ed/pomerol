@@ -7,11 +7,11 @@
 #ifndef POMEROL_INCLUDE_POMEROL_FIELDOPERATORCONTAINER_H
 #define POMEROL_INCLUDE_POMEROL_FIELDOPERATORCONTAINER_H
 
-#include"Misc.hpp"
-#include"IndexClassification.hpp"
-#include"MonomialOperator.hpp"
-#include"Hamiltonian.hpp"
-#include"StatesClassification.hpp"
+#include "Hamiltonian.hpp"
+#include "IndexClassification.hpp"
+#include "Misc.hpp"
+#include "MonomialOperator.hpp"
+#include "StatesClassification.hpp"
 
 #include <set>
 #include <unordered_map>

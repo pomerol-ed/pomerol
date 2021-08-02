@@ -8,16 +8,17 @@
 #ifndef POMEROL_INCLUDE_SUSCEPTIBILITY_H
 #define POMEROL_INCLUDE_SUSCEPTIBILITY_H
 
-#include"Misc.hpp"
-#include"Thermal.hpp"
-#include"ComputableObject.hpp"
-#include"StatesClassification.hpp"
-#include"MonomialOperator.hpp"
-#include"DensityMatrix.hpp"
-#include"SusceptibilityPart.hpp"
-#include"EnsembleAverage.hpp"
+#include "ComputableObject.hpp"
+#include "DensityMatrix.hpp"
+#include "EnsembleAverage.hpp"
+#include "Hamiltonian.hpp"
+#include "Misc.hpp"
+#include "MonomialOperator.hpp"
+#include "StatesClassification.hpp"
+#include "SusceptibilityPart.hpp"
+#include "Thermal.hpp"
 
-#include <cmath>
+#include <complex>
 #include <vector>
 
 namespace Pomerol {

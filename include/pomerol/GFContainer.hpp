@@ -7,14 +7,19 @@
 #ifndef POMEROL_INCLUDE_POMEROL_GFCONTAINER_H
 #define POMEROL_INCLUDE_POMEROL_GFCONTAINER_H
 
-#include"Misc.hpp"
-#include"Index.hpp"
-#include"IndexClassification.hpp"
-#include"GreensFunction.hpp"
-#include"FieldOperatorContainer.hpp"
-#include"IndexContainer2.hpp"
+#include "DensityMatrix.hpp"
+#include "FieldOperatorContainer.hpp"
+#include "GreensFunction.hpp"
+#include "Hamiltonian.hpp"
+#include "Index.hpp"
+#include "IndexClassification.hpp"
+#include "IndexContainer2.hpp"
+#include "Misc.hpp"
+#include "StatesClassification.hpp"
+#include "Thermal.hpp"
 
 #include <memory>
+#include <set>
 
 namespace Pomerol {
 

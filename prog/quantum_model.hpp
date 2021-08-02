@@ -5,16 +5,16 @@
 #ifndef POMEROL_PROG_QUANTUM_MODEL_H
 #define POMEROL_PROG_QUANTUM_MODEL_H
 
-#include <cmath>
+#include <pomerol.hpp>
+
+#include "args.hxx"
+
 #include <iostream>
 #include <set>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
-
-#include <pomerol.hpp>
-
-#include "args.hxx"
 
 #define mpi_cout if(!pMPI::rank(comm)) std::cout
 
@@ -108,7 +108,7 @@ protected:
       std::cout << std::string(str.size(),'=') << std::endl;
       std::cout << str << std::endl;
       std::cout << std::string(str.size(),'=') << std::endl;
-    };
+    }
   }
 };
 

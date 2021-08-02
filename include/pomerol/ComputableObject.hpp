@@ -6,8 +6,6 @@
 #ifndef POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_H
 #define POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_H
 
-#include "Misc.hpp"
-
 #include <exception>
 
 namespace Pomerol {

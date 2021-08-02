@@ -1,14 +1,13 @@
-#include <pomerol/Misc.hpp>
-#include <pomerol/LatticePresets.hpp>
-#include <pomerol/IndexClassification.hpp>
-#include <pomerol/HilbertSpace.hpp>
-#include <pomerol/StatesClassification.hpp>
-#include <pomerol/Hamiltonian.hpp>
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>
 #include <pomerol/GreensFunction.hpp>
+#include <pomerol/Hamiltonian.hpp>
+#include <pomerol/HilbertSpace.hpp>
+#include <pomerol/IndexClassification.hpp>
+#include <pomerol/LatticePresets.hpp>
+#include <pomerol/Misc.hpp>
+#include <pomerol/StatesClassification.hpp>
 
-#undef INFO // Catch2 has its own INFO() macro
 #include "catch2/catch-pomerol.hpp"
 
 using namespace Pomerol;

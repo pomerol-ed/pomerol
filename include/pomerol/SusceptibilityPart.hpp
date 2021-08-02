@@ -8,16 +8,16 @@
 #ifndef POMEROL_INCLUDE_SUSCEPTIBILITYPART_H
 #define POMEROL_INCLUDE_SUSCEPTIBILITYPART_H
 
-#include"Misc.hpp"
-#include"StatesClassification.hpp"
-#include"HamiltonianPart.hpp"
-#include"MonomialOperatorPart.hpp"
-#include"DensityMatrixPart.hpp"
-#include"TermList.hpp"
+#include "DensityMatrixPart.hpp"
+#include "HamiltonianPart.hpp"
+#include "Misc.hpp"
+#include "MonomialOperatorPart.hpp"
+#include "StatesClassification.hpp"
+#include "TermList.hpp"
 
-#include <mpi.h>
+#include "mpi_dispatcher/misc.hpp"
 
-#include <cmath>
+#include <complex>
 #include <ostream>
 
 namespace Pomerol {

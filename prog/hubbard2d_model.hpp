@@ -5,10 +5,15 @@
 #ifndef POMEROL_PROG_HUBBARD2D_MODEL_H
 #define POMEROL_PROG_HUBBARD2D_MODEL_H
 
-#include <cmath>
-#include <limits>
-
 #include "quantum_model.hpp"
+
+#include <cmath>
+#include <iostream>
+#include <limits>
+#include <set>
+#include <string>
+#include <vector>
+#include <utility>
 
 using namespace Pomerol;
 

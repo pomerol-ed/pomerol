@@ -6,20 +6,20 @@
 #ifndef POMEROL_INCLUDE_POMEROL_HILBERTSPACE_H
 #define POMEROL_INCLUDE_POMEROL_HILBERTSPACE_H
 
-#include "Misc.hpp"
-#include "IndexClassification.hpp"
 #include "ComputableObject.hpp"
+#include "IndexClassification.hpp"
+#include "Misc.hpp"
 #include "Operators.hpp"
 
-#include <libcommute/loperator/hilbert_space.hpp>
 #include <libcommute/loperator/elementary_space_fermion.hpp>
+#include <libcommute/loperator/hilbert_space.hpp>
 #include <libcommute/loperator/loperator.hpp>
 #include <libcommute/loperator/space_partition.hpp>
 
 #include <map>
 #include <memory>
-#include <stdexcept>
 #include <sstream>
+#include <stdexcept>
 #include <tuple>
 #include <type_traits>
 

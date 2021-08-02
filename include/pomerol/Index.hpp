@@ -8,7 +8,7 @@
 #ifndef POMEROL_INCLUDE_POMEROL_INDEX_H
 #define POMEROL_INCLUDE_POMEROL_INDEX_H
 
-#include"Misc.hpp"
+#include "Misc.hpp"
 
 #include <ostream>
 #include <tuple>

@@ -11,6 +11,7 @@
 #include "Operators.hpp"
 
 #include <ostream>
+#include <string>
 
 namespace Pomerol {
 

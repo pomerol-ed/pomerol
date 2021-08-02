@@ -7,13 +7,14 @@
 #ifndef POMEROL_INCLUDE_POMEROL_GREENSFUNCTION_H
 #define POMEROL_INCLUDE_POMEROL_GREENSFUNCTION_H
 
-#include"Misc.hpp"
-#include"Thermal.hpp"
-#include"ComputableObject.hpp"
-#include"StatesClassification.hpp"
-#include"MonomialOperator.hpp"
-#include"DensityMatrix.hpp"
-#include"GreensFunctionPart.hpp"
+#include "ComputableObject.hpp"
+#include "DensityMatrix.hpp"
+#include "GreensFunctionPart.hpp"
+#include "Hamiltonian.hpp"
+#include "Misc.hpp"
+#include "MonomialOperator.hpp"
+#include "StatesClassification.hpp"
+#include "Thermal.hpp"
 
 #include <vector>
 
@@ -124,4 +125,3 @@ inline ComplexType GreensFunction::of_tau(RealType tau) const {
 } // namespace Pomerol
 
 #endif // #ifndef POMEROL_INCLUDE_POMEROL_GREENSFUNCTION_H
-

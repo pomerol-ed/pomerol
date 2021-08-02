@@ -20,13 +20,18 @@
 #ifndef POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_H
 #define POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_H
 
-#include"Misc.hpp"
-#include"Index.hpp"
-#include"TwoParticleGF.hpp"
-#include"FieldOperatorContainer.hpp"
-#include"IndexContainer4.hpp"
+#include "DensityMatrix.hpp"
+#include "FieldOperatorContainer.hpp"
+#include "Hamiltonian.hpp"
+#include "Index.hpp"
+#include "IndexClassification.hpp"
+#include "IndexContainer4.hpp"
+#include "Misc.hpp"
+#include "StatesClassification.hpp"
+#include "Thermal.hpp"
+#include "TwoParticleGF.hpp"
 
-#include <mpi.h>
+#include "mpi_dispatcher/misc.hpp"
 
 #include <map>
 #include <memory>

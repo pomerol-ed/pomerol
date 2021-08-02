@@ -7,8 +7,10 @@
 #ifndef POMEROL_INCLUDE_POMEROL_DENSITYMATRIXPART_H
 #define POMEROL_INCLUDE_POMEROL_DENSITYMATRIXPART_H
 
+#include "HamiltonianPart.hpp"
+#include "Misc.hpp"
+#include "StatesClassification.hpp"
 #include "Thermal.hpp"
-#include "Hamiltonian.hpp"
 
 namespace Pomerol {
 

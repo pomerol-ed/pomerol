@@ -7,16 +7,17 @@
 #ifndef POMEROL_INCLUDE_MONOMIALOPERATORPART_H
 #define POMEROL_INCLUDE_MONOMIALOPERATORPART_H
 
-#include "Misc.hpp"
-#include "HilbertSpace.hpp"
-#include "StatesClassification.hpp"
 #include "HamiltonianPart.hpp"
+#include "HilbertSpace.hpp"
+#include "Misc.hpp"
+#include "StatesClassification.hpp"
 
 #include <libcommute/algebra_ids.hpp>
 #include <libcommute/loperator/loperator.hpp>
 
 #include <memory>
 #include <ostream>
+#include <type_traits>
 
 namespace Pomerol {
 

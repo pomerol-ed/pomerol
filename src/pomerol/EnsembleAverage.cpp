@@ -1,6 +1,6 @@
 #include "pomerol/EnsembleAverage.hpp"
 
-namespace Pomerol{
+namespace Pomerol {
 
 EnsembleAverage::EnsembleAverage(const StatesClassification& S, const Hamiltonian& H,
                                  const MonomialOperator& A, const DensityMatrix& DM) :

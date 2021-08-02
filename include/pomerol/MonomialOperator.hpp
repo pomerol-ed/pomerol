@@ -7,23 +7,24 @@
 #ifndef POMEROL_INCLUDE_MONOMIALOPERATOR_H
 #define POMEROL_INCLUDE_MONOMIALOPERATOR_H
 
-#include"Misc.hpp"
-#include"ComputableObject.hpp"
-#include"StatesClassification.hpp"
-#include"HilbertSpace.hpp"
-#include"Hamiltonian.hpp"
-#include"MonomialOperatorPart.hpp"
-#include"Operators.hpp"
+#include "ComputableObject.hpp"
+#include "Hamiltonian.hpp"
+#include "HilbertSpace.hpp"
+#include "Misc.hpp"
+#include "MonomialOperatorPart.hpp"
+#include "Operators.hpp"
+#include "StatesClassification.hpp"
 
 #include "mpi_dispatcher/misc.hpp"
 #include "mpi_dispatcher/mpi_skel.hpp"
 
-#include<boost/bimap.hpp>
+#include <boost/bimap.hpp>
 
 #include <memory>
 #include <stdexcept>
 #include <type_traits>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace Pomerol {

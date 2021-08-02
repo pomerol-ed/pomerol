@@ -6,9 +6,9 @@
 #ifndef POMEROL_INCLUDE_TERMLIST_H
 #define POMEROL_INCLUDE_TERMLIST_H
 
-#include "mpi_dispatcher/misc.hpp"
-
 #include "Misc.hpp"
+
+#include "mpi_dispatcher/misc.hpp"
 
 #include <set>
 #include <utility>

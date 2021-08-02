@@ -1,6 +1,7 @@
 #include "pomerol/SusceptibilityPart.hpp"
 
 #include <cassert>
+#include <cmath>
 
 namespace Pomerol {
 

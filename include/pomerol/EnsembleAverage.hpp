@@ -8,12 +8,13 @@
 #ifndef POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_H
 #define POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_H
 
-#include"Misc.hpp"
-#include"Thermal.hpp"
-#include"ComputableObject.hpp"
-#include"StatesClassification.hpp"
-#include"MonomialOperator.hpp"
-#include"DensityMatrix.hpp"
+#include "ComputableObject.hpp"
+#include "DensityMatrix.hpp"
+#include "Hamiltonian.hpp"
+#include "Misc.hpp"
+#include "MonomialOperator.hpp"
+#include "StatesClassification.hpp"
+#include "Thermal.hpp"
 
 namespace Pomerol {
 

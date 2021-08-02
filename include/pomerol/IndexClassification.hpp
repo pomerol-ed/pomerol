@@ -11,13 +11,12 @@
 
 #include <libcommute/utility.hpp>
 
-#include <map>
 #include <iostream>
-#include <string>
+#include <map>
 #include <sstream>
+#include <stdexcept>
 #include <tuple>
 #include <vector>
-#include <stdexcept>
 
 namespace Pomerol {
 

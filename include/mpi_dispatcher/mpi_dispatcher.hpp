@@ -7,9 +7,9 @@
 
 #include <mpi.h>
 
+#include <map>
 #include <stack>
 #include <vector>
-#include <map>
 
 namespace pMPI {
 

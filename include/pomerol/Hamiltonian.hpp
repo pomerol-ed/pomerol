@@ -7,17 +7,17 @@
 #ifndef POMEROL_INCLUDE_POMEROL_HAMILTONIAN_H
 #define POMEROL_INCLUDE_POMEROL_HAMILTONIAN_H
 
-#include <vector>
-#include <type_traits>
+#include "ComputableObject.hpp"
+#include "HamiltonianPart.hpp"
+#include "HilbertSpace.hpp"
+#include "Misc.hpp"
+#include "Operators.hpp"
+#include "StatesClassification.hpp"
 
 #include "mpi_dispatcher/misc.hpp"
 
-#include "Misc.hpp"
-#include "ComputableObject.hpp"
-#include "Operators.hpp"
-#include "StatesClassification.hpp"
-#include "HilbertSpace.hpp"
-#include "HamiltonianPart.hpp"
+#include <type_traits>
+#include <vector>
 
 namespace Pomerol {
 
@@ -84,4 +84,3 @@ void Hamiltonian::prepare(Operators::expression<ScalarType, IndexTypes...> const
 } // namespace Pomerol
 
 #endif // #ifndef POMEROL_INCLUDE_POMEROL_HAMILTONIAN_H
-

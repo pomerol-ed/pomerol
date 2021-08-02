@@ -7,23 +7,23 @@
 #ifndef POMEROL_INCLUDE_POMEROL_MISC_H
 #define POMEROL_INCLUDE_POMEROL_MISC_H
 
-#include<pomerol/Version.hpp>
+#include <pomerol/Version.hpp>
 
-#include<iostream>
-#include<complex>
-#include<type_traits>
-
-#include <libcommute/loperator/state_vector.hpp>
-#include <libcommute/loperator/loperator.hpp>
 #include <libcommute/algebra_ids.hpp>
+#include <libcommute/loperator/loperator.hpp>
+#include <libcommute/loperator/state_vector.hpp>
 
 #define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
-#include<Eigen/Core>
-#include<Eigen/Sparse>
+#include <Eigen/Core>
+#include <Eigen/Sparse>
 
 #ifdef POMEROL_USE_OPENMP
 #include <omp.h>
 #endif
+
+#include <complex>
+#include <iostream>
+#include <type_traits>
 
 namespace Pomerol {
 
@@ -175,4 +175,3 @@ extern const Permutation4 permutations4[24];
  */
 
 #endif // #ifndef POMEROL_INCLUDE_POMEROL_MISC_H
-

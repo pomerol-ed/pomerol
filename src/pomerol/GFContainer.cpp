@@ -1,6 +1,6 @@
 #include "pomerol/GFContainer.hpp"
 
-namespace Pomerol{
+namespace Pomerol {
 
 void GFContainer::prepareAll(const std::set<IndexCombination2>& InitialIndices)
 {

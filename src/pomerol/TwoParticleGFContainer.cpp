@@ -21,7 +21,7 @@
 
 #include "pomerol/TwoParticleGFContainer.hpp"
 
-#include "mpi_dispatcher/misc.hpp"
+#include <cmath>
 
 namespace Pomerol {
 

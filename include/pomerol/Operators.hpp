@@ -11,6 +11,7 @@
 #include <libcommute/expression/factories.hpp>
 #include <libcommute/expression/hc.hpp>
 
+#include <cstdlib>
 #include <tuple>
 #include <type_traits>
 #include <utility>

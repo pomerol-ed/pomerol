@@ -6,8 +6,8 @@
 #ifndef POMEROL_INCLUDE_POMEROL_INDEXCONTAINER2_H
 #define POMEROL_INCLUDE_POMEROL_INDEXCONTAINER2_H
 
-#include"Index.hpp"
-#include"IndexClassification.hpp"
+#include "Index.hpp"
+#include "IndexClassification.hpp"
 
 #include <map>
 #include <memory>
@@ -128,7 +128,6 @@ std::set<IndexCombination2> IndexContainer2<ElementType,SourceObject>::enumerate
 
     return AllIndices;
 }
-
 
 } // namespace Pomerol
 

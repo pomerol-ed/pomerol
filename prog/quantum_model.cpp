@@ -2,16 +2,15 @@
 // Created by iskakoff on 05/12/16.
 //
 
-#include <algorithm>
-#include <cstdlib>
-#include <fstream>
-#include <stdexcept>
-#include <tuple>
-
 #include "quantum_model.hpp"
 
 #undef DEBUG
 #include <gftools.hpp>
+
+#include <algorithm>
+#include <complex>
+#include <stdexcept>
+#include <tuple>
 
 using namespace Pomerol;
 

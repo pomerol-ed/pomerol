@@ -1,8 +1,6 @@
 #include "pomerol/MonomialOperator.hpp"
 
-#include "mpi_dispatcher/mpi_skel.hpp"
-
-#include <libcommute/loperator/state_vector_eigen3.hpp>
+#include <cstdlib>
 
 namespace Pomerol {
 
@@ -17,8 +15,8 @@ void MonomialOperator::compute(const MPI_Comm& comm)
     if(getStatus() < Prepared) throw exStatusMismatch();
     if(getStatus() >= Computed) return;
 
-    size_t Size = parts.size();
-    for(size_t BlockIn = 0; BlockIn < Size; BlockIn++){
+    std::size_t Size = parts.size();
+    for(std::size_t BlockIn = 0; BlockIn < Size; BlockIn++){
         INFO_NONEWLINE( (int) ((1.0*BlockIn/Size) * 100 ) << "  " << std::flush);
         parts[BlockIn].compute();
     };

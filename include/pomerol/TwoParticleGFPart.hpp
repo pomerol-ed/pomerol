@@ -7,16 +7,18 @@
 #ifndef POMEROL_INCLUDE_TWOPARTICLEGFPART_H
 #define POMEROL_INCLUDE_TWOPARTICLEGFPART_H
 
-#include"Misc.hpp"
-#include"StatesClassification.hpp"
-#include"HamiltonianPart.hpp"
-#include"MonomialOperatorPart.hpp"
-#include"DensityMatrixPart.hpp"
-#include"TermList.hpp"
+#include "ComputableObject.hpp"
+#include "DensityMatrixPart.hpp"
+#include "HamiltonianPart.hpp"
+#include "Misc.hpp"
+#include "MonomialOperatorPart.hpp"
+#include "StatesClassification.hpp"
+#include "TermList.hpp"
+#include "Thermal.hpp"
 
-#include <mpi.h>
+#include "mpi_dispatcher/misc.hpp"
 
-#include <cmath>
+#include <complex>
 
 namespace Pomerol {
 

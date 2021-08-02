@@ -1,11 +1,12 @@
 #include "pomerol/StatesClassification.hpp"
 
 #include <algorithm>
-#include <string>
+#include <iterator>
 #include <numeric>
 #include <stdexcept>
+#include <string>
 
-namespace Pomerol{
+namespace Pomerol {
 
 //
 // StatesClassification

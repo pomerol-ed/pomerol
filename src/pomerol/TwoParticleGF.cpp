@@ -2,6 +2,7 @@
 
 #include "mpi_dispatcher/mpi_skel.hpp"
 
+#include <cassert>
 #include <map>
 #include <stdexcept>
 

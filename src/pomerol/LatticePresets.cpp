@@ -11,7 +11,10 @@ using Operators::n;
 using Operators::a_dag;
 using Operators::a;
 
+//
 // spin
+//
+
 std::ostream & operator<<(std::ostream & os, spin s)
 {
     switch(s) {

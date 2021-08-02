@@ -26,7 +26,8 @@
 #ifndef POMEROL_INCLUDE_POMEROL_INDEXCONTAINER4_H
 #define POMEROL_INCLUDE_POMEROL_INDEXCONTAINER4_H
 
-#include"IndexClassification.hpp"
+#include "Index.hpp"
+#include "IndexClassification.hpp"
 
 #include <map>
 #include <memory>

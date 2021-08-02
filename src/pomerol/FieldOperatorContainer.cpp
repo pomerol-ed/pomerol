@@ -1,5 +1,7 @@
 #include "pomerol/FieldOperatorContainer.hpp"
 
+#include <stdexcept>
+
 namespace Pomerol {
 
 void FieldOperatorContainer::computeAll()

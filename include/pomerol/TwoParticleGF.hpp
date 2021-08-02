@@ -7,14 +7,16 @@
 #ifndef POMEROL_INCLUDE_TWOPARTICLEGF_H
 #define POMEROL_INCLUDE_TWOPARTICLEGF_H
 
-#include"Misc.hpp"
-#include"ComputableObject.hpp"
-#include"StatesClassification.hpp"
-#include"MonomialOperator.hpp"
-#include"DensityMatrix.hpp"
-#include"TwoParticleGFPart.hpp"
+#include "ComputableObject.hpp"
+#include "DensityMatrix.hpp"
+#include "Hamiltonian.hpp"
+#include "Misc.hpp"
+#include "MonomialOperator.hpp"
+#include "StatesClassification.hpp"
+#include "Thermal.hpp"
+#include "TwoParticleGFPart.hpp"
 
-#include <mpi.h>
+#include "mpi_dispatcher/misc.hpp"
 
 #include <tuple>
 #include <vector>

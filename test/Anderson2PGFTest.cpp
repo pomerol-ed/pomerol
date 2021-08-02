@@ -1,17 +1,16 @@
-#include <pomerol/Misc.hpp>
-#include <pomerol/Operators.hpp>
-#include <pomerol/LatticePresets.hpp>
-#include <pomerol/IndexClassification.hpp>
-#include <pomerol/HilbertSpace.hpp>
-#include <pomerol/StatesClassification.hpp>
-#include <pomerol/Hamiltonian.hpp>
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>
+#include <pomerol/Hamiltonian.hpp>
+#include <pomerol/HilbertSpace.hpp>
+#include <pomerol/IndexClassification.hpp>
+#include <pomerol/LatticePresets.hpp>
+#include <pomerol/Misc.hpp>
+#include <pomerol/StatesClassification.hpp>
 #include <pomerol/TwoParticleGFContainer.hpp>
 
 #include "catch2/catch-pomerol.hpp"
 
-#include <cmath>
+#include <set>
 #include <string>
 #include <tuple>
 #include <vector>

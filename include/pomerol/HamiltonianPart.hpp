@@ -7,16 +7,16 @@
 #ifndef POMEROL_INCLUDE_POMEROL_HAMILTONIANPART_H
 #define POMEROL_INCLUDE_POMEROL_HAMILTONIANPART_H
 
-#include "Misc.hpp"
 #include "ComputableObject.hpp"
 #include "IndexClassification.hpp"
+#include "Misc.hpp"
 #include "StatesClassification.hpp"
 
 #include <libcommute/algebra_ids.hpp>
 #include <libcommute/loperator/loperator.hpp>
 
-#include <memory>
 #include <iostream>
+#include <memory>
 #include <type_traits>
 
 namespace Pomerol {

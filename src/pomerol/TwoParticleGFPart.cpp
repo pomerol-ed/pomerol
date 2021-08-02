@@ -1,9 +1,9 @@
 #include "pomerol/TwoParticleGFPart.hpp"
 
-#include <cstddef>
+#include <cassert>
 #include <mutex>
-#include <vector>
 #include <stdexcept>
+#include <vector>
 
 std::mutex NonResonantTerm_mpi_datatype_mutex;
 std::mutex ResonantTerm_mpi_datatype_mutex;
