@@ -26,8 +26,9 @@ add_library(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME}
                            PRIVATE
                            ${PROJECT_SOURCE_DIR}/include
-                           ${PROJECT_BINARY_DIR}/include
-                           PUBLIC
+                           ${PROJECT_BINARY_DIR}/include)
+target_include_directories(${PROJECT_NAME}
+                           SYSTEM PUBLIC
                            ${EIGEN3_INCLUDE_DIR}
                            ${MPI_CXX_INCLUDE_PATH}
                            ${Boost_INCLUDE_DIRS})
