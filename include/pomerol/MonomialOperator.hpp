@@ -164,7 +164,7 @@ public:
                      ParticleIndex Index) :
     MonomialOperator(
         Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>,
-                                 HS.getIndexInfo().getInfo(Index)
+                                 IndexInfo.getInfo(Index)
                                  ),
         HS, S, H
     ), Index(Index)
@@ -193,7 +193,7 @@ public:
                          ParticleIndex Index) :
     MonomialOperator(
         Operators::Detail::apply(Operators::c<double, IndexTypes...>,
-                                 HS.getIndexInfo().getInfo(Index)
+                                 IndexInfo.getInfo(Index)
                                  ),
         HS, S, H
     ), Index(Index)
@@ -223,10 +223,10 @@ public:
                       ParticleIndex Index1, ParticleIndex Index2) :
     MonomialOperator(
         Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>,
-                                 HS.getIndexInfo().getInfo(Index1)
+                                 IndexInfo.getInfo(Index1)
                                  ) *
         Operators::Detail::apply(Operators::c<double, IndexTypes...>,
-                                 HS.getIndexInfo().getInfo(Index2)
+                                 IndexInfo.getInfo(Index2)
                                  ),
         HS, S, H
     ), Index1(Index1), Index2(Index2)
