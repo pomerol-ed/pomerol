@@ -1,6 +1,9 @@
 # Build Catch2 main object file
 add_library(catch2 OBJECT catch2/catch2-main.cpp)
 target_include_directories(catch2 PRIVATE ${MPI_CXX_INCLUDE_PATH})
+if(StaticAnalysis)
+    set_target_properties(catch2 PROPERTIES CXX_CLANG_TIDY "" CXX_CPPCHECK "")
+endif()
 
 # Pomerol tests
 set(tests

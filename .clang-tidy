@@ -1,0 +1,2 @@
+Checks: '-*,modernize-*,performance-*,cppcoreguidelines-*,-modernize-use-trailing-return-type,-cppcoreguidelines-avoid-magic-numbers'
+HeaderFilterRegex: '^(pomerol|mpi_dispatcher).*$'
