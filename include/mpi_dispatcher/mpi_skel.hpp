@@ -20,22 +20,22 @@ namespace pMPI {
 
 template <typename PartType>
 struct ComputeWrap {
-    PartType *x;
+    PartType & x;
     int complexity;
 
     ComputeWrap() = default;
-    ComputeWrap(PartType &y, int complexity = 1) : x(&y), complexity(complexity) {}
-    void run(){ x->compute(); }
+    ComputeWrap(PartType &x, int complexity = 1) : x(x), complexity(complexity) {}
+    void run(){ x.compute(); }
 };
 
 template <typename PartType>
 struct PrepareWrap {
-    PartType *x;
+    PartType & x;
     int complexity;
 
     PrepareWrap() = default;
-    PrepareWrap(PartType &y, int complexity = 1) : x(&y), complexity(complexity) {}
-    void run(){ x->prepare(); }
+    PrepareWrap(PartType & x, int complexity = 1) : x(x), complexity(complexity) {}
+    void run(){ x.prepare(); }
 };
 
 template <typename WrapType>

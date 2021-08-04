@@ -21,9 +21,9 @@ void Hamiltonian::prepareImpl(const LOperatorTypeRC<C> &HOp, const MPI_Comm& com
     }
 
     pMPI::mpi_skel<pMPI::PrepareWrap<HamiltonianPart>> skel;
-    skel.parts.resize(parts.size());
-    for(std::size_t p = 0; p < parts.size(); ++p) {
-        skel.parts[p] = pMPI::PrepareWrap<HamiltonianPart>(parts[p]);
+    skel.parts.reserve(parts.size());
+    for(auto & part: parts) {
+        skel.parts.emplace_back(pMPI::PrepareWrap<HamiltonianPart>(part));
     }
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, false);
     MPI_Barrier(comm);
@@ -56,10 +56,9 @@ void Hamiltonian::computeImpl(const MPI_Comm& comm)
 {
     // Create a "skeleton" class with pointers to part that can call a compute method
     pMPI::mpi_skel<pMPI::ComputeWrap<HamiltonianPart>> skel;
-    skel.parts.resize(parts.size());
-    for (std::size_t p = 0; p < parts.size(); p++) {
-      auto & part = parts[p];
-      skel.parts[p] = pMPI::ComputeWrap<HamiltonianPart>(part, part.getSize());
+    skel.parts.reserve(parts.size());
+    for (auto & part: parts) {
+      skel.parts.emplace_back(pMPI::ComputeWrap<HamiltonianPart>(part, part.getSize()));
     }
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true);
     int rank = pMPI::rank(comm);
