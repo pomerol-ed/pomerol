@@ -39,7 +39,7 @@ public:
      * \param[in] L A pointer to a Lattice Object.
      */
     template<typename ScalarType>
-    IndexClassification(Operators::expression<ScalarType, IndexTypes...> const& H) {
+    explicit IndexClassification(Operators::expression<ScalarType, IndexTypes...> const& H) {
         // Collect indices of fermionic operators in the Hamiltonian
         for(auto const& mon : H) {
             for(auto const& g : mon.monomial) {

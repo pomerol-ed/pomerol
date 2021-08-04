@@ -3,9 +3,12 @@
 #include <cassert>
 #include <mutex>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::mutex NonResonantTerm_mpi_datatype_mutex;
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::mutex ResonantTerm_mpi_datatype_mutex;
 
 namespace Pomerol {
@@ -36,6 +39,7 @@ TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator
 {
     long combinedWeight = Weight + AnotherTerm.Weight;
     for(unsigned short p = 0; p < 3; ++p)
+        // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions)
         Poles[p] = (Weight*Poles[p] + AnotherTerm.Weight*AnotherTerm.Poles[p])/combinedWeight;
     Weight = combinedWeight;
     Coeff += AnotherTerm.Coeff;
@@ -59,12 +63,15 @@ MPI_Datatype TwoParticleGFPart::NonResonantTerm::mpi_datatype() {
     // Create and commit datatype only once
     static bool type_committed = false;
     if(!type_committed) {
+        // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
         int blocklengths[] = {1,3,1,1};
+        // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
         MPI_Aint displacements[] = {offsetof(NonResonantTerm, Coeff),
                                     offsetof(NonResonantTerm, Poles),
                                     offsetof(NonResonantTerm, isz4),
                                     offsetof(NonResonantTerm, Weight)
                                    };
+        // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
         MPI_Datatype types[] = {MPI_CXX_DOUBLE_COMPLEX, // ComplexType Coeff
                                 MPI_DOUBLE,             // RealType Poles[3]
                                 MPI_CXX_BOOL,           // bool isz4
@@ -84,7 +91,9 @@ TwoParticleGFPart::ResonantTerm& TwoParticleGFPart::ResonantTerm::operator+=(
                 const ResonantTerm& AnotherTerm)
 {
     long combinedWeight=Weight + AnotherTerm.Weight;
-    for (unsigned short p=0; p<3; ++p) Poles[p]= (Weight*Poles[p] + AnotherTerm.Weight*AnotherTerm.Poles[p])/combinedWeight;
+    for (unsigned short p=0; p<3; ++p)
+        // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions)
+        Poles[p]= (Weight*Poles[p] + AnotherTerm.Weight*AnotherTerm.Poles[p])/combinedWeight;
     Weight=combinedWeight;
     ResCoeff += AnotherTerm.ResCoeff;
     NonResCoeff += AnotherTerm.NonResCoeff;
@@ -108,13 +117,16 @@ MPI_Datatype TwoParticleGFPart::ResonantTerm::mpi_datatype() {
     // Create and commit datatype only once
     static bool type_committed = false;
     if(!type_committed) {
+        // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
         int blocklengths[] = {1,1,3,1,1};
+        // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
         MPI_Aint displacements[] = {offsetof(ResonantTerm, ResCoeff),
                                     offsetof(ResonantTerm, NonResCoeff),
                                     offsetof(ResonantTerm, Poles),
                                     offsetof(ResonantTerm, isz1z2),
                                     offsetof(ResonantTerm, Weight)
                                    };
+        // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
         MPI_Datatype types[] = {MPI_CXX_DOUBLE_COMPLEX, // ComplexType ResCoeff
                                 MPI_CXX_DOUBLE_COMPLEX, // ComplexType NonResCoeff
                                 MPI_DOUBLE,             // RealType Poles[3]
@@ -139,12 +151,12 @@ TwoParticleGFPart::TwoParticleGFPart(
                 const DensityMatrixPart& DMpart1, const DensityMatrixPart& DMpart2,
                 const DensityMatrixPart& DMpart3, const DensityMatrixPart& DMpart4,
                 Permutation3 Permutation) :
-    Thermal(DMpart1),
+    Thermal(DMpart1.beta),
     ComputableObject(),
     O1(O1), O2(O2), O3(O3), CX4(CX4),
     Hpart1(Hpart1), Hpart2(Hpart2), Hpart3(Hpart3), Hpart4(Hpart4),
     DMpart1(DMpart1), DMpart2(DMpart2), DMpart3(DMpart3), DMpart4(DMpart4),
-    Permutation(Permutation),
+    Permutation(std::move(Permutation)),
     NonResonantTerms(NonResonantTerm::Compare(), NonResonantTerm::IsNegligible()),
     ResonantTerms(ResonantTerm::Compare(), ResonantTerm::IsNegligible())
 {}
@@ -175,17 +187,14 @@ void TwoParticleGFPart::computeImpl()
     const RowMajorMatrixType<Complex>& O3matrix = O3.getRowMajorValue<Complex>();
     const ColMajorMatrixType<Complex>& CX4matrix = CX4.getColMajorValue<Complex>();
 
-    InnerQuantumState index1;
     InnerQuantumState index1Max = CX4matrix.outerSize(); // One can not make a cutoff in external index for evaluating 2PGF
-
-    InnerQuantumState index3;
     InnerQuantumState index3Max = O2matrix.outerSize();
 
     std::vector<InnerQuantumState> Index4List;
     Index4List.reserve(index1Max*index3Max);
 
-    for(index1=0; index1<index1Max; ++index1)
-    for(index3=0; index3<index3Max; ++index3){
+    for(InnerQuantumState index1=0; index1<index1Max; ++index1)
+    for(InnerQuantumState index3=0; index3<index3Max; ++index3){
         typename ColMajorMatrixType<Complex>::InnerIterator index4bra_iter(CX4matrix, index1);
         typename RowMajorMatrixType<Complex>::InnerIterator index4ket_iter(O3matrix, index3);
         Index4List.clear();
@@ -213,9 +222,8 @@ void TwoParticleGFPart::computeImpl()
                     RealType E2 = Hpart2.getEigenValue(index2);
                     RealType weight2 = DMpart2.getWeight(index2);
 
-                    for (unsigned long p4 = 0; p4 < Index4List.size(); ++p4)
+                    for (unsigned long index4 : Index4List)
                     {
-                        InnerQuantumState index4 = Index4List[p4];//*pIndex4;
                         RealType E4 = Hpart4.getEigenValue(index4);
                         RealType weight4 = DMpart4.getWeight(index4);
                         if (weight1 + weight2 + weight3 + weight4 >= CoefficientTolerance) {
@@ -289,7 +297,7 @@ ComplexType TwoParticleGFPart::operator()(long MatsubaraNumber1, long MatsubaraN
 
 ComplexType TwoParticleGFPart::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
 {
-    ComplexType Frequencies[3] = {z1, z2, -z3};
+    std::array<ComplexType, 3> Frequencies = {z1, z2, -z3};
 
     z1 = Frequencies[Permutation.perm[0]];
     z2 = Frequencies[Permutation.perm[1]];

@@ -103,7 +103,7 @@ public:
     }
 
     /** Check that all terms in the container are properly ordered and are not negligible */
-    bool check_terms() {
+    bool check_terms() const {
         if(size() == 0) return true;
         auto prev_it = data.begin();
         if(is_negligible(*prev_it, data.size() + 1)) return false;

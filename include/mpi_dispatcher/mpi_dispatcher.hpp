@@ -41,7 +41,7 @@ protected:
 struct MPIMaster
 {
     MPI_Comm Comm;
-    std::size_t Ntasks, Nprocs;
+    int Ntasks, Nprocs;
 
     std::stack<JobId> JobStack;
     std::stack<WorkerId> WorkerStack;

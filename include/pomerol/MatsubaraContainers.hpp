@@ -24,7 +24,7 @@ class MatsubaraContainer4 {
 
 public:
 
-    MatsubaraContainer4(SourceObject const& Source) : Source(Source) {}
+    explicit MatsubaraContainer4(SourceObject const& Source) : Source(Source) {}
 
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 

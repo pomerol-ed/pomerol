@@ -27,15 +27,15 @@ public:
 
   anderson_model(int argc, char* argv[]) :
     quantum_model(argc, argv, "Full-ED of the Anderson model"),
-    args_options{{args_parser, "U", "Interaction constant U", {"U"}, 10.0},
-                 {args_parser, "ed", "Energy level of the impurity", {"ed"}, 0},
-                 {args_parser, "levels", "Energy levels of the bath sites", {"levels"}, {}},
-                 {args_parser, "hoppings", "Hopping to the bath sites", {"hoppings"}, {}}}
+    args_options_anderson{{args_parser, "U", "Interaction constant U", {"U"}, 10.0},
+                          {args_parser, "ed", "Energy level of the impurity", {"ed"}, 0},
+                          {args_parser, "levels", "Energy levels of the bath sites", {"levels"}, {}},
+                          {args_parser, "hoppings", "Hopping to the bath sites", {"hoppings"}, {}}}
   {
     parse_args(argc, argv);
 
-    levels = args::get(args_options.levels);
-    hoppings = args::get(args_options.hoppings);
+    levels = args::get(args_options_anderson.levels);
+    hoppings = args::get(args_options_anderson.hoppings);
 
     if(levels.size() != hoppings.size()) {
       MPI_Finalize();
@@ -66,8 +66,8 @@ public:
 
   virtual void init_hamiltonian() override {
     HExpr += LatticePresets::CoulombS("A",
-                                      args::get(args_options.U),
-                                      args::get(args_options.ed));
+                                      args::get(args_options_anderson.U),
+                                      args::get(args_options_anderson.ed));
 
     std::vector<std::string> names(L);
     for (std::size_t i=0; i<L; i++) {
@@ -84,7 +84,7 @@ public:
     args::ValueFlag<double> ed;
     args::ValueFlag<std::vector<double>, VectorReader> levels;
     args::ValueFlag<std::vector<double>, VectorReader> hoppings;
-  } args_options;
+  } args_options_anderson;
 
   std::size_t L;
   std::vector<double> levels;

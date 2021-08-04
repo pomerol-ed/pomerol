@@ -95,6 +95,7 @@ TEST_CASE("Hamiltonian of an isolated Hubbard-Holstein atom",
 
         // Sorted list of eigenvalues
         auto ev = H.getEigenValues();
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         std::sort(ev.data(), ev.data() + ev.size());
         INFO(ev);
 
@@ -118,6 +119,7 @@ TEST_CASE("Hamiltonian of an isolated Hubbard-Holstein atom",
 
         // Sorted list of eigenvalues
         auto ev = H.getEigenValues();
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         std::sort(ev.data(), ev.data() + ev.size());
         INFO(ev);
 

@@ -17,9 +17,9 @@ using namespace Pomerol;
 using LatticePresets::spin;
 
 // Parameters
-double mu = 1.2;
-double U = 2.0;
-double beta = 10;
+const double mu = 1.2;
+const double U = 2.0;
+const double beta = 10;
 
 // Reference Green's function
 struct GF_ref {
@@ -27,11 +27,11 @@ struct GF_ref {
     std::vector<RealType> E;
     std::vector<RealType> w;
     RealType Z = 0;
-    GF_ref(ComplexType J) :
+    explicit GF_ref(ComplexType J) :
         phi(std::arg(J)),
         E{0, -mu-std::abs(J), -mu+std::abs(J), -2*mu+U} {
-        for(int i = 0; i < E.size(); ++i) {
-            w.push_back(std::exp(-beta*E[i]));
+        for(double e : E) {
+            w.push_back(std::exp(-beta * e));
             Z += w.back();
         }
         for(int i = 0; i < E.size(); ++i) w[i] /= Z;

@@ -62,26 +62,26 @@ std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::com
     std::map<IndexCombination4, std::vector<ComplexType>> storage;
 
     int comm_size = pMPI::size(comm);
-    int rank = pMPI::rank(comm);
+    int comm_rank = pMPI::rank(comm);
 
     // split communicator
-    std::size_t ncomponents = NonTrivialElements.size();
-    std::size_t ncolors = std::min(comm_size, int(NonTrivialElements.size()));
-    RealType color_size = 1.0*comm_size / ncolors;
+    int ncomponents = static_cast<int>(NonTrivialElements.size());
+    int ncolors = std::min(comm_size, int(NonTrivialElements.size()));
+    RealType color_size = 1.0*comm_size / static_cast<RealType>(ncolors);
     std::map<int,int> proc_colors;
     std::map<int,int> elem_colors;
     std::map<int,int> color_roots;
-    for (std::size_t p = 0; p < comm_size; ++p) {
+    for (int p = 0; p < comm_size; ++p) {
         int color = int (1.0*p / color_size);
         proc_colors[p] = color;
         color_roots[color] = p;
     }
-    for(std::size_t i=0; i < ncomponents; ++i) {
+    for(int i=0; i < ncomponents; ++i) {
         int color = i * ncolors / ncomponents;
         elem_colors[i] = color;
     }
 
-    if(!rank) {
+    if(!comm_rank) {
         INFO("Splitting " << ncomponents << " components in " << ncolors << " communicators");
         for (std::size_t i = 0; i < ncomponents; ++i)
             INFO("2pgf " << i << " color: " << elem_colors[i] << " color_root: "
@@ -90,20 +90,18 @@ std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::com
     MPI_Barrier(comm);
     int comp = 0;
 
-    MPI_Comm comm_split;
-    MPI_Comm_split(comm, proc_colors[rank], rank, &comm_split);
+    MPI_Comm comm_split = nullptr;
+    MPI_Comm_split(comm, proc_colors[comm_rank], comm_rank, &comm_split);
 
     for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
-        bool calc = (elem_colors[comp] == proc_colors[rank]);
-        if (calc) {
-            INFO("C" << elem_colors[comp] << "p" << rank << ": computing 2PGF for " << iter->first);
-            if (calc)
-                storage[iter->first] = static_cast<TwoParticleGF&>(*(iter->second)).compute(clearTerms, freqs, comm_split);
+        if (elem_colors[comp] == proc_colors[comm_rank]) {
+            INFO("C" << elem_colors[comp] << "p" << comm_rank << ": computing 2PGF for " << iter->first);
+            storage[iter->first] = static_cast<TwoParticleGF&>(*(iter->second)).compute(clearTerms, freqs, comm_split);
         }
     }
     MPI_Barrier(comm);
     // distribute data
-    if (!rank)
+    if (!comm_rank)
         INFO_NONEWLINE("Distributing 2PGF container...");
     comp = 0;
     for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
@@ -113,10 +111,10 @@ std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::com
             chi.parts[p].NonResonantTerms.broadcast(comm, sender);
             chi.parts[p].ResonantTerms.broadcast(comm, sender);
             std::vector<ComplexType> freq_data;
-            long freq_data_size;
-            if (rank == sender) {
+            int freq_data_size = {};
+            if (comm_rank == sender) {
                 freq_data = storage[iter->first];
-                freq_data_size = freq_data.size();
+                freq_data_size = static_cast<int>(freq_data.size());
                 MPI_Bcast(&freq_data_size, 1, MPI_LONG, sender, comm);
                 MPI_Bcast(freq_data.data(), freq_data_size, MPI_CXX_DOUBLE_COMPLEX, sender, comm);
             } else {
@@ -126,13 +124,13 @@ std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::com
             }
             out[iter->first] = freq_data;
 
-            if (rank != sender) {
+            if (comm_rank != sender) {
                 chi.setStatus(TwoParticleGF::Computed);
             }
         }
     }
     MPI_Barrier(comm);
-    if (!rank) INFO("done.");
+    if (!comm_rank) INFO("done.");
     return out;
 }
 

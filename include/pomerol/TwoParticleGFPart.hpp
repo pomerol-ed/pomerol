@@ -18,6 +18,7 @@
 
 #include "mpi_dispatcher/misc.hpp"
 
+#include <array>
 #include <complex>
 #include <cstddef>
 
@@ -48,7 +49,7 @@ public:
         ComplexType Coeff;
 
         /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
-        RealType Poles[3];
+        std::array<RealType, 3> Poles;
 
         /** Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term? */
         bool isz4;
@@ -136,7 +137,7 @@ public:
         ComplexType NonResCoeff;
 
         /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
-        RealType Poles[3];
+        std::array<RealType, 3> Poles;
 
         /** Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
         Otherwise we are using \f$ \delta(z_2+z_3-P_2-P_3) \f$. */

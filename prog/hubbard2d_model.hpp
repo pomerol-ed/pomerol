@@ -29,18 +29,18 @@ public:
 
   hubbard2d_model(int argc, char* argv[]) :
     quantum_model(argc, argv, "Full-ED of the MxM Hubbard cluster"),
-    args_options{{args_parser, "U", "Hubbard constant U", {"U"}, 10.0},
-                 {args_parser, "mu", "Chemical potential", {"mu"}, std::numeric_limits<double>::quiet_NaN()},
-                 {args_parser, "t", "NN hopping constant t", {"t"}, 1.0},
-                 {args_parser, "tp", "NNN hopping constant t'", {"tp"}, 0.0},
-                 {args_parser, "x", "Size over x", {"x"}, 2},
-                 {args_parser, "y", "Size over y", {"y"}, 2}}
+    args_options_hubbard2d{{args_parser, "U", "Hubbard constant U", {"U"}, 10.0},
+                           {args_parser, "mu", "Chemical potential", {"mu"}, std::numeric_limits<double>::quiet_NaN()},
+                           {args_parser, "t", "NN hopping constant t", {"t"}, 1.0},
+                           {args_parser, "tp", "NNN hopping constant t'", {"tp"}, 0.0},
+                           {args_parser, "x", "Size over x", {"x"}, 2},
+                           {args_parser, "y", "Size over y", {"y"}, 2}}
   {
-    args_options.mu.HelpDefault("U/2");
+    args_options_hubbard2d.mu.HelpDefault("U/2");
     parse_args(argc, argv);
 
-    size_x = args::get(args_options.x);
-    size_y = args::get(args_options.y);
+    size_x = args::get(args_options_hubbard2d.x);
+    size_y = args::get(args_options_hubbard2d.y);
 
     init_hamiltonian();
   }
@@ -66,16 +66,16 @@ public:
     }
 
     /* Add interaction on each site*/
-    double U = args::get(args_options.U);
-    double mu = args::get(args_options.mu);
+    double U = args::get(args_options_hubbard2d.U);
+    double mu = args::get(args_options_hubbard2d.mu);
     if(std::isnan(mu)) mu = U / 2;
 
     for (std::size_t i=0; i<L; i++)
       HExpr += LatticePresets::CoulombS(names[i], U, -mu);
 
     /* Add hopping */
-    double t = args::get(args_options.t);
-    double tp = args::get(args_options.tp);
+    double t = args::get(args_options_hubbard2d.t);
+    double tp = args::get(args_options_hubbard2d.tp);
 
     for (std::size_t y=0; y<size_y; y++) {
       for (std::size_t x=0; x<size_x; x++) {
@@ -121,7 +121,7 @@ private:
     args::ValueFlag<double> tp;
     args::ValueFlag<int> x;
     args::ValueFlag<int> y;
-  } args_options;
+  } args_options_hubbard2d;
 
   int size_x;
   int size_y;

@@ -35,7 +35,7 @@ class DensityMatrixPart : public Thermal
     RealVectorType weights;
 
     /** The contribution to the partition function. */
-    RealType Z_part;
+    RealType Z_part = 0;
 
     /** It is true if this part has not been truncated. */
     bool Retained = true;

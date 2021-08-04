@@ -24,7 +24,7 @@ using BlockNumber = int;
 constexpr BlockNumber INVALID_BLOCK_NUMBER = -1;
 
 /** InnerQuantumState labels the states inside of the block of Fock States. Has no physical meaning. */
-using InnerQuantumState = unsigned long;
+using InnerQuantumState = libcommute::sv_index_type;
 
 /** This class handles all information about Fock states.
  *  It makes a classification of Fock states into blocks.
@@ -67,7 +67,7 @@ public:
 
     /**
      */
-    unsigned long getBlockSize(BlockNumber in) const;
+    InnerQuantumState getBlockSize(BlockNumber in) const;
 
     /** get a vector of all FockStates with a given set of QuantumNumbers
      * \param[in] in A set of quantum numbers to get a vector of FockStates

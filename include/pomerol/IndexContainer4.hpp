@@ -43,7 +43,7 @@ struct ElementWithPermFreq
     std::shared_ptr<ElementType> pElement;
     const Permutation4 FrequenciesPermutation;
 
-    ElementWithPermFreq(std::shared_ptr<ElementType> pElement, Permutation4 FrequenciesPermutation);
+    ElementWithPermFreq(std::shared_ptr<ElementType> pElement, Permutation4 const& FrequenciesPermutation);
 
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
     operator ElementType&();
@@ -85,7 +85,7 @@ public:
 /////////////////////////
 template<typename ElementType> inline
 ElementWithPermFreq<ElementType>::ElementWithPermFreq(
-    std::shared_ptr<ElementType> pElement, Permutation4 FrequenciesPermutation) :
+    std::shared_ptr<ElementType> pElement, Permutation4 const& FrequenciesPermutation) :
     pElement(pElement), FrequenciesPermutation(FrequenciesPermutation)
 {}
 

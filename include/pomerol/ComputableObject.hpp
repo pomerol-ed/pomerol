@@ -30,7 +30,7 @@ public:
 
     class StatusMismatch : public std::runtime_error {
     public:
-        StatusMismatch(std::string const& str) : std::runtime_error(str) {}
+        explicit StatusMismatch(std::string const& str) : std::runtime_error(str) {}
     };
 };
 

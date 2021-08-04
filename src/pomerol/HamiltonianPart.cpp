@@ -54,7 +54,7 @@ template<bool C> void HamiltonianPart::prepareImpl()
         auto bra_view = mapper.make_view_no_ref(HMatrix_.col(st));
         ket(st) = 1.0;
         HOp_(ket_view, bra_view);
-        ket(st) = .0;
+        ket(st) = .0; // cppcheck-suppress redundantAssignment
     }
 
     assert((HMatrix_.adjoint() - HMatrix_).array().abs().maxCoeff()
@@ -113,7 +113,7 @@ void HamiltonianPart::checkComputed() const
 RealType HamiltonianPart::getEigenValue(InnerQuantumState state) const
 {
     checkComputed();
-    return Eigenvalues(state);
+    return Eigenvalues(static_cast<Eigen::Index>(state));
 }
 
 const RealVectorType& HamiltonianPart::getEigenValues() const
@@ -144,8 +144,8 @@ bool HamiltonianPart::reduce(RealType ActualCutoff)
 {
     checkComputed();
 
-    InnerQuantumState counter = 0;
-    for (counter=0; counter < (unsigned int)Eigenvalues.size() && Eigenvalues[counter]<=ActualCutoff; ++counter){};
+    Eigen::Index counter = 0;
+    for (counter=0; counter < Eigenvalues.size() && Eigenvalues[counter]<=ActualCutoff; ++counter);
     INFO("Left " << counter << " eigenvalues : ");
 
     if (counter) {

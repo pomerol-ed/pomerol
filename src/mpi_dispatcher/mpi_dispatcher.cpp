@@ -66,7 +66,7 @@ void MPIMaster::fill_stack_()
         JobStack.emplace(task_numbers[i]);
     }
     for(int p = Nprocs - 1; p >= 0; --p) {
-        WorkerIndices[worker_pool[p]] = p;
+        WorkerIndices[worker_pool[p]] = static_cast<int>(p);
         WorkerStack.emplace(worker_pool[p]);
     }
 }
@@ -82,15 +82,15 @@ bool MPIMaster::is_finished() const
 
 inline std::vector<WorkerId> _autorange_workers(const MPI_Comm &comm, bool include_boss)
 {
-    int size = pMPI::size(comm);
-    int rank = pMPI::rank(comm);
+    int comm_size = pMPI::size(comm);
+    int comm_rank = pMPI::rank(comm);
 
     std::vector<WorkerId> out;
-    std::size_t Nprocs(size - int(!include_boss));
+    int Nprocs = comm_size - int(!include_boss);
     if(!Nprocs)
         throw std::runtime_error("No workers to evaluate");
-    for(std::size_t p = 0; p < size; ++p) {
-        if(include_boss || rank != p) {
+    for(std::size_t p = 0; p < comm_size; ++p) {
+        if(include_boss || comm_rank != p) {
             out.emplace_back(p);
         }
     }
@@ -105,8 +105,8 @@ inline std::vector<JobId> _autorange_tasks(std::size_t ntasks)
 }
 
 MPIMaster::MPIMaster(const MPI_Comm &comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers):
-    Comm(comm), Ntasks(task_numbers.size()),
-    Nprocs(worker_pool.size()),
+    Comm(comm), Ntasks(static_cast<int>(task_numbers.size())),
+    Nprocs(static_cast<int>(worker_pool.size())),
     task_numbers(std::move(task_numbers)),
     worker_pool(std::move(worker_pool)),
     wait_statuses(Nprocs, MPI_REQUEST_NULL),
@@ -120,7 +120,7 @@ MPIMaster::MPIMaster(const MPI_Comm &comm, std::size_t ntasks, bool include_boss
 {}
 
 MPIMaster::MPIMaster(const MPI_Comm &comm, std::vector<JobId> task_numbers, bool include_boss):
-    MPIMaster(comm, _autorange_workers(comm, include_boss), task_numbers)
+    MPIMaster(comm, _autorange_workers(comm, include_boss), std::move(task_numbers))
 {}
 
 void MPIMaster::order_worker(WorkerId worker, JobId job)

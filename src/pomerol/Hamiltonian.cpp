@@ -12,8 +12,8 @@ template<bool C>
 void Hamiltonian::prepareImpl(const LOperatorTypeRC<C> &HOp, const MPI_Comm& comm)
 {
     BlockNumber NumberOfBlocks = S.getNumberOfBlocks();
-    int rank = pMPI::rank(comm);
-    if(!rank) INFO_NONEWLINE("Preparing Hamiltonian parts...");
+    int comm_rank = pMPI::rank(comm);
+    if(!comm_rank) INFO_NONEWLINE("Preparing Hamiltonian parts...");
 
     parts.reserve(NumberOfBlocks);
     for(BlockNumber CurrentBlock = 0; CurrentBlock < NumberOfBlocks; ++CurrentBlock) {
@@ -30,15 +30,15 @@ void Hamiltonian::prepareImpl(const LOperatorTypeRC<C> &HOp, const MPI_Comm& com
 
     MPI_Datatype H_dt = C ? MPI_CXX_DOUBLE_COMPLEX : MPI_DOUBLE;
 
-    for(std::size_t p = 0; p < parts.size(); ++p) {
+    for(int p = 0; p < static_cast<int>(parts.size()); ++p) {
         auto & part = parts[p];
-        if (rank == job_map[p]) {
+        if (comm_rank == job_map[p]) {
             if (part.getStatus() != HamiltonianPart::Prepared) {
-                ERROR ("Worker" << rank << " didn't calculate part" << p);
+                ERROR ("Worker" << comm_rank << " didn't calculate part" << p);
                 throw std::logic_error("Worker didn't calculate this part.");
             }
             auto & H = part.getMatrix<C>();
-            MPI_Bcast(H.data(), H.size(), H_dt, rank, comm);
+            MPI_Bcast(H.data(), H.size(), H_dt, comm_rank, comm);
         } else {
             part.initHMatrix<C>();
             auto & H = part.getMatrix<C>();
@@ -58,34 +58,34 @@ void Hamiltonian::computeImpl(const MPI_Comm& comm)
     pMPI::mpi_skel<pMPI::ComputeWrap<HamiltonianPart>> skel;
     skel.parts.reserve(parts.size());
     for (auto & part: parts) {
-      skel.parts.emplace_back(pMPI::ComputeWrap<HamiltonianPart>(part, part.getSize()));
+      skel.parts.emplace_back(pMPI::ComputeWrap<HamiltonianPart>(part, static_cast<int>(part.getSize())));
     }
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true);
-    int rank = pMPI::rank(comm);
+    int comm_rank = pMPI::rank(comm);
 
     // Start distributing data
     MPI_Barrier(comm);
     MPI_Datatype H_dt = C ? MPI_CXX_DOUBLE_COMPLEX : MPI_DOUBLE;
-    for (std::size_t p = 0; p < parts.size(); ++p) {
+    for (int p = 0; p < static_cast<int>(parts.size()); ++p) {
         auto & part = parts[p];
         auto & H = part.getMatrix<C>();
-        if (rank == job_map[p]){
+        if (comm_rank == job_map[p]){
             if (part.Status != HamiltonianPart::Computed) {
-                ERROR ("Worker" << rank << " didn't calculate part" << p);
+                ERROR ("Worker" << comm_rank << " didn't calculate part" << p);
                 throw std::logic_error("Worker didn't calculate this part.");
             }
-            MPI_Bcast(H.data(), H.size(), H_dt, rank, comm);
+            MPI_Bcast(H.data(), H.size(), H_dt, comm_rank, comm);
             MPI_Bcast(part.Eigenvalues.data(),
-                      part.Eigenvalues.size(),
+                      static_cast<int>(part.Eigenvalues.size()),
                       MPI_DOUBLE,
-                      rank,
+                      comm_rank,
                       comm
                     );
         } else {
             part.Eigenvalues.resize(H.rows());
             MPI_Bcast(H.data(), H.size(), H_dt, job_map[p], comm);
             MPI_Bcast(part.Eigenvalues.data(),
-                      part.Eigenvalues.size(),
+                      static_cast<int>(part.Eigenvalues.size()),
                       MPI_DOUBLE,
                       job_map[p],
                       comm
@@ -142,7 +142,7 @@ RealVectorType const& Hamiltonian::getEigenValues(BlockNumber Block) const
 RealVectorType Hamiltonian::getEigenValues() const
 {
     RealVectorType out(S.getNumberOfStates());
-    std::size_t copied_size = 0;
+    long copied_size = 0;
     for(auto const& part : parts) {
         auto const& ev = part.getEigenValues();
         out.segment(copied_size, ev.size()) = ev;

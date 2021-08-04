@@ -38,7 +38,7 @@ foreach(model ${progs_list})
         set(def "POMEROL_${def}")
         set(prog_name "${model}.${PROJECT_NAME}")
         add_executable(${prog_name} ${PROG_SOURCES})
-        target_include_directories(${prog_name} PRIVATE ${GFTOOLS_INCLUDE_DIR})
+        target_include_directories(${prog_name} SYSTEM PRIVATE ${GFTOOLS_INCLUDE_DIR})
         target_compile_definitions(${prog_name} PRIVATE ${def})
         target_link_libraries(${prog_name} ${PROJECT_NAME})
         set_target_properties(${prog_name} PROPERTIES

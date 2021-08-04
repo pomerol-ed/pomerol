@@ -36,7 +36,7 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
                -4.384848776411e-03,
                -5.253420668000e-03,
                -5.370700986029e-03,
-               -5.126175681822e-03,
+               -5.126175681822e-03, // cppcheck-suppress constStatement
                -4.732777836189e-03;
 
     using namespace LatticePresets;

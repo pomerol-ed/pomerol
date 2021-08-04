@@ -16,6 +16,7 @@
 
 #include "mpi_dispatcher/misc.hpp"
 
+#include <cmath>
 #include <type_traits>
 #include <vector>
 
@@ -28,19 +29,19 @@ namespace Pomerol {
  */
 class Hamiltonian : public ComputableObject
 {
-    bool Complex;
+    bool Complex = {};
 
     /** Array of pointers to the Hamiltonian Parts */
     std::vector<HamiltonianPart> parts;
     /** A reference to the StatesClassification object. */
     const StatesClassification& S;
     /** A value of the ground energy - needed for further renormalization */
-    RealType GroundEnergy;
+    RealType GroundEnergy = -HUGE_VAL;
 
 public:
 
     /** Constructor. */
-    Hamiltonian(const StatesClassification &S) : S(S) {}
+    explicit Hamiltonian(const StatesClassification &S) : S(S) {}
 
     template<typename ScalarType, typename... IndexTypes>
     void prepare(const Operators::expression<ScalarType, IndexTypes...> &H,

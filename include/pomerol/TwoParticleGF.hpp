@@ -19,6 +19,7 @@
 #include "mpi_dispatcher/misc.hpp"
 
 #include <cstddef>
+#include <numeric>
 #include <tuple>
 #include <vector>
 
@@ -60,8 +61,6 @@ friend class TwoParticleGFContainer;
     const CreationOperator& CX4;
     /** A reference to a density matrix. */
     const DensityMatrix& DM;
-
-private:
 
     /** A list of pointers to parts. */
     std::vector<TwoParticleGFPart> parts;
@@ -154,14 +153,11 @@ public:
 };
 
 inline ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const {
-    if(Vanishing) {
-        return 0;
-    } else {
-        ComplexType Value = 0;
-        for(auto const& p : parts) {
-            Value += p(z1,z2,z3);
-        }
-        return Value;
+    if(Vanishing) return 0;
+    else {
+        return std::accumulate(parts.begin(), parts.end(), ComplexType(0),
+            [z1,z2,z3](ComplexType s, TwoParticleGFPart const& p) { return s + p(z1,z2,z3); }
+        );
     }
 }
 

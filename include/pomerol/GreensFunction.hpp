@@ -106,20 +106,18 @@ inline ComplexType GreensFunction::operator()(long int MatsubaraNumber) const {
 inline ComplexType GreensFunction::operator()(ComplexType z) const {
     if(Vanishing) return 0;
     else {
-        ComplexType Value = 0;
-        for(auto const& p : parts)
-            Value += p(z);
-        return Value;
+        return std::accumulate(parts.begin(), parts.end(), ComplexType(0),
+            [z](ComplexType s, GreensFunctionPart const& p) { return s + p(z); }
+        );
     }
 }
 
 inline ComplexType GreensFunction::of_tau(RealType tau) const {
     if(Vanishing) return 0;
     else {
-        ComplexType Value = 0;
-        for(auto const& p : parts)
-            Value += p.of_tau(tau);
-        return Value;
+        return std::accumulate(parts.begin(), parts.end(), ComplexType(0),
+            [tau](ComplexType s, GreensFunctionPart const& p) { return s + p.of_tau(tau); }
+        );
     }
 }
 

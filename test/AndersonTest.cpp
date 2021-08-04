@@ -30,7 +30,7 @@ TEST_CASE("Anderson model with 2 bath sites", "[Anderson]") {
                 -0.18013326-0.33885065*I,
                 -0.14541077-0.31208195*I,
                 -0.12043127-0.28860297*I,
-                -0.10171394-0.26815136*I,
+                -0.10171394-0.26815136*I, // cppcheck-suppress constStatement
                 -0.08721336-0.25025992*I;
     ComplexVectorType G_ref_down(10);
     G_ref_down << 0.49196891-0.07241433*I,
@@ -41,7 +41,7 @@ TEST_CASE("Anderson model with 2 bath sites", "[Anderson]") {
                   0.20705484-0.26399883*I,
                   0.1748209 -0.25319165*I,
                   0.14976473-0.2414213*I,
-                  0.12986709-0.22973732*I,
+                  0.12986709-0.22973732*I, // cppcheck-suppress constStatement
                   0.11373954-0.21855949*I;
 
     using namespace LatticePresets;

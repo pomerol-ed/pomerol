@@ -16,8 +16,9 @@ ComplexType SusceptibilityPart::Term::operator()(ComplexType Frequency) const
 
 ComplexType SusceptibilityPart::Term::operator()(RealType tau, RealType beta) const {
     using std::exp;
-    return Pole > 0 ? Residue*exp(-tau*Pole)/(1 - exp(-beta*Pole)) :
-                      Residue*exp((beta-tau)*Pole)/(exp(beta*Pole) - 1);
+    using std::expm1;
+    return Pole > 0 ? -Residue*exp(-tau*Pole) / expm1(-beta*Pole) :
+                      Residue*exp((beta-tau)*Pole) / expm1(beta*Pole);
 }
 
 inline
@@ -30,7 +31,7 @@ SusceptibilityPart::Term& SusceptibilityPart::Term::operator+=(const Term& Anoth
 SusceptibilityPart::SusceptibilityPart( const MonomialOperatorPart& A, const MonomialOperatorPart& B,
                                         const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
                                         const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
-                                        Thermal(DMpartInner),
+                                        Thermal(DMpartInner.beta),
                                         HpartInner(HpartInner), HpartOuter(HpartOuter),
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
                                         A(A), B(B),

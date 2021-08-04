@@ -48,7 +48,7 @@ ComplexType EnsembleAverage::computeImpl(const MonomialOperatorPart& Apart,
 
     // Sum up <index1|A|index1> * weight(index1)
     ComplexType result_part = 0;
-    for(QuantumState Index = 0; Index < Amatrix.outerSize(); ++Index)
+    for(Eigen::Index Index = 0; Index < Amatrix.outerSize(); ++Index)
         result_part += Amatrix.coeff(Index, Index) * DMpart.getWeight(Index);
     return result_part;
 }

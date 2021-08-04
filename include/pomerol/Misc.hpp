@@ -21,6 +21,7 @@
 #include <omp.h>
 #endif
 
+#include <array>
 #include <complex>
 #include <cstddef>
 #include <iostream>
@@ -89,23 +90,23 @@ static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent lin
 
 /** Permutation of 3 elements */
 struct Permutation3 {
-    const std::size_t perm[3];
+    const std::array<std::size_t, 3> perm;
     const int sign;
     bool operator==(const Permutation3& rhs) const;
     bool operator!=(const Permutation3& rhs) const;
     friend std::ostream& operator<<(std::ostream& out, const Permutation3 &rhs);
 };
-extern const Permutation3 permutations3[6];
+extern const std::array<Permutation3, 6> permutations3;
 
 /** Permutation of 4 elements */
 struct Permutation4 {
-    const std::size_t perm[4];
+    const std::array<std::size_t, 4> perm;
     const int sign;
     bool operator==(const Permutation4& rhs) const;
     bool operator!=(const Permutation4& rhs) const;
     friend std::ostream& operator<<(std::ostream& out, const Permutation4 &p);
 };
-extern const Permutation4 permutations4[24];
+extern const std::array<Permutation4, 24> permutations4;
 
 } // namespace Pomerol
 

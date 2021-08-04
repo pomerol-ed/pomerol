@@ -2,6 +2,7 @@
 
 #include "mpi_dispatcher/mpi_skel.hpp"
 
+#include <array>
 #include <cassert>
 #include <map>
 #include <stdexcept>
@@ -56,7 +57,7 @@ void TwoParticleGF::prepare()
     for(auto outer_iter = CX4NontrivialBlocks.right.begin();
         outer_iter != CX4NontrivialBlocks.right.end(); outer_iter++){ // Iterate over the outermost index.
             for(std::size_t p = 0; p < 6; ++p) { // Choose a permutation
-                  BlockNumber LeftIndices[4];
+                  std::array<BlockNumber, 4> LeftIndices{};
                   LeftIndices[0] = outer_iter->first;
                   LeftIndices[3] = outer_iter->second;
                   LeftIndices[2] = getLeftIndex(p,2,LeftIndices[3]);
@@ -118,7 +119,7 @@ struct ComputeAndClearWrap {
     void run() {
         p.compute();
         if (fill_) {
-            int wsize = freqs_.size();
+            std::size_t wsize = freqs_.size();
             #ifdef POMEROL_USE_OPENMP
             #pragma omp parallel for
             #endif
@@ -132,9 +133,10 @@ struct ComputeAndClearWrap {
         if(clear_) p.clear();
     }
 
+    // NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
     const int complexity;
 
-protected:
+private:
 
     const FreqVec & freqs_;
     std::vector<ComplexType> & data_;
@@ -157,8 +159,8 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs
         bool fill_container = !freqs.empty();
         skel.parts.reserve(parts.size());
         m_data.resize(freqs.size(), 0.0);
-        for (std::size_t i = 0; i < parts.size(); ++i) {
-            skel.parts.emplace_back(freqs, m_data, parts[i], clear, fill_container, 1);
+        for (auto & part : parts) {
+            skel.parts.emplace_back(freqs, m_data, part, clear, fill_container, 1);
         }
         std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
 
@@ -167,14 +169,14 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs
 
         MPI_Allreduce(MPI_IN_PLACE,
                       m_data.data(),
-                      m_data.size(),
+                      static_cast<int>(m_data.size()),
                       MPI_CXX_DOUBLE_COMPLEX,
                       MPI_SUM,
                       comm);
 
         // Optionally distribute terms to other processes
         if (!clear) {
-            for(std::size_t p = 0; p < parts.size(); ++p) {
+            for(int p = 0; p < static_cast<int>(parts.size()); ++p) {
                 parts[p].NonResonantTerms.broadcast(comm, job_map[p]);
                 parts[p].ResonantTerms.broadcast(comm, job_map[p]);
                 parts[p].setStatus(TwoParticleGFPart::Computed);

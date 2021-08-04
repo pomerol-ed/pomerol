@@ -25,7 +25,7 @@ GreensFunctionPart::Term& GreensFunctionPart::Term::operator+=(const Term& Anoth
 GreensFunctionPart::GreensFunctionPart( const MonomialOperatorPart& C, const MonomialOperatorPart& CX,
                                         const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
                                         const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
-                                        Thermal(DMpartInner),
+                                        Thermal(DMpartInner.beta),
                                         HpartInner(HpartInner), HpartOuter(HpartOuter),
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
                                         C(C), CX(CX),

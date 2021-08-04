@@ -51,7 +51,7 @@ TEST_CASE("Green's function of a Hubbard plaquette", "[GF4site]") {
              -0.000360621591 -0.248974505*I,
              -0.000129046261 -0.219206946*I,
              -3.20102701e-05 -0.194983212*I,
-              9.51503858e-06 -0.175149329*I,
+              9.51503858e-06 -0.175149329*I, // cppcheck-suppress constStatement
               2.68929175e-05 -0.158732731*I;
 
     using namespace LatticePresets;

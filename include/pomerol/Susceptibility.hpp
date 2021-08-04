@@ -19,6 +19,7 @@
 #include "Thermal.hpp"
 
 #include <complex>
+#include <numeric>
 #include <vector>
 
 namespace Pomerol {
@@ -132,8 +133,9 @@ inline ComplexType Susceptibility::operator()(long int MatsubaraNumber) const {
 inline ComplexType Susceptibility::operator()(ComplexType z) const {
     ComplexType Value = 0;
     if(!Vanishing) {
-        for(auto const& p : parts)
-            Value += p(z);
+        Value = std::accumulate(parts.begin(), parts.end(), ComplexType(0),
+            [z](ComplexType s, SusceptibilityPart const& p) { return s + p(z); }
+        );
     }
     if(SubtractDisconnected && std::abs(z) < 1e-15)
             Value -= ave_A * ave_B * beta;  // only for n=0
@@ -143,8 +145,9 @@ inline ComplexType Susceptibility::operator()(ComplexType z) const {
 inline ComplexType Susceptibility::of_tau(RealType tau) const {
     ComplexType Value = 0;
     if(!Vanishing) {
-        for(auto const& p : parts)
-            Value += p.of_tau(tau);
+        Value = std::accumulate(parts.begin(), parts.end(), ComplexType(0),
+            [tau](ComplexType s, SusceptibilityPart const& p) { return s + p.of_tau(tau); }
+        );
     }
     if(SubtractDisconnected)
         Value -= ave_A * ave_B;

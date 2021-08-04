@@ -13,10 +13,8 @@ GreensFunction::GreensFunction(const StatesClassification& S, const Hamiltonian&
 }
 
 GreensFunction::GreensFunction(const GreensFunction& GF) :
-    Thermal(GF.beta), ComputableObject(GF), S(GF.S), H(GF.H), C(GF.C), CX(GF.CX), DM(GF.DM), Vanishing(GF.Vanishing)
+    Thermal(GF.beta), ComputableObject(GF), S(GF.S), H(GF.H), C(GF.C), CX(GF.CX), DM(GF.DM), Vanishing(GF.Vanishing), parts(GF.parts)
 {
-    for(auto const& part: GF.parts)
-        parts.emplace_back(part);
 }
 
 void GreensFunction::prepare()

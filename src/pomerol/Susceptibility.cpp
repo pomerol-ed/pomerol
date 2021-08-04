@@ -11,10 +11,10 @@ Susceptibility::Susceptibility(const StatesClassification& S, const Hamiltonian&
 
 Susceptibility::Susceptibility(const Susceptibility& Chi) :
     Thermal(Chi.beta), ComputableObject(Chi), S(Chi.S), H(Chi.H), A(Chi.A), B(Chi.B), DM(Chi.DM),
-    Vanishing(Chi.Vanishing), SubtractDisconnected(Chi.SubtractDisconnected), ave_A(Chi.ave_A), ave_B(Chi.ave_B)
+    Vanishing(Chi.Vanishing),
+    parts(Chi.parts),
+    SubtractDisconnected(Chi.SubtractDisconnected), ave_A(Chi.ave_A), ave_B(Chi.ave_B)
 {
-    for(auto const& p : Chi.parts)
-        parts.emplace_back(p);
 }
 
 void Susceptibility::prepare()

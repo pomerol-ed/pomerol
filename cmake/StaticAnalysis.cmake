@@ -20,11 +20,15 @@ if(StaticAnalysis)
                          NAMES "cppcheck" REQUIRED
                          DOC "Path to the cppcheck executable")
             message(STATUS "Using cppcheck: ${CPPCHECK_EXECUTABLE}")
+
+            configure_file(.cppcheck.supp.in .cppcheck.supp @ONLY)
+
             set(CMAKE_CXX_CPPCHECK
                 "${CPPCHECK_EXECUTABLE}"
                  "--enable=warning,style,performance,portability"
                  "--std=c++11"
                  "--template=gcc"
+                 "--suppressions-list=${CMAKE_BINARY_DIR}/.cppcheck.supp"
                  "--inline-suppr"
                  "--verbose"
                  "--force"

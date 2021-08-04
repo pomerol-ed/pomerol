@@ -72,9 +72,9 @@ public:
 private:
 
   // Simulation parameters
-  Pomerol::RealType beta;
-  bool calc_gf;
-  bool calc_2pgf;
+  Pomerol::RealType beta = {};
+  bool calc_gf = false;
+  bool calc_2pgf = false;
 
 protected:
 

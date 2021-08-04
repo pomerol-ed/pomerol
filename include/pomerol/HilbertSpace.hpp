@@ -48,7 +48,7 @@ private:
     struct boson_es_constructor_from_map {
         const std::map<std::tuple<IndexTypes...>, unsigned int> &bits_per_boson;
 
-        boson_es_constructor_from_map(
+        explicit boson_es_constructor_from_map(
             const std::map<std::tuple<IndexTypes...>, unsigned int> &bits_per_boson
         ) : bits_per_boson(bits_per_boson) {}
 
