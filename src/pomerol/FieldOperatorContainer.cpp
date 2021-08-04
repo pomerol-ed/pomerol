@@ -26,7 +26,7 @@ const CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleInde
 {
     auto it = mapCreationOperators.find(in);
     if(it == mapCreationOperators.end())
-        throw std::logic_error("No creation operator found.");
+        throw std::runtime_error("Creation operator not found.");
     else
         return it->second;
 }
@@ -35,7 +35,7 @@ const AnnihilationOperator& FieldOperatorContainer::getAnnihilationOperator(Part
 {
     auto it = mapAnnihilationOperators.find(in);
     if(it == mapAnnihilationOperators.end())
-        throw std::logic_error("No annihilation operator found.");
+        throw std::runtime_error("Annihilation operator not found.");
     else
         return it->second;
 }

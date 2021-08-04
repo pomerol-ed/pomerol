@@ -4,15 +4,22 @@
 
 namespace Pomerol {
 
+void MonomialOperator::checkPrepared() const
+{
+    if(getStatus() < Prepared) {
+        throw StatusMismatch("MonomialOperator is not prepared yet.");
+    }
+}
+
 MonomialOperator::BlocksBimap const& MonomialOperator::getBlockMapping() const
 {
-    if(getStatus() < Prepared) { ERROR("MonomialOperator is not prepared yet."); throw exStatusMismatch(); }
+    checkPrepared();
     return LeftRightBlocks;
 }
 
 void MonomialOperator::compute(const MPI_Comm& comm)
 {
-    if(getStatus() < Prepared) throw exStatusMismatch();
+    checkPrepared();
     if(getStatus() >= Computed) return;
 
     std::size_t Size = parts.size();
@@ -26,40 +33,38 @@ void MonomialOperator::compute(const MPI_Comm& comm)
 
 MonomialOperatorPart& MonomialOperator::getPartFromRightIndex(BlockNumber out)
 {
-    if(getStatus() < Prepared) { ERROR("MonomialOperator is not prepared yet."); throw exStatusMismatch(); }
+    checkPrepared();
     return parts[mapPartsFromRight.find(out)->second];
 }
 
 const MonomialOperatorPart& MonomialOperator::getPartFromRightIndex(BlockNumber out) const
 {
-    if(getStatus() < Prepared) { ERROR("MonomialOperator is not prepared yet."); throw exStatusMismatch(); }
+    checkPrepared();
     return parts[mapPartsFromRight.find(out)->second];
 }
 
 MonomialOperatorPart& MonomialOperator::getPartFromLeftIndex(BlockNumber in)
 {
-    if(getStatus() < Prepared) { ERROR("MonomialOperator is not prepared yet."); throw exStatusMismatch(); }
+    checkPrepared();
     return parts[mapPartsFromLeft.find(in)->second];
 }
 
 const MonomialOperatorPart& MonomialOperator::getPartFromLeftIndex(BlockNumber in) const
 {
-    if(getStatus() < Prepared) { ERROR("MonomialOperator is not prepared yet."); throw exStatusMismatch(); }
+    checkPrepared();
     return parts[mapPartsFromLeft.find(in)->second];
 }
 
 BlockNumber MonomialOperator::getRightIndex(BlockNumber LeftIndex) const
 {
-    if(getStatus() < Prepared) { ERROR("MonomialOperator is not prepared yet."); throw exStatusMismatch(); }
-
+    checkPrepared();
     BlocksBimap::left_const_iterator it =  LeftRightBlocks.left.find(LeftIndex);
     return it != LeftRightBlocks.left.end() ? it->second : INVALID_BLOCK_NUMBER;
 }
 
 BlockNumber MonomialOperator::getLeftIndex(BlockNumber RightIndex) const
 {
-    if(getStatus() < Prepared) { ERROR("MonomialOperator is not prepared yet."); throw exStatusMismatch(); }
-
+    checkPrepared();
     BlocksBimap::right_const_iterator it =  LeftRightBlocks.right.find(RightIndex);
     return (it != LeftRightBlocks.right.end()) ? it->second : INVALID_BLOCK_NUMBER;
 }

@@ -80,10 +80,8 @@ unsigned short GreensFunction::getIndex(std::size_t Position) const
     switch(Position){
         case 0: return C.getIndex();
         case 1: return CX.getIndex();
-        default: assert(0);
+        default: throw std::runtime_error("GreensFunction: Wrong operator");
     }
-    throw std::logic_error("GreensFunction :: wrong operator");
-    return C.getIndex();
 }
 
 } // namespace Pomerol

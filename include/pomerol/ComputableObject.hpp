@@ -6,7 +6,8 @@
 #ifndef POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_H
 #define POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_H
 
-#include <exception>
+#include <stdexcept>
+#include <string>
 
 namespace Pomerol {
 
@@ -22,14 +23,14 @@ public:
     /** Returns the current status of an object */
     StatusEnum getStatus() const { return Status; }
     void setStatus(StatusEnum Status_in){
-        if(Status_in > Computed) throw exStatusMismatch();
+        if(Status_in > Computed)
+            throw StatusMismatch("Invalid computable object status");
         Status = Status_in;
     }
 
-    class exStatusMismatch : public std::exception {
-        virtual const char* what() const noexcept override {
-            return "Object status mismatch";
-        }
+    class StatusMismatch : public std::runtime_error {
+    public:
+        StatusMismatch(std::string const& str) : std::runtime_error(str) {}
     };
 };
 

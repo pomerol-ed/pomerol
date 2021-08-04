@@ -143,6 +143,10 @@ public:
     }
     /** Computes all world-lines */
     void compute(const MPI_Comm& comm = MPI_COMM_WORLD);
+
+private:
+
+    void checkPrepared() const;
 };
 
 class CreationOperator : public MonomialOperator

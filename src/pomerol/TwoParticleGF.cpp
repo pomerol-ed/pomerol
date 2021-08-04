@@ -43,9 +43,8 @@ const MonomialOperatorPart& TwoParticleGF::OperatorPartAtPosition(std::size_t Pe
         case 0: return C1.getPartFromLeftIndex(LeftIndex);
         case 1: return C2.getPartFromLeftIndex(LeftIndex);
         case 2: return CX3.getPartFromLeftIndex(LeftIndex);
-        default: assert(0);
+        default: throw std::runtime_error("TwoParticleGF: Could not find operator part");
     }
-    throw std::logic_error("TwoParticleGF : could not find operator part");
 }
 
 void TwoParticleGF::prepare()
@@ -146,7 +145,8 @@ protected:
 
 std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs, const MPI_Comm& comm)
 {
-    if(getStatus() < Prepared) throw exStatusMismatch();
+    if(getStatus() < Prepared)
+        throw StatusMismatch("TwoParticleGF is not prepared yet.");
 
     std::vector<ComplexType> m_data;
     if(getStatus() >= Computed) return m_data;
@@ -197,7 +197,7 @@ ParticleIndex TwoParticleGF::getIndex(std::size_t Position) const
         case 3: return CX4.getIndex();
         default: assert(0);
     }
-    throw std::logic_error("TwoParticleGF : could not get operator index");
+    throw std::runtime_error("TwoParticleGF: Could not get operator index");
 }
 
 unsigned short TwoParticleGF::getPermutationNumber(const Permutation3& in)

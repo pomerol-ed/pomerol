@@ -168,7 +168,7 @@ void quantum_model::compute() {
       std::vector<std::size_t> indices_2pgf = args::get(args_options._2pgf_indices);
 
       if (indices_2pgf.size() != 4)
-        throw std::logic_error("Need 4 indices for 2PGF");
+        throw std::runtime_error("Need 4 indices for 2PGF");
 
       // a set of four indices to evaluate the 2pgf
       IndexCombination4 index_comb(indices_2pgf[0], indices_2pgf[1], indices_2pgf[2], indices_2pgf[3]);

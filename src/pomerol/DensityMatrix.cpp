@@ -37,7 +37,7 @@ void DensityMatrix::compute()
 
 RealType DensityMatrix::getWeight(QuantumState state) const
 {
-    if(getStatus() < Computed ) { ERROR("DensityMatrix is not computed yet."); throw exStatusMismatch(); };
+    if(getStatus() < Computed) { throw StatusMismatch("DensityMatrix is not computed yet."); };
     BlockNumber BlockNumber = S.getBlockNumber(state);
     InnerQuantumState InnerState = S.getInnerState(state);
 
@@ -51,7 +51,7 @@ const DensityMatrixPart& DensityMatrix::getPart(BlockNumber in) const
 
 RealType DensityMatrix::getAverageEnergy() const
 {
-    if(getStatus() < Computed) { ERROR("DensityMatrix is not computed yet."); throw exStatusMismatch(); };
+    if(getStatus() < Computed) { throw StatusMismatch("DensityMatrix is not computed yet."); };
     RealType E = 0;
     for(auto const& p : parts)
     E += p.getAverageEnergy();

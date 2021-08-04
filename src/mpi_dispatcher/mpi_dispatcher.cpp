@@ -88,7 +88,7 @@ inline std::vector<WorkerId> _autorange_workers(const MPI_Comm &comm, bool inclu
     std::vector<WorkerId> out;
     std::size_t Nprocs(size - int(!include_boss));
     if(!Nprocs)
-        throw std::logic_error("No workers to evaluate");
+        throw std::runtime_error("No workers to evaluate");
     for(std::size_t p = 0; p < size; ++p) {
         if(include_boss || rank != p) {
             out.emplace_back(p);

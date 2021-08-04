@@ -52,9 +52,9 @@ public:
         auto const& FullHilbertSpace = HS.getFullHilbertSpace();
         auto Dim = FullHilbertSpace.dim();
         if(HS.getStatus() == Computed) { // Multiple blocks revealed by HS
-            InitMultipleBlocks(HS.getSpacePartition());
+            initMultipleBlocks(HS.getSpacePartition());
         } else { // Just one block
-            InitSingleBlock(Dim);
+            initSingleBlock(Dim);
         }
         Status = Computed;
     }
@@ -93,8 +93,9 @@ public:
 
 private:
 
-    void InitSingleBlock(unsigned long Dim);
-    void InitMultipleBlocks(libcommute::space_partition const& partition);
+    void initSingleBlock(unsigned long Dim);
+    void initMultipleBlocks(libcommute::space_partition const& partition);
+    void checkComputed() const;
 };
 
 } // namespace Pomerol

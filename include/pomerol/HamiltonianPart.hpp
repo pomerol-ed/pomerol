@@ -106,6 +106,8 @@ private:
     template<bool C> void initHMatrix();
     template<bool C> void prepareImpl();
     template<bool C> void computeImpl();
+
+    void checkComputed() const;
 };
 
 } // namespace Pomerol

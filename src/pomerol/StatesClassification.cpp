@@ -12,13 +12,13 @@ namespace Pomerol {
 // StatesClassification
 //
 
-void StatesClassification::InitSingleBlock(unsigned long Dim) {
+void StatesClassification::initSingleBlock(unsigned long Dim) {
     StateBlockIndex.resize(Dim, 0);
     StatesContainer.emplace_back(Dim, 0);
     std::iota(StatesContainer.back().begin(), StatesContainer.back().end(), 0);
 }
 
-void StatesClassification::InitMultipleBlocks(libcommute::space_partition const& partition) {
+void StatesClassification::initMultipleBlocks(libcommute::space_partition const& partition) {
     StateBlockIndex.resize(partition.dim());
     StatesContainer.resize(partition.n_subspaces(), std::vector<QuantumState>());
     foreach(partition, [this](QuantumState State, BlockNumber Block) {
@@ -27,31 +27,35 @@ void StatesClassification::InitMultipleBlocks(libcommute::space_partition const&
     });
 }
 
+void StatesClassification::checkComputed() const
+{
+    if(getStatus() < Computed) { throw StatusMismatch("StatesClassification is not computed yet."); }
+}
+
 unsigned long StatesClassification::getBlockSize(BlockNumber in) const
 {
-    if(getStatus() < Computed) { ERROR("StatesClassification is not computed yet."); throw exStatusMismatch(); }
+    checkComputed();
     return getFockStates(in).size();
 }
 
 const std::vector<QuantumState>& StatesClassification::getFockStates(BlockNumber in) const
 {
-    if(getStatus() < Computed) { ERROR("StatesClassification is not computed yet."); throw exStatusMismatch(); }
+    checkComputed();
     return StatesContainer[in];
 }
 
 QuantumState StatesClassification::getFockState(BlockNumber in, InnerQuantumState m) const
 {
-    if(getStatus() < Computed) { ERROR("StatesClassification is not computed yet."); throw exStatusMismatch(); }
+    checkComputed();
     if(int(in) < StatesContainer.size())
         if(m < StatesContainer[in].size())
             return StatesContainer[in][m];
-    ERROR("Couldn't find state numbered " << m << " in block " << in);
     throw std::runtime_error("Wrong inner state " + std::to_string(m));
 }
 
 BlockNumber StatesClassification::getBlockNumber(QuantumState in) const
 {
-    if(getStatus() < Computed) { ERROR("StatesClassification is not computed yet."); throw exStatusMismatch(); }
+    checkComputed();
     if(in >= StateBlockIndex.size()) {
         throw std::runtime_error("Wrong state " + std::to_string(in));
     }
@@ -60,7 +64,7 @@ BlockNumber StatesClassification::getBlockNumber(QuantumState in) const
 
 InnerQuantumState StatesClassification::getInnerState(QuantumState in) const
 {
-    if(getStatus() < Computed) { ERROR("StatesClassification is not computed yet."); throw exStatusMismatch(); }
+    checkComputed();
     if(in >= StateBlockIndex.size()) {
         throw std::runtime_error("Wrong state " + std::to_string(in));
     }

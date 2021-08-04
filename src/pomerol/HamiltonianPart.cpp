@@ -104,15 +104,21 @@ template<bool C> MatrixType<C>& HamiltonianPart::getMatrix() {
 template MatrixType<true>& HamiltonianPart::getMatrix<true>();
 template MatrixType<false>& HamiltonianPart::getMatrix<false>();
 
+void HamiltonianPart::checkComputed() const
+{
+    if(getStatus() < Computed)
+        throw StatusMismatch("HamiltonianPart is not computed yet.");
+}
+
 RealType HamiltonianPart::getEigenValue(InnerQuantumState state) const
 {
-    if(getStatus() < Computed) throw exStatusMismatch();
+    checkComputed();
     return Eigenvalues(state);
 }
 
 const RealVectorType& HamiltonianPart::getEigenValues() const
 {
-    if(getStatus() < Computed) throw exStatusMismatch();
+    checkComputed();
     return Eigenvalues;
 }
 
@@ -124,19 +130,19 @@ InnerQuantumState HamiltonianPart::getSize() const
 template<bool C>
 VectorType<C> HamiltonianPart::getEigenState(InnerQuantumState state) const
 {
-    if(getStatus() < Computed) throw exStatusMismatch();
+    checkComputed();
     return getMatrix<C>()->col(state);
 }
 
 RealType HamiltonianPart::getMinimumEigenvalue() const
 {
-    if(getStatus() < Computed) throw exStatusMismatch();
+    checkComputed();
     return Eigenvalues.minCoeff();
 }
 
 bool HamiltonianPart::reduce(RealType ActualCutoff)
 {
-    if(getStatus() < Computed) throw exStatusMismatch();
+    checkComputed();
 
     InnerQuantumState counter = 0;
     for (counter=0; counter < (unsigned int)Eigenvalues.size() && Eigenvalues[counter]<=ActualCutoff; ++counter){};
