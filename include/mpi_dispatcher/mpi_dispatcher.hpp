@@ -15,8 +15,8 @@
 namespace pMPI {
 
 enum WorkerTag : int { Pending, Work, Finish }; // tags for MPI communication
-typedef int JobId;
-typedef int WorkerId;
+using JobId = int;
+using WorkerId = int;
 
 struct MPIWorker
 {

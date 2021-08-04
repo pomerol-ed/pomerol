@@ -27,9 +27,9 @@ namespace Pomerol {
  */
 template<typename TermType> class TermList {
     /** Comparison function */
-    typedef typename TermType::Compare Compare;
+    using Compare = typename TermType::Compare;
     /** Predicate for determining negligible terms */
-    typedef typename TermType::IsNegligible IsNegligible;
+    using IsNegligible = typename TermType::IsNegligible;
 
     std::set<TermType, Compare> data;
     IsNegligible is_negligible;
