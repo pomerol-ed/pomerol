@@ -141,8 +141,7 @@ void quantum_model::compute() {
 
     if (!rank) // dump gf into a file
       // loops over all components (pairs of indices) of the Green's function
-      for (std::set<IndexCombination2>::const_iterator it = indices2.begin(); it != indices2.end(); ++it) {
-        IndexCombination2 ind2 = *it;
+      for (IndexCombination2 const& ind2 : indices2) {
         const GreensFunction & GF = G(ind2);
         // Save Matsubara GF from pi/beta to pi/beta*(4*wf_max + 1)
         std::cout << "Saving imfreq G" << ind2 << " on " << 4 * wf_max << " Matsubara freqs. " << std::endl;

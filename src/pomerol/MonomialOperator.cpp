@@ -58,14 +58,14 @@ const MonomialOperatorPart& MonomialOperator::getPartFromLeftIndex(BlockNumber i
 BlockNumber MonomialOperator::getRightIndex(BlockNumber LeftIndex) const
 {
     checkPrepared();
-    BlocksBimap::left_const_iterator it =  LeftRightBlocks.left.find(LeftIndex);
+    auto it =  LeftRightBlocks.left.find(LeftIndex);
     return it != LeftRightBlocks.left.end() ? it->second : INVALID_BLOCK_NUMBER;
 }
 
 BlockNumber MonomialOperator::getLeftIndex(BlockNumber RightIndex) const
 {
     checkPrepared();
-    BlocksBimap::right_const_iterator it =  LeftRightBlocks.right.find(RightIndex);
+    auto it =  LeftRightBlocks.right.find(RightIndex);
     return (it != LeftRightBlocks.right.end()) ? it->second : INVALID_BLOCK_NUMBER;
 }
 

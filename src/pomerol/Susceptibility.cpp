@@ -22,11 +22,11 @@ void Susceptibility::prepare()
     if(getStatus() >= Prepared) return;
 
     // Find out non-trivial blocks of A and B.
-    MonomialOperator::BlocksBimap const& ANontrivialBlocks = A.getBlockMapping();
-    MonomialOperator::BlocksBimap const& BNontrivialBlocks = B.getBlockMapping();
+    auto const& ANontrivialBlocks = A.getBlockMapping();
+    auto const& BNontrivialBlocks = B.getBlockMapping();
 
-    MonomialOperator::BlocksBimap::left_const_iterator Aiter = ANontrivialBlocks.left.begin();
-    MonomialOperator::BlocksBimap::right_const_iterator Biter = BNontrivialBlocks.right.begin();
+    auto Aiter = ANontrivialBlocks.left.begin();
+    auto Biter = BNontrivialBlocks.right.begin();
 
     while(Aiter != ANontrivialBlocks.left.end() && Biter != BNontrivialBlocks.right.end()){
         // <Aleft|A|Aright><Bleft|B|Bright>
