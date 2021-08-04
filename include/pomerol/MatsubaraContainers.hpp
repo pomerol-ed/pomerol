@@ -17,28 +17,27 @@ namespace Pomerol {
 // class MatsubaraContainer4
 template<typename SourceObject>
 class MatsubaraContainer4 {
-    const SourceObject* pSource = nullptr;
+    SourceObject const& Source;
     long NumberOfMatsubaras = 0;
     std::vector<ComplexMatrixType> Values;
     std::vector<long> FermionicIndexOffset;
 
 public:
 
-    MatsubaraContainer4() = default;
+    MatsubaraContainer4(SourceObject const& Source) : Source(Source) {}
 
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
-    // calls pSource->value(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3)
-    void fill(const SourceObject* pSource, long NumberOfMatsubaras);
+    // calls Source.value(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3)
+    void fill(long NumberOfMatsubaras);
 
     long getNumberOfMatsubaras() const { return NumberOfMatsubaras; }
 };
 
 template<typename SourceObject> inline
-void MatsubaraContainer4<SourceObject>::fill(const SourceObject* pSource, long NumberOfMatsubaras)
+void MatsubaraContainer4<SourceObject>::fill(long NumberOfMatsubaras)
 {
     this->NumberOfMatsubaras = NumberOfMatsubaras;
-    this->pSource = pSource;
 
     if(NumberOfMatsubaras == 0){
         Values.clear();
@@ -63,7 +62,7 @@ void MatsubaraContainer4<SourceObject>::fill(const SourceObject* pSource, long N
             long MatsubaraNumber2 = BosonicIndex - MatsubaraNumber1;
             long MatsubaraNumber3 = NupIndexM+FermionicIndexOffset[BosonicIndexV];
             Values[BosonicIndexV](NuIndexM,NupIndexM) =
-                pSource->value(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+                Source.value(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
         }
     }
 }
@@ -85,10 +84,10 @@ ComplexType MatsubaraContainer4<SourceObject>::operator()(long MatsubaraNumber1,
           "n2 = " << MatsubaraNumber2 << ", " <<
           "n3 = " << MatsubaraNumber3 <<
           " (NumberOfMatsubaras = " << NumberOfMatsubaras <<
-          "), fetching a raw value from " << pSource
+          "), fetching a raw value from " << &Source
     );
 
-    return pSource->value(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
+    return Source.value(MatsubaraNumber1,MatsubaraNumber2,MatsubaraNumber3);
 }
 
 } // namespace Pomerol
