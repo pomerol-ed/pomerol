@@ -55,7 +55,7 @@ class IndexContainer4 {
 protected:
     ParticleIndex NumIndices;
 
-    SourceObject* pSource;
+    SourceObject const& Source;
 
     const std::set<IndexCombination4> enumerateInitialIndices() const;
 
@@ -64,8 +64,8 @@ public:
     std::map<IndexCombination4, std::shared_ptr<ElementType>> NonTrivialElements;
 
     template<typename... IndexTypes>
-    IndexContainer4(SourceObject* pSource, const IndexClassification<IndexTypes...>& IndexInfo) :
-        NumIndices(IndexInfo.getIndexSize()), pSource(pSource)
+    IndexContainer4(SourceObject const& Source, const IndexClassification<IndexTypes...>& IndexInfo) :
+        NumIndices(IndexInfo.getIndexSize()), Source(Source)
     {}
 
     void fill(std::set<IndexCombination4> InitialIndices = std::set<IndexCombination4>());
@@ -152,7 +152,7 @@ template<typename ElementType, typename SourceObject>
 inline
 ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::set(const IndexCombination4& Indices)
 {
-    std::shared_ptr<ElementType> pElement(pSource->createElement(Indices));
+    std::shared_ptr<ElementType> pElement(Source.createElement(Indices));
     auto iter = ElementsMap.emplace(Indices, ElementWithPermFreq<ElementType>(pElement,permutations4[0])).first;
 
     DEBUG("IndexContainer4::fill() at " << this << ": " <<
@@ -212,7 +212,7 @@ ElementWithPermFreq<ElementType>& IndexContainer4<ElementType,SourceObject>::ope
               ", Index2=" << Indices.Index2 <<
               ", Index3=" << Indices.Index3 <<
               ", Index4=" << Indices.Index4 <<
-              "; add a new element to the container using source " << pSource
+              "; add a new element to the container using source " << &Source
         );
         return set(Indices);
     }else

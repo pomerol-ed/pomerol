@@ -33,7 +33,7 @@ public:
                 const Hamiltonian &H,
                 const DensityMatrix &DM,
                 const FieldOperatorContainer& Operators) :
-        IndexContainer2<GreensFunction, GFContainer>(this, IndexInfo),
+        IndexContainer2<GreensFunction, GFContainer>(*this, IndexInfo),
         Thermal(DM), S(S), H(H), DM(DM), Operators(Operators)
     {}
 

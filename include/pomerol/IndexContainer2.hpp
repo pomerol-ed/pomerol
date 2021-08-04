@@ -23,15 +23,15 @@ protected:
     ParticleIndex NumIndices;
     std::map<IndexCombination2, std::shared_ptr<ElementType>> ElementsMap;
 
-    SourceObject* pSource;
+    SourceObject const& Source;
 
     std::set<IndexCombination2> enumerateInitialIndices() const;
 
 public:
 
     template<typename... IndexTypes>
-    IndexContainer2(SourceObject* pSource, const IndexClassification<IndexTypes...>& IndexInfo) :
-        NumIndices(IndexInfo.getIndexSize()), pSource(pSource)
+    IndexContainer2(SourceObject const& Source, const IndexClassification<IndexTypes...>& IndexInfo) :
+        NumIndices(IndexInfo.getIndexSize()), Source(Source)
     {}
 
     void fill(std::set<IndexCombination2> InitialIndices = std::set<IndexCombination2>());
@@ -84,7 +84,7 @@ void IndexContainer2<ElementType,SourceObject>::fill(std::set<IndexCombination2>
 template<typename ElementType, typename SourceObject>
 ElementType& IndexContainer2<ElementType,SourceObject>::set(const IndexCombination2& Indices)
 {
-    std::shared_ptr<ElementType> pElement(pSource->createElement(Indices));
+    std::shared_ptr<ElementType> pElement(Source.createElement(Indices));
     ElementsMap[Indices] = pElement;
 
     DEBUG("IndexContainer2::set() at " << this << ": "
@@ -102,7 +102,7 @@ ElementType& IndexContainer2<ElementType,SourceObject>::operator()(const IndexCo
         DEBUG("IndexContainer2 at " << this << ": " <<
               "cache miss for Index1=" << Indices.Index1 <<
               ", Index2=" << Indices.Index2 <<
-              "; add a new element to the container using source " << pSource
+              "; add a new element to the container using source " << &Source
         );
         return set(Indices);
     }
