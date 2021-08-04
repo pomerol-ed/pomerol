@@ -97,8 +97,8 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
     {
         Chi4.computeAll(false, freqs, MPI_COMM_WORLD, true);
 
-        const TwoParticleGF& chi_uuuu = Chi4(IndexCombination4(u0,u0,u0,u0));
-        const TwoParticleGF& chi_dddd = Chi4(IndexCombination4(d0,d0,d0,d0));
+        TwoParticleGF const& chi_uuuu = Chi4(IndexCombination4(u0,u0,u0,u0));
+        TwoParticleGF const& chi_dddd = Chi4(IndexCombination4(d0,d0,d0,d0));
 
         for(int i = 0; i < chi_ref.size(); ++i)
         {

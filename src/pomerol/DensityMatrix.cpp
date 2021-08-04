@@ -4,7 +4,7 @@
 
 namespace Pomerol {
 
-DensityMatrix::DensityMatrix(const StatesClassification& S, const Hamiltonian& H, RealType beta) :
+DensityMatrix::DensityMatrix(StatesClassification const& S, Hamiltonian const& H, RealType beta) :
     Thermal(beta), ComputableObject(), S(S), H(H)
 {}
 
@@ -46,7 +46,7 @@ RealType DensityMatrix::getWeight(QuantumState state) const
     return parts[Block].getWeight(InnerState);
 }
 
-const DensityMatrixPart& DensityMatrix::getPart(BlockNumber in) const
+DensityMatrixPart const& DensityMatrix::getPart(BlockNumber in) const
 {
     return parts[in];
 }

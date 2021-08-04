@@ -2,7 +2,7 @@
 
 namespace Pomerol {
 
-void GFContainer::prepareAll(const std::set<IndexCombination2>& InitialIndices)
+void GFContainer::prepareAll(std::set<IndexCombination2> const& InitialIndices)
 {
     fill(InitialIndices);
     for(auto & el : ElementsMap)
@@ -15,7 +15,7 @@ void GFContainer::computeAll()
         el.second->compute();
 }
 
-std::shared_ptr<GreensFunction> GFContainer::createElement(const IndexCombination2& Indices) const
+std::shared_ptr<GreensFunction> GFContainer::createElement(IndexCombination2 const& Indices) const
 {
     return std::make_shared<GreensFunction>(
         S,

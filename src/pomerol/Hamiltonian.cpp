@@ -9,7 +9,7 @@
 namespace Pomerol {
 
 template<bool C>
-void Hamiltonian::prepareImpl(const LOperatorTypeRC<C> &HOp, const MPI_Comm& comm)
+void Hamiltonian::prepareImpl(LOperatorTypeRC<C> const& HOp, MPI_Comm const& comm)
 {
     BlockNumber NumberOfBlocks = S.getNumberOfBlocks();
     int comm_rank = pMPI::rank(comm);
@@ -48,11 +48,11 @@ void Hamiltonian::prepareImpl(const LOperatorTypeRC<C> &HOp, const MPI_Comm& com
     }
 }
 
-template void Hamiltonian::prepareImpl<true>(const LOperatorTypeRC<true> &p, const MPI_Comm&);
-template void Hamiltonian::prepareImpl<false>(const LOperatorTypeRC<false> &, const MPI_Comm&);
+template void Hamiltonian::prepareImpl<true>(LOperatorTypeRC<true> const&, MPI_Comm const&);
+template void Hamiltonian::prepareImpl<false>(LOperatorTypeRC<false> const&, MPI_Comm const&);
 
 template<bool C>
-void Hamiltonian::computeImpl(const MPI_Comm& comm)
+void Hamiltonian::computeImpl(MPI_Comm const& comm)
 {
     // Create a "skeleton" class with pointers to part that can call a compute method
     pMPI::mpi_skel<pMPI::ComputeWrap<HamiltonianPart>> skel;
@@ -95,7 +95,7 @@ void Hamiltonian::computeImpl(const MPI_Comm& comm)
     }
 }
 
-void Hamiltonian::compute(const MPI_Comm& comm)
+void Hamiltonian::compute(MPI_Comm const& comm)
 {
     if (getStatus() >= Computed) return;
 
@@ -109,7 +109,7 @@ void Hamiltonian::compute(const MPI_Comm& comm)
     setStatus(Computed);
 }
 
-void Hamiltonian::reduce(const RealType Cutoff)
+void Hamiltonian::reduce(RealType Cutoff)
 {
     INFO("Performing EV cutoff at " << Cutoff << " level");
     for(auto & part : parts)

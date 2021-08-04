@@ -66,10 +66,10 @@ public:
     void clear() { data.clear(); }
 
     /** Access set of terms */
-    const std::set<TermType, Compare>& as_set() const { return data; }
+    std::set<TermType, Compare> const& as_set() const { return data; }
 
     /** Access the is_negligible object */
-    const IsNegligible& get_is_negligible() const { return is_negligible; }
+    IsNegligible const& get_is_negligible() const { return is_negligible; }
 
     /** Pass arguments to operator() of each term in the container
      *  and return a sum of their return values.
@@ -82,7 +82,7 @@ public:
         return res;
     }
 
-    void broadcast(const MPI_Comm &comm, int root) {
+    void broadcast(MPI_Comm const& comm, int root) {
         auto comp = data.key_comp();
         comp.broadcast(comm, root);
 

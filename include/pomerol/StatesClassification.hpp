@@ -72,7 +72,7 @@ public:
     /** get a vector of all FockStates with a given set of QuantumNumbers
      * \param[in] in A set of quantum numbers to get a vector of FockStates
      */
-    const std::vector<QuantumState>& getFockStates(BlockNumber in) const;
+    std::vector<QuantumState> const& getFockStates(BlockNumber in) const;
 
     /** get a FockState, corresponding to an internal InnerQuantumState
      * \param[in] QuantumNumbers of block in which the InnerQuantumState is located

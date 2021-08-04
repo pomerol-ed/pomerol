@@ -12,7 +12,7 @@ void FieldOperatorContainer::computeAll()
 
         auto & c = mapAnnihilationOperators.find(cdag_p.first)->second;
 
-        const auto & cdag_block_map = cdag_p.second.getBlockMapping();
+        auto const& cdag_block_map = cdag_p.second.getBlockMapping();
         for(auto cdag_map_it = cdag_block_map.right.begin(); cdag_map_it != cdag_block_map.right.end(); ++cdag_map_it) {
             auto & cPart = c.getPartFromRightIndex(cdag_map_it->second);
             auto & cdagPart = cdag.getPartFromRightIndex(cdag_map_it->first);
@@ -22,7 +22,7 @@ void FieldOperatorContainer::computeAll()
     }
 }
 
-const CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleIndex in) const
+CreationOperator const& FieldOperatorContainer::getCreationOperator(ParticleIndex in) const
 {
     auto it = mapCreationOperators.find(in);
     if(it == mapCreationOperators.end())
@@ -31,7 +31,7 @@ const CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleInde
         return it->second;
 }
 
-const AnnihilationOperator& FieldOperatorContainer::getAnnihilationOperator(ParticleIndex in) const
+AnnihilationOperator const& FieldOperatorContainer::getAnnihilationOperator(ParticleIndex in) const
 {
     auto it = mapAnnihilationOperators.find(in);
     if(it == mapAnnihilationOperators.end())

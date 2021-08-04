@@ -101,7 +101,7 @@ auto apply(F && f, ArgsT && args) ->
 
 template<typename... IndexTypes>
 expression<double, IndexTypes...>
-N(const std::vector<std::tuple<IndexTypes...>> &Indices) {
+N(std::vector<std::tuple<IndexTypes...>> const& Indices) {
     expression<double, IndexTypes...> res;
     for(auto const& i : Indices)
         res += Detail::apply(n<double, IndexTypes...>, i);
@@ -110,8 +110,8 @@ N(const std::vector<std::tuple<IndexTypes...>> &Indices) {
 
 template<typename... IndexTypes>
 expression<double, IndexTypes...>
-Sz(const std::vector<std::tuple<IndexTypes...>> &SpinUpIndices,
-   const std::vector<std::tuple<IndexTypes...>> &SpinDownIndices) {
+Sz(std::vector<std::tuple<IndexTypes...>> const& SpinUpIndices,
+   std::vector<std::tuple<IndexTypes...>> const& SpinDownIndices) {
     expression<double, IndexTypes...> res;
     for(auto const& i : SpinUpIndices)
         res += 0.5 * Detail::apply(n<double, IndexTypes...>, i);

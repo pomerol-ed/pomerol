@@ -57,7 +57,7 @@ protected:
     std::shared_ptr<void> MOp;
 
     template<bool Complex>
-    const LOperatorTypeRC<Complex>& getMOp() const {
+    LOperatorTypeRC<Complex> const& getMOp() const {
         assert(MOpComplex == Complex);
         return *std::static_pointer_cast<LOperatorTypeRC<Complex>>(MOp);
     }
@@ -65,11 +65,11 @@ protected:
     bool Complex;
 
     /** A reference to a StatesClassification object */
-    const StatesClassification &S;
+    StatesClassification const& S;
     /** A reference to a Hamiltonian object */
-    const Hamiltonian &H;
+    Hamiltonian const& H;
 
-    const libcommute::space_partition &Partition;
+    libcommute::space_partition const& Partition;
     /** A map between non-vanishing parts (internal numbering) and their R.H.S. BlockNumbers  */
     std::unordered_map<std::size_t, BlockNumber> mapPartsFromRight;
     /** A map between non-vanishing parts (internal numbering) and their L.H.S. BlockNumbers  */
@@ -91,8 +91,8 @@ public:
     template<typename ScalarType, typename... IndexTypes>
     MonomialOperator(libcommute::expression<ScalarType, IndexTypes...> const& MO,
                      HilbertSpace<IndexTypes...> const& HS,
-                     const StatesClassification &S,
-                     const Hamiltonian &H) :
+                     StatesClassification const& S,
+                     Hamiltonian const& H) :
         MOpComplex(std::is_same<ScalarType, ComplexType>::value),
         MOp(std::make_shared<LOperatorType<ScalarType>>(MO, HS.getFullHilbertSpace())),
         Complex(MOpComplex || H.isComplex()),
@@ -105,10 +105,10 @@ public:
 
     /** Returns a FieldOperatorPart based on its left BlockNumber */
     MonomialOperatorPart& getPartFromLeftIndex(BlockNumber in);
-    const MonomialOperatorPart& getPartFromLeftIndex(BlockNumber in) const;
+    MonomialOperatorPart const& getPartFromLeftIndex(BlockNumber in) const;
     /** Returns a FieldOperatorPart based on its right BlockNumber */
     MonomialOperatorPart& getPartFromRightIndex(BlockNumber out);
-    const MonomialOperatorPart& getPartFromRightIndex(BlockNumber out) const;
+    MonomialOperatorPart const& getPartFromRightIndex(BlockNumber out) const;
 
     /** Returns a left BlockNumber for a given right BlockNumber */
     BlockNumber getLeftIndex(BlockNumber RightIndex) const;
@@ -142,7 +142,7 @@ public:
         Status = Prepared;
     }
     /** Computes all world-lines */
-    void compute(const MPI_Comm& comm = MPI_COMM_WORLD);
+    void compute(MPI_Comm const& comm = MPI_COMM_WORLD);
 
 private:
 
@@ -161,10 +161,10 @@ public:
      * \param[in] Index An index of an operator
      */
     template<typename... IndexTypes>
-    CreationOperator(const IndexClassification<IndexTypes...> &IndexInfo,
-                     const HilbertSpace<IndexTypes...> &HS,
-                     const StatesClassification &S,
-                     const Hamiltonian &H,
+    CreationOperator(IndexClassification<IndexTypes...> const& IndexInfo,
+                     HilbertSpace<IndexTypes...> const& HS,
+                     StatesClassification const& S,
+                     Hamiltonian const& H,
                      ParticleIndex Index) :
     MonomialOperator(
         Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>,
@@ -190,10 +190,10 @@ public:
      * \param[in] Index An index of an operator
      */
     template<typename... IndexTypes>
-    AnnihilationOperator(const IndexClassification<IndexTypes...> &IndexInfo,
-                         const HilbertSpace<IndexTypes...> &HS,
-                         const StatesClassification &S,
-                         const Hamiltonian &H,
+    AnnihilationOperator(IndexClassification<IndexTypes...> const& IndexInfo,
+                         HilbertSpace<IndexTypes...> const& HS,
+                         StatesClassification const& S,
+                         Hamiltonian const& H,
                          ParticleIndex Index) :
     MonomialOperator(
         Operators::Detail::apply(Operators::c<double, IndexTypes...>,
@@ -220,10 +220,10 @@ public:
      * \param[in] Index2 An index of an annihilation operator
      */
     template<typename... IndexTypes>
-    QuadraticOperator(const IndexClassification<IndexTypes...> &IndexInfo,
-                      const HilbertSpace<IndexTypes...> &HS,
-                      const StatesClassification &S,
-                      const Hamiltonian &H,
+    QuadraticOperator(IndexClassification<IndexTypes...> const& IndexInfo,
+                      HilbertSpace<IndexTypes...> const& HS,
+                      StatesClassification const& S,
+                      Hamiltonian const& H,
                       ParticleIndex Index1, ParticleIndex Index2) :
     MonomialOperator(
         Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>,

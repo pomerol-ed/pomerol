@@ -23,7 +23,7 @@ namespace Pomerol {
 class DensityMatrixPart : public Thermal
 {
     /** A reference to a part of a Hamiltonian. */
-    const HamiltonianPart& H;
+    HamiltonianPart const& H;
 
     /** The ground energy of the Hamiltonian.
      * It is subtracted from all energy levels to avoid
@@ -46,7 +46,7 @@ public:
      * \param[in] beta The inverse temperature.
      * \param[in] GroundEnergy The ground state energy of the Hamiltonian.
      */
-    DensityMatrixPart(const HamiltonianPart& H, RealType beta, RealType GroundEnergy);
+    DensityMatrixPart(HamiltonianPart const& H, RealType beta, RealType GroundEnergy);
 
     /** Compute unnormalized weights (diagonal matrix elements)
      *

@@ -9,10 +9,10 @@
 
 namespace Pomerol {
 
-TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H,
-                const AnnihilationOperator& C1, const AnnihilationOperator& C2,
-                const CreationOperator& CX3, const CreationOperator& CX4,
-                const DensityMatrix& DM) :
+TwoParticleGF::TwoParticleGF(StatesClassification const& S, Hamiltonian const& H,
+                AnnihilationOperator const& C1, AnnihilationOperator const& C2,
+                CreationOperator const& CX3, CreationOperator const& CX4,
+                DensityMatrix const& DM) :
     Thermal(DM.beta), ComputableObject(),
     S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM)
 {
@@ -38,7 +38,7 @@ BlockNumber TwoParticleGF::getRightIndex(std::size_t PermutationNumber, std::siz
     }
 }
 
-const MonomialOperatorPart& TwoParticleGF::OperatorPartAtPosition(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const
+MonomialOperatorPart const& TwoParticleGF::OperatorPartAtPosition(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const
 {
     switch(permutations3[PermutationNumber].perm[OperatorPosition]){
         case 0: return C1.getPartFromLeftIndex(LeftIndex);
@@ -108,7 +108,7 @@ void TwoParticleGF::prepare()
 
 // An mpi adapter to 1) compute 2pgf terms; 2) convert them to a Matsubara Container; 3) purge terms
 struct ComputeAndClearWrap {
-    ComputeAndClearWrap(const FreqVec & freqs,
+    ComputeAndClearWrap(FreqVec const& freqs,
                         std::vector<ComplexType> & data,
                         TwoParticleGFPart & p,
                         bool clear,
@@ -134,18 +134,18 @@ struct ComputeAndClearWrap {
     }
 
     // NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
-    const int complexity;
+    int const complexity;
 
 private:
 
-    const FreqVec & freqs_;
+    FreqVec const& freqs_;
     std::vector<ComplexType> & data_;
     TwoParticleGFPart & p;
     bool clear_;
     bool fill_;
 };
 
-std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs, const MPI_Comm& comm)
+std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs, MPI_Comm const& comm)
 {
     if(getStatus() < Prepared)
         throw StatusMismatch("TwoParticleGF is not prepared yet.");
@@ -202,7 +202,7 @@ ParticleIndex TwoParticleGF::getIndex(std::size_t Position) const
     throw std::runtime_error("TwoParticleGF: Could not get operator index");
 }
 
-unsigned short TwoParticleGF::getPermutationNumber(const Permutation3& in)
+unsigned short TwoParticleGF::getPermutationNumber(Permutation3 const& in)
 {
     for(unsigned short i = 0; i < 6; ++i)
         if (in == permutations3[i]) return i;

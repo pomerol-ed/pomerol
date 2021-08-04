@@ -30,17 +30,17 @@ protected:
 public:
 
     template<typename... IndexTypes>
-    IndexContainer2(SourceObject const& Source, const IndexClassification<IndexTypes...>& IndexInfo) :
+    IndexContainer2(SourceObject const& Source, IndexClassification<IndexTypes...> const& IndexInfo) :
         NumIndices(IndexInfo.getIndexSize()), Source(Source)
     {}
 
     void fill(std::set<IndexCombination2> InitialIndices = std::set<IndexCombination2>());
-    ElementType& set(const IndexCombination2& Indices);
+    ElementType& set(IndexCombination2 const& Indices);
 
-    bool isInContainer(const IndexCombination2& Indices) const;
+    bool isInContainer(IndexCombination2 const& Indices) const;
     bool isInContainer(ParticleIndex Index1, ParticleIndex Index2) const;
 
-    ElementType& operator()(const IndexCombination2& Indices);
+    ElementType& operator()(IndexCombination2 const& Indices);
     ElementType& operator()(ParticleIndex Index1, ParticleIndex Index2);
 };
 
@@ -48,7 +48,7 @@ public:
 // IndexContainer2 //
 /////////////////////
 template<typename ElementType, typename SourceObject>
-bool IndexContainer2<ElementType,SourceObject>::isInContainer(const IndexCombination2& Indices) const
+bool IndexContainer2<ElementType,SourceObject>::isInContainer(IndexCombination2 const& Indices) const
 {
     return ElementsMap.count(Indices) > 0;
 }
@@ -82,7 +82,7 @@ void IndexContainer2<ElementType,SourceObject>::fill(std::set<IndexCombination2>
 }
 
 template<typename ElementType, typename SourceObject>
-ElementType& IndexContainer2<ElementType,SourceObject>::set(const IndexCombination2& Indices)
+ElementType& IndexContainer2<ElementType,SourceObject>::set(IndexCombination2 const& Indices)
 {
     std::shared_ptr<ElementType> pElement(Source.createElement(Indices));
     ElementsMap[Indices] = pElement;
@@ -94,7 +94,7 @@ ElementType& IndexContainer2<ElementType,SourceObject>::set(const IndexCombinati
 }
 
 template<typename ElementType, typename SourceObject>
-ElementType& IndexContainer2<ElementType,SourceObject>::operator()(const IndexCombination2& Indices)
+ElementType& IndexContainer2<ElementType,SourceObject>::operator()(IndexCombination2 const& Indices)
 {
     auto iter = ElementsMap.find(Indices);
 

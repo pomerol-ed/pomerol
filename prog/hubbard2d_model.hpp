@@ -46,7 +46,7 @@ public:
   }
 
   virtual std::pair<ParticleIndex, ParticleIndex>
-  get_node(const IndexInfoType &IndexInfo) override {
+  get_node(IndexInfoType const& IndexInfo) override {
     ParticleIndex d0 = IndexInfo.getIndex("S0",0,LatticePresets::down);
     ParticleIndex u0 = IndexInfo.getIndex("S0",0,LatticePresets::up);
     return std::make_pair(d0, u0);
@@ -104,7 +104,7 @@ public:
                                ParticleIndex u0,
                                std::set<IndexCombination2> &indices2,
                                std::set<ParticleIndex>& f,
-                               const IndexInfoType &IndexInfo) override {
+                               IndexInfoType const& IndexInfo) override {
     for (std::size_t x=0; x<size_x; x++) {
       ParticleIndex ind = IndexInfo.getIndex(names[SiteIndexF(x,0)],0,LatticePresets::down);
       f.insert(ind);

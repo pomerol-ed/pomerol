@@ -15,7 +15,7 @@
 using namespace Pomerol;
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
-quantum_model::quantum_model(int argc, char* argv[], const std::string &prog_desc) :
+quantum_model::quantum_model(int argc, char* argv[], std::string const& prog_desc) :
   args_parser(prog_desc),
   args_options{{args_parser, "help", "Display this help menu", {'h', "help"}},
                {args_parser, "beta", "Inverse temperature", {"beta"}, 1.0},
@@ -146,7 +146,7 @@ void quantum_model::compute() {
     if (!rank) // dump gf into a file
       // loops over all components (pairs of indices) of the Green's function
       for (auto const& ind2 : indices2) {
-        const GreensFunction & GF = G(ind2);
+        GreensFunction const& GF = G(ind2);
         // Save Matsubara GF from pi/beta to pi/beta*(4*wf_max + 1)
         std::cout << "Saving imfreq G" << ind2 << " on " << 4 * wf_max << " Matsubara freqs. " << std::endl;
         grid_object<std::complex<double>, fmatsubara_grid> gf_imfreq (fmatsubara_grid(wf_min, wf_max*4, beta, true));

@@ -34,25 +34,25 @@ class Hamiltonian : public ComputableObject
     /** Array of pointers to the Hamiltonian Parts */
     std::vector<HamiltonianPart> parts;
     /** A reference to the StatesClassification object. */
-    const StatesClassification& S;
+    StatesClassification const& S;
     /** A value of the ground energy - needed for further renormalization */
     RealType GroundEnergy = -HUGE_VAL;
 
 public:
 
     /** Constructor. */
-    explicit Hamiltonian(const StatesClassification &S) : S(S) {}
+    explicit Hamiltonian(StatesClassification const& S) : S(S) {}
 
     template<typename ScalarType, typename... IndexTypes>
-    void prepare(const Operators::expression<ScalarType, IndexTypes...> &H,
-                 const HilbertSpace<IndexTypes...> &HS,
-                 const MPI_Comm &comm = MPI_COMM_WORLD);
-    void compute(const MPI_Comm &comm = MPI_COMM_WORLD);
-    void reduce(const RealType Cutoff);
+    void prepare(Operators::expression<ScalarType, IndexTypes...> const& H,
+                 HilbertSpace<IndexTypes...> const& HS,
+                 MPI_Comm const& comm = MPI_COMM_WORLD);
+    void compute(MPI_Comm const& comm = MPI_COMM_WORLD);
+    void reduce(RealType Cutoff);
 
     bool isComplex() const { return Complex; }
 
-    const HamiltonianPart& getPart(BlockNumber Block) const { return parts[Block]; }
+    HamiltonianPart const& getPart(BlockNumber Block) const { return parts[Block]; }
 
     InnerQuantumState getBlockSize(BlockNumber Block) const;
 
@@ -64,14 +64,14 @@ public:
 private:
     void computeGroundEnergy();
 
-    template<bool C> void prepareImpl(const LOperatorTypeRC<C> &HOp, const MPI_Comm& comm);
-    template<bool C> void computeImpl(const MPI_Comm& comm);
+    template<bool C> void prepareImpl(LOperatorTypeRC<C> const& HOp, const MPI_Comm& comm);
+    template<bool C> void computeImpl(MPI_Comm const& comm);
 };
 
 template<typename ScalarType, typename... IndexTypes>
 void Hamiltonian::prepare(Operators::expression<ScalarType, IndexTypes...> const& H,
-                          const HilbertSpace<IndexTypes...> &HS,
-                          const MPI_Comm &comm) {
+                          HilbertSpace<IndexTypes...> const& HS,
+                          MPI_Comm const& comm) {
 
     if(getStatus() >= Prepared) return;
 

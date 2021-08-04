@@ -73,7 +73,7 @@ public:
                 } else
                     return t1.isz4 < t2.isz4;
             }
-            void broadcast(const MPI_Comm &comm, int root) {
+            void broadcast(MPI_Comm const& comm, int root) {
                 MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
             }
         };
@@ -85,7 +85,7 @@ public:
             bool operator()(NonResonantTerm const& t, std::size_t ToleranceDivisor) const {
                 return std::abs(t.Coeff) < Tolerance / ToleranceDivisor;
             }
-            void broadcast(const MPI_Comm &comm, int root) {
+            void broadcast(MPI_Comm const& comm, int root) {
                 MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
             }
         };
@@ -116,7 +116,7 @@ public:
         * It does not check the similarity of the terms!
         * \param[in] AnotherTerm Another term to add to this.
         */
-        NonResonantTerm& operator+=(const NonResonantTerm& AnotherTerm);
+        NonResonantTerm& operator+=(NonResonantTerm const& AnotherTerm);
 
         /** Create and commit an MPI datatype for NonResonantTerm */
         static MPI_Datatype mpi_datatype();
@@ -162,7 +162,7 @@ public:
                 } else
                     return t1.isz1z2 < t2.isz1z2;
             }
-            void broadcast(const MPI_Comm &comm, int root) {
+            void broadcast(MPI_Comm const& comm, int root) {
                 MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
             }
         };
@@ -175,7 +175,7 @@ public:
                 return std::abs(t.ResCoeff) < Tolerance / ToleranceDivisor &&
                        std::abs(t.NonResCoeff) < Tolerance / ToleranceDivisor;
             }
-            void broadcast(const MPI_Comm &comm, int root) {
+            void broadcast(MPI_Comm const& comm, int root) {
                 MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
             }
         };
@@ -207,7 +207,7 @@ public:
         * It does not check the similarity of the terms!
         * \param[in] AnotherTerm Another term to add to this.
         */
-        ResonantTerm& operator+=(const ResonantTerm& AnotherTerm);
+        ResonantTerm& operator+=(ResonantTerm const& AnotherTerm);
 
         /** Create and commit an MPI datatype for ResonantTerm */
         static MPI_Datatype mpi_datatype();
@@ -216,31 +216,31 @@ public:
 private:
 
     /** A reference to a part of the first operator. */
-    const MonomialOperatorPart& O1;
+    MonomialOperatorPart const& O1;
     /** A reference to a part of the second operator. */
-    const MonomialOperatorPart& O2;
+    MonomialOperatorPart const& O2;
     /** A reference to a part of the third operator. */
-    const MonomialOperatorPart& O3;
+    MonomialOperatorPart const& O3;
     /** A reference to a part of the fourth (creation) operator. */
-    const MonomialOperatorPart& CX4;
+    MonomialOperatorPart const& CX4;
 
     /** A reference to the first part of a Hamiltonian. */
-    const HamiltonianPart& Hpart1;
+    HamiltonianPart const& Hpart1;
     /** A reference to the second part of a Hamiltonian. */
-    const HamiltonianPart& Hpart2;
+    HamiltonianPart const& Hpart2;
     /** A reference to the third part of a Hamiltonian. */
-    const HamiltonianPart& Hpart3;
+    HamiltonianPart const& Hpart3;
     /** A reference to the fourth part of a Hamiltonian. */
-    const HamiltonianPart& Hpart4;
+    HamiltonianPart const& Hpart4;
 
     /** A reference to the first part of a density matrix (the part corresponding to Hpart1). */
-    const DensityMatrixPart& DMpart1;
+    DensityMatrixPart const& DMpart1;
     /** A reference to the second part of a density matrix (the part corresponding to Hpart2). */
-    const DensityMatrixPart& DMpart2;
+    DensityMatrixPart const& DMpart2;
     /** A reference to the third part of a density matrix (the part corresponding to Hpart3). */
-    const DensityMatrixPart& DMpart3;
+    DensityMatrixPart const& DMpart3;
     /** A reference to the fourth part of a density matrix (the part corresponding to Hpart4). */
-    const DensityMatrixPart& DMpart4;
+    DensityMatrixPart const& DMpart4;
 
     /** A permutation of the operators for this part. */
     Permutation3 Permutation;
@@ -321,12 +321,12 @@ public:
      * \param[in] DMpart4 A reference to the fourth part of a density matrix.
      * \param[in] Permutation A permutation of the operators for this part.
      */
-    TwoParticleGFPart(const MonomialOperatorPart& O1, const MonomialOperatorPart& O2,
-                      const MonomialOperatorPart& O3, const MonomialOperatorPart& CX4,
-                      const HamiltonianPart& Hpart1, const HamiltonianPart& Hpart2,
-                      const HamiltonianPart& Hpart3, const HamiltonianPart& Hpart4,
-                      const DensityMatrixPart& DMpart1, const DensityMatrixPart& DMpart2,
-                      const DensityMatrixPart& DMpart3, const DensityMatrixPart& DMpart4,
+    TwoParticleGFPart(MonomialOperatorPart const& O1, MonomialOperatorPart const& O2,
+                      MonomialOperatorPart const& O3, MonomialOperatorPart const& CX4,
+                      HamiltonianPart const& Hpart1, HamiltonianPart const& Hpart2,
+                      HamiltonianPart const& Hpart3, HamiltonianPart const& Hpart4,
+                      DensityMatrixPart const& DMpart1, DensityMatrixPart const& DMpart2,
+                      DensityMatrixPart const& DMpart3, DensityMatrixPart const& DMpart4,
                       Permutation3 Permutation);
 
     /** Actually computes the part. */
@@ -354,12 +354,12 @@ public:
     std::size_t getNumNonResonantTerms() const { return NonResonantTerms.size(); }
 
     /** Returns a Permutation3 of the current part */
-    const Permutation3& getPermutation() const { return Permutation; }
+    Permutation3 const& getPermutation() const { return Permutation; }
 
     /** Return the list of Resonant Terms */
-    const TermList<TwoParticleGFPart::ResonantTerm>& getResonantTerms() const { return ResonantTerms; }
+    TermList<TwoParticleGFPart::ResonantTerm> const& getResonantTerms() const { return ResonantTerms; }
     /** Return the list of NonResonantTerms */
-    const TermList<TwoParticleGFPart::NonResonantTerm>& getNonResonantTerms() const { return NonResonantTerms; }
+    TermList<TwoParticleGFPart::NonResonantTerm> const& getNonResonantTerms() const { return NonResonantTerms; }
 };
 
 inline

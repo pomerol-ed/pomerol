@@ -46,10 +46,10 @@ private:
     std::unique_ptr<SpacePartitionType> Partition = nullptr;
 
     struct boson_es_constructor_from_map {
-        const std::map<std::tuple<IndexTypes...>, unsigned int> &bits_per_boson;
+        std::map<std::tuple<IndexTypes...>, unsigned int> const& bits_per_boson;
 
         explicit boson_es_constructor_from_map(
-            const std::map<std::tuple<IndexTypes...>, unsigned int> &bits_per_boson
+            std::map<std::tuple<IndexTypes...>, unsigned int> const& bits_per_boson
         ) : bits_per_boson(bits_per_boson) {}
 
         inline std::unique_ptr<libcommute::elementary_space<IndexTypes...>>
@@ -74,8 +74,8 @@ private:
 public:
 
     template<typename ScalarType>
-    HilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
-                 const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian,
+    HilbertSpace(IndexClassification<IndexTypes...> const& IndexInfo,
+                 Operators::expression<ScalarType, IndexTypes...> const& Hamiltonian,
                  unsigned int bits_per_boson = 1) :
       IndexInfo(IndexInfo),
       FullHilbertSpace(Hamiltonian, libcommute::boson_es_constructor(bits_per_boson)),
@@ -84,9 +84,9 @@ public:
     {}
 
     template<typename ScalarType>
-    HilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
-                 const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian,
-                 const std::map<std::tuple<IndexTypes...>, unsigned int> &bits_per_boson_map) :
+    HilbertSpace(IndexClassification<IndexTypes...> const& IndexInfo,
+                 Operators::expression<ScalarType, IndexTypes...> const& Hamiltonian,
+                 std::map<std::tuple<IndexTypes...>, unsigned int> const& bits_per_boson_map) :
       IndexInfo(IndexInfo),
       FullHilbertSpace(Hamiltonian, boson_es_constructor_from_map(bits_per_boson_map)),
       HamiltonianComplex(std::is_same<ScalarType, ComplexType>::value),
@@ -135,17 +135,17 @@ public:
 
 template<typename ScalarType, typename... IndexTypes>
 HilbertSpace<IndexTypes...>
-MakeHilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
-                 const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian,
+MakeHilbertSpace(IndexClassification<IndexTypes...> const& IndexInfo,
+                 Operators::expression<ScalarType, IndexTypes...> const& Hamiltonian,
                  unsigned int bits_per_boson = 1) {
   return HilbertSpace<IndexTypes...>(IndexInfo, Hamiltonian, bits_per_boson);
 }
 
 template<typename ScalarType, typename... IndexTypes>
 HilbertSpace<IndexTypes...>
-MakeHilbertSpace(const IndexClassification<IndexTypes...> &IndexInfo,
-                 const Operators::expression<ScalarType, IndexTypes...>& Hamiltonian,
-                 const std::map<std::tuple<IndexTypes...>, unsigned int> &bits_per_boson_map) {
+MakeHilbertSpace(IndexClassification<IndexTypes...> const& IndexInfo,
+                 Operators::expression<ScalarType, IndexTypes...> const& Hamiltonian,
+                 std::map<std::tuple<IndexTypes...>, unsigned int> const& bits_per_boson_map) {
   return HilbertSpace<IndexTypes...>(IndexInfo, Hamiltonian, bits_per_boson_map);
 }
 

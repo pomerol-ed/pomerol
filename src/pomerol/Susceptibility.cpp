@@ -2,14 +2,14 @@
 
 namespace Pomerol {
 
-Susceptibility::Susceptibility(const StatesClassification& S, const Hamiltonian& H,
-                               const MonomialOperator& A, const MonomialOperator& B,
-                               const DensityMatrix& DM) :
+Susceptibility::Susceptibility(StatesClassification const& S, Hamiltonian const& H,
+                               MonomialOperator const& A, MonomialOperator const& B,
+                               DensityMatrix const& DM) :
     Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), B(B), DM(DM)
 {
 }
 
-Susceptibility::Susceptibility(const Susceptibility& Chi) :
+Susceptibility::Susceptibility(Susceptibility const& Chi) :
     Thermal(Chi.beta), ComputableObject(Chi), S(Chi.S), H(Chi.H), A(Chi.A), B(Chi.B), DM(Chi.DM),
     Vanishing(Chi.Vanishing),
     parts(Chi.parts),

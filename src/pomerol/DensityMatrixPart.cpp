@@ -2,7 +2,7 @@
 
 namespace Pomerol {
 
-DensityMatrixPart::DensityMatrixPart(const HamiltonianPart& H, RealType beta, RealType GroundEnergy) :
+DensityMatrixPart::DensityMatrixPart(HamiltonianPart const& H, RealType beta, RealType GroundEnergy) :
     Thermal(beta), H(H), GroundEnergy(GroundEnergy), weights(H.getSize())
 {}
 

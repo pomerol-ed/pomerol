@@ -35,7 +35,7 @@ inline bool chaseIndices(typename RowMajorMatrixType<Complex>::InnerIterator& in
 // TwoParticleGFPart::NonResonantTerm
 //
 TwoParticleGFPart::NonResonantTerm& TwoParticleGFPart::NonResonantTerm::operator+=(
-    const NonResonantTerm& AnotherTerm)
+    NonResonantTerm const& AnotherTerm)
 {
     long combinedWeight = Weight + AnotherTerm.Weight;
     for(unsigned short p = 0; p < 3; ++p)
@@ -58,7 +58,7 @@ MPI_Datatype TwoParticleGFPart::NonResonantTerm::mpi_datatype() {
 
     // Since we are using static variables here, we have to make sure the code
     // is thread-safe.
-    const std::lock_guard<std::mutex> lock(NonResonantTerm_mpi_datatype_mutex);
+    std::lock_guard<std::mutex> const lock(NonResonantTerm_mpi_datatype_mutex);
 
     // Create and commit datatype only once
     static bool type_committed = false;
@@ -88,7 +88,7 @@ MPI_Datatype TwoParticleGFPart::NonResonantTerm::mpi_datatype() {
 // TwoParticleGFPart::ResonantTerm
 //
 TwoParticleGFPart::ResonantTerm& TwoParticleGFPart::ResonantTerm::operator+=(
-                const ResonantTerm& AnotherTerm)
+                ResonantTerm const& AnotherTerm)
 {
     long combinedWeight=Weight + AnotherTerm.Weight;
     for (unsigned short p=0; p<3; ++p)
@@ -112,7 +112,7 @@ MPI_Datatype TwoParticleGFPart::ResonantTerm::mpi_datatype() {
 
     // Since we are using static variables here, we have to make sure the code
     // is thread-safe.
-    const std::lock_guard<std::mutex> lock(ResonantTerm_mpi_datatype_mutex);
+    std::lock_guard<std::mutex> const lock(ResonantTerm_mpi_datatype_mutex);
 
     // Create and commit datatype only once
     static bool type_committed = false;
@@ -144,12 +144,12 @@ MPI_Datatype TwoParticleGFPart::ResonantTerm::mpi_datatype() {
 // TwoParticleGFPart
 //
 TwoParticleGFPart::TwoParticleGFPart(
-                const MonomialOperatorPart& O1, const MonomialOperatorPart& O2,
-                const MonomialOperatorPart& O3, const MonomialOperatorPart& CX4,
-                const HamiltonianPart& Hpart1, const HamiltonianPart& Hpart2,
-                const HamiltonianPart& Hpart3, const HamiltonianPart& Hpart4,
-                const DensityMatrixPart& DMpart1, const DensityMatrixPart& DMpart2,
-                const DensityMatrixPart& DMpart3, const DensityMatrixPart& DMpart4,
+                MonomialOperatorPart const& O1, MonomialOperatorPart const& O2,
+                MonomialOperatorPart const& O3, MonomialOperatorPart const& CX4,
+                HamiltonianPart const& Hpart1, HamiltonianPart const& Hpart2,
+                HamiltonianPart const& Hpart3, HamiltonianPart const& Hpart4,
+                DensityMatrixPart const& DMpart1, DensityMatrixPart const& DMpart2,
+                DensityMatrixPart const& DMpart3, DensityMatrixPart const& DMpart4,
                 Permutation3 Permutation) :
     Thermal(DMpart1.beta),
     ComputableObject(),
@@ -182,10 +182,10 @@ void TwoParticleGFPart::computeImpl()
     // <1 | O1 | 2> <2 | O2 | 3> <3 | O3 |4> <4| CX4 |1>
     // Iterate over all values of |1><1| and |3><3|
     // Chase indices |2> and <2|, |4> and <4|.
-    const RowMajorMatrixType<Complex>& O1matrix = O1.getRowMajorValue<Complex>();
-    const ColMajorMatrixType<Complex>& O2matrix = O2.getColMajorValue<Complex>();
-    const RowMajorMatrixType<Complex>& O3matrix = O3.getRowMajorValue<Complex>();
-    const ColMajorMatrixType<Complex>& CX4matrix = CX4.getColMajorValue<Complex>();
+    RowMajorMatrixType<Complex> const& O1matrix = O1.getRowMajorValue<Complex>();
+    ColMajorMatrixType<Complex> const& O2matrix = O2.getColMajorValue<Complex>();
+    RowMajorMatrixType<Complex> const& O3matrix = O3.getRowMajorValue<Complex>();
+    ColMajorMatrixType<Complex> const& CX4matrix = CX4.getColMajorValue<Complex>();
 
     InnerQuantumState index1Max = CX4matrix.outerSize(); // One can not make a cutoff in external index for evaluating 2PGF
     InnerQuantumState index3Max = O2matrix.outerSize();

@@ -47,15 +47,15 @@ namespace Pomerol {
 class Susceptibility : public Thermal, public ComputableObject {
 
     /** A reference to a states classification object. */
-    const StatesClassification& S;
+    StatesClassification const& S;
     /** A reference to a Hamiltonian. */
-    const Hamiltonian& H;
+    Hamiltonian const& H;
     /** A reference to a quadratic operator. */
-    const MonomialOperator& A;
+    MonomialOperator const& A;
     /** A reference to a quadratic operator. */
-    const MonomialOperator& B;
+    MonomialOperator const& B;
     /** A reference to a density matrix. */
-    const DensityMatrix& DM;
+    DensityMatrix const& DM;
 
     /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
     bool Vanishing = true;
@@ -79,12 +79,12 @@ public:
      * \param[in] B A reference to a quadratic operator.
      * \param[in] DM A reference to a density matrix.
      */
-    Susceptibility(const StatesClassification& S, const Hamiltonian& H,
-                   const MonomialOperator& A, const MonomialOperator& B, const DensityMatrix& DM);
+    Susceptibility(StatesClassification const& S, Hamiltonian const& H,
+                   MonomialOperator const& A, MonomialOperator const& B, DensityMatrix const& DM);
     /** Copy-constructor.
      * \param[in] GF Susceptibility object to be copied.
      */
-    Susceptibility(const Susceptibility& Chi);
+    Susceptibility(Susceptibility const& Chi);
 
     /** Chooses relevant parts of A and B and allocates resources for the parts of the Green's function. */
     void prepare();

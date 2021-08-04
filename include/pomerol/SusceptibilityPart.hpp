@@ -30,18 +30,18 @@ namespace Pomerol {
 class SusceptibilityPart : public Thermal
 {
     /** A reference to a part of a Hamiltonian (inner index iterates through it). */
-    const HamiltonianPart& HpartInner;
+    HamiltonianPart const& HpartInner;
     /** A reference to a part of a Hamiltonian (outer index iterates through it). */
-    const HamiltonianPart& HpartOuter;
+    HamiltonianPart const& HpartOuter;
     /** A reference to a part of a density matrix (the part corresponding to HpartInner). */
-    const DensityMatrixPart& DMpartInner;
+    DensityMatrixPart const& DMpartInner;
     /** A reference to a part of a density matrix (the part corresponding to HpartOuter). */
-    const DensityMatrixPart& DMpartOuter;
+    DensityMatrixPart const& DMpartOuter;
 
     /** A reference to a part of a quadratic operator. */
-    const MonomialOperatorPart& A;
+    MonomialOperatorPart const& A;
     /** A reference to a part of a quadratic operator. */
-    const MonomialOperatorPart& B;
+    MonomialOperatorPart const& B;
 
     /** Every term is a fraction \f$ \frac{R}{z - P} \f$. */
     struct Term {
@@ -52,7 +52,7 @@ class SusceptibilityPart : public Thermal
 
         /** Comparator object for terms */
         struct Compare {
-            const double Tolerance;
+            double const Tolerance;
             Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             bool operator()(Term const& t1, Term const& t2) const {
                 return t2.Pole - t1.Pole >= Tolerance;
@@ -66,7 +66,7 @@ class SusceptibilityPart : public Thermal
             bool operator()(Term const& t, std::size_t ToleranceDivisor) const {
                 return std::abs(t.Residue) < Tolerance / ToleranceDivisor;
             }
-            void broadcast(const MPI_Comm &comm, int root) {
+            void broadcast(MPI_Comm const& comm, int root) {
                 MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
             }
         };
@@ -91,13 +91,13 @@ class SusceptibilityPart : public Thermal
         * It does not check the similarity of the terms!
         * \param[in] AnotherTerm Another term to add to this.
         */
-        Term& operator+=(const Term& AnotherTerm);
+        Term& operator+=(Term const& AnotherTerm);
     };
     /** A stream insertion operator for type GreensTerm.
      * \param[in] out An output stream to insert to.
      * \param[in] Term A term to be inserted.
      */
-    friend std::ostream& operator<<(std::ostream& os, const Term& T)
+    friend std::ostream& operator<<(std::ostream& os, Term const& T)
     {
         return os << T.Residue << "/(z - " << T.Pole << ")";
     }
@@ -106,7 +106,7 @@ class SusceptibilityPart : public Thermal
     TermList<Term> Terms;
 
     /** A matrix element with magnitude less than this value is treated as zero. */
-    const RealType MatrixElementTolerance = 1e-8;
+    RealType const MatrixElementTolerance = 1e-8;
 
     /** BOSON: The weight of zero-energy pole. **/
     ComplexType ZeroPoleWeight = 0;
@@ -121,9 +121,9 @@ public:
      * \param[in] DMpartInner A reference to a part of the density matrix (inner index).
      * \param[in] DMpartOuter A reference to a part of the density matrix (outer index).
      */
-    SusceptibilityPart(const MonomialOperatorPart& A, const MonomialOperatorPart& B,
-                       const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
-                       const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter);
+    SusceptibilityPart(MonomialOperatorPart const& A, MonomialOperatorPart const& B,
+                       HamiltonianPart const& HpartInner, HamiltonianPart const& HpartOuter,
+                       DensityMatrixPart const& DMpartInner, DensityMatrixPart const& DMpartOuter);
 
     /** Iterates over all matrix elements and fills the list of terms. */
     void compute();
@@ -143,9 +143,9 @@ public:
     ComplexType of_tau(RealType tau) const;
 
     /** A difference in energies with magnitude less than this value is treated as zero. */
-    const RealType ReduceResonanceTolerance = 1e-8;
+    RealType const ReduceResonanceTolerance = 1e-8;
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
-    const RealType ReduceTolerance = 1e-8;
+    RealType const ReduceTolerance = 1e-8;
 
 private:
 

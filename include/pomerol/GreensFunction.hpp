@@ -36,15 +36,15 @@ namespace Pomerol {
 class GreensFunction : public Thermal, public ComputableObject {
 
     /** A reference to a states classification object. */
-    const StatesClassification& S;
+    StatesClassification const& S;
     /** A reference to a Hamiltonian. */
-    const Hamiltonian& H;
+    Hamiltonian const& H;
     /** A reference to an annihilation operator. */
-    const AnnihilationOperator& C;
+    AnnihilationOperator const& C;
     /** A reference to a creation operator. */
-    const CreationOperator& CX;
+    CreationOperator const& CX;
     /** A reference to a density matrix. */
-    const DensityMatrix& DM;
+    DensityMatrix const& DM;
 
     /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
     bool Vanishing = true;
@@ -62,12 +62,12 @@ public:
      * \param[in] CX A reference to a creation operator.
      * \param[in] DM A reference to a density matrix.
      */
-    GreensFunction(const StatesClassification& S, const Hamiltonian& H,
-                   const AnnihilationOperator& C, const CreationOperator& CX, const DensityMatrix& DM);
+    GreensFunction(StatesClassification const& S, Hamiltonian const& H,
+                   AnnihilationOperator const& C, CreationOperator const& CX, DensityMatrix const& DM);
     /** Copy-constructor.
      * \param[in] GF GreensFunction object to be copied.
      */
-    GreensFunction(const GreensFunction& GF);
+    GreensFunction(GreensFunction const& GF);
 
     /** Chooses relevant parts of C and CX and allocates resources for the parts of the Green's function. */
     void prepare();

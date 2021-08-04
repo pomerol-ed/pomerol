@@ -26,7 +26,7 @@
 
 namespace Pomerol {
 
-void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& InitialIndices)
+void TwoParticleGFContainer::prepareAll(std::set<IndexCombination4> const& InitialIndices)
 {
     fill(InitialIndices);
     for(auto & el : ElementsMap) {
@@ -38,7 +38,7 @@ void TwoParticleGFContainer::prepareAll(const std::set<IndexCombination4>& Initi
     }
 }
 
-std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::computeAll(bool clearTerms, FreqVec const& freqs, const MPI_Comm& comm, bool split)
+std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::computeAll(bool clearTerms, FreqVec const& freqs, MPI_Comm const& comm, bool split)
 {
     if (split)
         return computeAll_split(clearTerms, freqs, comm);
@@ -46,7 +46,7 @@ std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::com
         return computeAll_nosplit(clearTerms, freqs, comm);
 }
 
-std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, FreqVec const& freqs, const MPI_Comm& comm)
+std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, FreqVec const& freqs, MPI_Comm const& comm)
 {
     std::map<IndexCombination4, std::vector<ComplexType>> out;
     for(auto & el : ElementsMap) {
@@ -56,7 +56,7 @@ std::map<IndexCombination4,std::vector<ComplexType> > TwoParticleGFContainer::co
     return out;
 }
 
-std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::computeAll_split(bool clearTerms, FreqVec const& freqs, const MPI_Comm& comm)
+std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::computeAll_split(bool clearTerms, FreqVec const& freqs, MPI_Comm const& comm)
 {
     std::map<IndexCombination4, std::vector<ComplexType>> out;
     std::map<IndexCombination4, std::vector<ComplexType>> storage;
@@ -134,12 +134,12 @@ std::map<IndexCombination4,std::vector<ComplexType>> TwoParticleGFContainer::com
     return out;
 }
 
-std::shared_ptr<TwoParticleGF> TwoParticleGFContainer::createElement(const IndexCombination4& Indices) const
+std::shared_ptr<TwoParticleGF> TwoParticleGFContainer::createElement(IndexCombination4 const& Indices) const
 {
-    const AnnihilationOperator &C1 = Operators.getAnnihilationOperator(Indices.Index1);
-    const AnnihilationOperator &C2 = Operators.getAnnihilationOperator(Indices.Index2);
-    const CreationOperator     &CX3 = Operators.getCreationOperator   (Indices.Index3);
-    const CreationOperator     &CX4 = Operators.getCreationOperator   (Indices.Index4);
+    AnnihilationOperator const& C1 = Operators.getAnnihilationOperator(Indices.Index1);
+    AnnihilationOperator const& C2 = Operators.getAnnihilationOperator(Indices.Index2);
+    CreationOperator     const& CX3 = Operators.getCreationOperator   (Indices.Index3);
+    CreationOperator     const& CX4 = Operators.getCreationOperator   (Indices.Index4);
 
     return std::make_shared<TwoParticleGF>(S, H, C1, C2, CX3, CX4, DM);
 }

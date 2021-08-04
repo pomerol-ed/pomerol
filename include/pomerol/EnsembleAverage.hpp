@@ -34,19 +34,19 @@ namespace Pomerol {
 class EnsembleAverage : public Thermal, public ComputableObject {
 
     /** A reference to a states classification object. */
-    const StatesClassification& S;
+    StatesClassification const& S;
     /** A reference to a Hamiltonian. */
-    const Hamiltonian& H;
+    Hamiltonian const& H;
     /** A reference to a bosonic operator. */
-    const MonomialOperator& A;
+    MonomialOperator const& A;
     /** A reference to a density matrix. */
-    const DensityMatrix& DM;
+    DensityMatrix const& DM;
 
     ComplexType Result = 0;
 
     /** Returns the contribution to the ensemble average from a part. Called in prepare() */
     template<bool Complex>
-    ComplexType computeImpl(const MonomialOperatorPart& Apart, const DensityMatrixPart& DMpart);
+    ComplexType computeImpl(MonomialOperatorPart const& Apart, DensityMatrixPart const& DMpart);
 
 public:
      /** Constructor.
@@ -55,12 +55,12 @@ public:
      * \param[in] A A reference to a quadratic operator.
      * \param[in] DM A reference to a density matrix.
      */
-     EnsembleAverage(const StatesClassification& S, const Hamiltonian& H,
-                     const MonomialOperator& A, const DensityMatrix& DM);
+     EnsembleAverage(StatesClassification const& S, Hamiltonian const& H,
+                     MonomialOperator const& A, DensityMatrix const& DM);
     /** Copy-constructor.
      * \param[in] EA EnsembleAverage object to be copied.
      */
-    EnsembleAverage(const EnsembleAverage& EA);
+    EnsembleAverage(EnsembleAverage const& EA);
 
     /** Compute the ensemble average of A by choosing relevant parts of A and sum up each contribution. */
     void compute();

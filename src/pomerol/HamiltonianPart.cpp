@@ -41,7 +41,7 @@ template<bool C> void HamiltonianPart::prepareImpl()
 {
     initHMatrix<C>();
 
-    auto const& HOp_ = *static_cast<const LOperatorTypeRC<C>*>(HOp);
+    auto const& HOp_ = *static_cast<LOperatorTypeRC<C> const*>(HOp);
     auto & HMatrix_ = getMatrix<C>();
 
     auto mapper = libcommute::basis_mapper(S.getFockStates(Block));
@@ -88,13 +88,13 @@ template<bool C> void HamiltonianPart::computeImpl()
     }
 }
 
-template<bool C> const MatrixType<C>& HamiltonianPart::getMatrix() const {
+template<bool C> MatrixType<C> const& HamiltonianPart::getMatrix() const {
     if(C != isComplex())
         throw std::runtime_error("Stored matrix type mismatch (real/complex)");
     return *std::static_pointer_cast<const MatrixType<C>>(HMatrix);
 }
-template const MatrixType<true>& HamiltonianPart::getMatrix<true>() const;
-template const MatrixType<false>& HamiltonianPart::getMatrix<false>() const;
+template MatrixType<true> const& HamiltonianPart::getMatrix<true>() const;
+template MatrixType<false> const& HamiltonianPart::getMatrix<false>() const;
 
 template<bool C> MatrixType<C>& HamiltonianPart::getMatrix() {
     if(C != isComplex())
@@ -116,7 +116,7 @@ RealType HamiltonianPart::getEigenValue(InnerQuantumState state) const
     return Eigenvalues(static_cast<Eigen::Index>(state));
 }
 
-const RealVectorType& HamiltonianPart::getEigenValues() const
+RealVectorType const& HamiltonianPart::getEigenValues() const
 {
     checkComputed();
     return Eigenvalues;

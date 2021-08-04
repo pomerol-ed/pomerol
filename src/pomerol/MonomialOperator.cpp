@@ -17,7 +17,7 @@ MonomialOperator::BlocksBimap const& MonomialOperator::getBlockMapping() const
     return LeftRightBlocks;
 }
 
-void MonomialOperator::compute(const MPI_Comm& comm)
+void MonomialOperator::compute(MPI_Comm const& comm)
 {
     checkPrepared();
     if(getStatus() >= Computed) return;
@@ -37,7 +37,7 @@ MonomialOperatorPart& MonomialOperator::getPartFromRightIndex(BlockNumber out)
     return parts[mapPartsFromRight.find(out)->second];
 }
 
-const MonomialOperatorPart& MonomialOperator::getPartFromRightIndex(BlockNumber out) const
+MonomialOperatorPart const& MonomialOperator::getPartFromRightIndex(BlockNumber out) const
 {
     checkPrepared();
     return parts[mapPartsFromRight.find(out)->second];
@@ -49,7 +49,7 @@ MonomialOperatorPart& MonomialOperator::getPartFromLeftIndex(BlockNumber in)
     return parts[mapPartsFromLeft.find(in)->second];
 }
 
-const MonomialOperatorPart& MonomialOperator::getPartFromLeftIndex(BlockNumber in) const
+MonomialOperatorPart const& MonomialOperator::getPartFromLeftIndex(BlockNumber in) const
 {
     checkPrepared();
     return parts[mapPartsFromLeft.find(in)->second];

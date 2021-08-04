@@ -38,7 +38,7 @@ unsigned long StatesClassification::getBlockSize(BlockNumber in) const
     return static_cast<InnerQuantumState>(getFockStates(in).size());
 }
 
-const std::vector<QuantumState>& StatesClassification::getFockStates(BlockNumber in) const
+std::vector<QuantumState> const& StatesClassification::getFockStates(BlockNumber in) const
 {
     checkComputed();
     return StatesContainer[in];

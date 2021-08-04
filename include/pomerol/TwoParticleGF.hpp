@@ -48,19 +48,19 @@ class TwoParticleGF : public Thermal, public ComputableObject {
 friend class TwoParticleGFContainer;
 
     /** A reference to a states classification object. */
-    const StatesClassification& S;
+    StatesClassification const& S;
     /** A reference to a Hamiltonian. */
-    const Hamiltonian& H;
+    Hamiltonian const& H;
     /** A reference to the first annihilation operator. */
-    const AnnihilationOperator& C1;
+    AnnihilationOperator const& C1;
     /** A reference to the second annihilation operator. */
-    const AnnihilationOperator& C2;
+    AnnihilationOperator const& C2;
     /** A reference to the first creation operator. */
-    const CreationOperator& CX3;
+    CreationOperator const& CX3;
     /** A reference to the second creation operator. */
-    const CreationOperator& CX4;
+    CreationOperator const& CX4;
     /** A reference to a density matrix. */
-    const DensityMatrix& DM;
+    DensityMatrix const& DM;
 
     /** A list of pointers to parts. */
     std::vector<TwoParticleGFPart> parts;
@@ -75,7 +75,7 @@ protected:
      * \param[in] OperatorPosition The number of the position of the operator.
      * \param[in] LeftIndex A left block index referring to the part needed.
      */
-    const MonomialOperatorPart& OperatorPartAtPosition(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const;
+    MonomialOperatorPart const& OperatorPartAtPosition(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const;
     /** Chooses an operator standing at a specified position in a given permutation and
      * returns a left block index corresponding to the right block index. May return INVALID_BLOCK_NUMBER if
      * the operator does not have such a (non-zero) block.
@@ -110,10 +110,10 @@ public:
      * \param[in] CX4 A reference to the second creation operator.
      * \param[in] DM A reference to a density matrix.
      */
-    TwoParticleGF(const StatesClassification& S, const Hamiltonian& H,
-            const AnnihilationOperator& C1, const AnnihilationOperator& C2,
-            const CreationOperator& CX3, const CreationOperator& CX4,
-            const DensityMatrix& DM);
+    TwoParticleGF(StatesClassification const& S, Hamiltonian const& H,
+            AnnihilationOperator const& C1, AnnihilationOperator const& C2,
+            CreationOperator const& CX3, CreationOperator const& CX4,
+            DensityMatrix const& DM);
 
     /** Chooses relevant parts of C1, C2, CX3 and CX4 and allocates resources for the parts. */
     void prepare();
@@ -124,7 +124,7 @@ public:
     std::vector<ComplexType> compute(
         bool clear = false,
         FreqVec const& freqs = {},
-        const MPI_Comm& comm = MPI_COMM_WORLD
+        MPI_Comm const& comm = MPI_COMM_WORLD
     );
 
     /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
@@ -149,7 +149,7 @@ public:
     bool isVanishing() const { return Vanishing; }
 
     /** Returns the number of current permutation in permutations3 */
-    unsigned short getPermutationNumber(const Permutation3& in);
+    unsigned short getPermutationNumber(Permutation3 const& in);
 };
 
 inline ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const {

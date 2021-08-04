@@ -17,9 +17,9 @@ using namespace Pomerol;
 using LatticePresets::spin;
 
 // Parameters
-const double mu = 1.2;
-const double U = 2.0;
-const double beta = 10;
+double const mu = 1.2;
+double const U = 2.0;
+double const beta = 10;
 
 // Reference Green's function
 struct GF_ref {

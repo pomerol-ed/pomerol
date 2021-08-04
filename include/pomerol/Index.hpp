@@ -29,24 +29,24 @@ struct IndexCombination2
         Index1(Index1), Index2(Index2) {}
 
     /** Operator < - comparison method for IndexCombination */
-    bool operator< (const IndexCombination2& rhs) const
+    bool operator< (IndexCombination2 const& rhs) const
     {
         return std::make_tuple(Index1, Index2) <
                std::make_tuple(rhs.Index1, rhs.Index2);
     }
     /** Operator == */
-    bool operator==(const IndexCombination2& rhs) const
+    bool operator==(IndexCombination2 const& rhs) const
     {
         return Index1 == rhs.Index1 && Index2 == rhs.Index2;
     }
     /** Operator != */
-    bool operator!=(const IndexCombination2& rhs) const
+    bool operator!=(IndexCombination2 const& rhs) const
     {
         return !operator==(rhs);
     }
 
     /** Output to external stream */
-    friend std::ostream& operator<<(std::ostream& os, const IndexCombination2& ic)
+    friend std::ostream& operator<<(std::ostream& os, IndexCombination2 const& ic)
     {
         return os << "(" << ic.Index1 << ic.Index2 << ")";
     }
@@ -69,13 +69,13 @@ struct IndexCombination4
         Index1(Index1), Index2(Index2), Index3(Index3), Index4(Index4) {}
 
     /** Operator < - comparison method for IndexCombination */
-    bool operator< (const IndexCombination4& rhs) const
+    bool operator< (IndexCombination4 const& rhs) const
     {
         return std::make_tuple(Index1, Index2, Index3, Index4) <
                std::make_tuple(rhs.Index1, rhs.Index2, rhs.Index3, rhs.Index4);
     }
     /** Operator == */
-    bool operator==(const IndexCombination4& rhs) const
+    bool operator==(IndexCombination4 const& rhs) const
     {
         return Index1 == rhs.Index1 &&
                Index2 == rhs.Index2 &&
@@ -83,13 +83,13 @@ struct IndexCombination4
                Index4 == rhs.Index4;
     }
     /** Operator != */
-    bool operator!=(const IndexCombination4& rhs) const
+    bool operator!=(IndexCombination4 const& rhs) const
     {
         return !operator==(rhs);
     }
 
     /** Output to external stream */
-    friend std::ostream& operator<<(std::ostream& os, const IndexCombination4& ic)
+    friend std::ostream& operator<<(std::ostream& os, IndexCombination4 const& ic)
     {
         return os << "(" << ic.Index1 << ic.Index2 << ic.Index3 << ic.Index4 << ")";
     }

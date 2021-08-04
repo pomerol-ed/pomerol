@@ -34,8 +34,8 @@ void MonomialOperatorPart::computeImpl() {
     BlockNumber to = HTo.getBlockNumber();
     BlockNumber from = HFrom.getBlockNumber();
 
-    const std::vector<QuantumState>& toStates = S.getFockStates(to);
-    const std::vector<QuantumState>& fromStates = S.getFockStates(from);
+    std::vector<QuantumState> const& toStates = S.getFockStates(to);
+    std::vector<QuantumState> const& fromStates = S.getFockStates(from);
 
     /* Rotation is done in the following way:
     * O_{nm} = \sum_{lk} U^{+}_{nl} O_{lk} U_{km} = \sum_{lk} U^{*}_{ln}O_{lk}U_{km},
@@ -49,7 +49,7 @@ void MonomialOperatorPart::computeImpl() {
 
     auto const& U = HFrom.getMatrix<HC>();
 
-    auto const& MOp_ = *static_cast<const LOperatorTypeRC<MOpC>*>(MOp);
+    auto const& MOp_ = *static_cast<LOperatorTypeRC<MOpC> const *>(MOp);
 
     for(InnerQuantumState st = 0; st < fromStates.size(); ++st) {
         auto fromView = fromMapper.make_const_view_no_ref(U.col(st));
@@ -74,11 +74,11 @@ void MonomialOperatorPart::computeImpl() {
 #endif
 
     elementsColMajor = std::make_shared<ColMajorMatrixType<C>>(
-        *std::static_pointer_cast<const RowMajorMatrixType<C>>(elementsRowMajor)
+        *std::static_pointer_cast<RowMajorMatrixType<C> const>(elementsRowMajor)
     );
 }
 
-void MonomialOperatorPart::setFromAdjoint(const MonomialOperatorPart &part) {
+void MonomialOperatorPart::setFromAdjoint(MonomialOperatorPart const& part) {
     assert(isComplex() == part.isComplex());
     assert(getLeftIndex() == part.getRightIndex());
     assert(getRightIndex() == part.getLeftIndex());
@@ -107,14 +107,14 @@ template ColMajorMatrixType<true>& MonomialOperatorPart::getColMajorValue<true>(
 template ColMajorMatrixType<false>& MonomialOperatorPart::getColMajorValue<false>();
 
 template<bool C>
-const ColMajorMatrixType<C>& MonomialOperatorPart::getColMajorValue() const
+ColMajorMatrixType<C> const& MonomialOperatorPart::getColMajorValue() const
 {
     if(C != isComplex())
         throw std::runtime_error("Stored matrix type mismatch (real/complex)");
-    return *std::static_pointer_cast<const ColMajorMatrixType<C>>(elementsColMajor);
+    return *std::static_pointer_cast<ColMajorMatrixType<C> const>(elementsColMajor);
 }
-template const ColMajorMatrixType<true>& MonomialOperatorPart::getColMajorValue<true>() const;
-template const ColMajorMatrixType<false>& MonomialOperatorPart::getColMajorValue<false>() const;
+template ColMajorMatrixType<true> const& MonomialOperatorPart::getColMajorValue<true>() const;
+template ColMajorMatrixType<false> const& MonomialOperatorPart::getColMajorValue<false>() const;
 
 template<bool C>
 RowMajorMatrixType<C>& MonomialOperatorPart::getRowMajorValue()
@@ -127,14 +127,14 @@ template RowMajorMatrixType<true>& MonomialOperatorPart::getRowMajorValue<true>(
 template RowMajorMatrixType<false>& MonomialOperatorPart::getRowMajorValue<false>();
 
 template<bool C>
-const RowMajorMatrixType<C>& MonomialOperatorPart::getRowMajorValue() const
+RowMajorMatrixType<C> const& MonomialOperatorPart::getRowMajorValue() const
 {
     if(C != isComplex())
         throw std::runtime_error("Stored matrix type mismatch (real/complex)");
     return *std::static_pointer_cast<const RowMajorMatrixType<C>>(elementsRowMajor);
 }
-template const RowMajorMatrixType<true>& MonomialOperatorPart::getRowMajorValue<true>() const;
-template const RowMajorMatrixType<false>& MonomialOperatorPart::getRowMajorValue<false>() const;
+template RowMajorMatrixType<true> const& MonomialOperatorPart::getRowMajorValue<true>() const;
+template RowMajorMatrixType<false> const& MonomialOperatorPart::getRowMajorValue<false>() const;
 
 template<bool C>
 void MonomialOperatorPart::streamOutputImpl(std::ostream & os) const {

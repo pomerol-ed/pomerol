@@ -12,7 +12,7 @@ namespace pMPI {
 // Worker
 //
 
-MPIWorker::MPIWorker(const MPI_Comm &comm, WorkerId boss):
+MPIWorker::MPIWorker(MPI_Comm const& comm, WorkerId boss):
     Comm(comm),
     id(rank(comm)),
     boss(boss),
@@ -80,7 +80,7 @@ bool MPIMaster::is_finished() const
     return NFinished == Nprocs;
 }
 
-inline std::vector<WorkerId> _autorange_workers(const MPI_Comm &comm, bool include_boss)
+inline std::vector<WorkerId> _autorange_workers(MPI_Comm const& comm, bool include_boss)
 {
     int comm_size = pMPI::size(comm);
     int comm_rank = pMPI::rank(comm);
@@ -104,7 +104,7 @@ inline std::vector<JobId> _autorange_tasks(std::size_t ntasks)
     return out;
 }
 
-MPIMaster::MPIMaster(const MPI_Comm &comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers):
+MPIMaster::MPIMaster(MPI_Comm const& comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers):
     Comm(comm), Ntasks(static_cast<int>(task_numbers.size())),
     Nprocs(static_cast<int>(worker_pool.size())),
     task_numbers(std::move(task_numbers)),
@@ -115,11 +115,11 @@ MPIMaster::MPIMaster(const MPI_Comm &comm, std::vector<WorkerId> worker_pool, st
     fill_stack_();
 }
 
-MPIMaster::MPIMaster(const MPI_Comm &comm, std::size_t ntasks, bool include_boss):
+MPIMaster::MPIMaster(MPI_Comm const& comm, std::size_t ntasks, bool include_boss):
     MPIMaster(comm, _autorange_workers(comm, include_boss), _autorange_tasks(ntasks))
 {}
 
-MPIMaster::MPIMaster(const MPI_Comm &comm, std::vector<JobId> task_numbers, bool include_boss):
+MPIMaster::MPIMaster(MPI_Comm const& comm, std::vector<JobId> task_numbers, bool include_boss):
     MPIMaster(comm, _autorange_workers(comm, include_boss), std::move(task_numbers))
 {}
 

@@ -5,14 +5,14 @@
 
 namespace Pomerol {
 
-GreensFunction::GreensFunction(const StatesClassification& S, const Hamiltonian& H,
-                               const AnnihilationOperator& C, const CreationOperator& CX,
-                               const DensityMatrix& DM) :
+GreensFunction::GreensFunction(StatesClassification const& S, Hamiltonian const& H,
+                               AnnihilationOperator const& C, CreationOperator const& CX,
+                               DensityMatrix const& DM) :
     Thermal(DM.beta), ComputableObject(), S(S), H(H), C(C), CX(CX), DM(DM)
 {
 }
 
-GreensFunction::GreensFunction(const GreensFunction& GF) :
+GreensFunction::GreensFunction(GreensFunction const& GF) :
     Thermal(GF.beta), ComputableObject(GF), S(GF.S), H(GF.H), C(GF.C), CX(GF.CX), DM(GF.DM), Vanishing(GF.Vanishing), parts(GF.parts)
 {
 }

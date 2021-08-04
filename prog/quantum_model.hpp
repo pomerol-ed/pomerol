@@ -21,8 +21,8 @@
 
 // Vector value reader for args
 struct VectorReader {
-  template<typename T> void operator()(const std::string &,
-                                       const std::string &value,
+  template<typename T> void operator()(std::string const&,
+                                       std::string const& value,
                                        std::vector<T> &destination) {
     std::stringstream ss(value);
     std::string token;
@@ -49,7 +49,7 @@ public:
       Pomerol::LatticePresets::spin
   >;
 
-  quantum_model(int argc, char* argv[], const std::string &prog_desc);
+  quantum_model(int argc, char* argv[], std::string const& prog_desc);
   ~quantum_model();
 
   void parse_args(int argc, char* argv[]);
@@ -59,7 +59,7 @@ public:
   void compute();
 
   virtual std::pair<Pomerol::ParticleIndex, Pomerol::ParticleIndex>
-  get_node(const IndexInfoType &IndexInfo) = 0;
+  get_node(IndexInfoType const& IndexInfo) = 0;
 
   double FMatsubara(int n, double beta){ return M_PI/beta*(2.*n+1); }
   double BMatsubara(int n, double beta){ return M_PI/beta*(2.*n); }
@@ -68,7 +68,7 @@ public:
                                Pomerol::ParticleIndex u0,
                                std::set<Pomerol::IndexCombination2> &indices2,
                                std::set<Pomerol::ParticleIndex> & f,
-                               const IndexInfoType &IndexInfo) = 0;
+                               IndexInfoType const& IndexInfo) = 0;
 private:
 
   // Simulation parameters
@@ -103,7 +103,7 @@ protected:
 
   Pomerol::LatticePresets::RealExpr HExpr;
 
-  void print_section (const std::string& str)
+  void print_section(std::string const& str)
   {
     if (!rank) {
       std::cout << std::string(str.size(),'=') << std::endl;

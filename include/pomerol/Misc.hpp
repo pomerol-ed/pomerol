@@ -86,27 +86,27 @@ template<bool Complex>
 using RowMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::RowMajor>;
 
 /** A short name for imaginary unit. */
-static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
+static ComplexType const I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
 
 /** Permutation of 3 elements */
 struct Permutation3 {
-    const std::array<std::size_t, 3> perm;
-    const int sign;
-    bool operator==(const Permutation3& rhs) const;
-    bool operator!=(const Permutation3& rhs) const;
-    friend std::ostream& operator<<(std::ostream& out, const Permutation3 &rhs);
+    std::array<std::size_t, 3> const perm;
+    int const sign;
+    bool operator==(Permutation3 const& rhs) const;
+    bool operator!=(Permutation3 const& rhs) const;
+    friend std::ostream& operator<<(std::ostream& out, Permutation3 const& p);
 };
-extern const std::array<Permutation3, 6> permutations3;
+extern std::array<Permutation3, 6> const permutations3;
 
 /** Permutation of 4 elements */
 struct Permutation4 {
-    const std::array<std::size_t, 4> perm;
-    const int sign;
-    bool operator==(const Permutation4& rhs) const;
-    bool operator!=(const Permutation4& rhs) const;
-    friend std::ostream& operator<<(std::ostream& out, const Permutation4 &p);
+    std::array<std::size_t, 4> const perm;
+    int const sign;
+    bool operator==(Permutation4 const& rhs) const;
+    bool operator!=(Permutation4 const& rhs) const;
+    friend std::ostream& operator<<(std::ostream& out, Permutation4 const& p);
 };
-extern const std::array<Permutation4, 24> permutations4;
+extern std::array<Permutation4, 24> const permutations4;
 
 } // namespace Pomerol
 

@@ -21,10 +21,10 @@ using WorkerId = int;
 struct MPIWorker
 {
     MPI_Comm Comm;
-    const WorkerId id;
-    const WorkerId boss;
+    WorkerId const id;
+    WorkerId const boss;
 
-    MPIWorker(const MPI_Comm &comm, WorkerId boss);
+    MPIWorker(MPI_Comm const& comm, WorkerId boss);
     void receive_order();
     void report_job_done();
     bool is_finished();
@@ -55,9 +55,9 @@ struct MPIMaster
     std::vector<MPI_Request> wait_statuses;
     std::vector<bool> workers_finish;
 
-    MPIMaster(const MPI_Comm &comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers);
-    MPIMaster(const MPI_Comm &comm, std::vector<JobId> task_numbers, bool include_boss = true);
-    MPIMaster(const MPI_Comm &comm, std::size_t ntasks, bool include_boss = true);
+    MPIMaster(MPI_Comm const& comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers);
+    MPIMaster(MPI_Comm const& comm, std::vector<JobId> task_numbers, bool include_boss = true);
+    MPIMaster(MPI_Comm const& comm, std::size_t ntasks, bool include_boss = true);
 
     void order_worker(WorkerId worker_id, JobId job);
     void order();

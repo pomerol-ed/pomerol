@@ -41,16 +41,16 @@ struct PrepareWrap {
 template <typename WrapType>
 struct mpi_skel {
     std::vector<WrapType> parts;
-    std::map<pMPI::JobId, pMPI::WorkerId> run(const MPI_Comm& comm, bool VerboseOutput = true);
+    std::map<pMPI::JobId, pMPI::WorkerId> run(MPI_Comm const& comm, bool VerboseOutput = true);
 };
 
 /// Master-slave task schedule, associates jobs with workers and executes mpi_dispatcher to run the simulation
 template <typename WrapType>
-std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(const MPI_Comm& comm, bool VerboseOutput)
+std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(MPI_Comm const& comm, bool VerboseOutput)
 {
     int comm_rank = pMPI::rank(comm);
     int comm_size = pMPI::size(comm);
-    const int root = 0;
+    int const root = 0;
     MPI_Barrier(comm);
 
     if (comm_rank == root) {

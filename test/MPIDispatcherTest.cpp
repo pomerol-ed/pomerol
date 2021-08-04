@@ -23,7 +23,7 @@ TEST_CASE("Test mpi_dispatcher", "[mpi_dispatcher]") {
     std::random_device rd;
     std::mt19937 gen(100000);
     int comm_rank = pMPI::rank(MPI_COMM_WORLD);
-    const int root = 0;
+    int const root = 0;
 
     SECTION("With MPIMaster") {
         std::uniform_real_distribution<double> dist(0, 0.1);
