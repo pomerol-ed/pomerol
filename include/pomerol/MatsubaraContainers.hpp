@@ -14,42 +14,6 @@
 
 namespace Pomerol {
 
-// class MatsubaraContainer1
-template<typename SourceObject>
-class MatsubaraContainer1 {
-    const SourceObject* pSource;
-    ComplexVectorType Values;
-    long NumberOfMatsubaras = 0;
-
-public:
-
-    MatsubaraContainer1(const SourceObject* pSource) : pSource(pSource) {}
-
-    ComplexType operator()(long MatsubaraNumber) const
-    {
-        if(MatsubaraNumber < NumberOfMatsubaras && MatsubaraNumber >= -NumberOfMatsubaras)
-            return Values(NumberOfMatsubaras+MatsubaraNumber);
-        else {
-            DEBUG("MatsubaraContainer1 at " << this << ": " <<
-                  "cache miss for n = " << MatsubaraNumber <<
-                  " (NumberOfMatsubaras = " << NumberOfMatsubaras <<
-                  "), fetching a raw value from " << pSource
-            );
-            return pSource->value(MatsubaraNumber);
-        }
-    }
-
-    void fill(long NumberOfMatsubaras)
-    {
-        this->NumberOfMatsubaras = NumberOfMatsubaras;
-        Values.resize(2*NumberOfMatsubaras);
-        for(long MatsubaraNum=-NumberOfMatsubaras; MatsubaraNum<NumberOfMatsubaras; MatsubaraNum++)
-            Values[MatsubaraNum+NumberOfMatsubaras] = pSource->value(MatsubaraNum);
-    }
-
-    long getNumberOfMatsubaras() const { return NumberOfMatsubaras; }
-};
-
 // class MatsubaraContainer4
 template<typename SourceObject>
 class MatsubaraContainer4 {
