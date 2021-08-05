@@ -11,13 +11,12 @@
 
 #include <libcommute/utility.hpp>
 
-#include <map>
 #include <iostream>
-#include <string>
+#include <map>
 #include <sstream>
+#include <stdexcept>
 #include <tuple>
 #include <vector>
-#include <stdexcept>
 
 namespace Pomerol {
 
@@ -40,7 +39,7 @@ public:
      * \param[in] L A pointer to a Lattice Object.
      */
     template<typename ScalarType>
-    IndexClassification(Operators::expression<ScalarType, IndexTypes...> const& H) {
+    explicit IndexClassification(Operators::expression<ScalarType, IndexTypes...> const& H) {
         // Collect indices of fermionic operators in the Hamiltonian
         for(auto const& mon : H) {
             for(auto const& g : mon.monomial) {
@@ -52,7 +51,7 @@ public:
     }
     IndexClassification() = default;
 
-    void addInfo(const IndexInfo& info) {
+    void addInfo(IndexInfo const& info) {
         InfoToIndices.emplace(info, 0);
         UpdateMaps();
     }
@@ -67,7 +66,7 @@ public:
     bool checkIndex(ParticleIndex in) const { return in < InfoToIndices.size(); }
 
     /** Returns a ParticleIndex, which corresponds to a given site, orbital and spin. */
-    ParticleIndex getIndex(const IndexInfo& info) const {
+    ParticleIndex getIndex(IndexInfo const& info) const {
         auto it = InfoToIndices.find(info);
         if(it != InfoToIndices.end())
             return it->second;
@@ -90,10 +89,10 @@ public:
     }
 
     /** Returns total number of ParticleIndices. */
-    const ParticleIndex getIndexSize() const { return InfoToIndices.size(); }
+    ParticleIndex getIndexSize() const { return InfoToIndices.size(); }
 
     /** Print all Indices to the information stream */
-    friend std::ostream & operator<<(std::ostream & os, const IndexClassification &ic) {
+    friend std::ostream & operator<<(std::ostream & os, IndexClassification const& ic) {
         for(ParticleIndex i=0; i<ic.InfoToIndices.size(); ++i) {
             os << "Index " << i << " = (";
             libcommute::print_tuple(os, ic.IndicesToInfo[i]);

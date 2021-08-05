@@ -1,6 +1,7 @@
 #include "pomerol/SusceptibilityPart.hpp"
 
 #include <cassert>
+#include <cmath>
 
 namespace Pomerol {
 
@@ -15,21 +16,22 @@ ComplexType SusceptibilityPart::Term::operator()(ComplexType Frequency) const
 
 ComplexType SusceptibilityPart::Term::operator()(RealType tau, RealType beta) const {
     using std::exp;
-    return Pole > 0 ? Residue*exp(-tau*Pole)/(1 - exp(-beta*Pole)) :
-                      Residue*exp((beta-tau)*Pole)/(exp(beta*Pole) - 1);
+    using std::expm1;
+    return Pole > 0 ? -Residue*exp(-tau*Pole) / expm1(-beta*Pole) :
+                      Residue*exp((beta-tau)*Pole) / expm1(beta*Pole);
 }
 
 inline
-SusceptibilityPart::Term& SusceptibilityPart::Term::operator+=(const Term& AnotherTerm)
+SusceptibilityPart::Term& SusceptibilityPart::Term::operator+=(Term const& AnotherTerm)
 {
     Residue += AnotherTerm.Residue;
     return *this;
 }
 
-SusceptibilityPart::SusceptibilityPart( const MonomialOperatorPart& A, const MonomialOperatorPart& B,
-                                        const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
-                                        const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
-                                        Thermal(DMpartInner),
+SusceptibilityPart::SusceptibilityPart( MonomialOperatorPart const& A, MonomialOperatorPart const& B,
+                                        HamiltonianPart const& HpartInner, HamiltonianPart const& HpartOuter,
+                                        DensityMatrixPart const& DMpartInner, DensityMatrixPart const& DMpartOuter) :
+                                        Thermal(DMpartInner.beta),
                                         HpartInner(HpartInner), HpartOuter(HpartOuter),
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
                                         A(A), B(B),
@@ -57,8 +59,8 @@ void SusceptibilityPart::computeImpl()
     Terms.clear();
 
     // Blocks (submatrices) of A and B
-    const RowMajorMatrixType<AComplex>& Amatrix = A.getRowMajorValue<AComplex>();
-    const ColMajorMatrixType<BComplex>& Bmatrix = B.getColMajorValue<BComplex>();
+    RowMajorMatrixType<AComplex> const& Amatrix = A.getRowMajorValue<AComplex>();
+    ColMajorMatrixType<BComplex> const& Bmatrix = B.getColMajorValue<BComplex>();
     QuantumState outerSize = Amatrix.outerSize();
 
     // Iterate over all values of the outer index.

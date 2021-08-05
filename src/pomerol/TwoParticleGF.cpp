@@ -2,21 +2,23 @@
 
 #include "mpi_dispatcher/mpi_skel.hpp"
 
+#include <array>
+#include <cassert>
 #include <map>
 #include <stdexcept>
 
 namespace Pomerol {
 
-TwoParticleGF::TwoParticleGF(const StatesClassification& S, const Hamiltonian& H,
-                const AnnihilationOperator& C1, const AnnihilationOperator& C2,
-                const CreationOperator& CX3, const CreationOperator& CX4,
-                const DensityMatrix& DM) :
+TwoParticleGF::TwoParticleGF(StatesClassification const& S, Hamiltonian const& H,
+                AnnihilationOperator const& C1, AnnihilationOperator const& C2,
+                CreationOperator const& CX3, CreationOperator const& CX4,
+                DensityMatrix const& DM) :
     Thermal(DM.beta), ComputableObject(),
     S(S), H(H), C1(C1), C2(C2), CX3(CX3), CX4(CX4), DM(DM)
 {
 }
 
-BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber RightIndex) const
+BlockNumber TwoParticleGF::getLeftIndex(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber RightIndex) const
 {
     switch(permutations3[PermutationNumber].perm[OperatorPosition]) {
         case 0: return C1.getLeftIndex(RightIndex);
@@ -26,7 +28,7 @@ BlockNumber TwoParticleGF::getLeftIndex(size_t PermutationNumber, size_t Operato
     }
 }
 
-BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const
+BlockNumber TwoParticleGF::getRightIndex(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const
 {
     switch(permutations3[PermutationNumber].perm[OperatorPosition]) {
         case 0: return C1.getRightIndex(LeftIndex);
@@ -36,15 +38,14 @@ BlockNumber TwoParticleGF::getRightIndex(size_t PermutationNumber, size_t Operat
     }
 }
 
-const MonomialOperatorPart& TwoParticleGF::OperatorPartAtPosition(size_t PermutationNumber, size_t OperatorPosition, BlockNumber LeftIndex) const
+MonomialOperatorPart const& TwoParticleGF::OperatorPartAtPosition(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const
 {
     switch(permutations3[PermutationNumber].perm[OperatorPosition]){
         case 0: return C1.getPartFromLeftIndex(LeftIndex);
         case 1: return C2.getPartFromLeftIndex(LeftIndex);
         case 2: return CX3.getPartFromLeftIndex(LeftIndex);
-        default: assert(0);
+        default: throw std::runtime_error("TwoParticleGF: Could not find operator part");
     }
-    throw std::logic_error("TwoParticleGF : could not find operator part");
 }
 
 void TwoParticleGF::prepare()
@@ -55,8 +56,8 @@ void TwoParticleGF::prepare()
     MonomialOperator::BlocksBimap const& CX4NontrivialBlocks = CX4.getBlockMapping();
     for(auto outer_iter = CX4NontrivialBlocks.right.begin();
         outer_iter != CX4NontrivialBlocks.right.end(); outer_iter++){ // Iterate over the outermost index.
-            for(size_t p = 0; p < 6; ++p) { // Choose a permutation
-                  BlockNumber LeftIndices[4];
+            for(std::size_t p = 0; p < 6; ++p) { // Choose a permutation
+                  std::array<BlockNumber, 4> LeftIndices{};
                   LeftIndices[0] = outer_iter->first;
                   LeftIndices[3] = outer_iter->second;
                   LeftIndices[2] = getLeftIndex(p,2,LeftIndices[3]);
@@ -107,7 +108,7 @@ void TwoParticleGF::prepare()
 
 // An mpi adapter to 1) compute 2pgf terms; 2) convert them to a Matsubara Container; 3) purge terms
 struct ComputeAndClearWrap {
-    ComputeAndClearWrap(const FreqVec & freqs,
+    ComputeAndClearWrap(FreqVec const& freqs,
                         std::vector<ComplexType> & data,
                         TwoParticleGFPart & p,
                         bool clear,
@@ -118,7 +119,7 @@ struct ComputeAndClearWrap {
     void run() {
         p.compute();
         if (fill_) {
-            int wsize = freqs_.size();
+            std::size_t wsize = freqs_.size();
             #ifdef POMEROL_USE_OPENMP
             #pragma omp parallel for
             #endif
@@ -132,20 +133,22 @@ struct ComputeAndClearWrap {
         if(clear_) p.clear();
     }
 
-    const int complexity;
+    // NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
+    int const complexity;
 
-protected:
+private:
 
-    const FreqVec & freqs_;
+    FreqVec const& freqs_;
     std::vector<ComplexType> & data_;
     TwoParticleGFPart & p;
     bool clear_;
     bool fill_;
 };
 
-std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs, const MPI_Comm& comm)
+std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs, MPI_Comm const& comm)
 {
-    if(getStatus() < Prepared) throw exStatusMismatch();
+    if(getStatus() < Prepared)
+        throw StatusMismatch("TwoParticleGF is not prepared yet.");
 
     std::vector<ComplexType> m_data;
     if(getStatus() >= Computed) return m_data;
@@ -156,8 +159,8 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs
         bool fill_container = !freqs.empty();
         skel.parts.reserve(parts.size());
         m_data.resize(freqs.size(), 0.0);
-        for (size_t i = 0; i < parts.size(); ++i) {
-            skel.parts.emplace_back(freqs, m_data, parts[i], clear, fill_container, 1);
+        for (auto & part : parts) {
+            skel.parts.emplace_back(freqs, m_data, part, clear, fill_container, 1);
         }
         std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true); // actual running - very costly
 
@@ -166,14 +169,14 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs
 
         MPI_Allreduce(MPI_IN_PLACE,
                       m_data.data(),
-                      m_data.size(),
+                      static_cast<int>(m_data.size()),
                       MPI_CXX_DOUBLE_COMPLEX,
                       MPI_SUM,
                       comm);
 
         // Optionally distribute terms to other processes
         if (!clear) {
-            for(size_t p = 0; p < parts.size(); ++p) {
+            for(int p = 0; p < static_cast<int>(parts.size()); ++p) {
                 parts[p].NonResonantTerms.broadcast(comm, job_map[p]);
                 parts[p].ResonantTerms.broadcast(comm, job_map[p]);
                 parts[p].setStatus(TwoParticleGFPart::Computed);
@@ -187,7 +190,7 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs
     return m_data;
 }
 
-ParticleIndex TwoParticleGF::getIndex(size_t Position) const
+ParticleIndex TwoParticleGF::getIndex(std::size_t Position) const
 {
     switch(Position){
         case 0: return C1.getIndex();
@@ -196,10 +199,10 @@ ParticleIndex TwoParticleGF::getIndex(size_t Position) const
         case 3: return CX4.getIndex();
         default: assert(0);
     }
-    throw std::logic_error("TwoParticleGF : could not get operator index");
+    throw std::runtime_error("TwoParticleGF: Could not get operator index");
 }
 
-unsigned short TwoParticleGF::getPermutationNumber(const Permutation3& in)
+unsigned short TwoParticleGF::getPermutationNumber(Permutation3 const& in)
 {
     for(unsigned short i = 0; i < 6; ++i)
         if (in == permutations3[i]) return i;

@@ -1,6 +1,7 @@
 #include "pomerol/GreensFunctionPart.hpp"
 
 #include <cassert>
+#include <cmath>
 
 namespace Pomerol {
 
@@ -15,16 +16,16 @@ ComplexType GreensFunctionPart::Term::operator()(RealType tau, RealType beta) co
 }
 
 inline
-GreensFunctionPart::Term& GreensFunctionPart::Term::operator+=(const Term& AnotherTerm)
+GreensFunctionPart::Term& GreensFunctionPart::Term::operator+=(Term const& AnotherTerm)
 {
     Residue += AnotherTerm.Residue;
     return *this;
 }
 
-GreensFunctionPart::GreensFunctionPart( const MonomialOperatorPart& C, const MonomialOperatorPart& CX,
-                                        const HamiltonianPart& HpartInner, const HamiltonianPart& HpartOuter,
-                                        const DensityMatrixPart& DMpartInner, const DensityMatrixPart& DMpartOuter) :
-                                        Thermal(DMpartInner),
+GreensFunctionPart::GreensFunctionPart( MonomialOperatorPart const& C, MonomialOperatorPart const& CX,
+                                        HamiltonianPart const& HpartInner, HamiltonianPart const& HpartOuter,
+                                        DensityMatrixPart const& DMpartInner, DensityMatrixPart const& DMpartOuter) :
+                                        Thermal(DMpartInner.beta),
                                         HpartInner(HpartInner), HpartOuter(HpartOuter),
                                         DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
                                         C(C), CX(CX),
@@ -43,8 +44,8 @@ template<bool Complex> void GreensFunctionPart::computeImpl() {
     Terms.clear();
 
     // Blocks (submatrices) of C and CX
-    const RowMajorMatrixType<Complex>& Cmatrix = C.template getRowMajorValue<Complex>();
-    const ColMajorMatrixType<Complex>& CXmatrix = CX.template getColMajorValue<Complex>();
+    RowMajorMatrixType<Complex> const& Cmatrix = C.template getRowMajorValue<Complex>();
+    ColMajorMatrixType<Complex> const& CXmatrix = CX.template getColMajorValue<Complex>();
     QuantumState outerSize = Cmatrix.outerSize();
 
     // Iterate over all values of the outer index.

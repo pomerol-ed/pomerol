@@ -6,32 +6,31 @@
 #ifndef POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_H
 #define POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_H
 
-#include "Misc.hpp"
-
-#include <exception>
+#include <stdexcept>
+#include <string>
 
 namespace Pomerol {
 
 struct ComputableObject {
     /** Computation statuses of the object. */
-    enum {Constructed, Prepared, Computed};
+    enum StatusEnum {Constructed, Prepared, Computed};
 protected:
     /** Current status of an object */
-    unsigned int Status = Constructed;
+    StatusEnum Status = Constructed;
 public:
     ComputableObject() = default;
 
     /** Returns the current status of an object */
-    unsigned int getStatus() const { return Status; }
-    void setStatus(unsigned int Status_in){
-        if(Status_in > Computed) throw exStatusMismatch();
+    StatusEnum getStatus() const { return Status; }
+    void setStatus(StatusEnum Status_in){
+        if(Status_in > Computed)
+            throw StatusMismatch("Invalid computable object status");
         Status = Status_in;
     }
 
-    class exStatusMismatch : public std::exception {
-        virtual const char* what() const noexcept override {
-            return "Object status mismatch";
-        }
+    class StatusMismatch : public std::runtime_error {
+    public:
+        explicit StatusMismatch(std::string const& str) : std::runtime_error(str) {}
     };
 };
 

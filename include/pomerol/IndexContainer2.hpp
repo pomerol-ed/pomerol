@@ -6,8 +6,8 @@
 #ifndef POMEROL_INCLUDE_POMEROL_INDEXCONTAINER2_H
 #define POMEROL_INCLUDE_POMEROL_INDEXCONTAINER2_H
 
-#include"Index.hpp"
-#include"IndexClassification.hpp"
+#include "Index.hpp"
+#include "IndexClassification.hpp"
 
 #include <map>
 #include <memory>
@@ -23,24 +23,24 @@ protected:
     ParticleIndex NumIndices;
     std::map<IndexCombination2, std::shared_ptr<ElementType>> ElementsMap;
 
-    SourceObject* pSource;
+    SourceObject const& Source;
 
     std::set<IndexCombination2> enumerateInitialIndices() const;
 
 public:
 
     template<typename... IndexTypes>
-    IndexContainer2(SourceObject* pSource, const IndexClassification<IndexTypes...>& IndexInfo) :
-        NumIndices(IndexInfo.getIndexSize()), pSource(pSource)
+    IndexContainer2(SourceObject const& Source, IndexClassification<IndexTypes...> const& IndexInfo) :
+        NumIndices(IndexInfo.getIndexSize()), Source(Source)
     {}
 
     void fill(std::set<IndexCombination2> InitialIndices = std::set<IndexCombination2>());
-    ElementType& set(const IndexCombination2& Indices);
+    ElementType& set(IndexCombination2 const& Indices);
 
-    bool isInContainer(const IndexCombination2& Indices) const;
+    bool isInContainer(IndexCombination2 const& Indices) const;
     bool isInContainer(ParticleIndex Index1, ParticleIndex Index2) const;
 
-    ElementType& operator()(const IndexCombination2& Indices);
+    ElementType& operator()(IndexCombination2 const& Indices);
     ElementType& operator()(ParticleIndex Index1, ParticleIndex Index2);
 };
 
@@ -48,7 +48,7 @@ public:
 // IndexContainer2 //
 /////////////////////
 template<typename ElementType, typename SourceObject>
-bool IndexContainer2<ElementType,SourceObject>::isInContainer(const IndexCombination2& Indices) const
+bool IndexContainer2<ElementType,SourceObject>::isInContainer(IndexCombination2 const& Indices) const
 {
     return ElementsMap.count(Indices) > 0;
 }
@@ -82,9 +82,9 @@ void IndexContainer2<ElementType,SourceObject>::fill(std::set<IndexCombination2>
 }
 
 template<typename ElementType, typename SourceObject>
-ElementType& IndexContainer2<ElementType,SourceObject>::set(const IndexCombination2& Indices)
+ElementType& IndexContainer2<ElementType,SourceObject>::set(IndexCombination2 const& Indices)
 {
-    std::shared_ptr<ElementType> pElement(pSource->createElement(Indices));
+    std::shared_ptr<ElementType> pElement(Source.createElement(Indices));
     ElementsMap[Indices] = pElement;
 
     DEBUG("IndexContainer2::set() at " << this << ": "
@@ -94,7 +94,7 @@ ElementType& IndexContainer2<ElementType,SourceObject>::set(const IndexCombinati
 }
 
 template<typename ElementType, typename SourceObject>
-ElementType& IndexContainer2<ElementType,SourceObject>::operator()(const IndexCombination2& Indices)
+ElementType& IndexContainer2<ElementType,SourceObject>::operator()(IndexCombination2 const& Indices)
 {
     auto iter = ElementsMap.find(Indices);
 
@@ -102,7 +102,7 @@ ElementType& IndexContainer2<ElementType,SourceObject>::operator()(const IndexCo
         DEBUG("IndexContainer2 at " << this << ": " <<
               "cache miss for Index1=" << Indices.Index1 <<
               ", Index2=" << Indices.Index2 <<
-              "; add a new element to the container using source " << pSource
+              "; add a new element to the container using source " << &Source
         );
         return set(Indices);
     }
@@ -128,7 +128,6 @@ std::set<IndexCombination2> IndexContainer2<ElementType,SourceObject>::enumerate
 
     return AllIndices;
 }
-
 
 } // namespace Pomerol
 

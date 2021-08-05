@@ -2,17 +2,17 @@
 
 namespace Pomerol {
 
-Vertex4::Vertex4(const TwoParticleGF& Chi4,
-                 const GreensFunction& G13, const GreensFunction& G24,
-                 const GreensFunction& G14, const GreensFunction& G23) :
+Vertex4::Vertex4(TwoParticleGF const& Chi4,
+                 GreensFunction const& G13, GreensFunction const& G24,
+                 GreensFunction const& G14, GreensFunction const& G23) :
     Thermal(Chi4.beta), ComputableObject(),
-    Chi4(Chi4), G13(G13), G24(G24), G14(G14), G23(G23)
+    Chi4(Chi4), G13(G13), G24(G24), G14(G14), G23(G23), Storage(*this)
 {}
 
 void Vertex4::compute(long NumberOfMatsubaras)
 {
     if(getStatus() >= Computed) return;
-    Storage.fill(this, NumberOfMatsubaras);
+    Storage.fill(NumberOfMatsubaras);
     setStatus(Computed);
 }
 

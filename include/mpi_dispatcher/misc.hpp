@@ -9,14 +9,14 @@
 namespace pMPI {
 
 // Size of communicator 'Comm'
-inline int size(const MPI_Comm &Comm) {
+inline int size(MPI_Comm const& Comm) {
     int s;
     MPI_Comm_size(Comm, &s);
     return s;
 }
 
 // Rank of this process in communicator 'Comm'
-inline int rank(const MPI_Comm &Comm) {
+inline int rank(MPI_Comm const& Comm) {
     int r;
     MPI_Comm_rank(Comm, &r);
     return r;

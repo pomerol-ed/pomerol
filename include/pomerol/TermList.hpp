@@ -6,10 +6,11 @@
 #ifndef POMEROL_INCLUDE_TERMLIST_H
 #define POMEROL_INCLUDE_TERMLIST_H
 
-#include "mpi_dispatcher/misc.hpp"
-
 #include "Misc.hpp"
 
+#include "mpi_dispatcher/misc.hpp"
+
+#include <cstddef>
 #include <set>
 #include <utility>
 #include <vector>
@@ -26,9 +27,9 @@ namespace Pomerol {
  */
 template<typename TermType> class TermList {
     /** Comparison function */
-    typedef typename TermType::Compare Compare;
+    using Compare = typename TermType::Compare;
     /** Predicate for determining negligible terms */
-    typedef typename TermType::IsNegligible IsNegligible;
+    using IsNegligible = typename TermType::IsNegligible;
 
     std::set<TermType, Compare> data;
     IsNegligible is_negligible;
@@ -65,10 +66,10 @@ public:
     void clear() { data.clear(); }
 
     /** Access set of terms */
-    const std::set<TermType, Compare>& as_set() const { return data; }
+    std::set<TermType, Compare> const& as_set() const { return data; }
 
     /** Access the is_negligible object */
-    const IsNegligible& get_is_negligible() const { return is_negligible; }
+    IsNegligible const& get_is_negligible() const { return is_negligible; }
 
     /** Pass arguments to operator() of each term in the container
      *  and return a sum of their return values.
@@ -81,7 +82,7 @@ public:
         return res;
     }
 
-    void broadcast(const MPI_Comm &comm, int root) {
+    void broadcast(MPI_Comm const& comm, int root) {
         auto comp = data.key_comp();
         comp.broadcast(comm, root);
 
@@ -102,7 +103,7 @@ public:
     }
 
     /** Check that all terms in the container are properly ordered and are not negligible */
-    bool check_terms() {
+    bool check_terms() const {
         if(size() == 0) return true;
         auto prev_it = data.begin();
         if(is_negligible(*prev_it, data.size() + 1)) return false;

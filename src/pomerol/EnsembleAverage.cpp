@@ -1,13 +1,13 @@
 #include "pomerol/EnsembleAverage.hpp"
 
-namespace Pomerol{
+namespace Pomerol {
 
-EnsembleAverage::EnsembleAverage(const StatesClassification& S, const Hamiltonian& H,
-                                 const MonomialOperator& A, const DensityMatrix& DM) :
+EnsembleAverage::EnsembleAverage(StatesClassification const& S, Hamiltonian const& H,
+                                 MonomialOperator const& A, DensityMatrix const& DM) :
     Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), DM(DM)
 {}
 
-EnsembleAverage::EnsembleAverage(const EnsembleAverage& EA) :
+EnsembleAverage::EnsembleAverage(EnsembleAverage const& EA) :
     Thermal(EA.beta), ComputableObject(EA), S(EA.S), H(EA.H), A(EA.A), DM(EA.DM), Result(EA.Result)
 {}
 
@@ -40,15 +40,15 @@ void EnsembleAverage::compute()
 
 // This function is called directly in prepare()
 template<bool Complex>
-ComplexType EnsembleAverage::computeImpl(const MonomialOperatorPart& Apart,
-                                         const DensityMatrixPart& DMpart)
+ComplexType EnsembleAverage::computeImpl(MonomialOperatorPart const& Apart,
+                                         DensityMatrixPart const& DMpart)
 {
     // Blocks (submatrices) of A
-    const RowMajorMatrixType<Complex>& Amatrix = Apart.getRowMajorValue<Complex>();
+    RowMajorMatrixType<Complex> const& Amatrix = Apart.getRowMajorValue<Complex>();
 
     // Sum up <index1|A|index1> * weight(index1)
     ComplexType result_part = 0;
-    for(QuantumState Index = 0; Index < Amatrix.outerSize(); ++Index)
+    for(Eigen::Index Index = 0; Index < Amatrix.outerSize(); ++Index)
         result_part += Amatrix.coeff(Index, Index) * DMpart.getWeight(Index);
     return result_part;
 }

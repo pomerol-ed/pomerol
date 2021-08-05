@@ -7,20 +7,22 @@
 #ifndef POMEROL_INCLUDE_VERTEX4_H
 #define POMEROL_INCLUDE_VERTEX4_H
 
-#include"Misc.hpp"
-#include"GFContainer.hpp"
-#include"TwoParticleGF.hpp"
-#include"MatsubaraContainers.hpp"
+#include "ComputableObject.hpp"
+#include "MatsubaraContainers.hpp"
+#include "Misc.hpp"
+#include "GreensFunction.hpp"
+#include "Thermal.hpp"
+#include "TwoParticleGF.hpp"
 
 namespace Pomerol {
 
 class Vertex4 : public Thermal, public ComputableObject {
 
-    const TwoParticleGF &Chi4;
-    const GreensFunction &G13;
-    const GreensFunction &G24;
-    const GreensFunction &G14;
-    const GreensFunction &G23;
+    TwoParticleGF const& Chi4;
+    GreensFunction const& G13;
+    GreensFunction const& G24;
+    GreensFunction const& G14;
+    GreensFunction const& G23;
 
     /** Storage for precomputed values. */
     mutable MatsubaraContainer4<Vertex4> Storage;
@@ -29,9 +31,9 @@ class Vertex4 : public Thermal, public ComputableObject {
 
 public:
 
-    Vertex4(const TwoParticleGF& Chi4,
-            const GreensFunction& G13, const GreensFunction& G24,
-            const GreensFunction& G14, const GreensFunction& G23);
+    Vertex4(TwoParticleGF const& Chi4,
+            GreensFunction const& G13, GreensFunction const& G24,
+            GreensFunction const& G14, GreensFunction const& G23);
 
     void compute(long NumberOfMatsubaras = 0);
 

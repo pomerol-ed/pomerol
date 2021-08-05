@@ -11,7 +11,10 @@ using Operators::n;
 using Operators::a_dag;
 using Operators::a;
 
+//
 // spin
+//
+
 std::ostream & operator<<(std::ostream & os, spin s)
 {
     switch(s) {
@@ -25,16 +28,16 @@ std::ostream & operator<<(std::ostream & os, spin s)
 // 2-index presets
 //
 
-RealExpr Level(const std::string& Label, RealType Value, unsigned short Orbital, spin Spin)
+RealExpr Level(std::string const& Label, RealType Value, unsigned short Orbital, spin Spin)
 {
     return Value * n(Label, Orbital, Spin);
 }
-ComplexExpr Level(const std::string& Label, ComplexType Value, unsigned short Orbital, spin Spin)
+ComplexExpr Level(std::string const& Label, ComplexType Value, unsigned short Orbital, spin Spin)
 {
     return Value * n(Label, Orbital, Spin);
 }
 
-RealExpr Level(const std::string& Label, RealType Level, unsigned short NOrbitals)
+RealExpr Level(std::string const& Label, RealType Level, unsigned short NOrbitals)
 {
     RealExpr res;
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
@@ -44,7 +47,7 @@ RealExpr Level(const std::string& Label, RealType Level, unsigned short NOrbital
     return res;
 }
 
-ComplexExpr Level(const std::string& Label, ComplexType Level, unsigned short NOrbitals)
+ComplexExpr Level(std::string const& Label, ComplexType Level, unsigned short NOrbitals)
 {
     ComplexExpr res;
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
@@ -54,34 +57,34 @@ ComplexExpr Level(const std::string& Label, ComplexType Level, unsigned short NO
     return res;
 }
 
-RealExpr Hopping(const std::string& Label1, const std::string& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
+RealExpr Hopping(std::string const& Label1, std::string const& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
 {
     return (t * c_dag(Label1, Orbital1, Spin1) * c(Label2, Orbital2, Spin2)) + Operators::hc;
 }
-ComplexExpr Hopping(const std::string& Label1, const std::string& Label2, ComplexType t, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
+ComplexExpr Hopping(std::string const& Label1, std::string const& Label2, ComplexType t, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
 {
     return (t * c_dag(Label1, Orbital1, Spin1) * c(Label2, Orbital2, Spin2)) + Operators::hc;
 }
 
-RealExpr Hopping(const std::string& Label1, const std::string& Label2, RealType t, unsigned short Orbital, spin Spin)
+RealExpr Hopping(std::string const& Label1, std::string const& Label2, RealType t, unsigned short Orbital, spin Spin)
 {
     return Hopping(Label1, Label2, t, Orbital, Orbital, Spin, Spin);
 }
-ComplexExpr Hopping(const std::string& Label1, const std::string& Label2, ComplexType t, unsigned short Orbital, spin Spin)
+ComplexExpr Hopping(std::string const& Label1, std::string const& Label2, ComplexType t, unsigned short Orbital, spin Spin)
 {
     return Hopping(Label1, Label2, t, Orbital, Orbital, Spin, Spin);
 }
 
-RealExpr Hopping(const std::string &Label1, const std::string& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2)
+RealExpr Hopping(std::string const& Label1, std::string const& Label2, RealType t, unsigned short Orbital1, unsigned short Orbital2)
 {
     return Hopping(Label1, Label2, t, Orbital1, Orbital2, up, up) + Hopping(Label1, Label2, t, Orbital1, Orbital2, down, down);
 }
-ComplexExpr Hopping(const std::string &Label1, const std::string& Label2, ComplexType t, unsigned short Orbital1, unsigned short Orbital2)
+ComplexExpr Hopping(std::string const&Label1, std::string const& Label2, ComplexType t, unsigned short Orbital1, unsigned short Orbital2)
 {
     return Hopping(Label1, Label2, t, Orbital1, Orbital2, up, up) + Hopping(Label1, Label2, t, Orbital1, Orbital2, down, down);
 }
 
-RealExpr Hopping(const std::string &Label1, const std::string& Label2, RealType t, unsigned short NOrbitals)
+RealExpr Hopping(std::string const& Label1, std::string const& Label2, RealType t, unsigned short NOrbitals)
 {
     RealExpr res;
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
@@ -90,7 +93,7 @@ RealExpr Hopping(const std::string &Label1, const std::string& Label2, RealType 
     }
     return res;
 }
-ComplexExpr Hopping(const std::string &Label1, const std::string& Label2, ComplexType t, unsigned short NOrbitals)
+ComplexExpr Hopping(std::string const& Label1, std::string const& Label2, ComplexType t, unsigned short NOrbitals)
 {
     ComplexExpr res;
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
@@ -104,79 +107,79 @@ ComplexExpr Hopping(const std::string &Label1, const std::string& Label2, Comple
 // 4-index presets
 //
 
-RealExpr NupNdown(const std::string& Label1, const std::string& Label2, RealType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
+RealExpr NupNdown(std::string const& Label1, std::string const& Label2, RealType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
 {
     return Value * n(Label1, Orbital1, Spin1) * n(Label2, Orbital2, Spin2);
 }
-ComplexExpr NupNdown(const std::string& Label1, const std::string& Label2, ComplexType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
+ComplexExpr NupNdown(std::string const& Label1, std::string const& Label2, ComplexType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
 {
     return Value * n(Label1, Orbital1, Spin1) * n(Label2, Orbital2, Spin2);
 }
 
-RealExpr NupNdown(const std::string& Label, RealType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
+RealExpr NupNdown(std::string const& Label, RealType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
 {
     return NupNdown(Label, Label, Value, Orbital1, Orbital2, Spin1, Spin2);
 }
-ComplexExpr NupNdown(const std::string& Label, ComplexType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
+ComplexExpr NupNdown(std::string const& Label, ComplexType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
 {
     return NupNdown(Label, Label, Value, Orbital1, Orbital2, Spin1, Spin2);
 }
 
-RealExpr NupNdown(const std::string& Label, RealType Value, unsigned short Orbital1, unsigned short Orbital2)
+RealExpr NupNdown(std::string const& Label, RealType Value, unsigned short Orbital1, unsigned short Orbital2)
 {
     return NupNdown(Label, Label, Value, Orbital1, Orbital2, up, down);
 }
-ComplexExpr NupNdown(const std::string& Label, ComplexType Value, unsigned short Orbital1, unsigned short Orbital2)
+ComplexExpr NupNdown(std::string const& Label, ComplexType Value, unsigned short Orbital1, unsigned short Orbital2)
 {
     return NupNdown(Label, Label, Value, Orbital1, Orbital2, up, down);
 }
 
-RealExpr NupNdown(const std::string& Label, RealType Value, unsigned short Orbital, spin Spin1, spin Spin2)
+RealExpr NupNdown(std::string const& Label, RealType Value, unsigned short Orbital, spin Spin1, spin Spin2)
 {
     return NupNdown(Label, Label, Value, Orbital, Orbital, Spin1, Spin2);
 }
-ComplexExpr NupNdown(const std::string& Label, ComplexType Value, unsigned short Orbital, spin Spin1, spin Spin2)
+ComplexExpr NupNdown(std::string const& Label, ComplexType Value, unsigned short Orbital, spin Spin1, spin Spin2)
 {
     return NupNdown(Label, Label, Value, Orbital, Orbital, Spin1, Spin2);
 }
 
-RealExpr Spinflip(const std::string& Label, RealType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
+RealExpr Spinflip(std::string const& Label, RealType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
 {
     return Value * c_dag(Label, Orbital1, Spin1) * c_dag(Label, Orbital2, Spin2) * c(Label, Orbital2, Spin1) * c(Label, Orbital1, Spin2);
 }
-ComplexExpr Spinflip(const std::string& Label, ComplexType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
+ComplexExpr Spinflip(std::string const& Label, ComplexType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
 {
     return Value * c_dag(Label, Orbital1, Spin1) * c_dag(Label, Orbital2, Spin2) * c(Label, Orbital2, Spin1) * c(Label, Orbital1, Spin2);
 }
 
-RealExpr PairHopping(const std::string& Label, RealType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
+RealExpr PairHopping(std::string const& Label, RealType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
 {
     return Value * c_dag(Label, Orbital1, Spin1) * c_dag(Label, Orbital1, Spin2) * c(Label, Orbital2, Spin1) * c(Label, Orbital2, Spin2);
 }
-ComplexExpr PairHopping(const std::string& Label, ComplexType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
+ComplexExpr PairHopping(std::string const& Label, ComplexType Value, unsigned short Orbital1, unsigned short Orbital2, spin Spin1, spin Spin2)
 {
     return Value * c_dag(Label, Orbital1, Spin1) * c_dag(Label, Orbital1, Spin2) * c(Label, Orbital2, Spin1) * c(Label, Orbital2, Spin2);
 }
 
-RealExpr SplusSminus(const std::string& Label1, const std::string& Label2, RealType Value, unsigned short Orbital)
+RealExpr SplusSminus(std::string const& Label1, std::string const& Label2, RealType Value, unsigned short Orbital)
 {
     return Value * c_dag(Label1, Orbital, up) * c(Label1, Orbital, down) * c_dag(Label2, Orbital, down) * c(Label2, Orbital, up);
 }
-ComplexExpr SplusSminus(const std::string& Label1, const std::string& Label2, ComplexType Value, unsigned short Orbital)
+ComplexExpr SplusSminus(std::string const& Label1, std::string const& Label2, ComplexType Value, unsigned short Orbital)
 {
     return Value * c_dag(Label1, Orbital, up) * c(Label1, Orbital, down) * c_dag(Label2, Orbital, down) * c(Label2, Orbital, up);
 }
 
-RealExpr SminusSplus(const std::string& Label1, const std::string& Label2, RealType Value, unsigned short Orbital)
+RealExpr SminusSplus(std::string const& Label1, std::string const& Label2, RealType Value, unsigned short Orbital)
 {
     return Value * c_dag(Label1, Orbital, down) * c(Label1, Orbital, up) * c_dag(Label2, Orbital, up) * c(Label2, Orbital, down);
 }
-ComplexExpr SminusSplus(const std::string& Label1, const std::string& Label2, ComplexType Value, unsigned short Orbital)
+ComplexExpr SminusSplus(std::string const& Label1, std::string const& Label2, ComplexType Value, unsigned short Orbital)
 {
     return Value * c_dag(Label1, Orbital, down) * c(Label1, Orbital, up) * c_dag(Label2, Orbital, up) * c(Label2, Orbital, down);
 }
 
-RealExpr CoulombS(const std::string& Label, RealType U, RealType Level, unsigned short NOrbitals)
+RealExpr CoulombS(std::string const& Label, RealType U, RealType Level, unsigned short NOrbitals)
 {
     RealExpr res;
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
@@ -186,7 +189,7 @@ RealExpr CoulombS(const std::string& Label, RealType U, RealType Level, unsigned
     }
     return res;
 }
-ComplexExpr CoulombS(const std::string& Label, ComplexType U, ComplexType Level, unsigned short NOrbitals)
+ComplexExpr CoulombS(std::string const& Label, ComplexType U, ComplexType Level, unsigned short NOrbitals)
 {
     ComplexExpr res;
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
@@ -197,7 +200,7 @@ ComplexExpr CoulombS(const std::string& Label, ComplexType U, ComplexType Level,
     return res;
 }
 
-RealExpr CoulombP(const std::string& Label, RealType U, RealType U_p, RealType J, RealType Level, unsigned short NOrbitals)
+RealExpr CoulombP(std::string const& Label, RealType U, RealType U_p, RealType J, RealType Level, unsigned short NOrbitals)
 {
     if(NOrbitals < 2)
         throw std::runtime_error("Cannot add multiorbital interaction to a site with 1 orbital");
@@ -223,7 +226,7 @@ RealExpr CoulombP(const std::string& Label, RealType U, RealType U_p, RealType J
     }
     return res;
 }
-ComplexExpr CoulombP(const std::string& Label, ComplexType U, ComplexType U_p, ComplexType J, ComplexType Level, unsigned short NOrbitals)
+ComplexExpr CoulombP(std::string const& Label, ComplexType U, ComplexType U_p, ComplexType J, ComplexType Level, unsigned short NOrbitals)
 {
     if(NOrbitals < 2)
         throw std::runtime_error("Cannot add multiorbital interaction to a site with 1 orbital");
@@ -250,16 +253,16 @@ ComplexExpr CoulombP(const std::string& Label, ComplexType U, ComplexType U_p, C
     return res;
 }
 
-RealExpr CoulombP(const std::string& Label, RealType U, RealType J, RealType Level, unsigned short NOrbitals)
+RealExpr CoulombP(std::string const& Label, RealType U, RealType J, RealType Level, unsigned short NOrbitals)
 {
     return CoulombP(Label, U, U - 2.0 * J, J, Level, NOrbitals);
 }
-ComplexExpr addCoulombP(const std::string& Label, ComplexType U, ComplexType J, ComplexType Level, unsigned short NOrbitals)
+ComplexExpr addCoulombP(std::string const& Label, ComplexType U, ComplexType J, ComplexType Level, unsigned short NOrbitals)
 {
     return CoulombP(Label, U, U - 2.0 * J, J, Level, NOrbitals);
 }
 
-RealExpr Magnetization(const std::string& Label, RealType Magnetization, unsigned short NOrbitals)
+RealExpr Magnetization(std::string const& Label, RealType Magnetization, unsigned short NOrbitals)
 {
     RealExpr res;
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
@@ -269,7 +272,7 @@ RealExpr Magnetization(const std::string& Label, RealType Magnetization, unsigne
     return res;
 }
 
-ComplexExpr Magnetization(const std::string& Label, ComplexType Magnetization, unsigned short NOrbitals)
+ComplexExpr Magnetization(std::string const& Label, ComplexType Magnetization, unsigned short NOrbitals)
 {
     ComplexExpr res;
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
@@ -279,7 +282,7 @@ ComplexExpr Magnetization(const std::string& Label, ComplexType Magnetization, u
     return res;
 }
 
-RealExpr SzSz(const std::string& Label1, const std::string& Label2, RealType ExchJ, unsigned short NOrbitals)
+RealExpr SzSz(std::string const& Label1, std::string const& Label2, RealType ExchJ, unsigned short NOrbitals)
 {
     RealExpr res;
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
@@ -296,7 +299,7 @@ RealExpr SzSz(const std::string& Label1, const std::string& Label2, RealType Exc
     return res;
 }
 
-ComplexExpr SzSz(const std::string& Label1, const std::string& Label2, ComplexType ExchJ, unsigned short NOrbitals)
+ComplexExpr SzSz(std::string const& Label1, std::string const& Label2, ComplexType ExchJ, unsigned short NOrbitals)
 {
     ComplexExpr res;
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
@@ -313,7 +316,7 @@ ComplexExpr SzSz(const std::string& Label1, const std::string& Label2, ComplexTy
     return res;
 }
 
-RealExpr SS(const std::string& Label1, const std::string& Label2, RealType ExchJ, unsigned short NOrbitals)
+RealExpr SS(std::string const& Label1, std::string const& Label2, RealType ExchJ, unsigned short NOrbitals)
 {
     RealExpr res = SzSz(Label1, Label2, ExchJ, NOrbitals);
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
@@ -323,7 +326,7 @@ RealExpr SS(const std::string& Label1, const std::string& Label2, RealType ExchJ
     return res;
 }
 
-ComplexExpr SS(const std::string& Label1, const std::string& Label2, ComplexType ExchJ, unsigned short NOrbitals)
+ComplexExpr SS(std::string const& Label1, std::string const& Label2, ComplexType ExchJ, unsigned short NOrbitals)
 {
     ComplexExpr res = SzSz(Label1, Label2, ExchJ, NOrbitals);
     for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
@@ -333,35 +336,35 @@ ComplexExpr SS(const std::string& Label1, const std::string& Label2, ComplexType
     return res;
 }
 
-RealExpr BosonLevel(const std::string& Label, RealType Value, unsigned short ExtraIndex)
+RealExpr BosonLevel(std::string const& Label, RealType Value, unsigned short ExtraIndex)
 {
     return Value * a_dag(Label, ExtraIndex, undef) * a(Label, ExtraIndex, undef);
 }
 
-ComplexExpr BosonLevel(const std::string& Label, ComplexType Value, unsigned short ExtraIndex)
+ComplexExpr BosonLevel(std::string const& Label, ComplexType Value, unsigned short ExtraIndex)
 {
     return Value * a_dag(Label, ExtraIndex, undef) * a(Label, ExtraIndex, undef);
 }
 
-RealExpr BosonInteraction(const std::string& Label, RealType Value, unsigned short ExtraIndex)
+RealExpr BosonInteraction(std::string const& Label, RealType Value, unsigned short ExtraIndex)
 {
     auto nb = a_dag(Label, ExtraIndex, undef) * a(Label, ExtraIndex, undef);
     return 0.5 * Value * nb * (nb - 1.0);
 }
 
-ComplexExpr BosonInteraction(const std::string& Label, ComplexType Value, unsigned short ExtraIndex)
+ComplexExpr BosonInteraction(std::string const& Label, ComplexType Value, unsigned short ExtraIndex)
 {
     auto nb = a_dag(Label, ExtraIndex, undef) * a(Label, ExtraIndex, undef);
     return 0.5 * Value * nb * (nb - 1.0);
 }
 
-RealExpr HolsteinInteraction(const std::string& Label, RealType Value, unsigned short Orbital, unsigned short BosonExtraIndex)
+RealExpr HolsteinInteraction(std::string const& Label, RealType Value, unsigned short Orbital, unsigned short BosonExtraIndex)
 {
     auto N = n(Label, Orbital, up) + n(Label, Orbital, down);
     return Value * N * (a_dag(Label, BosonExtraIndex, undef) + a(Label, BosonExtraIndex, undef));
 }
 
-ComplexExpr HolsteinInteraction(const std::string& Label, ComplexType Value, unsigned short Orbital, unsigned short BosonExtraIndex)
+ComplexExpr HolsteinInteraction(std::string const& Label, ComplexType Value, unsigned short Orbital, unsigned short BosonExtraIndex)
 {
     auto N = n(Label, Orbital, up) + n(Label, Orbital, down);
     return Value * N * (a_dag(Label, BosonExtraIndex, undef) + a(Label, BosonExtraIndex, undef));

@@ -9,28 +9,28 @@
 
 namespace Pomerol {
 
-bool operator==(const TwoParticleGFPart::NonResonantTerm &t1,
-                const TwoParticleGFPart::NonResonantTerm &t2) {
+bool operator==(TwoParticleGFPart::NonResonantTerm const& t1,
+                TwoParticleGFPart::NonResonantTerm const& t2) {
     return t1.Coeff == t2.Coeff &&
-           std::equal(t1.Poles, t1.Poles + 3, t2.Poles) &&
+           std::equal(t1.Poles.begin(), t1.Poles.end(), t2.Poles.begin()) &&
            t1.isz4 == t2.isz4 &&
            t1.Weight == t2.Weight;
 }
-bool operator!=(const TwoParticleGFPart::NonResonantTerm &t1,
-                const TwoParticleGFPart::NonResonantTerm &t2) {
+bool operator!=(TwoParticleGFPart::NonResonantTerm const& t1,
+                TwoParticleGFPart::NonResonantTerm const& t2) {
     return !operator==(t1, t2);
 }
 
-bool operator==(const TwoParticleGFPart::ResonantTerm &t1,
-                const TwoParticleGFPart::ResonantTerm &t2) {
+bool operator==(TwoParticleGFPart::ResonantTerm const& t1,
+                TwoParticleGFPart::ResonantTerm const& t2) {
     return t1.ResCoeff == t2.ResCoeff &&
            t1.NonResCoeff == t2.NonResCoeff &&
-           std::equal(t1.Poles, t1.Poles + 3, t2.Poles) &&
+           std::equal(t1.Poles.begin(), t1.Poles.end(), t2.Poles.begin()) &&
            t1.isz1z2 == t2.isz1z2 &&
            t1.Weight == t2.Weight;
 }
-bool operator!=(const TwoParticleGFPart::ResonantTerm &t1,
-                const TwoParticleGFPart::ResonantTerm &t2) {
+bool operator!=(TwoParticleGFPart::ResonantTerm const& t1,
+                TwoParticleGFPart::ResonantTerm const& t2) {
     return !operator==(t1, t2);
 }
 
@@ -59,7 +59,7 @@ TEST_CASE("broadcast() methods of various objects", "[broadcast]") {
 
         std::vector<TwoParticleGFPart::NonResonantTerm> tnr_v(10, tnr);
 
-        MPI_Bcast(tnr_v.data(), tnr_v.size(),
+        MPI_Bcast(tnr_v.data(), static_cast<int>(tnr_v.size()),
                   TwoParticleGFPart::NonResonantTerm::mpi_datatype(),
                   0, MPI_COMM_WORLD);
 
@@ -74,7 +74,7 @@ TEST_CASE("broadcast() methods of various objects", "[broadcast]") {
             tr = tr_ref;
 
         std::vector<TwoParticleGFPart::ResonantTerm> tr_v(10, tr);
-        MPI_Bcast(tr_v.data(), tr_v.size(),
+        MPI_Bcast(tr_v.data(), static_cast<int>(tr_v.size()),
                   TwoParticleGFPart::ResonantTerm::mpi_datatype(),
                   0, MPI_COMM_WORLD);
 

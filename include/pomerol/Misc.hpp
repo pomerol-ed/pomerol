@@ -7,23 +7,25 @@
 #ifndef POMEROL_INCLUDE_POMEROL_MISC_H
 #define POMEROL_INCLUDE_POMEROL_MISC_H
 
-#include<pomerol/Version.hpp>
+#include <pomerol/Version.hpp>
 
-#include<iostream>
-#include<complex>
-#include<type_traits>
-
-#include <libcommute/loperator/state_vector.hpp>
-#include <libcommute/loperator/loperator.hpp>
 #include <libcommute/algebra_ids.hpp>
+#include <libcommute/loperator/loperator.hpp>
+#include <libcommute/loperator/state_vector.hpp>
 
 #define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
-#include<Eigen/Core>
-#include<Eigen/Sparse>
+#include <Eigen/Core>
+#include <Eigen/Sparse>
 
 #ifdef POMEROL_USE_OPENMP
 #include <omp.h>
 #endif
+
+#include <array>
+#include <complex>
+#include <cstddef>
+#include <iostream>
+#include <type_traits>
 
 namespace Pomerol {
 
@@ -84,27 +86,27 @@ template<bool Complex>
 using RowMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::RowMajor>;
 
 /** A short name for imaginary unit. */
-static const ComplexType I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
+static ComplexType const I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
 
 /** Permutation of 3 elements */
 struct Permutation3 {
-    const size_t perm[3];
-    const int sign;
-    bool operator==(const Permutation3& rhs) const;
-    bool operator!=(const Permutation3& rhs) const;
-    friend std::ostream& operator<<(std::ostream& out, const Permutation3 &rhs);
+    std::array<std::size_t, 3> const perm;
+    int const sign;
+    bool operator==(Permutation3 const& rhs) const;
+    bool operator!=(Permutation3 const& rhs) const;
+    friend std::ostream& operator<<(std::ostream& out, Permutation3 const& p);
 };
-extern const Permutation3 permutations3[6];
+extern std::array<Permutation3, 6> const permutations3;
 
 /** Permutation of 4 elements */
 struct Permutation4 {
-    const size_t perm[4];
-    const int sign;
-    bool operator==(const Permutation4& rhs) const;
-    bool operator!=(const Permutation4& rhs) const;
-    friend std::ostream& operator<<(std::ostream& out, const Permutation4 &p);
+    std::array<std::size_t, 4> const perm;
+    int const sign;
+    bool operator==(Permutation4 const& rhs) const;
+    bool operator!=(Permutation4 const& rhs) const;
+    friend std::ostream& operator<<(std::ostream& out, Permutation4 const& p);
 };
-extern const Permutation4 permutations4[24];
+extern std::array<Permutation4, 24> const permutations4;
 
 } // namespace Pomerol
 
@@ -175,4 +177,3 @@ extern const Permutation4 permutations4[24];
  */
 
 #endif // #ifndef POMEROL_INCLUDE_POMEROL_MISC_H
-

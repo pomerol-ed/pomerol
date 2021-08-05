@@ -7,8 +7,10 @@
 #ifndef POMEROL_INCLUDE_STATESCLASSIFICATION_H
 #define POMEROL_INCLUDE_STATESCLASSIFICATION_H
 
-#include "Misc.hpp"
 #include "HilbertSpace.hpp"
+#include "Misc.hpp"
+
+#include <libcommute/loperator/space_partition.hpp>
 
 #include <vector>
 
@@ -22,7 +24,7 @@ using BlockNumber = int;
 constexpr BlockNumber INVALID_BLOCK_NUMBER = -1;
 
 /** InnerQuantumState labels the states inside of the block of Fock States. Has no physical meaning. */
-using InnerQuantumState = unsigned long;
+using InnerQuantumState = libcommute::sv_index_type;
 
 /** This class handles all information about Fock states.
  *  It makes a classification of Fock states into blocks.
@@ -50,9 +52,9 @@ public:
         auto const& FullHilbertSpace = HS.getFullHilbertSpace();
         auto Dim = FullHilbertSpace.dim();
         if(HS.getStatus() == Computed) { // Multiple blocks revealed by HS
-            InitMultipleBlocks(HS.getSpacePartition());
+            initMultipleBlocks(HS.getSpacePartition());
         } else { // Just one block
-            InitSingleBlock(Dim);
+            initSingleBlock(Dim);
         }
         Status = Computed;
     }
@@ -65,12 +67,12 @@ public:
 
     /**
      */
-    unsigned long getBlockSize(BlockNumber in) const;
+    InnerQuantumState getBlockSize(BlockNumber in) const;
 
     /** get a vector of all FockStates with a given set of QuantumNumbers
      * \param[in] in A set of quantum numbers to get a vector of FockStates
      */
-    const std::vector<QuantumState>& getFockStates(BlockNumber in) const;
+    std::vector<QuantumState> const& getFockStates(BlockNumber in) const;
 
     /** get a FockState, corresponding to an internal InnerQuantumState
      * \param[in] QuantumNumbers of block in which the InnerQuantumState is located
@@ -91,8 +93,9 @@ public:
 
 private:
 
-    void InitSingleBlock(unsigned long Dim);
-    void InitMultipleBlocks(libcommute::space_partition const& partition);
+    void initSingleBlock(unsigned long Dim);
+    void initMultipleBlocks(libcommute::space_partition const& partition);
+    void checkComputed() const;
 };
 
 } // namespace Pomerol

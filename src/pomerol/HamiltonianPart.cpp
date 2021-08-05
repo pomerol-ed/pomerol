@@ -1,10 +1,14 @@
 #include "pomerol/HamiltonianPart.hpp"
 
+// clang-format off
 #include <libcommute/loperator/state_vector_eigen3.hpp>
 #include <libcommute/loperator/mapped_basis_view.hpp>
+// clang-format on
 
 #include <Eigen/Eigenvalues>
 
+#include <cassert>
+#include <complex>
 #include <limits>
 #include <sstream>
 #include <stdexcept>
@@ -37,7 +41,7 @@ template<bool C> void HamiltonianPart::prepareImpl()
 {
     initHMatrix<C>();
 
-    auto const& HOp_ = *static_cast<const LOperatorTypeRC<C>*>(HOp);
+    auto const& HOp_ = *static_cast<LOperatorTypeRC<C> const*>(HOp);
     auto & HMatrix_ = getMatrix<C>();
 
     auto mapper = libcommute::basis_mapper(S.getFockStates(Block));
@@ -50,7 +54,7 @@ template<bool C> void HamiltonianPart::prepareImpl()
         auto bra_view = mapper.make_view_no_ref(HMatrix_.col(st));
         ket(st) = 1.0;
         HOp_(ket_view, bra_view);
-        ket(st) = .0;
+        ket(st) = .0; // cppcheck-suppress redundantAssignment
     }
 
     assert((HMatrix_.adjoint() - HMatrix_).array().abs().maxCoeff()
@@ -84,13 +88,13 @@ template<bool C> void HamiltonianPart::computeImpl()
     }
 }
 
-template<bool C> const MatrixType<C>& HamiltonianPart::getMatrix() const {
+template<bool C> MatrixType<C> const& HamiltonianPart::getMatrix() const {
     if(C != isComplex())
         throw std::runtime_error("Stored matrix type mismatch (real/complex)");
     return *std::static_pointer_cast<const MatrixType<C>>(HMatrix);
 }
-template const MatrixType<true>& HamiltonianPart::getMatrix<true>() const;
-template const MatrixType<false>& HamiltonianPart::getMatrix<false>() const;
+template MatrixType<true> const& HamiltonianPart::getMatrix<true>() const;
+template MatrixType<false> const& HamiltonianPart::getMatrix<false>() const;
 
 template<bool C> MatrixType<C>& HamiltonianPart::getMatrix() {
     if(C != isComplex())
@@ -100,15 +104,21 @@ template<bool C> MatrixType<C>& HamiltonianPart::getMatrix() {
 template MatrixType<true>& HamiltonianPart::getMatrix<true>();
 template MatrixType<false>& HamiltonianPart::getMatrix<false>();
 
-RealType HamiltonianPart::getEigenValue(InnerQuantumState state) const
+void HamiltonianPart::checkComputed() const
 {
-    if(getStatus() < Computed) throw exStatusMismatch();
-    return Eigenvalues(state);
+    if(getStatus() < Computed)
+        throw StatusMismatch("HamiltonianPart is not computed yet.");
 }
 
-const RealVectorType& HamiltonianPart::getEigenValues() const
+RealType HamiltonianPart::getEigenValue(InnerQuantumState state) const
 {
-    if(getStatus() < Computed) throw exStatusMismatch();
+    checkComputed();
+    return Eigenvalues(static_cast<Eigen::Index>(state));
+}
+
+RealVectorType const& HamiltonianPart::getEigenValues() const
+{
+    checkComputed();
     return Eigenvalues;
 }
 
@@ -120,22 +130,22 @@ InnerQuantumState HamiltonianPart::getSize() const
 template<bool C>
 VectorType<C> HamiltonianPart::getEigenState(InnerQuantumState state) const
 {
-    if(getStatus() < Computed) throw exStatusMismatch();
+    checkComputed();
     return getMatrix<C>()->col(state);
 }
 
 RealType HamiltonianPart::getMinimumEigenvalue() const
 {
-    if(getStatus() < Computed) throw exStatusMismatch();
+    checkComputed();
     return Eigenvalues.minCoeff();
 }
 
 bool HamiltonianPart::reduce(RealType ActualCutoff)
 {
-    if(getStatus() < Computed) throw exStatusMismatch();
+    checkComputed();
 
-    InnerQuantumState counter = 0;
-    for (counter=0; counter < (unsigned int)Eigenvalues.size() && Eigenvalues[counter]<=ActualCutoff; ++counter){};
+    Eigen::Index counter = 0;
+    for (counter=0; counter < Eigenvalues.size() && Eigenvalues[counter]<=ActualCutoff; ++counter);
     INFO("Left " << counter << " eigenvalues : ");
 
     if (counter) {

@@ -7,8 +7,10 @@
 #ifndef POMEROL_INCLUDE_POMEROL_DENSITYMATRIXPART_H
 #define POMEROL_INCLUDE_POMEROL_DENSITYMATRIXPART_H
 
+#include "HamiltonianPart.hpp"
+#include "Misc.hpp"
+#include "StatesClassification.hpp"
 #include "Thermal.hpp"
-#include "Hamiltonian.hpp"
 
 namespace Pomerol {
 
@@ -21,7 +23,7 @@ namespace Pomerol {
 class DensityMatrixPart : public Thermal
 {
     /** A reference to a part of a Hamiltonian. */
-    const HamiltonianPart& H;
+    HamiltonianPart const& H;
 
     /** The ground energy of the Hamiltonian.
      * It is subtracted from all energy levels to avoid
@@ -33,7 +35,7 @@ class DensityMatrixPart : public Thermal
     RealVectorType weights;
 
     /** The contribution to the partition function. */
-    RealType Z_part;
+    RealType Z_part = 0;
 
     /** It is true if this part has not been truncated. */
     bool Retained = true;
@@ -44,7 +46,7 @@ public:
      * \param[in] beta The inverse temperature.
      * \param[in] GroundEnergy The ground state energy of the Hamiltonian.
      */
-    DensityMatrixPart(const HamiltonianPart& H, RealType beta, RealType GroundEnergy);
+    DensityMatrixPart(HamiltonianPart const& H, RealType beta, RealType GroundEnergy);
 
     /** Compute unnormalized weights (diagonal matrix elements)
      *

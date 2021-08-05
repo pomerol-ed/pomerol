@@ -7,16 +7,17 @@
 #ifndef POMEROL_INCLUDE_MONOMIALOPERATORPART_H
 #define POMEROL_INCLUDE_MONOMIALOPERATORPART_H
 
-#include "Misc.hpp"
-#include "HilbertSpace.hpp"
-#include "StatesClassification.hpp"
 #include "HamiltonianPart.hpp"
+#include "HilbertSpace.hpp"
+#include "Misc.hpp"
+#include "StatesClassification.hpp"
 
 #include <libcommute/algebra_ids.hpp>
 #include <libcommute/loperator/loperator.hpp>
 
 #include <memory>
 #include <ostream>
+#include <type_traits>
 
 namespace Pomerol {
 
@@ -33,16 +34,16 @@ class MonomialOperatorPart : public ComputableObject {
 private:
 
     bool MOpComplex;
-    const void* MOp;
+    void const * MOp;
 
     bool Complex;
 
     /** A reference to the StateClassification object. */
-    const StatesClassification &S;
+    StatesClassification const& S;
     /** A reference to the HamiltonianPart on the right hand side. */
-    const HamiltonianPart &HFrom;
+    HamiltonianPart const& HFrom;
     /** A reference to the HamiltonianPart on the left hand side. */
-    const HamiltonianPart &HTo;
+    HamiltonianPart const& HTo;
 protected:
 
     /** Storage of the matrix elements of the operator. Row ordered sparse matrix. */
@@ -50,7 +51,7 @@ protected:
     /** Copy of the Storage of the matrix elements of the operator. Column ordered sparse matrix. */
     std::shared_ptr<void> elementsColMajor;
     /** The tolerance with which the matrix elements are evaluated. */
-    const RealType MatrixElementTolerance = 1e-8;
+    RealType const MatrixElementTolerance = 1e-8;
 
 public:
 
@@ -62,10 +63,10 @@ public:
      * \param[in] PIndex Index of the field operator.
      */
     template<typename ScalarType>
-    MonomialOperatorPart(const LOperatorType<ScalarType> & MOp,
-                         const StatesClassification &S,
-                         const HamiltonianPart &HFrom,
-                         const HamiltonianPart &HTo) :
+    MonomialOperatorPart(LOperatorType<ScalarType> const& MOp,
+                         StatesClassification const& S,
+                         HamiltonianPart const& HFrom,
+                         HamiltonianPart const& HTo) :
       MOpComplex(std::is_same<ScalarType, ComplexType>::value), MOp(&MOp),
       Complex(MOpComplex || HFrom.isComplex() || HTo.isComplex()),
       S(S), HFrom(HFrom), HTo(HTo)
@@ -74,22 +75,22 @@ public:
     /** Compute all the matrix elements. Changes the Status of the object to Computed. */
     void compute();
 
-    void setFromAdjoint(const MonomialOperatorPart &part);
+    void setFromAdjoint(MonomialOperatorPart const& part);
 
     bool isComplex() const { return Complex; }
 
     /** Returns the row ordered sparse matrix of matrix elements. */
     template<bool C> RowMajorMatrixType<C>& getRowMajorValue();
-    template<bool C> const RowMajorMatrixType<C>& getRowMajorValue() const;
+    template<bool C> RowMajorMatrixType<C> const& getRowMajorValue() const;
     /** Returns the column ordered sparse matrix of matrix elements. */
     template<bool C> ColMajorMatrixType<C>& getColMajorValue();
-    template<bool C> const ColMajorMatrixType<C>& getColMajorValue() const;
+    template<bool C> ColMajorMatrixType<C> const& getColMajorValue() const;
     /** Returns the right hand side index. */
     BlockNumber getRightIndex() const { return HFrom.getBlockNumber(); }
     /** Returns the left hand side index. */
     BlockNumber getLeftIndex() const { return HTo.getBlockNumber(); }
 
-    friend std::ostream & operator<<(std::ostream & os, const MonomialOperatorPart &part)
+    friend std::ostream & operator<<(std::ostream & os, MonomialOperatorPart const& part)
     {
         if(part.isComplex())
             part.streamOutputImpl<true>(os);

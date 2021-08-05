@@ -1,17 +1,16 @@
-#include <pomerol/Misc.hpp>
-#include <pomerol/Operators.hpp>
-#include <pomerol/LatticePresets.hpp>
-#include <pomerol/IndexClassification.hpp>
-#include <pomerol/HilbertSpace.hpp>
-#include <pomerol/StatesClassification.hpp>
-#include <pomerol/Hamiltonian.hpp>
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>
+#include <pomerol/Hamiltonian.hpp>
+#include <pomerol/HilbertSpace.hpp>
+#include <pomerol/IndexClassification.hpp>
+#include <pomerol/LatticePresets.hpp>
+#include <pomerol/Misc.hpp>
+#include <pomerol/StatesClassification.hpp>
 #include <pomerol/TwoParticleGFContainer.hpp>
 
 #include "catch2/catch-pomerol.hpp"
 
-#include <cmath>
+#include <set>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -37,7 +36,7 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
                -4.384848776411e-03,
                -5.253420668000e-03,
                -5.370700986029e-03,
-               -5.126175681822e-03,
+               -5.126175681822e-03, // cppcheck-suppress constStatement
                -4.732777836189e-03;
 
     using namespace LatticePresets;
@@ -98,8 +97,8 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
     {
         Chi4.computeAll(false, freqs, MPI_COMM_WORLD, true);
 
-        const TwoParticleGF& chi_uuuu = Chi4(IndexCombination4(u0,u0,u0,u0));
-        const TwoParticleGF& chi_dddd = Chi4(IndexCombination4(d0,d0,d0,d0));
+        TwoParticleGF const& chi_uuuu = Chi4(IndexCombination4(u0,u0,u0,u0));
+        TwoParticleGF const& chi_dddd = Chi4(IndexCombination4(d0,d0,d0,d0));
 
         for(int i = 0; i < chi_ref.size(); ++i)
         {

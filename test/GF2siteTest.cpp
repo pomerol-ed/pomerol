@@ -24,18 +24,20 @@
 ** \author Igor Krivenko (igor@shg.ru)
 */
 
-#include <pomerol/Misc.hpp>
-#include <pomerol/Operators.hpp>
-#include <pomerol/LatticePresets.hpp>
-#include <pomerol/IndexClassification.hpp>
-#include <pomerol/HilbertSpace.hpp>
-#include <pomerol/StatesClassification.hpp>
-#include <pomerol/Hamiltonian.hpp>
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>
 #include <pomerol/GreensFunction.hpp>
+#include <pomerol/Hamiltonian.hpp>
+#include <pomerol/HilbertSpace.hpp>
+#include <pomerol/IndexClassification.hpp>
+#include <pomerol/LatticePresets.hpp>
+#include <pomerol/Misc.hpp>
+#include <pomerol/Operators.hpp>
+#include <pomerol/StatesClassification.hpp>
 
 #include "catch2/catch-pomerol.hpp"
+
+#include <vector>
 
 using namespace Pomerol;
 
@@ -54,7 +56,7 @@ TEST_CASE("Green's function of a Hubbard dimer", "[GF2site]") {
              -2.62894141e-01*I,
              -2.28274316e-01*I,
              -2.01170772e-01*I,
-             -1.79539602e-01*I,
+             -1.79539602e-01*I, // cppcheck-suppress constStatement
              -1.61950993e-01*I;
 
     using namespace LatticePresets;
@@ -66,16 +68,16 @@ TEST_CASE("Green's function of a Hubbard dimer", "[GF2site]") {
     auto IndexInfo = MakeIndexClassification(HExpr);
     INFO("Indices\n" << IndexInfo);
 
-    auto A_dn = IndexInfo.getInfo(0);
-    auto A_up = IndexInfo.getInfo(1);
-    auto B_dn = IndexInfo.getInfo(2);
-    auto B_up = IndexInfo.getInfo(3);
+    auto const& A_dn = IndexInfo.getInfo(0);
+    auto const& A_up = IndexInfo.getInfo(1);
+    auto const& B_dn = IndexInfo.getInfo(2);
+    auto const& B_up = IndexInfo.getInfo(3);
 
-    auto N = Operators::N(std::vector<decltype(A_up)>{A_up, A_dn, B_up, B_dn});
+    auto N = Operators::N(std::vector<decltype(IndexInfo)::IndexInfo>{A_up, A_dn, B_up, B_dn});
     INFO("N = " << N);
 
-    auto Sz = Operators::Sz(std::vector<decltype(A_up)>{A_up, B_up},
-                            std::vector<decltype(A_dn)>{A_dn, B_dn});
+    auto Sz = Operators::Sz(std::vector<decltype(IndexInfo)::IndexInfo>{A_up, B_up},
+                            std::vector<decltype(IndexInfo)::IndexInfo>{A_dn, B_dn});
     INFO("Sz = " << Sz);
 
     REQUIRE(Sz * N == N * Sz);

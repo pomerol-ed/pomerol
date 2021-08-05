@@ -2,20 +2,20 @@
 // Created by iskakoff on 05/12/16.
 //
 
-#include <algorithm>
-#include <cstdlib>
-#include <fstream>
-#include <stdexcept>
-#include <tuple>
-
 #include "quantum_model.hpp"
 
 #undef DEBUG
 #include <gftools.hpp>
 
+#include <algorithm>
+#include <complex>
+#include <stdexcept>
+#include <tuple>
+
 using namespace Pomerol;
 
-quantum_model::quantum_model(int argc, char* argv[], const std::string &prog_desc) :
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
+quantum_model::quantum_model(int argc, char* argv[], std::string const& prog_desc) :
   args_parser(prog_desc),
   args_options{{args_parser, "help", "Display this help menu", {'h', "help"}},
                {args_parser, "beta", "Inverse temperature", {"beta"}, 1.0},
@@ -44,6 +44,7 @@ quantum_model::~quantum_model() {
   MPI_Finalize();
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 void quantum_model::parse_args(int argc, char* argv[]) {
   try {
     args_parser.ParseCLI(argc, argv);
@@ -95,9 +96,11 @@ void quantum_model::compute() {
   H.compute(MPI_COMM_WORLD);
 
   if(!rank) {
-    gftools::grid_object<double, gftools::enum_grid> evals1(gftools::enum_grid(0, S.getNumberOfStates()));
+    gftools::grid_object<double, gftools::enum_grid> evals1(gftools::enum_grid(0, static_cast<int>(S.getNumberOfStates())));
     RealVectorType evals (H.getEigenValues());
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     std::sort(evals.data(), evals.data() + H.getEigenValues().size());
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     std::copy(evals.data(), evals.data() + S.getNumberOfStates(), evals1.data().data());
     evals1.savetxt("spectrum.dat");
   }
@@ -142,9 +145,8 @@ void quantum_model::compute() {
 
     if (!rank) // dump gf into a file
       // loops over all components (pairs of indices) of the Green's function
-      for (std::set<IndexCombination2>::const_iterator it = indices2.begin(); it != indices2.end(); ++it) {
-        IndexCombination2 ind2 = *it;
-        const GreensFunction & GF = G(ind2);
+      for (auto const& ind2 : indices2) {
+        GreensFunction const& GF = G(ind2);
         // Save Matsubara GF from pi/beta to pi/beta*(4*wf_max + 1)
         std::cout << "Saving imfreq G" << ind2 << " on " << 4 * wf_max << " Matsubara freqs. " << std::endl;
         grid_object<std::complex<double>, fmatsubara_grid> gf_imfreq (fmatsubara_grid(wf_min, wf_max*4, beta, true));
@@ -152,7 +154,7 @@ void quantum_model::compute() {
         for (auto p : gf_imfreq.grid().points()) { gf_imfreq[p] = GF(p.value()); }
         gf_imfreq.savetxt("gw_imfreq_"+ ind_str +".dat");
 
-        real_grid freq_grid(-hbw, hbw, 2*hbw/step+1, true);
+        real_grid freq_grid(-hbw, hbw, 2*static_cast<std::size_t>(hbw/step)+1, true);
         grid_object<std::complex<double>, real_grid> gf_refreq(freq_grid);
         for (auto p : freq_grid.points()) {
           ComplexType val = GF(ComplexType(p.value()) + I*eta);
@@ -166,10 +168,10 @@ void quantum_model::compute() {
     if (calc_2pgf) {
       print_section("2-Particle Green's function calc");
 
-      std::vector<size_t> indices_2pgf = args::get(args_options._2pgf_indices);
+      std::vector<std::size_t> indices_2pgf = args::get(args_options._2pgf_indices);
 
       if (indices_2pgf.size() != 4)
-        throw std::logic_error("Need 4 indices for 2PGF");
+        throw std::runtime_error("Need 4 indices for 2PGF");
 
       // a set of four indices to evaluate the 2pgf
       IndexCombination4 index_comb(indices_2pgf[0], indices_2pgf[1], indices_2pgf[2], indices_2pgf[3]);
@@ -206,7 +208,7 @@ void quantum_model::compute() {
         for (auto w3 : fgrid.values()) {
           for (auto w2 : fgrid.values()) {
             ComplexType w1 = W+w3;
-            freqs_2pgf.push_back(std::make_tuple(w1,w2,w3));
+            freqs_2pgf.emplace_back(w1, w2, w3);
           }
         }
       }
@@ -219,7 +221,7 @@ void quantum_model::compute() {
         mpi_cout << "Saving 2PGF " << index_comb << std::endl;
         grid_object<std::complex<double>, bmatsubara_grid, fmatsubara_grid, fmatsubara_grid> full_vertex(std::forward_as_tuple(bgrid, fgrid, fgrid));
         grid_object<std::complex<double>, fmatsubara_grid, fmatsubara_grid> full_vertex_1freq(std::forward_as_tuple(fgrid, fgrid));
-        size_t w_ind = 0;
+        std::size_t w_ind = 0;
         for (auto W : bgrid.points()) {
           for (auto w3 : fgrid.points()) {
             for (auto w2 : fgrid.points()) {

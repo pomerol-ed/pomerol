@@ -2,7 +2,7 @@
 
 namespace Pomerol {
 
-DensityMatrixPart::DensityMatrixPart(const HamiltonianPart& H, RealType beta, RealType GroundEnergy) :
+DensityMatrixPart::DensityMatrixPart(HamiltonianPart const& H, RealType beta, RealType GroundEnergy) :
     Thermal(beta), H(H), GroundEnergy(GroundEnergy), weights(H.getSize())
 {}
 
@@ -25,7 +25,7 @@ RealType DensityMatrixPart::getAverageEnergy() const
 
 RealType DensityMatrixPart::getWeight(InnerQuantumState s) const
 {
-    return weights(s);
+    return weights(static_cast<Eigen::Index>(s));
 }
 
 void DensityMatrixPart::truncate(RealType Tolerance)
@@ -33,7 +33,7 @@ void DensityMatrixPart::truncate(RealType Tolerance)
     Retained = false;
     InnerQuantumState partSize = weights.size();
     for(InnerQuantumState s = 0; s < partSize; ++s) {
-        if(weights(s) > Tolerance) {
+        if(weights(static_cast<Eigen::Index>(s)) > Tolerance) {
             Retained = true;
             break;
         }

@@ -5,18 +5,16 @@
 
 namespace Pomerol {
 
-GreensFunction::GreensFunction(const StatesClassification& S, const Hamiltonian& H,
-                               const AnnihilationOperator& C, const CreationOperator& CX,
-                               const DensityMatrix& DM) :
+GreensFunction::GreensFunction(StatesClassification const& S, Hamiltonian const& H,
+                               AnnihilationOperator const& C, CreationOperator const& CX,
+                               DensityMatrix const& DM) :
     Thermal(DM.beta), ComputableObject(), S(S), H(H), C(C), CX(CX), DM(DM)
 {
 }
 
-GreensFunction::GreensFunction(const GreensFunction& GF) :
-    Thermal(GF.beta), ComputableObject(GF), S(GF.S), H(GF.H), C(GF.C), CX(GF.CX), DM(GF.DM), Vanishing(GF.Vanishing)
+GreensFunction::GreensFunction(GreensFunction const& GF) :
+    Thermal(GF.beta), ComputableObject(GF), S(GF.S), H(GF.H), C(GF.C), CX(GF.CX), DM(GF.DM), Vanishing(GF.Vanishing), parts(GF.parts)
 {
-    for(auto const& part: GF.parts)
-        parts.emplace_back(part);
 }
 
 void GreensFunction::prepare()
@@ -75,15 +73,13 @@ void GreensFunction::compute()
     setStatus(Computed);
 }
 
-unsigned short GreensFunction::getIndex(size_t Position) const
+unsigned short GreensFunction::getIndex(std::size_t Position) const
 {
     switch(Position){
         case 0: return C.getIndex();
         case 1: return CX.getIndex();
-        default: assert(0);
+        default: throw std::runtime_error("GreensFunction: Wrong operator");
     }
-    throw std::logic_error("GreensFunction :: wrong operator");
-    return C.getIndex();
 }
 
 } // namespace Pomerol

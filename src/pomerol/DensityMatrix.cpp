@@ -1,8 +1,10 @@
 #include "pomerol/DensityMatrix.hpp"
 
+#include <numeric>
+
 namespace Pomerol {
 
-DensityMatrix::DensityMatrix(const StatesClassification& S, const Hamiltonian& H, RealType beta) :
+DensityMatrix::DensityMatrix(StatesClassification const& S, Hamiltonian const& H, RealType beta) :
     Thermal(beta), ComputableObject(), S(S), H(H)
 {}
 
@@ -37,25 +39,25 @@ void DensityMatrix::compute()
 
 RealType DensityMatrix::getWeight(QuantumState state) const
 {
-    if(getStatus() < Computed ) { ERROR("DensityMatrix is not computed yet."); throw exStatusMismatch(); };
-    BlockNumber BlockNumber = S.getBlockNumber(state);
+    if(getStatus() < Computed) { throw StatusMismatch("DensityMatrix is not computed yet."); };
+    BlockNumber Block = S.getBlockNumber(state);
     InnerQuantumState InnerState = S.getInnerState(state);
 
-    return parts[BlockNumber].getWeight(InnerState);
+    return parts[Block].getWeight(InnerState);
 }
 
-const DensityMatrixPart& DensityMatrix::getPart(BlockNumber in) const
+DensityMatrixPart const& DensityMatrix::getPart(BlockNumber in) const
 {
     return parts[in];
 }
 
 RealType DensityMatrix::getAverageEnergy() const
 {
-    if(getStatus() < Computed) { ERROR("DensityMatrix is not computed yet."); throw exStatusMismatch(); };
-    RealType E = 0;
-    for(auto const& p : parts)
-    E += p.getAverageEnergy();
-    return E;
+    if(getStatus() < Computed) { throw StatusMismatch("DensityMatrix is not computed yet."); }
+    return std::accumulate(parts.begin(),
+                           parts.end(),
+                           .0,
+                           [](double E, DensityMatrixPart const& p) { return E + p.getAverageEnergy(); });
 }
 
 void DensityMatrix::truncateBlocks(RealType Tolerance, bool verbose)
@@ -65,7 +67,7 @@ void DensityMatrix::truncateBlocks(RealType Tolerance, bool verbose)
 
     if(verbose){
         // count retained blocks and states included in those blocks
-        BlockNumber n_blocks_retained = 0, n_states_retained = 0;
+        QuantumState n_blocks_retained = 0, n_states_retained = 0;
         for(BlockNumber i = 0; i < S.getNumberOfBlocks(); ++i)
             if(isRetained(i)){
                 ++n_blocks_retained;

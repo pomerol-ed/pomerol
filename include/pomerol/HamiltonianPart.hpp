@@ -7,16 +7,16 @@
 #ifndef POMEROL_INCLUDE_POMEROL_HAMILTONIANPART_H
 #define POMEROL_INCLUDE_POMEROL_HAMILTONIANPART_H
 
-#include "Misc.hpp"
 #include "ComputableObject.hpp"
 #include "IndexClassification.hpp"
+#include "Misc.hpp"
 #include "StatesClassification.hpp"
 
 #include <libcommute/algebra_ids.hpp>
 #include <libcommute/loperator/loperator.hpp>
 
-#include <memory>
 #include <iostream>
+#include <memory>
 #include <type_traits>
 
 namespace Pomerol {
@@ -24,14 +24,14 @@ namespace Pomerol {
 /** HamiltonianPart is a class, which stores and diagonalizes the block of the Hamiltonian, which corresponds to a set of given quantum numbers. */
 class HamiltonianPart : public ComputableObject {
 
-    const StatesClassification &S;
+    StatesClassification const& S;
 
     /** The number of Block. Defined in StatesClassification. */
     BlockNumber Block;
 
     bool Complex;
 
-    const void* HOp;
+    void const * HOp;
 
     /** A matrix filled with matrix elements of HamiltonianPart in the space of FockState's.
      *  After diagonalization it stores the eigenfunctions of the problem in a rows of H. */
@@ -50,8 +50,8 @@ public:
      * \param[in] S StatesClassification object. Provides information about Fock States of the problem.
      * \param[in] Block The BlockNumber of current part. It is a genuine id of the part. */
     template<typename ScalarType>
-    HamiltonianPart(const LOperatorType<ScalarType> &HOp,
-                    const StatesClassification &S,
+    HamiltonianPart(LOperatorType<ScalarType> const& HOp,
+                    StatesClassification const& S,
                     BlockNumber Block) :
          S(S), Block(Block), Complex(std::is_same<ScalarType, ComplexType>::value), HOp(&HOp)
     {}
@@ -73,10 +73,10 @@ public:
     RealType getEigenValue(InnerQuantumState state) const;
 
     /** Returns calculated eigenvalues. */
-    const RealVectorType& getEigenValues() const;
+    RealVectorType const& getEigenValues() const;
 
     /** Return the hamiltonian part matrix. */
-    template<bool Complex> const MatrixType<Complex>& getMatrix() const;
+    template<bool Complex> MatrixType<Complex> const& getMatrix() const;
     template<bool Complex> MatrixType<Complex>& getMatrix();
 
     /** Return the lowest Eigenvalue of the current part. */
@@ -91,7 +91,7 @@ public:
     BlockNumber getBlockNumber() const { return Block; }
 
     /** Print the part of hamiltonian to screen. */
-    friend std::ostream & operator<<(std::ostream & os, const HamiltonianPart& part)
+    friend std::ostream & operator<<(std::ostream & os, HamiltonianPart const& part)
     {
         if(part.isComplex())
             os << part.getMatrix<true>() << std::endl;
@@ -106,6 +106,8 @@ private:
     template<bool C> void initHMatrix();
     template<bool C> void prepareImpl();
     template<bool C> void computeImpl();
+
+    void checkComputed() const;
 };
 
 } // namespace Pomerol

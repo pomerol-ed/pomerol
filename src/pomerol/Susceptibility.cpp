@@ -2,19 +2,19 @@
 
 namespace Pomerol {
 
-Susceptibility::Susceptibility(const StatesClassification& S, const Hamiltonian& H,
-                               const MonomialOperator& A, const MonomialOperator& B,
-                               const DensityMatrix& DM) :
+Susceptibility::Susceptibility(StatesClassification const& S, Hamiltonian const& H,
+                               MonomialOperator const& A, MonomialOperator const& B,
+                               DensityMatrix const& DM) :
     Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), B(B), DM(DM)
 {
 }
 
-Susceptibility::Susceptibility(const Susceptibility& Chi) :
+Susceptibility::Susceptibility(Susceptibility const& Chi) :
     Thermal(Chi.beta), ComputableObject(Chi), S(Chi.S), H(Chi.H), A(Chi.A), B(Chi.B), DM(Chi.DM),
-    Vanishing(Chi.Vanishing), SubtractDisconnected(Chi.SubtractDisconnected), ave_A(Chi.ave_A), ave_B(Chi.ave_B)
+    Vanishing(Chi.Vanishing),
+    parts(Chi.parts),
+    SubtractDisconnected(Chi.SubtractDisconnected), ave_A(Chi.ave_A), ave_B(Chi.ave_B)
 {
-    for(auto const& p : Chi.parts)
-        parts.emplace_back(p);
 }
 
 void Susceptibility::prepare()
@@ -22,11 +22,11 @@ void Susceptibility::prepare()
     if(getStatus() >= Prepared) return;
 
     // Find out non-trivial blocks of A and B.
-    MonomialOperator::BlocksBimap const& ANontrivialBlocks = A.getBlockMapping();
-    MonomialOperator::BlocksBimap const& BNontrivialBlocks = B.getBlockMapping();
+    auto const& ANontrivialBlocks = A.getBlockMapping();
+    auto const& BNontrivialBlocks = B.getBlockMapping();
 
-    MonomialOperator::BlocksBimap::left_const_iterator Aiter = ANontrivialBlocks.left.begin();
-    MonomialOperator::BlocksBimap::right_const_iterator Biter = BNontrivialBlocks.right.begin();
+    auto Aiter = ANontrivialBlocks.left.begin();
+    auto Biter = BNontrivialBlocks.right.begin();
 
     while(Aiter != ANontrivialBlocks.left.end() && Biter != BNontrivialBlocks.right.end()){
         // <Aleft|A|Aright><Bleft|B|Bright>

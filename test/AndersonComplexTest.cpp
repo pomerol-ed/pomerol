@@ -1,25 +1,25 @@
-#include <pomerol/Misc.hpp>
-#include <pomerol/LatticePresets.hpp>
-#include <pomerol/IndexClassification.hpp>
-#include <pomerol/HilbertSpace.hpp>
-#include <pomerol/StatesClassification.hpp>
-#include <pomerol/Hamiltonian.hpp>
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>
 #include <pomerol/GreensFunction.hpp>
+#include <pomerol/Hamiltonian.hpp>
+#include <pomerol/HilbertSpace.hpp>
+#include <pomerol/IndexClassification.hpp>
+#include <pomerol/LatticePresets.hpp>
+#include <pomerol/Misc.hpp>
+#include <pomerol/StatesClassification.hpp>
 
 #include "catch2/catch-pomerol.hpp"
 
-#include <cmath>
+#include <complex>
 #include <vector>
 
 using namespace Pomerol;
 using LatticePresets::spin;
 
 // Parameters
-double mu = 1.2;
-double U = 2.0;
-double beta = 10;
+double const mu = 1.2;
+double const U = 2.0;
+double const beta = 10;
 
 // Reference Green's function
 struct GF_ref {
@@ -27,11 +27,11 @@ struct GF_ref {
     std::vector<RealType> E;
     std::vector<RealType> w;
     RealType Z = 0;
-    GF_ref(ComplexType J) :
+    explicit GF_ref(ComplexType J) :
         phi(std::arg(J)),
         E{0, -mu-std::abs(J), -mu+std::abs(J), -2*mu+U} {
-        for(int i = 0; i < E.size(); ++i) {
-            w.push_back(std::exp(-beta*E[i]));
+        for(double e : E) {
+            w.push_back(std::exp(-beta * e));
             Z += w.back();
         }
         for(int i = 0; i < E.size(); ++i) w[i] /= Z;

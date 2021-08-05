@@ -80,6 +80,13 @@ find_package(Boost 1.54.0 REQUIRED)
 message(STATUS "Boost includes: ${Boost_INCLUDE_DIRS}" )
 
 #
+# Set up static analysis tools
+#
+
+option(StaticAnalysis "Run static analysis tools on C++ sources" OFF)
+include(cmake/StaticAnalysis.cmake)
+
+#
 # Build parts of the project
 #
 

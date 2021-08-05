@@ -11,6 +11,7 @@
 #include <libcommute/expression/factories.hpp>
 #include <libcommute/expression/hc.hpp>
 
+#include <cstdlib>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -36,23 +37,23 @@ namespace Detail {
 // Based on http://stackoverflow.com/a/17426611/410767 by Xeo
 //
 
-template <size_t... Ints> struct index_sequence {
+template <std::size_t... Ints> struct index_sequence {
     using type = index_sequence;
-    using value_type = size_t;
+    using value_type = std::size_t;
     static constexpr std::size_t size() noexcept { return sizeof...(Ints); }
 };
 
 // --------------------------------------------------------------
 template <class Sequence1, class Sequence2> struct _merge_and_renumber;
 
-template <size_t... I1, size_t... I2>
+template <std::size_t... I1, std::size_t... I2>
 struct _merge_and_renumber<index_sequence<I1...>, index_sequence<I2...>>
     : index_sequence<I1..., (sizeof...(I1)+I2)...>
 {};
 
 // --------------------------------------------------------------
 
-template <size_t N> struct make_index_sequence
+template <std::size_t N> struct make_index_sequence
     : _merge_and_renumber<typename make_index_sequence<N/2>::type,
                           typename make_index_sequence<N - N/2>::type>
 {};
@@ -68,11 +69,11 @@ template<typename T>
 make_index_sequence<std::tuple_size<typename std::decay<T>::type>::value>
 make_seq() { return {}; }
 
-template<size_t N, typename T>
+template<std::size_t N, typename T>
 using element_t =
 typename std::tuple_element<N, typename std::decay<T>::type>::type;
 
-template<typename F, typename ArgsT, size_t... Is>
+template<typename F, typename ArgsT, std::size_t... Is>
 auto apply_impl(F && f, ArgsT && args, index_sequence<Is...>) ->
     decltype(f(static_cast<element_t<Is, ArgsT>>(
         std::get<Is>(std::forward<ArgsT>(args))
@@ -100,7 +101,7 @@ auto apply(F && f, ArgsT && args) ->
 
 template<typename... IndexTypes>
 expression<double, IndexTypes...>
-N(const std::vector<std::tuple<IndexTypes...>> &Indices) {
+N(std::vector<std::tuple<IndexTypes...>> const& Indices) {
     expression<double, IndexTypes...> res;
     for(auto const& i : Indices)
         res += Detail::apply(n<double, IndexTypes...>, i);
@@ -109,8 +110,8 @@ N(const std::vector<std::tuple<IndexTypes...>> &Indices) {
 
 template<typename... IndexTypes>
 expression<double, IndexTypes...>
-Sz(const std::vector<std::tuple<IndexTypes...>> &SpinUpIndices,
-   const std::vector<std::tuple<IndexTypes...>> &SpinDownIndices) {
+Sz(std::vector<std::tuple<IndexTypes...>> const& SpinUpIndices,
+   std::vector<std::tuple<IndexTypes...>> const& SpinDownIndices) {
     expression<double, IndexTypes...> res;
     for(auto const& i : SpinUpIndices)
         res += 0.5 * Detail::apply(n<double, IndexTypes...>, i);

@@ -7,11 +7,11 @@
 #ifndef POMEROL_INCLUDE_POMEROL_FIELDOPERATORCONTAINER_H
 #define POMEROL_INCLUDE_POMEROL_FIELDOPERATORCONTAINER_H
 
-#include"Misc.hpp"
-#include"IndexClassification.hpp"
-#include"MonomialOperator.hpp"
-#include"Hamiltonian.hpp"
-#include"StatesClassification.hpp"
+#include "Hamiltonian.hpp"
+#include "IndexClassification.hpp"
+#include "Misc.hpp"
+#include "MonomialOperator.hpp"
+#include "StatesClassification.hpp"
 
 #include <set>
 #include <unordered_map>
@@ -37,10 +37,10 @@ public:
      * \param[in] IndexInfo A reference to a IndexClassification
      */
     template<typename... IndexTypes>
-    FieldOperatorContainer(const IndexClassification<IndexTypes...> &IndexInfo,
-                           const HilbertSpace<IndexTypes...> &HS,
-                           StatesClassification &S,
-                           const Hamiltonian &H,
+    FieldOperatorContainer(IndexClassification<IndexTypes...> const& IndexInfo,
+                           HilbertSpace<IndexTypes...> const& HS,
+                           StatesClassification const& S,
+                           Hamiltonian const& H,
                            std::set<ParticleIndex> in = {})
     {
         if(in.empty()) {
@@ -55,7 +55,7 @@ public:
     }
 
     template<typename... IndexTypes>
-    void prepareAll(const HilbertSpace<IndexTypes...> &HS)
+    void prepareAll(HilbertSpace<IndexTypes...> const& HS)
     {
         for(auto & CX : mapCreationOperators)
             CX.second.prepare(HS);
@@ -65,9 +65,9 @@ public:
     void computeAll();
 
     /** Returns the CreationOperator for a given Index. Makes on-demand computation. */
-    const CreationOperator& getCreationOperator(ParticleIndex in) const;
+    CreationOperator const& getCreationOperator(ParticleIndex in) const;
     /** Returns the AnnihilationOperator for a given Index. Makes on-demand computation */
-    const AnnihilationOperator& getAnnihilationOperator(ParticleIndex in) const;
+    AnnihilationOperator const& getAnnihilationOperator(ParticleIndex in) const;
 };
 
 } // namespace Pomerol

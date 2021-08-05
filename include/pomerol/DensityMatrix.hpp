@@ -7,10 +7,13 @@
 #ifndef POMEROL_INCLUDE_POMEROL_DENSITYMATRIX_H
 #define POMEROL_INCLUDE_POMEROL_DENSITYMATRIX_H
 
-#include "StatesClassification.hpp"
-#include "IndexClassification.hpp"
-#include "Hamiltonian.hpp"
+#include "ComputableObject.hpp"
 #include "DensityMatrixPart.hpp"
+#include "Hamiltonian.hpp"
+#include "IndexClassification.hpp"
+#include "Misc.hpp"
+#include "StatesClassification.hpp"
+#include "Thermal.hpp"
 
 #include <vector>
 
@@ -25,9 +28,9 @@ namespace Pomerol {
 class DensityMatrix : public Thermal, public ComputableObject
 {
     /** A reference to a states classification object. */
-    const StatesClassification& S;
+    StatesClassification const& S;
     /** A reference to a Hamiltonian defining the grand canonical ensemble. */
-    const Hamiltonian &H;
+    Hamiltonian const& H;
     /** A vector of pointers to parts (every part corresponds to a part of the Hamiltonian). */
     std::vector<DensityMatrixPart> parts;
 
@@ -37,7 +40,7 @@ public:
      * \param[in] H A reference to a Hamiltonian.
      * \param[in] beta The inverse temperature.
      */
-    DensityMatrix(const StatesClassification& S, const Hamiltonian& H, RealType beta);
+    DensityMatrix(StatesClassification const& S, Hamiltonian const& H, RealType beta);
     /** Destructor. */
     ~DensityMatrix() = default;
 
@@ -50,7 +53,7 @@ public:
     /** Returns a part of the density matrix.
      * \param[in] in A part number.
      */
-    const DensityMatrixPart& getPart(BlockNumber in) const;
+    DensityMatrixPart const& getPart(BlockNumber in) const;
 
     /** Returns the value of the density matrix corresponding to a specified quantum state.
      * \param[in] state A quantum state.

@@ -20,13 +20,18 @@
 #ifndef POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_H
 #define POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_H
 
-#include"Misc.hpp"
-#include"Index.hpp"
-#include"TwoParticleGF.hpp"
-#include"FieldOperatorContainer.hpp"
-#include"IndexContainer4.hpp"
+#include "DensityMatrix.hpp"
+#include "FieldOperatorContainer.hpp"
+#include "Hamiltonian.hpp"
+#include "Index.hpp"
+#include "IndexClassification.hpp"
+#include "IndexContainer4.hpp"
+#include "Misc.hpp"
+#include "StatesClassification.hpp"
+#include "Thermal.hpp"
+#include "TwoParticleGF.hpp"
 
-#include <mpi.h>
+#include "mpi_dispatcher/misc.hpp"
 
 #include <map>
 #include <memory>
@@ -46,43 +51,43 @@ public:
     RealType MultiTermCoefficientTolerance = 1e-5;
 
     template<typename... IndexTypes>
-    TwoParticleGFContainer(const IndexClassification<IndexTypes...>& IndexInfo,
-                           const StatesClassification &S,
-                           const Hamiltonian &H,
-                           const DensityMatrix &DM,
-                           const FieldOperatorContainer& Operators) :
-        IndexContainer4<TwoParticleGF, TwoParticleGFContainer>(this, IndexInfo), Thermal(DM),
+    TwoParticleGFContainer(IndexClassification<IndexTypes...> const& IndexInfo,
+                           StatesClassification const& S,
+                           Hamiltonian const& H,
+                           DensityMatrix const& DM,
+                           FieldOperatorContainer const& Operators) :
+        IndexContainer4<TwoParticleGF, TwoParticleGFContainer>(*this, IndexInfo), Thermal(DM),
         S(S), H(H), DM(DM), Operators(Operators)
     {}
 
-    void prepareAll(const std::set<IndexCombination4>& InitialIndices = {});
+    void prepareAll(std::set<IndexCombination4> const& InitialIndices = {});
     std::map<IndexCombination4,std::vector<ComplexType>> computeAll(
         bool clearTerms = false,
         FreqVec const& freqs = {},
-        const MPI_Comm& comm = MPI_COMM_WORLD,
+        MPI_Comm const& comm = MPI_COMM_WORLD,
         bool split = true
     );
     std::map<IndexCombination4,std::vector<ComplexType>> computeAll_nosplit(
         bool clearTerms,
         FreqVec const& freqs = {},
-        const MPI_Comm& comm = MPI_COMM_WORLD
+        MPI_Comm const& comm = MPI_COMM_WORLD
     );
     std::map<IndexCombination4,std::vector<ComplexType>> computeAll_split(
         bool clearTerms,
         FreqVec const& freqs = {},
-        const MPI_Comm& comm = MPI_COMM_WORLD
+        MPI_Comm const& comm = MPI_COMM_WORLD
     );
 
 protected:
 
     friend class IndexContainer4<TwoParticleGF,TwoParticleGFContainer>;
-    std::shared_ptr<TwoParticleGF> createElement(const IndexCombination4& Indices) const;
+    std::shared_ptr<TwoParticleGF> createElement(IndexCombination4 const& Indices) const;
 
-    const StatesClassification &S;
+    StatesClassification const& S;
 
-    const Hamiltonian &H;
-    const DensityMatrix &DM;
-    const FieldOperatorContainer &Operators;
+    Hamiltonian const& H;
+    DensityMatrix const& DM;
+    FieldOperatorContainer const& Operators;
 };
 
 } // namespace Pomerol

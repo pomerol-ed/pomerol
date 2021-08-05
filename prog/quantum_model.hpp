@@ -5,23 +5,24 @@
 #ifndef POMEROL_PROG_QUANTUM_MODEL_H
 #define POMEROL_PROG_QUANTUM_MODEL_H
 
-#include <cmath>
+#include <pomerol.hpp>
+
+#include "args.hxx"
+
+#include <cstddef>
 #include <iostream>
 #include <set>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
-
-#include <pomerol.hpp>
-
-#include "args.hxx"
 
 #define mpi_cout if(!pMPI::rank(comm)) std::cout
 
 // Vector value reader for args
 struct VectorReader {
-  template<typename T> void operator()(const std::string &,
-                                       const std::string &value,
+  template<typename T> void operator()(std::string const&,
+                                       std::string const& value,
                                        std::vector<T> &destination) {
     std::stringstream ss(value);
     std::string token;
@@ -48,7 +49,7 @@ public:
       Pomerol::LatticePresets::spin
   >;
 
-  quantum_model(int argc, char* argv[], const std::string &prog_desc);
+  quantum_model(int argc, char* argv[], std::string const& prog_desc);
   ~quantum_model();
 
   void parse_args(int argc, char* argv[]);
@@ -58,7 +59,7 @@ public:
   void compute();
 
   virtual std::pair<Pomerol::ParticleIndex, Pomerol::ParticleIndex>
-  get_node(const IndexInfoType &IndexInfo) = 0;
+  get_node(IndexInfoType const& IndexInfo) = 0;
 
   double FMatsubara(int n, double beta){ return M_PI/beta*(2.*n+1); }
   double BMatsubara(int n, double beta){ return M_PI/beta*(2.*n); }
@@ -67,13 +68,13 @@ public:
                                Pomerol::ParticleIndex u0,
                                std::set<Pomerol::IndexCombination2> &indices2,
                                std::set<Pomerol::ParticleIndex> & f,
-                               const IndexInfoType &IndexInfo) = 0;
+                               IndexInfoType const& IndexInfo) = 0;
 private:
 
   // Simulation parameters
-  Pomerol::RealType beta;
-  bool calc_gf;
-  bool calc_2pgf;
+  Pomerol::RealType beta = {};
+  bool calc_gf = false;
+  bool calc_2pgf = false;
 
 protected:
 
@@ -91,7 +92,7 @@ protected:
     args::ValueFlag<int> wf_max;
     args::ValueFlag<int> wb_min;
     args::ValueFlag<int> wb_max;
-    args::ValueFlag<std::vector<size_t>, VectorReader> _2pgf_indices;
+    args::ValueFlag<std::vector<std::size_t>, VectorReader> _2pgf_indices;
     args::ValueFlag<double> _2pgf_reduce_tol;
     args::ValueFlag<double> _2pgf_coeff_tol;
     args::ValueFlag<double> _2pgf_multiterm_tol;
@@ -102,13 +103,13 @@ protected:
 
   Pomerol::LatticePresets::RealExpr HExpr;
 
-  void print_section (const std::string& str)
+  void print_section(std::string const& str)
   {
     if (!rank) {
       std::cout << std::string(str.size(),'=') << std::endl;
       std::cout << str << std::endl;
       std::cout << std::string(str.size(),'=') << std::endl;
-    };
+    }
   }
 };
 

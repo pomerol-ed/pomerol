@@ -5,10 +5,16 @@
 #ifndef POMEROL_PROG_HUBBARD2D_MODEL_H
 #define POMEROL_PROG_HUBBARD2D_MODEL_H
 
-#include <cmath>
-#include <limits>
-
 #include "quantum_model.hpp"
+
+#include <cmath>
+#include <cstddef>
+#include <iostream>
+#include <limits>
+#include <set>
+#include <string>
+#include <vector>
+#include <utility>
 
 using namespace Pomerol;
 
@@ -23,24 +29,24 @@ public:
 
   hubbard2d_model(int argc, char* argv[]) :
     quantum_model(argc, argv, "Full-ED of the MxM Hubbard cluster"),
-    args_options{{args_parser, "U", "Hubbard constant U", {"U"}, 10.0},
-                 {args_parser, "mu", "Chemical potential", {"mu"}, std::numeric_limits<double>::quiet_NaN()},
-                 {args_parser, "t", "NN hopping constant t", {"t"}, 1.0},
-                 {args_parser, "tp", "NNN hopping constant t'", {"tp"}, 0.0},
-                 {args_parser, "x", "Size over x", {"x"}, 2},
-                 {args_parser, "y", "Size over y", {"y"}, 2}}
+    args_options_hubbard2d{{args_parser, "U", "Hubbard constant U", {"U"}, 10.0},
+                           {args_parser, "mu", "Chemical potential", {"mu"}, std::numeric_limits<double>::quiet_NaN()},
+                           {args_parser, "t", "NN hopping constant t", {"t"}, 1.0},
+                           {args_parser, "tp", "NNN hopping constant t'", {"tp"}, 0.0},
+                           {args_parser, "x", "Size over x", {"x"}, 2},
+                           {args_parser, "y", "Size over y", {"y"}, 2}}
   {
-    args_options.mu.HelpDefault("U/2");
+    args_options_hubbard2d.mu.HelpDefault("U/2");
     parse_args(argc, argv);
 
-    size_x = args::get(args_options.x);
-    size_y = args::get(args_options.y);
+    size_x = args::get(args_options_hubbard2d.x);
+    size_y = args::get(args_options_hubbard2d.y);
 
     init_hamiltonian();
   }
 
   virtual std::pair<ParticleIndex, ParticleIndex>
-  get_node(const IndexInfoType &IndexInfo) override {
+  get_node(IndexInfoType const& IndexInfo) override {
     ParticleIndex d0 = IndexInfo.getIndex("S0",0,LatticePresets::down);
     ParticleIndex u0 = IndexInfo.getIndex("S0",0,LatticePresets::up);
     return std::make_pair(d0, u0);
@@ -52,27 +58,27 @@ public:
 
     /* Add sites */
     names.resize(L);
-    for (size_t y=0; y<size_y; y++) {
-      for (size_t x = 0; x < size_x; x++) {
+    for (std::size_t y=0; y<size_y; y++) {
+      for (std::size_t x = 0; x < size_x; x++) {
         auto i = SiteIndexF(x, y);
         names[i] = "S" + std::to_string(i);
       }
     }
 
     /* Add interaction on each site*/
-    double U = args::get(args_options.U);
-    double mu = args::get(args_options.mu);
+    double U = args::get(args_options_hubbard2d.U);
+    double mu = args::get(args_options_hubbard2d.mu);
     if(std::isnan(mu)) mu = U / 2;
 
-    for (size_t i=0; i<L; i++)
+    for (std::size_t i=0; i<L; i++)
       HExpr += LatticePresets::CoulombS(names[i], U, -mu);
 
     /* Add hopping */
-    double t = args::get(args_options.t);
-    double tp = args::get(args_options.tp);
+    double t = args::get(args_options_hubbard2d.t);
+    double tp = args::get(args_options_hubbard2d.tp);
 
-    for (size_t y=0; y<size_y; y++) {
-      for (size_t x=0; x<size_x; x++) {
+    for (std::size_t y=0; y<size_y; y++) {
+      for (std::size_t x=0; x<size_x; x++) {
         auto pos = SiteIndexF(x,y);
         auto pos_right = SiteIndexF((x+1)%size_x,y); /*if (x == size_x - 1) pos_right = SiteIndexF(0,y); */
         auto pos_up = SiteIndexF(x,(y+1)%size_y);
@@ -98,8 +104,8 @@ public:
                                ParticleIndex u0,
                                std::set<IndexCombination2> &indices2,
                                std::set<ParticleIndex>& f,
-                               const IndexInfoType &IndexInfo) override {
-    for (size_t x=0; x<size_x; x++) {
+                               IndexInfoType const& IndexInfo) override {
+    for (std::size_t x=0; x<size_x; x++) {
       ParticleIndex ind = IndexInfo.getIndex(names[SiteIndexF(x,0)],0,LatticePresets::down);
       f.insert(ind);
       indices2.insert(IndexCombination2(d0,ind));
@@ -115,13 +121,13 @@ private:
     args::ValueFlag<double> tp;
     args::ValueFlag<int> x;
     args::ValueFlag<int> y;
-  } args_options;
+  } args_options_hubbard2d;
 
   int size_x;
   int size_y;
   std::vector<std::string> names;
 
-  size_t SiteIndexF(size_t x, size_t y) { return y * size_x + x; }
+  std::size_t SiteIndexF(std::size_t x, std::size_t y) { return y * size_x + x; }
 };
 
 #endif // #ifndef POMEROL_PROG_HUBBARD2D_MODEL_H
