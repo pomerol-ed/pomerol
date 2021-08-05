@@ -31,7 +31,7 @@ class HamiltonianPart : public ComputableObject {
 
     bool Complex;
 
-    void const * HOp;
+    void const* HOp;
 
     /** A matrix filled with matrix elements of HamiltonianPart in the space of FockState's.
      *  After diagonalization it stores the eigenfunctions of the problem in a rows of H. */
@@ -43,18 +43,14 @@ class HamiltonianPart : public ComputableObject {
     friend class Hamiltonian;
 
 public:
-
     /** Constructor.
      * \param[in] IndexInfo IndexClassification object. Provides information about the indices in the problem.
      * \param[in] F IndexHamiltonian object. Provides all Terms required to fill the Hamiltonian part.
      * \param[in] S StatesClassification object. Provides information about Fock States of the problem.
      * \param[in] Block The BlockNumber of current part. It is a genuine id of the part. */
-    template<typename ScalarType>
-    HamiltonianPart(LOperatorType<ScalarType> const& HOp,
-                    StatesClassification const& S,
-                    BlockNumber Block) :
-         S(S), Block(Block), Complex(std::is_same<ScalarType, ComplexType>::value), HOp(&HOp)
-    {}
+    template <typename ScalarType>
+    HamiltonianPart(LOperatorType<ScalarType> const& HOp, StatesClassification const& S, BlockNumber Block)
+        : S(S), Block(Block), Complex(std::is_same<ScalarType, ComplexType>::value), HOp(&HOp) {}
 
     /** Fill in the H matrix. */
     void prepare();
@@ -76,23 +72,21 @@ public:
     RealVectorType const& getEigenValues() const;
 
     /** Return the hamiltonian part matrix. */
-    template<bool Complex> MatrixType<Complex> const& getMatrix() const;
-    template<bool Complex> MatrixType<Complex>& getMatrix();
+    template <bool Complex> MatrixType<Complex> const& getMatrix() const;
+    template <bool Complex> MatrixType<Complex>& getMatrix();
 
     /** Return the lowest Eigenvalue of the current part. */
     RealType getMinimumEigenvalue() const;
 
     /** Return the eigenstate of the H matrix.
      * \param[in] Number of eigenvalue. */
-    template<bool Complex>
-    VectorType<Complex> getEigenState(InnerQuantumState state) const;
+    template <bool Complex> VectorType<Complex> getEigenState(InnerQuantumState state) const;
 
     /** Return the BlockNumber associated with the Hamiltonian part. */
     BlockNumber getBlockNumber() const { return Block; }
 
     /** Print the part of hamiltonian to screen. */
-    friend std::ostream & operator<<(std::ostream & os, HamiltonianPart const& part)
-    {
+    friend std::ostream& operator<<(std::ostream& os, HamiltonianPart const& part) {
         if(part.isComplex())
             os << part.getMatrix<true>() << std::endl;
         else
@@ -102,10 +96,9 @@ public:
     }
 
 private:
-
-    template<bool C> void initHMatrix();
-    template<bool C> void prepareImpl();
-    template<bool C> void computeImpl();
+    template <bool C> void initHMatrix();
+    template <bool C> void prepareImpl();
+    template <bool C> void computeImpl();
 
     void checkComputed() const;
 };

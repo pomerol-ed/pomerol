@@ -31,15 +31,14 @@
 #include "hubbard2d_model.hpp"
 #endif
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
 #ifdef POMEROL_ANDERSON
-  anderson_model m(argc, argv);
+    anderson_model m(argc, argv);
 #endif
 #ifdef POMEROL_HUBBARD2D
-  hubbard2d_model m(argc, argv);
+    hubbard2d_model m(argc, argv);
 #endif
 
-  m.compute();
-  return 0;
+    m.compute();
+    return 0;
 }

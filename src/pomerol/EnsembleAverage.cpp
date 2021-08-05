@@ -2,18 +2,18 @@
 
 namespace Pomerol {
 
-EnsembleAverage::EnsembleAverage(StatesClassification const& S, Hamiltonian const& H,
-                                 MonomialOperator const& A, DensityMatrix const& DM) :
-    Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), DM(DM)
-{}
+EnsembleAverage::EnsembleAverage(StatesClassification const& S,
+                                 Hamiltonian const& H,
+                                 MonomialOperator const& A,
+                                 DensityMatrix const& DM)
+    : Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), DM(DM) {}
 
-EnsembleAverage::EnsembleAverage(EnsembleAverage const& EA) :
-    Thermal(EA.beta), ComputableObject(EA), S(EA.S), H(EA.H), A(EA.A), DM(EA.DM), Result(EA.Result)
-{}
+EnsembleAverage::EnsembleAverage(EnsembleAverage const& EA)
+    : Thermal(EA.beta), ComputableObject(EA), S(EA.S), H(EA.H), A(EA.A), DM(EA.DM), Result(EA.Result) {}
 
-void EnsembleAverage::compute()
-{
-    if(getStatus() >= Prepared) return;
+void EnsembleAverage::compute() {
+    if(getStatus() >= Prepared)
+        return;
 
     // Find out non-trivial blocks of A.
     MonomialOperator::BlocksBimap const& ANontrivialBlocks = A.getBlockMapping();
@@ -24,13 +24,15 @@ void EnsembleAverage::compute()
         BlockNumber Aright = Aiter->second;
 
         // Only diagonal blocks
-        if(Aleft == Aright){
+        if(Aleft == Aright) {
             // check if retained blocks are included. If not, do not push.
             if(DM.isRetained(Aleft)) {
                 if(A.isComplex())
-                    Result += computeImpl<true>((MonomialOperatorPart&)A.getPartFromLeftIndex(Aleft), DM.getPart(Aleft));
+                    Result +=
+                        computeImpl<true>((MonomialOperatorPart&)A.getPartFromLeftIndex(Aleft), DM.getPart(Aleft));
                 else
-                    Result += computeImpl<false>((MonomialOperatorPart&)A.getPartFromLeftIndex(Aleft), DM.getPart(Aleft));
+                    Result +=
+                        computeImpl<false>((MonomialOperatorPart&)A.getPartFromLeftIndex(Aleft), DM.getPart(Aleft));
             }
         }
     }
@@ -39,10 +41,8 @@ void EnsembleAverage::compute()
 }
 
 // This function is called directly in prepare()
-template<bool Complex>
-ComplexType EnsembleAverage::computeImpl(MonomialOperatorPart const& Apart,
-                                         DensityMatrixPart const& DMpart)
-{
+template <bool Complex>
+ComplexType EnsembleAverage::computeImpl(MonomialOperatorPart const& Apart, DensityMatrixPart const& DMpart) {
     // Blocks (submatrices) of A
     RowMajorMatrixType<Complex> const& Amatrix = Apart.getRowMajorValue<Complex>();
 

@@ -13,16 +13,18 @@ namespace Pomerol {
 
 struct ComputableObject {
     /** Computation statuses of the object. */
-    enum StatusEnum {Constructed, Prepared, Computed};
+    enum StatusEnum { Constructed, Prepared, Computed };
+
 protected:
     /** Current status of an object */
     StatusEnum Status = Constructed;
+
 public:
     ComputableObject() = default;
 
     /** Returns the current status of an object */
     StatusEnum getStatus() const { return Status; }
-    void setStatus(StatusEnum Status_in){
+    void setStatus(StatusEnum Status_in) {
         if(Status_in > Computed)
             throw StatusMismatch("Invalid computable object status");
         Status = Status_in;

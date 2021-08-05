@@ -4,13 +4,12 @@
 
 namespace Pomerol {
 
-DensityMatrix::DensityMatrix(StatesClassification const& S, Hamiltonian const& H, RealType beta) :
-    Thermal(beta), ComputableObject(), S(S), H(H)
-{}
+DensityMatrix::DensityMatrix(StatesClassification const& S, Hamiltonian const& H, RealType beta)
+    : Thermal(beta), ComputableObject(), S(S), H(H) {}
 
-void DensityMatrix::prepare()
-{
-    if(getStatus() >= Prepared) return;
+void DensityMatrix::prepare() {
+    if(getStatus() >= Prepared)
+        return;
     BlockNumber NumOfBlocks = S.getNumberOfBlocks();
     parts.reserve(NumOfBlocks);
     RealType GroundEnergy = H.getGroundEnergy();
@@ -21,55 +20,54 @@ void DensityMatrix::prepare()
     setStatus(Prepared);
 }
 
-void DensityMatrix::compute()
-{
-    if(getStatus() >= Computed) return;
+void DensityMatrix::compute() {
+    if(getStatus() >= Computed)
+        return;
     RealType Z = 0;
     // A total partition function is a sum over partition functions of
     // all non-normalized parts.
-    for(auto & p : parts)
+    for(auto& p : parts)
         Z += p.computeUnnormalized();
 
     // Divide the density matrix by Z.
-    for(auto & p : parts)
+    for(auto& p : parts)
         p.normalize(Z);
 
     setStatus(Computed);
 }
 
-RealType DensityMatrix::getWeight(QuantumState state) const
-{
-    if(getStatus() < Computed) { throw StatusMismatch("DensityMatrix is not computed yet."); };
+RealType DensityMatrix::getWeight(QuantumState state) const {
+    if(getStatus() < Computed) {
+        throw StatusMismatch("DensityMatrix is not computed yet.");
+    };
     BlockNumber Block = S.getBlockNumber(state);
     InnerQuantumState InnerState = S.getInnerState(state);
 
     return parts[Block].getWeight(InnerState);
 }
 
-DensityMatrixPart const& DensityMatrix::getPart(BlockNumber in) const
-{
+DensityMatrixPart const& DensityMatrix::getPart(BlockNumber in) const {
     return parts[in];
 }
 
-RealType DensityMatrix::getAverageEnergy() const
-{
-    if(getStatus() < Computed) { throw StatusMismatch("DensityMatrix is not computed yet."); }
-    return std::accumulate(parts.begin(),
-                           parts.end(),
-                           .0,
-                           [](double E, DensityMatrixPart const& p) { return E + p.getAverageEnergy(); });
+RealType DensityMatrix::getAverageEnergy() const {
+    if(getStatus() < Computed) {
+        throw StatusMismatch("DensityMatrix is not computed yet.");
+    }
+    return std::accumulate(parts.begin(), parts.end(), .0, [](double E, DensityMatrixPart const& p) {
+        return E + p.getAverageEnergy();
+    });
 }
 
-void DensityMatrix::truncateBlocks(RealType Tolerance, bool verbose)
-{
-    for(auto & p : parts)
+void DensityMatrix::truncateBlocks(RealType Tolerance, bool verbose) {
+    for(auto& p : parts)
         p.truncate(Tolerance);
 
-    if(verbose){
+    if(verbose) {
         // count retained blocks and states included in those blocks
         QuantumState n_blocks_retained = 0, n_states_retained = 0;
         for(BlockNumber i = 0; i < S.getNumberOfBlocks(); ++i)
-            if(isRetained(i)){
+            if(isRetained(i)) {
                 ++n_blocks_retained;
                 n_states_retained += S.getBlockSize(i);
             }
@@ -78,8 +76,7 @@ void DensityMatrix::truncateBlocks(RealType Tolerance, bool verbose)
     }
 }
 
-bool DensityMatrix::isRetained(BlockNumber in) const
-{
+bool DensityMatrix::isRetained(BlockNumber in) const {
     return parts[in].isRetained();
 }
 

@@ -34,22 +34,22 @@ TEST_CASE("Test mpi_dispatcher", "[mpi_dispatcher]") {
 
         std::unique_ptr<MPIMaster> disp(comm_rank == root ? new MPIMaster(MPI_COMM_WORLD, ntasks, true) : nullptr);
 
-        if (comm_rank == root) {
+        if(comm_rank == root) {
             disp->order();
         }
         MPI_Barrier(MPI_COMM_WORLD);
 
         while(!worker.is_finished()) {
-            if (comm_rank == root) disp->order();
+            if(comm_rank == root)
+                disp->order();
             worker.receive_order();
-            if (worker.is_working()) {
+            if(worker.is_working()) {
                 dumb_task(dist(gen), worker.current_job(), comm_rank);
                 worker.report_job_done();
             };
-            if (comm_rank == root) {
-                INFO("--> stack size = " << disp->JobStack.size() <<
-                     " --> worker stack size =" << disp->WorkerStack.size() <<
-                     "\n");
+            if(comm_rank == root) {
+                INFO("--> stack size = " << disp->JobStack.size()
+                                         << " --> worker stack size =" << disp->WorkerStack.size() << "\n");
                 disp->check_workers();
             }
         }
@@ -65,18 +65,17 @@ TEST_CASE("Test mpi_dispatcher", "[mpi_dispatcher]") {
         dumb_task_type dumb_task;
         int ntasks = 45;
 
-        if (comm_rank == root) {
+        if(comm_rank == root) {
             MPIMaster master(MPI_COMM_WORLD, ntasks, false);
-            for (; !master.is_finished();) {
+            for(; !master.is_finished();) {
                 master.order();
                 master.check_workers();
             }
-        }
-        else {
+        } else {
             MPIWorker worker(MPI_COMM_WORLD, root);
-            for (; !worker.is_finished();) {
+            for(; !worker.is_finished();) {
                 worker.receive_order();
-                if (worker.is_working()) {
+                if(worker.is_working()) {
                     dumb_task(dist(gen), worker.current_job(), comm_rank);
                     worker.report_job_done();
                 }

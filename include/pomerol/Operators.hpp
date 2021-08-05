@@ -48,70 +48,57 @@ template <class Sequence1, class Sequence2> struct _merge_and_renumber;
 
 template <std::size_t... I1, std::size_t... I2>
 struct _merge_and_renumber<index_sequence<I1...>, index_sequence<I2...>>
-    : index_sequence<I1..., (sizeof...(I1)+I2)...>
-{};
+    : index_sequence<I1..., (sizeof...(I1) + I2)...> {};
 
 // --------------------------------------------------------------
 
-template <std::size_t N> struct make_index_sequence
-    : _merge_and_renumber<typename make_index_sequence<N/2>::type,
-                          typename make_index_sequence<N - N/2>::type>
-{};
+template <std::size_t N>
+struct make_index_sequence
+    : _merge_and_renumber<typename make_index_sequence<N / 2>::type, typename make_index_sequence<N - N / 2>::type> {};
 
-template<> struct make_index_sequence<0> : index_sequence<> {};
-template<> struct make_index_sequence<1> : index_sequence<0> {};
+template <> struct make_index_sequence<0> : index_sequence<> {};
+template <> struct make_index_sequence<1> : index_sequence<0> {};
 
 //
 // Apply a function to a tuple of arguments
 //
 
-template<typename T>
-make_index_sequence<std::tuple_size<typename std::decay<T>::type>::value>
-make_seq() { return {}; }
-
-template<std::size_t N, typename T>
-using element_t =
-typename std::tuple_element<N, typename std::decay<T>::type>::type;
-
-template<typename F, typename ArgsT, std::size_t... Is>
-auto apply_impl(F && f, ArgsT && args, index_sequence<Is...>) ->
-    decltype(f(static_cast<element_t<Is, ArgsT>>(
-        std::get<Is>(std::forward<ArgsT>(args))
-    )...)) {
-    return f(static_cast<element_t<Is, ArgsT>>(
-        std::get<Is>(std::forward<ArgsT>(args))
-    )...);
+template <typename T> make_index_sequence<std::tuple_size<typename std::decay<T>::type>::value> make_seq() {
+    return {};
 }
 
-template<typename F, typename ArgsT>
-auto apply(F && f, ArgsT && args) ->
-    decltype(apply_impl(std::forward<F>(f),
-                        std::forward<ArgsT>(args),
-                        make_seq<ArgsT>())) {
-    return apply_impl(std::forward<F>(f),
-                      std::forward<ArgsT>(args),
-                      make_seq<ArgsT>());
+template <std::size_t N, typename T>
+using element_t = typename std::tuple_element<N, typename std::decay<T>::type>::type;
+
+template <typename F, typename ArgsT, std::size_t... Is>
+auto apply_impl(F&& f, ArgsT&& args, index_sequence<Is...>)
+    -> decltype(f(static_cast<element_t<Is, ArgsT>>(std::get<Is>(std::forward<ArgsT>(args)))...)) {
+    return f(static_cast<element_t<Is, ArgsT>>(std::get<Is>(std::forward<ArgsT>(args)))...);
 }
 
-} // namespace Pomerol::Operators::Detail
+template <typename F, typename ArgsT>
+auto apply(F&& f, ArgsT&& args)
+    -> decltype(apply_impl(std::forward<F>(f), std::forward<ArgsT>(args), make_seq<ArgsT>())) {
+    return apply_impl(std::forward<F>(f), std::forward<ArgsT>(args), make_seq<ArgsT>());
+}
+
+} // namespace Detail
 
 //
 // Operator presets
 //
 
-template<typename... IndexTypes>
-expression<double, IndexTypes...>
-N(std::vector<std::tuple<IndexTypes...>> const& Indices) {
+template <typename... IndexTypes>
+expression<double, IndexTypes...> N(std::vector<std::tuple<IndexTypes...>> const& Indices) {
     expression<double, IndexTypes...> res;
     for(auto const& i : Indices)
         res += Detail::apply(n<double, IndexTypes...>, i);
     return res;
 }
 
-template<typename... IndexTypes>
-expression<double, IndexTypes...>
-Sz(std::vector<std::tuple<IndexTypes...>> const& SpinUpIndices,
-   std::vector<std::tuple<IndexTypes...>> const& SpinDownIndices) {
+template <typename... IndexTypes>
+expression<double, IndexTypes...> Sz(std::vector<std::tuple<IndexTypes...>> const& SpinUpIndices,
+                                     std::vector<std::tuple<IndexTypes...>> const& SpinDownIndices) {
     expression<double, IndexTypes...> res;
     for(auto const& i : SpinUpIndices)
         res += 0.5 * Detail::apply(n<double, IndexTypes...>, i);
@@ -120,7 +107,7 @@ Sz(std::vector<std::tuple<IndexTypes...>> const& SpinUpIndices,
     return res;
 }
 
-} // namespace Pomerol::Operators
+} // namespace Operators
 } // namespace Pomerol
 
 #endif // #ifndef POMEROL_INCLUDE_OPERATORS_H

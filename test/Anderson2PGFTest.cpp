@@ -28,6 +28,7 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
     RealType coeff_tol = 1e-8;
 
     RealVectorType chi_ref(10);
+    // clang-format off
     chi_ref << -2.342841271771e+01,
                 0.000000000000e+00,
                 6.932231165814e-03,
@@ -38,12 +39,12 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
                -5.370700986029e-03,
                -5.126175681822e-03, // cppcheck-suppress constStatement
                -4.732777836189e-03;
+    // clang-format on
 
     using namespace LatticePresets;
 
     auto HExpr = CoulombS("C", U, -mu);
-    for(int i = 0; i < levels.size(); ++i)
-    {
+    for(int i = 0; i < levels.size(); ++i) {
         auto bath_name = "b" + std::to_string(i);
         HExpr += Level(bath_name, levels[i]);
         HExpr += Hopping("C", bath_name, hoppings[i]);
@@ -76,61 +77,55 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
     Operators.prepareAll(HS);
     Operators.computeAll();
 
-    std::set<IndexCombination4> indices4 = {
-        IndexCombination4(u0,u0,u0,u0),
-        IndexCombination4(u0,d0,u0,d0),
-        IndexCombination4(d0,d0,d0,d0)
-    };
-    TwoParticleGFContainer Chi4(IndexInfo,S,H,rho,Operators);
+    std::set<IndexCombination4> indices4 = {IndexCombination4(u0, u0, u0, u0),
+                                            IndexCombination4(u0, d0, u0, d0),
+                                            IndexCombination4(d0, d0, d0, d0)};
+    TwoParticleGFContainer Chi4(IndexInfo, S, H, rho, Operators);
     Chi4.ReduceResonanceTolerance = reduce_tol;
     Chi4.CoefficientTolerance = coeff_tol;
     Chi4.MultiTermCoefficientTolerance = 1e-6;
     Chi4.prepareAll(indices4);
     MPI_Barrier(MPI_COMM_WORLD);
 
-    ComplexType Omega = I*2.*M_PI/beta;
-    ComplexType omega = I*M_PI/beta;
+    ComplexType Omega = I * 2. * M_PI / beta;
+    ComplexType omega = I * M_PI / beta;
 
     std::vector<std::tuple<ComplexType, ComplexType, ComplexType>> freqs;
 
-    SECTION("Chi4.computeAll() for arbitrary frequencies")
-    {
+    SECTION("Chi4.computeAll() for arbitrary frequencies") {
         Chi4.computeAll(false, freqs, MPI_COMM_WORLD, true);
 
-        TwoParticleGF const& chi_uuuu = Chi4(IndexCombination4(u0,u0,u0,u0));
-        TwoParticleGF const& chi_dddd = Chi4(IndexCombination4(d0,d0,d0,d0));
+        TwoParticleGF const& chi_uuuu = Chi4(IndexCombination4(u0, u0, u0, u0));
+        TwoParticleGF const& chi_dddd = Chi4(IndexCombination4(d0, d0, d0, d0));
 
-        for(int i = 0; i < chi_ref.size(); ++i)
-        {
-            ComplexType w_p = I*(2.*i+1.)*M_PI/beta;
+        for(int i = 0; i < chi_ref.size(); ++i) {
+            ComplexType w_p = I * (2. * i + 1.) * M_PI / beta;
             INFO("i = " << i << ", w_p = " << w_p);
             auto ref = chi_ref[i];
-            ComplexType chi_uuuu_val =  chi_uuuu(omega+Omega, w_p, omega);
-            ComplexType chi_dddd_val =  chi_dddd(omega+Omega, w_p, omega);
+            ComplexType chi_uuuu_val = chi_uuuu(omega + Omega, w_p, omega);
+            ComplexType chi_dddd_val = chi_dddd(omega + Omega, w_p, omega);
             REQUIRE_THAT(chi_uuuu_val, IsCloseTo(ref, 1e-6));
             REQUIRE_THAT(chi_dddd_val, IsCloseTo(ref, 1e-6));
         }
     }
 
-    SECTION("Chi4.computeAll() with precomputation for specific frequencies")
-    {
+    SECTION("Chi4.computeAll() with precomputation for specific frequencies") {
         freqs.resize(chi_ref.size());
         for(int i = 0; i < chi_ref.size(); ++i) {
-            ComplexType w_p = I*(2.*i+1.)*M_PI/beta;
-            freqs[i] = std::make_tuple(omega+Omega, w_p, omega);
+            ComplexType w_p = I * (2. * i + 1.) * M_PI / beta;
+            freqs[i] = std::make_tuple(omega + Omega, w_p, omega);
         }
 
         auto computed_data = Chi4.computeAll(true, freqs, MPI_COMM_WORLD, true);
-        auto chi_uuuu = computed_data[IndexCombination4(u0,u0,u0,u0)];
-        auto chi_dddd = computed_data[IndexCombination4(d0,d0,d0,d0)];
+        auto chi_uuuu = computed_data[IndexCombination4(u0, u0, u0, u0)];
+        auto chi_dddd = computed_data[IndexCombination4(d0, d0, d0, d0)];
 
-        for(int i = 0; i < chi_ref.size(); ++i)
-        {
-            ComplexType w_p = I*(2.*i+1.)*M_PI/beta;
+        for(int i = 0; i < chi_ref.size(); ++i) {
+            ComplexType w_p = I * (2. * i + 1.) * M_PI / beta;
             INFO("i = " << i << ", w_p = " << w_p);
             auto ref = chi_ref[i];
-            ComplexType chi_uuuu_val =  chi_uuuu[i];
-            ComplexType chi_dddd_val =  chi_dddd[i];
+            ComplexType chi_uuuu_val = chi_uuuu[i];
+            ComplexType chi_dddd_val = chi_dddd[i];
             REQUIRE_THAT(chi_uuuu_val, IsCloseTo(ref, 1e-6));
             REQUIRE_THAT(chi_dddd_val, IsCloseTo(ref, 1e-6));
         }

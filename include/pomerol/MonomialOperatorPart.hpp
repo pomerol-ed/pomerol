@@ -32,9 +32,8 @@ class MonomialOperatorPart : public ComputableObject {
     friend class FieldOperatorContainer;
 
 private:
-
     bool MOpComplex;
-    void const * MOp;
+    void const* MOp;
 
     bool Complex;
 
@@ -44,8 +43,8 @@ private:
     HamiltonianPart const& HFrom;
     /** A reference to the HamiltonianPart on the left hand side. */
     HamiltonianPart const& HTo;
-protected:
 
+protected:
     /** Storage of the matrix elements of the operator. Row ordered sparse matrix. */
     std::shared_ptr<void> elementsRowMajor;
     /** Copy of the Storage of the matrix elements of the operator. Column ordered sparse matrix. */
@@ -54,7 +53,6 @@ protected:
     RealType const MatrixElementTolerance = 1e-8;
 
 public:
-
     /** Constructor.
      * \param[in] IndexInfo A const reference to the IndexClassification object.
      * \param[in] S A const reference to the StateClassification object.
@@ -62,15 +60,17 @@ public:
      * \param[in] HTo A const reference to the HamiltonianPart on the left hand side.
      * \param[in] PIndex Index of the field operator.
      */
-    template<typename ScalarType>
+    template <typename ScalarType>
     MonomialOperatorPart(LOperatorType<ScalarType> const& MOp,
                          StatesClassification const& S,
                          HamiltonianPart const& HFrom,
-                         HamiltonianPart const& HTo) :
-      MOpComplex(std::is_same<ScalarType, ComplexType>::value), MOp(&MOp),
-      Complex(MOpComplex || HFrom.isComplex() || HTo.isComplex()),
-      S(S), HFrom(HFrom), HTo(HTo)
-    {}
+                         HamiltonianPart const& HTo)
+        : MOpComplex(std::is_same<ScalarType, ComplexType>::value),
+          MOp(&MOp),
+          Complex(MOpComplex || HFrom.isComplex() || HTo.isComplex()),
+          S(S),
+          HFrom(HFrom),
+          HTo(HTo) {}
 
     /** Compute all the matrix elements. Changes the Status of the object to Computed. */
     void compute();
@@ -80,18 +80,17 @@ public:
     bool isComplex() const { return Complex; }
 
     /** Returns the row ordered sparse matrix of matrix elements. */
-    template<bool C> RowMajorMatrixType<C>& getRowMajorValue();
-    template<bool C> RowMajorMatrixType<C> const& getRowMajorValue() const;
+    template <bool C> RowMajorMatrixType<C>& getRowMajorValue();
+    template <bool C> RowMajorMatrixType<C> const& getRowMajorValue() const;
     /** Returns the column ordered sparse matrix of matrix elements. */
-    template<bool C> ColMajorMatrixType<C>& getColMajorValue();
-    template<bool C> ColMajorMatrixType<C> const& getColMajorValue() const;
+    template <bool C> ColMajorMatrixType<C>& getColMajorValue();
+    template <bool C> ColMajorMatrixType<C> const& getColMajorValue() const;
     /** Returns the right hand side index. */
     BlockNumber getRightIndex() const { return HFrom.getBlockNumber(); }
     /** Returns the left hand side index. */
     BlockNumber getLeftIndex() const { return HTo.getBlockNumber(); }
 
-    friend std::ostream & operator<<(std::ostream & os, MonomialOperatorPart const& part)
-    {
+    friend std::ostream& operator<<(std::ostream& os, MonomialOperatorPart const& part) {
         if(part.isComplex())
             part.streamOutputImpl<true>(os);
         else
@@ -100,9 +99,8 @@ public:
     }
 
 private:
-
-    template<bool C, bool HC> void computeImpl();
-    template<bool C> void streamOutputImpl(std::ostream & os) const;
+    template <bool C, bool HC> void computeImpl();
+    template <bool C> void streamOutputImpl(std::ostream& os) const;
 };
 
 } // namespace Pomerol

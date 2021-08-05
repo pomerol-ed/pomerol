@@ -1,7 +1,9 @@
 #include "pomerol/MonomialOperatorPart.hpp"
 
+// clang-format off
 #include <libcommute/loperator/state_vector_eigen3.hpp>
 #include <libcommute/loperator/mapped_basis_view.hpp>
+// clang-format on
 
 #include <cassert>
 #include <cstddef>
@@ -11,9 +13,9 @@
 
 namespace Pomerol {
 
-void MonomialOperatorPart::compute()
-{
-    if(getStatus() >= Computed) return;
+void MonomialOperatorPart::compute() {
+    if(getStatus() >= Computed)
+        return;
 
     if(MOpComplex && HFrom.isComplex())
         computeImpl<true, true>();
@@ -27,8 +29,7 @@ void MonomialOperatorPart::compute()
     setStatus(Computed);
 }
 
-template<bool MOpC, bool HC>
-void MonomialOperatorPart::computeImpl() {
+template <bool MOpC, bool HC> void MonomialOperatorPart::computeImpl() {
     constexpr bool C = MOpC || HC;
 
     BlockNumber to = HTo.getBlockNumber();
@@ -49,7 +50,7 @@ void MonomialOperatorPart::computeImpl() {
 
     auto const& U = HFrom.getMatrix<HC>();
 
-    auto const& MOp_ = *static_cast<LOperatorTypeRC<MOpC> const *>(MOp);
+    auto const& MOp_ = *static_cast<LOperatorTypeRC<MOpC> const*>(MOp);
 
     for(InnerQuantumState st = 0; st < fromStates.size(); ++st) {
         auto fromView = fromMapper.make_const_view_no_ref(U.col(st));
@@ -63,19 +64,15 @@ void MonomialOperatorPart::computeImpl() {
 // https://gitlab.com/libeigen/eigen/-/issues/1224
 //
 // Affected versions are some betas of 3.3 but not the 3.3 release
-#if EIGEN_VERSION_AT_LEAST(3,2,90) && EIGEN_MAJOR_VERSION<3
-    elementsRowMajor = std::make_shared<RowMajorMatrixType<C>>(
-        MatrixType<C>(ULeft * OURight).sparseView(MatrixElementTolerance)
-    );
+#if EIGEN_VERSION_AT_LEAST(3, 2, 90) && EIGEN_MAJOR_VERSION < 3
+    elementsRowMajor =
+        std::make_shared<RowMajorMatrixType<C>>(MatrixType<C>(ULeft * OURight).sparseView(MatrixElementTolerance));
 #else
-    elementsRowMajor = std::make_shared<RowMajorMatrixType<C>>(
-        (ULeft * OURight).sparseView(MatrixElementTolerance)
-    );
+    elementsRowMajor = std::make_shared<RowMajorMatrixType<C>>((ULeft * OURight).sparseView(MatrixElementTolerance));
 #endif
 
     elementsColMajor = std::make_shared<ColMajorMatrixType<C>>(
-        *std::static_pointer_cast<RowMajorMatrixType<C> const>(elementsRowMajor)
-    );
+        *std::static_pointer_cast<RowMajorMatrixType<C> const>(elementsRowMajor));
 }
 
 void MonomialOperatorPart::setFromAdjoint(MonomialOperatorPart const& part) {
@@ -83,7 +80,8 @@ void MonomialOperatorPart::setFromAdjoint(MonomialOperatorPart const& part) {
     assert(getLeftIndex() == part.getRightIndex());
     assert(getRightIndex() == part.getLeftIndex());
 
-    if(getStatus() >= Computed) return;
+    if(getStatus() >= Computed)
+        return;
 
     if(isComplex()) {
         elementsRowMajor = std::make_shared<RowMajorMatrixType<true>>(part.getColMajorValue<true>().adjoint());
@@ -96,9 +94,7 @@ void MonomialOperatorPart::setFromAdjoint(MonomialOperatorPart const& part) {
     setStatus(Computed);
 }
 
-template<bool C>
-ColMajorMatrixType<C>& MonomialOperatorPart::getColMajorValue()
-{
+template <bool C> ColMajorMatrixType<C>& MonomialOperatorPart::getColMajorValue() {
     if(C != isComplex())
         throw std::runtime_error("Stored matrix type mismatch (real/complex)");
     return *std::static_pointer_cast<ColMajorMatrixType<C>>(elementsColMajor);
@@ -106,9 +102,7 @@ ColMajorMatrixType<C>& MonomialOperatorPart::getColMajorValue()
 template ColMajorMatrixType<true>& MonomialOperatorPart::getColMajorValue<true>();
 template ColMajorMatrixType<false>& MonomialOperatorPart::getColMajorValue<false>();
 
-template<bool C>
-ColMajorMatrixType<C> const& MonomialOperatorPart::getColMajorValue() const
-{
+template <bool C> ColMajorMatrixType<C> const& MonomialOperatorPart::getColMajorValue() const {
     if(C != isComplex())
         throw std::runtime_error("Stored matrix type mismatch (real/complex)");
     return *std::static_pointer_cast<ColMajorMatrixType<C> const>(elementsColMajor);
@@ -116,9 +110,7 @@ ColMajorMatrixType<C> const& MonomialOperatorPart::getColMajorValue() const
 template ColMajorMatrixType<true> const& MonomialOperatorPart::getColMajorValue<true>() const;
 template ColMajorMatrixType<false> const& MonomialOperatorPart::getColMajorValue<false>() const;
 
-template<bool C>
-RowMajorMatrixType<C>& MonomialOperatorPart::getRowMajorValue()
-{
+template <bool C> RowMajorMatrixType<C>& MonomialOperatorPart::getRowMajorValue() {
     if(C != isComplex())
         throw std::runtime_error("Stored matrix type mismatch (real/complex)");
     return *std::static_pointer_cast<RowMajorMatrixType<C>>(elementsRowMajor);
@@ -126,9 +118,7 @@ RowMajorMatrixType<C>& MonomialOperatorPart::getRowMajorValue()
 template RowMajorMatrixType<true>& MonomialOperatorPart::getRowMajorValue<true>();
 template RowMajorMatrixType<false>& MonomialOperatorPart::getRowMajorValue<false>();
 
-template<bool C>
-RowMajorMatrixType<C> const& MonomialOperatorPart::getRowMajorValue() const
-{
+template <bool C> RowMajorMatrixType<C> const& MonomialOperatorPart::getRowMajorValue() const {
     if(C != isComplex())
         throw std::runtime_error("Stored matrix type mismatch (real/complex)");
     return *std::static_pointer_cast<const RowMajorMatrixType<C>>(elementsRowMajor);
@@ -136,9 +126,8 @@ RowMajorMatrixType<C> const& MonomialOperatorPart::getRowMajorValue() const
 template RowMajorMatrixType<true> const& MonomialOperatorPart::getRowMajorValue<true>() const;
 template RowMajorMatrixType<false> const& MonomialOperatorPart::getRowMajorValue<false>() const;
 
-template<bool C>
-void MonomialOperatorPart::streamOutputImpl(std::ostream & os) const {
-    BlockNumber to   = HTo.getBlockNumber();
+template <bool C> void MonomialOperatorPart::streamOutputImpl(std::ostream& os) const {
+    BlockNumber to = HTo.getBlockNumber();
     BlockNumber from = HFrom.getBlockNumber();
     auto const& mat = getColMajorValue<C>();
 
@@ -150,7 +139,7 @@ void MonomialOperatorPart::streamOutputImpl(std::ostream & os) const {
         }
     }
 }
-template void MonomialOperatorPart::streamOutputImpl<true>(std::ostream & os) const;
-template void MonomialOperatorPart::streamOutputImpl<false>(std::ostream & os) const;
+template void MonomialOperatorPart::streamOutputImpl<true>(std::ostream& os) const;
+template void MonomialOperatorPart::streamOutputImpl<false>(std::ostream& os) const;
 
 } // namespace Pomerol

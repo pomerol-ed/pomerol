@@ -20,8 +20,7 @@ namespace Pomerol {
  * block of the Hamiltonian.
  */
 
-class DensityMatrixPart : public Thermal
-{
+class DensityMatrixPart : public Thermal {
     /** A reference to a part of a Hamiltonian. */
     HamiltonianPart const& H;
 

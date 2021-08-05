@@ -48,21 +48,23 @@ TEST_CASE("Green's function of a Hubbard dimer", "[GF2site]") {
 
     // Reference Green's function
     ComplexVectorType G_ref(10);
-    G_ref << -2.53021005e-01*I,
-             -4.62090702e-01*I,
-             -4.32482782e-01*I,
-             -3.65598615e-01*I,
-             -3.07785174e-01*I,
-             -2.62894141e-01*I,
-             -2.28274316e-01*I,
-             -2.01170772e-01*I,
-             -1.79539602e-01*I, // cppcheck-suppress constStatement
-             -1.61950993e-01*I;
+    // clang-format off
+    G_ref << -2.53021005e-01 * I,
+             -4.62090702e-01 * I,
+             -4.32482782e-01 * I,
+             -3.65598615e-01 * I,
+             -3.07785174e-01 * I,
+             -2.62894141e-01 * I,
+             -2.28274316e-01 * I,
+             -2.01170772e-01 * I,
+             -1.79539602e-01 * I, // cppcheck-suppress constStatement
+             -1.61950993e-01 * I;
+    // clang-format on
 
     using namespace LatticePresets;
 
     auto HExpr = CoulombS("A", U, -mu) + CoulombS("B", U, -mu);
-    HExpr += Hopping("A","B", -1.0);
+    HExpr += Hopping("A", "B", -1.0);
     INFO("Hamiltonian\n" << HExpr);
 
     auto IndexInfo = MakeIndexClassification(HExpr);
@@ -95,7 +97,7 @@ TEST_CASE("Green's function of a Hubbard dimer", "[GF2site]") {
     INFO("Energy levels " << H.getEigenValues());
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
-    DensityMatrix rho(S,H,beta);
+    DensityMatrix rho(S, H, beta);
     rho.prepare();
     rho.compute();
     for(QuantumState i = 0; i < S.getNumberOfStates(); ++i)
@@ -105,11 +107,10 @@ TEST_CASE("Green's function of a Hubbard dimer", "[GF2site]") {
     Operators.prepareAll(HS);
     Operators.computeAll();
 
-    ParticleIndex A_down_index = IndexInfo.getIndex("A",0,down);
+    ParticleIndex A_down_index = IndexInfo.getIndex("A", 0, down);
 
     auto const& c_map = Operators.getCreationOperator(A_down_index).getBlockMapping();
-    for(auto c_map_it = c_map.right.begin(); c_map_it != c_map.right.end(); c_map_it++)
-    {
+    for(auto c_map_it = c_map.right.begin(); c_map_it != c_map.right.end(); c_map_it++) {
         INFO(c_map_it->first << "->" << c_map_it->second);
     }
 

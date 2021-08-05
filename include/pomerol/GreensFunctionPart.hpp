@@ -27,8 +27,7 @@ namespace Pomerol {
  * Every part describes all transitions allowed by selection rules
  * between a given pair of Hamiltonian blocks.
  */
-class GreensFunctionPart : public Thermal
-{
+class GreensFunctionPart : public Thermal {
     /** A reference to a part of a Hamiltonian (inner index iterates through it). */
     HamiltonianPart const& HpartInner;
     /** A reference to a part of a Hamiltonian (outer index iterates through it). */
@@ -54,9 +53,7 @@ class GreensFunctionPart : public Thermal
         struct Compare {
             double const Tolerance;
             Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
-            bool operator()(Term const& t1, Term const& t2) const {
-                return t2.Pole - t1.Pole >= Tolerance;
-            }
+            bool operator()(Term const& t1, Term const& t2) const { return t2.Pole - t1.Pole >= Tolerance; }
         };
 
         /** Does term have a negligible residue? */
@@ -66,9 +63,7 @@ class GreensFunctionPart : public Thermal
             bool operator()(Term const& t, std::size_t ToleranceDivisor) const {
                 return std::abs(t.Residue) < Tolerance / ToleranceDivisor;
             }
-            void broadcast(MPI_Comm const& comm, int root) {
-                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
-            }
+            void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm); }
         };
 
         /** Constructor.
@@ -97,8 +92,7 @@ class GreensFunctionPart : public Thermal
      * \param[in] out An output stream to insert to.
      * \param[in] Term A term to be inserted.
      */
-    friend std::ostream& operator<<(std::ostream& os, Term const& T)
-    {
+    friend std::ostream& operator<<(std::ostream& os, Term const& T) {
         return os << T.Residue << "/(z - " << T.Pole << ")";
     }
 
@@ -109,7 +103,6 @@ class GreensFunctionPart : public Thermal
     RealType const MatrixElementTolerance = 1e-8;
 
 public:
-
     /** Constructor.
      * \param[in] C A reference to a part of an annihilation operator.
      * \param[in] CX A reference to a part of a creation operator.
@@ -118,9 +111,12 @@ public:
      * \param[in] DMpartInner A reference to a part of the density matrix (inner index).
      * \param[in] DMpartOuter A reference to a part of the density matrix (outer index).
      */
-    GreensFunctionPart(MonomialOperatorPart const& C, MonomialOperatorPart const& CX,
-                       HamiltonianPart const& HpartInner, HamiltonianPart const& HpartOuter,
-                       DensityMatrixPart const& DMpartInner, DensityMatrixPart const& DMpartOuter);
+    GreensFunctionPart(MonomialOperatorPart const& C,
+                       MonomialOperatorPart const& CX,
+                       HamiltonianPart const& HpartInner,
+                       HamiltonianPart const& HpartOuter,
+                       DensityMatrixPart const& DMpartInner,
+                       DensityMatrixPart const& DMpartOuter);
 
     /** Iterates over all matrix elements and fills the list of terms. */
     void compute();
@@ -145,13 +141,13 @@ public:
     RealType const ReduceTolerance = 1e-8;
 
 private:
-
-    template<bool Complex> void computeImpl();
+    template <bool Complex> void computeImpl();
 };
 
 // Inline call operators
 inline ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const {
-    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1)); }
+    return (*this)(MatsubaraSpacing * RealType(2 * MatsubaraNumber + 1));
+}
 
 inline ComplexType GreensFunctionPart::operator()(ComplexType z) const {
     return Terms(z);

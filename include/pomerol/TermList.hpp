@@ -25,7 +25,7 @@ namespace Pomerol {
  * A term T is considered negligible and is automatically removed from the
  * container if TermType::IsNegligible(T, current_number_of_terms + 1) evaluates to true.
  */
-template<typename TermType> class TermList {
+template <typename TermType> class TermList {
     /** Comparison function */
     using Compare = typename TermType::Compare;
     /** Predicate for determining negligible terms */
@@ -35,13 +35,11 @@ template<typename TermType> class TermList {
     IsNegligible is_negligible;
 
 public:
-
     /** Constructor.
      * \param[in] compare Compare predicate for the underlying std::set object
      * \param[in] is_negligible Predicate that determines whether a term can be neglected
      */
-    TermList(Compare const& compare, IsNegligible const& is_negligible) :
-        data(compare), is_negligible(is_negligible) {}
+    TermList(Compare const& compare, IsNegligible const& is_negligible) : data(compare), is_negligible(is_negligible) {}
 
     /** Add a new term to the container
      * \param[in] term Term to be added
@@ -50,7 +48,7 @@ public:
         auto it = data.find(term);
         if(it == data.end()) { // new term
             data.emplace(term);
-        } else {               // similar term
+        } else { // similar term
             TermType sum = *it;
             sum += term;
             data.erase(*it);
@@ -74,8 +72,7 @@ public:
     /** Pass arguments to operator() of each term in the container
      *  and return a sum of their return values.
      */
-    template<typename... Args>
-    ComplexType operator()(Args&&... args) const {
+    template <typename... Args> ComplexType operator()(Args&&... args) const {
         ComplexType res = 0;
         for(auto const& t : data)
             res += t(std::forward<Args>(args)...);
@@ -104,10 +101,13 @@ public:
 
     /** Check that all terms in the container are properly ordered and are not negligible */
     bool check_terms() const {
-        if(size() == 0) return true;
+        if(size() == 0)
+            return true;
         auto prev_it = data.begin();
-        if(is_negligible(*prev_it, data.size() + 1)) return false;
-        if(size() == 1) return true;
+        if(is_negligible(*prev_it, data.size() + 1))
+            return false;
+        if(size() == 1)
+            return true;
 
         Compare const& compare = data.key_comp();
 

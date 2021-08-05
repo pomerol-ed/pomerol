@@ -55,15 +55,18 @@ class GreensFunction : public Thermal, public ComputableObject {
     std::vector<GreensFunctionPart> parts;
 
 public:
-     /** Constructor.
+    /** Constructor.
      * \param[in] S A reference to a states classification object.
      * \param[in] H A reference to a Hamiltonian.
      * \param[in] C A reference to an annihilation operator.
      * \param[in] CX A reference to a creation operator.
      * \param[in] DM A reference to a density matrix.
      */
-    GreensFunction(StatesClassification const& S, Hamiltonian const& H,
-                   AnnihilationOperator const& C, CreationOperator const& CX, DensityMatrix const& DM);
+    GreensFunction(StatesClassification const& S,
+                   Hamiltonian const& H,
+                   AnnihilationOperator const& C,
+                   CreationOperator const& CX,
+                   DensityMatrix const& DM);
     /** Copy-constructor.
      * \param[in] GF GreensFunction object to be copied.
      */
@@ -81,17 +84,17 @@ public:
      */
     unsigned short getIndex(std::size_t Position) const;
 
-     /** Returns the value of the Green's function calculated at a given frequency.
+    /** Returns the value of the Green's function calculated at a given frequency.
      * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
      */
     ComplexType operator()(long MatsubaraNumber) const;
 
-     /** Returns the value of the Green's function calculated at a given frequency.
+    /** Returns the value of the Green's function calculated at a given frequency.
      * \param[in] z Input frequency
      */
     ComplexType operator()(ComplexType z) const;
 
-     /** Returns the value of the Green's function calculated at a given imaginary time point.
+    /** Returns the value of the Green's function calculated at a given imaginary time point.
      * \param[in] tau Imaginary time point.
      */
     ComplexType of_tau(RealType tau) const;
@@ -100,24 +103,28 @@ public:
 };
 
 inline ComplexType GreensFunction::operator()(long int MatsubaraNumber) const {
-    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber+1));
+    return (*this)(MatsubaraSpacing * RealType(2 * MatsubaraNumber + 1));
 }
 
 inline ComplexType GreensFunction::operator()(ComplexType z) const {
-    if(Vanishing) return 0;
+    if(Vanishing)
+        return 0;
     else {
-        return std::accumulate(parts.begin(), parts.end(), ComplexType(0),
-            [z](ComplexType s, GreensFunctionPart const& p) { return s + p(z); }
-        );
+        return std::accumulate(parts.begin(),
+                               parts.end(),
+                               ComplexType(0),
+                               [z](ComplexType s, GreensFunctionPart const& p) { return s + p(z); });
     }
 }
 
 inline ComplexType GreensFunction::of_tau(RealType tau) const {
-    if(Vanishing) return 0;
+    if(Vanishing)
+        return 0;
     else {
-        return std::accumulate(parts.begin(), parts.end(), ComplexType(0),
-            [tau](ComplexType s, GreensFunctionPart const& p) { return s + p.of_tau(tau); }
-        );
+        return std::accumulate(parts.begin(),
+                               parts.end(),
+                               ComplexType(0),
+                               [tau](ComplexType s, GreensFunctionPart const& p) { return s + p.of_tau(tau); });
     }
 }
 

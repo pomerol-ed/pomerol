@@ -22,7 +22,7 @@ namespace Pomerol {
 
 /** This class handles all the indices classification, it allocates the indices to particular Site+Spin+Orbital configuration.
  *  It also returns the information about current ParticleIndex on request. */
-template<typename... IndexTypes> class IndexClassification {
+template <typename... IndexTypes> class IndexClassification {
 public:
     /** A structure, which holds the site label, orbital and spin of a ParticleIndex. */
     using IndexInfo = std::tuple<IndexTypes...>;
@@ -34,11 +34,10 @@ private:
     std::vector<IndexInfo> IndicesToInfo;
 
 public:
-
     /** Constructor
      * \param[in] L A pointer to a Lattice Object.
      */
-    template<typename ScalarType>
+    template <typename ScalarType>
     explicit IndexClassification(Operators::expression<ScalarType, IndexTypes...> const& H) {
         // Collect indices of fermionic operators in the Hamiltonian
         for(auto const& mon : H) {
@@ -77,9 +76,7 @@ public:
         }
     }
 
-    ParticleIndex getIndex(IndexTypes... info) const {
-        return getIndex(std::make_tuple(info...));
-    }
+    ParticleIndex getIndex(IndexTypes... info) const { return getIndex(std::make_tuple(info...)); }
 
     /** Return all information about the given index. */
     IndexInfo const& getInfo(ParticleIndex in) const {
@@ -92,8 +89,8 @@ public:
     ParticleIndex getIndexSize() const { return InfoToIndices.size(); }
 
     /** Print all Indices to the information stream */
-    friend std::ostream & operator<<(std::ostream & os, IndexClassification const& ic) {
-        for(ParticleIndex i=0; i<ic.InfoToIndices.size(); ++i) {
+    friend std::ostream& operator<<(std::ostream& os, IndexClassification const& ic) {
+        for(ParticleIndex i = 0; i < ic.InfoToIndices.size(); ++i) {
             os << "Index " << i << " = (";
             libcommute::print_tuple(os, ic.IndicesToInfo[i]);
             os << ")" << std::endl;
@@ -102,21 +99,19 @@ public:
     }
 
 private:
-
     void UpdateMaps() {
         IndicesToInfo.clear();
         IndicesToInfo.reserve(InfoToIndices.size());
-        for(auto & ii : InfoToIndices) {
+        for(auto& ii : InfoToIndices) {
             ii.second = IndicesToInfo.size();
             IndicesToInfo.emplace_back(ii.first);
         }
     }
 };
 
-template<typename ScalarType, typename... IndexTypes>
-IndexClassification<IndexTypes...>
-MakeIndexClassification(Operators::expression<ScalarType, IndexTypes...> const& H) {
-  return IndexClassification<IndexTypes...>(H);
+template <typename ScalarType, typename... IndexTypes>
+IndexClassification<IndexTypes...> MakeIndexClassification(Operators::expression<ScalarType, IndexTypes...> const& H) {
+    return IndexClassification<IndexTypes...>(H);
 }
 
 } // namespace Pomerol

@@ -41,8 +41,7 @@
 
 using namespace Pomerol;
 
-TEST_CASE("Hamiltonian of an isolated Hubbard-Holstein atom",
-          "[HubbardHolstein]") {
+TEST_CASE("Hamiltonian of an isolated Hubbard-Holstein atom", "[HubbardHolstein]") {
     using namespace LatticePresets;
     using namespace Operators;
 
@@ -76,8 +75,7 @@ TEST_CASE("Hamiltonian of an isolated Hubbard-Holstein atom",
     std::sort(ev_ref.begin(), ev_ref.end());
 
     auto HExpr = CoulombS("A", U, -mu);
-    HExpr += BosonLevel("A", Omega, 0) +
-             HolsteinInteraction("A", lambda, 0, 0);
+    HExpr += BosonLevel("A", Omega, 0) + HolsteinInteraction("A", lambda, 0, 0);
     INFO("Hamiltonian\n" << HExpr);
 
     auto IndexInfo = MakeIndexClassification(HExpr);

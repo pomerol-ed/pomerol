@@ -27,45 +27,44 @@ struct GF_ref {
     std::vector<RealType> E;
     std::vector<RealType> w;
     RealType Z = 0;
-    explicit GF_ref(ComplexType J) :
-        phi(std::arg(J)),
-        E{0, -mu-std::abs(J), -mu+std::abs(J), -2*mu+U} {
+    explicit GF_ref(ComplexType J) : phi(std::arg(J)), E{0, -mu - std::abs(J), -mu + std::abs(J), -2 * mu + U} {
         for(double e : E) {
             w.push_back(std::exp(-beta * e));
             Z += w.back();
         }
-        for(int i = 0; i < E.size(); ++i) w[i] /= Z;
+        for(int i = 0; i < E.size(); ++i)
+            w[i] /= Z;
     }
 
     ComplexType operator()(spin s1, spin s2, int n) const {
-        ComplexType iw = ComplexType(0,M_PI*(2*n+1)/beta);
+        ComplexType iw = ComplexType(0, M_PI * (2 * n + 1) / beta);
 
         using LatticePresets::up;
         using LatticePresets::down;
 
         ComplexType res = 0;
         if(s1 == up && s2 == up) {
-            res += 0.5*(w[1] + w[0])/(iw - (E[1] - E[0]));
-            res += 0.5*(w[2] + w[0])/(iw - (E[2] - E[0]));
-            res += 0.5*(w[3] + w[1])/(iw - (E[3] - E[1]));
-            res += 0.5*(w[3] + w[2])/(iw - (E[3] - E[2]));
+            res += 0.5 * (w[1] + w[0]) / (iw - (E[1] - E[0]));
+            res += 0.5 * (w[2] + w[0]) / (iw - (E[2] - E[0]));
+            res += 0.5 * (w[3] + w[1]) / (iw - (E[3] - E[1]));
+            res += 0.5 * (w[3] + w[2]) / (iw - (E[3] - E[2]));
         } else if(s1 == up && s2 == down) {
-            ComplexType u = std::exp(ComplexType(0,phi));
-            res += -u*0.5*(w[1] + w[0])/(iw - (E[1] - E[0]));
-            res += u*0.5*(w[2] + w[0])/(iw - (E[2] - E[0]));
-            res += u*0.5*(w[3] + w[1])/(iw - (E[3] - E[1]));
-            res += -u*0.5*(w[3] + w[2])/(iw - (E[3] - E[2]));
+            ComplexType u = std::exp(ComplexType(0, phi));
+            res += -u * 0.5 * (w[1] + w[0]) / (iw - (E[1] - E[0]));
+            res += u * 0.5 * (w[2] + w[0]) / (iw - (E[2] - E[0]));
+            res += u * 0.5 * (w[3] + w[1]) / (iw - (E[3] - E[1]));
+            res += -u * 0.5 * (w[3] + w[2]) / (iw - (E[3] - E[2]));
         } else if(s1 == down && s2 == up) {
-            ComplexType u = std::exp(ComplexType(0,-phi));
-            res += -u*0.5*(w[1] + w[0])/(iw - (E[1] - E[0]));
-            res += u*0.5*(w[2] + w[0])/(iw - (E[2] - E[0]));
-            res += u*0.5*(w[3] + w[1])/(iw - (E[3] - E[1]));
-            res += -u*0.5*(w[3] + w[2])/(iw - (E[3] - E[2]));
+            ComplexType u = std::exp(ComplexType(0, -phi));
+            res += -u * 0.5 * (w[1] + w[0]) / (iw - (E[1] - E[0]));
+            res += u * 0.5 * (w[2] + w[0]) / (iw - (E[2] - E[0]));
+            res += u * 0.5 * (w[3] + w[1]) / (iw - (E[3] - E[1]));
+            res += -u * 0.5 * (w[3] + w[2]) / (iw - (E[3] - E[2]));
         } else {
-            res += 0.5*(w[1] + w[0])/(iw - (E[1] - E[0]));
-            res += 0.5*(w[2] + w[0])/(iw - (E[2] - E[0]));
-            res += 0.5*(w[3] + w[1])/(iw - (E[3] - E[1]));
-            res += 0.5*(w[3] + w[2])/(iw - (E[3] - E[2]));
+            res += 0.5 * (w[1] + w[0]) / (iw - (E[1] - E[0]));
+            res += 0.5 * (w[2] + w[0]) / (iw - (E[2] - E[0]));
+            res += 0.5 * (w[3] + w[1]) / (iw - (E[3] - E[1]));
+            res += 0.5 * (w[3] + w[2]) / (iw - (E[3] - E[2]));
         }
         return res;
     }
@@ -77,12 +76,11 @@ TEST_CASE("Bare Anderson atom with complex spin mixing", "[AndersonComplex]") {
     auto J = GENERATE(ComplexType(0.1, 0),
                       ComplexType(-0.1, 0),
                       ComplexType(0, 0.1),
-                      ComplexType(0,-0.1),
+                      ComplexType(0, -0.1),
                       ComplexType(0.1, 0.1),
-                      ComplexType(0.1,-0.1),
-                      ComplexType(-0.1,0.1),
-                      ComplexType(-0.1,-0.1)
-                      );
+                      ComplexType(0.1, -0.1),
+                      ComplexType(-0.1, 0.1),
+                      ComplexType(-0.1, -0.1));
 
     using namespace LatticePresets;
 
@@ -115,14 +113,15 @@ TEST_CASE("Bare Anderson atom with complex spin mixing", "[AndersonComplex]") {
     // Reference
     GF_ref G_ref(J);
 
-    for(spin s1 : {down, up}){
-        for(spin s2 : {down, up}){
-            ParticleIndex index1 = IndexInfo.getIndex("C",0,s1);
-            ParticleIndex index2 = IndexInfo.getIndex("C",0,s2);
-            GreensFunction GF(S,H,
-                Operators.getAnnihilationOperator(index1),
-                Operators.getCreationOperator(index2),
-            rho);
+    for(spin s1 : {down, up}) {
+        for(spin s2 : {down, up}) {
+            ParticleIndex index1 = IndexInfo.getIndex("C", 0, s1);
+            ParticleIndex index2 = IndexInfo.getIndex("C", 0, s2);
+            GreensFunction GF(S,
+                              H,
+                              Operators.getAnnihilationOperator(index1),
+                              Operators.getCreationOperator(index2),
+                              rho);
             GF.prepare();
             GF.compute();
 

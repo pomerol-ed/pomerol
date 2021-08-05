@@ -23,26 +23,27 @@
 
 namespace Pomerol {
 
-class GFContainer: public IndexContainer2<GreensFunction,GFContainer>, public Thermal
-{
+class GFContainer : public IndexContainer2<GreensFunction, GFContainer>, public Thermal {
 
 public:
-    template<typename... IndexTypes>
+    template <typename... IndexTypes>
     GFContainer(IndexClassification<IndexTypes...> const& IndexInfo,
                 StatesClassification const& S,
                 Hamiltonian const& H,
                 DensityMatrix const& DM,
-                FieldOperatorContainer const& Operators) :
-        IndexContainer2<GreensFunction, GFContainer>(*this, IndexInfo),
-        Thermal(DM), S(S), H(H), DM(DM), Operators(Operators)
-    {}
+                FieldOperatorContainer const& Operators)
+        : IndexContainer2<GreensFunction, GFContainer>(*this, IndexInfo),
+          Thermal(DM),
+          S(S),
+          H(H),
+          DM(DM),
+          Operators(Operators) {}
 
     void prepareAll(std::set<IndexCombination2> const& InitialIndices = {});
     void computeAll();
 
 protected:
-
-    friend class IndexContainer2<GreensFunction,GFContainer>;
+    friend class IndexContainer2<GreensFunction, GFContainer>;
     std::shared_ptr<GreensFunction> createElement(IndexCombination2 const& Indices) const;
 
     StatesClassification const& S;

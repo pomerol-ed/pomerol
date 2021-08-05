@@ -27,8 +27,7 @@ namespace Pomerol {
  * It provides eigenvalues and eigenfunctions of any of its parts once they are obtained within its parts.
  * The diagonalization and entering routines are done inside of HamiltonianPart instances.
  */
-class Hamiltonian : public ComputableObject
-{
+class Hamiltonian : public ComputableObject {
     bool Complex = {};
 
     /** Array of pointers to the Hamiltonian Parts */
@@ -39,11 +38,10 @@ class Hamiltonian : public ComputableObject
     RealType GroundEnergy = -HUGE_VAL;
 
 public:
-
     /** Constructor. */
     explicit Hamiltonian(StatesClassification const& S) : S(S) {}
 
-    template<typename ScalarType, typename... IndexTypes>
+    template <typename ScalarType, typename... IndexTypes>
     void prepare(Operators::expression<ScalarType, IndexTypes...> const& H,
                  HilbertSpace<IndexTypes...> const& HS,
                  MPI_Comm const& comm = MPI_COMM_WORLD);
@@ -64,16 +62,17 @@ public:
 private:
     void computeGroundEnergy();
 
-    template<bool C> void prepareImpl(LOperatorTypeRC<C> const& HOp, const MPI_Comm& comm);
-    template<bool C> void computeImpl(MPI_Comm const& comm);
+    template <bool C> void prepareImpl(LOperatorTypeRC<C> const& HOp, const MPI_Comm& comm);
+    template <bool C> void computeImpl(MPI_Comm const& comm);
 };
 
-template<typename ScalarType, typename... IndexTypes>
+template <typename ScalarType, typename... IndexTypes>
 void Hamiltonian::prepare(Operators::expression<ScalarType, IndexTypes...> const& H,
                           HilbertSpace<IndexTypes...> const& HS,
                           MPI_Comm const& comm) {
 
-    if(getStatus() >= Prepared) return;
+    if(getStatus() >= Prepared)
+        return;
 
     Complex = std::is_same<ScalarType, ComplexType>::value;
     LOperatorType<ScalarType> HOp(H, HS.getFullHilbertSpace());
