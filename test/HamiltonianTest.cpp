@@ -24,8 +24,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
 
-#include <pomerol/HamiltonianPart.hpp>
 #include <pomerol/Hamiltonian.hpp>
+#include <pomerol/HamiltonianPart.hpp>
 #include <pomerol/HilbertSpace.hpp>
 #include <pomerol/Index.hpp>
 #include <pomerol/IndexClassification.hpp>
@@ -81,7 +81,8 @@ TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
         op.compute();
         BlockNumber result_block = op.getLeftIndex(test_block);
 
-        INFO("Acting with rotated cdag_" << op_index << " on block " << test_block << " and receiving " << result_block);
+        INFO("Acting with rotated cdag_" << op_index << " on block " << test_block << " and receiving "
+                                         << result_block);
 
         using LOperatorT = LOperatorType<RealType>;
 

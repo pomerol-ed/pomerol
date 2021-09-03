@@ -42,17 +42,19 @@ TEST_CASE("Green's function of a Hubbard plaquette", "[GF4site]") {
     RealType beta = 10.0;
 
     // Reference Green's function
+    // clang-format off
     ComplexVectorType G_ref(10);
-    G_ref <<  0.00515461461  -0.191132319*I,
-             -0.0129218293   -0.35749415*I,
-             -0.0063208255   -0.364571553*I,
-             -0.00244599255  -0.326995909*I,
-             -0.000938220077 -0.285235829*I,
-             -0.000360621591 -0.248974505*I,
-             -0.000129046261 -0.219206946*I,
-             -3.20102701e-05 -0.194983212*I,
-              9.51503858e-06 -0.175149329*I, // cppcheck-suppress constStatement
-              2.68929175e-05 -0.158732731*I;
+    G_ref << 0.00515461461 - 0.191132319 * I,
+            -0.0129218293 - 0.35749415 * I,
+            -0.0063208255 - 0.364571553 * I,
+            -0.00244599255 - 0.326995909 * I,
+            -0.000938220077 - 0.285235829 * I,
+            -0.000360621591 - 0.248974505 * I,
+            -0.000129046261 - 0.219206946 * I,
+            -3.20102701e-05 - 0.194983212 * I,
+             9.51503858e-06 - 0.175149329 * I, // cppcheck-suppress constStatement
+             2.68929175e-05 - 0.158732731 * I;
+    // clang-format on
 
     using namespace LatticePresets;
 
@@ -81,7 +83,7 @@ TEST_CASE("Green's function of a Hubbard plaquette", "[GF4site]") {
     INFO("Energy levels " << H.getEigenValues());
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
-    DensityMatrix rho(S,H,beta);
+    DensityMatrix rho(S, H, beta);
     rho.prepare();
     rho.compute();
     for(QuantumState i = 0; i < S.getNumberOfStates(); ++i)
@@ -94,8 +96,7 @@ TEST_CASE("Green's function of a Hubbard plaquette", "[GF4site]") {
     ParticleIndex A_down_index = IndexInfo.getIndex("A", 0, down);
 
     auto const& c_map = Operators.getCreationOperator(A_down_index).getBlockMapping();
-    for(auto c_map_it = c_map.right.begin(); c_map_it != c_map.right.end(); c_map_it++)
-    {
+    for(auto c_map_it = c_map.right.begin(); c_map_it != c_map.right.end(); c_map_it++) {
         INFO(c_map_it->first << "->" << c_map_it->second);
     }
 

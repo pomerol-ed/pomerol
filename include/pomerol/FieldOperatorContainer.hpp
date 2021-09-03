@@ -22,8 +22,7 @@ namespace Pomerol {
  * rotated to eigenvector basis of Hamiltonian H ) for a given Index.
  * If no field operator is yet initialized then calculation of the field operator is done.
  */
-class FieldOperatorContainer
-{
+class FieldOperatorContainer {
 
     /** A map which gives a link to the CreationOperator for a given index */
     std::unordered_map<ParticleIndex, CreationOperator> mapCreationOperators;
@@ -36,15 +35,14 @@ public:
      * \param[in] H A reference to a Hamiltonian.
      * \param[in] IndexInfo A reference to a IndexClassification
      */
-    template<typename... IndexTypes>
+    template <typename... IndexTypes>
     FieldOperatorContainer(IndexClassification<IndexTypes...> const& IndexInfo,
                            HilbertSpace<IndexTypes...> const& HS,
                            StatesClassification const& S,
                            Hamiltonian const& H,
-                           std::set<ParticleIndex> in = {})
-    {
+                           std::set<ParticleIndex> in = {}) {
         if(in.empty()) {
-            for (ParticleIndex p = 0; p < IndexInfo.getIndexSize(); ++p) {
+            for(ParticleIndex p = 0; p < IndexInfo.getIndexSize(); ++p) {
                 in.insert(p);
             }
         }
@@ -54,12 +52,10 @@ public:
         }
     }
 
-    template<typename... IndexTypes>
-    void prepareAll(HilbertSpace<IndexTypes...> const& HS)
-    {
-        for(auto & CX : mapCreationOperators)
+    template <typename... IndexTypes> void prepareAll(HilbertSpace<IndexTypes...> const& HS) {
+        for(auto& CX : mapCreationOperators)
             CX.second.prepare(HS);
-        for(auto & C : mapAnnihilationOperators)
+        for(auto& C : mapAnnihilationOperators)
             C.second.prepare(HS);
     }
     void computeAll();

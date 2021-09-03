@@ -18,94 +18,90 @@
 
 namespace pMPI {
 
-template <typename PartType>
-struct ComputeWrap {
-    PartType & x;
+template <typename PartType> struct ComputeWrap {
+    PartType& x;
     int complexity;
 
     ComputeWrap() = default;
-    explicit ComputeWrap(PartType &x, int complexity = 1) : x(x), complexity(complexity) {}
-    void run(){ x.compute(); }
+    explicit ComputeWrap(PartType& x, int complexity = 1) : x(x), complexity(complexity) {}
+    void run() { x.compute(); }
 };
 
-template <typename PartType>
-struct PrepareWrap {
-    PartType & x;
+template <typename PartType> struct PrepareWrap {
+    PartType& x;
     int complexity;
 
     PrepareWrap() = default;
-    explicit PrepareWrap(PartType & x, int complexity = 1) : x(x), complexity(complexity) {}
-    void run(){ x.prepare(); }
+    explicit PrepareWrap(PartType& x, int complexity = 1) : x(x), complexity(complexity) {}
+    void run() { x.prepare(); }
 };
 
-template <typename WrapType>
-struct mpi_skel {
+template <typename WrapType> struct mpi_skel {
     std::vector<WrapType> parts;
     std::map<pMPI::JobId, pMPI::WorkerId> run(MPI_Comm const& comm, bool VerboseOutput = true);
 };
 
 /// Master-slave task schedule, associates jobs with workers and executes mpi_dispatcher to run the simulation
 template <typename WrapType>
-std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(MPI_Comm const& comm, bool VerboseOutput)
-{
+std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(MPI_Comm const& comm, bool VerboseOutput) {
     int comm_rank = pMPI::rank(comm);
     int comm_size = pMPI::size(comm);
     int const root = 0;
     MPI_Barrier(comm);
 
-    if (comm_rank == root) {
-        std::cout << "Calculating " << parts.size() << " jobs using "
-                  << comm_size << " procs." << std::endl;
+    if(comm_rank == root) {
+        std::cout << "Calculating " << parts.size() << " jobs using " << comm_size << " procs." << std::endl;
     }
 
     std::unique_ptr<pMPI::MPIMaster> disp;
 
-    if (comm_rank == root) {
+    if(comm_rank == root) {
         // prepare one Master on a root process for distributing parts.size() jobs
         std::vector<pMPI::JobId> job_order(parts.size());
         std::iota(job_order.begin(), job_order.end(), 0);
 
         auto comp1 = [this](std::size_t l, std::size_t r) -> int {
-          return (parts[l].complexity > parts[r].complexity);
+            return (parts[l].complexity > parts[r].complexity);
         };
         std::sort(job_order.begin(), job_order.end(), comp1);
-        disp.reset(new pMPI::MPIMaster(comm,job_order,true));
+        disp.reset(new pMPI::MPIMaster(comm, job_order, true));
     }
 
     MPI_Barrier(comm);
 
     // Start calculating data
-    for (pMPI::MPIWorker worker(comm,root); !worker.is_finished();) {
-        if (comm_rank == root) disp->order();
+    for(pMPI::MPIWorker worker(comm, root); !worker.is_finished();) {
+        if(comm_rank == root)
+            disp->order();
         worker.receive_order();
-        if (worker.is_working()) { // for a specific worker
+        if(worker.is_working()) { // for a specific worker
             JobId p = worker.current_job();
-            if (VerboseOutput)
-                std::cout << "[" << p+1 << "/" << parts.size()<< "] P" << comm_rank
-                          << " : part " << p
-                          << " [" << parts[p].complexity << "] run;" << std::endl;
+            if(VerboseOutput)
+                std::cout << "[" << p + 1 << "/" << parts.size() << "] P" << comm_rank << " : part " << p << " ["
+                          << parts[p].complexity << "] run;" << std::endl;
             parts[p].run();
             worker.report_job_done();
         }
-        if(comm_rank == root) disp->check_workers(); // check if there are free workers
+        if(comm_rank == root)
+            disp->check_workers(); // check if there are free workers
     }
 
     // at this moment all communication is finished
     MPI_Barrier(comm);
     // Now spread the information, who did what.
-    if (VerboseOutput && comm_rank==root)
+    if(VerboseOutput && comm_rank == root)
         std::cout << "done." << std::endl;
 
     MPI_Barrier(comm);
     std::map<pMPI::JobId, pMPI::WorkerId> job_map;
-    if (comm_rank == root) {
-        job_map = disp -> DispatchMap;
+    if(comm_rank == root) {
+        job_map = disp->DispatchMap;
         long n_jobs = job_map.size();
         std::vector<pMPI::JobId> jobs(n_jobs);
         std::vector<pMPI::WorkerId> workers(n_jobs);
 
         auto it = job_map.cbegin();
-        for (int i = 0; i < n_jobs; ++i, ++it) {
+        for(int i = 0; i < n_jobs; ++i, ++it) {
             std::tie(jobs[i], workers[i]) = *it;
         }
 
@@ -119,7 +115,7 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(MPI_Comm const& co
         MPI_Bcast(jobs.data(), n_jobs, MPI_INT, root, comm);
         std::vector<pMPI::WorkerId> workers(n_jobs);
         MPI_Bcast(workers.data(), n_jobs, MPI_INT, root, comm);
-        for (std::size_t i = 0; i < n_jobs; ++i)
+        for(std::size_t i = 0; i < n_jobs; ++i)
             job_map[jobs[i]] = workers[i];
     }
     return job_map;

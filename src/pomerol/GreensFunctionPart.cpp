@@ -5,42 +5,45 @@
 
 namespace Pomerol {
 
-GreensFunctionPart::Term::Term(ComplexType Residue, RealType Pole) :
-    Residue(Residue), Pole(Pole) {};
-ComplexType GreensFunctionPart::Term::operator()(ComplexType Frequency) const { return Residue/(Frequency - Pole); }
+GreensFunctionPart::Term::Term(ComplexType Residue, RealType Pole) : Residue(Residue), Pole(Pole){};
+ComplexType GreensFunctionPart::Term::operator()(ComplexType Frequency) const {
+    return Residue / (Frequency - Pole);
+}
 
 ComplexType GreensFunctionPart::Term::operator()(RealType tau, RealType beta) const {
     using std::exp;
-    return Pole > 0 ? -Residue*exp(-tau*Pole)/(1 + exp(-beta*Pole)) :
-                      -Residue*exp((beta-tau)*Pole)/(exp(beta*Pole) + 1);
+    return Pole > 0 ? -Residue * exp(-tau * Pole) / (1 + exp(-beta * Pole)) :
+                      -Residue * exp((beta - tau) * Pole) / (exp(beta * Pole) + 1);
 }
 
-inline
-GreensFunctionPart::Term& GreensFunctionPart::Term::operator+=(Term const& AnotherTerm)
-{
+inline GreensFunctionPart::Term& GreensFunctionPart::Term::operator+=(Term const& AnotherTerm) {
     Residue += AnotherTerm.Residue;
     return *this;
 }
 
-GreensFunctionPart::GreensFunctionPart( MonomialOperatorPart const& C, MonomialOperatorPart const& CX,
-                                        HamiltonianPart const& HpartInner, HamiltonianPart const& HpartOuter,
-                                        DensityMatrixPart const& DMpartInner, DensityMatrixPart const& DMpartOuter) :
-                                        Thermal(DMpartInner.beta),
-                                        HpartInner(HpartInner), HpartOuter(HpartOuter),
-                                        DMpartInner(DMpartInner), DMpartOuter(DMpartOuter),
-                                        C(C), CX(CX),
-                                        Terms(Term::Compare(), Term::IsNegligible())
-{}
+GreensFunctionPart::GreensFunctionPart(MonomialOperatorPart const& C,
+                                       MonomialOperatorPart const& CX,
+                                       HamiltonianPart const& HpartInner,
+                                       HamiltonianPart const& HpartOuter,
+                                       DensityMatrixPart const& DMpartInner,
+                                       DensityMatrixPart const& DMpartOuter)
+    : Thermal(DMpartInner.beta),
+      HpartInner(HpartInner),
+      HpartOuter(HpartOuter),
+      DMpartInner(DMpartInner),
+      DMpartOuter(DMpartOuter),
+      C(C),
+      CX(CX),
+      Terms(Term::Compare(), Term::IsNegligible()) {}
 
-void GreensFunctionPart::compute()
-{
+void GreensFunctionPart::compute() {
     if(C.isComplex() || CX.isComplex())
         computeImpl<true>();
     else
         computeImpl<false>();
 }
 
-template<bool Complex> void GreensFunctionPart::computeImpl() {
+template <bool Complex> void GreensFunctionPart::computeImpl() {
     Terms.clear();
 
     // Blocks (submatrices) of C and CX
@@ -50,10 +53,10 @@ template<bool Complex> void GreensFunctionPart::computeImpl() {
 
     // Iterate over all values of the outer index.
     // TODO: should be optimized - skip empty rows of Cmatrix and empty columns of CXmatrix.
-    for(QuantumState index1 = 0; index1 < outerSize; ++index1){
+    for(QuantumState index1 = 0; index1 < outerSize; ++index1) {
         // <index1|C|Cinner><CXinner|CX|index1>
-        typename RowMajorMatrixType<Complex>::InnerIterator Cinner(Cmatrix,index1);
-        typename ColMajorMatrixType<Complex>::InnerIterator CXinner(CXmatrix,index1);
+        typename RowMajorMatrixType<Complex>::InnerIterator Cinner(Cmatrix, index1);
+        typename ColMajorMatrixType<Complex>::InnerIterator CXinner(CXmatrix, index1);
 
         // While we are not at the last column of Cmatrix or at the last row of CXmatrix.
         while(Cinner && CXinner) {
@@ -70,12 +73,16 @@ template<bool Complex> void GreensFunctionPart::computeImpl() {
                     RealType Pole = HpartInner.getEigenValue(C_index2) - HpartOuter.getEigenValue(index1);
                     Terms.add_term(Term(Residue, Pole));
                 };
-                ++Cinner;   // The next non-zero element
-                ++CXinner;  // The next non-zero element
-            }else{
+                ++Cinner;  // The next non-zero element
+                ++CXinner; // The next non-zero element
+            } else {
                 // Chasing: one index runs down the other index
-                if(CX_index2 < C_index2) for(;QuantumState(CXinner.index())<C_index2; ++CXinner);
-                else for(;QuantumState(Cinner.index())<CX_index2; ++Cinner);
+                if(CX_index2 < C_index2)
+                    for(; QuantumState(CXinner.index()) < C_index2; ++CXinner)
+                        ;
+                else
+                    for(; QuantumState(Cinner.index()) < CX_index2; ++Cinner)
+                        ;
             }
         }
     }

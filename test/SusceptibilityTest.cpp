@@ -18,8 +18,8 @@
 // You should have received a copy of the GNU General Public License
 // along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <pomerol/EnsembleAverage.hpp>
 #include <pomerol/DensityMatrix.hpp>
+#include <pomerol/EnsembleAverage.hpp>
 #include <pomerol/Hamiltonian.hpp>
 #include <pomerol/HilbertSpace.hpp>
 #include <pomerol/IndexClassification.hpp>
@@ -41,7 +41,7 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
     RealType beta = 10.0;
     int n_iw = 20;
 
-    auto omega = [beta](int n) { return M_PI * (2*n) / beta; };
+    auto omega = [beta](int n) { return M_PI * (2 * n) / beta; };
 
     using namespace LatticePresets;
 
@@ -62,12 +62,12 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
     INFO("Energy levels " << H.getEigenValues());
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
-    DensityMatrix rho(S,H,beta);
+    DensityMatrix rho(S, H, beta);
     rho.prepare();
     rho.compute();
 
-    ParticleIndex up_index = IndexInfo.getIndex("A",0,up);
-    ParticleIndex dn_index = IndexInfo.getIndex("A",0,down);
+    ParticleIndex up_index = IndexInfo.getIndex("A", 0, up);
+    ParticleIndex dn_index = IndexInfo.getIndex("A", 0, down);
 
     // Quadratic operators of form c^+ c
     QuadraticOperator s_plus(IndexInfo, HS, S, H, up_index, dn_index);
@@ -75,17 +75,14 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
     QuadraticOperator n_up(IndexInfo, HS, S, H, up_index, up_index);
     QuadraticOperator n_dn(IndexInfo, HS, S, H, dn_index, dn_index);
 
-    for(auto * op : {&s_plus, &s_minus, &n_up, &n_dn}) {
+    for(auto* op : {&s_plus, &s_minus, &n_up, &n_dn}) {
         op->prepare(HS);
         op->compute();
     }
 
     // Reference statistical weights of states
     RealVectorType weights_ref(4); // {0, up, down, 2}
-    weights_ref << 1.0,
-                   exp(-beta*(-mu-h_field)),
-                   exp(-beta*(-mu+h_field)),
-                   exp(-beta*(-2*mu+U));
+    weights_ref << 1.0, exp(-beta * (-mu - h_field)), exp(-beta * (-mu + h_field)), exp(-beta * (-2 * mu + U));
     weights_ref /= weights_ref.sum();
     RealType wu = weights_ref[1];
     RealType wd = weights_ref[2];
@@ -122,7 +119,7 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
             if(std::abs(wu - wd) < 1e-8 && n == 0) // E_up == E_down
                 g += wu * beta;
             else
-                g += -(wu - wd) / (I*omega(n) - 2*h_field);
+                g += -(wu - wd) / (I * omega(n) - 2 * h_field);
             return g;
         };
         for(int n = 0; n < n_iw; ++n)
@@ -135,9 +132,7 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
         Chi.compute();
         Chi.subtractDisconnected();
 
-        auto ref = [&](int n) {
-            return n == 0 ? (wu + w2) * (1 - wu - w2) * beta : 0;
-        };
+        auto ref = [&](int n) { return n == 0 ? (wu + w2) * (1 - wu - w2) * beta : 0; };
         for(int n = 0; n < n_iw; ++n)
             REQUIRE_THAT(Chi(n), IsCloseTo(ref(n), 1e-14));
     }
@@ -148,9 +143,7 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
         Chi.compute();
         Chi.subtractDisconnected();
 
-        auto ref = [&](int n) {
-            return n == 0 ? (w2 - (wu + w2) * (wd + w2)) * beta : 0;
-        };
+        auto ref = [&](int n) { return n == 0 ? (w2 - (wu + w2) * (wd + w2)) * beta : 0; };
         for(int n = 0; n < n_iw; ++n)
             REQUIRE_THAT(Chi(n), IsCloseTo(ref(n), 1e-14));
     }

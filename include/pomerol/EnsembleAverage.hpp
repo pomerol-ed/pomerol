@@ -45,18 +45,19 @@ class EnsembleAverage : public Thermal, public ComputableObject {
     ComplexType Result = 0;
 
     /** Returns the contribution to the ensemble average from a part. Called in prepare() */
-    template<bool Complex>
-    ComplexType computeImpl(MonomialOperatorPart const& Apart, DensityMatrixPart const& DMpart);
+    template <bool Complex> ComplexType computeImpl(MonomialOperatorPart const& Apart, DensityMatrixPart const& DMpart);
 
 public:
-     /** Constructor.
+    /** Constructor.
      * \param[in] S A reference to a states classification object.
      * \param[in] H A reference to a Hamiltonian.
      * \param[in] A A reference to a quadratic operator.
      * \param[in] DM A reference to a density matrix.
      */
-     EnsembleAverage(StatesClassification const& S, Hamiltonian const& H,
-                     MonomialOperator const& A, DensityMatrix const& DM);
+    EnsembleAverage(StatesClassification const& S,
+                    Hamiltonian const& H,
+                    MonomialOperator const& A,
+                    DensityMatrix const& DM);
     /** Copy-constructor.
      * \param[in] EA EnsembleAverage object to be copied.
      */

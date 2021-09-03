@@ -25,8 +25,7 @@ namespace Pomerol {
  * the Hamiltonian and the parts of the density matrix itself, since the density matrix
  * is a function of \f$ \hat H \f$.
  */
-class DensityMatrix : public Thermal, public ComputableObject
-{
+class DensityMatrix : public Thermal, public ComputableObject {
     /** A reference to a states classification object. */
     StatesClassification const& S;
     /** A reference to a Hamiltonian defining the grand canonical ensemble. */
@@ -67,7 +66,7 @@ public:
     RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const;
 
     /** Truncate such blocks that do not include any states having larger weight than Tolerance. */
-    void truncateBlocks(RealType Tolerance, bool verbose=true);
+    void truncateBlocks(RealType Tolerance, bool verbose = true);
 
     /** Return true if the block has not been truncated. Always true if function truncateBlocks has not been called. */
     bool isRetained(BlockNumber in) const;

@@ -29,11 +29,10 @@ namespace Pomerol {
  */
 class TwoParticleGFPart : public Thermal, ComputableObject {
 
-friend class TwoParticleGF;
-friend class TwoParticleGFContainer;
+    friend class TwoParticleGF;
+    friend class TwoParticleGFContainer;
 
 public:
-
     /** A non-resonant term has the following form:
      * \f[
      * \frac{C}{(z_1-P_1)(z_2-P_2)(z_3-P_3)}
@@ -61,21 +60,17 @@ public:
         struct Compare {
             double Tolerance;
             Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
-            bool real_eq(RealType x1, RealType x2) const {
-                return std::abs(x1 - x2) < Tolerance;
-            }
+            bool real_eq(RealType x1, RealType x2) const { return std::abs(x1 - x2) < Tolerance; }
             bool operator()(NonResonantTerm const& t1, NonResonantTerm const& t2) const {
-                if (t1.isz4 == t2.isz4) {
-                    return !real_eq(t1.Poles[0], t2.Poles[0]) ? t1.Poles[0] < t2.Poles[0] : (
-                           !real_eq(t1.Poles[1], t2.Poles[1]) ? t1.Poles[1] < t2.Poles[1] : (
-                            t2.Poles[2] - t1.Poles[2] >= Tolerance
-                           ));
+                if(t1.isz4 == t2.isz4) {
+                    return !real_eq(t1.Poles[0], t2.Poles[0]) ?
+                               t1.Poles[0] < t2.Poles[0] :
+                               (!real_eq(t1.Poles[1], t2.Poles[1]) ? t1.Poles[1] < t2.Poles[1] :
+                                                                     (t2.Poles[2] - t1.Poles[2] >= Tolerance));
                 } else
                     return t1.isz4 < t2.isz4;
             }
-            void broadcast(MPI_Comm const& comm, int root) {
-                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
-            }
+            void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm); }
         };
 
         /** Does term have a negligible residue? */
@@ -85,9 +80,7 @@ public:
             bool operator()(NonResonantTerm const& t, std::size_t ToleranceDivisor) const {
                 return std::abs(t.Coeff) < Tolerance / ToleranceDivisor;
             }
-            void broadcast(MPI_Comm const& comm, int root) {
-                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
-            }
+            void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm); }
         };
 
         NonResonantTerm() = default;
@@ -99,10 +92,12 @@ public:
         * \param[in] P3 Pole P3.
         * \param[in] isz4 Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term?
         */
-        inline NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4) :
-            Coeff(Coeff), isz4(isz4)
-        {
-            Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight = 1;
+        inline NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4)
+            : Coeff(Coeff), isz4(isz4) {
+            Poles[0] = P1;
+            Poles[1] = P2;
+            Poles[2] = P3;
+            Weight = 1;
         }
 
         /** Returns a contribution to the two-particle Green's function made by this term.
@@ -150,21 +145,17 @@ public:
         struct Compare {
             double Tolerance;
             Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
-            bool real_eq(RealType x1, RealType x2) const {
-                return std::abs(x1 - x2) < Tolerance;
-            }
+            bool real_eq(RealType x1, RealType x2) const { return std::abs(x1 - x2) < Tolerance; }
             bool operator()(ResonantTerm const& t1, ResonantTerm const& t2) const {
-                if (t1.isz1z2 == t2.isz1z2) {
-                    return !real_eq(t1.Poles[0], t2.Poles[0]) ? t1.Poles[0] < t2.Poles[0] : (
-                           !real_eq(t1.Poles[1], t2.Poles[1]) ? t1.Poles[1] < t2.Poles[1] : (
-                            t2.Poles[2] - t1.Poles[2] >= Tolerance
-                           ));
+                if(t1.isz1z2 == t2.isz1z2) {
+                    return !real_eq(t1.Poles[0], t2.Poles[0]) ?
+                               t1.Poles[0] < t2.Poles[0] :
+                               (!real_eq(t1.Poles[1], t2.Poles[1]) ? t1.Poles[1] < t2.Poles[1] :
+                                                                     (t2.Poles[2] - t1.Poles[2] >= Tolerance));
                 } else
                     return t1.isz1z2 < t2.isz1z2;
             }
-            void broadcast(MPI_Comm const& comm, int root) {
-                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
-            }
+            void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm); }
         };
 
         /** Does term have a negligible residue? */
@@ -175,9 +166,7 @@ public:
                 return std::abs(t.ResCoeff) < Tolerance / ToleranceDivisor &&
                        std::abs(t.NonResCoeff) < Tolerance / ToleranceDivisor;
             }
-            void broadcast(MPI_Comm const& comm, int root) {
-                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
-            }
+            void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm); }
         };
 
         ResonantTerm() = default;
@@ -190,10 +179,17 @@ public:
         * \param[in] P3 Pole P3.
         * \param[in] isz1z2 Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
         */
-        inline ResonantTerm(ComplexType ResCoeff, ComplexType NonResCoeff, RealType P1, RealType P2, RealType P3, bool isz1z2):
-            ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), isz1z2(isz1z2)
-        {
-            Poles[0] = P1; Poles[1] = P2; Poles[2] = P3; Weight=1;
+        inline ResonantTerm(ComplexType ResCoeff,
+                            ComplexType NonResCoeff,
+                            RealType P1,
+                            RealType P2,
+                            RealType P3,
+                            bool isz1z2)
+            : ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), isz1z2(isz1z2) {
+            Poles[0] = P1;
+            Poles[1] = P2;
+            Poles[2] = P3;
+            Weight = 1;
         }
 
         /** Returns a contribution to the two-particle Green's function made by this term.
@@ -201,7 +197,8 @@ public:
         * \param[in] z2 Complex frequency \f$ z_2 \f$.
         * \param[in] z3 Complex frequency \f$ z_3 \f$.
         */
-        ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3, RealType KroneckerSymbolTolerance = 1e-16) const;
+        ComplexType
+        operator()(ComplexType z1, ComplexType z2, ComplexType z3, RealType KroneckerSymbolTolerance = 1e-16) const;
 
         /** This operator add a non-resonant term to this one.
         * It does not check the similarity of the terms!
@@ -214,7 +211,6 @@ public:
     };
 
 private:
-
     /** A reference to a part of the first operator. */
     MonomialOperatorPart const& O1;
     /** A reference to a part of the second operator. */
@@ -292,9 +288,16 @@ private:
     * \param[in] Wl The fourth weight \f$ w_l \f$.
     * \param[in] Permutation A reference to a permutation of operators for this part.
     */
-    void addMultiterm(ComplexType Coeff, RealType beta,
-                      RealType Ei, RealType Ej, RealType Ek, RealType El,
-                      RealType Wi, RealType Wj, RealType Wk, RealType Wl);
+    void addMultiterm(ComplexType Coeff,
+                      RealType beta,
+                      RealType Ei,
+                      RealType Ej,
+                      RealType Ek,
+                      RealType El,
+                      RealType Wi,
+                      RealType Wj,
+                      RealType Wk,
+                      RealType Wl);
 
     /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
     RealType ReduceResonanceTolerance = 1e-8;
@@ -303,7 +306,7 @@ private:
     /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. default = 1e-5. */
     RealType MultiTermCoefficientTolerance = 1e-5;
 
-    template<bool Complex> void computeImpl();
+    template <bool Complex> void computeImpl();
 
 public:
     /** Constructor.
@@ -321,12 +324,18 @@ public:
      * \param[in] DMpart4 A reference to the fourth part of a density matrix.
      * \param[in] Permutation A permutation of the operators for this part.
      */
-    TwoParticleGFPart(MonomialOperatorPart const& O1, MonomialOperatorPart const& O2,
-                      MonomialOperatorPart const& O3, MonomialOperatorPart const& CX4,
-                      HamiltonianPart const& Hpart1, HamiltonianPart const& Hpart2,
-                      HamiltonianPart const& Hpart3, HamiltonianPart const& Hpart4,
-                      DensityMatrixPart const& DMpart1, DensityMatrixPart const& DMpart2,
-                      DensityMatrixPart const& DMpart3, DensityMatrixPart const& DMpart4,
+    TwoParticleGFPart(MonomialOperatorPart const& O1,
+                      MonomialOperatorPart const& O2,
+                      MonomialOperatorPart const& O3,
+                      MonomialOperatorPart const& CX4,
+                      HamiltonianPart const& Hpart1,
+                      HamiltonianPart const& Hpart2,
+                      HamiltonianPart const& Hpart3,
+                      HamiltonianPart const& Hpart4,
+                      DensityMatrixPart const& DMpart1,
+                      DensityMatrixPart const& DMpart2,
+                      DensityMatrixPart const& DMpart3,
+                      DensityMatrixPart const& DMpart4,
                       Permutation3 Permutation);
 
     /** Actually computes the part. */
@@ -362,25 +371,25 @@ public:
     TermList<TwoParticleGFPart::NonResonantTerm> const& getNonResonantTerms() const { return NonResonantTerms; }
 };
 
-inline
-ComplexType TwoParticleGFPart::NonResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const
-{
-    return isz4 ? Coeff / ((z1-Poles[0])*(z1+z2+z3-Poles[0]-Poles[1]-Poles[2])*(z3-Poles[2])) :
-                  Coeff / ((z1-Poles[0])*(z2-Poles[1])*(z3-Poles[2]));
+inline ComplexType
+TwoParticleGFPart::NonResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const {
+    return isz4 ? Coeff / ((z1 - Poles[0]) * (z1 + z2 + z3 - Poles[0] - Poles[1] - Poles[2]) * (z3 - Poles[2])) :
+                  Coeff / ((z1 - Poles[0]) * (z2 - Poles[1]) * (z3 - Poles[2]));
 }
 
-inline
-ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3, RealType KroneckerSymbolTolerance) const
-{
+inline ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1,
+                                                               ComplexType z2,
+                                                               ComplexType z3,
+                                                               RealType KroneckerSymbolTolerance) const {
     ComplexType Diff;
     if(isz1z2) {
         Diff = z1 + z2 - Poles[0] - Poles[1];
-        return (std::abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff/Diff) )
-                /((z1-Poles[0])*(z3-Poles[2]));
+        return (std::abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff / Diff)) /
+               ((z1 - Poles[0]) * (z3 - Poles[2]));
     } else {
         Diff = z2 + z3 - Poles[1] - Poles[2];
-        return (std::abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff/Diff) )
-                /((z1-Poles[0])*(z3-Poles[2]));
+        return (std::abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff / Diff)) /
+               ((z1 - Poles[0]) * (z3 - Poles[2]));
     }
 }
 

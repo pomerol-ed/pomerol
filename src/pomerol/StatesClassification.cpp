@@ -24,28 +24,27 @@ void StatesClassification::initMultipleBlocks(libcommute::space_partition const&
     foreach(partition, [this](QuantumState State, BlockNumber Block) {
         StateBlockIndex[State] = Block;
         StatesContainer[Block].push_back(State);
-    });
+    })
+        ;
 }
 
-void StatesClassification::checkComputed() const
-{
-    if(getStatus() < Computed) { throw StatusMismatch("StatesClassification is not computed yet."); }
+void StatesClassification::checkComputed() const {
+    if(getStatus() < Computed) {
+        throw StatusMismatch("StatesClassification is not computed yet.");
+    }
 }
 
-unsigned long StatesClassification::getBlockSize(BlockNumber in) const
-{
+unsigned long StatesClassification::getBlockSize(BlockNumber in) const {
     checkComputed();
     return static_cast<InnerQuantumState>(getFockStates(in).size());
 }
 
-std::vector<QuantumState> const& StatesClassification::getFockStates(BlockNumber in) const
-{
+std::vector<QuantumState> const& StatesClassification::getFockStates(BlockNumber in) const {
     checkComputed();
     return StatesContainer[in];
 }
 
-QuantumState StatesClassification::getFockState(BlockNumber in, InnerQuantumState m) const
-{
+QuantumState StatesClassification::getFockState(BlockNumber in, InnerQuantumState m) const {
     checkComputed();
     if(int(in) < StatesContainer.size())
         if(m < StatesContainer[in].size())
@@ -53,8 +52,7 @@ QuantumState StatesClassification::getFockState(BlockNumber in, InnerQuantumStat
     throw std::runtime_error("Wrong inner state " + std::to_string(m));
 }
 
-BlockNumber StatesClassification::getBlockNumber(QuantumState in) const
-{
+BlockNumber StatesClassification::getBlockNumber(QuantumState in) const {
     checkComputed();
     if(in >= StateBlockIndex.size()) {
         throw std::runtime_error("Wrong state " + std::to_string(in));
@@ -62,8 +60,7 @@ BlockNumber StatesClassification::getBlockNumber(QuantumState in) const
     return StateBlockIndex[in];
 }
 
-InnerQuantumState StatesClassification::getInnerState(QuantumState in) const
-{
+InnerQuantumState StatesClassification::getInnerState(QuantumState in) const {
     checkComputed();
     if(in >= StateBlockIndex.size()) {
         throw std::runtime_error("Wrong state " + std::to_string(in));

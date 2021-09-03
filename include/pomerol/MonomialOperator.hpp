@@ -37,18 +37,12 @@ using BlockMapping = std::pair<BlockNumber, BlockNumber>;
 
 /** This class is a parent class for creation/annihilation operators which act
  * on all blocks of quantum states */
-class MonomialOperator : public ComputableObject
-{
+class MonomialOperator : public ComputableObject {
 public:
-
-    using BlocksBimap = boost::bimaps::bimap<
-        boost::bimaps::set_of<BlockNumber>,
-        boost::bimaps::set_of<BlockNumber>
-    >;
+    using BlocksBimap = boost::bimaps::bimap<boost::bimaps::set_of<BlockNumber>, boost::bimaps::set_of<BlockNumber>>;
     using BlockMapping = BlocksBimap::value_type;
 
 protected:
-
     friend class FieldOperatorContainer;
 
     /** A reference an Operator object (OperatorPresets::C or Cdag). */
@@ -56,8 +50,7 @@ protected:
 
     std::shared_ptr<void> MOp;
 
-    template<bool Complex>
-    LOperatorTypeRC<Complex> const& getMOp() const {
+    template <bool Complex> LOperatorTypeRC<Complex> const& getMOp() const {
         assert(MOpComplex == Complex);
         return *std::static_pointer_cast<LOperatorTypeRC<Complex>>(MOp);
     }
@@ -81,25 +74,26 @@ protected:
     std::vector<MonomialOperatorPart> parts;
 
 public:
-
     /** Constructor
      * \param[in] IndexInfo A reference to an IndexClassification object
      * \param[in] S A reference to a StatesClassification object
      * \param[in] H A reference to a Hamiltonian object
      * \param[in] Index An index of an operator
      */
-    template<typename ScalarType, typename... IndexTypes>
+    template <typename ScalarType, typename... IndexTypes>
     MonomialOperator(libcommute::expression<ScalarType, IndexTypes...> const& MO,
                      HilbertSpace<IndexTypes...> const& HS,
                      StatesClassification const& S,
-                     Hamiltonian const& H) :
-        MOpComplex(std::is_same<ScalarType, ComplexType>::value),
-        MOp(std::make_shared<LOperatorType<ScalarType>>(MO, HS.getFullHilbertSpace())),
-        Complex(MOpComplex || H.isComplex()),
-        S(S), H(H), Partition(HS.getSpacePartition()) {
-            if(MO.size() > 1)
-                throw std::runtime_error("Only monomial expressions are supported");
-        }
+                     Hamiltonian const& H)
+        : MOpComplex(std::is_same<ScalarType, ComplexType>::value),
+          MOp(std::make_shared<LOperatorType<ScalarType>>(MO, HS.getFullHilbertSpace())),
+          Complex(MOpComplex || H.isComplex()),
+          S(S),
+          H(H),
+          Partition(HS.getSpacePartition()) {
+        if(MO.size() > 1)
+            throw std::runtime_error("Only monomial expressions are supported");
+    }
 
     bool isComplex() const { return Complex; }
 
@@ -118,14 +112,13 @@ public:
     BlocksBimap const& getBlockMapping() const;
 
     /** Virtual method for assigning world-lines */
-    template<typename... IndexTypes>
-    void prepare(HilbertSpace<IndexTypes...> const& HS) {
-        if(getStatus() >= Prepared) return;
+    template <typename... IndexTypes> void prepare(HilbertSpace<IndexTypes...> const& HS) {
+        if(getStatus() >= Prepared)
+            return;
 
         auto const& FullHS = HS.getFullHilbertSpace();
-        auto Connections = MOpComplex ?
-            Partition.find_connections(getMOp<true>(), FullHS) :
-            Partition.find_connections(getMOp<false>(), FullHS);
+        auto Connections = MOpComplex ? Partition.find_connections(getMOp<true>(), FullHS) :
+                                        Partition.find_connections(getMOp<false>(), FullHS);
 
         parts.reserve(Connections.size());
         for(auto const& Conn : Connections) {
@@ -145,12 +138,10 @@ public:
     void compute(MPI_Comm const& comm = MPI_COMM_WORLD);
 
 private:
-
     void checkPrepared() const;
 };
 
-class CreationOperator : public MonomialOperator
-{
+class CreationOperator : public MonomialOperator {
     ParticleIndex Index;
 
 public:
@@ -160,55 +151,48 @@ public:
      * \param[in] H A reference to a Hamiltonian object
      * \param[in] Index An index of an operator
      */
-    template<typename... IndexTypes>
+    template <typename... IndexTypes>
     CreationOperator(IndexClassification<IndexTypes...> const& IndexInfo,
                      HilbertSpace<IndexTypes...> const& HS,
                      StatesClassification const& S,
                      Hamiltonian const& H,
-                     ParticleIndex Index) :
-    MonomialOperator(
-        Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>,
-                                 IndexInfo.getInfo(Index)
-                                 ),
-        HS, S, H
-    ), Index(Index)
-    {}
+                     ParticleIndex Index)
+        : MonomialOperator(Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index)),
+                           HS,
+                           S,
+                           H),
+          Index(Index) {}
 
     ParticleIndex getIndex() const { return Index; }
 };
 
-class AnnihilationOperator : public MonomialOperator
-{
+class AnnihilationOperator : public MonomialOperator {
     ParticleIndex Index;
 
 public:
-
     /** Constructor
      * \param[in] IndexInfo A reference to an IndexClassification object
      * \param[in] S A reference to a StatesClassification object
      * \param[in] H A reference to a Hamiltonian object
      * \param[in] Index An index of an operator
      */
-    template<typename... IndexTypes>
+    template <typename... IndexTypes>
     AnnihilationOperator(IndexClassification<IndexTypes...> const& IndexInfo,
                          HilbertSpace<IndexTypes...> const& HS,
                          StatesClassification const& S,
                          Hamiltonian const& H,
-                         ParticleIndex Index) :
-    MonomialOperator(
-        Operators::Detail::apply(Operators::c<double, IndexTypes...>,
-                                 IndexInfo.getInfo(Index)
-                                 ),
-        HS, S, H
-    ), Index(Index)
-    {}
+                         ParticleIndex Index)
+        : MonomialOperator(Operators::Detail::apply(Operators::c<double, IndexTypes...>, IndexInfo.getInfo(Index)),
+                           HS,
+                           S,
+                           H),
+          Index(Index) {}
 
     ParticleIndex getIndex() const { return Index; }
 };
 
 /** A quadratic operator, c_1^+ c_2, in the eigenbasis of a Hamiltonian */
-class QuadraticOperator : public MonomialOperator
-{
+class QuadraticOperator : public MonomialOperator {
     ParticleIndex Index1, Index2;
 
 public:
@@ -219,22 +203,21 @@ public:
      * \param[in] Index1 An index of a creation operator
      * \param[in] Index2 An index of an annihilation operator
      */
-    template<typename... IndexTypes>
+    template <typename... IndexTypes>
     QuadraticOperator(IndexClassification<IndexTypes...> const& IndexInfo,
                       HilbertSpace<IndexTypes...> const& HS,
                       StatesClassification const& S,
                       Hamiltonian const& H,
-                      ParticleIndex Index1, ParticleIndex Index2) :
-    MonomialOperator(
-        Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>,
-                                 IndexInfo.getInfo(Index1)
-                                 ) *
-        Operators::Detail::apply(Operators::c<double, IndexTypes...>,
-                                 IndexInfo.getInfo(Index2)
-                                 ),
-        HS, S, H
-    ), Index1(Index1), Index2(Index2)
-    {}
+                      ParticleIndex Index1,
+                      ParticleIndex Index2)
+        : MonomialOperator(
+              Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index1)) *
+                  Operators::Detail::apply(Operators::c<double, IndexTypes...>, IndexInfo.getInfo(Index2)),
+              HS,
+              S,
+              H),
+          Index1(Index1),
+          Index2(Index2) {}
 
     ParticleIndex getCXXIndex() const { return Index1; }
     ParticleIndex getCIndex() const { return Index2; }

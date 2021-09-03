@@ -72,15 +72,18 @@ class Susceptibility : public Thermal, public ComputableObject {
     ComplexType ave_A = {}, ave_B = {};
 
 public:
-     /** Constructor.
+    /** Constructor.
      * \param[in] S A reference to a states classification object.
      * \param[in] H A reference to a Hamiltonian.
      * \param[in] A A reference to a quadratic operator.
      * \param[in] B A reference to a quadratic operator.
      * \param[in] DM A reference to a density matrix.
      */
-    Susceptibility(StatesClassification const& S, Hamiltonian const& H,
-                   MonomialOperator const& A, MonomialOperator const& B, DensityMatrix const& DM);
+    Susceptibility(StatesClassification const& S,
+                   Hamiltonian const& H,
+                   MonomialOperator const& A,
+                   MonomialOperator const& B,
+                   DensityMatrix const& DM);
     /** Copy-constructor.
      * \param[in] GF Susceptibility object to be copied.
      */
@@ -106,19 +109,19 @@ public:
      * \param[in] EA_A Predefined EnsembleAverage class for operator A.
      * \param[in] EA_B Predefined EnsembleAverage class for operator B.
      */
-    void subtractDisconnected(EnsembleAverage &EA_A, EnsembleAverage &EA_B);
+    void subtractDisconnected(EnsembleAverage& EA_A, EnsembleAverage& EA_B);
 
-     /** Returns the value of the Green's function calculated at a given frequency.
+    /** Returns the value of the Green's function calculated at a given frequency.
      * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
      */
     ComplexType operator()(long MatsubaraNumber) const;
 
-     /** Returns the value of the Green's function calculated at a given frequency.
+    /** Returns the value of the Green's function calculated at a given frequency.
      * \param[in] z Input frequency
      */
     ComplexType operator()(ComplexType z) const;
 
-     /** Returns the value of the Green's function calculated at a given imaginary time point.
+    /** Returns the value of the Green's function calculated at a given imaginary time point.
      * \param[in] tau Imaginary time point.
      */
     ComplexType of_tau(RealType tau) const;
@@ -128,26 +131,29 @@ public:
 
 // BOSON: bosononic Matsubara frequency
 inline ComplexType Susceptibility::operator()(long int MatsubaraNumber) const {
-    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber)); }
+    return (*this)(MatsubaraSpacing * RealType(2 * MatsubaraNumber));
+}
 
 inline ComplexType Susceptibility::operator()(ComplexType z) const {
     ComplexType Value = 0;
     if(!Vanishing) {
-        Value = std::accumulate(parts.begin(), parts.end(), ComplexType(0),
-            [z](ComplexType s, SusceptibilityPart const& p) { return s + p(z); }
-        );
+        Value = std::accumulate(parts.begin(),
+                                parts.end(),
+                                ComplexType(0),
+                                [z](ComplexType s, SusceptibilityPart const& p) { return s + p(z); });
     }
     if(SubtractDisconnected && std::abs(z) < 1e-15)
-            Value -= ave_A * ave_B * beta;  // only for n=0
+        Value -= ave_A * ave_B * beta; // only for n=0
     return Value;
 }
 
 inline ComplexType Susceptibility::of_tau(RealType tau) const {
     ComplexType Value = 0;
     if(!Vanishing) {
-        Value = std::accumulate(parts.begin(), parts.end(), ComplexType(0),
-            [tau](ComplexType s, SusceptibilityPart const& p) { return s + p.of_tau(tau); }
-        );
+        Value = std::accumulate(parts.begin(),
+                                parts.end(),
+                                ComplexType(0),
+                                [tau](ComplexType s, SusceptibilityPart const& p) { return s + p.of_tau(tau); });
     }
     if(SubtractDisconnected)
         Value -= ave_A * ave_B;

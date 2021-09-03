@@ -26,8 +26,8 @@
 
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>
-#include <pomerol/GreensFunction.hpp>
 #include <pomerol/GFContainer.hpp>
+#include <pomerol/GreensFunction.hpp>
 #include <pomerol/Hamiltonian.hpp>
 #include <pomerol/HilbertSpace.hpp>
 #include <pomerol/IndexClassification.hpp>
@@ -47,17 +47,18 @@ TEST_CASE("Green's function of a Hubbard atom", "[GF1site]") {
     RealType beta = 10.0;
 
     // Reference Green's function
-    auto G_ref = [U,mu,beta](int n)
-    {
-        RealType omega = M_PI*(2*n+1)/beta;
+    auto G_ref = [U, mu, beta](int n) {
+        RealType omega = M_PI * (2 * n + 1) / beta;
 
         RealType w0 = 1.0;
-        RealType w1 = exp(beta*mu);
-        RealType w2 = exp(-beta*(-2*mu+U));
-        RealType Z = w0 + 2*w1 +w2;
-        w0 /= Z; w1 /= Z; w2 /= Z;
+        RealType w1 = exp(beta * mu);
+        RealType w2 = exp(-beta * (-2 * mu + U));
+        RealType Z = w0 + 2 * w1 + w2;
+        w0 /= Z;
+        w1 /= Z;
+        w2 /= Z;
 
-        return (w0+w1)/(I*omega+mu) + (w1+w2)/(I*omega+mu-U);
+        return (w0 + w1) / (I * omega + mu) + (w1 + w2) / (I * omega + mu - U);
     };
 
     using namespace LatticePresets;
@@ -79,7 +80,7 @@ TEST_CASE("Green's function of a Hubbard atom", "[GF1site]") {
     INFO("Energy levels " << H.getEigenValues());
     INFO("The value of ground energy is " << H.getGroundEnergy());
 
-    DensityMatrix rho(S,H,beta);
+    DensityMatrix rho(S, H, beta);
     rho.prepare();
     rho.compute();
     for(QuantumState i = 0; i < S.getNumberOfStates(); ++i)
@@ -89,11 +90,10 @@ TEST_CASE("Green's function of a Hubbard atom", "[GF1site]") {
     Operators.prepareAll(HS);
     Operators.computeAll();
 
-    ParticleIndex down_index = IndexInfo.getIndex("A",0,down);
+    ParticleIndex down_index = IndexInfo.getIndex("A", 0, down);
 
     auto const& c_map = Operators.getCreationOperator(down_index).getBlockMapping();
-    for (auto c_map_it = c_map.right.begin(); c_map_it != c_map.right.end(); c_map_it++)
-    {
+    for(auto c_map_it = c_map.right.begin(); c_map_it != c_map.right.end(); c_map_it++) {
         INFO(c_map_it->first << "->" << c_map_it->second);
     }
 
@@ -113,23 +113,23 @@ TEST_CASE("Green's function of a Hubbard atom", "[GF1site]") {
     }
 
     SECTION("GFContainer") {
-        GFContainer G(IndexInfo,S,H,rho,Operators);
+        GFContainer G(IndexInfo, S, H, rho, Operators);
 
         std::set<IndexCombination2> indices;
-        indices.insert(IndexCombination2(0,0));
-        indices.insert(IndexCombination2(0,1));
-        indices.insert(IndexCombination2(1,0));
-        indices.insert(IndexCombination2(1,1));
+        indices.insert(IndexCombination2(0, 0));
+        indices.insert(IndexCombination2(0, 1));
+        indices.insert(IndexCombination2(1, 0));
+        indices.insert(IndexCombination2(1, 1));
 
         G.prepareAll(indices);
         G.computeAll();
 
         for(int n = -100; n < 100; ++n) {
             auto ref = G_ref(n);
-            REQUIRE_THAT(G(0,0)(n), IsCloseTo(ref, 1e-14));
-            REQUIRE_THAT(G(0,1)(n), IsCloseTo(0, 1e-14));
-            REQUIRE_THAT(G(1,0)(n), IsCloseTo(0, 1e-14));
-            REQUIRE_THAT(G(1,1)(n), IsCloseTo(ref, 1e-14));
+            REQUIRE_THAT(G(0, 0)(n), IsCloseTo(ref, 1e-14));
+            REQUIRE_THAT(G(0, 1)(n), IsCloseTo(0, 1e-14));
+            REQUIRE_THAT(G(1, 0)(n), IsCloseTo(0, 1e-14));
+            REQUIRE_THAT(G(1, 1)(n), IsCloseTo(ref, 1e-14));
         }
     }
 }

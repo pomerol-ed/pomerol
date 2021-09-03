@@ -18,8 +18,7 @@ enum WorkerTag : int { Pending, Work, Finish }; // tags for MPI communication
 using JobId = int;
 using WorkerId = int;
 
-struct MPIWorker
-{
+struct MPIWorker {
     MPI_Comm Comm;
     WorkerId const id;
     WorkerId const boss;
@@ -38,8 +37,7 @@ protected:
     WorkerTag Status;
 };
 
-struct MPIMaster
-{
+struct MPIMaster {
     MPI_Comm Comm;
     int Ntasks, Nprocs;
 

@@ -39,16 +39,16 @@ class StatesClassification : public ComputableObject {
     std::vector<BlockNumber> StateBlockIndex;
 
 public:
-
     StatesClassification() = default;
 
     /** Perform a classification of all FockStates */
     // TODO: Optionally accept a list of integrals of motion
     // (Operators::expression<ScalarType, IndexTypes...> objects) and fill lists
     // of quantum numbers.
-    template<typename ScalarType, typename... IndexTypes>
+    template <typename ScalarType, typename... IndexTypes>
     void compute(HilbertSpace<ScalarType, IndexTypes...> const& HS) {
-        if(Status == Computed) return;
+        if(Status == Computed)
+            return;
         auto const& FullHilbertSpace = HS.getFullHilbertSpace();
         auto Dim = FullHilbertSpace.dim();
         if(HS.getStatus() == Computed) { // Multiple blocks revealed by HS
@@ -92,7 +92,6 @@ public:
     InnerQuantumState getInnerState(QuantumState in) const;
 
 private:
-
     void initSingleBlock(unsigned long Dim);
     void initMultipleBlocks(libcommute::space_partition const& partition);
     void checkComputed() const;

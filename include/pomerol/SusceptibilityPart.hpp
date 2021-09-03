@@ -27,8 +27,7 @@ namespace Pomerol {
  * Every part describes all transitions allowed by selection rules
  * between a given pair of Hamiltonian blocks.
  */
-class SusceptibilityPart : public Thermal
-{
+class SusceptibilityPart : public Thermal {
     /** A reference to a part of a Hamiltonian (inner index iterates through it). */
     HamiltonianPart const& HpartInner;
     /** A reference to a part of a Hamiltonian (outer index iterates through it). */
@@ -54,9 +53,7 @@ class SusceptibilityPart : public Thermal
         struct Compare {
             double const Tolerance;
             Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
-            bool operator()(Term const& t1, Term const& t2) const {
-                return t2.Pole - t1.Pole >= Tolerance;
-            }
+            bool operator()(Term const& t1, Term const& t2) const { return t2.Pole - t1.Pole >= Tolerance; }
         };
 
         /** Does term have a negligible residue? */
@@ -66,9 +63,7 @@ class SusceptibilityPart : public Thermal
             bool operator()(Term const& t, std::size_t ToleranceDivisor) const {
                 return std::abs(t.Residue) < Tolerance / ToleranceDivisor;
             }
-            void broadcast(MPI_Comm const& comm, int root) {
-                MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm);
-            }
+            void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm); }
         };
 
         /** Constructor.
@@ -97,8 +92,7 @@ class SusceptibilityPart : public Thermal
      * \param[in] out An output stream to insert to.
      * \param[in] Term A term to be inserted.
      */
-    friend std::ostream& operator<<(std::ostream& os, Term const& T)
-    {
+    friend std::ostream& operator<<(std::ostream& os, Term const& T) {
         return os << T.Residue << "/(z - " << T.Pole << ")";
     }
 
@@ -112,7 +106,6 @@ class SusceptibilityPart : public Thermal
     ComplexType ZeroPoleWeight = 0;
 
 public:
-
     /** Constructor.
      * \param[in] A A reference to a part of a quadratic operator.
      * \param[in] B A reference to a part of a quadratic operator.
@@ -121,9 +114,12 @@ public:
      * \param[in] DMpartInner A reference to a part of the density matrix (inner index).
      * \param[in] DMpartOuter A reference to a part of the density matrix (outer index).
      */
-    SusceptibilityPart(MonomialOperatorPart const& A, MonomialOperatorPart const& B,
-                       HamiltonianPart const& HpartInner, HamiltonianPart const& HpartOuter,
-                       DensityMatrixPart const& DMpartInner, DensityMatrixPart const& DMpartOuter);
+    SusceptibilityPart(MonomialOperatorPart const& A,
+                       MonomialOperatorPart const& B,
+                       HamiltonianPart const& HpartInner,
+                       HamiltonianPart const& HpartOuter,
+                       DensityMatrixPart const& DMpartInner,
+                       DensityMatrixPart const& DMpartOuter);
 
     /** Iterates over all matrix elements and fills the list of terms. */
     void compute();
@@ -148,18 +144,18 @@ public:
     RealType const ReduceTolerance = 1e-8;
 
 private:
-
-    template<bool AComplex, bool BComplex> void computeImpl();
+    template <bool AComplex, bool BComplex> void computeImpl();
 };
 
 // Inline call operators
 // BOSON: bosononic Matsubara frequency
 inline ComplexType SusceptibilityPart::operator()(long MatsubaraNumber) const {
-    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber)); }
+    return (*this)(MatsubaraSpacing * RealType(2 * MatsubaraNumber));
+}
 
 inline ComplexType SusceptibilityPart::operator()(ComplexType z) const {
     // BOSON: add contribution of zero-energy pole
-    ComplexType ZeroPole = std::abs(z) < 1e-15 ? ZeroPoleWeight*beta : 0;
+    ComplexType ZeroPole = std::abs(z) < 1e-15 ? ZeroPoleWeight * beta : 0;
     return Terms(z) + ZeroPole;
 }
 

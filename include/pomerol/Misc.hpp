@@ -29,15 +29,15 @@
 
 namespace Pomerol {
 
-#define MSG_PREFIX            __FILE__ << ":" << __LINE__ << ": "
+#define MSG_PREFIX __FILE__ << ":" << __LINE__ << ": "
 #ifndef NDEBUG
-#define DEBUG(MSG)            std::cout << MSG_PREFIX << MSG << std::endl
+#define DEBUG(MSG) std::cout << MSG_PREFIX << MSG << std::endl
 #else
-#define DEBUG(MSG)            NULL;
+#define DEBUG(MSG) NULL;
 #endif
-#define INFO(MSG)             std::cout << MSG << std::endl
-#define INFO_NONEWLINE(MSG)   std::cout << MSG << std::flush
-#define ERROR(MSG)            std::cerr << MSG_PREFIX << MSG << std::endl
+#define INFO(MSG) std::cout << MSG << std::endl
+#define INFO_NONEWLINE(MSG) std::cout << MSG << std::flush
+#define ERROR(MSG) std::cerr << MSG_PREFIX << MSG << std::endl
 
 /** Real floating point type. */
 using RealType = double;
@@ -57,36 +57,34 @@ using QuantumState = libcommute::sv_index_type;
 using ParticleIndex = unsigned int;
 
 /** Dense complex matrix. */
-using ComplexMatrixType = Eigen::Matrix<ComplexType,Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor>;
+using ComplexMatrixType =
+    Eigen::Matrix<ComplexType, Eigen::Dynamic, Eigen::Dynamic, Eigen::AutoAlign | Eigen::RowMajor>;
 
-template<bool Complex>
-using MelemType = typename std::conditional<Complex, ComplexType, RealType>::type;
+template <bool Complex> using MelemType = typename std::conditional<Complex, ComplexType, RealType>::type;
 
-template<typename ScalarType>
+template <typename ScalarType>
 using LOperatorType = libcommute::loperator<ScalarType, libcommute::fermion, libcommute::boson>;
 
-template<bool Complex>
+template <bool Complex>
 using LOperatorTypeRC = libcommute::loperator<MelemType<Complex>, libcommute::fermion, libcommute::boson>;
 
-template<bool Complex>
-using MatrixType = Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic,Eigen::Dynamic,Eigen::AutoAlign|Eigen::RowMajor>;
+template <bool Complex>
+using MatrixType =
+    Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic, Eigen::Dynamic, Eigen::AutoAlign | Eigen::RowMajor>;
 
 /** Dense complex vector. */
-using ComplexVectorType = Eigen::Matrix<ComplexType,Eigen::Dynamic,1,Eigen::AutoAlign>;
+using ComplexVectorType = Eigen::Matrix<ComplexType, Eigen::Dynamic, 1, Eigen::AutoAlign>;
 /** Dense real vector. */
-using RealVectorType = Eigen::Matrix<RealType,Eigen::Dynamic,1,Eigen::AutoAlign>;
+using RealVectorType = Eigen::Matrix<RealType, Eigen::Dynamic, 1, Eigen::AutoAlign>;
 
-template<bool Complex>
-using VectorType = Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic,1,Eigen::AutoAlign>;
+template <bool Complex> using VectorType = Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic, 1, Eigen::AutoAlign>;
 
 /** Sparse complex matrix */
-template<bool Complex>
-using ColMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::ColMajor>;
-template<bool Complex>
-using RowMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::RowMajor>;
+template <bool Complex> using ColMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::ColMajor>;
+template <bool Complex> using RowMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::RowMajor>;
 
 /** A short name for imaginary unit. */
-static ComplexType const I = ComplexType(0.0,1.0);    // 'static' to prevent linking problems
+static ComplexType const I = ComplexType(0.0, 1.0); // 'static' to prevent linking problems
 
 /** Permutation of 3 elements */
 struct Permutation3 {

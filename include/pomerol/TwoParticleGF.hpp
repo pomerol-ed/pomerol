@@ -45,7 +45,7 @@ using FreqVec = std::vector<FreqTuple>;
  */
 class TwoParticleGF : public Thermal, public ComputableObject {
 
-friend class TwoParticleGFContainer;
+    friend class TwoParticleGFContainer;
 
     /** A reference to a states classification object. */
     StatesClassification const& S;
@@ -66,7 +66,6 @@ friend class TwoParticleGFContainer;
     std::vector<TwoParticleGFPart> parts;
 
 protected:
-
     /** A flag to determine whether this GF is identical to zero */
     bool Vanishing = true;
 
@@ -75,7 +74,8 @@ protected:
      * \param[in] OperatorPosition The number of the position of the operator.
      * \param[in] LeftIndex A left block index referring to the part needed.
      */
-    MonomialOperatorPart const& OperatorPartAtPosition(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const;
+    MonomialOperatorPart const&
+    OperatorPartAtPosition(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const;
     /** Chooses an operator standing at a specified position in a given permutation and
      * returns a left block index corresponding to the right block index. May return INVALID_BLOCK_NUMBER if
      * the operator does not have such a (non-zero) block.
@@ -91,7 +91,8 @@ protected:
      * \param[in] OperatorPosition The number of the position of the operator.
      * \param[in] LeftIndex A left block index.
      */
-    BlockNumber getRightIndex(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const; //!< return right index of an operator at current position for a current permutation
+    BlockNumber getRightIndex(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex)
+        const; //!< return right index of an operator at current position for a current permutation
 
 public:
     /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
@@ -110,10 +111,13 @@ public:
      * \param[in] CX4 A reference to the second creation operator.
      * \param[in] DM A reference to a density matrix.
      */
-    TwoParticleGF(StatesClassification const& S, Hamiltonian const& H,
-            AnnihilationOperator const& C1, AnnihilationOperator const& C2,
-            CreationOperator const& CX3, CreationOperator const& CX4,
-            DensityMatrix const& DM);
+    TwoParticleGF(StatesClassification const& S,
+                  Hamiltonian const& H,
+                  AnnihilationOperator const& C1,
+                  AnnihilationOperator const& C2,
+                  CreationOperator const& CX3,
+                  CreationOperator const& CX4,
+                  DensityMatrix const& DM);
 
     /** Chooses relevant parts of C1, C2, CX3 and CX4 and allocates resources for the parts. */
     void prepare();
@@ -121,11 +125,8 @@ public:
     /** Actually computes the parts and fill the internal cache of precomputed values.
      * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
      */
-    std::vector<ComplexType> compute(
-        bool clear = false,
-        FreqVec const& freqs = {},
-        MPI_Comm const& comm = MPI_COMM_WORLD
-    );
+    std::vector<ComplexType>
+    compute(bool clear = false, FreqVec const& freqs = {}, MPI_Comm const& comm = MPI_COMM_WORLD);
 
     /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
      * \param[in] Position Zero-based number of the operator to use.
@@ -153,18 +154,21 @@ public:
 };
 
 inline ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const {
-    if(Vanishing) return 0;
+    if(Vanishing)
+        return 0;
     else {
-        return std::accumulate(parts.begin(), parts.end(), ComplexType(0),
-            [z1,z2,z3](ComplexType s, TwoParticleGFPart const& p) { return s + p(z1,z2,z3); }
-        );
+        return std::accumulate(parts.begin(),
+                               parts.end(),
+                               ComplexType(0),
+                               [z1, z2, z3](ComplexType s, TwoParticleGFPart const& p) { return s + p(z1, z2, z3); });
     }
 }
 
-inline ComplexType TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const {
-    return (*this)(MatsubaraSpacing*RealType(2*MatsubaraNumber1+1),
-                   MatsubaraSpacing*RealType(2*MatsubaraNumber2+1),
-                   MatsubaraSpacing*RealType(2*MatsubaraNumber3+1));
+inline ComplexType
+TwoParticleGF::operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const {
+    return (*this)(MatsubaraSpacing * RealType(2 * MatsubaraNumber1 + 1),
+                   MatsubaraSpacing * RealType(2 * MatsubaraNumber2 + 1),
+                   MatsubaraSpacing * RealType(2 * MatsubaraNumber3 + 1));
 }
 
 } // namespace Pomerol
