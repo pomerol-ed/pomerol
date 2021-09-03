@@ -42,7 +42,7 @@ The library, _libpomerol_ is built. It then can be used to linking with executab
 Documentation can be compiled with a `make doc` command.
 
 ## License
-The software is released under GPLv2 license.
+This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 Academic usage : please attribute this work by a citation to http://dx.doi.org/10.5281/zenodo.17900.
 
