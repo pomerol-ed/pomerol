@@ -53,8 +53,8 @@ template <bool MOpC, bool HC> void MonomialOperatorPart::computeImpl() {
     auto const& MOp_ = *static_cast<LOperatorTypeRC<MOpC> const*>(MOp);
 
     for(InnerQuantumState st = 0; st < fromStates.size(); ++st) {
-        auto fromView = fromMapper.make_const_view_no_ref(U.col(st));
-        auto toView = toMapper.make_view_no_ref(OURight.col(st));
+        auto fromView = fromMapper.make_const_view(U.col(st));
+        auto toView = toMapper.make_view(OURight.col(st));
         MOp_(fromView, toView);
     }
 

@@ -49,7 +49,7 @@ template <bool C> void HamiltonianPart::prepareImpl() {
     auto ket_view = mapper.make_const_view(ket);
 
     for(InnerQuantumState st = 0; st < BlockSize; ++st) {
-        auto bra_view = mapper.make_view_no_ref(HMatrix_.col(st));
+        auto bra_view = mapper.make_view(HMatrix_.col(st));
         ket(st) = 1.0;
         HOp_(ket_view, bra_view);
         ket(st) = .0; // cppcheck-suppress redundantAssignment
