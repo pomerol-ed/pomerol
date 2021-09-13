@@ -29,6 +29,10 @@ jobs:
            sudo apt-get install -y libeigen3-dev libopenmpi-dev libboost-all-dev
            sudo apt-get install -y ${{ matrix.compiler.name }}
 
+    - name: Install Doxygen
+      if: startsWith(matrix.cxx_compiler.name, 'clang') == true
+      run: sudo apt-get install -y doxygen
+
     - name: Install libcommute
       run: |
            git clone https://github.com/krivenko/libcommute
@@ -45,13 +49,30 @@ jobs:
       run: |
            mkdir build
            cd build
-           cmake -Dlibcommute_DIR=${GITHUB_WORKSPACE}/libcommute.ins/lib/cmake \
+           cmake -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/installed          \
+                 -Dlibcommute_DIR=${GITHUB_WORKSPACE}/libcommute.ins/lib/cmake \
                  -DTesting=ON                                                  \
                  -DProgs=ON                                                    \
                  -Dprogs_list="anderson;hubbard2d" ..
            make VERBOSE=1
+           make doc
 
     - name: Run unit tests
       run: |
            cd build
            CTEST_OUTPUT_ON_FAILURE=1 make test
+
+    - name: Install
+      run: |
+           cd build
+           make install
+
+    - name: Deploy documentation
+      if: |
+          github.ref == 'refs/heads/master' &&
+          startsWith(matrix.cxx_compiler.name, 'clang') == true
+      uses: JamesIves/github-pages-deploy-action@4.1.0
+      with:
+        branch: gh-pages
+        token: ${{ secrets.GITHUB_TOKEN }}
+        folder: installed/share/doc/pomerol

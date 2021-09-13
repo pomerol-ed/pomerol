@@ -120,7 +120,7 @@ extern std::array<Permutation4, 24> const permutations4;
 
 /**
  * \mainpage
- * The source code and fetch instructions are located at <a href="http://pomerol.googlecode.com">project's Google code page</a>.
+ * The source code and fetch instructions are located at <a href="https://github.com/aeantipov/pomerol">project's GitHub repository</a>.
  * \section   ref_API libpomerol API
  * The general sequence of a calculation is:
  * -    Define all indices of each mode of the system, i.e. site + spin indices ( by IndexClassification ).
@@ -170,17 +170,6 @@ extern std::array<Permutation4, 24> const permutations4;
  *     \Gamma_{1'2'3'4'}(\omega_1,\omega_2;\omega_3,\omega_4)
  *     (G^{-1}(\omega_3))_{3'3} (G^{-1}(\omega_4))_{4'4}
  * \f]
- *
- * \section Features
- * -    OpenMP support
- * \todo HDF5 storage ( read / write )
- * \section ref_authors Authors
- * -    Andrey Antipov <antipov[at]ct-qmc.org>
- * -    Igor Krivenko <igor[at]shg.ru>
- *
- * with a help from Mikhail Alejnikov, Alexey Rubtsov, Christoph Jung and Aljoscha Wilhelm
- *
- * We acknowledge <em>RRC Kurchatov Institute</em> for providing computing resources.
  *
  */
 

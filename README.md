@@ -1,6 +1,8 @@
 [![DOI](https://zenodo.org/badge/4569/aeantipov/pomerol.svg)](
 http://dx.doi.org/10.5281/zenodo.17900
 )
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-red)](
+https://aeantipov.github.io/pomerol/)
 
 **pomerol** is an exact diagonalization (full ED) code written in C++ aimed at
 solving condensed matter second-quantized models of interacting fermions
@@ -68,7 +70,8 @@ two-particle Green's functions as well as susceptibilities.
   - `make`
   - `make test` (if unit tests are compiled)
   - `make install`
-  - `make doc` generates the documentation in the `doc` subdirectory.
+  - `make doc` generates the Doxygen reference documentation in the `doc/html`
+    subdirectory.
 
 The library, _libpomerol_ is built. It can be used for linking with executables.
 Some working executables are given in `prog` subdirectory.
@@ -82,7 +85,7 @@ The interface to [TRIQS library](https://triqs.github.io/triqs/latest/) is
 readily available: <https://github.com/krivenko/pomerol2triqs>.
 
 # Documentation
-Check <https://aeantipov.github.io/pomerol/> or type `make doc` during
+Check <https://aeantipov.github.io/pomerol/html/> or type `make doc` during
 compilation stage to build the reference documentation.
 
 # License
@@ -98,11 +101,18 @@ Please, attribute this work by a citation to
 # Authors & Contributors
   * Andrey Antipov <Andrey.E.Antipov\at\gmail.com>
   * Igor Krivenko <igor.s.krivenko\at\gmail.com>
+  * Mikhail Alejnikov
+  * Alexey Rubtsov
+  * Christoph Jung
+  * Aljoscha Wilhelm
   * Junya Otsuki
   * Sergei Iskakov
   * Hiroshi Shinaoka
   * Nils Wentzell
   * Hugo U.R. Strand
+
+We acknowledge [NRC Kurchatov Institute](http://eng.nrcki.ru/) for providing
+computational resources.
 
 # Development/Help
 Please, feel free to contact us and to contribute!
