@@ -8,9 +8,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-//
-// Created by iskakoff on 05/12/16.
-//
+/// \file prog/anderson_model.hpp
+/// \brief ED calculations for the Anderson impurity model.
+/// \author Sergei Iskakov (sir.iskakoff@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
 
 #ifndef POMEROL_PROG_ANDERSON_MODEL_HPP
 #define POMEROL_PROG_ANDERSON_MODEL_HPP
@@ -26,14 +27,13 @@
 
 using namespace Pomerol;
 
-/**
- * @brief anderson_model class
- *
- * @author iskakoff
- */
+/// A full-ED calculation on the Anderson impurity model.
 class anderson_model : public quantum_model {
 
 public:
+    /// Constructor.
+    /// \param[in] argc The number of command line arguments.
+    /// \param[in] argv The command line arguments.
     anderson_model(int argc, char* argv[])
         : quantum_model(argc, argv, "Full-ED of the Anderson model"),
           // clang-format off
@@ -60,12 +60,21 @@ public:
         init_hamiltonian();
     }
 
+    /// Return the (spin down, spin up) pair of indices of the correlated atom.
+    /// \param[in] IndexInfo Classification of operator index tuples.
     virtual std::pair<ParticleIndex, ParticleIndex> get_node(IndexInfoType const& IndexInfo) override {
         ParticleIndex d0 = IndexInfo.getIndex("A", 0, LatticePresets::down);
         ParticleIndex u0 = IndexInfo.getIndex("A", 0, LatticePresets::up);
         return std::make_pair(d0, u0);
     }
 
+    /// Prepare a set of indices to evaluate annihilation/creation operators and
+    /// a set of pairs of indices to evaluate single-particle Green's functions.
+    /// \param[in] d0 The spin-down single particle index of the correlated atom.
+    /// \param[in] u0 The spin-up single particle index of the correlated atom.
+    /// \param[out] indices2 The set of index pairs for Green's function computation.
+    /// \param[out] f The set of indices for annihilation/creation operator computation.
+    /// \param[in] IndexInfo Classification of operator index tuples.
     virtual void prepare_indices(ParticleIndex d0,
                                  ParticleIndex u0,
                                  std::set<IndexCombination2>& indices2,
@@ -74,6 +83,7 @@ public:
         indices2.insert(IndexCombination2(d0, d0)); // evaluate only G_{\down \down}
     }
 
+    /// \brief Construct Hamiltonian of the single impurity Anderson model.
     virtual void init_hamiltonian() override {
         HExpr += LatticePresets::CoulombS("A", args::get(args_options_anderson.U), args::get(args_options_anderson.ed));
 
@@ -88,15 +98,24 @@ public:
             mpi_cout << "Hamiltonian:\n" << HExpr << std::endl;
     }
 
+private:
+    /// Description of command line options.
     struct {
+        /// Coulomb repulsion constant.
         args::ValueFlag<double> U;
+        /// Energy level localized on the correlated atom.
         args::ValueFlag<double> ed;
+        /// Bath levels.
         args::ValueFlag<std::vector<double>, VectorReader> levels;
+        /// Hopping constants between the correlated atom and the bath sites.
         args::ValueFlag<std::vector<double>, VectorReader> hoppings;
     } args_options_anderson;
 
+    /// The number of bath sites.
     std::size_t L;
+    /// Bath levels.
     std::vector<double> levels;
+    /// Hopping constants between the correlated atom and the bath sites.
     std::vector<double> hoppings;
 };
 

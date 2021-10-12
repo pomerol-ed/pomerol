@@ -8,9 +8,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-//
-// Created by iskakoff on 05/12/16.
-//
+/// \file prog/hubbard2d_model.hpp
+/// \brief ED calculations for the two-dimensional Hubbard model on an MxM cluster.
+/// \author Sergei Iskakov (sir.iskakoff@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
 
 #ifndef POMEROL_PROG_HUBBARD2D_MODEL_HPP
 #define POMEROL_PROG_HUBBARD2D_MODEL_HPP
@@ -28,14 +29,13 @@
 
 using namespace Pomerol;
 
-/**
- * @brief hubbard2d_model class
- *
- * @author iskakoff
- */
+/// A full-ED calculation for the two-dimensional Hubbard model on an \f$N_x \times N_y\f$ cluster.
 class hubbard2d_model : public quantum_model {
 
 public:
+    /// Constructor.
+    /// \param[in] argc The number of command line arguments.
+    /// \param[in] argv The command line arguments.
     hubbard2d_model(int argc, char* argv[])
         : quantum_model(argc, argv, "Full-ED of the MxM Hubbard cluster"),
           // clang-format off
@@ -55,12 +55,15 @@ public:
         init_hamiltonian();
     }
 
+    /// Return the (spin down, spin up) pair of indices belonging to one of cluster's sites.
+    /// \param[in] IndexInfo Classification of operator index tuples.
     virtual std::pair<ParticleIndex, ParticleIndex> get_node(IndexInfoType const& IndexInfo) override {
         ParticleIndex d0 = IndexInfo.getIndex("S0", 0, LatticePresets::down);
         ParticleIndex u0 = IndexInfo.getIndex("S0", 0, LatticePresets::up);
         return std::make_pair(d0, u0);
     };
 
+    /// \brief Construct Hamiltonian of the two-dimensional Hubbard model on an \f$N_x \times N_y\f$ cluster.
     virtual void init_hamiltonian() override {
         int L = size_x * size_y;
         INFO("Diagonalization of " << L << "=" << size_x << "*" << size_y << " sites");
@@ -119,6 +122,13 @@ public:
             mpi_cout << "Hamiltonian:\n" << HExpr << std::endl;
     }
 
+    /// Prepare a set of indices to evaluate annihilation/creation operators and
+    /// a set of pairs of indices to evaluate single-particle Green's functions.
+    /// \param[in] d0 The spin-down single particle index belonging to one of cluster's sites.
+    /// \param[in] u0 The spin-up single particle index belonging to one of cluster's sites.
+    /// \param[out] indices2 The set of index pairs for Green's function computation.
+    /// \param[out] f The set of indices for annihilation/creation operator computation.
+    /// \param[in] IndexInfo Classification of operator index tuples.
     virtual void prepare_indices(ParticleIndex d0,
                                  ParticleIndex u0,
                                  std::set<IndexCombination2>& indices2,
@@ -132,19 +142,33 @@ public:
     }
 
 private:
+    /// Description of command line options.
     struct {
+        /// Hubbard interaction constant.
         args::ValueFlag<double> U;
+        /// Chemical potential.
         args::ValueFlag<double> mu;
+        /// Nearest neighbor hopping constant.
         args::ValueFlag<double> t;
+        /// Next-nearest neighbor hopping constant.
         args::ValueFlag<double> tp;
+        /// Linear size of the cluster along the \f$x\f$-direction, \f$N_x\f$.
         args::ValueFlag<int> x;
+        /// Linear size of the cluster along the \f$y\f$-direction, \f$N_y\f$.
         args::ValueFlag<int> y;
     } args_options_hubbard2d;
 
+    /// Linear size of the cluster along the \f$x\f$-direction, \f$N_x\f$.
     int size_x;
+    /// Linear size of the cluster along the \f$y\f$-direction, \f$N_y\f$.
     int size_y;
+    /// Names of cluster's sites.
     std::vector<std::string> names;
 
+    /// Translate coordinates of cluster's sites into a linear index.
+    /// \param[in] x Site coordinate along the \f$x\f$-direction.
+    /// \param[in] y Site coordinate along the \f$y\f$-direction.
+    /// \return Flattened index.
     std::size_t SiteIndexF(std::size_t x, std::size_t y) { return y * size_x + x; }
 };
 

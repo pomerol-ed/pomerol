@@ -8,12 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/LatticePresets.h
-** \brief A set of preset methods to simplify Pomerol::Lattice entering.
-**
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-*/
+/// \file include/pomerol/LatticePresets.hpp
+/// \brief Factory functions for terms commonly used to construct various lattice Hamiltonians.
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #ifndef POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_HPP
 #define POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_HPP
 
@@ -25,42 +24,87 @@
 
 namespace Pomerol {
 
-/** This is a set of presets of different Terms, most commonly used while writing a Hamiltonian. */
+/// This namespace encloses factory functions for various terms most commonly used to write a lattice Hamiltonian.
 namespace LatticePresets {
 
-/** Possible spin projections are \b down and \b up */
-enum spin : short { undef = -1, down = 0, up = 1 };
+/// Possible values of spin-1/2 z-projection.
+enum spin : short {
+    undef = -1, ///< Undefined (useful for bosonic degrees of freedom)
+    down = 0,   ///< Spin down
+    up = 1      ///< Spin up
+};
 
+/// Output stream insertion operator for the spin projection values.
+/// \param[out] os Output stream.
+/// \param[in] s Spin projection to be inserted.
+/// \return Reference to the output stream.
 std::ostream& operator<<(std::ostream& os, spin s);
 
+/// Real-valued expression built out of lattice creation/annihilation operators.
+/// Each operator in the expression carries a site name label (a string index),
+/// an integer orbital index and a spin index.
 using RealExpr = Operators::expression<RealType, std::string, unsigned short, spin>;
+/// Complex-valued expression built out of lattice creation/annihilation operators.
+/// Each operator in the expression carries a site name label (a string index),
+/// an integer orbital index and a spin index.
 using ComplexExpr = Operators::expression<ComplexType, std::string, unsigned short, spin>;
 
-/** Generates a single energy level term \f$\varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma} \f$ on a local site for a given spin and orbital.
-     * \param[in] Label \f$i\f$ - site affected by this Lattice::Term.
-     * \param[in] Value \f$\varepsilon\f$ - the energy level.
-     * \param[in] orbital \f$\alpha\f$ - affected orbital of the site.
-     * \param[in] spin \f$\sigma\f$ - affected spin component.
-     */
-RealExpr Level(std::string const& Label, RealType Value, unsigned short Orbital, spin Spin);
-ComplexExpr Level(std::string const& Label, ComplexType Value, unsigned short Orbital, spin Spin);
+//
+// Overloads of Level()
+//
 
-/** Adds a level \f$ \sum\limits_{\alpha, \sigma} \varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma} \f$.
-     * \param[in] L A pointer to the Lattice to add the terms.
-     * \param[in] label \f$i\f$ - label of the site.
-     * \param[in] Level \f$\varepsilon\f$ - energy level to add.
-     */
-RealExpr Level(std::string const& Label, RealType Value, unsigned short NOrbitals = 1);
-ComplexExpr Level(std::string const& Label, ComplexType Value, unsigned short NOrbitals = 1);
+/// \defgroup LatticePresets Factory functions to construct widely used lattice models
+///@{
 
-/** Generates a hopping term \f$ t c^{\dagger}_{i\alpha\sigma}c_{j\alpha'\sigma}, j \neq i \f$ between two sites.
-     * \param[in] Label1 \f$i\f$ - the first site which is connected by this term.
-     * \param[in] Label2 \f$j\f$ - the second site which is connected by this term.
-     * \param[in] Value \f$t\f$ - matrix element of a term.
-     * \param[in] orbital \f$\alpha\f$ - orbital of site \f$i\f$, which is connected by this term.
-     * \param[in] orbital \f$\alpha'\f$ - orbital of site \f$j\f$, which is connected by this term.
-     * \param[in] spin \f$\sigma\f$ - spins of sites, which are connected by this term.
-     */
+/// \defgroup Level Factory functions for single fermion level terms
+///@{
+
+/// Make a single energy level term \f$\varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma}\f$
+/// for a fermion on a given site for a given spin and orbital.
+/// \param[in] Label Site label \f$i\f$.
+/// \param[in] Eps Real energy level \f$\varepsilon\f$.
+/// \param[in] Orbital Orbital index \f$\alpha\f$.
+/// \param[in] Spin Spin component \f$\sigma\f$.
+RealExpr Level(std::string const& Label, RealType Eps, unsigned short Orbital, spin Spin);
+/// Make a single energy level term \f$\varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma}\f$
+/// for a fermion on a given site for a given spin and orbital.
+/// \param[in] Label Site label \f$i\f$.
+/// \param[in] Eps Complex energy level \f$\varepsilon\f$.
+/// \param[in] Orbital Orbital index \f$\alpha\f$.
+/// \param[in] Spin Spin component \f$\sigma\f$.
+ComplexExpr Level(std::string const& Label, ComplexType Eps, unsigned short Orbital, spin Spin);
+
+/// Make a sum of real energy fermionic terms
+/// \f$ \sum\limits_{\alpha, \sigma} \varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma}\f$.
+/// \param[in] Label Site label \f$i\f$.
+/// \param[in] Eps Energy level \f$\varepsilon\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
+RealExpr Level(std::string const& Label, RealType Eps, unsigned short NOrbitals = 1);
+/// Make a sum of complex energy fermionic terms
+/// \f$ \sum\limits_{\alpha, \sigma} \varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma}\f$.
+/// \param[in] Label Site label \f$i\f$.
+/// \param[in] Eps Energy level \f$\varepsilon\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
+ComplexExpr Level(std::string const& Label, ComplexType Eps, unsigned short NOrbitals = 1);
+
+///@}
+
+//
+// Overloads of Hopping()
+//
+
+/// \defgroup Hopping Factory functions for fermionic hopping terms
+///@{
+
+/// Make a fermionic hopping term \f$t c^\dagger_{i\alpha_1\sigma_1}c_{j\alpha_2\sigma_2} + h.c.\f$
+/// between two lattice sites \f$i \neq j\f$ with a real hopping matrix element.
+/// \param[in] Label1 The first lattice site \f$i\f$ connected by this term.
+/// \param[in] Label2 The second lattice site \f$j\f$ connected by this term.
+/// \param[in] t Hopping matrix element \f$t\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$ on site \f$i\f$ connected by this term.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$ on site \f$j\f$ connected by this term.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$ on site \f$i\f$ connected by this term.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$ on site \f$j\f$ connected by this term.
 RealExpr Hopping(std::string const& Label1,
                  std::string const& Label2,
                  RealType t,
@@ -68,6 +112,15 @@ RealExpr Hopping(std::string const& Label1,
                  unsigned short Orbital2,
                  spin Spin1,
                  spin Spin2);
+/// Make a fermionic hopping term \f$t c^\dagger_{i\alpha_1\sigma_1}c_{j\alpha_2\sigma_2} + h.c.\f$
+/// between two lattice sites \f$i \neq j\f$ with a complex hopping matrix element.
+/// \param[in] Label1 The first lattice site \f$i\f$ connected by this term.
+/// \param[in] Label2 The second lattice site \f$j\f$ connected by this term.
+/// \param[in] t Hopping matrix element \f$t\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$ on site \f$i\f$ connected by this term.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$ on site \f$j\f$ connected by this term.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$ on site \f$i\f$ connected by this term.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$ on site \f$j\f$ connected by this term.
 ComplexExpr Hopping(std::string const& Label1,
                     std::string const& Label2,
                     ComplexType t,
@@ -75,207 +128,551 @@ ComplexExpr Hopping(std::string const& Label1,
                     unsigned short Orbital2,
                     spin Spin1,
                     spin Spin2);
-/** A shortcut to hopping Lattice::Term \f$ t c^{\dagger}_{i\alpha\sigma}c_{j\alpha\sigma}, j \neq i \f$ */
+
+/// Make a fermionic hopping term \f$t c^\dagger_{i\alpha\sigma}c_{j\alpha\sigma} + h.c.\f$
+/// between two lattice sites \f$i \neq j\f$ with a real hopping matrix element.
+/// \param[in] Label1 The first lattice site \f$i\f$ connected by this term.
+/// \param[in] Label2 The second lattice site \f$j\f$ connected by this term.
+/// \param[in] t Hopping matrix element \f$t\f$.
+/// \param[in] Orbital Orbital index \f$\alpha\f$.
+/// \param[in] Spin Spin component \f$\sigma\f$.
 RealExpr Hopping(std::string const& Label1, std::string const& Label2, RealType t, unsigned short Orbital, spin Spin);
+/// Make a fermionic hopping term \f$t c^\dagger_{i\alpha\sigma}c_{j\alpha\sigma} + h.c.\f$
+/// between two lattice sites \f$i \neq j\f$ with a complex hopping matrix element.
+/// \param[in] Label1 The first lattice site \f$i\f$ connected by this term.
+/// \param[in] Label2 The second lattice site \f$j\f$ connected by this term.
+/// \param[in] t Hopping matrix element \f$t\f$.
+/// \param[in] Orbital Orbital index \f$\alpha\f$.
+/// \param[in] Spin Spin component \f$\sigma\f$.
 ComplexExpr
 Hopping(std::string const& Label1, std::string const& Label2, ComplexType t, unsigned short Orbital, spin Spin);
-/** A shortcut to Hopping \f$ \sum_{\sigma} t c^{\dagger}_{i\alpha\sigma}c_{j\alpha\sigma} \f$ */
+
+/// Make a fermionic hopping term \f$t \sum_\sigma c^\dagger_{i\alpha_1\sigma}c_{j\alpha_2\sigma} + h.c.\f$
+/// between two lattice sites \f$i \neq j\f$ with a real hopping matrix element.
+/// \param[in] Label1 The first lattice site \f$i\f$ connected by this term.
+/// \param[in] Label2 The second lattice site \f$j\f$ connected by this term.
+/// \param[in] t Hopping matrix element \f$t\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$ on site \f$i\f$ connected by this term.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$ on site \f$j\f$ connected by this term.
 RealExpr Hopping(std::string const& Label1,
                  std::string const& Label2,
                  RealType t,
                  unsigned short Orbital1,
                  unsigned short Orbital2);
+/// Make a fermionic hopping term \f$t \sum_\sigma c^\dagger_{i\alpha_1\sigma}c_{j\alpha_2\sigma} + h.c.\f$
+/// between two lattice sites \f$i \neq j\f$ with a complex hopping matrix element.
+/// \param[in] Label1 The first lattice site \f$i\f$ connected by this term.
+/// \param[in] Label2 The second lattice site \f$j\f$ connected by this term.
+/// \param[in] t Hopping matrix element \f$t\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$ on site \f$i\f$ connected by this term.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$ on site \f$j\f$ connected by this term.
 ComplexExpr Hopping(std::string const& Label1,
                     std::string const& Label2,
                     ComplexType t,
                     unsigned short Orbital1,
                     unsigned short Orbital2);
-/** A shortcut to Hopping \f$ \sum_{\sigma\alpha} t c^{\dagger}_{i\alpha\sigma}c_{j\alpha\sigma} \f$ */
+
+/// Make a fermionic hopping term \f$t \sum_{\alpha\sigma} c^\dagger_{i\alpha\sigma}c_{j\alpha\sigma} + h.c.\f$
+/// between two lattice sites \f$i \neq j\f$ with a real hopping matrix element.
+/// \param[in] Label1 The first lattice site \f$i\f$ connected by this term.
+/// \param[in] Label2 The second lattice site \f$j\f$ connected by this term.
+/// \param[in] t Hopping matrix element \f$t\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
 RealExpr Hopping(std::string const& Label1, std::string const& Label2, RealType t, unsigned short NOrbitals = 1);
+/// Make a fermionic hopping term \f$t \sum_{\alpha\sigma} c^\dagger_{i\alpha\sigma}c_{j\alpha\sigma} + h.c.\f$
+/// between two lattice sites \f$i \neq j\f$ with a complex hopping matrix element.
+/// \param[in] Label1 The first lattice site \f$i\f$ connected by this term.
+/// \param[in] Label2 The second lattice site \f$j\f$ connected by this term.
+/// \param[in] t Hopping matrix element \f$t\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
 ComplexExpr Hopping(std::string const& Label1, std::string const& Label2, ComplexType t, unsigned short NOrbitals = 1);
 
-/** Generates a local density-density 4-point term \f$ U n_{i\alpha\sigma}n_{j\alpha'\sigma'} \f$.
-     * \param[in] Label1 \f$i\f$ - site affected by this Lattice::Term.
-     * \param[in] Label2 \f$j\f$ - site affected by this Lattice::Term.
-     * \param[in] Value \f$U\f$ - matrix element of the term.
-     * \param[in] orbital1 \f$\alpha\f$ - the orbital affected by the first density operator.
-     * \param[in] orbital2 \f$\alpha'\f$ - the orbital affected by the second density operator.
-     * \param[in] spin1 \f$\sigma\f$ - the spin component affected by the first density operator.
-     * \param[in] spin2 \f$\sigma'\f$ - the spin component affected by the second density operator.
-     */
+///@}
+
+//
+// Overloads of Magnetization()
+//
+
+/// \defgroup Magnetization Factory functions for magnetization terms
+///@{
+
+/// Make a magnetic splitting term \f$H \sum_\alpha (n_{i\alpha\uparrow} - n_{i\alpha\downarrow})\f$
+/// with a real magnetization constant.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] H Magnetization constant \f$H\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
+RealExpr Magnetization(std::string const& Label, RealType H, unsigned short NOrbitals = 1);
+/// Make a magnetic splitting term \f$H \sum_\alpha (n_{i\alpha\uparrow} - n_{i\alpha\downarrow})\f$
+/// with a complex magnetization constant.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] H Magnetization constant \f$H\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
+ComplexExpr Magnetization(std::string const& Label, ComplexType H, unsigned short NOrbitals = 1);
+
+///@}
+
+//
+// Overloads of NupNdown()
+//
+
+/// \defgroup NupNdown Factory functions for fermionic density-density interaction terms
+///@{
+
+/// Make a fermionic density-density interaction term \f$ U n_{i\alpha_1\sigma_1}n_{j\alpha_2\sigma_2}\f$
+/// with a real interaction strength \f$U\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] U Interaction constant \f$U\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$ on site \f$i\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$ on site \f$j\f$.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$ on site \f$i\f$.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$ on site \f$j\f$.
 RealExpr NupNdown(std::string const& Label1,
                   std::string const& Label2,
-                  RealType Value,
+                  RealType U,
                   unsigned short Orbital1,
                   unsigned short Orbital2,
                   spin Spin1,
                   spin Spin2);
+/// Make a fermionic density-density interaction term \f$ U n_{i\alpha_1\sigma_1}n_{j\alpha_2\sigma_2}\f$
+/// with a complex interaction strength \f$U\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] U Interaction constant \f$U\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$ on site \f$i\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$ on site \f$j\f$.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$ on site \f$i\f$.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$ on site \f$j\f$.
 ComplexExpr NupNdown(std::string const& Label1,
                      std::string const& Label2,
-                     ComplexType Value,
+                     ComplexType U,
                      unsigned short Orbital1,
                      unsigned short Orbital2,
                      spin Spin1,
                      spin Spin2);
-/** A shortcut to Pomerol::Lattice::Term::Presets::NupNdown \f$ U n_{i\alpha\uparrow}n_{j\alpha'\downarrow'} \f$ term for \f$i=j\f$. */
+
+/// Make a fermionic density-density interaction term \f$ U n_{i\alpha_1\sigma_1}n_{i\alpha_2\sigma_2}\f$
+/// with a real interaction strength \f$U\f$.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] U Interaction constant \f$U\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$.
 RealExpr NupNdown(std::string const& Label,
-                  RealType Value,
+                  RealType U,
                   unsigned short Orbital1,
                   unsigned short Orbital2,
                   spin Spin1,
                   spin Spin2);
+/// Make a fermionic density-density interaction term \f$ U n_{i\alpha_1\sigma_1}n_{i\alpha_2\sigma_2}\f$
+/// with a complex interaction strength \f$U\f$.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] U Interaction constant \f$U\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$.
 ComplexExpr NupNdown(std::string const& Label,
-                     ComplexType Value,
+                     ComplexType U,
                      unsigned short Orbital1,
                      unsigned short Orbital2,
                      spin Spin1,
                      spin Spin2);
-/** A shortcut to Pomerol::Lattice::Term::Presets::NupNdown \f$ U n_{i\alpha\uparrow}n_{i\alpha'\downarrow'} \f$ term for spin1 = \f$\uparrow\f$, spin2 = \f$\downarrow\f$. */
-RealExpr NupNdown(std::string const& Label, RealType Value, unsigned short Orbital1, unsigned short Orbital2);
-ComplexExpr NupNdown(std::string const& Label, ComplexType Value, unsigned short Orbital1, unsigned short Orbital2);
-/** A shortcut to Pomerol::Lattice::Term::Presets::NupNdown \f$ U n_{i\alpha\uparrow}n_{i\alpha\downarrow'} \f$ term for the same orbital \f$m=m'\f$ and default parameters spin1 = \f$\uparrow\f$, spin2 = \f$\downarrow\f$. */
-RealExpr NupNdown(std::string const& Label, RealType Value, unsigned short Orbital, spin Spin1 = up, spin Spin2 = down);
-ComplexExpr
-NupNdown(std::string const& Label, ComplexType Value, unsigned short Orbital, spin Spin1 = up, spin Spin2 = down);
 
-/** Generates a spinflip \f$ J c^\dagger_{i\alpha\sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha'\sigma}c_{i\alpha\sigma'}, \alpha \neq \alpha', \sigma \neq \sigma' \f$ term.
-     * \param[in] Label \f$i\f$ - site affected by this Lattice::Term.
-     * \param[in] Value \f$J\f$ - matrix element of the term.
-     * \param[in] orbital \f$\alpha\f$ - first orbital affected by this term.
-     * \param[in] orbital \f$\alpha'\f$ - second orbital affected by this term.
-     * \param[in] spin1 \f$\sigma\f$ - first affected spin component. By default set to \f$\uparrow\f$.
-     * \param[in] spin2 \f$\sigma'\f$ - second affected spin component. By default set to \f$\downarrow\f$.
-     */
+/// Make a fermionic density-density interaction term \f$ U n_{i\alpha_1\uparrow}n_{i\alpha_2\downarrow}\f$
+/// with a real interaction strength \f$U\f$.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] U Interaction constant \f$U\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$.
+RealExpr NupNdown(std::string const& Label, RealType U, unsigned short Orbital1, unsigned short Orbital2);
+/// Make a fermionic density-density interaction term \f$ U n_{i\alpha_1\uparrow}n_{i\alpha_2\downarrow}\f$
+/// with a complex interaction strength \f$U\f$.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] U Interaction constant \f$U\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$.
+ComplexExpr NupNdown(std::string const& Label, ComplexType U, unsigned short Orbital1, unsigned short Orbital2);
+
+/// Make a fermionic density-density interaction term \f$ U n_{i\alpha\sigma_1}n_{i\alpha\sigma_2}\f$
+/// with a real interaction strength \f$U\f$.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] U Interaction constant \f$U\f$.
+/// \param[in] Orbital Orbital index \f$\alpha\f$.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$.
+RealExpr NupNdown(std::string const& Label, RealType U, unsigned short Orbital, spin Spin1 = up, spin Spin2 = down);
+/// Make a fermionic density-density interaction term \f$ U n_{i\alpha\sigma_1}n_{i\alpha\sigma_2}\f$
+/// with a complex interaction strength \f$U\f$.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] U Interaction constant \f$U\f$.
+/// \param[in] Orbital Orbital index \f$\alpha\f$.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$.
+ComplexExpr
+NupNdown(std::string const& Label, ComplexType U, unsigned short Orbital, spin Spin1 = up, spin Spin2 = down);
+
+///@}
+
+/// \defgroup SpinflipPairHopping Factory functions for spin-flip and pair-hopping terms
+///@{
+
+//
+// Overloads of Spinflip()
+//
+
+/// Make a spin-flip term
+/// \f$J c^\dagger_{i\alpha_1\sigma_1}c^\dagger_{i\alpha_2\sigma_2}c_{i\alpha_2\sigma_1}c_{i\alpha_1\sigma_2}\f$,
+/// with \f$\alpha_1 \neq \alpha_2, \sigma_1 \neq \sigma_2\f$ and a real exchange constant \f$J\f$.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] J Exchange constant \f$J\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$.
 RealExpr Spinflip(std::string const& Label,
-                  RealType Value,
+                  RealType J,
                   unsigned short Orbital1,
                   unsigned short Orbital2,
                   spin Spin1 = up,
                   spin Spin2 = down);
+/// Make a spin-flip term
+/// \f$J c^\dagger_{i\alpha_1\sigma_1}c^\dagger_{i\alpha_2\sigma_2}c_{i\alpha_2\sigma_1}c_{i\alpha_1\sigma_2}\f$,
+/// with \f$\alpha_1 \neq \alpha_2, \sigma_1 \neq \sigma_2\f$ and a complex exchange constant \f$J\f$.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] J Exchange constant \f$J\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$.
 ComplexExpr Spinflip(std::string const& Label,
-                     ComplexType Value,
+                     ComplexType J,
                      unsigned short Orbital1,
                      unsigned short Orbital2,
                      spin Spin1 = up,
                      spin Spin2 = down);
 
-/** Generates a pair-hopping \f$ J c^\dagger_{i\alpha\sigma}c^\dagger_{i\alpha\sigma'}c_{i\alpha'\sigma}c_{i\alpha'\sigma'}, \alpha \neq \alpha', \sigma \neq \sigma' \f$ term.
-     * \param[in] Label \f$i\f$ - site affected by this Lattice::Term.
-     * \param[in] Value \f$J\f$ - matrix element of the term.
-     * \param[in] orbital \f$\alpha\f$ - first orbital affected by this term.
-     * \param[in] orbital \f$\alpha'\f$ - second orbital affected by this term.
-     * \param[in] spin1 \f$\sigma\f$ - first affected spin component. By default set to \f$\uparrow\f$.
-     * \param[in] spin2 \f$\sigma'\f$ - second affected spin component. By default set to \f$\downarrow\f$.
-     */
+//
+// Overloads of PairHopping()
+//
+
+/// Make a pair-hopping term
+/// \f$J c^\dagger_{i\alpha_1\sigma_1}c^\dagger_{i\alpha_1\sigma_2}c_{i\alpha_2\sigma_1}c_{i\alpha_2\sigma_2}\f$,
+/// with \f$\alpha_1 \neq \alpha_2, \sigma_1 \neq \sigma_2\f$ and a real exchange constant \f$J\f$.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] J Exchange constant \f$J\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$.
 RealExpr PairHopping(std::string const& Label,
-                     RealType Value,
+                     RealType J,
                      unsigned short Orbital1,
                      unsigned short Orbital2,
                      spin Spin1 = up,
                      spin Spin2 = down);
+/// Make a pair-hopping term
+/// \f$J c^\dagger_{i\alpha_1\sigma_1}c^\dagger_{i\alpha_1\sigma_2}c_{i\alpha_2\sigma_1}c_{i\alpha_2\sigma_2}\f$,
+/// with \f$\alpha_1 \neq \alpha_2, \sigma_1 \neq \sigma_2\f$ and a complex exchange constant \f$J\f$.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] J Exchange constant \f$J\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$.
 ComplexExpr PairHopping(std::string const& Label,
-                        ComplexType Value,
+                        ComplexType J,
                         unsigned short Orbital1,
                         unsigned short Orbital2,
                         spin Spin1 = up,
                         spin Spin2 = down);
 
-RealExpr SplusSminus(std::string const& Label1, std::string const& Label2, RealType Value, unsigned short Orbital);
-ComplexExpr
-SplusSminus(std::string const& Label1, std::string const& Label2, ComplexType Value, unsigned short Orbital);
+///@}
 
-RealExpr SminusSplus(std::string const& label1, std::string const& Label2, RealType Value, unsigned short Orbital);
-ComplexExpr
-SminusSplus(std::string const& label1, std::string const& Label2, ComplexType Value, unsigned short Orbital);
+/// \defgroup SS Factory functions for spin coupling terms
+///@{
 
-/** Adds an interaction with the hamiltonian \f[ \sum\limits_{\alpha, \sigma > \sigma'} Un_{i\alpha\sigma}Un_{i\alpha\sigma'} + \sum\limits_{\alpha,\sigma} \varepsilon n_{i\alpha\sigma} to a specified site. \f]
-     * \param[in] L A pointer to the Lattice to add the site.
-     * \param[in] label \f$i\f$ - label of the site.
-     * \param[in] U \f$U\f$ - value of the onsite Coulomb interaction.
-     * \param[in] Level \f$\varepsilon\f$ - the local energy level on the site.
-     */
-RealExpr CoulombS(std::string const& Label, RealType U, RealType Level, unsigned short NOrbitals = 1);
-ComplexExpr CoulombS(std::string const& Label, ComplexType U, ComplexType Level, unsigned short NOrbitals = 1);
+//
+// Overloads of SplusSminus()
+//
 
-/** Adds an interaction with the hamiltonian \f[ U \sum_{\alpha, \sigma > \sigma'} n_{i\alpha\sigma}n_{i\alpha\sigma'} + U' \sum_{\alpha\neq\alpha',\sigma > \sigma'} n_{i\alpha\sigma} n_{i\alpha'\sigma'} + \frac{U'-J}{2} \sum_{\alpha\neq\alpha',\sigma} n_{i\alpha\sigma} n_{i\alpha'\sigma} - J \sum_{\alpha\neq\alpha',\sigma > \sigma'} (c^\dagger_{i\alpha \sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha'\sigma}c_{i\alpha\sigma'} + c^\dagger_{i\alpha'\sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha\sigma}c_{i\alpha\sigma'}) to the specified site. \f]
-     * \param[in] L A pointer to the Lattice to add the site.
-     * \param[in] label \f$i\f$ - label of the site.
-     * \param[in] U \f$U\f$ - Kanamori \f$U\f$,  value of the onsite Coulomb interaction.
-     * \param[in] U_p \f$U'\f$ - Kanamori \f$U'\f$.
-     * \param[in] J \f$J\f$ - Kanamori J, value of the Hund's coupling.
-     * \param[in] Level \f$\varepsilon\f$ - the local energy level on the site.
-     */
+/// Make a fermionic \f$S_+ S_-\f$-coupling term
+/// \f$J S_{+,i\alpha} S_{-,j\alpha}  = J c^\dagger_{i\alpha\uparrow} c_{i\alpha\downarrow}
+/// c^\dagger_{j\alpha\downarrow} c_{j\alpha\uparrow}\f$ with a real exchange constant \f$J\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] J Exchange constant \f$J\f$.
+/// \param[in] Orbital Orbital index \f$\alpha\f$.
+RealExpr SplusSminus(std::string const& Label1, std::string const& Label2, RealType J, unsigned short Orbital);
+/// Make a fermionic \f$S_+ S_-\f$-coupling term
+/// \f$J S_{+,i\alpha} S_{-,j\alpha}  = J c^\dagger_{i\alpha\uparrow} c_{i\alpha\downarrow}
+/// c^\dagger_{j\alpha\downarrow} c_{j\alpha\uparrow}\f$ with a complex exchange constant \f$J\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] J Exchange constant \f$J\f$.
+/// \param[in] Orbital Orbital index \f$\alpha\f$.
+ComplexExpr SplusSminus(std::string const& Label1, std::string const& Label2, ComplexType J, unsigned short Orbital);
+
+//
+// Overloads of SminusSplus()
+//
+
+/// Make a fermionic \f$S_- S_+\f$-coupling term
+/// \f$J S_{-,i\alpha} S_{+,j\alpha} = J c^\dagger_{i\alpha\downarrow} c_{i\alpha\uparrow}
+/// c^\dagger_{j\alpha\uparrow} c_{j\alpha\downarrow}\f$ with a real exchange constant \f$J\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] J Exchange constant \f$J\f$.
+/// \param[in] Orbital Orbital index \f$\alpha\f$.
+RealExpr SminusSplus(std::string const& Label1, std::string const& Label2, RealType J, unsigned short Orbital);
+/// Make a fermionic \f$S_- S_+\f$-coupling term
+/// \f$J S_{-,i\alpha} S_{+,j\alpha} = J c^\dagger_{i\alpha\downarrow} c_{i\alpha\uparrow}
+/// c^\dagger_{j\alpha\uparrow} c_{j\alpha\downarrow}\f$ with a complex exchange constant \f$J\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] J Exchange constant \f$J\f$.
+/// \param[in] Orbital Orbital index \f$\alpha\f$.
+ComplexExpr SminusSplus(std::string const& Label1, std::string const& Label2, ComplexType J, unsigned short Orbital);
+
+//
+// Overloads of SzSz()
+//
+
+/// Make a fermionic \f$S_z S_z\f$-coupling term
+/// \f[
+///  J S_{z,i} S_{z,j} = \frac{J}{4} \sum_\alpha
+///    (n_{i\alpha\uparrow} - n_{i\alpha\downarrow}) (n_{j\alpha\uparrow} - n_{j\alpha\downarrow})
+/// \f]
+/// with a real exchange constant \f$J\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] J Exchange constant \f$J\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
+RealExpr SzSz(std::string const& Label1, std::string const& Label2, RealType J, unsigned short NOrbitals = 1);
+/// Make a fermionic \f$S_z S_z\f$-coupling term
+/// \f[
+///  J S_{z,i} S_{z,j} = \frac{J}{4} \sum_\alpha
+///    (n_{i\alpha\uparrow} - n_{i\alpha\downarrow}) (n_{j\alpha\uparrow} - n_{j\alpha\downarrow})
+/// \f]
+/// with a complex exchange constant \f$J\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] J Exchange constant \f$J\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
+ComplexExpr SzSz(std::string const& Label1, std::string const& Label2, ComplexType J, unsigned short NOrbitals = 1);
+
+//
+// Overloads of SS()
+//
+
+/// Make a fermionic \f$\mathbf{S S}\f$-coupling term
+/// \f[
+///  J \mathbf{S}_{i} \mathbf{S}_{j} = J \sum_\alpha \left[ S_{z,i\alpha} S_{z,j\alpha} +
+///    \frac{1}{2} S_{+,i\alpha} S_{-,j\alpha} + \frac{1}{2} S_{-,i\alpha} S_{+,j\alpha}\right]
+/// \f]
+/// with a real exchange constant \f$J\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] J Exchange constant \f$J\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
+RealExpr SS(std::string const& Label1, std::string const& Label2, RealType J, unsigned short NOrbitals = 1);
+/// Make a fermionic \f$\mathbf{S S}\f$-coupling term
+/// \f[
+///  J \mathbf{S}_{i} \mathbf{S}_{j} = J \sum_\alpha \left[ S_{z,i\alpha} S_{z,j\alpha} +
+///    \frac{1}{2} S_{+,i\alpha} S_{-,j\alpha} + \frac{1}{2} S_{-,i\alpha} S_{+,j\alpha}\right]
+/// \f]
+/// with a complex exchange constant \f$J\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] J Exchange constant \f$J\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
+ComplexExpr SS(std::string const& Label1, std::string const& Label2, ComplexType J, unsigned short NOrbitals = 1);
+
+///@}
+
+/// \defgroup Coulomb Factory functions for Coulomb interaction terms
+///@{
+
+//
+// Overloads of CoulombS()
+//
+
+/// Make a Coulomb interaction term of the following form,
+/// \f[
+///   U \sum_\alpha n_{i\alpha\uparrow} n_{i\alpha\downarrow} +
+///   \varepsilon \sum_{\alpha,\sigma} n_{i\alpha\sigma}
+/// \f]
+/// with a real interaction constant \f$U\f$ and a real energy level \f$\varepsilon\f$.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] U Interaction constant \f$U\f$.
+/// \param[in] Eps Energy level \f$\varepsilon\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
+RealExpr CoulombS(std::string const& Label, RealType U, RealType Eps, unsigned short NOrbitals = 1);
+/// Make a Coulomb interaction term of the following form,
+/// \f[
+///   U \sum_\alpha n_{i\alpha\uparrow} n_{i\alpha\downarrow} +
+///   \varepsilon \sum_{\alpha,\sigma} n_{i\alpha\sigma}
+/// \f]
+/// with a complex interaction constant \f$U\f$ and a complex energy level \f$\varepsilon\f$.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] U Interaction constant \f$U\f$.
+/// \param[in] Eps Energy level \f$\varepsilon\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
+ComplexExpr CoulombS(std::string const& Label, ComplexType U, ComplexType Eps, unsigned short NOrbitals = 1);
+
+//
+// Overloads of CoulombP()
+//
+
+/// Make a Hubbard-Kanamori interaction term of the following form,
+/// \f[
+/// U \sum_{\alpha, \sigma > \sigma'} n_{i\alpha\sigma}n_{i\alpha\sigma'} +
+/// U' \sum_{\alpha\neq\alpha',\sigma > \sigma'} n_{i\alpha\sigma} n_{i\alpha'\sigma'} +
+/// \frac{U'-J}{2} \sum_{\alpha\neq\alpha',\sigma} n_{i\alpha\sigma} n_{i\alpha'\sigma} -
+/// J \sum_{\alpha\neq\alpha',\sigma > \sigma'} (c^\dagger_{i\alpha \sigma}
+///   c^\dagger_{i\alpha'\sigma'}c_{i\alpha'\sigma}c_{i\alpha\sigma'} +
+///   c^\dagger_{i\alpha'\sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha\sigma}c_{i\alpha\sigma'}) +
+/// \varepsilon \sum_{\alpha,\sigma} n_{i\alpha\sigma}
+/// \f]
+/// with real interaction constants \f$U\f$, \f$U_p\f$, \f$J\f$ and a real energy level \f$\varepsilon\f$.
+/// The number of orbitals must be at least 2.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] U Hubbard-Kanamori interaction constant \f$U\f$.
+/// \param[in] U_p Hubbard-Kanamori interaction constant \f$U_p\f$.
+/// \param[in] J Hund's coupling \f$J\f$.
+/// \param[in] Eps Energy level \f$\varepsilon\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha, \alpha'\f$ to sum over.
 RealExpr
-CoulombP(std::string const& Label, RealType U, RealType U_p, RealType J, RealType Level, unsigned short NOrbitals = 3);
+CoulombP(std::string const& Label, RealType U, RealType U_p, RealType J, RealType Eps, unsigned short NOrbitals = 3);
+/// Make a Hubbard-Kanamori interaction term of the following form,
+/// \f[
+/// U \sum_{\alpha, \sigma > \sigma'} n_{i\alpha\sigma}n_{i\alpha\sigma'} +
+/// U' \sum_{\alpha\neq\alpha',\sigma > \sigma'} n_{i\alpha\sigma} n_{i\alpha'\sigma'} +
+/// \frac{U'-J}{2} \sum_{\alpha\neq\alpha',\sigma} n_{i\alpha\sigma} n_{i\alpha'\sigma} -
+/// J \sum_{\alpha\neq\alpha',\sigma > \sigma'} (c^\dagger_{i\alpha \sigma}
+///   c^\dagger_{i\alpha'\sigma'}c_{i\alpha'\sigma}c_{i\alpha\sigma'} +
+///   c^\dagger_{i\alpha'\sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha\sigma}c_{i\alpha\sigma'}) +
+/// \varepsilon \sum_{\alpha,\sigma} n_{i\alpha\sigma}
+/// \f]
+/// with complex interaction constants \f$U\f$, \f$U_p\f$, \f$J\f$ and a complex energy level \f$\varepsilon\f$.
+/// The number of orbitals must be at least 2.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] U Hubbard-Kanamori interaction constant \f$U\f$.
+/// \param[in] U_p Hubbard-Kanamori interaction constant \f$U_p\f$.
+/// \param[in] J Hund's coupling \f$J\f$.
+/// \param[in] Eps Energy level \f$\varepsilon\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha, \alpha'\f$ to sum over.
 ComplexExpr CoulombP(std::string const& Label,
                      ComplexType U,
                      ComplexType U_p,
                      ComplexType J,
-                     ComplexType Level,
+                     ComplexType Eps,
                      unsigned short NOrbitals = 3);
-/** A shortcut to Lattice::Presets::addPSite with \f$U'=U-2J\f$, i.e. U_p = U - 2.0* J */
-RealExpr CoulombP(std::string const& Label, RealType U, RealType J, RealType Level, unsigned short NOrbitals = 3);
+
+/// Make a Hubbard-Kanamori interaction term of the following form,
+/// \f[
+/// U \sum_{\alpha, \sigma > \sigma'} n_{i\alpha\sigma}n_{i\alpha\sigma'} +
+/// (U-2J) \sum_{\alpha\neq\alpha',\sigma > \sigma'} n_{i\alpha\sigma} n_{i\alpha'\sigma'} +
+/// \frac{U-3J}{2} \sum_{\alpha\neq\alpha',\sigma} n_{i\alpha\sigma} n_{i\alpha'\sigma} -
+/// J \sum_{\alpha\neq\alpha',\sigma > \sigma'} (c^\dagger_{i\alpha \sigma}
+///   c^\dagger_{i\alpha'\sigma'}c_{i\alpha'\sigma}c_{i\alpha\sigma'} +
+///   c^\dagger_{i\alpha'\sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha\sigma}c_{i\alpha\sigma'}) +
+/// \varepsilon \sum_{\alpha,\sigma} n_{i\alpha\sigma}
+/// \f]
+/// with real interaction constants \f$U\f$, \f$J\f$ and a real energy level \f$\varepsilon\f$.
+/// The number of orbitals must be at least 2.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] U Hubbard-Kanamori interaction constant \f$U\f$.
+/// \param[in] J Hund's coupling \f$J\f$.
+/// \param[in] Eps Energy level \f$\varepsilon\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha, \alpha'\f$ to sum over.
+RealExpr CoulombP(std::string const& Label, RealType U, RealType J, RealType Eps, unsigned short NOrbitals = 3);
+/// Make a Hubbard-Kanamori interaction term of the following form,
+/// \f[
+/// U \sum_{\alpha, \sigma > \sigma'} n_{i\alpha\sigma}n_{i\alpha\sigma'} +
+/// (U-2J) \sum_{\alpha\neq\alpha',\sigma > \sigma'} n_{i\alpha\sigma} n_{i\alpha'\sigma'} +
+/// \frac{U-3J}{2} \sum_{\alpha\neq\alpha',\sigma} n_{i\alpha\sigma} n_{i\alpha'\sigma} -
+/// J \sum_{\alpha\neq\alpha',\sigma > \sigma'} (c^\dagger_{i\alpha \sigma}
+///   c^\dagger_{i\alpha'\sigma'}c_{i\alpha'\sigma}c_{i\alpha\sigma'} +
+///   c^\dagger_{i\alpha'\sigma}c^\dagger_{i\alpha'\sigma'}c_{i\alpha\sigma}c_{i\alpha\sigma'}) +
+/// \varepsilon \sum_{\alpha,\sigma} n_{i\alpha\sigma}
+/// \f]
+/// with complex interaction constants \f$U\f$, \f$J\f$ and a complex energy level \f$\varepsilon\f$.
+/// The number of orbitals must be at least 2.
+/// \param[in] Label Lattice site \f$i\f$.
+/// \param[in] U Hubbard-Kanamori interaction constant \f$U\f$.
+/// \param[in] J Hund's coupling \f$J\f$.
+/// \param[in] Eps Energy level \f$\varepsilon\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha, \alpha'\f$ to sum over.
 ComplexExpr
-CoulombP(std::string const& Label, ComplexType U, ComplexType J, ComplexType Level, unsigned short NOrbitals = 3);
+CoulombP(std::string const& Label, ComplexType U, ComplexType J, ComplexType Eps, unsigned short NOrbitals = 3);
 
-/** Adds a magnetic \f$ \sum\limits_\alpha mH \frac{1}{2} (n_{i\alpha\uparrow} - n_{i\alpha\downarrow}) \f$ splitting to a given site. Valid only for 2 spins.
-     * \param[in] L A pointer to the Lattice to add the terms.
-     * \param[in] label \f$i\f$ - label of the site.
-     * \param[in] Magnetization \f$mH\f$ - magnetization to add.
-     */
-RealExpr Magnetization(std::string const& Label, RealType Magnetization, unsigned short NOrbitals = 1);
-ComplexExpr Magnetization(std::string const& Label, ComplexType Magnetization, unsigned short NOrbitals = 1);
-
-/** Adds a SzSz \f[ \sum\limits_{\alpha} J \frac{1}{2}(n_{i\alpha\uparrow} - n_{i\alpha\downarrow})\frac{1}{2}(n_{j\alpha\uparrow} - n_{j\alpha\downarrow}) \f]
-     * interaction terms. Valid only for 2 spins
-     * \param[in] L A pointer to the Lattice to add the terms.
-     * \param[in] Label1 \f$i\f$ - label of the first connected site.
-     * \param[in] Label2 \f$j\f$ - label of the second connected site. Site can be choosen the same as the first site.
-     * \param[in] ExchJ \f$J\f$ - magnetic exchange constant.
-     * \param[in] Orbitals Total amount of orbitals on the site. By default equal to 1.
-     * \param[in] Spins Total amount of spin components on the site. By default equal to 2. Works only for 2 spins.
-     */
-RealExpr SzSz(std::string const& Label1, std::string const& Label2, RealType ExchJ, unsigned short NOrbitals = 1);
-ComplexExpr SzSz(std::string const& Label1, std::string const& Label2, ComplexType ExchJ, unsigned short NOrbitals = 1);
-
-/** Adds a spin-spin \f[ \sum\limits_{\alpha} J \hat S_{i\alpha} \hat S_{j\alpha} \f]
-     * interaction terms. Valid only for 2 spins
-     * \param[in] L A pointer to the Lattice to add the terms.
-     * \param[in] Label1 \f$i\f$ - label of the first connected site.
-     * \param[in] Label2 \f$j\f$ - label of the second connected site. Site can be choosen the same as the first site.
-     * \param[in] ExchJ \f$J\f$ - magnetic exchange constant.
-     */
-RealExpr SS(std::string const& Label1, std::string const& Label2, RealType ExchJ, unsigned short NOrbitals = 1);
-ComplexExpr SS(std::string const& Label1, std::string const& Label2, ComplexType ExchJ, unsigned short NOrbitals = 1);
+/// @}
 
 //
 // Bosons
 //
 
-/** Generates a single energy level term \f$\varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma} \f$ on a local site for a given spin and orbital.
-     * \param[in] Label \f$i\f$ - site affected by this Lattice::Term.
-     * \param[in] Value \f$\varepsilon\f$ - the energy level.
-     * \param[in] orbital \f$\alpha\f$ - affected orbital of the site.
-     * \param[in] spin \f$\sigma\f$ - affected spin component.
-     */
-RealExpr BosonLevel(std::string const& Label, RealType Value, unsigned short ExtraIndex);
-ComplexExpr BosonLevel(std::string const& Label, ComplexType Value, unsigned short ExtraIndex);
+/// \defgroup Boson Factory functions for terms with bosonic degrees of freedom
+///@{
 
-/**
-     * TODO: Bose-Hubbard interaction term
-     */
-RealExpr BosonInteraction(std::string const& Label, RealType Value, unsigned short ExtraIndex);
-ComplexExpr BosonInteraction(std::string const& Label, ComplexType Value, unsigned short ExtraIndex);
+/// Make a single energy level term \f$\varepsilon a^{\dagger}_{i\alpha} a_{i\alpha}\f$
+/// for a boson on a given site with a given additional index.
+/// \param[in] Label Site label \f$i\f$.
+/// \param[in] Eps Real energy level \f$\varepsilon\f$.
+/// \param[in] ExtraIndex Additional index \f$\alpha\f$.
+RealExpr BosonLevel(std::string const& Label, RealType Eps, unsigned short ExtraIndex);
+/// Make a single energy level term \f$\varepsilon a^{\dagger}_{i\alpha} a_{i\alpha}\f$
+/// for a boson on a given site with a given additional index.
+/// \param[in] Label Site label \f$i\f$.
+/// \param[in] Eps Complex energy level \f$\varepsilon\f$.
+/// \param[in] ExtraIndex Additional index \f$\alpha\f$.
+ComplexExpr BosonLevel(std::string const& Label, ComplexType Eps, unsigned short ExtraIndex);
 
-/**
-     * TODO: Holstein coupling
-     */
+/// Make a bosonic interaction term
+/// \f$\frac{U}{2}a^{\dagger}_{i\alpha} a_{i\alpha} (a^{\dagger}_{i\alpha} a_{i\alpha} - 1)\f$
+/// with a real interaction strength \f$U\f$.
+/// \param[in] Label Site label \f$i\f$.
+/// \param[in] U Interaction constant \f$U\f$.
+/// \param[in] ExtraIndex Additional index \f$\alpha\f$.
+RealExpr BosonInteraction(std::string const& Label, RealType U, unsigned short ExtraIndex);
+/// Make a bosonic interaction term
+/// \f$\frac{U}{2}a^{\dagger}_{i\alpha} a_{i\alpha} (a^{\dagger}_{i\alpha} a_{i\alpha} - 1)\f$
+/// with a complex interaction strength \f$U\f$.
+/// \param[in] Label Site label \f$i\f$.
+/// \param[in] U Interaction constant \f$U\f$.
+/// \param[in] ExtraIndex Additional index \f$\alpha\f$.
+ComplexExpr BosonInteraction(std::string const& Label, ComplexType U, unsigned short ExtraIndex);
+
+/// Make a Holstein fermion-boson coupling term of the following form,
+/// \f[
+/// \lambda (n_{i\alpha\uparrow} + n_{i\alpha\downarrow}) (a^\dagger_{i\beta} + a_{i\beta})
+/// \f]
+/// with a real coupling constant \f$\lambda\f$.
+/// \param[in] Label Site label \f$i\f$.
+/// \param[in] Lambda Coupling constant \f$\lambda\f$.
+/// \param[in] Orbital Orbital index \f$\alpha\f$.
+/// \param[in] BosonExtraIndex Additional bosonic index \f$\beta\f$.
 RealExpr
-HolsteinInteraction(std::string const& Label, RealType Value, unsigned short Orbital, unsigned short BosonExtraIndex);
+HolsteinInteraction(std::string const& Label, RealType Lambda, unsigned short Orbital, unsigned short BosonExtraIndex);
+/// Make a Holstein fermion-boson coupling term of the following form,
+/// \f[
+/// \lambda (n_{i\alpha\uparrow} + n_{i\alpha\downarrow}) (a^\dagger_{i\beta} + a_{i\beta})
+/// \f]
+/// with a complex coupling constant \f$\lambda\f$.
+/// \param[in] Label Site label \f$i\f$.
+/// \param[in] Lambda Coupling constant \f$\lambda\f$.
+/// \param[in] Orbital Orbital index \f$\alpha\f$.
+/// \param[in] BosonExtraIndex Additional bosonic index \f$\beta\f$.
 ComplexExpr HolsteinInteraction(std::string const& Label,
-                                ComplexType Value,
+                                ComplexType Lambda,
                                 unsigned short Orbital,
                                 unsigned short BosonExtraIndex);
+
+///@}
+
+///@}
 
 } // namespace LatticePresets
 } // namespace Pomerol

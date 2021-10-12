@@ -8,6 +8,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file test/BroadcastTest.cpp
+/// \brief Test the MPI broadcast operation for various types.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #include <mpi_dispatcher/misc.hpp>
 
 #include <pomerol/TwoParticleGFPart.hpp>

@@ -8,12 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file Misc.h
-**    \brief Declares very common type names and macros.
-**
-** \author    Igor Krivenko (Igor.S.Krivenko@gmail.com)
-** \author    Andrey Antipov (antipov@shg.ru)
-*/
+/// \file include/pomerol/Misc.hpp
+/// \brief Declarations of the most basic types and macros.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #ifndef POMEROL_INCLUDE_POMEROL_MISC_HPP
 #define POMEROL_INCLUDE_POMEROL_MISC_HPP
 
@@ -23,7 +22,9 @@
 #include <libcommute/loperator/loperator.hpp>
 #include <libcommute/loperator/state_vector.hpp>
 
+#ifndef DOXYGEN_SKIP
 #define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
+#endif
 #include <Eigen/Core>
 #include <Eigen/Sparse>
 
@@ -37,140 +38,120 @@
 #include <iostream>
 #include <type_traits>
 
+/// The main namespace of the library.
 namespace Pomerol {
 
+/// \defgroup Basic Basic declarations
+///@{
+
+#ifndef DOXYGEN_SKIP
 #define MSG_PREFIX __FILE__ << ":" << __LINE__ << ": "
+#endif
 #ifndef NDEBUG
+/// Print a debugging message to the standard output with a source file name and line number annotation.
 #define DEBUG(MSG) std::cout << MSG_PREFIX << MSG << std::endl
 #else
 #define DEBUG(MSG) NULL;
 #endif
+/// Print a message to the standard output.
 #define INFO(MSG) std::cout << MSG << std::endl
+/// Print a message without a trailing new line character to the standard output.
 #define INFO_NONEWLINE(MSG) std::cout << MSG << std::flush
+/// Print a message to the standard error stream.
 #define ERROR(MSG) std::cerr << MSG_PREFIX << MSG << std::endl
 
-/** Real floating point type. */
+/// Real floating point type.
 using RealType = double;
-/** Complex type. */
+/// Complex floating point type.
 using ComplexType = std::complex<double>;
 
-/** Index represents a combination of spin, orbital, and lattice indices **/
+/// Index of a single particle degree of freedom.
 using ParticleIndex = unsigned int;
 
-/** Each Quantum State in the finite system is associated with a number.
- * This works for any basis, including Fock and Hamiltonian eigenbasis.
- * The Fock States are converted naturally from bitsets to ints.
- **/
+/// Index of a many-body state.
 using QuantumState = libcommute::sv_index_type;
 
-/** Index represents a combination of spin, orbital, and lattice indices **/
-using ParticleIndex = unsigned int;
-
-/** Dense complex matrix. */
+/// Dense complex matrix.
 using ComplexMatrixType =
     Eigen::Matrix<ComplexType, Eigen::Dynamic, Eigen::Dynamic, Eigen::AutoAlign | Eigen::RowMajor>;
 
+/// Element type of a real or complex matrix.
+/// \tparam Complex Whether the matrix in question is complex.
 template <bool Complex> using MelemType = typename std::conditional<Complex, ComplexType, RealType>::type;
 
+/// Linear operator with a given type of coefficients.
+/// \tparam ScalarType Coefficient  type.
 template <typename ScalarType>
 using LOperatorType = libcommute::loperator<ScalarType, libcommute::fermion, libcommute::boson>;
 
+/// Linear operator with either real or complex coefficients.
+/// \tparam Complex Whether the operator in question has complex coefficients.
 template <bool Complex>
 using LOperatorTypeRC = libcommute::loperator<MelemType<Complex>, libcommute::fermion, libcommute::boson>;
 
+/// Dense real or complex matrix.
+/// \tparam Complex Whether the matrix in question is complex.
 template <bool Complex>
 using MatrixType =
     Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic, Eigen::Dynamic, Eigen::AutoAlign | Eigen::RowMajor>;
 
-/** Dense complex vector. */
+/// Dense complex vector.
 using ComplexVectorType = Eigen::Matrix<ComplexType, Eigen::Dynamic, 1, Eigen::AutoAlign>;
-/** Dense real vector. */
+/// Dense real vector.
 using RealVectorType = Eigen::Matrix<RealType, Eigen::Dynamic, 1, Eigen::AutoAlign>;
 
+/// Dense real or complex vector.
+/// \tparam Complex Whether the vector in question is complex.
 template <bool Complex> using VectorType = Eigen::Matrix<MelemType<Complex>, Eigen::Dynamic, 1, Eigen::AutoAlign>;
 
-/** Sparse complex matrix */
+/// Sparse real or complex matrix with column-major storage.
+/// \tparam Complex Whether the matrix in question is complex.
 template <bool Complex> using ColMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::ColMajor>;
+/// Sparse real or complex matrix with row-major storage.
+/// \tparam Complex Whether the matrix in question is complex.
 template <bool Complex> using RowMajorMatrixType = Eigen::SparseMatrix<MelemType<Complex>, Eigen::RowMajor>;
 
-/** A short name for imaginary unit. */
+/// Imaginary unit \f$i\f$.
 static ComplexType const I = ComplexType(0.0, 1.0); // 'static' to prevent linking problems
 
-/** Permutation of 3 elements */
+/// Permutation of 3 elements
 struct Permutation3 {
+    /// A permuted list of integers (0, 1, 2)
     std::array<std::size_t, 3> const perm;
+    /// Signature of the permutation
     int const sign;
     bool operator==(Permutation3 const& rhs) const;
     bool operator!=(Permutation3 const& rhs) const;
-    friend std::ostream& operator<<(std::ostream& out, Permutation3 const& p);
+
+    /// Output stream insertion operator.
+    /// \param[out] os Output stream.
+    /// \param[in] p Permutation to be inserted.
+    /// \return Reference to the output stream.
+    friend std::ostream& operator<<(std::ostream& os, Permutation3 const& p);
 };
+/// An array of all 3! = 6 permutations of 3 elements
 extern std::array<Permutation3, 6> const permutations3;
 
-/** Permutation of 4 elements */
+/// Permutation of 4 elements
 struct Permutation4 {
+    /// A permuted list of integers (0, 1, 2, 3)
     std::array<std::size_t, 4> const perm;
+    /// Signature of the permutation
     int const sign;
     bool operator==(Permutation4 const& rhs) const;
     bool operator!=(Permutation4 const& rhs) const;
-    friend std::ostream& operator<<(std::ostream& out, Permutation4 const& p);
+
+    /// Output stream insertion operator.
+    /// \param[out] os Output stream.
+    /// \param[in] p Permutation to be inserted.
+    /// \return Reference to the output stream.
+    friend std::ostream& operator<<(std::ostream& os, Permutation4 const& p);
 };
+/// An array of all 4! = 24 permutations of 4 elements
 extern std::array<Permutation4, 24> const permutations4;
 
-} // namespace Pomerol
+///@}
 
-/**
- * \mainpage
- * The source code and fetch instructions are located at <a href="https://github.com/aeantipov/pomerol">project's GitHub repository</a>.
- * \section   ref_API libpomerol API
- * The general sequence of a calculation is:
- * -    Define all indices of each mode of the system, i.e. site + spin indices ( by IndexClassification ).
- *      This is also a moment to discover symmetries against permutations of indices.
- * -    Define the Fock space - create QuantumStates and sort them into the blocks by their quantum numbers ( by StatesClassification ).
- * -    Enter blocks of the Hamiltonian ( by Hamiltonian and HamiltonianPart) and diagonalize them.
- * -    Find creation and annihilation operators in the eigenbasis of the Hamiltonian ( by FieldOperator and FieldOperatorPart ).
- * -    Calculate thermal quantities:
- *      -   The density matrix ( by DensityMatrix and DensityMatrixPart ).
- *      -   The Green's function ( by GreensFunction, GreensFunctionPart and GFContainer to store the values of GF for various index combinations ).
- *      -   The TwoParticle Greens Function ( by TwoParticleGF, TwoParticleGFPart and TwoParticleGFContainer ).
- * -    Calculcate the Vertex Function out of GF- and TwoParticleGF- containers - no work with Fock space is done ( by Vertex4 ).
- *
- * A hint: Refer to <a href="inherits.html">a Class Hierarchy</a> if provided
- *
- * \section ref_conventions Conventions
- *
- * \par Green's function
- * \f[
- *      G(\omega_n) = -\int_0^\beta \langle\mathbf{T}c_i(\tau)c^+_j(0)\rangle e^{i\omega_n\tau} d\tau
- * \f]
- *
- * \par Two-particle Green's function:
- * \f[ \chi_{ijkl}(\omega_{n_1},\omega_{n_2};\omega_{n_3},\omega_{n_1}+\omega_{n_2}-\omega_{n_3}) =
- *   \int_0^\beta
- *     \langle\mathbf{T} c_i(\tau_1)c_j(\tau_2)c^+_k(\tau_3)c^+_l(0) \rangle
- *     \exp(i\omega_{n_1}\tau_1+i\omega_{n_2}\tau_2-i\omega_{n_3}\tau_3)
- *   d\tau_1 d\tau_2 d\tau_3
- * \f]
- *
- * \par The Wick part of a two-particle Green's function:
- * \f[
- * \chi^0_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) =
- * \beta\delta_{\omega_1\omega_4}\delta_{\omega_2\omega_3}G_{14}(\omega_1)G_{23}(\omega_2) -
- *  \beta\delta_{\omega_1\omega_3}\delta_{\omega_2\omega_4}G_{13}(\omega_1)G_{24}(\omega_2)
- * \f]
- * \par An irreducible vertex part:
- * \f[ \Gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv
- *     \chi_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) -
- *     \chi^{0}_{1234}(\omega_1,\omega_2;\omega_3,\omega_4)
- * \f]
- *
- * \par An amputated irreducible vertex part:
- * \f[ \gamma_{1234}(\omega_1,\omega_2;\omega_3,\omega_4) \equiv
- *     \sum_{1'2'3'4'}
- *     (G^{-1}(\omega_1))_{11'} (G^{-1}(\omega_2))_{22'}
- *     \Gamma_{1'2'3'4'}(\omega_1,\omega_2;\omega_3,\omega_4)
- *     (G^{-1}(\omega_3))_{3'3} (G^{-1}(\omega_4))_{4'4}
- * \f]
- *
- */
+} // namespace Pomerol
 
 #endif // #ifndef POMEROL_INCLUDE_POMEROL_MISC_HPP

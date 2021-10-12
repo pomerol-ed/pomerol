@@ -8,6 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file test/SusceptibilityTest.cpp
+/// \brief Susceptibilities of a single Hubbard atom.
+/// \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/EnsembleAverage.hpp>
 #include <pomerol/Hamiltonian.hpp>

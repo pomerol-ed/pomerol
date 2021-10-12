@@ -8,9 +8,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-//
-// Created by iskakoff on 05/12/16.
-//
+/// \file prog/quantum_model.hpp
+/// \brief Base class for ED calculations of finite quantum many-body models (implementation).
+/// \author Sergei Iskakov (sir.iskakoff@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
 
 #include "quantum_model.hpp"
 
@@ -41,7 +42,7 @@ quantum_model::quantum_model(int argc, char* argv[], std::string const& prog_des
                {args_parser, "wb_max", "Maximum bosonic Matsubara frequency", {"wb_max"}, 0},
                {args_parser, "indices", "2PGF index combination", {"2pgf.indices"}, {0, 0, 0, 0}},
                {args_parser, "tol", "Energy resonance resolution in 2PGF", {"2pgf.reduce_tol"}, 1e-5},
-               {args_parser, "tol", "Tolerance on nominators in 2PGF", {"2pgf.coeff_tol"}, 1e-12},
+               {args_parser, "tol", "Tolerance on numerators in 2PGF", {"2pgf.coeff_tol"}, 1e-12},
                {args_parser, "tol", "How often to reduce terms in 2PGF", {"2pgf.multiterm_tol"}, 1e-6}
   },
       // clang-format on
@@ -113,21 +114,20 @@ void quantum_model::compute() {
         std::copy(evals.data(), evals.data() + S.getNumberOfStates(), evals1.data().data());
         evals1.savetxt("spectrum.dat");
     }
-    DensityMatrix rho(S, H, beta); // create Density Matrix
+    DensityMatrix rho(S, H, beta); // Create density matrix.
     rho.prepare();
-    rho.compute(); // evaluate thermal weights with respect to ground energy, i.e exp(-beta(e-e_0))/Z
+    rho.compute(); // Evaluate thermal weights with respect to ground energy, i.e exp(-beta(e-e_0))/Z.
 
     std::pair<ParticleIndex, ParticleIndex> pair = get_node(IndexInfo);
-    ParticleIndex d0 =
-        pair.first; //IndexInfo.getIndex("A",0,down); // find the indices of the impurity, i.e. spin up index
-    ParticleIndex u0 = pair.second; //IndexInfo.getIndex("A",0,up);
+    ParticleIndex d0 = pair.first;
+    ParticleIndex u0 = pair.second;
 
-    // Green's function calculation starts here
+    // Green's function calculation starts here.
 
     if(calc_gf) {
         print_section("1-particle Green's functions calc");
-        std::set<ParticleIndex> f;            // a set of indices to evaluate c and c^+
-        std::set<IndexCombination2> indices2; // a set of pairs of indices to evaluate Green's function
+        std::set<ParticleIndex> f;            // A set of indices to evaluate c and c^+.
+        std::set<IndexCombination2> indices2; // A set of pairs of indices to evaluate Green's function.
 
         double eta = args::get(args_options.gf_eta);
         double step = args::get(args_options.gf_step);
@@ -138,23 +138,26 @@ void quantum_model::compute() {
         int wb_min = args::get(args_options.wb_min);
         int wb_max = args::get(args_options.wb_max);
 
-        // Take only impurity spin up and spin down indices
+        // Take only impurity spin up and spin down indices.
         f.insert(u0);
         f.insert(d0);
         prepare_indices(d0, u0, indices2, f, IndexInfo);
 
-        // Create a container for c and c^+ in the eigenstate basis
+        // Create a container for c and c^+ in the eigenstate basis.
         FieldOperatorContainer Operators(IndexInfo, HS, S, H, f);
         Operators.prepareAll(HS);
-        Operators.computeAll(); // evaluate c, c^+ for chosen indices
+        Operators.computeAll(); // evaluate c, c^+ for chosen indices.
 
         GFContainer G(IndexInfo, S, H, rho, Operators);
 
-        G.prepareAll(indices2); // identify all non-vanishing block connections in the Green's function
-        G.computeAll(); // Evaluate all GF terms, i.e. resonances and weights of expressions in Lehmans representation of the Green's function
+        // Identify all non-vanishing block connections in the Green's function.
+        G.prepareAll(indices2);
+        // Evaluate all GF terms, i.e. resonances and weights of expressions in Lehmann's representation
+        // of the Green's function.
+        G.computeAll();
 
-        if(!rank) // dump gf into a file
-            // loops over all components (pairs of indices) of the Green's function
+        if(!rank) // Dump gf into a file
+            // Loops over all components (pairs of indices) of the Green's function.
             for(auto const& ind2 : indices2) {
                 GreensFunction const& GF = G(ind2);
                 // Save Matsubara GF from pi/beta to pi/beta*(4*wf_max + 1)
@@ -176,7 +179,7 @@ void quantum_model::compute() {
                 gf_refreq.savetxt("gw_refreq_" + ind_str + ".dat");
             }
 
-        // Start Two-particle GF calculation
+        // Start Two-particle GF calculation.
 
         if(calc_2pgf) {
             print_section("2-Particle Green's function calc");
@@ -201,12 +204,15 @@ void quantum_model::compute() {
             CreationOperator const& CX4 = Operators.getCreationOperator(index_comb.Index4);
             TwoParticleGF G4(S, H, C1, C2, CX3, CX4, rho);
 
-            /* Some knobs to make calc faster - the larger the values of tolerances, the faster is calc, but rounding errors may show up. */
-            /** A difference in energies with magnitude less than this value is treated as zero - resolution of energy resonances. */
+            // Some knobs to make calc faster - the larger the values of tolerances, the faster is calc,
+            // but rounding errors may show up.
+
+            // A difference in energies with magnitude less than this value is treated as zero
+            // - resolution of energy resonances.
             G4.ReduceResonanceTolerance = args::get(args_options._2pgf_reduce_tol);
-            /** Minimal magnitude of the coefficient of a term to take it into account - resolution of thermal weight. */
+            // Minimal magnitude of the coefficient of a term to take it into account - resolution of thermal weight.
             G4.CoefficientTolerance = args::get(args_options._2pgf_coeff_tol);
-            /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
+            // Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms.
             G4.MultiTermCoefficientTolerance = args::get(args_options._2pgf_multiterm_tol);
 
             G4.prepare();

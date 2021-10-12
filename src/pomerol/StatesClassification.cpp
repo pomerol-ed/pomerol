@@ -8,6 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file src/pomerol/StatesClassification.cpp
+/// \brief Classification of many-body basis states (Fock states) into subspaces (implementation).
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #include "pomerol/StatesClassification.hpp"
 
 #include <algorithm>
@@ -22,7 +27,7 @@ namespace Pomerol {
 // StatesClassification
 //
 
-void StatesClassification::initSingleBlock(unsigned long Dim) {
+void StatesClassification::initSingleBlock(QuantumState Dim) {
     StateBlockIndex.resize(Dim, 0);
     StatesContainer.emplace_back(Dim, 0);
     std::iota(StatesContainer.back().begin(), StatesContainer.back().end(), 0);

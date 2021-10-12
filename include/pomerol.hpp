@@ -8,6 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file include/pomerol.hpp
+/// \brief Main "include-all" header of the library.
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #ifndef POMEROL_INCLUDE_POMEROL_HPP
 #define POMEROL_INCLUDE_POMEROL_HPP
 

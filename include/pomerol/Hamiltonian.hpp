@@ -8,12 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/Hamiltonian.h
-** \brief A storage of the matrix elements of the hamiltonian in Fock basis, provides eigenvalues and eigenfunctions
-**
-** \author Andrey Antipov(Andrey.E.Antipov@gmail.com)
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-*/
+/// \file include/pomerol/Hamiltonian.hpp
+/// \brief Storage and diagonalization of a Hamiltonian matrix.
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #ifndef POMEROL_INCLUDE_POMEROL_HAMILTONIAN_HPP
 #define POMEROL_INCLUDE_POMEROL_HAMILTONIAN_HPP
 
@@ -32,44 +31,89 @@
 
 namespace Pomerol {
 
-/** This class represents a Hamiltonian, written as a matrix of matrix elements in a Fock basis.
- * It is a container for several hamiltonian parts, each for single defined QuantumNumbers and a corresponding BlockNumber.
- * It provides eigenvalues and eigenfunctions of any of its parts once they are obtained within its parts.
- * The diagonalization and entering routines are done inside of HamiltonianPart instances.
- */
+/// \addtogroup ED
+///@{
+
+/// \brief Hamiltonian of a quantum system.
+///
+/// This class represents a Hamiltonian as a block-diagonal matrix with blocks corresponding
+/// to distinct invariant subspaces. The blocks are stored as a list of
+/// \ref HamiltonianPart objects. The main purpose of this class is MPI-parallelized
+/// diagonalization of the entire Hamiltonian matrix.
 class Hamiltonian : public ComputableObject {
+
+    /// Whether the Hamiltonian is complex-valued.
     bool Complex = {};
 
-    /** Array of pointers to the Hamiltonian Parts */
+    /// List of parts (diagonal matrix blocks).
     std::vector<HamiltonianPart> parts;
-    /** A reference to the StatesClassification object. */
+
+    /// Information about invariant subspaces of the Hamiltonian.
     StatesClassification const& S;
-    /** A value of the ground energy - needed for further renormalization */
+
+    /// The ground state energy.
     RealType GroundEnergy = -HUGE_VAL;
 
 public:
-    /** Constructor. */
+    /// Constructor.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
     explicit Hamiltonian(StatesClassification const& S) : S(S) {}
 
+    /// Fill matrices of all diagonal blocks in parallel.
+    /// \tparam ScalarType Scalar type (either double or std::complex<double>) of the expression \p H.
+    /// \tparam IndexTypes Types of indices carried by operators in the expression \p H.
+    /// \param[in] H Expression of the Hamiltonian.
+    /// \param[in] HS Hilbert space.
+    /// \param[in] comm MPI communicator used to parallelize the computation.
     template <typename ScalarType, typename... IndexTypes>
     void prepare(Operators::expression<ScalarType, IndexTypes...> const& H,
                  HilbertSpace<IndexTypes...> const& HS,
                  MPI_Comm const& comm = MPI_COMM_WORLD);
+
+    /// Diagonalize matrices of all diagonal blocks in parallel.
+    /// \param[in] comm MPI communicator used to parallelize the computation.
+    /// \pre \ref prepare() has been called.
     void compute(MPI_Comm const& comm = MPI_COMM_WORLD);
+
+    /// Discard all eigenvalues exceeding a given cutoff and truncate the size of all diagonalized
+    /// blocks accordingly.
+    /// \param[in] Cutoff Maximum allowed excitation energy (energy level calculated w.r.t. the ground state energy).
+    /// \pre \ref compute() has been called.
     void reduce(RealType Cutoff);
 
+    /// Is the Hamiltonian a complex-valued matrix?
     bool isComplex() const { return Complex; }
 
+    /// Access a part (diagonal block) of the Hamiltonian.
+    /// \param[in] Block Index of the diagonal block.
+    /// \pre \ref prepare() has been called.
     HamiltonianPart const& getPart(BlockNumber Block) const { return parts[Block]; }
 
+    /// Return size of a part (dimension of a diagonal block).
+    /// \param[in] Block Index of the diagonal block.
+    /// \pre \ref prepare() has been called.
     InnerQuantumState getBlockSize(BlockNumber Block) const;
 
+    /// Return a single eigenvalue of the Hamiltonian.
+    /// \param[in] state Index of the eigenvalue within the full diagonalized matrix of the Hamiltonian.
+    /// \pre \ref compute() has been called.
     RealType getEigenValue(unsigned long state) const;
+
+    /// Return a list of eigenvalues of the Hamiltonian within a block.
+    /// \param[in] Block Index of the diagonal block.
+    /// \pre \ref compute() has been called.
     RealVectorType const& getEigenValues(BlockNumber Block) const;
+
+    /// Return a list of all eigenvalues of the Hamiltonian.
+    /// \pre \ref compute() has been called.
     RealVectorType getEigenValues() const;
+
+    /// Return the ground state energy.
+    /// \pre \ref compute() has been called.
     RealType getGroundEnergy() const { return GroundEnergy; }
 
 private:
+    // Implementation details
     void computeGroundEnergy();
 
     template <bool C> void prepareImpl(LOperatorTypeRC<C> const& HOp, const MPI_Comm& comm);
@@ -90,6 +134,8 @@ void Hamiltonian::prepare(Operators::expression<ScalarType, IndexTypes...> const
 
     setStatus(Prepared);
 }
+
+///@}
 
 } // namespace Pomerol
 

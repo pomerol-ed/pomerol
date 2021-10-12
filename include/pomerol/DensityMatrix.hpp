@@ -8,12 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/DensityMatrix.h
-** \brief Density matrix of the grand canonical ensemble.
-**
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-*/
+/// \file include/pomerol/DensityMatrix.hpp
+/// \brief Many-body Gibbs density matrix as a list of diagonal blocks.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #ifndef POMEROL_INCLUDE_POMEROL_DENSITYMATRIX_HPP
 #define POMEROL_INCLUDE_POMEROL_DENSITYMATRIX_HPP
 
@@ -29,58 +28,65 @@
 
 namespace Pomerol {
 
-/** This class represents a density matrix \f$ \rho = \exp(-\beta \hat H)/Z \f$.
- * It is actually a container class for a collection of parts (all real calculations
- * take place inside the parts). There is one-to-one correspondence between parts of
- * the Hamiltonian and the parts of the density matrix itself, since the density matrix
- * is a function of \f$ \hat H \f$.
- */
+/// \addtogroup ED
+///@{
+
+/// \brief Many-body Gibbs density matrix.
+/// This class represents a many-body Gibbs density matrix
+/// \f[
+///  \hat\rho = \frac{e^{-\beta\hat H}}{Z}, \quad Z = Tr[e^{-\beta\hat H}].
+/// \f]
+/// The matrix is stored as a list of \ref DensityMatrixPart (diagonal blocks), which correspond
+/// to invariant subspaces/diagonal blocks of the Hamiltonian \f$\hat H\f$.
 class DensityMatrix : public Thermal, public ComputableObject {
-    /** A reference to a states classification object. */
+
+    /// Information about invariant subspaces of the Hamiltonian.
     StatesClassification const& S;
-    /** A reference to a Hamiltonian defining the grand canonical ensemble. */
+    /// A reference to the Hamiltonian \f$\hat H\f$.
     Hamiltonian const& H;
-    /** A vector of pointers to parts (every part corresponds to a part of the Hamiltonian). */
+    /// The list of parts (diagonal blocks).
     std::vector<DensityMatrixPart> parts;
 
 public:
-    /** Constructor.
-     * \param[in] S A reference to a states classification object.
-     * \param[in] H A reference to a Hamiltonian.
-     * \param[in] beta The inverse temperature.
-     */
+    /// Constructor.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
+    /// \param[in] H The Hamiltonian \f$\hat H\f$.
+    /// \param[in] beta Inverse temperature \f$\beta\f$.
     DensityMatrix(StatesClassification const& S, Hamiltonian const& H, RealType beta);
-    /** Destructor. */
+
+    /// Destructor.
     ~DensityMatrix() = default;
 
-    /** Allocates resources for the parts. */
+    /// Allocate memory for the parts.
     void prepare();
 
-    /** Actually computes the parts. */
+    /// Compute statistical weights within every part (diagonal block).
+    /// \pre prepare() has been called.
     void compute();
 
-    /** Returns a part of the density matrix.
-     * \param[in] in A part number.
-     */
-    DensityMatrixPart const& getPart(BlockNumber in) const;
+    /// Return a reference to a part (diagonal block).
+    /// \param[in] B Index of the part.
+    DensityMatrixPart const& getPart(BlockNumber B) const;
 
-    /** Returns the value of the density matrix corresponding to a specified quantum state.
-     * \param[in] state A quantum state.
-     */
+    /// Return a statistical weight corresponding to a specified eigenstate.
+    /// \param[in] state Index of the eigenstate within the full Hilbert space.
     RealType getWeight(QuantumState state) const;
 
-    /** Returns the average energy. */
+    /// Compute the average energy \f$ \langle E\rangle = \sum_s E_s w_s\f$.
     RealType getAverageEnergy() const;
 
-    /** Returns an averaged value of the double occupancy. */
-    RealType getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const;
-
-    /** Truncate such blocks that do not include any states having larger weight than Tolerance. */
+    /// Check if any of the statistical weights within each block is above a given tolerance.
+    /// If not, mark the respective block as irrelevant (set the Retained flag to false).
+    /// \param[in] Tolerance Statistical weights smaller or equal to this value are considered negligible.
+    /// \param[in] verbose Print out information about the truncation results.
     void truncateBlocks(RealType Tolerance, bool verbose = true);
 
-    /** Return true if the block has not been truncated. Always true if function truncateBlocks has not been called. */
-    bool isRetained(BlockNumber in) const;
+    /// Does a given block contain any non-negligible statistical weights?
+    /// \param[in] B Index of the part (block).
+    bool isRetained(BlockNumber B) const;
 };
+
+///@}
 
 } // namespace Pomerol
 

@@ -8,12 +8,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file Operators.h
-**  \brief Expressions with quantum-mechanical operators and functions to
-*   construct them.
-**
-**  \author    Igor Krivenko (Igor.S.Krivenko@gmail.com)
-*/
+/// \file include/pomerol/Operators.hpp
+/// \brief Expressions with quantum-mechanical operators and functions to construct them.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #ifndef POMEROL_INCLUDE_OPERATORS_HPP
 #define POMEROL_INCLUDE_OPERATORS_HPP
 
@@ -29,6 +27,27 @@
 
 namespace Pomerol {
 namespace Operators {
+
+/// \defgroup Operators Operator expressions
+///@{
+
+/// \namespace Pomerol::Operators
+/// \brief Expressions of quantum-mechanical operators.
+///
+/// The \ref Pomerol::Operators namespace imports a few types and functions from
+/// <a href="https://krivenko.github.io/libcommute/">libcommute</a>. These include
+/// \li <a href="https://krivenko.github.io/libcommute/expression/expression.html">
+///     The polynomial expression object, libcommute::expression</a>.
+/// \li <a href="https://krivenko.github.io/libcommute/expression/expression.html#pm-h-c-notation">
+///     The plus/minus Hermitian conjugate placeholder, libcommute::hc</a>.
+/// \li <a href="https://krivenko.github.io/libcommute/expression/factories.html#statically-typed-indices">
+///     Factory functions for fermionic creation, annihilation and occupation operators
+///     (\f$ \hat c^\dagger, \hat c, \hat n = \hat c^\dagger \hat c\f$) with statically typed indices</a>.
+/// \li <a href="https://krivenko.github.io/libcommute/expression/factories.html#statically-typed-indices">
+///     Factory functions for bosonic creation and annihilation operators
+///     (\f$ \hat a^\dagger, \hat a\f$) with statically typed indices</a>.
+///
+/// There are also a few additional factory functions defined in this namespace.
 
 using libcommute::expression;
 using libcommute::hc;
@@ -98,6 +117,13 @@ auto apply(F&& f, ArgsT&& args)
 // Operator presets
 //
 
+/// Construct a real-valued expression for the full occupation number operator
+/// \f[
+///   \hat N = \sum_{i\in\{I\}} \hat n_i.
+/// \f]
+/// \tparam IndexTypes Types of indices of creation/annihilation operators in the resulting expression.
+/// \param[in] Indices List of index tuples corresponding to the selected degrees of freedom \f$\{I\}\f$.
+/// \return Constructed expression.
 template <typename... IndexTypes>
 expression<double, IndexTypes...> N(std::vector<std::tuple<IndexTypes...>> const& Indices) {
     expression<double, IndexTypes...> res;
@@ -106,6 +132,16 @@ expression<double, IndexTypes...> N(std::vector<std::tuple<IndexTypes...>> const
     return res;
 }
 
+/// Construct a real-valued expression for the full spin z-projection operator
+/// \f[
+///   \hat S_z = \frac{1}{2}\sum_{i\in\{I_\uparrow\}}\hat n_i - \frac{1}{2}\sum_{i\in\{I_\downarrow\}}\hat n_i.
+/// \f]
+/// \tparam IndexTypes Types of indices of creation/annihilation operators in the resulting expression.
+/// \param[in] SpinUpIndices List of index tuples corresponding to the spin-up degrees of freedom
+/// \f$\{I_\uparrow\}\f$.
+/// \param[in] SpinDownIndices List of index tuples corresponding to the spin-down degrees of freedom
+/// \f$\{I_\downarrow\}\f$.
+/// \return Constructed expression.
 template <typename... IndexTypes>
 expression<double, IndexTypes...> Sz(std::vector<std::tuple<IndexTypes...>> const& SpinUpIndices,
                                      std::vector<std::tuple<IndexTypes...>> const& SpinDownIndices) {
@@ -116,6 +152,8 @@ expression<double, IndexTypes...> Sz(std::vector<std::tuple<IndexTypes...>> cons
         res -= 0.5 * Detail::apply(n<double, IndexTypes...>, i);
     return res;
 }
+
+///@}
 
 } // namespace Operators
 } // namespace Pomerol

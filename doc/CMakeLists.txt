@@ -10,6 +10,7 @@
 
 # Generate documentation
 set(DOXYFILE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/include")
+set(DOXYFILE_EXTRA_SOURCES "${CMAKE_BINARY_DIR}/include")
 set(DOXYFILE_IN "${PROJECT_SOURCE_DIR}/doc/Doxyfile.in")
 set(DOXYFILE_OUTPUT_DIR "${CMAKE_BINARY_DIR}/doc")
 

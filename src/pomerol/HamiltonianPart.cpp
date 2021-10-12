@@ -8,6 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file src/pomerol/HamiltonianPart.cpp
+/// \brief Storage and diagonalization of a Hamiltonian matrix block (implementation).
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #include "pomerol/HamiltonianPart.hpp"
 
 // clang-format off
@@ -23,11 +28,11 @@
 #include <sstream>
 #include <stdexcept>
 
+namespace Pomerol {
+
 //
 // class HamiltonianPart
 //
-
-namespace Pomerol {
 
 template <bool C> void HamiltonianPart::initHMatrix() {
     InnerQuantumState BlockSize = S.getBlockSize(Block);
@@ -139,11 +144,11 @@ RealType HamiltonianPart::getMinimumEigenvalue() const {
     return Eigenvalues.minCoeff();
 }
 
-bool HamiltonianPart::reduce(RealType ActualCutoff) {
+bool HamiltonianPart::reduce(RealType Cutoff) {
     checkComputed();
 
     Eigen::Index counter = 0;
-    for(counter = 0; counter < Eigenvalues.size() && Eigenvalues[counter] <= ActualCutoff; ++counter)
+    for(counter = 0; counter < Eigenvalues.size() && Eigenvalues[counter] <= Cutoff; ++counter)
         ;
     INFO("Left " << counter << " eigenvalues : ");
 

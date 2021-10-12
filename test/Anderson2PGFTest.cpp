@@ -8,6 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file test/Anderson2PGFTest.cpp
+/// \brief Two-particle Green's function of the Anderson impurity model.
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>
 #include <pomerol/Hamiltonian.hpp>

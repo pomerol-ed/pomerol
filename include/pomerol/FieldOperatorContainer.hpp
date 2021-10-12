@@ -8,12 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/FieldOperatorContainer.h
-** \brief A container for either creation or annihilation operators in eigenvector basis
-**
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-*/
+/// \file include/pomerol/FieldOperatorContainer.hpp
+/// \brief A container for creation and annihilation operators.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #ifndef POMEROL_INCLUDE_POMEROL_FIELDOPERATORCONTAINER_HPP
 #define POMEROL_INCLUDE_POMEROL_FIELDOPERATORCONTAINER_HPP
 
@@ -28,23 +27,31 @@
 
 namespace Pomerol {
 
-/** This class represents a container to store and retrieve FieldOperators ( CreationOperator or AnnihilationOperator
- * rotated to eigenvector basis of Hamiltonian H ) for a given Index.
- * If no field operator is yet initialized then calculation of the field operator is done.
- */
+/// \addtogroup ED
+///@{
+
+/// \brief Container for instances of \ref CreationOperator and \ref  AnnihilationOperator.
+///
+/// This container class stores instances of \ref CreationOperator and \ref  AnnihilationOperator
+/// in associative maps with keys being their respective single-particle indices.
+/// It also provides methods that prepare and compute all stored \ref MonomialOperator objects
+/// at once.
 class FieldOperatorContainer {
 
-    /** A map which gives a link to the CreationOperator for a given index */
+    /// Storage of CreationOperator objects.
     std::unordered_map<ParticleIndex, CreationOperator> mapCreationOperators;
-    /** A map which gives a link to the AnnihilationOperator for a given index */
+    /// Storage of AnnihilationOperator objects.
     std::unordered_map<ParticleIndex, AnnihilationOperator> mapAnnihilationOperators;
 
 public:
-    /** Constructor.
-     * \param[in] S A reference to a states classification object.
-     * \param[in] H A reference to a Hamiltonian.
-     * \param[in] IndexInfo A reference to a IndexClassification
-     */
+    /// Constructor.
+    /// \tparam IndexTypes Types of indices carried by the creation and annihilation operators.
+    /// \param[in] IndexInfo Map for fermionic operator index tuples.
+    /// \param[in] HS Hilbert space.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
+    /// \param[in] H The Hamiltonian.
+    /// \param[in] in Set of all single-particle indices to store the \ref MonomialOperator objects
+    ///            for. When empty, a set of all indices from IndexInfo is used.
     template <typename... IndexTypes>
     FieldOperatorContainer(IndexClassification<IndexTypes...> const& IndexInfo,
                            HilbertSpace<IndexTypes...> const& HS,
@@ -62,19 +69,29 @@ public:
         }
     }
 
+    /// Prepare all stored creation and annihilation operators (allocate memory for them).
+    /// \tparam IndexTypes Types of indices carried by the creation and annihilation operators.
+    /// \param[in] HS Hilbert space.
     template <typename... IndexTypes> void prepareAll(HilbertSpace<IndexTypes...> const& HS) {
         for(auto& CX : mapCreationOperators)
             CX.second.prepare(HS);
         for(auto& C : mapAnnihilationOperators)
             C.second.prepare(HS);
     }
+
+    /// Compute all stored creation and annihilation operators.
+    /// \pre \ref prepareAll() has been called.
     void computeAll();
 
-    /** Returns the CreationOperator for a given Index. Makes on-demand computation. */
+    /// Return a reference to a creation operator by its single-particle index.
+    /// \param[in] in Single-particle index.
     CreationOperator const& getCreationOperator(ParticleIndex in) const;
-    /** Returns the AnnihilationOperator for a given Index. Makes on-demand computation */
+    /// Return a reference to a annihilation operator by its single-particle index.
+    /// \param[in] in Single-particle index.
     AnnihilationOperator const& getAnnihilationOperator(ParticleIndex in) const;
 };
+
+///@}
 
 } // namespace Pomerol
 

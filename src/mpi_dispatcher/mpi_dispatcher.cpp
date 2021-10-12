@@ -8,6 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file src/mpi_dispatcher/mpi_dispatcher.cpp
+/// \brief A master-worker parallelization scheme using non-blocking MPI communications (implementation).
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #include "mpi_dispatcher/mpi_dispatcher.hpp"
 #include "mpi_dispatcher/misc.hpp"
 
@@ -22,7 +27,7 @@ namespace pMPI {
 // Worker
 //
 
-MPIWorker::MPIWorker(MPI_Comm const& comm, WorkerId boss)
+MPIWorker::MPIWorker(MPI_Comm const& comm, int boss)
     : Comm(comm), id(rank(comm)), boss(boss), current_job_(-1), req(MPI_REQUEST_NULL), Status(pMPI::Pending) {
     MPI_Irecv(&current_job_, 1, MPI_INT, boss, MPI_ANY_TAG, comm, &req);
 }
@@ -66,7 +71,7 @@ void MPIMaster::fill_stack_() {
         JobStack.emplace(task_numbers[i]);
     }
     for(int p = Nprocs - 1; p >= 0; --p) {
-        WorkerIndices[worker_pool[p]] = static_cast<int>(p);
+        WorkerIndices[worker_pool[p]] = p;
         WorkerStack.emplace(worker_pool[p]);
     }
 }

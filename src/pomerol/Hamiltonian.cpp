@@ -8,6 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file src/pomerol/Hamiltonian.cpp
+/// \brief Storage and diagonalization of a Hamiltonian matrix (implementation).
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #include "pomerol/Hamiltonian.hpp"
 
 #include "mpi_dispatcher/mpi_skel.hpp"
@@ -77,7 +82,7 @@ template <bool C> void Hamiltonian::computeImpl(MPI_Comm const& comm) {
         auto& part = parts[p];
         auto& H = part.getMatrix<C>();
         if(comm_rank == job_map[p]) {
-            if(part.Status != HamiltonianPart::Computed) {
+            if(part.getStatus() != HamiltonianPart::Computed) {
                 ERROR("Worker" << comm_rank << " didn't calculate part" << p);
                 throw std::logic_error("Worker didn't calculate this part.");
             }
@@ -87,7 +92,7 @@ template <bool C> void Hamiltonian::computeImpl(MPI_Comm const& comm) {
             part.Eigenvalues.resize(H.rows());
             MPI_Bcast(H.data(), H.size(), H_dt, job_map[p], comm);
             MPI_Bcast(part.Eigenvalues.data(), static_cast<int>(part.Eigenvalues.size()), MPI_DOUBLE, job_map[p], comm);
-            part.Status = HamiltonianPart::Computed;
+            part.setStatus(HamiltonianPart::Computed);
         }
     }
 }

@@ -8,11 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/IndexContainer2.h
-** \brief A parent abstract class for 2-index objects
-**
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-*/
+/// \file include/pomerol/IndexContainer2.hpp
+/// \brief A CRTP base for container types whose elements are addressable by
+/// two single-particle indices.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #ifndef POMEROL_INCLUDE_POMEROL_INDEXCONTAINER2_HPP
 #define POMEROL_INCLUDE_POMEROL_INDEXCONTAINER2_HPP
 
@@ -26,30 +26,68 @@
 
 namespace Pomerol {
 
-/** A container to store components of a function with 2 indices. */
+/// \addtogroup Misc
+///@{
+
+/// \brief Base class for sparse container types whose elements are addressable
+/// by two single-particle indices.
+///
+/// \tparam ElementType Type of an element.
+/// \tparam SourceObject Type of the source object used to create the elements.
 template <typename ElementType, typename SourceObject> class IndexContainer2 {
 protected:
+    /// Each of the two indices can change in the range [0; NumIndices[.
     ParticleIndex NumIndices;
+    /// Sparse storage for the elements.
     std::map<IndexCombination2, std::shared_ptr<ElementType>> ElementsMap;
 
+    /// Stored elements are created by calling Source.createElement(Indices).
     SourceObject const& Source;
 
-    std::set<IndexCombination2> enumerateInitialIndices() const;
+    /// Generate a complete set of index combinations usable to address
+    /// elements in the container.
+    std::set<IndexCombination2> enumerateIndices() const;
 
 public:
+    /// Construct from a source object and an index classification object.
+    /// The container is initially empty and shall be populated with elements
+    /// by a subsequent call to \ref fill().
+    /// \tparam IndexTypes Types of indices carried by a single creation/annihilation operator.
+    /// \param[in] Source Source object used to create stored elements.
+    /// \param[in] IndexInfo Classification of single-particle indices.
     template <typename... IndexTypes>
     IndexContainer2(SourceObject const& Source, IndexClassification<IndexTypes...> const& IndexInfo)
         : NumIndices(IndexInfo.getIndexSize()), Source(Source) {}
 
-    void fill(std::set<IndexCombination2> InitialIndices = std::set<IndexCombination2>());
-    ElementType& set(IndexCombination2 const& Indices);
+    /// Fill the container with elements from the source object.
+    /// Each element is created by calling Source.createElement(IndexCombination).
+    /// \param[in] Indices Set of index combinations of the elements to be created.
+    ///            An empty set results in creation of elements for all possible index combinations.
+    void fill(std::set<IndexCombination2> Indices = std::set<IndexCombination2>());
 
+    /// Create a stored element from the source object by its index combination.
+    /// \param[in] Indices Index combination of the element to be created.
+    /// \return Reference to the created element.
+    ElementType& create(IndexCombination2 const& Indices);
+
+    /// Check if an element for a given index combination is stored in the container.
+    /// \param[in] Indices Index combination.
     bool isInContainer(IndexCombination2 const& Indices) const;
+    /// Check if an element for a given index combination is stored in the container.
+    /// \param[in] Index1 First index in the combination.
+    /// \param[in] Index2 Second index in the combination.
     bool isInContainer(ParticleIndex Index1, ParticleIndex Index2) const;
 
+    /// Get a reference to a stored element by its index combination.
+    /// \param[in] Indices Index combination.
     ElementType& operator()(IndexCombination2 const& Indices);
+    /// Get a reference to a stored element by its index combination.
+    /// \param[in] Index1 First index in the combination.
+    /// \param[in] Index2 Second index in the combination.
     ElementType& operator()(ParticleIndex Index1, ParticleIndex Index2);
 };
+
+///@}
 
 /////////////////////
 // IndexContainer2 //
@@ -65,33 +103,33 @@ bool IndexContainer2<ElementType, SourceObject>::isInContainer(ParticleIndex Ind
 }
 
 template <typename ElementType, typename SourceObject>
-void IndexContainer2<ElementType, SourceObject>::fill(std::set<IndexCombination2> InitialIndices) {
+void IndexContainer2<ElementType, SourceObject>::fill(std::set<IndexCombination2> Indices) {
     // TODO: this method should use symmetry information
-    // InitialIndices should be split into equivalence classes with
+    // Indices should be split into equivalence classes with
     // the equivalence relation provided by a symmetry analyzer
     // The resulting classes may be extended afterwards (optionally)
 
     // remove existing elements
     ElementsMap.clear();
 
-    std::set<IndexCombination2> II = InitialIndices.empty() ? enumerateInitialIndices() : std::move(InitialIndices);
+    std::set<IndexCombination2> II = Indices.empty() ? enumerateIndices() : std::move(Indices);
 
     for(auto const& ic : II) {
         if(!isInContainer(ic)) {
-            set(ic);
+            create(ic);
         }
     }
 }
 
 template <typename ElementType, typename SourceObject>
-ElementType& IndexContainer2<ElementType, SourceObject>::set(IndexCombination2 const& Indices) {
+ElementType& IndexContainer2<ElementType, SourceObject>::create(IndexCombination2 const& Indices) {
     std::shared_ptr<ElementType> pElement(Source.createElement(Indices));
     ElementsMap[Indices] = pElement;
 
-    DEBUG("IndexContainer2::set() at " << this
-                                       << ": "
-                                          "added an element with indices "
-                                       << Indices << " (" << pElement << ").");
+    DEBUG("IndexContainer2::create() at " << this
+                                          << ": "
+                                             "added an element with indices "
+                                          << Indices << " (" << pElement << ").");
 
     return *pElement;
 }
@@ -104,7 +142,7 @@ ElementType& IndexContainer2<ElementType, SourceObject>::operator()(IndexCombina
         DEBUG("IndexContainer2 at " << this << ": "
                                     << "cache miss for Index1=" << Indices.Index1 << ", Index2=" << Indices.Index2
                                     << "; add a new element to the container using source " << &Source);
-        return set(Indices);
+        return create(Indices);
     }
     return *(iter->second);
 }
@@ -115,7 +153,7 @@ ElementType& IndexContainer2<ElementType, SourceObject>::operator()(ParticleInde
 }
 
 template <typename ElementType, typename SourceObject>
-inline std::set<IndexCombination2> IndexContainer2<ElementType, SourceObject>::enumerateInitialIndices() const {
+inline std::set<IndexCombination2> IndexContainer2<ElementType, SourceObject>::enumerateIndices() const {
     std::set<IndexCombination2> AllIndices;
 
     for(ParticleIndex Index1 = 0; Index1 < NumIndices; ++Index1)

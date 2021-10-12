@@ -8,12 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/GreensFunctionPart.h
-** \brief Part of a Green's function for a given set of quantum numbers.
-**
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-*/
+/// \file include/pomerol/GreensFunctionPart.hpp
+/// \brief Part of a fermionic single-particle Matsubara Green's function.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #ifndef POMEROL_INCLUDE_POMEROL_GREENSFUNCTIONPART_HPP
 #define POMEROL_INCLUDE_POMEROL_GREENSFUNCTIONPART_HPP
 
@@ -33,94 +32,123 @@
 
 namespace Pomerol {
 
-/** This class represents a part of a Green's function.
- * Every part describes all transitions allowed by selection rules
- * between a given pair of Hamiltonian blocks.
- */
+/// \addtogroup GF
+///@{
+
+/// \brief Part of a fermionic single-particle Matsubara Green's function.
+///
+/// It includes contributions from all matrix elements of the following form,
+/// \f[
+///  \langle {\rm outer} | c | {\rm inner} \rangle\langle {\rm inner}  | c^\dagger | {\rm outer} \rangle
+/// \f]
+/// with (inner, outer) being a certain pair of Hamiltonian's invariant subspaces.
+/// The contributions are stored as terms of the Lehmann representation, i.e. as
+/// fractions \f$\frac{R}{z - P}\f$ with real poles \f$P\f$ and complex residues \f$R\f$.
+/// The latter are combinations of matrix elements and statistical weights.
 class GreensFunctionPart : public Thermal {
-    /** A reference to a part of a Hamiltonian (inner index iterates through it). */
+    /// Diagonal block of the Hamiltonian corresponding to the 'inner' subspace.
     HamiltonianPart const& HpartInner;
-    /** A reference to a part of a Hamiltonian (outer index iterates through it). */
+    /// Diagonal block of the Hamiltonian corresponding to the 'outer' subspace.
     HamiltonianPart const& HpartOuter;
-    /** A reference to a part of a density matrix (the part corresponding to HpartInner). */
+    /// Diagonal block of the many-body density matrix corresponding to the 'inner' subspace.
     DensityMatrixPart const& DMpartInner;
-    /** A reference to a part of a density matrix (the part corresponding to HpartOuter). */
+    /// Diagonal block of the many-body density matrix corresponding to the 'outer' subspace.
     DensityMatrixPart const& DMpartOuter;
 
-    /** A reference to a part of an annihilation operator. */
+    /// Block of the annihilation operator, \f$\langle{\rm outer}|c|{\rm inner}\rangle\f$.
     MonomialOperatorPart const& C;
-    /** A reference to a part of a creation operator. */
+    /// Block of the creation operator, \f$\langle{\rm inner}|c^\dagger|{\rm outer}\rangle\f$.
     MonomialOperatorPart const& CX;
 
-    /** Every term is a fraction \f$ \frac{R}{z - P} \f$. */
+    /// A contribution to the Lehmann representation of a single-particle Green's function,
+    /// a fraction of the form \f$\frac{R}{z - P}\f$.
     struct Term {
-        /** Residue at the pole (\f$ R \f$). */
+        /// Residue at the pole (\f$ R \f$).
         ComplexType Residue;
-        /** Position of the pole (\f$ P \f$). */
+        /// Position of the pole (\f$ P \f$).
         RealType Pole;
 
-        /** Comparator object for terms */
+        /// Comparator object for terms.
         struct Compare {
+        private:
+            /// Tolerance level used to compare positions of the pole.
             double const Tolerance;
+
+        public:
+            /// Constructor.
+            /// \param[in] Tolerance Tolerance level used to compare positions of the pole.
             Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            /// Are terms similar?
+            /// \param[in] t1 First term.
+            /// \param[in] t2 Second term.
             bool operator()(Term const& t1, Term const& t2) const { return t2.Pole - t1.Pole >= Tolerance; }
         };
 
-        /** Does term have a negligible residue? */
+        /// Predicate: Does a term have a negligible residue?
         struct IsNegligible {
+        private:
+            /// Tolerance level used to detect negligible residues.
             double Tolerance;
+
+        public:
+            /// Constructor.
+            /// \param[in] Tolerance Tolerance level used to detect negligible residues.
             IsNegligible(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            /// Is term negligible?
+            /// \param[in] t Term.
+            /// \param[in] ToleranceDivisor Divide tolerance by this value.
             bool operator()(Term const& t, std::size_t ToleranceDivisor) const {
                 return std::abs(t.Residue) < Tolerance / ToleranceDivisor;
             }
+            /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
+            /// \param[in] comm The MPI communicator for the broadcast operation.
+            /// \param[in] root Rank of the root MPI process.
             void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm); }
         };
 
-        /** Constructor.
-        * \param[in] Residue Value of the residue.
-        * \param[in] Pole Position of the pole.
-        */
+        /// Constructor.
+        /// \param[in] Residue Value of the residue \f$ R \f$.
+        /// \param[in] Pole Position of the pole \f$ P \f$.
         Term(ComplexType Residue, RealType Pole);
-        /** Returns a contribution to the Green's function made by this term.
-        * \param[in] Frequency Complex frequency \f$ z \f$ to substitute into this term.
-        */
-        ComplexType operator()(ComplexType Frequency) const;
 
-        /** Returns a contribution to the imaginary-time Green's function made by this term.
-        * \param[in] tau Imaginary time point.
-        * \param[in] beta Inverse temperature.
-        */
+        /// Substitute a complex frequency \f$ z \f$ into this term.
+        /// \param[in] z Value of the frequency \f$ z \f$.
+        ComplexType operator()(ComplexType z) const;
+
+        /// Return the contribution to the imaginary-time Green's function made by this term.
+        /// \param[in] tau Imaginary time point.
+        /// \param[in] beta Inverse temperature.
         ComplexType operator()(RealType tau, RealType beta) const;
 
-        /** This operator add a term to this one.
-        * It does not check the similarity of the terms!
-        * \param[in] AnotherTerm Another term to add to this.
-        */
+        /// In-place addition of terms (similarity of the terms is not checked).
+        /// \param[in] AnotherTerm Term to add.
         Term& operator+=(Term const& AnotherTerm);
     };
-    /** A stream insertion operator for type GreensTerm.
-     * \param[in] out An output stream to insert to.
-     * \param[in] Term A term to be inserted.
-     */
+
+    /// Output stream insertion operator.
+    /// \param[out] os Output stream.
+    /// \param[in] T Term to be inserted.
+    /// \return Reference to the output stream.
     friend std::ostream& operator<<(std::ostream& os, Term const& T) {
         return os << T.Residue << "/(z - " << T.Pole << ")";
     }
 
-    /** A list of all terms. */
+    /// List of all terms contributing to this part.
     TermList<Term> Terms;
 
-    /** A matrix element with magnitude less than this value is treated as zero. */
+    /// Matrix elements with magnitudes below this value are treated as negligible.
     RealType const MatrixElementTolerance = 1e-8;
 
 public:
-    /** Constructor.
-     * \param[in] C A reference to a part of an annihilation operator.
-     * \param[in] CX A reference to a part of a creation operator.
-     * \param[in] HpartInner A reference to a part of the Hamiltonian (inner index).
-     * \param[in] HpartOuter A reference to a part of the Hamiltonian (outer index).
-     * \param[in] DMpartInner A reference to a part of the density matrix (inner index).
-     * \param[in] DMpartOuter A reference to a part of the density matrix (outer index).
-     */
+    /// Constructor.
+    /// \param[in] C Part of the annihilation operator \f$c\f$.
+    /// \param[in] CX Part of the creation operator \f$c^\dagger\f$.
+    /// \param[in] HpartInner Part of the Hamiltonian corresponding to the 'inner' subspace.
+    /// \param[in] HpartOuter Part of the Hamiltonian corresponding to the 'outer' subspace.
+    /// \param[in] DMpartInner Part of the many-body density matrix \f$\hat\rho\f$
+    ///                        corresponding to the 'inner' subspace.
+    /// \param[in] DMpartOuter Part of the many-body density matrix \f$\hat\rho\f$
+    ///                        corresponding to the 'outer' subspace.
     GreensFunctionPart(MonomialOperatorPart const& C,
                        MonomialOperatorPart const& CX,
                        HamiltonianPart const& HpartInner,
@@ -128,31 +156,28 @@ public:
                        DensityMatrixPart const& DMpartInner,
                        DensityMatrixPart const& DMpartOuter);
 
-    /** Iterates over all matrix elements and fills the list of terms. */
+    /// Compute the terms contributing to this part.
     void compute();
 
-    /** Returns a sum of all the terms with a substituted frequency.
-    * \param[in] z Input frequency
-    */
+    /// Substitute a complex frequency \f$z\f$ into this part.
+    /// \param[in] z Value of the frequency \f$z\f$.
     ComplexType operator()(ComplexType z) const;
-    /** Returns a sum of all the terms with a substituted Matsubara frequency.
-    * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi*(2*n+1)/\beta \f$).
-    */
+
+    /// Substitute a fermionic Matsubara frequency \f$\omega_n\f$ into this part.
+    /// \param[in] MatsubaraNumber Index of the Matsubara frequency \f$n\f$
+    /// (\f$ \omega_n = \pi (2n + 1)/\beta \f$).
     ComplexType operator()(long MatsubaraNumber) const;
 
-    /** Returns a sum of all the terms with a substituted imaginary time point.
-     * \param[in] tau Imaginary time point.
-     */
+    /// Return the contribution to the imaginary-time Green's function made by this part.
+    /// \param[in] tau Imaginary time point.
     ComplexType of_tau(RealType tau) const;
 
-    /** A difference in energies with magnitude less than this value is treated as zero. */
-    RealType const ReduceResonanceTolerance = 1e-8;
-    /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. */
-    RealType const ReduceTolerance = 1e-8;
-
 private:
+    /// Implementation details.
     template <bool Complex> void computeImpl();
 };
+
+///@}
 
 // Inline call operators
 inline ComplexType GreensFunctionPart::operator()(long MatsubaraNumber) const {

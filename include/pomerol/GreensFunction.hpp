@@ -8,12 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/GreensFunction.h
-** \brief Thermal Green's function.
-**
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-*/
+/// \file include/pomerol/GreensFunction.hpp
+/// \brief Fermionic single-particle Matsubara Green's function.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #ifndef POMEROL_INCLUDE_POMEROL_GREENSFUNCTION_HPP
 #define POMEROL_INCLUDE_POMEROL_GREENSFUNCTION_HPP
 
@@ -31,88 +30,88 @@
 
 namespace Pomerol {
 
-/** This class represents a thermal Green's function in the Matsubara representation.
- *
- * Exact definition:
- *
- * \f[
- *      G(\omega_n) = -\int_0^\beta \langle\mathbf{T}c_i(\tau)c^+_j(0)\rangle e^{i\omega_n\tau} d\tau
- * \f]
- *
- * It is actually a container class for a collection of parts (most of real calculations
- * take place inside the parts). A pair of parts, one part of an annihilation operator and
- * another from a creation operator, corresponds to a part of the Green's function.
- */
+/// \defgroup GF Single-particle Green's functions of fermions
+///@{
+
+/// \brief Fermionic single-particle Matsubara Green's function.
+///
+/// This class gives access to the GF values both in imaginary time representation,
+/// \f[
+///  G(\tau) = -Tr[\mathcal{T}_\tau \hat\rho c(\tau) c^\dagger(0)]
+/// \f]
+/// and at the imaginary Matsubara frequencies \f$\omega_n = \pi(2n+1)/\beta\f$,
+/// \f[
+///  G(i\omega_n) = \int_0^\beta d\tau e^{i\omega_n\tau} G(\tau).
+/// \f]
+/// It is actually a container class for a collection of \ref GreensFunctionPart's
+/// (most of the real calculations take place in the parts).
 class GreensFunction : public Thermal, public ComputableObject {
 
-    /** A reference to a states classification object. */
+    /// Information about invariant subspaces of the Hamiltonian.
     StatesClassification const& S;
-    /** A reference to a Hamiltonian. */
+    /// The Hamiltonian.
     Hamiltonian const& H;
-    /** A reference to an annihilation operator. */
+    /// The annihilation operator \f$c\f$.
     AnnihilationOperator const& C;
-    /** A reference to a creation operator. */
+    /// The creation operator \f$c^\dagger\f$.
     CreationOperator const& CX;
-    /** A reference to a density matrix. */
+    /// Many-body density matrix \f$\hat\rho\f$.
     DensityMatrix const& DM;
 
-    /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
+    /// A flag that marks an identically vanishing Green's function.
     bool Vanishing = true;
 
-    /** A list of pointers to parts (every part corresponds to a part of the annihilation operator
-     * and a part of the creation operator).
-     */
+    /// The list of all \ref GreensFunctionPart's contributing to this GF.
     std::vector<GreensFunctionPart> parts;
 
 public:
-    /** Constructor.
-     * \param[in] S A reference to a states classification object.
-     * \param[in] H A reference to a Hamiltonian.
-     * \param[in] C A reference to an annihilation operator.
-     * \param[in] CX A reference to a creation operator.
-     * \param[in] DM A reference to a density matrix.
-     */
+    /// Constructor.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
+    /// \param[in] H The Hamiltonian.
+    /// \param[in] C The annihilation operator \f$c\f$.
+    /// \param[in] CX The creation operator \f$c^\dagger\f$.
+    /// \param[in] DM Many-body density matrix \f$\hat\rho\f$.
     GreensFunction(StatesClassification const& S,
                    Hamiltonian const& H,
                    AnnihilationOperator const& C,
                    CreationOperator const& CX,
                    DensityMatrix const& DM);
-    /** Copy-constructor.
-     * \param[in] GF GreensFunction object to be copied.
-     */
+
+    /// Copy-constructor.
+    /// \param[in] GF \ref GreensFunction object to be copied.
     GreensFunction(GreensFunction const& GF);
 
-    /** Chooses relevant parts of C and CX and allocates resources for the parts of the Green's function. */
+    /// Select all relevant parts of \f$c\f$ and \f$c^\dagger\f$
+    /// and allocate resources for the \ref GreensFunctionPart's.
     void prepare();
-    /** Actually computes the parts and fills the internal cache of precomputed values.
-     * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
-     */
+
+    /// Actually computes the parts.
     void compute();
 
-    /** Returns the 'bit' (index) of the operator C or CX.
-     * \param[in] Position Use C for Position==0 and CX for Position==1.
-     */
-    unsigned short getIndex(std::size_t Position) const;
+    /// Returns the single-particle index of either \f$c\f$ or \f$c^\dagger\f$.
+    /// \param[in] Position Select \f$c\f$ for Position==0 and \f$c^\dagger\f$ for Position==1.
+    ///            Throws for other values of this argument.
+    ParticleIndex getIndex(std::size_t Position) const;
 
-    /** Returns the value of the Green's function calculated at a given frequency.
-     * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
-     */
+    /// Return the GF value calculated at a given Matsubara frequency.
+    /// \param[in] MatsubaraNumber Index of the Matsubara frequency \f$n\f$ (\f$\omega_n=\pi(2n+1)/\beta\f$).
     ComplexType operator()(long MatsubaraNumber) const;
 
-    /** Returns the value of the Green's function calculated at a given frequency.
-     * \param[in] z Input frequency
-     */
+    /// Return the GF value calculated at a given complex frequency \f$z\f$.
+    /// \param[in] z The complex frequency.
     ComplexType operator()(ComplexType z) const;
 
-    /** Returns the value of the Green's function calculated at a given imaginary time point.
-     * \param[in] tau Imaginary time point.
-     */
+    /// Return the GF value calculated at a given imaginary time \f$\tau\f$.
+    /// \param[in] tau Imaginary time point.
     ComplexType of_tau(RealType tau) const;
 
+    /// Is this Green's function identically zero?
     bool isVanishing() const { return Vanishing; }
 };
 
-inline ComplexType GreensFunction::operator()(long int MatsubaraNumber) const {
+///@}
+
+inline ComplexType GreensFunction::operator()(long MatsubaraNumber) const {
     return (*this)(MatsubaraSpacing * RealType(2 * MatsubaraNumber + 1));
 }
 
