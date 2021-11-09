@@ -123,6 +123,8 @@ TEST_CASE("Two-particle vertex of a single Hubbard atom", "[Vertex4]") {
         GreensFunction const& GF = G(up_index, up_index);
         TwoParticleGF const& Chi_uuuu = Chi(IndexCombination4(up_index, up_index, up_index, up_index));
         Vertex4 Gamma4_uuuu(Chi_uuuu, GF, GF, GF, GF);
+        Gamma4_uuuu.compute(n_iw);
+
         for(int n1 = -n_iw; n1 < n_iw; ++n1) {
             for(int n2 = -n_iw; n2 < n_iw; ++n2) {
                 for(int n3 = -n_iw; n3 < n_iw; ++n3) {
@@ -135,9 +137,9 @@ TEST_CASE("Two-particle vertex of a single Hubbard atom", "[Vertex4]") {
                                           beta * GF(n1) * GF(n2) * delta(n1, n3);
                     REQUIRE_THAT(chi_value, IsCloseTo(chi_ref, 1e-6));
 
-                    ComplexType Gamma_value = Gamma4_uuuu.value(n1, n2, n3);
+                    ComplexType Gamma_value = Gamma4_uuuu(n1, n2, n3);
                     ComplexType Gamma_ref = Gamma4uuuu_ref(n1, n2, n3) * GF(n1) * GF(n2) * GF(n3) * GF(n4);
-                    REQUIRE_THAT(Gamma_value, IsCloseTo(Gamma_ref, 1e-6));
+                    REQUIRE_THAT(Gamma_value, IsCloseTo(Gamma_ref, 1e-10));
                 }
             }
         }
@@ -157,7 +159,7 @@ TEST_CASE("Two-particle vertex of a single Hubbard atom", "[Vertex4]") {
                     ComplexType chi_ref =
                         Gamma4udud_ref(n1, n2, n3) * GF_up(n1) * GF_down(n2) * GF_up(n3) * GF_down(n4) -
                         beta * GF_up(n1) * GF_down(n2) * delta(n1, n3);
-                    REQUIRE_THAT(chi_value, IsCloseTo(chi_ref, 1e-6));
+                    REQUIRE_THAT(chi_value, IsCloseTo(chi_ref, 1e-10));
                 }
             }
         }
