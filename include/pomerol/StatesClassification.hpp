@@ -55,8 +55,7 @@ public:
     // TODO: Optionally accept a list of integrals of motion
     // (Operators::expression<ScalarType, IndexTypes...> objects) and fill lists
     // of quantum numbers.
-    template <typename ScalarType, typename... IndexTypes>
-    void compute(HilbertSpace<ScalarType, IndexTypes...> const& HS) {
+    template <typename... IndexTypes> void compute(HilbertSpace<IndexTypes...> const& HS) {
         if(Status == Computed)
             return;
         auto const& FullHilbertSpace = HS.getFullHilbertSpace();
