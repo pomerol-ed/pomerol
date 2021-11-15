@@ -13,8 +13,8 @@
 **
 **  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_H
-#define POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_H
+#ifndef POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_HPP
+#define POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_HPP
 
 #include "Misc.hpp"
 #include "Operators.hpp"
@@ -126,4 +126,4 @@ IndexClassification<IndexTypes...> MakeIndexClassification(Operators::expression
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_HPP

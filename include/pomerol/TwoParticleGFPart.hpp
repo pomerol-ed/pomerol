@@ -14,8 +14,8 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_TWOPARTICLEGFPART_H
-#define POMEROL_INCLUDE_TWOPARTICLEGFPART_H
+#ifndef POMEROL_INCLUDE_TWOPARTICLEGFPART_HPP
+#define POMEROL_INCLUDE_TWOPARTICLEGFPART_HPP
 
 #include "ComputableObject.hpp"
 #include "DensityMatrixPart.hpp"
@@ -405,4 +405,4 @@ inline ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1,
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_TWOPARTICLEGFPART_H
+#endif // #ifndef POMEROL_INCLUDE_TWOPARTICLEGFPART_HPP

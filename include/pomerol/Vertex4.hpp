@@ -14,8 +14,8 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_VERTEX4_H
-#define POMEROL_INCLUDE_VERTEX4_H
+#ifndef POMEROL_INCLUDE_VERTEX4_HPP
+#define POMEROL_INCLUDE_VERTEX4_HPP
 
 #include "ComputableObject.hpp"
 #include "GreensFunction.hpp"
@@ -53,4 +53,4 @@ public:
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_VERTEX4_H
+#endif // #ifndef POMEROL_INCLUDE_VERTEX4_HPP

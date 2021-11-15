@@ -14,8 +14,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_POMEROL_GFCONTAINER_H
-#define POMEROL_INCLUDE_POMEROL_GFCONTAINER_H
+#ifndef POMEROL_INCLUDE_POMEROL_GFCONTAINER_HPP
+#define POMEROL_INCLUDE_POMEROL_GFCONTAINER_HPP
 
 #include "DensityMatrix.hpp"
 #include "FieldOperatorContainer.hpp"
@@ -65,4 +65,4 @@ protected:
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_POMEROL_GFCONTAINER_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_GFCONTAINER_HPP

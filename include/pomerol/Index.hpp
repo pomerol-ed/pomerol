@@ -15,8 +15,8 @@
 ** \author    Andrey Antipov (antipov@shg.ru)
 */
 
-#ifndef POMEROL_INCLUDE_POMEROL_INDEX_H
-#define POMEROL_INCLUDE_POMEROL_INDEX_H
+#ifndef POMEROL_INCLUDE_POMEROL_INDEX_HPP
+#define POMEROL_INCLUDE_POMEROL_INDEX_HPP
 
 #include "Misc.hpp"
 
@@ -85,4 +85,4 @@ struct IndexCombination4 {
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_POMEROL_INDEX_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_INDEX_HPP

@@ -14,8 +14,8 @@
 ** \author    Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author    Andrey Antipov (antipov@shg.ru)
 */
-#ifndef POMEROL_INCLUDE_POMEROL_MISC_H
-#define POMEROL_INCLUDE_POMEROL_MISC_H
+#ifndef POMEROL_INCLUDE_POMEROL_MISC_HPP
+#define POMEROL_INCLUDE_POMEROL_MISC_HPP
 
 #include <pomerol/Version.hpp>
 
@@ -184,4 +184,4 @@ extern std::array<Permutation4, 24> const permutations4;
  *
  */
 
-#endif // #ifndef POMEROL_INCLUDE_POMEROL_MISC_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_MISC_HPP

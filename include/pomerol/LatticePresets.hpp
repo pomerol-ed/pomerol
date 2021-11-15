@@ -14,8 +14,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_H
-#define POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_H
+#ifndef POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_HPP
+#define POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_HPP
 
 #include "Misc.hpp"
 #include "Operators.hpp"
@@ -280,4 +280,4 @@ ComplexExpr HolsteinInteraction(std::string const& Label,
 } // namespace LatticePresets
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_HPP

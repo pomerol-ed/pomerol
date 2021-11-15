@@ -13,8 +13,8 @@
 **
 **  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_POMEROL_HILBERTSPACE_H
-#define POMEROL_INCLUDE_POMEROL_HILBERTSPACE_H
+#ifndef POMEROL_INCLUDE_POMEROL_HILBERTSPACE_HPP
+#define POMEROL_INCLUDE_POMEROL_HILBERTSPACE_HPP
 
 #include "ComputableObject.hpp"
 #include "IndexClassification.hpp"
@@ -146,4 +146,4 @@ MakeHilbertSpace(IndexClassification<IndexTypes...> const& IndexInfo,
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_POMEROL_HILBERTSPACE_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_HILBERTSPACE_HPP

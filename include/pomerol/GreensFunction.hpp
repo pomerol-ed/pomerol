@@ -14,8 +14,8 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_POMEROL_GREENSFUNCTION_H
-#define POMEROL_INCLUDE_POMEROL_GREENSFUNCTION_H
+#ifndef POMEROL_INCLUDE_POMEROL_GREENSFUNCTION_HPP
+#define POMEROL_INCLUDE_POMEROL_GREENSFUNCTION_HPP
 
 #include "ComputableObject.hpp"
 #include "DensityMatrix.hpp"
@@ -140,4 +140,4 @@ inline ComplexType GreensFunction::of_tau(RealType tau) const {
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_POMEROL_GREENSFUNCTION_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_GREENSFUNCTION_HPP

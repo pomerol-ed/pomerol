@@ -15,8 +15,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 ** \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
 */
-#ifndef POMEROL_INCLUDE_SUSCEPTIBILITYPART_H
-#define POMEROL_INCLUDE_SUSCEPTIBILITYPART_H
+#ifndef POMEROL_INCLUDE_SUSCEPTIBILITYPART_HPP
+#define POMEROL_INCLUDE_SUSCEPTIBILITYPART_HPP
 
 #include "DensityMatrixPart.hpp"
 #include "HamiltonianPart.hpp"
@@ -175,4 +175,4 @@ inline ComplexType SusceptibilityPart::of_tau(RealType tau) const {
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_SUSCEPTIBILITYPART_H
+#endif // #ifndef POMEROL_INCLUDE_SUSCEPTIBILITYPART_HPP

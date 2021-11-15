@@ -12,8 +12,8 @@
 // Created by iskakoff on 05/12/16.
 //
 
-#ifndef POMEROL_PROG_ANDERSON_MODEL_H
-#define POMEROL_PROG_ANDERSON_MODEL_H
+#ifndef POMEROL_PROG_ANDERSON_MODEL_HPP
+#define POMEROL_PROG_ANDERSON_MODEL_HPP
 
 #include "quantum_model.hpp"
 
@@ -100,4 +100,4 @@ public:
     std::vector<double> hoppings;
 };
 
-#endif // #ifndef POMEROL_PROG_ANDERSON_MODEL_H
+#endif // #ifndef POMEROL_PROG_ANDERSON_MODEL_HPP

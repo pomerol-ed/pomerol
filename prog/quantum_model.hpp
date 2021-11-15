@@ -12,8 +12,8 @@
 // Created by iskakoff on 05/12/16.
 //
 
-#ifndef POMEROL_PROG_QUANTUM_MODEL_H
-#define POMEROL_PROG_QUANTUM_MODEL_H
+#ifndef POMEROL_PROG_QUANTUM_MODEL_HPP
+#define POMEROL_PROG_QUANTUM_MODEL_HPP
 
 #include <pomerol.hpp>
 
@@ -115,4 +115,4 @@ protected:
     }
 };
 
-#endif // #ifndef POMEROL_PROG_QUANTUM_MODEL_H
+#endif // #ifndef POMEROL_PROG_QUANTUM_MODEL_HPP

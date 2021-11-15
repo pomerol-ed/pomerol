@@ -12,8 +12,8 @@
 ** \brief Implementation of a master-slave computation using unblocked MPI Communication that allows to utilize
 ** master as a computation node
 */
-#ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MPI_DISPATCHER_H
-#define POMEROL_INCLUDE_MPI_DISPATCHER_MPI_DISPATCHER_H
+#ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MPI_DISPATCHER_HPP
+#define POMEROL_INCLUDE_MPI_DISPATCHER_MPI_DISPATCHER_HPP
 
 #include <mpi.h>
 
@@ -78,4 +78,4 @@ private:
 
 } // namespace pMPI
 
-#endif // #ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MPI_DISPATCHER_H
+#endif // #ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MPI_DISPATCHER_HPP

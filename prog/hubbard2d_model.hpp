@@ -12,8 +12,8 @@
 // Created by iskakoff on 05/12/16.
 //
 
-#ifndef POMEROL_PROG_HUBBARD2D_MODEL_H
-#define POMEROL_PROG_HUBBARD2D_MODEL_H
+#ifndef POMEROL_PROG_HUBBARD2D_MODEL_HPP
+#define POMEROL_PROG_HUBBARD2D_MODEL_HPP
 
 #include "quantum_model.hpp"
 
@@ -148,4 +148,4 @@ private:
     std::size_t SiteIndexF(std::size_t x, std::size_t y) { return y * size_x + x; }
 };
 
-#endif // #ifndef POMEROL_PROG_HUBBARD2D_MODEL_H
+#endif // #ifndef POMEROL_PROG_HUBBARD2D_MODEL_HPP

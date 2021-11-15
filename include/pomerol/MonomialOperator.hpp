@@ -14,8 +14,8 @@
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_MONOMIALOPERATOR_H
-#define POMEROL_INCLUDE_MONOMIALOPERATOR_H
+#ifndef POMEROL_INCLUDE_MONOMIALOPERATOR_HPP
+#define POMEROL_INCLUDE_MONOMIALOPERATOR_HPP
 
 #include "ComputableObject.hpp"
 #include "Hamiltonian.hpp"
@@ -235,4 +235,4 @@ public:
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_MONOMIALOPERATOR_H
+#endif // #ifndef POMEROL_INCLUDE_MONOMIALOPERATOR_HPP

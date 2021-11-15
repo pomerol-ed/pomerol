@@ -14,8 +14,8 @@
 **
 **  \author    Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_OPERATORS_H
-#define POMEROL_INCLUDE_OPERATORS_H
+#ifndef POMEROL_INCLUDE_OPERATORS_HPP
+#define POMEROL_INCLUDE_OPERATORS_HPP
 
 #include <libcommute/expression/expression.hpp>
 #include <libcommute/expression/factories.hpp>
@@ -120,4 +120,4 @@ expression<double, IndexTypes...> Sz(std::vector<std::tuple<IndexTypes...>> cons
 } // namespace Operators
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_OPERATORS_H
+#endif // #ifndef POMEROL_INCLUDE_OPERATORS_HPP

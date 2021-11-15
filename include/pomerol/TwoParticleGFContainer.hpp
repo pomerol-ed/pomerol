@@ -8,8 +8,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_H
-#define POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_H
+#ifndef POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_HPP
+#define POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_HPP
 
 #include "DensityMatrix.hpp"
 #include "FieldOperatorContainer.hpp"
@@ -76,4 +76,4 @@ protected:
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_H
+#endif // #ifndef POMEROL_INCLUDE_TWOPARTICLEGFCONTAINER_HPP

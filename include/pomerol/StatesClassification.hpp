@@ -14,8 +14,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_STATESCLASSIFICATION_H
-#define POMEROL_INCLUDE_STATESCLASSIFICATION_H
+#ifndef POMEROL_INCLUDE_STATESCLASSIFICATION_HPP
+#define POMEROL_INCLUDE_STATESCLASSIFICATION_HPP
 
 #include "HilbertSpace.hpp"
 #include "Misc.hpp"
@@ -108,4 +108,4 @@ private:
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_STATESCLASSIFICATION_H
+#endif // #ifndef POMEROL_INCLUDE_STATESCLASSIFICATION_HPP

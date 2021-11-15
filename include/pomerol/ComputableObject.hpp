@@ -13,8 +13,8 @@
 **
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_H
-#define POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_H
+#ifndef POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_HPP
+#define POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_HPP
 
 #include <stdexcept>
 #include <string>
@@ -48,4 +48,4 @@ public:
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_COMPUTABLEOBJECT_HPP

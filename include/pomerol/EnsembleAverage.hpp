@@ -15,8 +15,8 @@
 ** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
 ** \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
 */
-#ifndef POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_H
-#define POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_H
+#ifndef POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_HPP
+#define POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_HPP
 
 #include "ComputableObject.hpp"
 #include "DensityMatrix.hpp"
@@ -73,4 +73,4 @@ public:
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_HPP

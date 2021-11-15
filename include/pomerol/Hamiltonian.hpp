@@ -14,8 +14,8 @@
 ** \author Andrey Antipov(Andrey.E.Antipov@gmail.com)
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_POMEROL_HAMILTONIAN_H
-#define POMEROL_INCLUDE_POMEROL_HAMILTONIAN_H
+#ifndef POMEROL_INCLUDE_POMEROL_HAMILTONIAN_HPP
+#define POMEROL_INCLUDE_POMEROL_HAMILTONIAN_HPP
 
 #include "ComputableObject.hpp"
 #include "HamiltonianPart.hpp"
@@ -93,4 +93,4 @@ void Hamiltonian::prepare(Operators::expression<ScalarType, IndexTypes...> const
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_POMEROL_HAMILTONIAN_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_HAMILTONIAN_HPP

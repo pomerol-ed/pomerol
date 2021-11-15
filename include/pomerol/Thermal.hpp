@@ -13,8 +13,8 @@
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_THERMAL_H
-#define POMEROL_INCLUDE_THERMAL_H
+#ifndef POMEROL_INCLUDE_THERMAL_HPP
+#define POMEROL_INCLUDE_THERMAL_HPP
 
 #include "Misc.hpp"
 
@@ -31,4 +31,4 @@ struct Thermal {
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_THERMAL_H
+#endif // #ifndef POMEROL_INCLUDE_THERMAL_HPP

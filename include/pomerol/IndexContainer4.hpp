@@ -12,8 +12,8 @@
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_POMEROL_INDEXCONTAINER4_H
-#define POMEROL_INCLUDE_POMEROL_INDEXCONTAINER4_H
+#ifndef POMEROL_INCLUDE_POMEROL_INDEXCONTAINER4_HPP
+#define POMEROL_INCLUDE_POMEROL_INDEXCONTAINER4_HPP
 
 #include "Index.hpp"
 #include "IndexClassification.hpp"
@@ -212,4 +212,4 @@ inline std::set<IndexCombination4> IndexContainer4<ElementType, SourceObject>::e
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_POMEROL_INDEXCONTAINER4_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_INDEXCONTAINER4_HPP

@@ -13,8 +13,8 @@
 **
 ** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
 */
-#ifndef POMEROL_INCLUDE_TERMLIST_H
-#define POMEROL_INCLUDE_TERMLIST_H
+#ifndef POMEROL_INCLUDE_TERMLIST_HPP
+#define POMEROL_INCLUDE_TERMLIST_HPP
 
 #include "Misc.hpp"
 
@@ -132,4 +132,4 @@ public:
 
 } // namespace Pomerol
 
-#endif // #ifndef POMEROL_INCLUDE_TERMLIST_H
+#endif // #ifndef POMEROL_INCLUDE_TERMLIST_HPP

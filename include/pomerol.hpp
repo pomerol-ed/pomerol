@@ -8,8 +8,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef POMEROL_INCLUDE_POMEROL_H
-#define POMEROL_INCLUDE_POMEROL_H
+#ifndef POMEROL_INCLUDE_POMEROL_HPP
+#define POMEROL_INCLUDE_POMEROL_HPP
 
 #include "mpi_dispatcher/mpi_dispatcher.hpp"
 #include "mpi_dispatcher/mpi_skel.hpp"
@@ -30,4 +30,4 @@
 #include "pomerol/TwoParticleGF.hpp"
 #include "pomerol/TwoParticleGFContainer.hpp"
 
-#endif // #ifndef POMEROL_INCLUDE_POMEROL_H
+#endif // #ifndef POMEROL_INCLUDE_POMEROL_HPP
