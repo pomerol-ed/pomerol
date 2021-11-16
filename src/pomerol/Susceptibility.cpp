@@ -92,8 +92,8 @@ void Susceptibility::compute() {
 }
 
 void Susceptibility::subtractDisconnected() {
-    EnsembleAverage EA_A(S, H, A, DM);
-    EnsembleAverage EA_B(S, H, B, DM);
+    EnsembleAverage EA_A(A, DM);
+    EnsembleAverage EA_B(B, DM);
     subtractDisconnected(EA_A, EA_B);
 }
 

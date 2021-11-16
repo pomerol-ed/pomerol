@@ -12,14 +12,11 @@
 
 namespace Pomerol {
 
-EnsembleAverage::EnsembleAverage(StatesClassification const& S,
-                                 Hamiltonian const& H,
-                                 MonomialOperator const& A,
-                                 DensityMatrix const& DM)
-    : Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), DM(DM) {}
+EnsembleAverage::EnsembleAverage(MonomialOperator const& A, DensityMatrix const& DM)
+    : Thermal(DM.beta), ComputableObject(), A(A), DM(DM) {}
 
 EnsembleAverage::EnsembleAverage(EnsembleAverage const& EA)
-    : Thermal(EA.beta), ComputableObject(EA), S(EA.S), H(EA.H), A(EA.A), DM(EA.DM), Result(EA.Result) {}
+    : Thermal(EA.beta), ComputableObject(EA), A(EA.A), DM(EA.DM), Result(EA.Result) {}
 
 void EnsembleAverage::compute() {
     if(getStatus() >= Prepared)

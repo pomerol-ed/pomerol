@@ -37,16 +37,12 @@ namespace Pomerol {
  * \f]
  *
  * How to use:
- *   EnsembleAverage EA(S, H, A, DM);
+ *   EnsembleAverage EA(A, DM);
  *   EA.prepare()
  *   EA.getResult()
  */
 class EnsembleAverage : public Thermal, public ComputableObject {
 
-    /** A reference to a states classification object. */
-    StatesClassification const& S;
-    /** A reference to a Hamiltonian. */
-    Hamiltonian const& H;
     /** A reference to a bosonic operator. */
     MonomialOperator const& A;
     /** A reference to a density matrix. */
@@ -59,15 +55,10 @@ class EnsembleAverage : public Thermal, public ComputableObject {
 
 public:
     /** Constructor.
-     * \param[in] S A reference to a states classification object.
-     * \param[in] H A reference to a Hamiltonian.
      * \param[in] A A reference to a quadratic operator.
      * \param[in] DM A reference to a density matrix.
      */
-    EnsembleAverage(StatesClassification const& S,
-                    Hamiltonian const& H,
-                    MonomialOperator const& A,
-                    DensityMatrix const& DM);
+    EnsembleAverage(MonomialOperator const& A, DensityMatrix const& DM);
     /** Copy-constructor.
      * \param[in] EA EnsembleAverage object to be copied.
      */
