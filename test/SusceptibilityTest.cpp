@@ -81,21 +81,21 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
     SECTION("Ensemble averages") {
         EnsembleAverage s_plus_aver(s_plus, rho);
         s_plus_aver.compute();
-        REQUIRE_THAT(s_plus_aver.getResult(), IsCloseTo(0, 1e-14));
+        REQUIRE_THAT(s_plus_aver(), IsCloseTo(0, 1e-14));
 
         EnsembleAverage s_minus_aver(s_minus, rho);
         s_minus_aver.compute();
-        REQUIRE_THAT(s_minus_aver.getResult(), IsCloseTo(0, 1e-14));
+        REQUIRE_THAT(s_minus_aver(), IsCloseTo(0, 1e-14));
 
         EnsembleAverage n_up_aver(n_up, rho);
         n_up_aver.compute();
         RealType n_up_ref = weights_ref[1] + weights_ref[3];
-        REQUIRE_THAT(n_up_aver.getResult(), IsCloseTo(n_up_ref, 1e-14));
+        REQUIRE_THAT(n_up_aver(), IsCloseTo(n_up_ref, 1e-14));
 
         EnsembleAverage n_dn_aver(n_dn, rho);
         n_dn_aver.compute();
         RealType n_dn_ref = weights_ref[2] + weights_ref[3];
-        REQUIRE_THAT(n_dn_aver.getResult(), IsCloseTo(n_dn_ref, 1e-14));
+        REQUIRE_THAT(n_dn_aver(), IsCloseTo(n_dn_ref, 1e-14));
     }
 
     SECTION("<S_+; S_->") {

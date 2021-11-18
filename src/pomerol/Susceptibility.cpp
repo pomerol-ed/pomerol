@@ -106,7 +106,7 @@ void Susceptibility::subtractDisconnected(ComplexType ave_A, ComplexType ave_B) 
 void Susceptibility::subtractDisconnected(EnsembleAverage& EA_A, EnsembleAverage& EA_B) {
     EA_A.compute();
     EA_B.compute();
-    subtractDisconnected(EA_A.getResult(), EA_B.getResult());
+    subtractDisconnected(EA_A(), EA_B());
 }
 
 } // namespace Pomerol

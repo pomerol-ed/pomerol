@@ -68,7 +68,7 @@ public:
     void compute();
 
     /** Returns the ensemble average */
-    ComplexType getResult() const { return Result; };
+    ComplexType operator()() const { return Result; };
 };
 
 } // namespace Pomerol
