@@ -27,7 +27,7 @@
 
 namespace Pomerol {
 
-/// \addtogroup Susceptibility
+/// \addtogroup Susc
 ///@{
 
 /// \brief Canonical ensemble average of a monomial operator.

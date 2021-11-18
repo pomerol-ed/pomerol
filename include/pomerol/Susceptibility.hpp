@@ -33,7 +33,7 @@
 
 namespace Pomerol {
 
-/// \defgroup Susceptibility Dynamical susceptibilities
+/// \defgroup Susc Dynamical susceptibilities
 ///@{
 
 /// \brief Dynamical susceptibility.

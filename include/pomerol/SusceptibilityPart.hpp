@@ -32,7 +32,7 @@
 
 namespace Pomerol {
 
-/// \addtogroup Susceptibility
+/// \addtogroup Susc
 /// @{
 
 /// \brief Part of a dynamical susceptibility.
