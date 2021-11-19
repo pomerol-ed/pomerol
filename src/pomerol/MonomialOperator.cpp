@@ -35,6 +35,7 @@ void MonomialOperator::compute(MPI_Comm const& comm) {
         INFO_NONEWLINE((int)((1.0 * BlockIn / Size) * 100) << "  " << std::flush);
         parts[BlockIn].compute();
     };
+    std::cout << std::endl;
 
     setStatus(Computed);
 }
