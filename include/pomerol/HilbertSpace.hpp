@@ -111,9 +111,10 @@ public:
             auto const& info = IndexInfo.getInfo(in);
             using Operators::c_dag;
             using Operators::c;
-            using Operators::Detail::apply;
-            auto Cd = LOperatorType<RealType>(apply(c_dag<double, IndexTypes...>, info), FullHilbertSpace);
-            auto C = LOperatorType<RealType>(apply(c<double, IndexTypes...>, info), FullHilbertSpace);
+            auto Cd =
+                LOperatorType<RealType>(Operators::Detail::apply(c_dag<double, IndexTypes...>, info), FullHilbertSpace);
+            auto C =
+                LOperatorType<RealType>(Operators::Detail::apply(c<double, IndexTypes...>, info), FullHilbertSpace);
             Partition->merge_subspaces(Cd, C, FullHilbertSpace, false);
         }
 
