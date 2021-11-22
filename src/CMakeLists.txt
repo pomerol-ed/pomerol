@@ -41,7 +41,8 @@ target_include_directories(${PROJECT_NAME}
                            SYSTEM PUBLIC
                            ${EIGEN3_INCLUDE_DIR}
                            ${MPI_CXX_INCLUDE_PATH}
-                           ${Boost_INCLUDE_DIRS})
+                           ${Boost_INCLUDE_DIRS}
+                           ${libcommute_INCLUDE_PATH})
 set_property(TARGET ${PROJECT_NAME} APPEND
     PROPERTY INTERFACE_INCLUDE_DIRECTORIES
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
