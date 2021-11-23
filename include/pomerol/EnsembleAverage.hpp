@@ -8,13 +8,12 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/EnsembleAverage.h
-** \brief Ensemble average.
-**
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-** \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
-*/
+/// \file include/pomerol/EnsembleAverage.hpp
+/// \brief Ensemble average of a monomial operator representing a physical observable.
+/// \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #ifndef POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_HPP
 #define POMEROL_INCLUDE_POMEROL_ENSEMBLEAVERAGE_HPP
 
@@ -28,48 +27,53 @@
 
 namespace Pomerol {
 
-/** This class represents the ensemble average of a quadratic operator.
- *
- * Exact definition:
- *
- * \f[
- *      \langle A \rangle = \langle c_i^{\dag} c_j \rangle
- * \f]
- *
- * How to use:
- *   EnsembleAverage EA(A, DM);
- *   EA.prepare()
- *   EA.getResult()
- */
+/// \addtogroup Susc
+///@{
+
+/// \brief Canonical ensemble average of a monomial operator.
+///
+/// This class represents the ensemble average of a monomial operator \f$\hat A\f$,
+/// \f[
+///   \langle A \rangle = Tr[\hat\rho \hat A].
+/// \f]
+///
+/// Usage example:
+/// \code{.cpp}
+///   EnsembleAverage EA(A /* Monomial operator */, DM /* Density matrix */);
+///
+///   EA.prepare();
+///   auto average = EA();
+/// \endcode
 class EnsembleAverage : public Thermal, public ComputableObject {
 
-    /** A reference to a bosonic operator. */
+    /// The monomial operator \f$\hat A\f$.
     MonomialOperator const& A;
-    /** A reference to a density matrix. */
+    /// Many-body density matrix \f$\hat\rho\f$.
     DensityMatrix const& DM;
 
+    /// Computed result
     ComplexType Result = 0;
 
-    /** Returns the contribution to the ensemble average from a part. Called in prepare() */
+    /// Implementation detail of prepare().
     template <bool Complex> ComplexType computeImpl(MonomialOperatorPart const& Apart, DensityMatrixPart const& DMpart);
 
 public:
-    /** Constructor.
-     * \param[in] A A reference to a quadratic operator.
-     * \param[in] DM A reference to a density matrix.
-     */
+    /// Constructor.
+    /// \param[in] A Monomial operator \f$\hat A\f$.
+    /// \param[in] DM Many-body density matrix \f$\hat\rho\f$.
     EnsembleAverage(MonomialOperator const& A, DensityMatrix const& DM);
-    /** Copy-constructor.
-     * \param[in] EA EnsembleAverage object to be copied.
-     */
+    /// Copy-constructor.
+    /// \param[in] EA EnsembleAverage object to be copied.
     EnsembleAverage(EnsembleAverage const& EA);
 
-    /** Compute the ensemble average of A by choosing relevant parts of A and sum up each contribution. */
+    /// Compute the ensemble average of \f$\hat A\f$.
     void compute();
 
-    /** Returns the ensemble average */
+    /// Return the ensemble average.
     ComplexType operator()() const { return Result; };
 };
+
+///@}
 
 } // namespace Pomerol
 

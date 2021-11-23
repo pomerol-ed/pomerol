@@ -8,11 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file IndexClassification.h
-**  \brief Declaration of IndexClassification class.
-**
-**  \author    Andrey Antipov (Andrey.E.Antipov@gmail.com)
-*/
+/// \file include/pomerol/IndexClassification.hpp
+/// \brief Classification of indices of fermionic creation/annihilation operators.
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #ifndef POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_HPP
 #define POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_HPP
 
@@ -30,23 +30,31 @@
 
 namespace Pomerol {
 
-/** This class handles all the indices classification, it allocates the indices to particular Site+Spin+Orbital configuration.
- *  It also returns the information about current ParticleIndex on request. */
+/// \defgroup ED Exact diagonalization: Hilbert space, Hamiltonian, monomial operators and density matrix
+///@{
+
+/// \brief Contiguous list of operator index tuples.
+///
+/// This class establishes correspondence between index tuples of fermionic creation/annihilation
+/// operators and values of a contiguous integer index (\ref ParticleIndex).
+/// \tparam IndexTypes Types of indices carried by a single creation/annihilation operator.
 template <typename... IndexTypes> class IndexClassification {
 public:
-    /** A structure, which holds the site label, orbital and spin of a ParticleIndex. */
+    /// Tuple of indices carried by a single creation/annihilation operator.
     using IndexInfo = std::tuple<IndexTypes...>;
 
 private:
-    /** A map of each ParticleIndex to the information about it. */
+    /// The map from operator index tuples to \ref ParticleIndex.
     std::map<IndexInfo, ParticleIndex> InfoToIndices;
-    /** A vector of IndexInfo - each element corresponds to its number. */
+    /// A reverse map from \ref ParticleIndex to the operator index tuples.
     std::vector<IndexInfo> IndicesToInfo;
 
 public:
-    /** Constructor
-     * \param[in] L A pointer to a Lattice Object.
-     */
+    /// Populate the index map by extracting all index tuples from a given
+    /// \ref Operators "polynomial expression". Mapped \ref ParticleIndex values
+    /// are assigned according to the order that keys (index tuples) are stored in.
+    /// \tparam ScalarType Coefficient type of expression H.
+    /// \param[in] H Expression to be analyzed.
     template <typename ScalarType>
     explicit IndexClassification(Operators::expression<ScalarType, IndexTypes...> const& H) {
         // Collect indices of fermionic operators in the Hamiltonian
@@ -58,23 +66,29 @@ public:
         }
         UpdateMaps();
     }
+    /// Construct an empty map.
     IndexClassification() = default;
 
+    /// Add an operator index tuple to the map.
+    /// \param[in] info Index tuple to be added.
     void addInfo(IndexInfo const& info) {
         InfoToIndices.emplace(info, 0);
         UpdateMaps();
     }
 
+    /// Create an operator index tuple and add it to the map.
+    /// \param[in] indices A pack of operator indices.
     void addInfo(IndexTypes... indices) {
         InfoToIndices.emplace(IndexInfo{indices...}, 0);
         UpdateMaps();
     }
 
-    /** Checks if the index belongs to the space of indices
-     * \param[in] in Index to check. */
+    /// Check if a given \ref ParticleIndex has a corresponding index tuple in the map.
+    /// \param[in] in Particle index to check.
     bool checkIndex(ParticleIndex in) const { return in < InfoToIndices.size(); }
 
-    /** Returns a ParticleIndex, which corresponds to a given site, orbital and spin. */
+    /// Return the \ref ParticleIndex corresponding to a given operator index tuple.
+    /// \param[in] info Index tuple.
     ParticleIndex getIndex(IndexInfo const& info) const {
         auto it = InfoToIndices.find(info);
         if(it != InfoToIndices.end())
@@ -86,19 +100,26 @@ public:
         }
     }
 
-    ParticleIndex getIndex(IndexTypes... info) const { return getIndex(std::make_tuple(info...)); }
+    /// Return the \ref ParticleIndex corresponding to a given operator index tuple.
+    /// Elements of the tuple are provided as a sequence of argument.
+    /// \param[in] indices A pack of operator indices.
+    ParticleIndex getIndex(IndexTypes... indices) const { return getIndex(std::make_tuple(indices...)); }
 
-    /** Return all information about the given index. */
+    /// Return the operator index tuple corresponding to a given \ref ParticleIndex.
+    /// \param[in] in Particle index to retrieve information for.
     IndexInfo const& getInfo(ParticleIndex in) const {
         if(in >= InfoToIndices.size())
             throw std::runtime_error("Wrong particle index " + std::to_string(in));
         return IndicesToInfo[in];
     }
 
-    /** Returns total number of ParticleIndices. */
+    /// Return the total number of elements in the map.
     ParticleIndex getIndexSize() const { return InfoToIndices.size(); }
 
-    /** Print all Indices to the information stream */
+    /// Print an entire \ref IndexClassification map into an output stream.
+    /// \param[out] os Output stream.
+    /// \param[in] ic The \ref IndexClassification object to be printed.
+    /// \return Reference to the output stream.
     friend std::ostream& operator<<(std::ostream& os, IndexClassification const& ic) {
         for(ParticleIndex i = 0; i < ic.InfoToIndices.size(); ++i) {
             os << "Index " << i << " = (";
@@ -109,6 +130,7 @@ public:
     }
 
 private:
+    /// Re-enumerate all index tuples stored in the map.
     void UpdateMaps() {
         IndicesToInfo.clear();
         IndicesToInfo.reserve(InfoToIndices.size());
@@ -119,10 +141,17 @@ private:
     }
 };
 
+/// A factory function for \ref IndexClassification, which populates the index map by
+/// extracting all index tuples from a given \ref Operators "polynomial expression".
+/// \tparam ScalarType Coefficient type of expression H.
+/// \tparam IndexTypes Types of indices carried by a single creation/annihilation operator.
+/// \param[in] H Expression to be analyzed.
 template <typename ScalarType, typename... IndexTypes>
 IndexClassification<IndexTypes...> MakeIndexClassification(Operators::expression<ScalarType, IndexTypes...> const& H) {
     return IndexClassification<IndexTypes...>(H);
 }
+
+///@}
 
 } // namespace Pomerol
 

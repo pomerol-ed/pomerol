@@ -8,6 +8,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file test/AndersonComplexTest.cpp
+/// \brief Single-particle Green's functions of a Hubbard atom with a complex spin-flipping term.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>
 #include <pomerol/GreensFunction.hpp>

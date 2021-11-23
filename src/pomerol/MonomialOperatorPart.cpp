@@ -8,6 +8,12 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file src/pomerol/MonomialOperatorPart.cpp
+/// \brief Storage for a matrix block of an operator that is a product of creation/annihilation operators
+///        (implementation).
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #include "pomerol/MonomialOperatorPart.hpp"
 
 // clang-format off

@@ -8,11 +8,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file tests/gamma4.cpp
-** \brief Test of a Green's function calculation (1 s-orbital).
-**
-** \author Igor Krivenko (igor@shg.ru)
-*/
+/// \file test/Vertex4Test.cpp
+/// \brief Two-particle Green's function and the vertex of a single Hubbard atom.
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
 
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>

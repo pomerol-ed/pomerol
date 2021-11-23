@@ -8,13 +8,12 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/Susceptibility.h
-** \brief Dynamical susceptibility.
-**
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-** \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
-*/
+/// \file include/pomerol/Susceptibility.hpp
+/// \brief Dynamical susceptibility in the Matsubara representation.
+/// \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #ifndef POMEROL_INCLUDE_SUSCEPTIBILITY_HPP
 #define POMEROL_INCLUDE_SUSCEPTIBILITY_HPP
 
@@ -34,113 +33,108 @@
 
 namespace Pomerol {
 
-/** This class represents a dynamical susceptibility in the Matsubara representation.
- *
- * Exact definition:
- *
- * \f[
- *      \chi(\omega_n) = \int_0^\beta \langle\mathbf{T} A(\tau) B(0)\rangle e^{i\omega_n\tau} d\tau
- * \f]
- *
- * or
- *
- * \f[
- *      \tilde{\chi}(\omega_n) = \chi(\omega_n) - \beta \langle A \rangle \langle B \rangle
- * \f]
- *
- * if specified.
- *
- * It is actually a container class for a collection of parts (most of real calculations
- * take place inside the parts). A pair of parts, one part of an annihilation operator and
- * another from a creation operator, corresponds to a part of the Green's function.
- */
+/// \defgroup Susc Dynamical susceptibilities
+///@{
+
+/// \brief Dynamical susceptibility.
+///
+/// This class represents a dynamical susceptibility in the Matsubara space,
+/// \f[
+///   \chi(i\omega_n) = \int_0^\beta Tr[\mathcal{T}_\tau \hat\rho A(\tau) B(0)] e^{i\omega_n\tau} d\tau
+/// \f]
+/// and its connected part,
+/// \f[
+///   \tilde{\chi}(i\omega_n) = \chi(i\omega_n) - \beta \langle\hat A \rangle \langle\hat B \rangle.
+/// \f]
+/// Here, \f$\beta\f$ is inverse temperature and \f$\langle\hat A\rangle, \langle\hat B\rangle\f$ are
+/// EnsembleAverage's of boson-like monomial operators \f$\hat A, \hat B\f$.
+///
+/// It is actually a container class for a collection of \ref SusceptibilityPart's
+/// (most of the real calculations take place in the parts).
 class Susceptibility : public Thermal, public ComputableObject {
 
-    /** A reference to a states classification object. */
+    /// Information about invariant subspaces of the Hamiltonian.
     StatesClassification const& S;
-    /** A reference to a Hamiltonian. */
+    /// The Hamiltonian.
     Hamiltonian const& H;
-    /** A reference to a quadratic operator. */
+    /// Monomial operator \f$\hat A\f$.
     MonomialOperator const& A;
-    /** A reference to a quadratic operator. */
+    /// Monomial operator \f$\hat B\f$.
     MonomialOperator const& B;
-    /** A reference to a density matrix. */
+    /// Many-body density matrix \f$\hat\rho\f$.
     DensityMatrix const& DM;
 
-    /** A flag to represent if Greens function vanishes, i.e. identical to 0 */
+    /// A flag that marks an identically vanishing susceptibility.
     bool Vanishing = true;
 
-    /** A list of pointers to parts (every part corresponds to a part of the quadratic operator A
-     * and a part of the quadratic operator B).
-     */
+    /// The list of all \ref SusceptibilityPart's contributing to this susceptibility.
     std::vector<SusceptibilityPart> parts;
 
-    /** Subtract disconnected part <A><B> */
+    /// Subtract the disconnected part \f$\langle\hat A \rangle \langle\hat B \rangle\f$?
     bool SubtractDisconnected = false;
 
-    /** <A>, <B> */
+    /// Ensemble averages \f$\langle\hat A \rangle, \langle\hat B \rangle\f$.
     ComplexType ave_A = {}, ave_B = {};
 
 public:
-    /** Constructor.
-     * \param[in] S A reference to a states classification object.
-     * \param[in] H A reference to a Hamiltonian.
-     * \param[in] A A reference to a quadratic operator.
-     * \param[in] B A reference to a quadratic operator.
-     * \param[in] DM A reference to a density matrix.
-     */
+    /// Constructor.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
+    /// \param[in] H The Hamiltonian.
+    /// \param[in] A Monomial operator \f$\hat A\f$.
+    /// \param[in] B Monomial operator \f$\hat B\f$.
+    /// \param[in] DM Many-body density matrix \f$\hat\rho\f$.
     Susceptibility(StatesClassification const& S,
                    Hamiltonian const& H,
                    MonomialOperator const& A,
                    MonomialOperator const& B,
                    DensityMatrix const& DM);
-    /** Copy-constructor.
-     * \param[in] GF Susceptibility object to be copied.
-     */
+
+    /// Copy-constructor.
+    /// \param[in] Chi \ref Susceptibility object to be copied.
     Susceptibility(Susceptibility const& Chi);
 
-    /** Chooses relevant parts of A and B and allocates resources for the parts of the Green's function. */
+    /// Select all relevant parts of \f$\hat A\f$ and \f$\hat B\f$
+    /// and allocate resources for the \ref SusceptibilityPart's.
     void prepare();
-    /** Actually computes the parts and fills the internal cache of precomputed values.
-     * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
-     */
+
+    /// Actually computes the parts.
     void compute();
 
-    /** Activate subtraction of the disconnected part <A><B>
-     * <A> and <B> are computed in this class.
-     */
+    /// Activate subtraction of the disconnected part \f$\langle\hat A \rangle \langle\hat B \rangle\f$.
+    /// \f$\langle\hat A \rangle\f$ and \f$\langle\hat B \rangle\f$ are computed by this class.
     void subtractDisconnected();
-    /** Activate subtraction of the disconnected part <A><B>
-     * \param[in] ave_A Precomputed value of <A>
-     * \param[in] ave_B Precomputed value of <B>
-     */
+
+    /// Activate subtraction of the disconnected part \f$\langle\hat A \rangle \langle\hat B \rangle\f$.
+    /// Precomputed ensemble averages must be provided by the caller.
+    /// \param[in] ave_A Precomputed value of \f$\langle\hat A \rangle\f$.
+    /// \param[in] ave_B Precomputed value of \f$\langle\hat B \rangle\f$.
     void subtractDisconnected(ComplexType ave_A, ComplexType ave_B);
-    /** Activate subtraction of the disconnected part <A><B>
-     * \param[in] EA_A Predefined EnsembleAverage class for operator A.
-     * \param[in] EA_B Predefined EnsembleAverage class for operator B.
-     */
+
+    /// Activate subtraction of the disconnected part \f$\langle\hat A \rangle \langle\hat B \rangle\f$.
+    /// EnsembleAverage objects must must be provided by the caller.
+    /// \param[in] EA_A Predefined EnsembleAverage class for the operator \f$\hat A\f$.
+    /// \param[in] EA_B Predefined EnsembleAverage class for the operator \f$\hat B\f$.
     void subtractDisconnected(EnsembleAverage& EA_A, EnsembleAverage& EA_B);
 
-    /** Returns the value of the Green's function calculated at a given frequency.
-     * \param[in] MatsubaraNum Number of the Matsubara frequency (\f$ \omega_n = \pi(2n+1)/\beta \f$).
-     */
+    /// Return the susceptibility value calculated at a given Matsubara frequency.
+    /// \param[in] MatsubaraNumber Index of the Matsubara frequency \f$n\f$ (\f$\omega_n=2\pi n/\beta\f$).
     ComplexType operator()(long MatsubaraNumber) const;
 
-    /** Returns the value of the Green's function calculated at a given frequency.
-     * \param[in] z Input frequency
-     */
+    /// Return the susceptibility value calculated at a given complex frequency \f$z\f$.
+    /// \param[in] z The complex frequency.
     ComplexType operator()(ComplexType z) const;
 
-    /** Returns the value of the Green's function calculated at a given imaginary time point.
-     * \param[in] tau Imaginary time point.
-     */
+    /// Return the susceptibility value calculated at a given imaginary time \f$\tau\f$.
+    /// \param[in] tau Imaginary time point.
     ComplexType of_tau(RealType tau) const;
 
+    /// Is this susceptibility identically zero?
     bool isVanishing() const { return Vanishing; }
 };
 
-// BOSON: bosononic Matsubara frequency
-inline ComplexType Susceptibility::operator()(long int MatsubaraNumber) const {
+///@}
+
+inline ComplexType Susceptibility::operator()(long MatsubaraNumber) const {
     return (*this)(MatsubaraSpacing * RealType(2 * MatsubaraNumber));
 }
 

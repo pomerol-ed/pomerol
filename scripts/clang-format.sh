@@ -19,6 +19,7 @@ SOURCES="include/*.hpp          \
          prog/*.cpp             \
          test/*.hpp             \
          test/*.cpp             \
-         test/catch2/catch2-*"
+         test/catch2/catch2-*   \
+         tutorial/*.cpp"
 
 clang-format --verbose -i $SOURCES

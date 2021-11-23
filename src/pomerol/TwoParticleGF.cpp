@@ -8,6 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file src/pomerol/TwoParticleGF.cpp
+/// \brief Fermionic two-particle Matsubara Green's function (implementation).
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #include "pomerol/TwoParticleGF.hpp"
 
 #include "mpi_dispatcher/mpi_skel.hpp"
@@ -209,14 +214,6 @@ ParticleIndex TwoParticleGF::getIndex(std::size_t Position) const {
     default: assert(0);
     }
     throw std::runtime_error("TwoParticleGF: Could not get operator index");
-}
-
-unsigned short TwoParticleGF::getPermutationNumber(Permutation3 const& in) {
-    for(unsigned short i = 0; i < 6; ++i)
-        if(in == permutations3[i])
-            return i;
-    ERROR("TwoParticleGF: Permutation " << in << " not found in all permutations3");
-    return 0;
 }
 
 } // namespace Pomerol

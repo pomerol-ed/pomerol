@@ -8,12 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/FieldOperatorPart.h
-** \brief Declaration of FieldOperatorPart, CreationOperatorPart and AnnihilationOperatorPart classes.
-**
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-*/
+/// \file include/pomerol/MonomialOperatorPart.hpp
+/// \brief Storage for a matrix block of an operator that is a product of creation/annihilation operators.
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #ifndef POMEROL_INCLUDE_MONOMIALOPERATORPART_HPP
 #define POMEROL_INCLUDE_MONOMIALOPERATORPART_HPP
 
@@ -31,45 +30,54 @@
 
 namespace Pomerol {
 
-/** This class is an abstract implementation of the electronic creation/annihilation operators, which acts in the eigenbasis of the Hamiltonian
- * between it's certain blocks.
- * Rotation to the basis is done in the following way:
- * C_{nm} = \sum_{lk} U^{+}_{nl} C_{lk} U_{km} = \sum_{lk} U^{*}_{ln}O_{lk}U_{km},
- * where the actual sum starts from k state. Big letters denote global states, smaller - InnerQuantumStates.
- * The actual creation and annihilation operators are inherited.
- */
+/// \addtogroup ED
+///@{
+
+/// \brief Part of a monomial quantum operator.
+///
+/// This class stores a matrix block of an operator \f$\hat M\f$, which is a monomial, i.e. a product
+/// of fermionic and/or bosonic creation/annihilation operators. The matrix is computed in the eigenbasis
+/// of the Hamiltonian \f$\hat H\f$ and connects one of its invariant subspaces (right subspace)
+/// to another one (left subspace),
+/// \f[
+///   \langle {\rm left}|\hat M|{\rm right}\rangle.
+/// \f]
 class MonomialOperatorPart : public ComputableObject {
     friend class FieldOperatorContainer;
 
 private:
+    /// Whether the following \p libcommute::loperator object is complex-valued.
     bool MOpComplex;
+    /// A type-erased pointer to the respective real/complex-valued \p libcommute::loperator object.
     void const* MOp;
 
+    /// Whether the stored matrices are complex-valued.
     bool Complex;
 
-    /** A reference to the StateClassification object. */
+    /// Information about invariant subspaces of the Hamiltonian.
     StatesClassification const& S;
-    /** A reference to the HamiltonianPart on the right hand side. */
+    /// Diagonal block of the Hamiltonian corresponding to the right invariant subspace.
     HamiltonianPart const& HFrom;
-    /** A reference to the HamiltonianPart on the left hand side. */
+    /// Diagonal block of the Hamiltonian corresponding to the left invariant subspace.
     HamiltonianPart const& HTo;
 
 protected:
-    /** Storage of the matrix elements of the operator. Row ordered sparse matrix. */
+    /// Type-erased real/complex sparse matrix \f$\langle {\rm left}|\hat M|{\rm right}\rangle\f$
+    /// stored in the row-major order.
     std::shared_ptr<void> elementsRowMajor;
-    /** Copy of the Storage of the matrix elements of the operator. Column ordered sparse matrix. */
+    /// Type-erased real/complex sparse matrix \f$\langle {\rm left}|\hat M|{\rm right}\rangle\f$
+    /// stored in the column-major order.
     std::shared_ptr<void> elementsColMajor;
-    /** The tolerance with which the matrix elements are evaluated. */
+    /// Matrix elements with the absolute value below this threshold are considered negligible.
     RealType const MatrixElementTolerance = 1e-8;
 
 public:
-    /** Constructor.
-     * \param[in] IndexInfo A const reference to the IndexClassification object.
-     * \param[in] S A const reference to the StateClassification object.
-     * \param[in] HFrom A const reference to the HamiltonianPart on the right hand side.
-     * \param[in] HTo A const reference to the HamiltonianPart on the left hand side.
-     * \param[in] PIndex Index of the field operator.
-     */
+    /// Constructor.
+    /// \tparam ScalarType Scalar type (either double or std::complex<double>) of the linear operator \p MOp.
+    /// \param[in] MOp The linear operator object corresponding to the monomial operator \f$\hat M\f$.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
+    /// \param[in] HFrom Diagonal block of the Hamiltonian corresponding to the right invariant subspace.
+    /// \param[in] HTo Diagonal block of the Hamiltonian corresponding to the left invariant subspace.
     template <typename ScalarType>
     MonomialOperatorPart(LOperatorType<ScalarType> const& MOp,
                          StatesClassification const& S,
@@ -82,24 +90,43 @@ public:
           HFrom(HFrom),
           HTo(HTo) {}
 
-    /** Compute all the matrix elements. Changes the Status of the object to Computed. */
+    /// Compute and store all matrix elements of \f$\hat M\f$ in the eigenbasis of the Hamiltonian.
     void compute();
 
+    /// Reset the stored sparse matrices to those obtained from
+    /// \f$\langle {\rm right}|\hat M^\dagger|{\rm left}\rangle\f$.
+    /// \param[in] part Monomial operator part \f$\langle {\rm right}|\hat M^\dagger|{\rm left}\rangle\f$.
     void setFromAdjoint(MonomialOperatorPart const& part);
 
+    /// Is this object storing a complex-valued sparse matrices?
     bool isComplex() const { return Complex; }
 
-    /** Returns the row ordered sparse matrix of matrix elements. */
+    /// Return a reference to the stored row-major sparse matrix.
+    /// \tparam C Request a reference to the complex-valued matrix.
+    /// \pre The compile-time value of \p C must agree with the result of \ref isComplex().
     template <bool C> RowMajorMatrixType<C>& getRowMajorValue();
+    /// Return a constant reference to the stored row-major sparse matrix.
+    /// \tparam C Request a reference to the complex-valued matrix.
+    /// \pre The compile-time value of \p C must agree with the result of \ref isComplex().
     template <bool C> RowMajorMatrixType<C> const& getRowMajorValue() const;
-    /** Returns the column ordered sparse matrix of matrix elements. */
+    /// Return a reference to the stored column-major sparse matrix.
+    /// \tparam C Request a reference to the complex-valued matrix.
+    /// \pre The compile-time value of \p C must agree with the result of \ref isComplex().
     template <bool C> ColMajorMatrixType<C>& getColMajorValue();
+    /// Return a constant reference to the stored column-major sparse matrix.
+    /// \tparam C Request a reference to the complex-valued matrix.
+    /// \pre The compile-time value of \p C must agree with the result of \ref isComplex().
     template <bool C> ColMajorMatrixType<C> const& getColMajorValue() const;
-    /** Returns the right hand side index. */
+
+    /// Return the index of the right invariant subspace.
     BlockNumber getRightIndex() const { return HFrom.getBlockNumber(); }
-    /** Returns the left hand side index. */
+    /// Return the index of the left invariant subspace.
     BlockNumber getLeftIndex() const { return HTo.getBlockNumber(); }
 
+    /// Output stream insertion operator.
+    /// \param[out] os Output stream.
+    /// \param[in] part \ref MonomialOperatorPart to be inserted.
+    /// \return Reference to the output stream.
     friend std::ostream& operator<<(std::ostream& os, MonomialOperatorPart const& part) {
         if(part.isComplex())
             part.streamOutputImpl<true>(os);
@@ -109,9 +136,12 @@ public:
     }
 
 private:
+    // Implementation details
     template <bool C, bool HC> void computeImpl();
     template <bool C> void streamOutputImpl(std::ostream& os) const;
 };
+
+///@}
 
 } // namespace Pomerol
 

@@ -8,11 +8,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/Thermal.h
-** \brief Thermal object (an object which has sense only for a finite temperature).
-**
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-*/
+/// \file include/pomerol/Thermal.hpp
+/// \brief Objects, whose definition depends on the temperature.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #ifndef POMEROL_INCLUDE_THERMAL_HPP
 #define POMEROL_INCLUDE_THERMAL_HPP
 
@@ -22,12 +21,22 @@
 
 namespace Pomerol {
 
+/// \addtogroup Misc
+///@{
+
+/// Base class for objects whose definition depends on the temperature.
 struct Thermal {
+    /// Inverse temperature \f$\beta\f$.
     RealType const beta;
+    /// Spacing between (imaginary) Matsubara frequencies, \f$i\pi/\beta\f$.
     ComplexType const MatsubaraSpacing;
 
+    /// Construct a thermal object for a given inverse temperature.
+    /// \param[in] beta Inverse temperature \f$\beta\f$
     explicit Thermal(RealType beta) : beta(beta), MatsubaraSpacing(I * M_PI / beta) {}
 };
+
+///@}
 
 } // namespace Pomerol
 

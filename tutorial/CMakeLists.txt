@@ -8,23 +8,21 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-cmake_minimum_required (VERSION 3.1.0)
-project (pomerol_example CXX)
+cmake_minimum_required(VERSION 3.1.0)
+project(pomerol_example CXX)
 
-# Disable build in source
-if (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
-    message(FATAL_ERROR "In source builds are disabled. Please use a separate build directory.")
-endif()
-set(CMAKE_DISABLE_SOURCE_CHANGES ON)
-set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+# Detect libcommute & pomerol
+find_package(libcommute CONFIG REQUIRED)
+find_package(pomerol CONFIG REQUIRED)
 
-SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-find_package(pomerol)
+# Print out a bit of information about pomerol
+get_target_property(pomerol_INCLUDE_DIRS pomerol::pomerol
+                    INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(pomerol_LIBRARIES pomerol::pomerol
+                    INTERFACE_LINK_LIBRARIES)
 message(STATUS "Pomerol includes : ${pomerol_INCLUDE_DIRS}")
 message(STATUS "Pomerol libraries : ${pomerol_LIBRARIES}")
 
-include_directories(${pomerol_INCLUDE_DIRS})
-
+# Add an executable and link it to pomerol
 add_executable(example2site example2site.cpp)
-target_link_libraries(example2site ${pomerol_LIBRARIES})
+target_link_libraries(example2site pomerol::pomerol)

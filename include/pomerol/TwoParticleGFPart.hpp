@@ -8,12 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/TwoParticleGFPart.h
-** \brief Part of a two-particle Green's function.
-**
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-*/
+/// \file include/pomerol/TwoParticleGFPart.hpp
+/// \brief Part of a fermionic two-particle Matsubara Green's function.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #ifndef POMEROL_INCLUDE_TWOPARTICLEGFPART_HPP
 #define POMEROL_INCLUDE_TWOPARTICLEGFPART_HPP
 
@@ -34,43 +33,62 @@
 
 namespace Pomerol {
 
-/** This class represents a part of a two-particle Green's function.
- * Every part describes one 'world stripe' of four operators.
- */
+/// \addtogroup 2PGF
+///@{
+
+/// \brief Part of a fermionic two-particle Matsubara Green's function.
+///
+/// It includes contributions from all matrix elements of the following form,
+/// \f[
+///  \langle {\rm S_1}| \hat O_1 |{\rm S_2}\rangle
+///  \langle {\rm S_2}| \hat O_2 |{\rm S_3} \rangle
+///  \langle {\rm S_3}| \hat O_3 |{\rm S_4} \rangle
+///  \langle {\rm S_4}| c^\dagger_l |{\rm S_1} \rangle,
+/// \f]
+/// where \f$\{\hat O_1, \hat O_2, \hat O_3\}\f$ is a permutation of operators \f$\{c_i, c_j, c^\dagger_k\}\f$
+/// and \f${\rm S_1}, {\rm S_2}, {\rm S_3}, {\rm S_4}\f$ are invariant subspaces of the Hamiltonian.
+/// The contributions are stored as terms of the Lehmann representation. There are two kinds of terms contributing
+/// to the expansion, so called resonant (\ref ResonantTerm) and non-resonant (\ref NonResonantTerm) terms.
 class TwoParticleGFPart : public Thermal, ComputableObject {
 
     friend class TwoParticleGF;
     friend class TwoParticleGFContainer;
 
 public:
-    /** A non-resonant term has the following form:
-     * \f[
-     * \frac{C}{(z_1-P_1)(z_2-P_2)(z_3-P_3)}
-     * \f]
-     * if isz4 == false, and
-     * \f[
-     * \frac{C}{(z_1-P_1)(z_1+z_2+z_3-P_1-P_2-P_3)(z_3-P_3)}
-     * \f]
-     * otherwise.
-     */
+    /// \brief A non-resonant term in the Lehmann representation of \ref TwoParticleGF.
+    ///
+    /// A non-resonant term of the Lehmann representation. It is parametrized by
+    /// a complex coefficient \f$C\f$ and positions of real poles \f$P_1, P_2, P_3\f$.
+    /// Depending on the value of the \ref isz4 flag, an explicit expression for the term reads
+    ///
+    /// \li \f$\frac{C}{(z_1-P_1)(z_2-P_2)(z_3-P_3)}\f$ for \ref isz4 == false,
+    /// \li \f$\frac{C}{(z_1-P_1)(z_1+z_2+z_3-P_1-P_2-P_3)(z_3-P_3)}\f$ for \ref isz4 == true.
     struct NonResonantTerm {
-        /** Coefficient \f$ C \f$. */
+        /// Coefficient \f$C\f$.
         ComplexType Coeff;
 
-        /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
+        /// Poles \f$P_1\f$, \f$P_2\f$, \f$P_3\f$.
         std::array<RealType, 3> Poles;
 
-        /** Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term? */
+        /// Are we using \f$z_4=z_1+z_2+z_3\f$ instead of \f$z_2\f$ in this term?
         bool isz4;
 
-        /** A statistical weight of current term for averaging ( when averaging formula (*this.weight + other.weight)/(*this.weight+other.weight) is used */
+        /// Weight \f$W\f$ used in addition of terms with different poles.
+        /// \see \ref operator+=()
         long Weight;
 
-        /** Comparator object for terms */
+        /// Comparator object for non-resonant terms.
         struct Compare {
+            /// Tolerance level used to compare positions of the poles.
             double Tolerance;
-            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             bool real_eq(RealType x1, RealType x2) const { return std::abs(x1 - x2) < Tolerance; }
+            /// Constructor.
+            /// \param[in] Tolerance Tolerance level used to compare positions of the poles.
+            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+
+            /// Are terms similar?
+            /// \param[in] t1 First term.
+            /// \param[in] t2 Second term.
             bool operator()(NonResonantTerm const& t1, NonResonantTerm const& t2) const {
                 if(t1.isz4 == t2.isz4) {
                     return !real_eq(t1.Poles[0], t2.Poles[0]) ?
@@ -80,82 +98,105 @@ public:
                 } else
                     return t1.isz4 < t2.isz4;
             }
+            /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
+            /// \param[in] comm The MPI communicator for the broadcast operation.
+            /// \param[in] root Rank of the root MPI process.
             void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm); }
         };
 
-        /** Does term have a negligible residue? */
+        /// Predicate: Does a term have a negligible residue?
         struct IsNegligible {
+            /// Tolerance level used to detect negligible residues.
             double Tolerance;
+            /// Constructor.
+            /// \param[in] Tolerance Tolerance level used to detect negligible residues.
             IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
+            /// Is term negligible?
+            /// \param[in] t Term.
+            /// \param[in] ToleranceDivisor Divide tolerance by this value.
             bool operator()(NonResonantTerm const& t, std::size_t ToleranceDivisor) const {
                 return std::abs(t.Coeff) < Tolerance / ToleranceDivisor;
             }
+            /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
+            /// \param[in] comm The MPI communicator for the broadcast operation.
+            /// \param[in] root Rank of the root MPI process.
             void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm); }
         };
 
         NonResonantTerm() = default;
 
-        /** Constructor.
-        * \param[in] Coeff Numerator of the term.
-        * \param[in] P1 Pole P1.
-        * \param[in] P2 Pole P2.
-        * \param[in] P3 Pole P3.
-        * \param[in] isz4 Are we using \f$ z_4 \f$ instead of \f$ z_2 \f$ in this term?
-        */
+        /// Constructor.
+        /// \param[in] Coeff Coefficient of the term \f$C\f$.
+        /// \param[in] P1 Pole \f$P_1\f$.
+        /// \param[in] P2 Pole \f$P_2\f$.
+        /// \param[in] P3 Pole \f$P_3\f$.
+        /// \param[in] isz4 Are we using \f$z_4=z_1+z_2+z_3\f$ instead of \f$z_2\f$ in this term?
         inline NonResonantTerm(ComplexType Coeff, RealType P1, RealType P2, RealType P3, bool isz4)
-            : Coeff(Coeff), isz4(isz4) {
-            Poles[0] = P1;
-            Poles[1] = P2;
-            Poles[2] = P3;
-            Weight = 1;
-        }
+            : Coeff(Coeff), Poles{P1, P2, P3}, isz4(isz4), Weight(1) {}
 
-        /** Returns a contribution to the two-particle Green's function made by this term.
-        * \param[in] z1 Complex frequency \f$ z_1 \f$.
-        * \param[in] z2 Complex frequency \f$ z_2 \f$.
-        * \param[in] z3 Complex frequency \f$ z_3 \f$.
-        */
+        /// Substitute complex frequencies \f$z_1, z_2, z_3\f$ into this term.
+        /// \param[in] z1 Complex frequency \f$z_1\f$.
+        /// \param[in] z2 Complex frequency \f$z_2\f$.
+        /// \param[in] z3 Complex frequency \f$z_3\f$.
         ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3) const;
 
-        /** This operator add a non-resonant term to this one.
-        * It does not check the similarity of the terms!
-        * \param[in] AnotherTerm Another term to add to this.
-        */
+        /// Add a non-resonant term to this term.
+        ///
+        /// This operator does not check similarity of the terms!
+        /// Parameters of this term are updated as follows.
+        /// \li Coeff += AnotherTerm.Coeff
+        /// \li Poles[i] = (Poles[i] * Weight + AnotherTerm.Poles[i] * AnotherTerm.Weight) /
+        ///                (Weight + AnotherTerm.Weight)
+        /// \li Weight += AnotherTerm.Weight
+        /// \param[in] AnotherTerm Term to add.
         NonResonantTerm& operator+=(NonResonantTerm const& AnotherTerm);
 
-        /** Create and commit an MPI datatype for NonResonantTerm */
+        /// Create and commit an MPI datatype for \ref NonResonantTerm.
         static MPI_Datatype mpi_datatype();
     };
 
-    /** A resonant term has the following form:
-     * \f[
-     * \frac{1}{(z_1-P_1)(z_3-P_3)}
-     *   \left( R \delta(z_1+z_2-P_1-P_2) + N \frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2} \right)
-     * \f]
-     */
-
+    /// \brief A resonant term in the Lehmann representation of \ref TwoParticleGF.
+    ///
+    /// It is parametrized by
+    /// two complex coefficients \f$R\f$ and \f$N\f$, and positions of real poles \f$P_1, P_2, P_3\f$.
+    /// Depending on the value of the \ref isz1z2 flag, an explicit expression for the term reads
+    /// \li \f$
+    ///   \frac{1}{(z_1-P_1)(z_3-P_3)}
+    ///   \left( R \delta(z_1+z_2-P_1-P_2) + N \frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2} \right)
+    /// \f$ for \ref isz1z2 == true,
+    /// \li \f$
+    ///   \frac{1}{(z_1-P_1)(z_3-P_3)}
+    ///   \left( R \delta(z_2+z_3-P_2-P_3) + N \frac{1 - \delta(z_2+z_3-P_2-P_3)}{z_2+z_3-P_2-P_3} \right)
+    /// \f$ for \ref isz1z2 == false.
     struct ResonantTerm {
 
-        /** Coefficient \f$ R \f$. */
+        /// Coefficient \f$R\f$.
         ComplexType ResCoeff;
-        /** Coefficient \f$ N \f$. */
+        /// Coefficient \f$N\f$.
         ComplexType NonResCoeff;
 
-        /** Poles \f$ P_1 \f$, \f$ P_2 \f$, \f$ P_3 \f$. */
+        /// Poles \f$P_1\f$, \f$P_2\f$, \f$P_3\f$.
         std::array<RealType, 3> Poles;
 
-        /** Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
-        Otherwise we are using \f$ \delta(z_2+z_3-P_2-P_3) \f$. */
+        /// Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
+        /// If not, we are using \f$ \delta(z_2+z_3-P_2-P_3) \f$.
         bool isz1z2;
 
-        /** A statistical weight of current term for averaging ( when averaging formula (*this.weight + other.weight)/(*this.weight+other.weight) is used */
+        /// Weight \f$W\f$ used in addition of terms with different poles.
+        /// \see \ref operator+=()
         long Weight;
 
-        /** Comparator object for terms */
+        /// Comparator object for resonant terms.
         struct Compare {
+            /// Tolerance level used to compare positions of the poles.
             double Tolerance;
-            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             bool real_eq(RealType x1, RealType x2) const { return std::abs(x1 - x2) < Tolerance; }
+            /// Constructor.
+            /// \param[in] Tolerance Tolerance level used to compare positions of the poles.
+            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            /// Are terms similar?
+            /// \param[in] t1 First term.
+            /// \param[in] t2 Second term.
             bool operator()(ResonantTerm const& t1, ResonantTerm const& t2) const {
                 if(t1.isz1z2 == t2.isz1z2) {
                     return !real_eq(t1.Poles[0], t2.Poles[0]) ?
@@ -165,139 +206,147 @@ public:
                 } else
                     return t1.isz1z2 < t2.isz1z2;
             }
+            /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
+            /// \param[in] comm The MPI communicator for the broadcast operation.
+            /// \param[in] root Rank of the root MPI process.
             void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm); }
         };
 
-        /** Does term have a negligible residue? */
+        /// Predicate: Does a term have a negligible residue?
         struct IsNegligible {
+            /// Tolerance level used to detect negligible residues.
             double Tolerance;
+            /// Constructor.
+            /// \param[in] Tolerance Tolerance level used to detect negligible residues.
             IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
+            /// Is term negligible?
+            /// \param[in] t Term.
+            /// \param[in] ToleranceDivisor Divide tolerance by this value.
             bool operator()(ResonantTerm const& t, std::size_t ToleranceDivisor) const {
                 return std::abs(t.ResCoeff) < Tolerance / ToleranceDivisor &&
                        std::abs(t.NonResCoeff) < Tolerance / ToleranceDivisor;
             }
+            /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
+            /// \param[in] comm The MPI communicator for the broadcast operation.
+            /// \param[in] root Rank of the root MPI process.
             void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm); }
         };
 
         ResonantTerm() = default;
 
-        /** Constructor.
-        * \param[in] ResCoeff Numerator of the term for a resonant case.
-        * \param[in] NonResCoeff Numerator of the term for a non-resonant case.
-        * \param[in] P1 Pole P1.
-        * \param[in] P2 Pole P2.
-        * \param[in] P3 Pole P3.
-        * \param[in] isz1z2 Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
-        */
+        /// Constructor.
+        /// \param[in] ResCoeff Numerator of the term for the resonant case, \f$R\f$.
+        /// \param[in] NonResCoeff Numerator of the term for the non-resonant case, \f$N\f$.
+        /// \param[in] P1 Pole \f$P_1\f$.
+        /// \param[in] P2 Pole \f$P_2\f$.
+        /// \param[in] P3 Pole \f$P_3\f$.
+        /// \param[in] isz1z2 Are we using the \f$\delta(z_1+z_2-P_1-P_2)\f$ resonance condition?
         inline ResonantTerm(ComplexType ResCoeff,
                             ComplexType NonResCoeff,
                             RealType P1,
                             RealType P2,
                             RealType P3,
                             bool isz1z2)
-            : ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), isz1z2(isz1z2) {
-            Poles[0] = P1;
-            Poles[1] = P2;
-            Poles[2] = P3;
-            Weight = 1;
-        }
+            : ResCoeff(ResCoeff), NonResCoeff(NonResCoeff), Poles{P1, P2, P3}, isz1z2(isz1z2), Weight(1) {}
 
-        /** Returns a contribution to the two-particle Green's function made by this term.
-        * \param[in] z1 Complex frequency \f$ z_1 \f$.
-        * \param[in] z2 Complex frequency \f$ z_2 \f$.
-        * \param[in] z3 Complex frequency \f$ z_3 \f$.
-        */
-        ComplexType
-        operator()(ComplexType z1, ComplexType z2, ComplexType z3, RealType KroneckerSymbolTolerance = 1e-16) const;
+        /// Substitute complex frequencies \f$z_1, z_2, z_3\f$ into this term.
+        /// \param[in] z1 Complex frequency \f$z_1\f$.
+        /// \param[in] z2 Complex frequency \f$z_2\f$.
+        /// \param[in] z3 Complex frequency \f$z_3\f$.
+        /// \param[in] DeltaTolerance Tolerance for the resonance detection.
+        ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3, RealType DeltaTolerance = 1e-16) const;
 
-        /** This operator add a non-resonant term to this one.
-        * It does not check the similarity of the terms!
-        * \param[in] AnotherTerm Another term to add to this.
-        */
+        /// Add a resonant term to this term.
+        ///
+        /// This operator does not check similarity of the terms!
+        /// Parameters of this term are updated as follows.
+        /// \li ResCoeff += AnotherTerm.ResCoeff
+        /// \li NonResCoeff += AnotherTerm.NonResCoeff
+        /// \li Poles[i] = (Poles[i] * Weight + AnotherTerm.Poles[i] * AnotherTerm.Weight) /
+        ///                (Weight + AnotherTerm.Weight)
+        /// \li Weight += AnotherTerm.Weight
+        /// \param[in] AnotherTerm Term to add.
         ResonantTerm& operator+=(ResonantTerm const& AnotherTerm);
 
-        /** Create and commit an MPI datatype for ResonantTerm */
+        /// Create and commit an MPI datatype for \ref ResonantTerm.
         static MPI_Datatype mpi_datatype();
     };
 
 private:
-    /** A reference to a part of the first operator. */
+    /// Part of the field operator \f$\hat O_1\f$.
     MonomialOperatorPart const& O1;
-    /** A reference to a part of the second operator. */
+    /// Part of the field operator \f$\hat O_2\f$.
     MonomialOperatorPart const& O2;
-    /** A reference to a part of the third operator. */
+    /// Part of the field operator \f$\hat O_3\f$.
     MonomialOperatorPart const& O3;
-    /** A reference to a part of the fourth (creation) operator. */
+    /// Part of the creation operator \f$\hat c^\dagger_l\f$.
     MonomialOperatorPart const& CX4;
 
-    /** A reference to the first part of a Hamiltonian. */
+    /// Diagonal block of the Hamiltonian corresponding to the subspace \f${\rm S_1}\f$.
     HamiltonianPart const& Hpart1;
-    /** A reference to the second part of a Hamiltonian. */
+    /// Diagonal block of the Hamiltonian corresponding to the subspace \f${\rm S_2}\f$.
     HamiltonianPart const& Hpart2;
-    /** A reference to the third part of a Hamiltonian. */
+    /// Diagonal block of the Hamiltonian corresponding to the subspace \f${\rm S_3}\f$.
     HamiltonianPart const& Hpart3;
-    /** A reference to the fourth part of a Hamiltonian. */
+    /// Diagonal block of the Hamiltonian corresponding to the subspace \f${\rm S_4}\f$.
     HamiltonianPart const& Hpart4;
 
-    /** A reference to the first part of a density matrix (the part corresponding to Hpart1). */
+    /// Diagonal block of the many-body density matrix corresponding to the subspace \f${\rm S_1}\f$.
     DensityMatrixPart const& DMpart1;
-    /** A reference to the second part of a density matrix (the part corresponding to Hpart2). */
+    /// Diagonal block of the many-body density matrix corresponding to the subspace \f${\rm S_2}\f$.
     DensityMatrixPart const& DMpart2;
-    /** A reference to the third part of a density matrix (the part corresponding to Hpart3). */
+    /// Diagonal block of the many-body density matrix corresponding to the subspace \f${\rm S_3}\f$.
     DensityMatrixPart const& DMpart3;
-    /** A reference to the fourth part of a density matrix (the part corresponding to Hpart4). */
+    /// Diagonal block of the many-body density matrix corresponding to the subspace \f${\rm S_4}\f$.
     DensityMatrixPart const& DMpart4;
 
-    /** A permutation of the operators for this part. */
+    /// Permutation of the operators \f$\{c_i, c_j, c^\dagger_k\}\f$ for this part.
     Permutation3 Permutation;
 
-    /** A list of non-resonant terms. */
+    /// List of all non-resonant terms contributing to this part.
     TermList<NonResonantTerm> NonResonantTerms;
-    /** A list of resonant terms. */
+    /// List of all resonant terms contributing to this part.
     TermList<ResonantTerm> ResonantTerms;
 
-    /** Adds a multi-term that has the following form:
-    * \f[
-    * \frac{1}{(z_1-P_1)(z_3-P_3)}
-    *         \left(\frac{C_4}{z_1+z_2+z_3-P_1-P_2-P_3} + \frac{C_2}{z_2-P_2} \right. +
-    * \f]
-    * \f[     \left.
-    *         + R_{12}\delta(z_1+z_2-P_1-P_2)
-    *         + N_{12}\frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2}
-    *         + R_{23}\delta(z_2+z_3-P_2-P_3)
-    *         + N_{23}\frac{1 - \delta(z_2+z_3-P_2-P_3)}{z_2+z_3-P_2-P_3}
-    *         \right)
-    * \f]
-    *
-    * Where
-    * \f{eqnarray*}{
-    *      P_1 = E_j - E_i \\
-    *      P_2 = E_k - E_j \\
-    *      P_3 = E_l - E_k \\
-    *      C_2 = -C(w_j + w_k) \\
-    *      C_4 = C(w_i + w_l) \\
-    *      R_{12} = C\beta w_i \\
-    *      N_{12} = C(w_k - w_i) \\
-    *      R_{23} = -C\beta w_j \\
-    *      N_{23} = C(w_j - w_l)
-    * \f}
-    *
-    * In fact this is a slightly rewritten form of an equation for \f$ \phi \f$ from
-    * <em>H. Hafermann et al 2009 EPL 85 27007</em>.
-    *
-    * \param[in] Coeff Common prefactor \f$ C \f$ for coefficients \f$ C_2 \f$, \f$ C_4 \f$,
-    *              \f$ R_{12} \f$, \f$ N_{12} \f$, \f$ R_{23} \f$, \f$ N_{23} \f$.
-    * \param[in] beta The inverse temperature.
-    * \param[in] Ei The first energy level \f$ E_i \f$.
-    * \param[in] Ej The second energy level \f$ E_j \f$.
-    * \param[in] Ek The third energy level \f$ E_k \f$.
-    * \param[in] El The fourth energy level \f$ E_l \f$.
-    * \param[in] Wi The first weight \f$ w_i \f$.
-    * \param[in] Wj The second weight \f$ w_j \f$.
-    * \param[in] Wk The third weight \f$ w_k \f$.
-    * \param[in] Wl The fourth weight \f$ w_l \f$.
-    * \param[in] Permutation A reference to a permutation of operators for this part.
-    */
+    /// Adds a multi-term that has the following form:
+    /// \f[
+    /// \frac{1}{(z_1-P_1)(z_3-P_3)}
+    ///         \left(\frac{C_4}{z_1+z_2+z_3-P_1-P_2-P_3} + \frac{C_2}{z_2-P_2} \right. +
+    /// \f]
+    /// \f[     \left.
+    ///         + R_{12}\delta(z_1+z_2-P_1-P_2)
+    ///         + N_{12}\frac{1 - \delta(z_1+z_2-P_1-P_2)}{z_1+z_2-P_1-P_2}
+    ///         + R_{23}\delta(z_2+z_3-P_2-P_3)
+    ///         + N_{23}\frac{1 - \delta(z_2+z_3-P_2-P_3)}{z_2+z_3-P_2-P_3}
+    ///         \right),
+    /// \f]
+    /// where
+    /// \f{eqnarray*}{
+    ///      P_1 = E_j - E_i \\
+    ///      P_2 = E_k - E_j \\
+    ///      P_3 = E_l - E_k \\
+    ///      C_2 = -C(w_j + w_k) \\
+    ///      C_4 = C(w_i + w_l) \\
+    ///      R_{12} = C\beta w_i \\
+    ///      N_{12} = C(w_k - w_i) \\
+    ///      R_{23} = -C\beta w_j \\
+    ///      N_{23} = C(w_j - w_l)
+    /// \f}
+    ///
+    /// In fact this is a slightly rewritten form of an equation for \f$\phi\f$ from
+    /// <em>H. Hafermann et al 2009 EPL 85 27007</em>.
+    ///
+    /// \param[in] Coeff Common prefactor \f$C\f$ for coefficients \f$C_2\f$, \f$C_4\f$,
+    ///              \f$R_{12}\f$, \f$N_{12}\f$, \f$R_{23}\f$, \f$N_{23}\f$.
+    /// \param[in] beta Inverse temperature.
+    /// \param[in] Ei The first energy level \f$E_i\f$.
+    /// \param[in] Ej The second energy level \f$E_j\f$.
+    /// \param[in] Ek The third energy level \f$E_k\f$.
+    /// \param[in] El The fourth energy level \f$E_l\f$.
+    /// \param[in] Wi The first weight \f$w_i\f$.
+    /// \param[in] Wj The second weight \f$w_j\f$.
+    /// \param[in] Wk The third weight \f$w_k\f$.
+    /// \param[in] Wl The fourth weight \f$w_l\f$.
     void addMultiterm(ComplexType Coeff,
                       RealType beta,
                       RealType Ei,
@@ -309,31 +358,32 @@ private:
                       RealType Wk,
                       RealType Wl);
 
-    /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
+    /// A difference in energies with magnitude below this value is treated as zero.
     RealType ReduceResonanceTolerance = 1e-8;
-    /** Minimal magnitude of the coefficient of a term to take it into account. default = 1e-16. */
+    /// Minimal magnitude of the coefficient of a term for it to be taken into account.
     RealType CoefficientTolerance = 1e-16;
-    /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. default = 1e-5. */
+    /// Minimal magnitude of the coefficient of a term for it to be taken into account with respect to
+    /// the amount of terms.
     RealType MultiTermCoefficientTolerance = 1e-5;
 
+    // compute() implementation details.
     template <bool Complex> void computeImpl();
 
 public:
-    /** Constructor.
-     * \param[in] O1 A reference to a part of the first operator.
-     * \param[in] O2 A reference to a part of the second operator.
-     * \param[in] O3 A reference to a part of the third operator.
-     * \param[in] CX4 A reference to a part of the fourth (creation) operator.
-     * \param[in] Hpart1 A reference to the first part of a Hamiltonian.
-     * \param[in] Hpart2 A reference to the second part of a Hamiltonian.
-     * \param[in] Hpart3 A reference to the third part of a Hamiltonian.
-     * \param[in] Hpart4 A reference to the fourth part of a Hamiltonian.
-     * \param[in] DMpart1 A reference to the first part of a density matrix.
-     * \param[in] DMpart2 A reference to the second part of a density matrix.
-     * \param[in] DMpart3 A reference to the third part of a density matrix.
-     * \param[in] DMpart4 A reference to the fourth part of a density matrix.
-     * \param[in] Permutation A permutation of the operators for this part.
-     */
+    /// Constructor.
+    /// \param[in] O1 Part of the field operator \f$\hat O_1\f$.
+    /// \param[in] O2 Part of the field operator \f$\hat O_2\f$.
+    /// \param[in] O3 Part of the field operator \f$\hat O_3\f$.
+    /// \param[in] CX4 Part of the creation operator \f$\hat c^\dagger_l\f$.
+    /// \param[in] Hpart1 Part of the Hamiltonian corresponding to the subspace \f${\rm S_1}\f$.
+    /// \param[in] Hpart2 Part of the Hamiltonian corresponding to the subspace \f${\rm S_2}\f$.
+    /// \param[in] Hpart3 Part of the Hamiltonian corresponding to the subspace \f${\rm S_3}\f$.
+    /// \param[in] Hpart4 Part of the Hamiltonian corresponding to the subspace \f${\rm S_4}\f$.
+    /// \param[in] DMpart1 Part of the many-body density matrix corresponding to the subspace \f${\rm S_1}\f$.
+    /// \param[in] DMpart2 Part of the many-body density matrix corresponding to the subspace \f${\rm S_2}\f$.
+    /// \param[in] DMpart3 Part of the many-body density matrix corresponding to the subspace \f${\rm S_3}\f$.
+    /// \param[in] DMpart4 Part of the many-body density matrix corresponding to the subspace \f${\rm S_4}\f$.
+    /// \param[in] Permutation Permutation of operators \f$\{c_i, c_j, c^\dagger_k\}\f$ for this part.
     TwoParticleGFPart(MonomialOperatorPart const& O1,
                       MonomialOperatorPart const& O2,
                       MonomialOperatorPart const& O3,
@@ -348,38 +398,41 @@ public:
                       DensityMatrixPart const& DMpart4,
                       Permutation3 Permutation);
 
-    /** Actually computes the part. */
+    /// Compute the terms contributing to this part.
     void compute();
 
-    /** Purges all terms. */
+    /// Purge all terms.
     void clear();
 
-    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values).
-    * \param[in] z1 Frequency 1
-    * \param[in] z2 Frequency 2
-    * \param[in] z3 Frequency 3
-    */
+    /// Substitute complex frequencies \f$z_1, z_2, z_3\f$ into this part.
+    /// \param[in] z1 First frequency \f$z_1\f$.
+    /// \param[in] z2 Second frequency \f$z_2\f$.
+    /// \param[in] z3 Third frequency \f$z_3\f$.
     ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3) const;
-    /** Returns a contribution to the two-particle Green's function made by this part.
-    * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
-    * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
-    * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
-    */
+    /// Substitute Matsubara frequencies \f$i\omega_{n_1}, i\omega_{n_2}, i\omega_{n_3}\f$ into this part.
+    /// \param[in] MatsubaraNumber1 Index of the first Matsubara frequency
+    ///                             \f$n_1\f$ (\f$\omega_{n_1}=\pi(2n_1+1)/\beta\f$).
+    /// \param[in] MatsubaraNumber2 Index of the second Matsubara frequency
+    ///                             \f$n_2\f$ (\f$\omega_{n_2}=\pi(2n_2+1)/\beta\f$).
+    /// \param[in] MatsubaraNumber3 Index of the third Matsubara frequency
+    ///                             \f$n_3\f$ (\f$\omega_{n_3}=\pi(2n_3+1)/\beta\f$).
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
-    /** Returns the number of resonant terms in the cache. */
+    /// Return the number of resonant terms.
     std::size_t getNumResonantTerms() const { return ResonantTerms.size(); }
-    /** Returns the number of non-resonant terms in the cache. */
+    /// Return the number of non-resonant terms.
     std::size_t getNumNonResonantTerms() const { return NonResonantTerms.size(); }
 
-    /** Returns a Permutation3 of the current part */
+    /// Return the permutation of operators \f$\{c_i, c_j, c^\dagger_k\}\f$ for this part.
     Permutation3 const& getPermutation() const { return Permutation; }
 
-    /** Return the list of Resonant Terms */
+    /// Access the list of the resonant terms.
     TermList<TwoParticleGFPart::ResonantTerm> const& getResonantTerms() const { return ResonantTerms; }
-    /** Return the list of NonResonantTerms */
+    /// Access the list of the non-resonant terms.
     TermList<TwoParticleGFPart::NonResonantTerm> const& getNonResonantTerms() const { return NonResonantTerms; }
 };
+
+///@}
 
 inline ComplexType
 TwoParticleGFPart::NonResonantTerm::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const {
@@ -390,15 +443,15 @@ TwoParticleGFPart::NonResonantTerm::operator()(ComplexType z1, ComplexType z2, C
 inline ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1,
                                                                ComplexType z2,
                                                                ComplexType z3,
-                                                               RealType KroneckerSymbolTolerance) const {
+                                                               RealType DeltaTolerance) const {
     ComplexType Diff;
     if(isz1z2) {
         Diff = z1 + z2 - Poles[0] - Poles[1];
-        return (std::abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff / Diff)) /
+        return (std::abs(Diff) < DeltaTolerance ? ResCoeff : (NonResCoeff / Diff)) /
                ((z1 - Poles[0]) * (z3 - Poles[2]));
     } else {
         Diff = z2 + z3 - Poles[1] - Poles[2];
-        return (std::abs(Diff) < KroneckerSymbolTolerance ? ResCoeff : (NonResCoeff / Diff)) /
+        return (std::abs(Diff) < DeltaTolerance ? ResCoeff : (NonResCoeff / Diff)) /
                ((z1 - Poles[0]) * (z3 - Poles[2]));
     }
 }

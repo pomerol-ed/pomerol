@@ -8,11 +8,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file prog/anderson.cpp
-** \brief Diagonalization of the Anderson impurity model (1 impurity coupled to a set of non-interacting bath sites)
-**
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-*/
+/// \file prog/main.cpp
+/// \brief A common main source file for executables that diagonalize various quantum models.
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #ifdef POMEROL_ANDERSON
 #include "anderson_model.hpp"

@@ -8,6 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file src/pomerol/GreensFunction.cpp
+/// \brief Fermionic single-particle Matsubara Green's function (implementation).
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #include "pomerol/GreensFunction.hpp"
 
 #include <cassert>
@@ -92,7 +97,7 @@ void GreensFunction::compute() {
     setStatus(Computed);
 }
 
-unsigned short GreensFunction::getIndex(std::size_t Position) const {
+ParticleIndex GreensFunction::getIndex(std::size_t Position) const {
     switch(Position) {
     case 0: return C.getIndex();
     case 1: return CX.getIndex();

@@ -8,12 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/TwoParticleGF.h
-** \brief Two-particle Green's function in the Matsubara representation.
-**
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-*/
+/// \file include/pomerol/TwoParticleGF.hpp
+/// \brief Fermionic two-particle Matsubara Green's function.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #ifndef POMEROL_INCLUDE_TWOPARTICLEGF_HPP
 #define POMEROL_INCLUDE_TWOPARTICLEGF_HPP
 
@@ -35,92 +34,92 @@
 
 namespace Pomerol {
 
+/// \defgroup 2PGF Two-particle Green's functions of fermions
+///@{
+
+/// Triplet of complex frequencies.
 using FreqTuple = std::tuple<ComplexType, ComplexType, ComplexType>;
+/// List of complex frequency triplets.
 using FreqVec = std::vector<FreqTuple>;
 
-/** This class represents a thermal Green's function in the Matsubara representation.
- *
- * Exact definition:
- *
- * \f[ \chi_{ijkl}(\omega_{n_1},\omega_{n_2};\omega_{n_3},\omega_{n_1}+\omega_{n_2}-\omega_{n_3}) =
- *   \int_0^\beta
- *     \langle\mathbf{T} c_i(\tau_1)c_j(\tau_2)c^+_k(\tau_3)c^+_l(0) \rangle
- *     \exp(i\omega_{n_1}\tau_1+i\omega_{n_2}\tau_2-i\omega_{n_3}\tau_3)
- *   d\tau_1 d\tau_2 d\tau_3
- * \f].
- *
- * It is actually a container class for a collection of parts (most of real calculations
- * take place inside the parts). Every part corresponds to a 'world-stripe', a sequence of 4
- * matrix blocks.
- */
+/// \brief Fermionic two-particle Matsubara Green's function.
+///
+/// \f[ \chi_{ijkl}(\omega_{n_1},\omega_{n_2};\omega_{n_3},\omega_{n_1}+\omega_{n_2}-\omega_{n_3}) =
+///   \int_0^\beta
+///   Tr[\mathcal{T}_\tau \hat\rho c_i(\tau_1)c_j(\tau_2)c^\dagger_k(\tau_3)c^\dagger_l(0)]
+///   e^{i\omega_{n_1}\tau_1+i\omega_{n_2}\tau_2-i\omega_{n_3}\tau_3}
+///   d\tau_1 d\tau_2 d\tau_3.
+/// \f]
+/// It is actually a container class for a collection of \ref TwoParticleGFPart's
+/// (most of the real calculations take place in the parts).
 class TwoParticleGF : public Thermal, public ComputableObject {
 
     friend class TwoParticleGFContainer;
 
-    /** A reference to a states classification object. */
+    /// Information about invariant subspaces of the Hamiltonian.
     StatesClassification const& S;
-    /** A reference to a Hamiltonian. */
+    /// The Hamiltonian.
     Hamiltonian const& H;
-    /** A reference to the first annihilation operator. */
+    /// The annihilation operator \f$c_i\f$.
     AnnihilationOperator const& C1;
-    /** A reference to the second annihilation operator. */
+    /// The annihilation operator \f$c_j\f$.
     AnnihilationOperator const& C2;
-    /** A reference to the first creation operator. */
+    /// The creation operator \f$c^\dagger_k\f$
     CreationOperator const& CX3;
-    /** A reference to the second creation operator. */
+    /// The creation operator \f$c^\dagger_l\f$
     CreationOperator const& CX4;
-    /** A reference to a density matrix. */
+    /// Many-body density matrix \f$\hat\rho\f$.
     DensityMatrix const& DM;
 
-    /** A list of pointers to parts. */
+    /// The list of all \ref TwoParticleGFPart's contributing to this GF.
     std::vector<TwoParticleGFPart> parts;
 
 protected:
-    /** A flag to determine whether this GF is identical to zero */
+    /// A flag that marks an identically vanishing Green's function.
     bool Vanishing = true;
 
-    /** Extracts a part of the operator standing at a specified position in a given permutation.
-     * \param[in] PermutationNumber The number of the permutation.
-     * \param[in] OperatorPosition The number of the position of the operator.
-     * \param[in] LeftIndex A left block index referring to the part needed.
-     */
+    /// Extract the operator part standing at a specified position in a given permutation of the list
+    /// \f$\{c_i,c_j,c^\dagger_k,c^\dagger_l\}\f$.
+    /// \param[in] PermutationNumber Serial number of the permutation within \ref permutations3.
+    /// \param[in] OperatorPosition Position of the operator, 0--3.
+    /// \param[in] LeftIndex The left invariant subspace index referring to the requested part.
     MonomialOperatorPart const&
     OperatorPartAtPosition(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const;
-    /** Chooses an operator standing at a specified position in a given permutation and
-     * returns a left block index corresponding to the right block index. May return INVALID_BLOCK_NUMBER if
-     * the operator does not have such a (non-zero) block.
-     * \param[in] PermutationNumber The number of the permutation.
-     * \param[in] OperatorPosition The number of the position of the operator.
-     * \param[in] RightIndex A right block index.
-     */
+
+    /// Choose the operator standing at a specified position in a given permutation of the list
+    /// \f$\{c_i,c_j,c^\dagger_k,c^\dagger_l\}\f$ and
+    /// return its left invariant subspace index corresponding to a given right subspace index.
+    /// Return \ref INVALID_BLOCK_NUMBER if the operator does not have such a (non-zero) block.
+    /// \param[in] PermutationNumber Serial number of the permutation within \ref permutations3.
+    /// \param[in] OperatorPosition Position of the operator, 0--3.
+    /// \param[in] RightIndex The right invariant subspace index.
     BlockNumber getLeftIndex(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber RightIndex) const;
-    /** Chooses an operator standing at a specified position in a given permutation and
-     * returns a right block index corresponding to the left block index. May return INVALID_BLOCK_NUMBER if
-     * the operator does not have such a (non-zero) block.
-     * \param[in] PermutationNumber The number of the permutation.
-     * \param[in] OperatorPosition The number of the position of the operator.
-     * \param[in] LeftIndex A left block index.
-     */
-    BlockNumber getRightIndex(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex)
-        const; //!< return right index of an operator at current position for a current permutation
+    /// Choose the operator standing at a specified position in a given permutation of the list
+    /// \f$\{c_i,c_j,c^\dagger_k,c^\dagger_l\}\f$ and
+    /// return its right invariant subspace index corresponding to a given left subspace index.
+    /// Return \ref INVALID_BLOCK_NUMBER if the operator does not have such a (non-zero) block.
+    /// \param[in] PermutationNumber Serial number of the permutation within \ref permutations3.
+    /// \param[in] OperatorPosition Position of the operator, 0--3.
+    /// \param[in] LeftIndex The left invariant subspace index.
+    BlockNumber getRightIndex(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const;
 
 public:
-    /** A difference in energies with magnitude less than this value is treated as zero. default = 1e-8. */
+    /// A difference in energies with magnitude below this value is treated as zero.
     RealType ReduceResonanceTolerance = 1e-8;
-    /** Minimal magnitude of the coefficient of a term to take it into account. default = 1e-16. */
+    /// Minimal magnitude of the coefficient of a term for it to be taken into account.
     RealType CoefficientTolerance = 1e-16;
-    /** Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms. default = 1e-5. */
+    /// Minimal magnitude of the coefficient of a term for it to be taken into account with respect to
+    /// the amount of terms.
     RealType MultiTermCoefficientTolerance = 1e-5;
 
-    /** Constructor.
-     * \param[in] S A reference to a states classification object.
-     * \param[in] H A reference to a Hamiltonian.
-     * \param[in] C1 A reference to the first annihilation operator.
-     * \param[in] C2 A reference to the second annihilation operator.
-     * \param[in] CX3 A reference to the first creation operator.
-     * \param[in] CX4 A reference to the second creation operator.
-     * \param[in] DM A reference to a density matrix.
-     */
+    /// Constructor.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
+    /// \param[in] H The Hamiltonian.
+    /// \param[in] C1 The annihilation operator \f$c_i\f$.
+    /// \param[in] C2 The annihilation operator \f$c_j\f$.
+    /// \param[in] CX3 The creation operator \f$c^\dagger_k\f$.
+    /// \param[in] CX4 The creation operator \f$c^\dagger_l\f$.
+    /// \param[in] DM Many-body density matrix \f$\hat\rho\f$.
     TwoParticleGF(StatesClassification const& S,
                   Hamiltonian const& H,
                   AnnihilationOperator const& C1,
@@ -129,39 +128,43 @@ public:
                   CreationOperator const& CX4,
                   DensityMatrix const& DM);
 
-    /** Chooses relevant parts of C1, C2, CX3 and CX4 and allocates resources for the parts. */
+    /// Choose relevant parts of \f$c_i,c_j,c^\dagger_k,c^\dagger_l\f$ and allocate resources for the parts.
     void prepare();
 
-    /** Actually computes the parts and fill the internal cache of precomputed values.
-     * \param[in] NumberOfMatsubaras Number of positive Matsubara frequencies.
-     */
+    /// Compute the parts in parallel and fill the internal cache of precomputed values.
+    /// \param[in] clear If true, computed \ref TwoParticleGFPart's will be destroyed immediately after
+    ///                  filling the precomputed value cache.
+    /// \param[in] freqs List of frequency triplets \f$(\omega_{n_1},\omega_{n_2},\omega_{n_3})\f$.
+    /// \param[in] comm MPI communicator used to parallelize the computation.
+    /// \return A list of precomputed values.
+    /// \pre \ref prepare() has been called.
     std::vector<ComplexType>
     compute(bool clear = false, FreqVec const& freqs = {}, MPI_Comm const& comm = MPI_COMM_WORLD);
 
-    /** Returns the 'bit' (index) of one of operators C1, C2, CX3 or CX4.
-     * \param[in] Position Zero-based number of the operator to use.
-     */
+    /// Returns the single particle index of one of the operators \f$c_i,c_j,c^\dagger_k,c^\dagger_l\f$.
+    /// \param[in] Position Position of the requested operator, 0--3.
     ParticleIndex getIndex(std::size_t Position) const;
 
-    /** Returns the value of the Green's function calculated at a given frequency (ignores precomputed values).
-    * \param[in] z1 Frequency 1
-    * \param[in] z2 Frequency 2
-    * \param[in] z3 Frequency 3
-    */
+    /// Return the value of the two-particle Green's function calculated at a given complex frequency triplet.
+    /// This method ignores the precomputed value cache.
+    /// \param[in] z1 First frequency \f$z_1\f$.
+    /// \param[in] z2 Second frequency \f$z_2\f$.
+    /// \param[in] z3 Third frequency \f$z_3\f$.
     ComplexType operator()(ComplexType z1, ComplexType z2, ComplexType z3) const;
-    /** Returns the value of the two-particle Green's function calculated at given frequencies.
-     * \param[in] MatsubaraNumber1 Number of the first Matsubara frequency.
-     * \param[in] MatsubaraNumber2 Number of the second Matsubara frequency.
-     * \param[in] MatsubaraNumber3 Number of the third Matsubara frequency.
-     */
+    /// Return the value of the two-particle Green's function calculated a given Matsubara frequency triplet.
+    /// \param[in] MatsubaraNumber1 Index of the first Matsubara frequency
+    ///                             \f$n_1\f$ (\f$\omega_{n_1}=\pi(2n_1+1)/\beta\f$).
+    /// \param[in] MatsubaraNumber2 Index of the second Matsubara frequency
+    ///                             \f$n_2\f$ (\f$\omega_{n_2}=\pi(2n_2+1)/\beta\f$).
+    /// \param[in] MatsubaraNumber3 Index of the third Matsubara frequency
+    ///                             \f$n_3\f$ (\f$\omega_{n_3}=\pi(2n_3+1)/\beta\f$).
     ComplexType operator()(long MatsubaraNumber1, long MatsubaraNumber2, long MatsubaraNumber3) const;
 
-    /** Returns true, if GF is identical to zero */
+    /// Is this Green's function identically zero?
     bool isVanishing() const { return Vanishing; }
-
-    /** Returns the number of current permutation in permutations3 */
-    unsigned short getPermutationNumber(Permutation3 const& in);
 };
+
+///@}
 
 inline ComplexType TwoParticleGF::operator()(ComplexType z1, ComplexType z2, ComplexType z3) const {
     if(Vanishing)

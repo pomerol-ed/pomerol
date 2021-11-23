@@ -8,12 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/StatesClassification.h
-** \brief Declaration of BlockNumber and StatesClassification classes
-**
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-*/
+/// \file include/pomerol/StatesClassification.hpp
+/// \brief Classification of many-body basis states (Fock states) into subspaces.
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #ifndef POMEROL_INCLUDE_STATESCLASSIFICATION_HPP
 #define POMEROL_INCLUDE_STATESCLASSIFICATION_HPP
 
@@ -24,39 +23,41 @@
 
 #include <vector>
 
-// TODO: Re-add functionality to classify many-body states by their quantum numbers
-
 namespace Pomerol {
 
-/** Index of a block (sector) within a many-body Hilbert space */
+/// \addtogroup ED
+///@{
+
+/// Index of a subspace (block) within a full many-body Hilbert space.
 using BlockNumber = int;
-/** All blocks with this number are treated as nonexistent */
+/// A special value that stands for a non-existent subspace (block).
 constexpr BlockNumber INVALID_BLOCK_NUMBER = -1;
 
-/** InnerQuantumState labels the states inside of the block of Fock States. Has no physical meaning. */
+/// Index of a state within a block.
 using InnerQuantumState = libcommute::sv_index_type;
 
-/** This class handles all information about Fock states.
- *  It makes a classification of Fock states into blocks.
- */
+/// \brief Classification of many-body basis states into bases of invariant subspaces.
+///
+/// This class stores lists of Fock states belonging to each invariant subspace (block)
+/// of a Hilbert space.
 class StatesClassification : public ComputableObject {
 
-    /** A storage for all FockStates, each subvector correspond to the states
-     *  which belong to a block with a given BlockNumber.
-     */
+    /// Lists of Fock states spanning the invariant subspaces, one inner vector per subspace.
     std::vector<std::vector<QuantumState>> StatesContainer;
-    /** Index all states to belong to a block. */
+    /// Each element of this vector is the block number the corresponding Fock state belongs to.
     std::vector<BlockNumber> StateBlockIndex;
 
 public:
+    /// Construct without filling any Fock state lists.
     StatesClassification() = default;
 
-    /** Perform a classification of all FockStates */
-    // TODO: Optionally accept a list of integrals of motion
-    // (Operators::expression<ScalarType, IndexTypes...> objects) and fill lists
-    // of quantum numbers.
+    /// Populate the Fock state lists from a \ref HilbertSpace object. If the \ref HilbertSpace is
+    /// not in the \ref ComputableObject::Computed state, then existence of just one invariant
+    /// subspace coinciding with the full Hilbert space will be assumed.
+    /// \tparam IndexTypes Types of indices carried by operators acting in the Hilbert space \p HS.
+    /// \param[in] HS The Hilbert space.
     template <typename... IndexTypes> void compute(HilbertSpace<IndexTypes...> const& HS) {
-        if(Status == Computed)
+        if(getStatus() == Computed)
             return;
         auto const& FullHilbertSpace = HS.getFullHilbertSpace();
         auto Dim = FullHilbertSpace.dim();
@@ -65,46 +66,53 @@ public:
         } else { // Just one block
             initSingleBlock(Dim);
         }
-        Status = Computed;
+        setStatus(Computed);
     }
 
-    /** Get total number of Quantum States */
-    unsigned long getNumberOfStates() const { return StateBlockIndex.size(); }
+    /// Get the total number of Fock states.
+    QuantumState getNumberOfStates() const { return StateBlockIndex.size(); }
 
-    /** Returns total amount of non-vanishing blocks */
+    /// Get the number of the invariant subspaces.
     BlockNumber getNumberOfBlocks() const { return StatesContainer.size(); }
 
-    /**
-     */
+    /// Get the number of Fock states spanning a given invariant subspace.
+    /// \param[in] in Index of the invariant subspace.
+    /// \pre \ref compute() has been called.
     InnerQuantumState getBlockSize(BlockNumber in) const;
 
-    /** get a vector of all FockStates with a given set of QuantumNumbers
-     * \param[in] in A set of quantum numbers to get a vector of FockStates
-     */
+    /// Get the list of all Fock states spanning a given invariant subspace.
+    /// \param[in] in Index of the invariant subspace.
+    /// \pre \ref compute() has been called.
     std::vector<QuantumState> const& getFockStates(BlockNumber in) const;
 
-    /** get a FockState, corresponding to an internal InnerQuantumState
-     * \param[in] QuantumNumbers of block in which the InnerQuantumState is located
-     * \param[in] m InnerQuantumState for which the correspondence is required
-     */
-    QuantumState getFockState(BlockNumber in, InnerQuantumState m) const;
+    /// Get a specific Fock state from a given invariant subspace.
+    /// \param[in] in Index of the invariant subspace.
+    /// \param[in] i Index of the Fock state within the subspace.
+    /// \pre \ref compute() has been called.
+    QuantumState getFockState(BlockNumber in, InnerQuantumState i) const;
 
-    /** Returns BlockNumber of a given FockState
-     * \param[in] in A FockState for which the BlockNumber is requested
-     */
+    /// Get the invariant subspace index a given Fock state belongs to.
+    /// \param[in] in Fock state.
+    /// \pre \ref compute() has been called.
     BlockNumber getBlockNumber(QuantumState in) const;
 
-    /** get InnerQuantumState of a given FockState. Since FockState is associated with
-     * the Block number no explicit BlockNumber or QuantumNumbers is required
-     * \param[in] state FockState for which the correspondence is required
-     */
+    /// For a given Fock state, get the index within the invariant subspace it belongs to.
+    /// \param[in] in Fock state.
+    /// \pre \ref compute() has been called.
     InnerQuantumState getInnerState(QuantumState in) const;
 
 private:
-    void initSingleBlock(unsigned long Dim);
+    /// Initialize data members for a single un-partitioned Hilbert space.
+    /// \param[in] Dim Dimension of the Hilbert space.
+    void initSingleBlock(QuantumState Dim);
+    /// Initialize data members for a partitioned Hilbert space.
+    /// \param[in] partition Partition of the full Hilbert space into invariant subspaces.
     void initMultipleBlocks(libcommute::space_partition const& partition);
+    /// Check if \ref compute() has already been called.
     void checkComputed() const;
 };
+
+///@}
 
 } // namespace Pomerol
 

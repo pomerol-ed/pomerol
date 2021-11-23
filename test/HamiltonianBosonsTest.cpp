@@ -8,11 +8,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file tests/green.cpp
-** \brief Test of a Green's function calculation (1 s-orbital).
-**
-** \author Igor Krivenko (igor@shg.ru)
-*/
+/// \file test/HamiltonianBosonsTest.cpp
+/// \brief Diagonalization of a Hubbard atom coupled to a boson.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
 
 #include <pomerol/Hamiltonian.hpp>
 #include <pomerol/HilbertSpace.hpp>

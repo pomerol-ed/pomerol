@@ -8,12 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file include/pomerol/MonomialOperator.h
-** \brief Declaration of field operators : creation and annihilation operators.
-**
-** \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-*/
+/// \file include/pomerol/MonomialOperator.hpp
+/// \brief Storage for an operator that is a product of creation/annihilation operators.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #ifndef POMEROL_INCLUDE_MONOMIALOPERATOR_HPP
 #define POMEROL_INCLUDE_MONOMIALOPERATOR_HPP
 
@@ -40,56 +39,73 @@
 
 namespace Pomerol {
 
-/** \typedef
- * A pair of left and right indices of a part in a Field Operator. Each part is a non-vanishing worldline in an operator
- */
+/// \addtogroup ED
+///@{
+
+/// A pair of invariant subspace indices.
 using BlockMapping = std::pair<BlockNumber, BlockNumber>;
 
-/** This class is a parent class for creation/annihilation operators which act
- * on all blocks of quantum states */
+/// \brief Monomial quantum operator.
+///
+/// This class stores an operator \f$\hat M\f$, which is a monomial, i.e. a product
+/// of fermionic and/or bosonic creation/annihilation operators. The operator is stored as
+/// a list of matrix blocks (\ref MonomialOperatorPart), each connecting a pair of
+/// invariant subspaces of the Hamiltonian. For a given right invariant subspace,
+/// there exists at most one part connecting it to a left subspace (and the other way around).
 class MonomialOperator : public ComputableObject {
 public:
+    /// A bi-map container for connections between invariant subspaces established by a monomial operator.
     using BlocksBimap = boost::bimaps::bimap<boost::bimaps::set_of<BlockNumber>, boost::bimaps::set_of<BlockNumber>>;
+    /// A single subspace-to-subspace connection established by a monomial operator.
     using BlockMapping = BlocksBimap::value_type;
 
 protected:
     friend class FieldOperatorContainer;
 
-    /** A reference an Operator object (OperatorPresets::C or Cdag). */
+    /// Whether the \ref MOp object is complex-valued.
     bool MOpComplex;
-
+    /// A type-erased real/complex-valued \p libcommute::loperator object.
     std::shared_ptr<void> MOp;
 
+    /// Return a constant reference to the stored \p libcommute::loperator object.
+    /// \tparam Complex Request a reference to the complex-valued linear operator.
+    /// \pre The compile-time value of \ref Complex must agree with the result of \ref isComplex().
     template <bool Complex> LOperatorTypeRC<Complex> const& getMOp() const {
         assert(MOpComplex == Complex);
         return *std::static_pointer_cast<LOperatorTypeRC<Complex>>(MOp);
     }
 
+    /// Whether the stored parts are complex-valued.
     bool Complex;
 
-    /** A reference to a StatesClassification object */
+    /// Information about invariant subspaces of the Hamiltonian.
     StatesClassification const& S;
-    /** A reference to a Hamiltonian object */
+    /// The Hamiltonian.
     Hamiltonian const& H;
 
+    /// An automatic space partition object.
     libcommute::space_partition const& Partition;
-    /** A map between non-vanishing parts (internal numbering) and their R.H.S. BlockNumbers  */
+
+    /// A map between positions of parts in the \ref parts list and the respective right subspace indices.
     std::unordered_map<std::size_t, BlockNumber> mapPartsFromRight;
-    /** A map between non-vanishing parts (internal numbering) and their L.H.S. BlockNumbers  */
+    /// A map between positions of parts in the \ref parts list and the respective left subspace indices.
     std::unordered_map<std::size_t, BlockNumber> mapPartsFromLeft;
 
+    /// Left-to-right connections between invariant subspaces established by this monomial operator.
     BlocksBimap LeftRightBlocks;
 
-    /** A vector of parts */
+    /// List of parts (matrix blocks).
     std::vector<MonomialOperatorPart> parts;
 
 public:
-    /** Constructor
-     * \param[in] IndexInfo A reference to an IndexClassification object
-     * \param[in] S A reference to a StatesClassification object
-     * \param[in] H A reference to a Hamiltonian object
-     * \param[in] Index An index of an operator
-     */
+    /// Constructor.
+    /// \tparam ScalarType Scalar type (either double or std::complex<double>) of the expression \p MO.
+    /// \tparam IndexTypes Types of indices carried by operators in the expression \p MO.
+    /// \param[in] MO Expression of the monomial operator \f$\hat M\f$.
+    /// \param[in] HS Hilbert space.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
+    /// \param[in] H The Hamiltonian.
+    /// \pre \p MO is a monomial operator.
     template <typename ScalarType, typename... IndexTypes>
     MonomialOperator(libcommute::expression<ScalarType, IndexTypes...> const& MO,
                      HilbertSpace<IndexTypes...> const& HS,
@@ -105,23 +121,44 @@ public:
             throw std::runtime_error("Only monomial expressions are supported");
     }
 
+    /// Is the monomial operator a complex-valued matrix?
     bool isComplex() const { return Complex; }
 
-    /** Returns a FieldOperatorPart based on its left BlockNumber */
-    MonomialOperatorPart& getPartFromLeftIndex(BlockNumber in);
-    MonomialOperatorPart const& getPartFromLeftIndex(BlockNumber in) const;
-    /** Returns a FieldOperatorPart based on its right BlockNumber */
-    MonomialOperatorPart& getPartFromRightIndex(BlockNumber out);
-    MonomialOperatorPart const& getPartFromRightIndex(BlockNumber out) const;
+    /// Return a reference to the part by a given left invariant subspace.
+    /// \param[in] LeftIndex Index of the left invariant subspace
+    /// \pre \ref prepare() has been called.
+    MonomialOperatorPart& getPartFromLeftIndex(BlockNumber LeftIndex);
+    /// Return a constant reference to the part by a given left invariant subspace.
+    /// \param[in] LeftIndex Index of the left invariant subspace
+    /// \pre \ref prepare() has been called.
+    MonomialOperatorPart const& getPartFromLeftIndex(BlockNumber LeftIndex) const;
+    /// Return a reference to the part by a given right invariant subspace.
+    /// \param[in] RightIndex Index of the right invariant subspace
+    /// \pre \ref prepare() has been called.
+    MonomialOperatorPart& getPartFromRightIndex(BlockNumber RightIndex);
+    /// Return a constant reference to the part by a given right invariant subspace.
+    /// \param[in] RightIndex Index of the right invariant subspace
+    /// \pre \ref prepare() has been called.
+    MonomialOperatorPart const& getPartFromRightIndex(BlockNumber RightIndex) const;
 
-    /** Returns a left BlockNumber for a given right BlockNumber */
+    /// For a given right invariant subspace, return the corresponding left invariant subspace.
+    /// \param[in] RightIndex Index of the right subspace.
+    /// \return Index of the left subspace.
+    /// \pre \ref prepare() has been called.
     BlockNumber getLeftIndex(BlockNumber RightIndex) const;
-    /** Returns a right BlockNumber for a given left BlockNumber */
+    /// For a given left invariant subspace, return the corresponding right invariant subspace.
+    /// \param[in] LeftIndex Index of the left subspace.
+    /// \return Index of the right subspace.
+    /// \pre \ref prepare() has been called.
     BlockNumber getRightIndex(BlockNumber LeftIndex) const;
-    /** Returns a reference to BlockMapping */
+
+    /// Return a constant reference to the left-to-right connection map.
+    /// \pre \ref prepare() has been called.
     BlocksBimap const& getBlockMapping() const;
 
-    /** Virtual method for assigning world-lines */
+    /// Allocate memory for all parts.
+    /// \tparam IndexTypes Types of indices carried by operators acting in the Hilbert space \p HS.
+    /// \param[in] HS The Hilbert space.
     template <typename... IndexTypes> void prepare(HilbertSpace<IndexTypes...> const& HS) {
         if(getStatus() >= Prepared)
             return;
@@ -144,23 +181,30 @@ public:
 
         Status = Prepared;
     }
-    /** Computes all world-lines */
+
+    /// Compute matrix elements of all parts in parallel.
+    /// \param[in] comm MPI communicator used to parallelize the computation.
+    /// \pre \ref prepare() has been called.
     void compute(MPI_Comm const& comm = MPI_COMM_WORLD);
 
 private:
+    // Implementation details
     void checkPrepared() const;
 };
 
+/// A special case of a monomial operator: A single fermion creation operator \f$c^\dagger_i\f$.
 class CreationOperator : public MonomialOperator {
+    /// The single-particle index corresponding to the creation operator.
     ParticleIndex Index;
 
 public:
-    /** Constructor
-     * \param[in] IndexInfo A reference to an IndexClassification object
-     * \param[in] S A reference to a StatesClassification object
-     * \param[in] H A reference to a Hamiltonian object
-     * \param[in] Index An index of an operator
-     */
+    /// Constructor.
+    /// \tparam IndexTypes Types of indices carried by operators acting in the Hilbert space \p HS.
+    /// \param[in] IndexInfo Map for fermionic operator index tuples.
+    /// \param[in] HS Hilbert space.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
+    /// \param[in] H The Hamiltonian.
+    /// \param[in] Index The single-particle index \f$i\f$.
     template <typename... IndexTypes>
     CreationOperator(IndexClassification<IndexTypes...> const& IndexInfo,
                      HilbertSpace<IndexTypes...> const& HS,
@@ -173,19 +217,23 @@ public:
                            H),
           Index(Index) {}
 
+    /// Return the single-particle index \f$i\f$.
     ParticleIndex getIndex() const { return Index; }
 };
 
+/// A special case of a monomial operator: A single fermion annihilation operator \f$c_i\f$.
 class AnnihilationOperator : public MonomialOperator {
+    /// The single-particle index corresponding to the annihilation operator.
     ParticleIndex Index;
 
 public:
-    /** Constructor
-     * \param[in] IndexInfo A reference to an IndexClassification object
-     * \param[in] S A reference to a StatesClassification object
-     * \param[in] H A reference to a Hamiltonian object
-     * \param[in] Index An index of an operator
-     */
+    /// Constructor.
+    /// \tparam IndexTypes Types of indices carried by operators acting in the Hilbert space \p HS.
+    /// \param[in] IndexInfo Map for fermionic operator index tuples.
+    /// \param[in] HS Hilbert space.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
+    /// \param[in] H The Hamiltonian.
+    /// \param[in] Index The single-particle index \f$i\f$.
     template <typename... IndexTypes>
     AnnihilationOperator(IndexClassification<IndexTypes...> const& IndexInfo,
                          HilbertSpace<IndexTypes...> const& HS,
@@ -198,21 +246,26 @@ public:
                            H),
           Index(Index) {}
 
+    /// Return the single-particle index \f$i\f$.
     ParticleIndex getIndex() const { return Index; }
 };
 
-/** A quadratic operator, c_1^+ c_2, in the eigenbasis of a Hamiltonian */
+/// A special case of a monomial operator: A single quadratic fermionic operator \f$c^\dagger_i c_j\f$.
 class QuadraticOperator : public MonomialOperator {
-    ParticleIndex Index1, Index2;
+    /// The single-particle index corresponding to the creation operator.
+    ParticleIndex Index1;
+    /// The single-particle index corresponding to the annihilation operator.
+    ParticleIndex Index2;
 
 public:
-    /** Constructor
-     * \param[in] IndexInfo A reference to an IndexClassification object
-     * \param[in] S A reference to a StatesClassification object
-     * \param[in] H A reference to a Hamiltonian object
-     * \param[in] Index1 An index of a creation operator
-     * \param[in] Index2 An index of an annihilation operator
-     */
+    /// Constructor.
+    /// \tparam IndexTypes Types of indices carried by operators acting in the Hilbert space \p HS.
+    /// \param[in] IndexInfo Map for fermionic operator index tuples.
+    /// \param[in] HS Hilbert space.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
+    /// \param[in] H The Hamiltonian.
+    /// \param[in] Index1 The single-particle index \f$i\f$ of the creation operator.
+    /// \param[in] Index2 The single-particle index \f$j\f$ of the annihilation operator.
     template <typename... IndexTypes>
     QuadraticOperator(IndexClassification<IndexTypes...> const& IndexInfo,
                       HilbertSpace<IndexTypes...> const& HS,
@@ -229,9 +282,13 @@ public:
           Index1(Index1),
           Index2(Index2) {}
 
+    /// Return the single-particle index \f$i\f$.
     ParticleIndex getCXXIndex() const { return Index1; }
+    /// Return the single-particle index \f$j\f$.
     ParticleIndex getCIndex() const { return Index2; }
 };
+
+///@}
 
 } // namespace Pomerol
 

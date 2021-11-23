@@ -8,6 +8,12 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file src/pomerol/SusceptibilityPart.cpp
+/// \brief Part of a dynamical susceptibility in the Matsubara representation (implementation).
+/// \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+
 #include "pomerol/SusceptibilityPart.hpp"
 
 #include <cassert>

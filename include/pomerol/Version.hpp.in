@@ -8,13 +8,22 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file include/pomerol/Version.hpp
+/// \brief Pomerol version information.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
+/// \addtogroup Misc
+///@{
+
 #ifndef POMEROL_INCLUDE_POMEROL_VERSION_HPP
 #define POMEROL_INCLUDE_POMEROL_VERSION_HPP
 
-// Pomerol version
+/// Pomerol version
 #define POMEROL_VERSION "@POMEROL_VERSION@"
 
-// OpenMP
+/// Pomerol has been built with OpenMP support.
 #cmakedefine POMEROL_USE_OPENMP
+
+///@}
 
 #endif // #ifndef POMEROL_INCLUDE_POMEROL_VERSION_HPP

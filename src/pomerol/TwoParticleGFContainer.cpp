@@ -8,6 +8,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// \file src/pomerol/TwoParticleGFContainer.cpp
+/// \brief Storage for multiple fermionic two-particle Matsubara Green's functions (implementation).
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #include "pomerol/TwoParticleGFContainer.hpp"
 
 #include <cmath>
