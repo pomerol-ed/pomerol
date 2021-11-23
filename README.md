@@ -34,7 +34,7 @@ two-particle Green's functions as well as susceptibilities.
     * CMake >= 3.1.0
     * Boost >= 1.54.0 (only headers are required)
     * Eigen >= 3.1.0
-    * libcommute >= 0.7
+    * [libcommute >= 0.7](https://github.com/krivenko/libcommute)
     * An MPI 3.0 implementation
     * Git to fetch the sources
 
