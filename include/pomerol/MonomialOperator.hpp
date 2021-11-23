@@ -83,9 +83,6 @@ protected:
     /// The Hamiltonian.
     Hamiltonian const& H;
 
-    /// An automatic space partition object.
-    libcommute::space_partition const& Partition;
-
     /// A map between positions of parts in the \ref parts list and the respective right subspace indices.
     std::unordered_map<std::size_t, BlockNumber> mapPartsFromRight;
     /// A map between positions of parts in the \ref parts list and the respective left subspace indices.
@@ -115,8 +112,7 @@ public:
           MOp(std::make_shared<LOperatorType<ScalarType>>(MO, HS.getFullHilbertSpace())),
           Complex(MOpComplex || H.isComplex()),
           S(S),
-          H(H),
-          Partition(HS.getSpacePartition()) {
+          H(H) {
         if(MO.size() > 1)
             throw std::runtime_error("Only monomial expressions are supported");
     }
@@ -163,7 +159,22 @@ public:
         if(getStatus() >= Prepared)
             return;
 
+        if(HS.getStatus() != Computed) { // Hilbert space has not been partitioned
+            mapPartsFromRight.emplace(0, 0);
+            mapPartsFromLeft.emplace(0, 0);
+            LeftRightBlocks.insert(BlockMapping(0, 0));
+
+            if(MOpComplex)
+                parts.emplace_back(getMOp<true>(), S, H.getPart(0), H.getPart(0));
+            else
+                parts.emplace_back(getMOp<false>(), S, H.getPart(0), H.getPart(0));
+
+            Status = Prepared;
+            return;
+        }
+
         auto const& FullHS = HS.getFullHilbertSpace();
+        auto const& Partition = HS.getSpacePartition();
         auto Connections = MOpComplex ? Partition.find_connections(getMOp<true>(), FullHS) :
                                         Partition.find_connections(getMOp<false>(), FullHS);
 
