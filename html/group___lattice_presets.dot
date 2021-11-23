@@ -1,0 +1,23 @@
+digraph "Factory functions to construct widely used lattice models"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir=LR;
+  Node3 [label="Factory functions for\l magnetization terms",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___magnetization.html"];
+  Node7 [label="Factory functions for\l Coulomb interaction terms",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___coulomb.html"];
+  Node4 [label="Factory functions for\l fermionic density-density\l interaction terms",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___nup_ndown.html"];
+  Node0 [label="Factory functions to\l construct widely used\l lattice models",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node6 [label="Factory functions for\l spin coupling terms",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___s_s.html"];
+  Node8 [label="Factory functions for\l terms with bosonic degrees\l of freedom",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___boson.html"];
+  Node5 [label="Factory functions for\l spin-flip and pair-hopping terms",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___spinflip_pair_hopping.html"];
+  Node2 [label="Factory functions for\l fermionic hopping terms",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___hopping.html"];
+  Node1 [label="Factory functions for\l single fermion level terms",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group___level.html"];
+  Node0->Node1 [shape=plaintext, dir="back", style="solid"];
+  Node0->Node2 [shape=plaintext, dir="back", style="solid"];
+  Node0->Node3 [shape=plaintext, dir="back", style="solid"];
+  Node0->Node4 [shape=plaintext, dir="back", style="solid"];
+  Node0->Node5 [shape=plaintext, dir="back", style="solid"];
+  Node0->Node6 [shape=plaintext, dir="back", style="solid"];
+  Node0->Node7 [shape=plaintext, dir="back", style="solid"];
+  Node0->Node8 [shape=plaintext, dir="back", style="solid"];
+}

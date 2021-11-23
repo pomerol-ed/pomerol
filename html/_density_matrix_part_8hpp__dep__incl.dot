@@ -1,0 +1,42 @@
+digraph "pomerol/DensityMatrixPart.hpp"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node37 [label="pomerol/DensityMatrixPart.hpp",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node37 -> Node38 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node38 [label="pomerol/DensityMatrix.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_density_matrix_8hpp.html",tooltip="Many-body Gibbs density matrix as a list of diagonal blocks. "];
+  Node38 -> Node39 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node39 [label="pomerol/EnsembleAverage.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_ensemble_average_8hpp.html",tooltip="Ensemble average of a monomial operator representing a physical observable. "];
+  Node39 -> Node40 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node40 [label="pomerol/Susceptibility.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_susceptibility_8hpp.html",tooltip="Dynamical susceptibility in the Matsubara representation. "];
+  Node40 -> Node41 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node41 [label="pomerol.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$pomerol_8hpp.html",tooltip="Main \"include-all\" header of the library. "];
+  Node39 -> Node41 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node38 -> Node42 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node42 [label="pomerol/GFContainer.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_g_f_container_8hpp.html",tooltip="Storage for multiple fermionic single-particle Matsubara Green&#39;s functions. "];
+  Node42 -> Node41 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node38 -> Node43 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node43 [label="pomerol/GreensFunction.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_greens_function_8hpp.html",tooltip="Fermionic single-particle Matsubara Green&#39;s function. "];
+  Node43 -> Node42 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node43 -> Node44 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node44 [label="pomerol/Vertex4.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_vertex4_8hpp.html",tooltip="Irreducible two-particle vertex in the Matsubara representation. "];
+  Node38 -> Node40 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node38 -> Node45 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node45 [label="pomerol/TwoParticleGF.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_two_particle_g_f_8hpp.html",tooltip="Fermionic two-particle Matsubara Green&#39;s function. "];
+  Node45 -> Node46 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node46 [label="pomerol/TwoParticleGFContainer.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_two_particle_g_f_container_8hpp.html",tooltip="Storage for multiple fermionic two-particle Matsubara Green&#39;s functions. "];
+  Node46 -> Node41 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node45 -> Node44 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node45 -> Node41 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node38 -> Node46 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node38 -> Node41 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node37 -> Node47 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node47 [label="pomerol/GreensFunctionPart.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_greens_function_part_8hpp.html",tooltip="Part of a fermionic single-particle Matsubara Green&#39;s function. "];
+  Node47 -> Node43 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node37 -> Node48 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node48 [label="pomerol/SusceptibilityPart.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_susceptibility_part_8hpp.html",tooltip="Part of a dynamical susceptibility in the Matsubara representation. "];
+  Node48 -> Node40 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node37 -> Node49 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node49 [label="pomerol/TwoParticleGFPart.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_two_particle_g_f_part_8hpp.html",tooltip="Part of a fermionic two-particle Matsubara Green&#39;s function. "];
+  Node49 -> Node45 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

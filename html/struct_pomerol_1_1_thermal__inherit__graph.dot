@@ -1,0 +1,31 @@
+digraph "Pomerol::Thermal"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="Pomerol::Thermal",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node0 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 [label="Pomerol::DensityMatrix",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pomerol_1_1_density_matrix.html",tooltip="Many-body Gibbs density matrix. This class represents a many-body Gibbs density matrix  The matrix is..."];
+  Node0 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="Pomerol::DensityMatrixPart",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pomerol_1_1_density_matrix_part.html",tooltip="Part of a many-body Gibbs density matrix. This class represents a part (diagonal block ) of a many-bo..."];
+  Node0 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="Pomerol::EnsembleAverage",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pomerol_1_1_ensemble_average.html",tooltip="Canonical ensemble average of a monomial operator. "];
+  Node0 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="Pomerol::GFContainer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pomerol_1_1_g_f_container.html",tooltip="Container for instances of GreensFunction. "];
+  Node0 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="Pomerol::GreensFunction",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pomerol_1_1_greens_function.html",tooltip="Fermionic single-particle Matsubara Green&#39;s function. "];
+  Node0 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="Pomerol::GreensFunctionPart",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pomerol_1_1_greens_function_part.html",tooltip="Part of a fermionic single-particle Matsubara Green&#39;s function. "];
+  Node0 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="Pomerol::Susceptibility",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pomerol_1_1_susceptibility.html",tooltip="Dynamical susceptibility. "];
+  Node0 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="Pomerol::SusceptibilityPart",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pomerol_1_1_susceptibility_part.html",tooltip="Part of a dynamical susceptibility. "];
+  Node0 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="Pomerol::TwoParticleGF",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pomerol_1_1_two_particle_g_f.html",tooltip="Fermionic two-particle Matsubara Green&#39;s function. "];
+  Node0 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="Pomerol::TwoParticleGFContainer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pomerol_1_1_two_particle_g_f_container.html",tooltip="Container for instances of TwoParticleGF. "];
+  Node0 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="Pomerol::TwoParticleGFPart",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pomerol_1_1_two_particle_g_f_part.html",tooltip="Part of a fermionic two-particle Matsubara Green&#39;s function. "];
+  Node0 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="Pomerol::Vertex4",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_pomerol_1_1_vertex4.html",tooltip="Irreducible two-particle vertex. "];
+}

@@ -1,0 +1,11 @@
+digraph "pomerol/EnsembleAverage.hpp"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node52 [label="pomerol/EnsembleAverage.hpp",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node52 -> Node53 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node53 [label="pomerol/Susceptibility.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_susceptibility_8hpp.html",tooltip="Dynamical susceptibility in the Matsubara representation. "];
+  Node53 -> Node54 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node54 [label="pomerol.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$pomerol_8hpp.html",tooltip="Main \"include-all\" header of the library. "];
+  Node52 -> Node54 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

@@ -1,0 +1,7 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="pMPI::ComputeWrap\<\l PartType \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structp_m_p_i_1_1_compute_wrap.html",tooltip="Wrapper around a computable object that calls the compute() method of the wrapped object and carries ..."];
+}
