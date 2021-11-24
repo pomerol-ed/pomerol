@@ -80,9 +80,15 @@ jobs:
            cd build
            make install
 
+    - name: Copy GitHub Pages Jekyll configuration file
+      if: startsWith(matrix.compiler.name, 'clang') == true
+      run: |
+           cp scripts/gh_pages_config.yml                                      \
+           build/installed/share/doc/pomerol/_config.yml
+
     - name: Deploy documentation
       if: |
-          github.ref == 'refs/heads/master' &&
+          github.ref == 'refs/heads/ci' &&
           startsWith(matrix.compiler.name, 'clang') == true
       uses: JamesIves/github-pages-deploy-action@4.1.0
       with:
