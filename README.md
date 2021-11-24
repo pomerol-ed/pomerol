@@ -1,8 +1,9 @@
 [![DOI](https://zenodo.org/badge/4569/aeantipov/pomerol.svg)](
-http://dx.doi.org/10.5281/zenodo.17900
-)
+http://dx.doi.org/10.5281/zenodo.17900)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-red)](
 https://aeantipov.github.io/pomerol/)
+[![Build and test](https://github.com/aeantipov/pomerol/actions/workflows/build-and-test.yml/badge.svg)](
+https://github.com/aeantipov/pomerol/actions/workflows/build-and-test.yml)
 
 **pomerol** is an exact diagonalization (full ED) code written in C++ aimed at
 solving condensed matter second-quantized models of interacting fermions
