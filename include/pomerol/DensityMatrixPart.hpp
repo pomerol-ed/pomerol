@@ -27,6 +27,7 @@ namespace Pomerol {
 ///@{
 
 /// \brief Part of a many-body Gibbs density matrix.
+///
 /// This class represents a part (diagonal block \f$B\f$) of a many-body Gibbs
 /// density matrix
 /// \f[

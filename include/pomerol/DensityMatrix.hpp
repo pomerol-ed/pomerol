@@ -32,6 +32,7 @@ namespace Pomerol {
 ///@{
 
 /// \brief Many-body Gibbs density matrix.
+///
 /// This class represents a many-body Gibbs density matrix
 /// \f[
 ///  \hat\rho = \frac{e^{-\beta\hat H}}{Z}, \quad Z = Tr[e^{-\beta\hat H}].
