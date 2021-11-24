@@ -1,0 +1,13 @@
+<map id="pomerol/Hamiltonian.hpp" name="pomerol/Hamiltonian.hpp">
+<area shape="rect" id="node2" href="$_density_matrix_8hpp.html" title="Many&#45;body Gibbs density matrix as a list of diagonal blocks. " alt="" coords="334,80,533,107"/>
+<area shape="rect" id="node3" href="$_ensemble_average_8hpp.html" title="Ensemble average of a monomial operator representing a physical observable. " alt="" coords="35,155,261,181"/>
+<area shape="rect" id="node4" href="$_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation. " alt="" coords="51,229,245,256"/>
+<area shape="rect" id="node5" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library. " alt="" coords="741,304,845,331"/>
+<area shape="rect" id="node6" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions. " alt="" coords="385,229,572,256"/>
+<area shape="rect" id="node7" href="$_greens_function_8hpp.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function. " alt="" coords="537,155,745,181"/>
+<area shape="rect" id="node9" href="$_two_particle_g_f_8hpp.html" title="Fermionic two&#45;particle Matsubara Green&#39;s function. " alt="" coords="770,155,966,181"/>
+<area shape="rect" id="node10" href="$_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions. " alt="" coords="830,229,1090,256"/>
+<area shape="rect" id="node11" href="$_monomial_operator_8hpp.html" title="Storage for an operator that is a product of creation/annihilation operators. " alt="" coords="607,80,835,107"/>
+<area shape="rect" id="node12" href="$_field_operator_container_8hpp.html" title="A container for creation and annihilation operators. " alt="" coords="990,155,1247,181"/>
+<area shape="rect" id="node8" href="$_vertex4_8hpp.html" title="Irreducible two&#45;particle vertex in the Matsubara representation. " alt="" coords="597,229,755,256"/>
+</map>

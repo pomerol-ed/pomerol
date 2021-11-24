@@ -1,0 +1,11 @@
+<map id="pomerol/DensityMatrixPart.hpp" name="pomerol/DensityMatrixPart.hpp">
+<area shape="rect" id="node2" href="$_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block. " alt="" coords="1521,80,1676,107"/>
+<area shape="rect" id="node7" href="$pomerol_2misc_8hpp.html" title="Declarations of the most basic types and macros. " alt="" coords="1712,393,1791,420"/>
+<area shape="rect" id="node30" href="$_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces. " alt="" coords="880,155,1058,181"/>
+<area shape="rect" id="node36" href="$_thermal_8hpp.html" title="Objects, whose definition depends on the temperature. " alt="" coords="1864,80,1968,107"/>
+<area shape="rect" id="node3" href="$_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc. ..." alt="" coords="1213,311,1384,338"/>
+<area shape="rect" id="node6" href="$_index_classification_8hpp.html" title="Classification of indices of fermionic creation/annihilation operators. " alt="" coords="914,311,1088,338"/>
+<area shape="rect" id="node19" href="$_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them. " alt="" coords="504,393,618,420"/>
+<area shape="rect" id="node8" href="$_version_8hpp.html" title="Pomerol version information. " alt="" coords="1971,475,2127,502"/>
+<area shape="rect" id="node31" href="$_hilbert_space_8hpp.html" title="Hilbert space of a system and invariant subspaces of its Hamiltonian. " alt="" coords="810,229,944,256"/>
+</map>

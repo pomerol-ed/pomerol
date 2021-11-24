@@ -1,7 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node0 [label="Pomerol::TwoParticleGFPart\l::NonResonantTerm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$struct_pomerol_1_1_two_particle_g_f_part_1_1_non_resonant_term.html",tooltip="A non-resonant term in the Lehmann representation of TwoParticleGF. "];
-}

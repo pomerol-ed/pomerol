@@ -76,10 +76,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Part of a many-body Gibbs density matrix. This class represents a part (diagonal block \(B\)) of a many-body Gibbs density matrix </p><p class="formulaDsp">
-\[ \hat\rho = \frac{e^{-\beta\hat H}}{Z}, \quad Z = Tr[e^{-\beta\hat H}]. \]
-</p>
-<p> Since the matrix is always computed in the eigenbasis of \(\hat H\), it is sufficient to store its eigenvalues (statistical weights \(w_s = e^{-\beta E_s} / Z\)).  
+<p>Part of a many-body Gibbs density matrix.  
  <a href="class_pomerol_1_1_density_matrix_part.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_density_matrix_part_8hpp_source.html">DensityMatrixPart.hpp</a>&gt;</code></p>
@@ -88,6 +85,7 @@ Inheritance diagram for Pomerol::DensityMatrixPart:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_pomerol_1_1_density_matrix_part__inherit__graph.png" border="0" usemap="#_pomerol_1_1_density_matrix_part_inherit__map" alt="Inheritance graph"/></div>
 <map name="_pomerol_1_1_density_matrix_part_inherit__map" id="_pomerol_1_1_density_matrix_part_inherit__map">
+<area shape="rect" id="node2" href="struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature. " alt="" coords="36,5,175,32"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -95,6 +93,7 @@ Collaboration diagram for Pomerol::DensityMatrixPart:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_pomerol_1_1_density_matrix_part__coll__graph.png" border="0" usemap="#_pomerol_1_1_density_matrix_part_coll__map" alt="Collaboration graph"/></div>
 <map name="_pomerol_1_1_density_matrix_part_coll__map" id="_pomerol_1_1_density_matrix_part_coll__map">
+<area shape="rect" id="node2" href="struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature. " alt="" coords="36,5,175,32"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -135,12 +134,13 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a5f4d0193f5c8bcc3a68bf28fa35f487a inherit pub_attribs_struct_pomerol_1_1_thermal"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Part of a many-body Gibbs density matrix. This class represents a part (diagonal block \(B\)) of a many-body Gibbs density matrix </p><p class="formulaDsp">
+<div class="textblock"><p>Part of a many-body Gibbs density matrix. </p>
+<p>This class represents a part (diagonal block \(B\)) of a many-body Gibbs density matrix </p><p class="formulaDsp">
 \[ \hat\rho = \frac{e^{-\beta\hat H}}{Z}, \quad Z = Tr[e^{-\beta\hat H}]. \]
 </p>
 <p> Since the matrix is always computed in the eigenbasis of \(\hat H\), it is sufficient to store its eigenvalues (statistical weights \(w_s = e^{-\beta E_s} / Z\)). </p>
 
-<p class="definition">Definition at line <a class="el" href="_density_matrix_part_8hpp_source.html#l00038">38</a> of file <a class="el" href="_density_matrix_part_8hpp_source.html">DensityMatrixPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_density_matrix_part_8hpp_source.html#l00039">39</a> of file <a class="el" href="_density_matrix_part_8hpp_source.html">DensityMatrixPart.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a356786f1d4d9fd34be0f4291554d5fb4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a356786f1d4d9fd34be0f4291554d5fb4">&#9670;&nbsp;</a></span>DensityMatrixPart()</h2>
@@ -248,7 +248,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Return the contribution of this block to the partition function, \(Z_B = Z\sum_{s\in B} w_s\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_density_matrix_part_8hpp_source.html#l00080">80</a> of file <a class="el" href="_density_matrix_part_8hpp_source.html">DensityMatrixPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_density_matrix_part_8hpp_source.html#l00081">81</a> of file <a class="el" href="_density_matrix_part_8hpp_source.html">DensityMatrixPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -301,7 +301,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Does this block contain any non-negligible statistical weights? </p>
 
-<p class="definition">Definition at line <a class="el" href="_density_matrix_part_8hpp_source.html#l00088">88</a> of file <a class="el" href="_density_matrix_part_8hpp_source.html">DensityMatrixPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_density_matrix_part_8hpp_source.html#l00089">89</a> of file <a class="el" href="_density_matrix_part_8hpp_source.html">DensityMatrixPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -359,7 +359,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Nov 24 2021 11:10:44 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Nov 24 2021 11:23:42 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

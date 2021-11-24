@@ -1,0 +1,8 @@
+<map id="pomerol/StatesClassification.hpp" name="pomerol/StatesClassification.hpp">
+<area shape="rect" id="node2" href="$_hilbert_space_8hpp.html" title="Hilbert space of a system and invariant subspaces of its Hamiltonian. " alt="" coords="1364,80,1497,107"/>
+<area shape="rect" id="node7" href="$pomerol_2misc_8hpp.html" title="Declarations of the most basic types and macros. " alt="" coords="818,244,897,271"/>
+<area shape="rect" id="node3" href="$_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc. ..." alt="" coords="2063,162,2233,189"/>
+<area shape="rect" id="node6" href="$_index_classification_8hpp.html" title="Classification of indices of fermionic creation/annihilation operators. " alt="" coords="1220,162,1393,189"/>
+<area shape="rect" id="node19" href="$_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them. " alt="" coords="1637,244,1752,271"/>
+<area shape="rect" id="node8" href="$_version_8hpp.html" title="Pomerol version information. " alt="" coords="905,326,1061,353"/>
+</map>

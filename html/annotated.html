@@ -82,14 +82,8 @@ $(function() {
 <tr id="row_1_1_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span id="arr_1_1_" class="arrow" onclick="toggleFolder('1_1_')">&#9660;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_pomerol_1_1_computable_object.html" target="_self">ComputableObject</a></td><td class="desc">A base class for computable objects </td></tr>
 <tr id="row_1_1_0_"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_pomerol_1_1_computable_object_1_1_status_mismatch.html" target="_self">StatusMismatch</a></td><td class="desc">Exception: Unexpected computation status of a computable object </td></tr>
 <tr id="row_1_2_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_pomerol_1_1_creation_operator.html" target="_self">CreationOperator</a></td><td class="desc">A special case of a monomial operator: A single fermion creation operator \(c^\dagger_i\) </td></tr>
-<tr id="row_1_3_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_pomerol_1_1_density_matrix.html" target="_self">DensityMatrix</a></td><td class="desc">Many-body Gibbs density matrix. This class represents a many-body Gibbs density matrix </p><p class="formulaDsp">
-\[ \hat\rho = \frac{e^{-\beta\hat H}}{Z}, \quad Z = Tr[e^{-\beta\hat H}]. \]
-</p>
-<p> The matrix is stored as a list of <a class="el" href="class_pomerol_1_1_density_matrix_part.html">DensityMatrixPart</a> (diagonal blocks), which correspond to invariant subspaces/diagonal blocks of the Hamiltonian \(\hat H\) </td></tr>
-<tr id="row_1_4_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_pomerol_1_1_density_matrix_part.html" target="_self">DensityMatrixPart</a></td><td class="desc">Part of a many-body Gibbs density matrix. This class represents a part (diagonal block \(B\)) of a many-body Gibbs density matrix </p><p class="formulaDsp">
-\[ \hat\rho = \frac{e^{-\beta\hat H}}{Z}, \quad Z = Tr[e^{-\beta\hat H}]. \]
-</p>
-<p> Since the matrix is always computed in the eigenbasis of \(\hat H\), it is sufficient to store its eigenvalues (statistical weights \(w_s = e^{-\beta E_s} / Z\)) </td></tr>
+<tr id="row_1_3_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_pomerol_1_1_density_matrix.html" target="_self">DensityMatrix</a></td><td class="desc">Many-body Gibbs density matrix </td></tr>
+<tr id="row_1_4_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_pomerol_1_1_density_matrix_part.html" target="_self">DensityMatrixPart</a></td><td class="desc">Part of a many-body Gibbs density matrix </td></tr>
 <tr id="row_1_5_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="struct_pomerol_1_1_element_with_perm_freq.html" target="_self">ElementWithPermFreq</a></td><td class="desc">A decorator that permutes indices of Matsubara frequencies in calls to operator() </td></tr>
 <tr id="row_1_6_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_pomerol_1_1_ensemble_average.html" target="_self">EnsembleAverage</a></td><td class="desc">Canonical ensemble average of a monomial operator </td></tr>
 <tr id="row_1_7_"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="class_pomerol_1_1_field_operator_container.html" target="_self">FieldOperatorContainer</a></td><td class="desc">Container for instances of <a class="el" href="class_pomerol_1_1_creation_operator.html">CreationOperator</a> and <a class="el" href="class_pomerol_1_1_annihilation_operator.html">AnnihilationOperator</a> </td></tr>
@@ -130,7 +124,7 @@ $(function() {
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Nov 24 2021 11:10:44 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Nov 24 2021 11:23:42 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

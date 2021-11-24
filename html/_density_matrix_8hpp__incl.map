@@ -1,0 +1,14 @@
+<map id="pomerol/DensityMatrix.hpp" name="pomerol/DensityMatrix.hpp">
+<area shape="rect" id="node2" href="$_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc. ..." alt="" coords="2717,386,2887,413"/>
+<area shape="rect" id="node5" href="$_density_matrix_part_8hpp.html" title="Diagonal block of a many&#45;body Gibbs density matrix. " alt="" coords="1085,80,1252,107"/>
+<area shape="rect" id="node7" href="$_index_classification_8hpp.html" title="Classification of indices of fermionic creation/annihilation operators. " alt="" coords="2079,386,2253,413"/>
+<area shape="rect" id="node8" href="$pomerol_2misc_8hpp.html" title="Declarations of the most basic types and macros. " alt="" coords="836,468,915,495"/>
+<area shape="rect" id="node31" href="$_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces. " alt="" coords="1282,229,1461,256"/>
+<area shape="rect" id="node37" href="$_thermal_8hpp.html" title="Objects, whose definition depends on the temperature. " alt="" coords="687,155,791,181"/>
+<area shape="rect" id="node39" href="$_hamiltonian_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix. " alt="" coords="1433,80,1563,107"/>
+<area shape="rect" id="node6" href="$_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block. " alt="" coords="1091,155,1246,181"/>
+<area shape="rect" id="node20" href="$_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them. " alt="" coords="1771,468,1886,495"/>
+<area shape="rect" id="node9" href="$_version_8hpp.html" title="Pomerol version information. " alt="" coords="461,550,617,577"/>
+<area shape="rect" id="node32" href="$_hilbert_space_8hpp.html" title="Hilbert space of a system and invariant subspaces of its Hamiltonian. " alt="" coords="1846,304,1979,331"/>
+<area shape="rect" id="node40" href="$mpi__dispatcher_2misc_8hpp.html" title="Miscellaneous MPI&#45;related functions. " alt="" coords="1951,155,2136,181"/>
+</map>

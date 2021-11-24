@@ -1,0 +1,28 @@
+<map id="pomerol.hpp" name="pomerol.hpp">
+<area shape="rect" id="node2" href="$mpi__dispatcher_8hpp.html" title="A master&#45;worker parallelization scheme using non&#45;blocking MPI communications. " alt="" coords="331,393,482,435"/>
+<area shape="rect" id="node8" href="$mpi__skel_8hpp.html" title="Utilities for MPI&#45;parallelized calculation of computable objects. " alt="" coords="899,304,1050,345"/>
+<area shape="rect" id="node15" href="$_density_matrix_8hpp.html" title="Many&#45;body Gibbs density matrix as a list of diagonal blocks. " alt="" coords="3007,229,3206,256"/>
+<area shape="rect" id="node21" href="$_index_classification_8hpp.html" title="Classification of indices of fermionic creation/annihilation operators. " alt="" coords="1688,632,1861,659"/>
+<area shape="rect" id="node22" href="$pomerol_2misc_8hpp.html" title="Declarations of the most basic types and macros. " alt="" coords="3874,707,3953,733"/>
+<area shape="rect" id="node29" href="$_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them. " alt="" coords="1891,707,2005,733"/>
+<area shape="rect" id="node32" href="$_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces. " alt="" coords="2367,483,2545,509"/>
+<area shape="rect" id="node36" href="$_hamiltonian_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix. " alt="" coords="2744,311,2875,338"/>
+<area shape="rect" id="node37" href="$_ensemble_average_8hpp.html" title="Ensemble average of a monomial operator representing a physical observable. " alt="" coords="3189,155,3414,181"/>
+<area shape="rect" id="node38" href="$_monomial_operator_8hpp.html" title="Storage for an operator that is a product of creation/annihilation operators. " alt="" coords="1733,229,1904,256"/>
+<area shape="rect" id="node40" href="$_field_operator_container_8hpp.html" title="A container for creation and annihilation operators. " alt="" coords="2073,155,2330,181"/>
+<area shape="rect" id="node42" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions. " alt="" coords="2507,80,2693,107"/>
+<area shape="rect" id="node44" href="$_index_8hpp.html" title="Combinations of single&#45;particle indices. " alt="" coords="3955,229,4042,256"/>
+<area shape="rect" id="node47" href="$_lattice_presets_8hpp.html" title="Factory functions for terms commonly used to construct various lattice Hamiltonians. " alt="" coords="4381,632,4581,659"/>
+<area shape="rect" id="node48" href="$_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation. " alt="" coords="3104,80,3299,107"/>
+<area shape="rect" id="node49" href="$_two_particle_g_f_8hpp.html" title="Fermionic two&#45;particle Matsubara Green&#39;s function. " alt="" coords="1518,155,1714,181"/>
+<area shape="rect" id="node50" href="$_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions. " alt="" coords="1854,80,2114,107"/>
+<area shape="rect" id="node9" href="$mpi__dispatcher_2misc_8hpp.html" title="Miscellaneous MPI&#45;related functions. " alt="" coords="659,401,741,427"/>
+<area shape="rect" id="node16" href="$_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc. ..." alt="" coords="2875,632,3045,659"/>
+<area shape="rect" id="node19" href="$_density_matrix_part_8hpp.html" title="Diagonal block of a many&#45;body Gibbs density matrix. " alt="" coords="3305,311,3471,338"/>
+<area shape="rect" id="node34" href="$_thermal_8hpp.html" title="Objects, whose definition depends on the temperature. " alt="" coords="3939,401,4043,427"/>
+<area shape="rect" id="node20" href="$_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block. " alt="" coords="3253,401,3408,427"/>
+<area shape="rect" id="node23" href="$_version_8hpp.html" title="Pomerol version information. " alt="" coords="3651,789,3807,815"/>
+<area shape="rect" id="node33" href="$_hilbert_space_8hpp.html" title="Hilbert space of a system and invariant subspaces of its Hamiltonian. " alt="" coords="2133,557,2267,584"/>
+<area shape="rect" id="node43" href="$_greens_function_8hpp.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function. " alt="" coords="2659,155,2810,181"/>
+<area shape="rect" id="node46" href="$_index_container2_8hpp.html" title="A CRTP base for container types whose elements are addressable by two single&#45;particle indices..." alt="" coords="1739,155,1896,181"/>
+</map>
