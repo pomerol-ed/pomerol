@@ -29,7 +29,7 @@ jobs:
 
     - name: Install Doxygen
       if: startsWith(matrix.compiler.name, 'clang') == true
-      run: sudo apt-get install -y doxygen
+      run: sudo apt-get install -y doxygen graphviz
 
     - name: Install libcommute
       env:
@@ -88,7 +88,7 @@ jobs:
 
     - name: Deploy documentation
       if: |
-          github.ref == 'refs/heads/ci' &&
+          github.ref == 'refs/heads/master' &&
           startsWith(matrix.compiler.name, 'clang') == true
       uses: JamesIves/github-pages-deploy-action@4.1.0
       with:
