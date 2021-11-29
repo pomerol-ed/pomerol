@@ -84,7 +84,7 @@ public:
     }
 
     /// \brief Construct Hamiltonian of the single impurity Anderson model.
-    virtual void init_hamiltonian() override {
+    void init_hamiltonian() {
         HExpr += LatticePresets::CoulombS("A", args::get(args_options_anderson.U), args::get(args_options_anderson.ed));
 
         std::vector<std::string> names(L);

@@ -70,11 +70,6 @@ public:
     /// \param[in] argv The command line arguments.
     void parse_args(int argc, char* argv[]);
 
-    /// \brief Construct system's Hamiltonian.
-    ///
-    /// To be implemented by calculations for specific quantum models.
-    virtual void init_hamiltonian() = 0;
-
     /// Diagonalize the model and compute Green's functions.
     void compute();
 

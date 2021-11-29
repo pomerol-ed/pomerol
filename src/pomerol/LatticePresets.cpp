@@ -35,6 +35,7 @@ std::ostream& operator<<(std::ostream& os, spin s) {
     case undef: return os;
     case up: return os << "up";
     case down: return os << "dn";
+    default: return os;
     }
 }
 

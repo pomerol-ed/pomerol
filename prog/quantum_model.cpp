@@ -48,6 +48,7 @@ quantum_model::quantum_model(int argc, char* argv[], std::string const& prog_des
       // clang-format on
       comm(MPI_COMM_WORLD) {
     MPI_Init(&argc, &argv);
+    // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
     rank = pMPI::rank(comm);
     // Print defaults in the usage message
     args_parser.helpParams.addDefault = true;

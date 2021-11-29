@@ -64,7 +64,7 @@ public:
     };
 
     /// \brief Construct Hamiltonian of the two-dimensional Hubbard model on an \f$N_x \times N_y\f$ cluster.
-    virtual void init_hamiltonian() override {
+    void init_hamiltonian() {
         int L = size_x * size_y;
         INFO("Diagonalization of " << L << "=" << size_x << "*" << size_y << " sites");
 
