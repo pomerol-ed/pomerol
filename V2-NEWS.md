@@ -5,7 +5,7 @@ Main changes in Pomerol 2.0
 
 - Pomerol 2.0 requires a C++11 compatible compiler to build.
 
-- Dependence on Boost.MPI and Boost.Serialization have been dropped. Pomerol 2.0
+- Dependence on Boost.MPI and Boost.Serialization has been dropped. Pomerol 2.0
   still depends on a few header-only Boost libraries and an MPI-3.0
   implementation that provides a working `<mpi.h>`.
 
