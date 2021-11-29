@@ -256,6 +256,8 @@ void quantum_model::compute() {
                     std::string fv1_name = "chi" + ind_str + "_W" + std::to_string(std::imag(W.value())) + ".dat";
                     full_vertex_1freq.savetxt(fv1_name);
                 }
+                std::string fv_name = "chi" + ind_str + ".dat";
+                full_vertex.savetxt(fv_name);
             }
         }
     }
