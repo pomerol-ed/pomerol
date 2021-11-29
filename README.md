@@ -1,56 +1,124 @@
-[![DOI](https://zenodo.org/badge/4569/aeantipov/pomerol.svg)](http://dx.doi.org/10.5281/zenodo.17900)
+[![DOI](https://zenodo.org/badge/4569/aeantipov/pomerol.svg)](
+http://dx.doi.org/10.5281/zenodo.17900)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-red)](
+https://aeantipov.github.io/pomerol/)
+[![Build and test](https://github.com/aeantipov/pomerol/actions/workflows/build-and-test.yml/badge.svg)](
+https://github.com/aeantipov/pomerol/actions/workflows/build-and-test.yml)
 
-**pomerol** is an exact diagonalization (full-ED) code written in C++ aimed at solving condensed matter second-quantized models of interacting fermions on finite size lattices at finite temperatures. It is designed to produce single and two-particle Greens functions.
+**pomerol** is an exact diagonalization (full ED) code written in C++ aimed at
+solving condensed matter second-quantized models of interacting fermions
+and bosons on finite size lattices at finite temperatures.
+It is designed to compute thermal expectation values of observables, single- and
+two-particle Green's functions as well as susceptibilities.
 
 ##  Features
-  * High performance exact calculation of a Green's function and a two-particle Green's function in Matsubara domain.
-  * Written in C++: iterators are used to avoid zero matrix elements and vanishing combinations. 
-  * Symmetry analysis. The commutation relations between operators are taken into account.
-  * Fermionic operators algebra to diagonalize any fermionic Hamiltonian.
-  * [Eigen3](http://eigen.tuxfamily.org) template library for linear algebra is used (mostly its Sparse module).
-  * [MPI](http://en.wikipedia.org/wiki/Message_Passing_Interface) + [OpenMP](https://en.wikipedia.org/wiki/OpenMP) support. 
-  * [CMake](http://www.cmake.org) is used for the installation.
+
+  * High performance exact calculation of Green's functions, two-particle
+    Green's functions and susceptibilities in Matsubara domain.
+  * Many-body Hamiltonians can be specified in a natural mathematical form using
+    [libcommute's](https://krivenko.github.io/libcommute/) Domain-Specific
+    Language. Hamiltonian presets for commonly used lattice models are also
+    available.
+  * Automatic symmetry analysis of the many-body Hamiltonians drastically
+    reduces computational costs.
+  * [Eigen 3](http://eigen.tuxfamily.org) template library is used for numerical
+    linear algebra.
+  * [MPI](http://en.wikipedia.org/wiki/Message_Passing_Interface) +
+    [OpenMP](https://en.wikipedia.org/wiki/OpenMP) support.
 
 ## Installation
 ### From source
-  Check the *dependencies*: c++ compiler, CMake, Eigen3, Boost (with Boost::mpi and serialization), mpi and git to fetch the sources. boost::program_options is required for building executables. 
-  - Checkout the latest sources `git clone https://github.com/aeantipov/pomerol.git`
-  - Create a (temporary) build directory.
-  - In this build directory run `cmake <path_to_pomerol> -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<path>` 
-    * add `-DTesting=ON` for compiling tests. Default = ON.
-    * add `-DProgs=ON` for compiling provided binaries (from progs directory). These include a diagonalization of the Anderson impurity. Default = OFF. 
-      * boost::program_options is then required.
-      * The flag `-DCXX11=ON` compiles the C++11-version of the anderson executable with [gftools](https://github.com/aeantipov/gftools) support for operations with Green's functions and vertices. The latter supports direct hdf5-saving through [ALPSCore](http://alpscore.org).
-    * add `-DPOMEROL_COMPLEX_MATRIX_ELEMENTS=ON` for allowing complex matrix elements in the Hamiltonian. Default = OFF.
-    * add `-DPOMEROL_USE_OPENMP=ON` to enable OpenMP optimization for two-particle GF calculation. Default = ON.
-    * add `-DPOMEROL_BUILD_STATIC=ON` to compile static instead of shared libraries.
-  - ` make`
-  - ` make test` (if tests are compiled)
-  - ` make install`
-    * Shared library _libpomerol_ will be in `<path>/lib`.
-  - ` make doc` generates the documentation in the `doc` subfolder.
+
+  - Check the *dependencies*:
+
+    * A C++11 conformant compiler
+    * CMake >= 3.1.0
+    * Boost >= 1.54.0 (only headers are required)
+    * Eigen >= 3.1.0
+    * [libcommute >= 0.7](https://github.com/krivenko/libcommute)
+    * An MPI 3.0 implementation
+    * Git to fetch the sources
+
+  - Download the latest sources:
+
+    ```
+    git clone https://github.com/aeantipov/pomerol.git
+    ```
+
+  - Create a (temporary) build directory and change to it:
+
+    ```
+    mkdir build && cd build
+    ```
+
+  - In this build directory, run
+
+    ```
+    cmake <path_to_pomerol_sources> -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<installation_path>
+    ```
+    * If CMake configuration file of libcommute cannot be found, add
+      `-Dlibcommute_DIR=<libcommute_installation_path>/lib/cmake` to the command line.
+    * Add `-DTesting=OFF` to disable compilation of unit tests (not recommended).
+    * Add `-DProgs=ON` to compile provided executables (from `progs`
+      directory). Some of the executables depend on the
+      [gftools](https://github.com/aeantipov/gftools) library, which will be
+      automatically downloaded in case it cannot be found by CMake (use
+      `-Dgftools_DIR` to specify its installation path). gftools supports saving
+      to HDF5 through [ALPSCore](http://alpscore.org).
+    * Add `-DDocumentation=OFF` to disable generation of reference
+      documentation.
+    * Add `-DUSE_OPENMP=OFF` to disable OpenMP optimization for two-particle GF
+      calculation.
+    * Add `-DBUILD_SHARED_LIBS=OFF` to compile static instead of shared libraries.
+  - `make`
+  - `make test` (if unit tests are compiled)
+  - `make install`
+  - `make doc` generates the Doxygen reference documentation in the `doc/html`
+    subdirectory.
+
+The library, _libpomerol_ is built. It can be used for linking with executables.
+Some working executables are given in `prog` subdirectory.
 
 ## Interfacing with your own code and other libraries
- Check the `tutorial` dir for an example of a pomerol-related code that is linked to external libraries.
- 
- The interface to [TRIQS library](https://triqs.github.io/triqs/latest/) is readily available: https://github.com/krivenko/pomerol2triqs
- 
-## Documentation
-Check http://pomerol.sourceforge.net or type `make doc` during compilation stage for the reference documentation.
 
-The library, _libpomerol_ is built. It then can be used to linking with executables. The example of the latter is given in example section and some working executables are given in prog subdirectory.
-Documentation can be compiled with a `make doc` command.
+Check the `tutorial` directory for an example of a pomerol-based code that is
+linked to external libraries.
 
-## License 
-The software is released under GPLv2 license. 
+The interface to [TRIQS library](https://triqs.github.io/triqs/latest/) is
+readily available: <https://github.com/krivenko/pomerol2triqs>.
 
-Academic usage : please attribute this work by a citation to http://dx.doi.org/10.5281/zenodo.17900.
+# Documentation
+Check <https://aeantipov.github.io/pomerol/html/> or type `make doc` during
+compilation stage to build the reference documentation.
 
-## Authors & Contributors
+[V2-NEWS.md](V2-NEWS.md) lists main changes introduced in pomerol 2.0
+compared to the 1.x branch.
+
+# License
+This Source Code Form is subject to the terms of the Mozilla Public License,
+v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain
+one at <http://mozilla.org/MPL/2.0/>.
+
+# Academic usage
+
+Please, attribute this work by a citation to
+<http://dx.doi.org/10.5281/zenodo.17900>.
+
+# Authors & Contributors
   * Andrey Antipov <Andrey.E.Antipov\at\gmail.com>
   * Igor Krivenko <igor.s.krivenko\at\gmail.com>
+  * Mikhail Alejnikov
+  * Alexey Rubtsov
+  * Christoph Jung
+  * Aljoscha Wilhelm
   * Junya Otsuki
+  * Sergei Iskakov
+  * Hiroshi Shinaoka
   * Nils Wentzell
+  * Hugo U.R. Strand
 
-## Development/Help 
-Please feel free to contact and contribute!
+We acknowledge [NRC Kurchatov Institute](http://eng.nrcki.ru/) for providing
+computational resources.
+
+# Development/Help
+Please, feel free to contact us and to contribute!

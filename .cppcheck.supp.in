@@ -1,0 +1,2 @@
+*:@CMAKE_SOURCE_DIR@/test/catch2/catch.hpp
+*:@CMAKE_SOURCE_DIR@/prog/args.hxx

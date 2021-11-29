@@ -1,107 +1,118 @@
-#include "pomerol/Susceptibility.h"
+//
+// This file is part of pomerol, an exact diagonalization library aimed at
+// solving condensed matter models of interacting fermions.
+//
+// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-namespace Pomerol{
+/// \file src/pomerol/Susceptibility.cpp
+/// \brief Dynamical susceptibility in the Matsubara representation (implementation).
+/// \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
-Susceptibility::Susceptibility(const StatesClassification& S, const Hamiltonian& H,
-                               const QuadraticOperator& A, const QuadraticOperator& B,
-                               const DensityMatrix& DM) :
-    Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), B(B), DM(DM), Vanishing(true),
-    ave_A(0), ave_B(0), SubtractDisconnected(false)
-{
-}
+#include "pomerol/Susceptibility.hpp"
 
-Susceptibility::Susceptibility(const Susceptibility& Chi) :
-    Thermal(Chi.beta), ComputableObject(Chi), S(Chi.S), H(Chi.H), A(Chi.A), B(Chi.B), DM(Chi.DM),
-    Vanishing(Chi.Vanishing), ave_A(Chi.ave_A), ave_B(Chi.ave_B), SubtractDisconnected(Chi.SubtractDisconnected)
-{
-    for(std::list<SusceptibilityPart*>::const_iterator iter = Chi.parts.begin(); iter != Chi.parts.end(); iter++)
-        parts.push_back(new SusceptibilityPart(**iter));
-}
+namespace Pomerol {
 
-Susceptibility::~Susceptibility()
-{
-    for(std::list<SusceptibilityPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
-        delete *iter;
-}
+Susceptibility::Susceptibility(StatesClassification const& S,
+                               Hamiltonian const& H,
+                               MonomialOperator const& A,
+                               MonomialOperator const& B,
+                               DensityMatrix const& DM)
+    : Thermal(DM.beta), ComputableObject(), S(S), H(H), A(A), B(B), DM(DM) {}
 
-void Susceptibility::prepare(void)
-{
-    if(Status>=Prepared) return;
+Susceptibility::Susceptibility(Susceptibility const& Chi)
+    : Thermal(Chi.beta),
+      ComputableObject(Chi),
+      S(Chi.S),
+      H(Chi.H),
+      A(Chi.A),
+      B(Chi.B),
+      DM(Chi.DM),
+      Vanishing(Chi.Vanishing),
+      parts(Chi.parts),
+      SubtractDisconnected(Chi.SubtractDisconnected),
+      ave_A(Chi.ave_A),
+      ave_B(Chi.ave_B) {}
+
+void Susceptibility::prepare() {
+    if(getStatus() >= Prepared)
+        return;
 
     // Find out non-trivial blocks of A and B.
-    FieldOperator::BlocksBimap const& ANontrivialBlocks = A.getBlockMapping();
-    FieldOperator::BlocksBimap const& BNontrivialBlocks = B.getBlockMapping();
+    auto const& ANontrivialBlocks = A.getBlockMapping();
+    auto const& BNontrivialBlocks = B.getBlockMapping();
 
-    FieldOperator::BlocksBimap::left_const_iterator Aiter = ANontrivialBlocks.left.begin();
-    FieldOperator::BlocksBimap::right_const_iterator Biter = BNontrivialBlocks.right.begin();
+    auto Aiter = ANontrivialBlocks.left.begin();
+    auto Biter = BNontrivialBlocks.right.begin();
 
-    while(Aiter != ANontrivialBlocks.left.end() && Biter != BNontrivialBlocks.right.end()){
+    while(Aiter != ANontrivialBlocks.left.end() && Biter != BNontrivialBlocks.right.end()) {
         // <Aleft|A|Aright><Bleft|B|Bright>
         BlockNumber Aleft = Aiter->first;
         BlockNumber Aright = Aiter->second;
         BlockNumber Bleft = Biter->second;
         BlockNumber Bright = Biter->first;
 
-
         // Select a relevant 'world stripe' (sequence of blocks).
-        if(Aleft == Bright && Aright == Bleft){
-        //DEBUG(S.getQuantumNumbers(Aleft) << "|" << S.getQuantumNumbers(Aright) << "||" << S.getQuantumNumbers(Bleft) << "|" << S.getQuantumNumbers(Bright) );
+        if(Aleft == Bright && Aright == Bleft) {
             // check if retained blocks are included. If not, do not push.
-            if ( DM.isRetained(Aleft) || DM.isRetained(Aright) )
-                parts.push_back(new SusceptibilityPart(
-                              (QuadraticOperatorPart&)A.getPartFromLeftIndex(Aleft),
-                              (QuadraticOperatorPart&)B.getPartFromRightIndex(Bright),
-                              H.getPart(Aright), H.getPart(Aleft),
-                              DM.getPart(Aright), DM.getPart(Aleft)));
+            if(DM.isRetained(Aleft) || DM.isRetained(Aright))
+                parts.emplace_back((MonomialOperatorPart&)A.getPartFromLeftIndex(Aleft),
+                                   (MonomialOperatorPart&)B.getPartFromRightIndex(Bright),
+                                   H.getPart(Aright),
+                                   H.getPart(Aleft),
+                                   DM.getPart(Aright),
+                                   DM.getPart(Aleft));
         }
 
         unsigned long AleftInt = Aleft;
         unsigned long BrightInt = Bright;
 
-        if(AleftInt <= BrightInt) Aiter++;
-        if(AleftInt >= BrightInt) Biter++;
+        if(AleftInt <= BrightInt)
+            Aiter++;
+        if(AleftInt >= BrightInt)
+            Biter++;
     }
-    if (parts.size() > 0) Vanishing = false;
 
-    Status = Prepared;
+    if(!parts.empty())
+        Vanishing = false;
+
+    setStatus(Prepared);
 }
 
-void Susceptibility::compute()
-{
-    if(Status>=Computed) return;
-    if(Status<Prepared) prepare();
+void Susceptibility::compute() {
+    if(getStatus() >= Computed)
+        return;
+    if(getStatus() < Prepared)
+        prepare();
 
-    if(Status<Computed){
-        for(std::list<SusceptibilityPart*>::iterator iter = parts.begin(); iter != parts.end(); iter++)
-            (*iter)->compute();
+    if(getStatus() < Computed) {
+        for(auto& p : parts)
+            p.compute();
     }
-    Status = Computed;
+    setStatus(Computed);
 }
 
-void Susceptibility::subtractDisconnected()
-{
-    EnsembleAverage EA_A(S, H, A, DM);
-    EnsembleAverage EA_B(S, H, B, DM);
+void Susceptibility::subtractDisconnected() {
+    EnsembleAverage EA_A(A, DM);
+    EnsembleAverage EA_B(B, DM);
     subtractDisconnected(EA_A, EA_B);
 }
 
-void Susceptibility::subtractDisconnected(ComplexType ave_A, ComplexType ave_B)
-{
+void Susceptibility::subtractDisconnected(ComplexType ave_A, ComplexType ave_B) {
     SubtractDisconnected = true;
     this->ave_A = ave_A;
     this->ave_B = ave_B;
 }
 
-void Susceptibility::subtractDisconnected(EnsembleAverage &EA_A, EnsembleAverage &EA_B)
-{
-    EA_A.prepare();
-    EA_B.prepare();
-    subtractDisconnected(EA_A.getResult(), EA_B.getResult());
+void Susceptibility::subtractDisconnected(EnsembleAverage& EA_A, EnsembleAverage& EA_B) {
+    EA_A.compute();
+    EA_B.compute();
+    subtractDisconnected(EA_A(), EA_B());
 }
 
-bool Susceptibility::isVanishing(void) const
-{
-    return Vanishing;
-}
-
-} // end of namespace Pomerol
+} // namespace Pomerol

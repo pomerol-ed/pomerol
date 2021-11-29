@@ -1,63 +1,55 @@
-#include "pomerol/FieldOperatorContainer.h"
+//
+// This file is part of pomerol, an exact diagonalization library aimed at
+// solving condensed matter models of interacting fermions.
+//
+// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-namespace Pomerol{
+/// \file src/pomerol/FieldOperatorContainer.cpp
+/// \brief A container for creation and annihilation operators (implementation).
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
-FieldOperatorContainer::FieldOperatorContainer(IndexClassification &IndexInfo, StatesClassification &S, const Hamiltonian &H, bool use_transpose) : 
-    IndexInfo(IndexInfo), S(S), H(H), use_transpose(use_transpose)
-{}
+#include "pomerol/FieldOperatorContainer.hpp"
 
-void FieldOperatorContainer::prepareAll(std::set<ParticleIndex> in)
-{
-    if (in.size() == 0) for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); ++i) in.insert(i);
-    for (std::set<ParticleIndex>::const_iterator it = in.begin(); it!=in.end(); it++)
-        {
-            ParticleIndex i = *it;
-            CreationOperator *CX = new CreationOperator(IndexInfo, S,H,i);
-            CX->prepare();
-            mapCreationOperators[i] = CX;
-            AnnihilationOperator *C = new AnnihilationOperator(IndexInfo, S,H,i);
-            C->prepare();
-            mapAnnihilationOperators[i] = C;
-        }
-}
+#include <stdexcept>
 
-void FieldOperatorContainer::computeAll()
-{
-    for (std::map <ParticleIndex, CreationOperator*>::iterator cdag_it = mapCreationOperators.begin(); cdag_it != mapCreationOperators.end(); ++cdag_it) {
-        CreationOperator &cdag = *(cdag_it->second);
+namespace Pomerol {
+
+void FieldOperatorContainer::computeAll() {
+    for(auto& cdag_p : mapCreationOperators) {
+        auto& cdag = cdag_p.second;
         cdag.compute();
-        AnnihilationOperator &c = *mapAnnihilationOperators[cdag_it->first];
 
-        FieldOperator::BlocksBimap cdag_block_map = cdag.getBlockMapping();
-        // hack - copy transpose matrices into c
-        for (FieldOperator::BlocksBimap::right_const_iterator cdag_map_it=cdag_block_map.right.begin(); cdag_map_it!=cdag_block_map.right.end(); cdag_map_it++) {
-                c.getPartFromRightIndex(cdag_map_it->second).elementsRowMajor = cdag.getPartFromRightIndex(cdag_map_it->first).getColMajorValue().adjoint();
-                c.getPartFromRightIndex(cdag_map_it->second).elementsColMajor = cdag.getPartFromRightIndex(cdag_map_it->first).getRowMajorValue().adjoint();
-                c.getPartFromRightIndex(cdag_map_it->second).Status = ComputableObject::Computed;
-                c.Status = ComputableObject::Computed;
-            };
-        };
+        auto& c = mapAnnihilationOperators.find(cdag_p.first)->second;
 
-// original
-    //for (auto c : mapAnnihilationOperators) c.second->compute();
-}
-
-const CreationOperator& FieldOperatorContainer::getCreationOperator(ParticleIndex in) const
-{
-    if (IndexInfo.checkIndex(in)){
-        return *mapCreationOperators[in];
+        auto const& cdag_block_map = cdag_p.second.getBlockMapping();
+        for(auto cdag_map_it = cdag_block_map.right.begin(); cdag_map_it != cdag_block_map.right.end(); ++cdag_map_it) {
+            auto& cPart = c.getPartFromRightIndex(cdag_map_it->second);
+            auto& cdagPart = cdag.getPartFromRightIndex(cdag_map_it->first);
+            cPart.setFromAdjoint(cdagPart);
         }
-    else
-        throw (std::logic_error("No creation operator found."));
+        c.setStatus(ComputableObject::Computed);
+    }
 }
 
-const AnnihilationOperator& FieldOperatorContainer::getAnnihilationOperator(ParticleIndex in) const
-{
-    if (IndexInfo.checkIndex(in)){
-        return *mapAnnihilationOperators[in];
-        }
+CreationOperator const& FieldOperatorContainer::getCreationOperator(ParticleIndex in) const {
+    auto it = mapCreationOperators.find(in);
+    if(it == mapCreationOperators.end())
+        throw std::runtime_error("Creation operator not found.");
     else
-        throw (std::logic_error("No annihilation operator found."));
+        return it->second;
 }
 
-} // end of namespace Pomerol
+AnnihilationOperator const& FieldOperatorContainer::getAnnihilationOperator(ParticleIndex in) const {
+    auto it = mapAnnihilationOperators.find(in);
+    if(it == mapAnnihilationOperators.end())
+        throw std::runtime_error("Annihilation operator not found.");
+    else
+        return it->second;
+}
+
+} // namespace Pomerol

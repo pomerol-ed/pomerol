@@ -1,80 +1,107 @@
 //
-// This file is a part of pomerol - a scientific ED code for obtaining 
-// properties of a Hubbard model on a finite-size lattice 
+// This file is part of pomerol, an exact diagonalization library aimed at
+// solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2010-2012 Andrey Antipov <antipov@ct-qmc.org>
-// Copyright (C) 2010-2012 Igor Krivenko <igor@shg.ru>
+// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
 //
-// pomerol is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// pomerol is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with pomerol.  If not, see <http://www.gnu.org/licenses/>.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/** \file tests/IndexTerm.cpp
-** \brief Test of the Symmetrizer::IndexPermutation.
-**
-** \author Andrey Antipov (Andrey.E.Antipov@gmail.com)
-*/
+/// \file test/HamiltonianTest.cpp
+/// \brief Diagonalization of a Hubbard dimer.
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
 
-#include "Misc.h"
-#include "Lattice.h"
-#include "LatticePresets.h"
-#include "Index.h"
-#include "IndexClassification.h"
-#include "Operator.h"
-#include "OperatorPresets.h"
-#include "IndexHamiltonian.h"
-#include "Symmetrizer.h"
-#include "StatesClassification.h"
-#include "HamiltonianPart.h"
-#include "Hamiltonian.h"
-#include <boost/shared_ptr.hpp>
+#include <pomerol/Hamiltonian.hpp>
+#include <pomerol/HamiltonianPart.hpp>
+#include <pomerol/HilbertSpace.hpp>
+#include <pomerol/Index.hpp>
+#include <pomerol/IndexClassification.hpp>
+#include <pomerol/LatticePresets.hpp>
+#include <pomerol/Misc.hpp>
+#include <pomerol/MonomialOperator.hpp>
+#include <pomerol/MonomialOperatorPart.hpp>
+#include <pomerol/Operators.hpp>
+#include <pomerol/StatesClassification.hpp>
+
+#include <mpi_dispatcher/misc.hpp>
+
+#include "catch2/catch-pomerol.hpp"
 
 using namespace Pomerol;
 
-int main(int argc, char* argv[])
-{
-    boost::mpi::environment env(argc,argv);
-    boost::mpi::communicator world;
+TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
+    using namespace LatticePresets;
 
-    
+    auto HExpr = CoulombS("A", 1.0, -0.5);
+    HExpr += CoulombS("B", 2.0, -1.0);
+    HExpr += Hopping("A", "B", -1.0);
 
-    Lattice L;
-    L.addSite(new Lattice::Site("A",1,2));
-    L.addSite(new Lattice::Site("B",1,2));
-    LatticePresets::addCoulombS(&L, "A", 1.0, -0.5);
-    LatticePresets::addCoulombS(&L, "B", 2.0, -1.0);
-    LatticePresets::addHopping(&L, "A", "B", -1.0);
+    auto IndexInfo = MakeIndexClassification(HExpr);
+    INFO(IndexInfo);
 
-    IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
+    StatesClassification S;
+    S.compute(HS);
 
-    IndexHamiltonian Storage(&L,IndexInfo);
-    Storage.prepare();
+    Hamiltonian H(S);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
+    H.compute(MPI_COMM_WORLD);
 
-    Symmetrizer Symm(IndexInfo, Storage);
-    Symm.compute();
+    INFO(H.getPart(BlockNumber(4)));
+    H.compute(MPI_COMM_WORLD);
+    INFO(H.getPart(BlockNumber(4)));
 
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
+    SECTION("Ground state energy") {
+        RealType E_ref = -2.8860009;
+        RealType E = H.getGroundEnergy();
 
-    Hamiltonian H(IndexInfo, Storage, S);
-    H.prepare();
-    H.getPart(BlockNumber(4)).print_to_screen();
-    H.compute(world);
-    H.getPart(BlockNumber(4)).print_to_screen();
-    RealType E = -2.8860009; 
-    RealType E_calc = H.getGroundEnergy();
-    INFO("Lowest energy level is " << E_calc);
-    if (std::abs(E-E_calc) > 1e-7) return EXIT_FAILURE;
-    return EXIT_SUCCESS;
+        REQUIRE_THAT(E, IsCloseTo(E_ref, 1e-7));
+    }
+
+    SECTION("Monomial operators") {
+        ParticleIndex op_index = IndexInfo.getIndex("B", 0, up);
+        BlockNumber test_block = 4;
+
+        CreationOperator op(IndexInfo, HS, S, H, op_index);
+        op.prepare(HS);
+        op.compute();
+        BlockNumber result_block = op.getLeftIndex(test_block);
+
+        INFO("Acting with rotated cdag_" << op_index << " on block " << test_block << " and receiving "
+                                         << result_block);
+
+        using LOperatorT = LOperatorType<RealType>;
+
+        HamiltonianPart HpartRHS(LOperatorT(HExpr, HS.getFullHilbertSpace()), S, test_block);
+        HpartRHS.prepare();
+        HpartRHS.compute();
+        INFO(HpartRHS);
+
+        HamiltonianPart HpartLHS(LOperatorT(HExpr, HS.getFullHilbertSpace()), S, result_block);
+        HpartLHS.prepare();
+        HpartLHS.compute();
+        INFO(HpartLHS);
+
+        auto cdag1op = LOperatorT(Operators::c_dag("B", (unsigned short)0, up), HS.getFullHilbertSpace());
+        MonomialOperatorPart Cdag1(cdag1op, S, HpartRHS, HpartLHS);
+        Cdag1.compute();
+        INFO(Cdag1);
+
+        auto c1op = LOperatorT(Operators::c("B", (unsigned short)0, up), HS.getFullHilbertSpace());
+        MonomialOperatorPart C1(c1op, S, HpartLHS, HpartRHS);
+        C1.compute();
+        INFO(C1);
+
+        // Check transposition
+        auto diff1 = (Cdag1.getRowMajorValue<false>() - C1.getColMajorValue<false>().transpose()).eval();
+        diff1.prune(1e-12);
+        REQUIRE(diff1.nonZeros() == 0);
+
+        auto diff2 = (Cdag1.getColMajorValue<false>() - C1.getRowMajorValue<false>().transpose()).eval();
+        diff2.prune(1e-12);
+        REQUIRE(diff2.nonZeros() == 0);
+    }
 }
-

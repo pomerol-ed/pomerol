@@ -1,0 +1,97 @@
+name: Build and test
+
+on:
+  push:
+    branches:
+      - master
+      - ci
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        compiler:
+        - { name: "g++-5", cxx: "g++-5" }
+        - { name: "clang-3.9", cxx: "clang++-3.9" }
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+           sudo apt-get update -q
+           sudo apt-get install -y libeigen3-dev libopenmpi-dev libboost-all-dev
+           sudo apt-get install -y ${{ matrix.compiler.name }}
+
+    - name: Install Doxygen
+      if: startsWith(matrix.compiler.name, 'clang') == true
+      run: sudo apt-get install -y doxygen graphviz
+
+    - name: Install libcommute
+      env:
+        CXX: ${{ matrix.compiler.cxx }}
+      run: |
+           git clone https://github.com/krivenko/libcommute ${HOME}/libcommute
+           mkdir ${HOME}/libcommute.build && cd ${HOME}/libcommute.build
+           cmake ${HOME}/libcommute                                            \
+              -DCMAKE_INSTALL_PREFIX=${HOME}/libcommute.ins                    \
+              -DTESTS=OFF                                                      \
+              -DEXAMPLES=OFF
+           make install
+
+    - name: Build
+      env:
+        CXX: ${{ matrix.compiler.cxx }}
+      run: |
+           if [[ "${{ matrix.compiler.name }}" == clang* ]]; then
+             DOCS=ON
+           else
+             DOCS=OFF
+           fi
+           mkdir build
+           cd build
+           cmake -DCMAKE_INSTALL_PREFIX=installed                              \
+                 -Dlibcommute_DIR=${HOME}/libcommute.ins/lib/cmake             \
+                 -DStaticAnalysis=OFF                                          \
+                 -DUSE_OPENMP=ON                                               \
+                 -DDocumentation=${DOCS}                                       \
+                 -DTesting=ON                                                  \
+                 -DProgs=ON                                                    \
+                 -Dprogs_list="anderson;hubbard2d" ..
+           make VERBOSE=1
+
+    - name: Build documentation
+      if: startsWith(matrix.compiler.name, 'clang') == true
+      run: |
+           cd build
+           make doc
+
+    - name: Run unit tests
+      run: |
+           cd build
+           CTEST_OUTPUT_ON_FAILURE=1 make test
+
+    - name: Install
+      run: |
+           cd build
+           make install
+
+    - name: Copy GitHub Pages Jekyll configuration file
+      if: startsWith(matrix.compiler.name, 'clang') == true
+      run: |
+           cp scripts/gh_pages_config.yml                                      \
+           build/installed/share/doc/pomerol/_config.yml
+
+    - name: Deploy documentation
+      if: |
+          github.ref == 'refs/heads/master' &&
+          startsWith(matrix.compiler.name, 'clang') == true
+      uses: JamesIves/github-pages-deploy-action@4.1.0
+      with:
+        branch: gh-pages
+        token: ${{ secrets.GITHUB_TOKEN }}
+        folder: build/installed/share/doc/pomerol

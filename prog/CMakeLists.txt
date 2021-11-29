@@ -1,29 +1,60 @@
-cmake_minimum_required (VERSION 2.8.12)
-# title and version of the project
-project (pomerol CXX)
+#
+# This file is part of pomerol, an exact diagonalization library aimed at
+# solving condensed matter models of interacting fermions.
+#
+# Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-set(default_progs "anderson" "hubbard2d")
+set(DEFAULT_PROGS
+    anderson
+    hubbard2d
+    quantum_model
+)
 
-find_package(Boost COMPONENTS system program_options REQUIRED)
-set(BOOST_EXTRA_LIBS ${Boost_LIBRARIES})
-set(BOOST_EXTRA_INCLUDES ${Boost_INCLUDE_DIRS})
-if (${PROJECT_CAPNAME}_CXX11)
-    find_package(Git)
-    execute_process(COMMAND "${GIT_EXECUTABLE}" "clone" "--branch" "master" "https://github.com/aeantipov/gftools.git" "gftools" WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+# Find or fetch gftools
+find_package(gftools CONFIG)
+if(gftools_FOUND)
+    get_target_property(GFTOOLS_INCLUDE_DIR gftools
+                        INTERFACE_INCLUDE_DIRECTORIES)
+else()
+    message(STATUS "Fetching gftools")
+    find_package(Git REQUIRED)
+    execute_process(COMMAND "${GIT_EXECUTABLE}" "clone" "--branch" "master"
+                    "https://github.com/aeantipov/gftools.git" "gftools"
+                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+    set(GFTOOLS_INCLUDE_DIR "${CMAKE_BINARY_DIR}/gftools")
 endif()
+message(STATUS "gftools includes : ${GFTOOLS_INCLUDE_DIR}")
 
 message(STATUS "Building executables")
 if(NOT progs_list)
-    set(progs_list "anderson")
+    set(progs_list ${DEFAULT_PROGS})
 endif()
 
+set(PROG_SOURCES
+    main.cpp
+    quantum_model.cpp
+    anderson_model.hpp
+    hubbard2d_model.hpp
+)
+
 foreach(model ${progs_list})
-  list (FIND default_progs ${model} _index)
-  if (${_index} GREATER -1)
-    string(TOUPPER ${model} def)
-    set(def "POMEROL_${def}")
-    add_prog(${model} ${def})
-  else()
-    message(WARNING "Unknown program \"${model}\" has been skiped.")
-  endif()
+    list (FIND DEFAULT_PROGS ${model} _index)
+    if(${_index} GREATER -1)
+        string(TOUPPER ${model} def)
+        set(def "POMEROL_${def}")
+        set(prog_name "${model}.${PROJECT_NAME}")
+        add_executable(${prog_name} ${PROG_SOURCES})
+        target_include_directories(${prog_name} SYSTEM PRIVATE ${GFTOOLS_INCLUDE_DIR})
+        target_compile_definitions(${prog_name} PRIVATE ${def})
+        target_link_libraries(${prog_name} ${PROJECT_NAME})
+        set_target_properties(${prog_name} PROPERTIES
+                              RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+        install(TARGETS ${prog_name} DESTINATION bin)
+    else()
+        message(WARNING "Unknown program \"${model}\" has been skipped.")
+    endif()
 endforeach()

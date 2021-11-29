@@ -1,48 +1,64 @@
+//
+// This file is part of pomerol, an exact diagonalization library aimed at
+// solving condensed matter models of interacting fermions.
+//
+// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+/// \file src/mpi_dispatcher/mpi_dispatcher.cpp
+/// \brief A master-worker parallelization scheme using non-blocking MPI communications (implementation).
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
 #include "mpi_dispatcher/mpi_dispatcher.hpp"
+#include "mpi_dispatcher/misc.hpp"
+
+#include <functional>
 #include <numeric>
+#include <stdexcept>
+#include <utility>
 
 namespace pMPI {
-
-#ifndef NDEBUG
-    int MPI_DEBUG_VERBOSITY = 0; // set it to 1 to debug mpi messages
-#endif
 
 //
 // Worker
 //
-MPIWorker::MPIWorker(const boost::mpi::communicator &comm, WorkerId boss):
-        Comm(comm),
-        id(Comm.rank()),
-        boss(boss),
-        req(Comm.irecv(boss, MPI_ANY_TAG, current_job_)),
-        Status(pMPI::Pending),
-        current_job_(-1)
-{}
 
-bool MPIWorker::is_finished()
-{
+MPIWorker::MPIWorker(MPI_Comm const& comm, int boss)
+    : Comm(comm), id(rank(comm)), boss(boss), current_job_(-1), req(MPI_REQUEST_NULL), Status(pMPI::Pending) {
+    MPI_Irecv(&current_job_, 1, MPI_INT, boss, MPI_ANY_TAG, comm, &req);
+}
+
+bool MPIWorker::is_finished() {
     return Status == pMPI::Finish;
 }
 
-bool MPIWorker::is_working()
-{
+bool MPIWorker::is_working() {
     return Status == pMPI::Work;
 }
 
-void MPIWorker::receive_order()
-{
-    if(Status != pMPI::Pending) return;
-    boost::optional<boost::mpi::status> st = req.test();
-    if(st) {
-        Status = pMPI::WorkerTag(boost::get(st).tag());
-        req = Comm.irecv(boss, MPI_ANY_TAG, current_job_);
-        if(is_finished()) req.cancel();
+void MPIWorker::receive_order() {
+    if(Status != pMPI::Pending)
+        return;
+
+    MPI_Status st;
+    int req_completed = 0;
+    MPI_Test(&req, &req_completed, &st);
+
+    if(req_completed) {
+        Status = pMPI::WorkerTag(st.MPI_TAG);
+        MPI_Irecv(&current_job_, 1, MPI_INT, boss, MPI_ANY_TAG, Comm, &req);
+        if(is_finished()) {
+            MPI_Cancel(&req);
+        }
     }
 }
 
-void MPIWorker::report_job_done()
-{
-    Comm.send(boss, int(pMPI::Pending));
+void MPIWorker::report_job_done() {
+    MPI_Send(nullptr, 0, MPI_INT, boss, pMPI::Pending, Comm);
     Status = pMPI::Pending;
 }
 
@@ -50,117 +66,96 @@ void MPIWorker::report_job_done()
 // Master
 //
 
-void MPIMaster::fill_stack_()
-{
-    for (int i=Ntasks-1; i>=0; i--) { JobStack.push(task_numbers[i]); };
-    for (int p=Nprocs-1; p>=0; p--) {
+void MPIMaster::fill_stack_() {
+    for(int i = Ntasks - 1; i >= 0; --i) {
+        JobStack.emplace(task_numbers[i]);
+    }
+    for(int p = Nprocs - 1; p >= 0; --p) {
         WorkerIndices[worker_pool[p]] = p;
-        WorkerStack.push(worker_pool[p]);
-    };
+        WorkerStack.emplace(worker_pool[p]);
+    }
 }
 
-bool MPIMaster::is_finished() const
-{
+bool MPIMaster::is_finished() const {
     int NFinished = std::accumulate(workers_finish.begin(), workers_finish.end(), 0, std::plus<int>());
     return NFinished == Nprocs;
 }
 
-void MPIMaster::swap(MPIMaster &x)
-{
-    std::swap(Ntasks, x.Ntasks);
-    std::swap(Nprocs, x.Nprocs);
-    std::swap(JobStack, x.JobStack);
-    std::swap(WorkerStack, x.WorkerStack);
-    std::swap(DispatchMap, x.DispatchMap);
-    std::swap(task_numbers, x.task_numbers);
-    std::swap(worker_pool, x.worker_pool);
-    std::swap(WorkerIndices, x.WorkerIndices);
-    std::swap(wait_statuses, x.wait_statuses);
-    std::swap(workers_finish, x.workers_finish);
-}
+inline std::vector<WorkerId> _autorange_workers(MPI_Comm const& comm, bool include_boss) {
+    int comm_size = pMPI::size(comm);
+    int comm_rank = pMPI::rank(comm);
 
-inline std::vector<WorkerId> _autorange_workers(const boost::mpi::communicator &comm, bool include_boss)
-{
     std::vector<WorkerId> out;
-    size_t Nprocs(comm.size()-!include_boss);
-    if (!Nprocs) throw (std::logic_error("No workers to evaluate"));
-    for (size_t p=0; p<comm.size(); p++) {
-        if (include_boss || comm.rank() != p) {
-            out.push_back(p);
+    int Nprocs = comm_size - int(!include_boss);
+    if(!Nprocs)
+        throw std::runtime_error("No workers to evaluate");
+    for(std::size_t p = 0; p < comm_size; ++p) {
+        if(include_boss || comm_rank != p) {
+            out.emplace_back(p);
         }
     }
     return out;
 }
 
-inline std::vector<JobId> _autorange_tasks(size_t ntasks)
-{
+inline std::vector<JobId> _autorange_tasks(std::size_t ntasks) {
     std::vector<JobId> out(ntasks);
-    for (size_t i=0; i<ntasks; i++) {
-        out[i] = i;
-    }
+    std::iota(out.begin(), out.end(), 0);
     return out;
 }
 
-MPIMaster::MPIMaster(const boost::mpi::communicator &comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers ):
-    Comm(comm), Ntasks(task_numbers.size()),
-    Nprocs(worker_pool.size()),
-    task_numbers(task_numbers), worker_pool(worker_pool),
-    wait_statuses(Nprocs),
-    workers_finish(Nprocs,false)
-{
+MPIMaster::MPIMaster(MPI_Comm const& comm, std::vector<WorkerId> worker_pool, std::vector<JobId> task_numbers)
+    : Comm(comm),
+      Ntasks(static_cast<int>(task_numbers.size())),
+      Nprocs(static_cast<int>(worker_pool.size())),
+      task_numbers(std::move(task_numbers)),
+      worker_pool(std::move(worker_pool)),
+      wait_statuses(Nprocs, MPI_REQUEST_NULL),
+      workers_finish(Nprocs, false) {
     fill_stack_();
-};
+}
 
-MPIMaster::MPIMaster(const boost::mpi::communicator &comm, size_t ntasks, bool include_boss):
-    Comm(comm)
-{
-    MPIMaster x(comm,_autorange_workers(comm,include_boss), _autorange_tasks(ntasks));
-    this->swap(x);
-};
+MPIMaster::MPIMaster(MPI_Comm const& comm, std::size_t ntasks, bool include_boss)
+    : MPIMaster(comm, _autorange_workers(comm, include_boss), _autorange_tasks(ntasks)) {}
 
-MPIMaster::MPIMaster(const boost::mpi::communicator &comm, std::vector<JobId> task_numbers, bool include_boss ):
-    Comm(comm)
-{
-    MPIMaster x(comm,_autorange_workers(comm,include_boss), task_numbers);
-    this->swap(x);
-};
+MPIMaster::MPIMaster(MPI_Comm const& comm, std::vector<JobId> task_numbers, bool include_boss)
+    : MPIMaster(comm, _autorange_workers(comm, include_boss), std::move(task_numbers)) {}
 
-void MPIMaster::order_worker(WorkerId worker, JobId job)
-{
-    Comm.send(worker,int(pMPI::Work),job);
-    //DEBUG(id << "->" << worker << " tag: work",MPI_DEBUG_VERBOSITY,1);
-    DispatchMap[job]=worker;
-    wait_statuses[WorkerIndices[worker]] = Comm.irecv(worker,int(pMPI::Pending));
-};
+void MPIMaster::order_worker(WorkerId worker, JobId job) {
+    MPI_Send(&job, 1, MPI_INT, worker, pMPI::Work, Comm);
+    DispatchMap[job] = worker;
+    MPI_Irecv(nullptr, 0, MPI_INT, worker, pMPI::Pending, Comm, &wait_statuses[WorkerIndices[worker]]);
+}
 
-void MPIMaster::order()
-{
-    while (!WorkerStack.empty() && !JobStack.empty()) {
+void MPIMaster::order() {
+    while(!WorkerStack.empty() && !JobStack.empty()) {
         WorkerId& worker = WorkerStack.top();
         JobId& job = JobStack.top();
-        order_worker(worker,job);
+        order_worker(worker, job);
         WorkerStack.pop();
         JobStack.pop();
-    };
-};
+    }
+}
 
-void MPIMaster::check_workers()
-{
-    for (size_t i=0; i<Nprocs; i++) {
-        if (wait_statuses[i].test()) {
+void MPIMaster::check_workers() {
+    for(std::size_t i = 0; i < Nprocs; ++i) {
+        if(wait_statuses[i] == MPI_REQUEST_NULL)
+            continue;
+
+        int req_completed = 0;
+        MPI_Test(&wait_statuses[i], &req_completed, MPI_STATUS_IGNORE);
+        if(req_completed) {
             WorkerStack.push(worker_pool[i]);
-            };
-    };
-    if (JobStack.empty() && WorkerStack.size() >= Nprocs) {
-        for (size_t i=0; i<Nprocs; i++) {
-            if (!workers_finish[i]) {
-                //DEBUG(id << "->" << worker_pool[i] << " tag: finish",MPI_DEBUG_VERBOSITY,1);
-                Comm.send(worker_pool[i], int(pMPI::Finish));
-                workers_finish[i] = true; // to prevent double sending of Finish command that could overlap with other communication
+        }
+    }
+    if(JobStack.empty() && WorkerStack.size() >= Nprocs) {
+        for(std::size_t i = 0; i < Nprocs; ++i) {
+            if(!workers_finish[i]) {
+                MPI_Send(nullptr, 0, MPI_INT, worker_pool[i], pMPI::Finish, Comm);
+                // to prevent double sending of Finish command that could overlap with other communication
+                workers_finish[i] = true;
             }
         }
     }
 }
 
-} // end of namespace MPI
-
+} // namespace pMPI

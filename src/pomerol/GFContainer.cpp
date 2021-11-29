@@ -1,34 +1,39 @@
-#include "pomerol/GFContainer.h"
+//
+// This file is part of pomerol, an exact diagonalization library aimed at
+// solving condensed matter models of interacting fermions.
+//
+// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-namespace Pomerol{
+/// \file src/pomerol/GFContainer.cpp
+/// \brief Storage for multiple fermionic single-particle Matsubara Green's functions (implementation).
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
 
-GFContainer::GFContainer ( const IndexClassification& IndexInfo,
-                           const StatesClassification& S,
-                           const Hamiltonian &H, const DensityMatrix &DM,
-                           const FieldOperatorContainer& Operators) :
-    IndexContainer2<GreensFunction,GFContainer>(this,IndexInfo),
-    Thermal(DM), S(S), H(H), DM(DM), Operators(Operators)
-{}
+#include "pomerol/GFContainer.hpp"
 
-void GFContainer::prepareAll(const std::set<IndexCombination2>& InitialIndices)
-{
-    fill(InitialIndices);
-    for(std::map<IndexCombination2,GFPointer>::iterator iter = ElementsMap.begin();
-        iter != ElementsMap.end(); iter++)
-        (iter->second)->prepare();
+namespace Pomerol {
+
+void GFContainer::prepareAll(std::set<IndexCombination2> const& Indices) {
+    fill(Indices);
+    for(auto& el : ElementsMap)
+        el.second->prepare();
 }
 
-void GFContainer::computeAll()
-{
-    for(std::map<IndexCombination2,GFPointer>::iterator iter = ElementsMap.begin();
-        iter != ElementsMap.end(); iter++)
-        (iter->second)->compute();
+void GFContainer::computeAll() {
+    for(auto& el : ElementsMap)
+        el.second->compute();
 }
 
-GreensFunction* GFContainer::createElement(const IndexCombination2& Indices) const
-{
-    return new GreensFunction(S,H, Operators.getAnnihilationOperator(Indices.Index1),
-                                   Operators.getCreationOperator(Indices.Index2),DM);
+std::shared_ptr<GreensFunction> GFContainer::createElement(IndexCombination2 const& Indices) const {
+    return std::make_shared<GreensFunction>(S,
+                                            H,
+                                            Operators.getAnnihilationOperator(Indices.Index1),
+                                            Operators.getCreationOperator(Indices.Index2),
+                                            DM);
 }
 
-} // end of namespace Pomerol
+} // namespace Pomerol

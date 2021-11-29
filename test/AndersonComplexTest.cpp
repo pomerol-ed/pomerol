@@ -1,140 +1,149 @@
-// Include the pomerol library
-#include <pomerol.h>
+//
+// This file is part of pomerol, an exact diagonalization library aimed at
+// solving condensed matter models of interacting fermions.
+//
+// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+/// \file test/AndersonComplexTest.cpp
+/// \brief Single-particle Green's functions of a Hubbard atom with a complex spin-flipping term.
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
+#include <pomerol/DensityMatrix.hpp>
+#include <pomerol/FieldOperatorContainer.hpp>
+#include <pomerol/GreensFunction.hpp>
+#include <pomerol/Hamiltonian.hpp>
+#include <pomerol/HilbertSpace.hpp>
+#include <pomerol/IndexClassification.hpp>
+#include <pomerol/LatticePresets.hpp>
+#include <pomerol/Misc.hpp>
+#include <pomerol/StatesClassification.hpp>
+
+#include "catch2/catch-pomerol.hpp"
+
+#include <complex>
+#include <vector>
 
 using namespace Pomerol;
+using LatticePresets::spin;
 
 // Parameters
-double mu = 1.2;
-double U = 2.0;
-double beta = 10;
+double const mu = 1.2;
+double const U = 2.0;
+double const beta = 10;
 
+// Reference Green's function
 struct GF_ref {
-    std::vector<double> E;
-    std::vector<double> w;
-    double Z;
-    double phi;
-    GF_ref(ComplexType J) : phi(std::arg(J)), Z(0) {
-        E.push_back(0);
-        E.push_back(-mu-std::abs(J));
-        E.push_back(-mu+std::abs(J));
-        E.push_back(-2*mu+U);
-
-        for(int i = 0; i < E.size(); ++i) {
-            w.push_back(std::exp(-beta*E[i]));
+    RealType phi;
+    std::vector<RealType> E;
+    std::vector<RealType> w;
+    RealType Z = 0;
+    explicit GF_ref(ComplexType J) : phi(std::arg(J)), E{0, -mu - std::abs(J), -mu + std::abs(J), -2 * mu + U} {
+        for(double e : E) {
+            w.push_back(std::exp(-beta * e));
             Z += w.back();
         }
-        for(int i = 0; i < E.size(); ++i) w[i] /= Z;
+        for(int i = 0; i < E.size(); ++i)
+            w[i] /= Z;
     }
 
     ComplexType operator()(spin s1, spin s2, int n) const {
-        ComplexType iw = ComplexType(0,M_PI*(2*n+1)/beta);
+        ComplexType iw = ComplexType(0, M_PI * (2 * n + 1) / beta);
+
+        using LatticePresets::up;
+        using LatticePresets::down;
 
         ComplexType res = 0;
         if(s1 == up && s2 == up) {
-            res += 0.5*(w[1] + w[0])/(iw - (E[1] - E[0]));
-            res += 0.5*(w[2] + w[0])/(iw - (E[2] - E[0]));
-            res += 0.5*(w[3] + w[1])/(iw - (E[3] - E[1]));
-            res += 0.5*(w[3] + w[2])/(iw - (E[3] - E[2]));
+            res += 0.5 * (w[1] + w[0]) / (iw - (E[1] - E[0]));
+            res += 0.5 * (w[2] + w[0]) / (iw - (E[2] - E[0]));
+            res += 0.5 * (w[3] + w[1]) / (iw - (E[3] - E[1]));
+            res += 0.5 * (w[3] + w[2]) / (iw - (E[3] - E[2]));
         } else if(s1 == up && s2 == down) {
-            ComplexType u = std::exp(ComplexType(0,phi));
-            res += -u*0.5*(w[1] + w[0])/(iw - (E[1] - E[0]));
-            res += u*0.5*(w[2] + w[0])/(iw - (E[2] - E[0]));
-            res += u*0.5*(w[3] + w[1])/(iw - (E[3] - E[1]));
-            res += -u*0.5*(w[3] + w[2])/(iw - (E[3] - E[2]));
+            ComplexType u = std::exp(ComplexType(0, phi));
+            res += -u * 0.5 * (w[1] + w[0]) / (iw - (E[1] - E[0]));
+            res += u * 0.5 * (w[2] + w[0]) / (iw - (E[2] - E[0]));
+            res += u * 0.5 * (w[3] + w[1]) / (iw - (E[3] - E[1]));
+            res += -u * 0.5 * (w[3] + w[2]) / (iw - (E[3] - E[2]));
         } else if(s1 == down && s2 == up) {
-            ComplexType u = std::exp(ComplexType(0,-phi));
-            res += -u*0.5*(w[1] + w[0])/(iw - (E[1] - E[0]));
-            res += u*0.5*(w[2] + w[0])/(iw - (E[2] - E[0]));
-            res += u*0.5*(w[3] + w[1])/(iw - (E[3] - E[1]));
-            res += -u*0.5*(w[3] + w[2])/(iw - (E[3] - E[2]));
+            ComplexType u = std::exp(ComplexType(0, -phi));
+            res += -u * 0.5 * (w[1] + w[0]) / (iw - (E[1] - E[0]));
+            res += u * 0.5 * (w[2] + w[0]) / (iw - (E[2] - E[0]));
+            res += u * 0.5 * (w[3] + w[1]) / (iw - (E[3] - E[1]));
+            res += -u * 0.5 * (w[3] + w[2]) / (iw - (E[3] - E[2]));
         } else {
-            res += 0.5*(w[1] + w[0])/(iw - (E[1] - E[0]));
-            res += 0.5*(w[2] + w[0])/(iw - (E[2] - E[0]));
-            res += 0.5*(w[3] + w[1])/(iw - (E[3] - E[1]));
-            res += 0.5*(w[3] + w[2])/(iw - (E[3] - E[2]));
+            res += 0.5 * (w[1] + w[0]) / (iw - (E[1] - E[0]));
+            res += 0.5 * (w[2] + w[0]) / (iw - (E[2] - E[0]));
+            res += 0.5 * (w[3] + w[1]) / (iw - (E[3] - E[1]));
+            res += 0.5 * (w[3] + w[2]) / (iw - (E[3] - E[2]));
         }
         return res;
     }
 };
 
-boost::mpi::communicator world;
+TEST_CASE("Bare Anderson atom with complex spin mixing", "[AndersonComplex]") {
 
-bool run_test(ComplexType J /* spin-flip amplitude */) {
+    // Execute this test case for a few values of 'J'
+    auto J = GENERATE(ComplexType(0.1, 0),
+                      ComplexType(-0.1, 0),
+                      ComplexType(0, 0.1),
+                      ComplexType(0, -0.1),
+                      ComplexType(0.1, 0.1),
+                      ComplexType(0.1, -0.1),
+                      ComplexType(-0.1, 0.1),
+                      ComplexType(-0.1, -0.1));
 
-    INFO("J = " << J);
+    using namespace LatticePresets;
 
-    Lattice L;
-    // Add a site with a name "C", that has 1 orbital and 2 spins.
-    L.addSite(new Lattice::Site("C",1,2));
+    ComplexExpr HExpr = CoulombS("C", U, -mu);
+    HExpr += Hopping("C", "C", J, 0, 0, up, down);
+    INFO("Hamiltonian\n" << HExpr);
 
-    LatticePresets::addCoulombS(&L, "C", U, -mu);
-    LatticePresets::addHopping(&L, "C", "C", J, 0, 0, up, down);
+    auto IndexInfo = MakeIndexClassification(HExpr);
+    INFO("Indices\n" << IndexInfo);
 
-    IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
-    IndexInfo.printIndices();
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
+    StatesClassification S;
+    S.compute(HS);
 
-    IndexHamiltonian HStorage(&L,IndexInfo);
-    HStorage.prepare();
+    Hamiltonian H(S);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
+    H.compute(MPI_COMM_WORLD);
+    INFO("Energy levels " << H.getEigenValues());
+    INFO("The value of ground energy is " << H.getGroundEnergy());
 
-    Symmetrizer Symm(IndexInfo, HStorage);
-    Symm.compute(true);
-
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
-
-    Hamiltonian H(IndexInfo, HStorage, S);
-    H.prepare();
-    H.compute(world);
-
-    DensityMatrix rho(S,H,beta);
+    DensityMatrix rho(S, H, beta);
     rho.prepare();
     rho.compute();
 
-    FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepareAll();
+    FieldOperatorContainer Operators(IndexInfo, HS, S, H);
+    Operators.prepareAll(HS);
     Operators.computeAll();
 
-    IndexInfo.printIndices();
-
-    std::vector<spin> all_spins;
-    all_spins.push_back(down);
-    all_spins.push_back(up);
-
     // Reference
-    GF_ref ref(J);
+    GF_ref G_ref(J);
 
-    BOOST_FOREACH(spin s1, all_spins){
-    BOOST_FOREACH(spin s2, all_spins){
-        INFO("s1 = " << s1 << " s2 = " << s2);
-        ParticleIndex index1 = IndexInfo.getIndex("C",0,s1);
-        ParticleIndex index2 = IndexInfo.getIndex("C",0,s2);
-        GreensFunction GF(S,H,
-            Operators.getAnnihilationOperator(index1),
-            Operators.getCreationOperator(index2),
-        rho);
-        GF.prepare();
-        GF.compute();
+    for(spin s1 : {down, up}) {
+        for(spin s2 : {down, up}) {
+            ParticleIndex index1 = IndexInfo.getIndex("C", 0, s1);
+            ParticleIndex index2 = IndexInfo.getIndex("C", 0, s2);
+            GreensFunction GF(S,
+                              H,
+                              Operators.getAnnihilationOperator(index1),
+                              Operators.getCreationOperator(index2),
+                              rho);
+            GF.prepare();
+            GF.compute();
 
-        for (int n=0; n<10; ++n)
-            if(std::abs(GF(n) - ref(s1,s2,n)) > 1e-10) return false;
-    }}
-    return true;
-}
-
-int main(int argc, char* argv[]) {
-
-    boost::mpi::environment MpiEnv(argc,argv);
-    world = boost::mpi::communicator();
-
-    return (
-     run_test(ComplexType( 0.1,0)) &&
-     run_test(ComplexType(-0.1,0)) &&
-     run_test(ComplexType(0, 0.1)) &&
-     run_test(ComplexType(0,-0.1)) &&
-     run_test(ComplexType(0.1, 0.1)) &&
-     run_test(ComplexType(0.1,-0.1)) &&
-     run_test(ComplexType(-0.1,0.1)) &&
-     run_test(ComplexType(-0.1,-0.1))
-     ) ? EXIT_SUCCESS : EXIT_FAILURE;
+            for(int n = 0; n < 10; ++n) {
+                auto result = GF(n);
+                auto ref = G_ref(s1, s2, n);
+                REQUIRE_THAT(result, IsCloseTo(ref, 1e-12));
+            }
+        }
+    }
 }

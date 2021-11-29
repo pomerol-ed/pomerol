@@ -1,302 +1,471 @@
-#include "pomerol/LatticePresets.h"
+//
+// This file is part of pomerol, an exact diagonalization library aimed at
+// solving condensed matter models of interacting fermions.
+//
+// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+/// \file src/pomerol/LatticePresets.cpp
+/// \brief Factory functions for terms commonly used to construct various lattice Hamiltonians (implementation).
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
+#include "pomerol/LatticePresets.hpp"
+
+#include <stdexcept>
 
 namespace Pomerol {
+namespace LatticePresets {
+
+using Operators::c_dag;
+using Operators::c;
+using Operators::n;
+using Operators::a_dag;
+using Operators::a;
 
 //
-// Lattice::Term::Presets
+// spin
 //
 
-// 2-index presets
-
-Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
-{
-    Lattice::Term *T = new Term(2);
-    bool OperatorSequence[2] = { 1, 0 };
-    std::string Labels[2] = { Label1, Label2 };
-    unsigned short Orbitals[2] = {orbital1, orbital2 };
-    unsigned short Spins[2] = { spin1, spin2 };
-    T->OperatorSequence.assign(OperatorSequence,OperatorSequence+2);
-    T->SiteLabels.assign(Labels,Labels+2);
-    T->Orbitals.assign(Orbitals,Orbitals+2);
-    T->Spins.assign(Spins,Spins+2);
-    T->Value = Value;
-    return T;
-};
-
-Lattice::Term* Lattice::Term::Presets::Hopping ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital, unsigned short spin)
-{
-    return Hopping(Label1, Label2, Value, orbital, orbital, spin, spin);
+std::ostream& operator<<(std::ostream& os, spin s) {
+    switch(s) {
+    case undef: return os;
+    case up: return os << "up";
+    case down: return os << "dn";
+    default: return os;
+    }
 }
-
-Lattice::Term* Lattice::Term::Presets::Level ( const std::string& Label, MelemType Value, unsigned short orbital, unsigned short spin)
-{
-    Lattice::Term *T = new Term(2);
-    bool OperatorSequence[2] = { 1, 0 };
-    std::string Labels[2] = { Label, Label };
-    unsigned short Orbitals[2] = {orbital, orbital };
-    unsigned short Spins[2] = { spin, spin };
-    T->OperatorSequence.assign(OperatorSequence,OperatorSequence+2);
-    T->SiteLabels.assign(Labels,Labels+2);
-    T->Orbitals.assign(Orbitals,Orbitals+2);
-    T->Spins.assign(Spins,Spins+2);
-    T->Value = Value;
-    return T;
-};
-
-// 4-index presets
-
-Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label1, const std::string& Label2,  MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
-{
-    if (Label1 == Label2 && spin1 == spin2 && orbital1 == orbital2) {
-        ERROR("NupNdown terms should have different sites or spin or orbital components. Returning simple Level term.");
-        return Lattice::Term::Presets::Level(Label1, Value, orbital1, spin1);
-        };
-    Lattice::Term *T = new Term(4);
-    bool order[4]              =      { 1,     0,     1,     0     };
-    unsigned short Spins[4]    =      { spin1, spin1, spin2, spin2  };
-    std::string Labels[4]      =      { Label1, Label1, Label2, Label2 };
-    unsigned short Orbitals[4] =      { orbital1, orbital1, orbital2, orbital2 };
-    T->OperatorSequence.assign(order,order+4);
-    T->SiteLabels.assign(Labels,Labels+4);
-    T->Orbitals.assign(Orbitals,Orbitals+4);
-    T->Spins.assign(Spins,Spins+4);
-    T->Value = Value;
-    return T;
-}
-
-Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
-{
-    return NupNdown(Label, Label, Value, orbital1, orbital2, spin1, spin2);
-}
-
-Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2 )
-{
-    return NupNdown(Label, Label, Value, orbital1, orbital2, up, down);
-};
-
-Lattice::Term* Lattice::Term::Presets::NupNdown ( const std::string& Label, MelemType Value, unsigned short Orbital, unsigned short spin1, unsigned short spin2 )
-{
-    return NupNdown(Label, Label, Value, Orbital, Orbital, spin1, spin2);
-};
-
-Lattice::Term* Lattice::Term::Presets::Spinflip ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
-{
-    if (orbital1 == orbital2 || spin1 == spin2) { ERROR("Spinflips should have different spins and orbitals"); throw (exWrongIndices()); }
-    Lattice::Term *T = new Term(4);
-    bool order[4]              =      { 1,     1,     0,     0 };
-    unsigned short Spins[4]    =      { spin1, spin2, spin1, spin2  };
-    std::string Labels[4]      =      { Label, Label, Label, Label };
-    unsigned short Orbitals[4] =      { orbital1, orbital2, orbital2, orbital1 };
-    T->OperatorSequence.assign(order,order+4);
-    T->Spins.assign(Spins,Spins+4);
-    T->SiteLabels.assign(Labels,Labels+4);
-    T->Orbitals.assign(Orbitals,Orbitals+4);
-    T->Value = Value;
-    return T;
-}
-
-Lattice::Term* Lattice::Term::Presets::PairHopping ( const std::string& Label, MelemType Value, unsigned short orbital1, unsigned short orbital2, unsigned short spin1, unsigned short spin2 )
-{
-    if (orbital1 == orbital2 || spin1 == spin2) { ERROR("Pair hopping terms should have different spins and orbitals"); throw (exWrongIndices()); }
-    Lattice::Term *T = new Term(4);
-    bool order[4]              =      { 1,     1,     0,     0 };
-    unsigned short Spins[4]    =      { spin1, spin2, spin1, spin2  };
-    std::string Labels[4]      =      { Label, Label, Label, Label };
-    unsigned short Orbitals[4] =      { orbital1, orbital1, orbital2, orbital2 };
-    T->OperatorSequence.assign(order,order+4);
-    T->Spins.assign(Spins,Spins+4);
-    T->SiteLabels.assign(Labels,Labels+4);
-    T->Orbitals.assign(Orbitals,Orbitals+4);
-    T->Value = Value;
-    return T;
-}
-
-Lattice::Term* Lattice::Term::Presets::SplusSminus ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital)
-{
-    Term *T = new Term(4);
-    bool order[4]              =      { 1,     0,     1,     0 };
-    unsigned short Spins[4]    =      { up, down, down, up  };
-    std::string Labels[4]      =      { Label1, Label1, Label2, Label2 };
-    unsigned short Orbitals[4] =      { orbital, orbital, orbital, orbital };
-    T->OperatorSequence.assign(order,order+4);
-    T->Spins.assign(Spins,Spins+4);
-    T->SiteLabels.assign(Labels,Labels+4);
-    T->Orbitals.assign(Orbitals,Orbitals+4);
-    T->Value = Value;
-    return T;
-}
-
-Lattice::Term* Lattice::Term::Presets::SminusSplus ( const std::string& Label1, const std::string& Label2, MelemType Value, unsigned short orbital)
-{
-    Term *T = SplusSminus(Label1, Label2, Value, orbital);
-    unsigned short Spins[4]    =      { down, up, up, down  };
-    T->Spins.assign(Spins,Spins+4);
-    T->Value = Value;
-    return T;
-}
-
-
-const char* Lattice::Term::Presets::exWrongIndices::what() const throw(){
-    return "Wrong indices for selected term";
-};
 
 //
-// LatticePresets
+// Overloads of Level()
 //
 
-void LatticePresets::addCoulombS(Lattice *L, const std::string& Label, MelemType U, MelemType Level)
-{
-    if (L->Sites.find(Label)==L->Sites.end()) throw (Lattice::exWrongLabel());
-    unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
-    unsigned short Spins = L->Sites[Label]->SpinSize;
-    for (unsigned short i=0; i<Orbitals; ++i)
-        for (unsigned short z1=0; z1<Spins; ++z1){
-            if (std::abs(Level)) L->Terms->addTerm(Lattice::Term::Presets::Level(Label, Level, i, z1 ));
-            for (unsigned short z2=0; z2<z1; ++z2) {
-                if (std::abs(U)) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label, U, i, i, z1, z2));
-                };
-       };
-};
-
-void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, MelemType U, MelemType U_p, MelemType J, MelemType Level)
-{
-    if (L->Sites.find(Label)==L->Sites.end()) throw (Lattice::exWrongLabel());
-    unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
-    unsigned short Spins = L->Sites[Label]->SpinSize;
-    if (Orbitals<=1 || Spins<=1) { ERROR("Cannot add multiorbital interaction to a site with 1 orbital or 1 spin"); throw (Lattice::Term::Presets::exWrongIndices()); };
-    for (unsigned short i=0; i<Orbitals; ++i){
-        for (unsigned short z1=0; z1<Spins; ++z1){
-            if (std::abs(Level)) L->Terms->addTerm(Lattice::Term::Presets::Level(Label, Level, i, z1 ));
-            for (unsigned short j=0; j<Orbitals; ++j) if (i!=j) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label, (U_p-J)/2., i, j, z1, z1));
-            for (unsigned short z2=0; z2<z1; ++z2){
-                if (std::abs(U)) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label, U, i, i, z1, z2));
-                for (unsigned short j=0; j<Orbitals; ++j){
-                        if (i!=j) {
-                            if (std::abs(U_p)) L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label, U_p, i, j, z1, z2));
-                            if (std::abs(J)) {
-                                L->Terms->addTerm(Lattice::Term::Presets::Spinflip(Label, -J, i, j, z1, z2));
-                                L->Terms->addTerm(Lattice::Term::Presets::PairHopping(Label, -J, i, j, z1, z2));
-                                };
-                            };
-                        };
-                    };
-            };
-        };
-};
-
-void LatticePresets::addCoulombP(Lattice *L, const std::string& Label, MelemType U, MelemType J, MelemType Level)
-{
-    addCoulombP(L, Label, U, U-2.0*J, J, Level);
+RealExpr Level(std::string const& Label, RealType Eps, unsigned short Orbital, spin Spin) {
+    return Eps * n(Label, Orbital, Spin);
+}
+ComplexExpr Level(std::string const& Label, ComplexType Eps, unsigned short Orbital, spin Spin) {
+    return Eps * n(Label, Orbital, Spin);
 }
 
-void LatticePresets::addLevel(Lattice *L, const std::string& Label, MelemType Level)
-{
-    if (L->Sites.find(Label)==L->Sites.end()) throw (Lattice::exWrongLabel());
-    unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
-    unsigned short Spins = L->Sites[Label]->SpinSize;
-    for (unsigned short i=0; i<Orbitals; ++i)
-        for (unsigned short z=0; z<Spins; ++z) {
-            if (std::abs(Level)) L->Terms->addTerm(Lattice::Term::Presets::Level(Label, Level, i, z ));
-            };
+RealExpr Level(std::string const& Label, RealType Eps, unsigned short NOrbitals) {
+    RealExpr res;
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        res += LatticePresets::Level(Label, Eps, Orbital, up);
+        res += LatticePresets::Level(Label, Eps, Orbital, down);
+    }
+    return res;
 }
 
-void LatticePresets::addMagnetization(Lattice *L, const std::string& Label, MelemType Magnetization)
-{
-    if (L->Sites.find(Label)==L->Sites.end()) { ERROR("No site" << Label << "found."); throw (Lattice::exWrongLabel()); };
-    unsigned short Orbitals = L->Sites[Label]->OrbitalSize;
-    unsigned short Spins = L->Sites[Label]->SpinSize;
-    if (Spins!=2) { ERROR("addSzSz doesn't work not for 2 spins."); throw (Lattice::Term::Presets::exWrongIndices()); };
-    for (unsigned short i=0; i<Orbitals; ++i) {
-            L->Terms->addTerm(Lattice::Term::Presets::Level(Label, Magnetization, i, Pomerol::up ));
-            L->Terms->addTerm(Lattice::Term::Presets::Level(Label, -Magnetization, i, Pomerol::down ));
-        };
+ComplexExpr Level(std::string const& Label, ComplexType Eps, unsigned short NOrbitals) {
+    ComplexExpr res;
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        res += LatticePresets::Level(Label, Eps, Orbital, up);
+        res += LatticePresets::Level(Label, Eps, Orbital, down);
+    }
+    return res;
 }
 
-void LatticePresets::addSzSz ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType ExchJ)
-{
+//
+// Overloads of Hopping()
+//
 
-    if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
-    if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
-    unsigned short Orbitals = L->Sites[Label1]->OrbitalSize;
-    unsigned short Spins = L->Sites[Label1]->SpinSize;
-    if ( Orbitals != L->Sites[Label2]->OrbitalSize || Spins != L->Sites[Label1]->SpinSize ) { ERROR("Adjacent sites spin and orbital sizes do not match. Use Lattice::addTerm for specific interaction."); throw (Lattice::Term::Presets::exWrongIndices()); };
-    if (Spins!=2) { ERROR("addSzSz doesn't work not for 2 spins."); throw (Lattice::exWrongLabel()); };
-    for (unsigned short i=0; i<Orbitals; ++i) {
-            L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label1, Label2, -ExchJ/4., i, i, up, down));
-            L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label1, Label2, -ExchJ/4., i, i, down, up));
-            if ( Label1 != Label2) {
-                L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label1, Label2, ExchJ/4., i, i, up, up));
-                L->Terms->addTerm(Lattice::Term::Presets::NupNdown(Label1, Label2, ExchJ/4., i, i, down, down));
+RealExpr Hopping(std::string const& Label1,
+                 std::string const& Label2,
+                 RealType t,
+                 unsigned short Orbital1,
+                 unsigned short Orbital2,
+                 spin Spin1,
+                 spin Spin2) {
+    return (t * c_dag(Label1, Orbital1, Spin1) * c(Label2, Orbital2, Spin2)) + Operators::hc;
+}
+ComplexExpr Hopping(std::string const& Label1,
+                    std::string const& Label2,
+                    ComplexType t,
+                    unsigned short Orbital1,
+                    unsigned short Orbital2,
+                    spin Spin1,
+                    spin Spin2) {
+    return (t * c_dag(Label1, Orbital1, Spin1) * c(Label2, Orbital2, Spin2)) + Operators::hc;
+}
+
+RealExpr Hopping(std::string const& Label1, std::string const& Label2, RealType t, unsigned short Orbital, spin Spin) {
+    return Hopping(Label1, Label2, t, Orbital, Orbital, Spin, Spin);
+}
+ComplexExpr
+Hopping(std::string const& Label1, std::string const& Label2, ComplexType t, unsigned short Orbital, spin Spin) {
+    return Hopping(Label1, Label2, t, Orbital, Orbital, Spin, Spin);
+}
+
+RealExpr Hopping(std::string const& Label1,
+                 std::string const& Label2,
+                 RealType t,
+                 unsigned short Orbital1,
+                 unsigned short Orbital2) {
+    return Hopping(Label1, Label2, t, Orbital1, Orbital2, up, up) +
+           Hopping(Label1, Label2, t, Orbital1, Orbital2, down, down);
+}
+ComplexExpr Hopping(std::string const& Label1,
+                    std::string const& Label2,
+                    ComplexType t,
+                    unsigned short Orbital1,
+                    unsigned short Orbital2) {
+    return Hopping(Label1, Label2, t, Orbital1, Orbital2, up, up) +
+           Hopping(Label1, Label2, t, Orbital1, Orbital2, down, down);
+}
+
+RealExpr Hopping(std::string const& Label1, std::string const& Label2, RealType t, unsigned short NOrbitals) {
+    RealExpr res;
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        res += LatticePresets::Hopping(Label1, Label2, t, Orbital, up);
+        res += LatticePresets::Hopping(Label1, Label2, t, Orbital, down);
+    }
+    return res;
+}
+ComplexExpr Hopping(std::string const& Label1, std::string const& Label2, ComplexType t, unsigned short NOrbitals) {
+    ComplexExpr res;
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        res += LatticePresets::Hopping(Label1, Label2, t, Orbital, up);
+        res += LatticePresets::Hopping(Label1, Label2, t, Orbital, down);
+    }
+    return res;
+}
+
+//
+// Overloads of Magnetization()
+//
+
+RealExpr Magnetization(std::string const& Label, RealType H, unsigned short NOrbitals) {
+    RealExpr res;
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        res += LatticePresets::Level(Label, H, Orbital, up);
+        res += LatticePresets::Level(Label, -H, Orbital, down);
+    }
+    return res;
+}
+
+ComplexExpr Magnetization(std::string const& Label, ComplexType H, unsigned short NOrbitals) {
+    ComplexExpr res;
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        res += LatticePresets::Level(Label, H, Orbital, up);
+        res += LatticePresets::Level(Label, -H, Orbital, down);
+    }
+    return res;
+}
+
+//
+// Overloads of NupNdown()
+//
+
+RealExpr NupNdown(std::string const& Label1,
+                  std::string const& Label2,
+                  RealType U,
+                  unsigned short Orbital1,
+                  unsigned short Orbital2,
+                  spin Spin1,
+                  spin Spin2) {
+    return U * n(Label1, Orbital1, Spin1) * n(Label2, Orbital2, Spin2);
+}
+ComplexExpr NupNdown(std::string const& Label1,
+                     std::string const& Label2,
+                     ComplexType U,
+                     unsigned short Orbital1,
+                     unsigned short Orbital2,
+                     spin Spin1,
+                     spin Spin2) {
+    return U * n(Label1, Orbital1, Spin1) * n(Label2, Orbital2, Spin2);
+}
+
+RealExpr NupNdown(std::string const& Label,
+                  RealType U,
+                  unsigned short Orbital1,
+                  unsigned short Orbital2,
+                  spin Spin1,
+                  spin Spin2) {
+    return NupNdown(Label, Label, U, Orbital1, Orbital2, Spin1, Spin2);
+}
+ComplexExpr NupNdown(std::string const& Label,
+                     ComplexType U,
+                     unsigned short Orbital1,
+                     unsigned short Orbital2,
+                     spin Spin1,
+                     spin Spin2) {
+    return NupNdown(Label, Label, U, Orbital1, Orbital2, Spin1, Spin2);
+}
+
+RealExpr NupNdown(std::string const& Label, RealType U, unsigned short Orbital1, unsigned short Orbital2) {
+    return NupNdown(Label, Label, U, Orbital1, Orbital2, up, down);
+}
+ComplexExpr NupNdown(std::string const& Label, ComplexType U, unsigned short Orbital1, unsigned short Orbital2) {
+    return NupNdown(Label, Label, U, Orbital1, Orbital2, up, down);
+}
+
+RealExpr NupNdown(std::string const& Label, RealType U, unsigned short Orbital, spin Spin1, spin Spin2) {
+    return NupNdown(Label, Label, U, Orbital, Orbital, Spin1, Spin2);
+}
+ComplexExpr NupNdown(std::string const& Label, ComplexType U, unsigned short Orbital, spin Spin1, spin Spin2) {
+    return NupNdown(Label, Label, U, Orbital, Orbital, Spin1, Spin2);
+}
+
+//
+// Overloads of Spinflip()
+//
+
+RealExpr Spinflip(std::string const& Label,
+                  RealType J,
+                  unsigned short Orbital1,
+                  unsigned short Orbital2,
+                  spin Spin1,
+                  spin Spin2) {
+    return J * c_dag(Label, Orbital1, Spin1) * c_dag(Label, Orbital2, Spin2) * c(Label, Orbital2, Spin1) *
+           c(Label, Orbital1, Spin2);
+}
+ComplexExpr Spinflip(std::string const& Label,
+                     ComplexType J,
+                     unsigned short Orbital1,
+                     unsigned short Orbital2,
+                     spin Spin1,
+                     spin Spin2) {
+    return J * c_dag(Label, Orbital1, Spin1) * c_dag(Label, Orbital2, Spin2) * c(Label, Orbital2, Spin1) *
+           c(Label, Orbital1, Spin2);
+}
+
+//
+// Overloads of PairHopping()
+//
+
+RealExpr PairHopping(std::string const& Label,
+                     RealType J,
+                     unsigned short Orbital1,
+                     unsigned short Orbital2,
+                     spin Spin1,
+                     spin Spin2) {
+    return J * c_dag(Label, Orbital1, Spin1) * c_dag(Label, Orbital1, Spin2) * c(Label, Orbital2, Spin1) *
+           c(Label, Orbital2, Spin2);
+}
+ComplexExpr PairHopping(std::string const& Label,
+                        ComplexType J,
+                        unsigned short Orbital1,
+                        unsigned short Orbital2,
+                        spin Spin1,
+                        spin Spin2) {
+    return J * c_dag(Label, Orbital1, Spin1) * c_dag(Label, Orbital1, Spin2) * c(Label, Orbital2, Spin1) *
+           c(Label, Orbital2, Spin2);
+}
+
+//
+// Overloads of SplusSminus()
+//
+
+RealExpr SplusSminus(std::string const& Label1, std::string const& Label2, RealType J, unsigned short Orbital) {
+    return J * c_dag(Label1, Orbital, up) * c(Label1, Orbital, down) * c_dag(Label2, Orbital, down) *
+           c(Label2, Orbital, up);
+}
+ComplexExpr SplusSminus(std::string const& Label1, std::string const& Label2, ComplexType J, unsigned short Orbital) {
+    return J * c_dag(Label1, Orbital, up) * c(Label1, Orbital, down) * c_dag(Label2, Orbital, down) *
+           c(Label2, Orbital, up);
+}
+
+//
+// Overloads of SminusSplus()
+//
+
+RealExpr SminusSplus(std::string const& Label1, std::string const& Label2, RealType J, unsigned short Orbital) {
+    return J * c_dag(Label1, Orbital, down) * c(Label1, Orbital, up) * c_dag(Label2, Orbital, up) *
+           c(Label2, Orbital, down);
+}
+ComplexExpr SminusSplus(std::string const& Label1, std::string const& Label2, ComplexType J, unsigned short Orbital) {
+    return J * c_dag(Label1, Orbital, down) * c(Label1, Orbital, up) * c_dag(Label2, Orbital, up) *
+           c(Label2, Orbital, down);
+}
+
+//
+// Overloads of SzSz()
+//
+
+RealExpr SzSz(std::string const& Label1, std::string const& Label2, RealType J, unsigned short NOrbitals) {
+    RealExpr res;
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        LatticePresets::NupNdown(Label1, Label2, -J / 4., Orbital, Orbital, up, down);
+        LatticePresets::NupNdown(Label1, Label2, -J / 4., Orbital, Orbital, down, up);
+        if(Label1 != Label2) {
+            res += LatticePresets::NupNdown(Label1, Label2, J / 4., Orbital, Orbital, up, up);
+            res += LatticePresets::NupNdown(Label1, Label2, J / 4., Orbital, Orbital, down, down);
+        } else {
+            res += LatticePresets::Level(Label1, J / 4., Orbital, up);
+            res += LatticePresets::Level(Label1, J / 4., Orbital, down);
+        }
+    }
+    return res;
+}
+
+ComplexExpr SzSz(std::string const& Label1, std::string const& Label2, ComplexType J, unsigned short NOrbitals) {
+    ComplexExpr res;
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        LatticePresets::NupNdown(Label1, Label2, -J / 4., Orbital, Orbital, up, down);
+        LatticePresets::NupNdown(Label1, Label2, -J / 4., Orbital, Orbital, down, up);
+        if(Label1 != Label2) {
+            res += LatticePresets::NupNdown(Label1, Label2, J / 4., Orbital, Orbital, up, up);
+            res += LatticePresets::NupNdown(Label1, Label2, J / 4., Orbital, Orbital, down, down);
+        } else {
+            res += LatticePresets::Level(Label1, J / 4., Orbital, up);
+            res += LatticePresets::Level(Label1, J / 4., Orbital, down);
+        }
+    }
+    return res;
+}
+
+//
+// Overloads of SS()
+//
+
+RealExpr SS(std::string const& Label1, std::string const& Label2, RealType J, unsigned short NOrbitals) {
+    RealExpr res = SzSz(Label1, Label2, J, NOrbitals);
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        res += LatticePresets::SplusSminus(Label1, Label2, J / 2., Orbital);
+        res += LatticePresets::SminusSplus(Label1, Label2, J / 2., Orbital);
+    }
+    return res;
+}
+
+ComplexExpr SS(std::string const& Label1, std::string const& Label2, ComplexType J, unsigned short NOrbitals) {
+    ComplexExpr res = SzSz(Label1, Label2, J, NOrbitals);
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        res += LatticePresets::SplusSminus(Label1, Label2, J / 2., Orbital);
+        res += LatticePresets::SminusSplus(Label1, Label2, J / 2., Orbital);
+    }
+    return res;
+}
+
+//
+// Overloads of CoulombS()
+//
+
+RealExpr CoulombS(std::string const& Label, RealType U, RealType Eps, unsigned short NOrbitals) {
+    RealExpr res;
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        res += LatticePresets::Level(Label, Eps, Orbital, up) + LatticePresets::Level(Label, Eps, Orbital, down) +
+               LatticePresets::NupNdown(Label, U, Orbital, Orbital, up, down);
+    }
+    return res;
+}
+ComplexExpr CoulombS(std::string const& Label, ComplexType U, ComplexType Eps, unsigned short NOrbitals) {
+    ComplexExpr res;
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        res += LatticePresets::Level(Label, Eps, Orbital, up) + LatticePresets::Level(Label, Eps, Orbital, down) +
+               LatticePresets::NupNdown(Label, U, Orbital, Orbital, up, down);
+    }
+    return res;
+}
+
+//
+// Overloads of CoulombP()
+//
+
+RealExpr
+CoulombP(std::string const& Label, RealType U, RealType U_p, RealType J, RealType Eps, unsigned short NOrbitals) {
+    if(NOrbitals < 2)
+        throw std::runtime_error("Cannot add multiorbital interaction to a site with 1 orbital");
+    RealExpr res;
+    for(unsigned short Orbital1 = 0; Orbital1 < NOrbitals; ++Orbital1) {
+        for(spin s1 : {up, down}) {
+            res += LatticePresets::Level(Label, Eps, Orbital1, s1);
+            for(unsigned short Orbital2 = 0; Orbital2 < NOrbitals; ++Orbital2)
+                if(Orbital1 != Orbital2)
+                    res += LatticePresets::NupNdown(Label, (U_p - J) / 2.0, Orbital1, Orbital2, s1, s1);
+            for(spin s2 : {up, down}) {
+                if(s2 >= s1)
+                    continue;
+                res += LatticePresets::NupNdown(Label, U, Orbital1, Orbital1, s1, s2);
+                for(unsigned short Orbital2 = 0; Orbital2 < NOrbitals; ++Orbital2) {
+                    if(Orbital1 != Orbital2) {
+                        res += LatticePresets::NupNdown(Label, U_p, Orbital1, Orbital2, s1, s2);
+                        res += LatticePresets::Spinflip(Label, -J, Orbital1, Orbital2, s1, s2);
+                        res += LatticePresets::PairHopping(Label, -J, Orbital1, Orbital2, s1, s2);
+                    }
                 }
-            else {
-                L->Terms->addTerm(Lattice::Term::Presets::Level(Label1, ExchJ/4., i, up));
-                L->Terms->addTerm(Lattice::Term::Presets::Level(Label1, ExchJ/4., i, down));
-                };
-        };
+            }
+        }
+    }
+    return res;
+}
+ComplexExpr CoulombP(std::string const& Label,
+                     ComplexType U,
+                     ComplexType U_p,
+                     ComplexType J,
+                     ComplexType Eps,
+                     unsigned short NOrbitals) {
+    if(NOrbitals < 2)
+        throw std::runtime_error("Cannot add multiorbital interaction to a site with 1 orbital");
+    ComplexExpr res;
+    for(unsigned short Orbital1 = 0; Orbital1 < NOrbitals; ++Orbital1) {
+        for(spin s1 : {up, down}) {
+            res += LatticePresets::Level(Label, Eps, Orbital1, s1);
+            for(unsigned short Orbital2 = 0; Orbital2 < NOrbitals; ++Orbital2)
+                if(Orbital1 != Orbital2)
+                    res += LatticePresets::NupNdown(Label, (U_p - J) / 2.0, Orbital1, Orbital2, s1, s1);
+            for(spin s2 : {up, down}) {
+                if(s2 >= s1)
+                    continue;
+                res += LatticePresets::NupNdown(Label, U, Orbital1, Orbital1, s1, s2);
+                for(unsigned short Orbital2 = 0; Orbital2 < NOrbitals; ++Orbital2) {
+                    if(Orbital1 != Orbital2) {
+                        res += LatticePresets::NupNdown(Label, U_p, Orbital1, Orbital2, s1, s2);
+                        res += LatticePresets::Spinflip(Label, -J, Orbital1, Orbital2, s1, s2);
+                        res += LatticePresets::PairHopping(Label, -J, Orbital1, Orbital2, s1, s2);
+                    }
+                }
+            }
+        }
+    }
+    return res;
 }
 
-void LatticePresets::addSS ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType ExchJ)
-{
-    if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
-    if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
-    unsigned short Orbitals = L->Sites[Label1]->OrbitalSize;
-    unsigned short Spins = L->Sites[Label1]->SpinSize;
-    if ( Orbitals != L->Sites[Label2]->OrbitalSize || Spins != L->Sites[Label1]->SpinSize ) { ERROR("Adjacent sites spin and orbital sizes do not match. Use Lattice::addTerm for specific interaction."); throw (Lattice::Term::Presets::exWrongIndices()); };
-    if (Spins!=2) { ERROR("addSS doesn't work not for 2 spins."); throw (Lattice::exWrongLabel()); };
-
-    addSzSz(L, Label1, Label2, ExchJ);
-    for (unsigned short i=0; i<Orbitals; ++i) {
-        L->Terms->addTerm(Lattice::Term::Presets::SplusSminus(Label1, Label2, ExchJ/2., i));
-        L->Terms->addTerm(Lattice::Term::Presets::SminusSplus(Label1, Label2, ExchJ/2., i));
-        };
+RealExpr CoulombP(std::string const& Label, RealType U, RealType J, RealType Eps, unsigned short NOrbitals) {
+    return CoulombP(Label, U, U - 2.0 * J, J, Eps, NOrbitals);
+}
+ComplexExpr
+addCoulombP(std::string const& Label, ComplexType U, ComplexType J, ComplexType Eps, unsigned short NOrbitals) {
+    return CoulombP(Label, U, U - 2.0 * J, J, Eps, NOrbitals);
 }
 
-void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin1, unsigned short Spin2)
-{
-    if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
-    if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
-    if (Orbital1 >= L->Sites[Label1]->OrbitalSize || Orbital2 >= L->Sites[Label2]->OrbitalSize || Spin1 >= L->Sites[Label1]->SpinSize || Spin2 >= L->Sites[Label2]->SpinSize ) {
-        ERROR("Orbital or Spin index mismatch"); throw ( Lattice::Term::Presets::exWrongIndices() );
-        };
-    L->addTerm(Lattice::Term::Presets::Hopping(Label1, Label2, t, Orbital1, Orbital2, Spin1, Spin2));
-    #ifdef POMEROL_COMPLEX_MATRIX_ELEMENTS
-    L->addTerm(Lattice::Term::Presets::Hopping(Label2, Label1, conj(t), Orbital2, Orbital1, Spin2, Spin1)); // Hermite conjugate
-    #else
-    L->addTerm(Lattice::Term::Presets::Hopping(Label2, Label1, t, Orbital2, Orbital1, Spin2, Spin1));
-    #endif
+//
+// Bosons
+//
+
+RealExpr BosonLevel(std::string const& Label, RealType Eps, unsigned short ExtraIndex) {
+    return Eps * a_dag(Label, ExtraIndex, undef) * a(Label, ExtraIndex, undef);
 }
 
-void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType t, unsigned short Orbital1, unsigned short Orbital2, unsigned short Spin)
-{
-    addHopping(L,Label1, Label2, t, Orbital1, Orbital2, Spin, Spin);
+ComplexExpr BosonLevel(std::string const& Label, ComplexType Eps, unsigned short ExtraIndex) {
+    return Eps * a_dag(Label, ExtraIndex, undef) * a(Label, ExtraIndex, undef);
 }
 
-void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType t, unsigned short Orbital1, unsigned short Orbital2)
-{
-    if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site " << Label1 << " found."); throw (Lattice::exWrongLabel()); };
-    if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site " << Label2 << " found."); throw (Lattice::exWrongLabel()); };
-    if (Orbital1 >= L->Sites[Label1]->OrbitalSize || Orbital2 >= L->Sites[Label2]->OrbitalSize ){
-        ERROR("Orbital or Spin index mismatch"); throw ( Lattice::Term::Presets::exWrongIndices() );
-        };
-    unsigned short Spins = L->Sites[Label1]->SpinSize;
-    if ( Spins != L->Sites[Label1]->SpinSize ) { ERROR("Adjacent sites spin sizes do not match. Use Lattice::addTerm for specific interaction."); throw (Lattice::Term::Presets::exWrongIndices()); };
-    for (int z=0; z<Spins; ++z) addHopping(L, Label1, Label2, t, Orbital1, Orbital2, z, z);
+RealExpr BosonInteraction(std::string const& Label, RealType U, unsigned short ExtraIndex) {
+    auto nb = a_dag(Label, ExtraIndex, undef) * a(Label, ExtraIndex, undef);
+    return 0.5 * U * nb * (nb - 1.0);
 }
 
-void LatticePresets::addHopping ( Lattice *L, const std::string& Label1, const std::string& Label2, MelemType t)
-{
-    if (L->Sites.find(Label1)==L->Sites.end()) { ERROR("No site" << Label1 << "found."); throw (Lattice::exWrongLabel()); };
-    if (L->Sites.find(Label2)==L->Sites.end()) { ERROR("No site" << Label2 << "found."); throw (Lattice::exWrongLabel()); };
-    unsigned short Orbitals = L->Sites[Label1]->OrbitalSize;
-    unsigned short Spins = L->Sites[Label1]->SpinSize;
-    if ( Orbitals != L->Sites[Label2]->OrbitalSize || Spins != L->Sites[Label1]->SpinSize ) {
-        ERROR("Adjacent sites spin and orbital sizes do not match. Use Lattice::addTerm for specific interaction."); throw (Lattice::Term::Presets::exWrongIndices());
-        };
-
-    for (unsigned short z=0; z<Spins; ++z)
-        for (unsigned short i=0; i<Orbitals; ++i)
-            addHopping(L, Label1, Label2, t, i, i, z, z);
-
+ComplexExpr BosonInteraction(std::string const& Label, ComplexType U, unsigned short ExtraIndex) {
+    auto nb = a_dag(Label, ExtraIndex, undef) * a(Label, ExtraIndex, undef);
+    return 0.5 * U * nb * (nb - 1.0);
 }
 
-} // end of namespace Pomerol
+RealExpr
+HolsteinInteraction(std::string const& Label, RealType Lambda, unsigned short Orbital, unsigned short BosonExtraIndex) {
+    auto N = n(Label, Orbital, up) + n(Label, Orbital, down);
+    return Lambda * N * (a_dag(Label, BosonExtraIndex, undef) + a(Label, BosonExtraIndex, undef));
+}
+
+ComplexExpr HolsteinInteraction(std::string const& Label,
+                                ComplexType Lambda,
+                                unsigned short Orbital,
+                                unsigned short BosonExtraIndex) {
+    auto N = n(Label, Orbital, up) + n(Label, Orbital, down);
+    return Lambda * N * (a_dag(Label, BosonExtraIndex, undef) + a(Label, BosonExtraIndex, undef));
+}
+
+} // namespace LatticePresets
+} // namespace Pomerol

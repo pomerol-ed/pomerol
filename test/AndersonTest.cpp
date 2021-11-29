@@ -1,128 +1,124 @@
-#include <Misc.h>
-#include <Lattice.h>
-#include <LatticePresets.h>
-#include <Index.h>
-#include <IndexClassification.h>
-#include <Operator.h>
-#include <OperatorPresets.h>
-#include <IndexHamiltonian.h>
-#include <Symmetrizer.h>
-#include <StatesClassification.h>
-#include <HamiltonianPart.h>
-#include <Hamiltonian.h>
-#include <FieldOperatorContainer.h>
-#include <GFContainer.h>
+//
+// This file is part of pomerol, an exact diagonalization library aimed at
+// solving condensed matter models of interacting fermions.
+//
+// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+/// \file test/AndersonTest.cpp
+/// \brief Single-particle Green's functions of the Anderson impurity model.
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+
+#include <pomerol/DensityMatrix.hpp>
+#include <pomerol/FieldOperatorContainer.hpp>
+#include <pomerol/GreensFunction.hpp>
+#include <pomerol/Hamiltonian.hpp>
+#include <pomerol/HilbertSpace.hpp>
+#include <pomerol/IndexClassification.hpp>
+#include <pomerol/LatticePresets.hpp>
+#include <pomerol/Misc.hpp>
+#include <pomerol/StatesClassification.hpp>
+
+#include "catch2/catch-pomerol.hpp"
 
 using namespace Pomerol;
 
-RealType beta = 20;
-RealType U = 3.7;
-RealType mu = U/2*0;
-RealType h = 0.0;
-RealType V = 1.0;
-RealType epsilon = 2.3;
+TEST_CASE("Anderson model with 2 bath sites", "[Anderson]") {
+    RealType U = 3.7;
+    RealType mu = 0.6 * U;
+    RealType h = 0.1;
+    RealType V = 1.0;
+    RealType epsilon = 2.3;
+    RealType beta = 20;
 
-int main(int argc, char* argv[])
-{
-    boost::mpi::environment env(argc,argv);
-    boost::mpi::communicator world;
+    // Reference Green's functions
+    ComplexVectorType G_ref_up(10);
+    // clang-format off
+    G_ref_up << -0.7545439 - 0.14723373 * I,
+                -0.59517353 - 0.34478922 * I,
+                -0.42646689 - 0.4031622 * I,
+                -0.30758605 - 0.39519013 * I,
+                -0.23068661 - 0.36811109 * I,
+                -0.18013326 - 0.33885065 * I,
+                -0.14541077 - 0.31208195 * I,
+                -0.12043127 - 0.28860297 * I,
+                -0.10171394 - 0.26815136 * I, // cppcheck-suppress constStatement
+                -0.08721336 - 0.25025992 * I;
+    // clang-format on
+    ComplexVectorType G_ref_down(10);
+    // clang-format off
+    G_ref_down << 0.49196891 - 0.07241433 * I,
+                  0.44396903 - 0.18681652 * I,
+                  0.37248532 - 0.24764566 * I,
+                  0.30425235 - 0.26969548 * I,
+                  0.24921656 - 0.27135953 * I,
+                  0.20705484 - 0.26399883 * I,
+                  0.1748209 - 0.25319165 * I,
+                  0.14976473 - 0.2414213 * I,
+                  0.12986709 - 0.22973732 * I, // cppcheck-suppress constStatement
+                  0.11373954 - 0.21855949 * I;
+    // clang-format on
 
-    
-    Lattice L;
-    // Correlated site
-    L.addSite(new Lattice::Site("C",1,2));
-    // Bath sites
-    L.addSite(new Lattice::Site("0",1,2));
-    //L.addSite(new Lattice::Site("1",1,2));
-    
-    LatticePresets::addCoulombS(&L, "C", U, -mu);
-/*
-    LatticePresets::addMagnetization(&L, "C", 2*h);
-    LatticePresets::addLevel(&L, "0", -epsilon);
-    LatticePresets::addLevel(&L, "1", epsilon);
-    LatticePresets::addHopping(&L, "C", "0", V);
-    LatticePresets::addHopping(&L, "C", "1", V);
-*/
-    IndexClassification IndexInfo(L.getSiteMap());
-    IndexInfo.prepare();
-    INFO("Indices");
-    IndexInfo.printIndices();
-    
-    IndexHamiltonian HStorage(&L,IndexInfo);
-    HStorage.prepare();
+    using namespace LatticePresets;
 
-    Symmetrizer Symm(IndexInfo, HStorage);
-    //Symm.compute(true);
-    Symm.compute(false);
+    auto HExpr = CoulombS("C", U, -mu);
+    HExpr += Magnetization("C", h);
+    HExpr += Level("0", -epsilon);
+    HExpr += Level("1", epsilon);
+    HExpr += Hopping("C", "0", V);
+    HExpr += Hopping("C", "1", V);
+    INFO("Hamiltonian\n" << HExpr);
 
-    StatesClassification S(IndexInfo,Symm);
-    S.compute();
+    auto IndexInfo = MakeIndexClassification(HExpr);
+    INFO("Indices\n" << IndexInfo);
 
-    Hamiltonian H(IndexInfo, HStorage, S);
-    H.prepare();
-    for (BlockNumber i=0; i<S.NumberOfBlocks(); i++) {
-        INFO(S.getQuantumNumbers(i));
-        std::vector<FockState> st = S.getFockStates(i);
-        for (int i=0; i<st.size(); ++i) INFO(st[i]);
-//        INFO(H.getPart(i).getBlockNumber() << "|" << H.getPart(i).getQuantumNumbers());
-//        INFO(H.getPart(i).getMatrix());
-        INFO("");
-    };
+    auto HS = MakeHilbertSpace(IndexInfo, HExpr);
+    HS.compute();
+    StatesClassification S;
+    S.compute(HS);
 
-    H.compute(world);
+    Hamiltonian H(S);
+    H.prepare(HExpr, HS, MPI_COMM_WORLD);
+    H.compute(MPI_COMM_WORLD);
+    INFO("Energy levels " << H.getEigenValues());
+    INFO("The value of ground energy is " << H.getGroundEnergy());
 
-    DensityMatrix rho(S,H,beta);
+    DensityMatrix rho(S, H, beta);
     rho.prepare();
     rho.compute();
-    
-    FieldOperatorContainer Operators(IndexInfo, S, H);
-    Operators.prepareAll();
+
+    FieldOperatorContainer Operators(IndexInfo, HS, S, H);
+    Operators.prepareAll(HS);
     Operators.computeAll();
 
-    ParticleIndex down_index = IndexInfo.getIndex("C",0,down);
-    ParticleIndex up_index = IndexInfo.getIndex("C",0,up);
+    ParticleIndex C_down_index = IndexInfo.getIndex("C", 0, down);
+    ParticleIndex C_up_index = IndexInfo.getIndex("C", 0, up);
 
-    DEBUG(down_index);
-    DEBUG(up_index);
-    
-    IndexInfo.printIndices();
-    for (ParticleIndex i=0; i<IndexInfo.getIndexSize(); i++) {
-    INFO("C^+_"<<i);
-/*
-    FieldOperator::BlocksBimap c_map=Operators.getCreationOperator(i).getBlockMapping();
-    for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
-        {
-            //INFO(c_map_it->second << "->" << c_map_it->first);
-            //INFO(S.getQuantumNumbers(c_map_it->second) << "->" << S.getQuantumNumbers(c_map_it->first));
-            Operators.getCreationOperator(i).getPartFromRightIndex(c_map_it->second).print_to_screen();
-        }
-    c_map=Operators.getAnnihilationOperator(i).getBlockMapping();
-    for (FieldOperator::BlocksBimap::right_const_iterator c_map_it=c_map.right.begin(); c_map_it!=c_map.right.end(); c_map_it++)
-        {
-            //INFO(c_map_it->second << "->" << c_map_it->first);
-            //INFO(S.getQuantumNumbers(c_map_it->second) << "->" << S.getQuantumNumbers(c_map_it->first));
-            Operators.getAnnihilationOperator(i).getPartFromRightIndex(c_map_it->second).print_to_screen();
-        }
+    GreensFunction GF_down(S,
+                           H,
+                           Operators.getAnnihilationOperator(C_down_index),
+                           Operators.getCreationOperator(C_down_index),
+                           rho);
 
-*/
-    };
+    GreensFunction GF_up(S,
+                         H,
+                         Operators.getAnnihilationOperator(C_up_index),
+                         Operators.getCreationOperator(C_up_index),
+                         rho);
 
-    GreensFunction GF_down(S,H,
-    	Operators.getAnnihilationOperator(down_index),
-    	Operators.getCreationOperator(down_index),
-	rho);
-    
-    GreensFunction GF_up(S,H,
-    	Operators.getAnnihilationOperator(up_index),
-    	Operators.getCreationOperator(up_index),
-	rho);
+    GF_down.prepare();
+    GF_up.prepare();
+    GF_down.compute();
+    GF_up.compute();
 
-    GF_down.prepare(); DEBUG(""); GF_up.prepare();
-    GF_down.compute(); DEBUG(""); GF_up.compute();
-
-    for (size_t i=0; i<10; i++) {
-        INFO(GF_down(i) << " " << GF_up(i));
-        };
-
-    return EXIT_SUCCESS;
+    for(int n = 0; n < G_ref_up.size(); ++n) {
+        REQUIRE_THAT(GF_up(n), IsCloseTo(G_ref_up[n], 1e-8));
+    }
+    for(int n = 0; n < G_ref_down.size(); ++n) {
+        REQUIRE_THAT(GF_down(n), IsCloseTo(G_ref_down[n], 1e-8));
+    }
 }

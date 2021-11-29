@@ -1,107 +1,52 @@
-#include "pomerol/DensityMatrixPart.h"
+//
+// This file is part of pomerol, an exact diagonalization library aimed at
+// solving condensed matter models of interacting fermions.
+//
+// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-namespace Pomerol{
-DensityMatrixPart::DensityMatrixPart(const StatesClassification &S, const HamiltonianPart& hpart, RealType beta, RealType GroundEnergy) :
-    Thermal(beta), S(S), hpart(hpart), GroundEnergy(GroundEnergy), weights(hpart.getSize()), retained(true)
-{}
+/// \file src/pomerol/DensityMatrixPart.cpp
+/// \brief Diagonal block of a many-body Gibbs density matrix (implementation).
+/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
-RealType DensityMatrixPart::computeUnnormalized(void)
-{
-    Z_part = 0;
-    QuantumState partSize = weights.size();
-    for(InnerQuantumState s = 0; s < partSize; ++s){
-        // The non-normalized weight is <=1 for any state.
-        weights(s) = exp(-beta*(hpart.getEigenValue(s)-GroundEnergy));
-        Z_part += weights(s);
-    }
-    return Z_part;
+#include "pomerol/DensityMatrixPart.hpp"
+
+namespace Pomerol {
+
+DensityMatrixPart::DensityMatrixPart(HamiltonianPart const& H, RealType beta, RealType GroundEnergy)
+    : Thermal(beta), H(H), GroundEnergy(GroundEnergy), weights(H.getSize()) {}
+
+RealType DensityMatrixPart::computeUnnormalized() {
+    weights = exp(-beta * (H.getEigenValues().array() - GroundEnergy));
+    return weights.sum();
 }
 
-void DensityMatrixPart::normalize(RealType Z)
-{
+void DensityMatrixPart::normalize(RealType Z) {
     weights /= Z;
     Z_part /= Z;
 }
 
-RealType DensityMatrixPart::getPartialZ(void) const
-{
-    return Z_part;
+RealType DensityMatrixPart::getAverageEnergy() const {
+    return weights.dot(H.getEigenValues());
 }
 
-RealType DensityMatrixPart::getAverageEnergy(void) const
-{
-    RealType E=0.;
-    InnerQuantumState partSize = weights.size();
-    for(InnerQuantumState s = 0; s < partSize; ++s){
-        E += weights(s)*hpart.getEigenValue(s);
-    }
-    return E;
-};
-
-RealType DensityMatrixPart::getAverageOccupancy(void) const
-{
-    RealType n=0.;
-    InnerQuantumState partSize = weights.size();
-    for(InnerQuantumState s = 0; s < partSize; ++s){
-        VectorType CurrentEigenState = hpart.getEigenState(s);
-        for (InnerQuantumState fi=0; (long) fi < CurrentEigenState.size(); ++fi)
-            n += weights(s)*
-		    S.getFockState(hpart.getBlockNumber(),fi).count()*
-		    std::abs(CurrentEigenState(fi)*CurrentEigenState(fi));
-    };
-    return n;
-};
-
-RealType DensityMatrixPart::getAverageOccupancy(ParticleIndex i) const
-{
-    RealType n=0.;
-    InnerQuantumState partSize = weights.size();
-    for(InnerQuantumState s = 0; s < partSize; ++s){
-        VectorType CurrentEigenState = hpart.getEigenState(s);
-        for (InnerQuantumState fi=0; (long) fi < CurrentEigenState.size(); ++fi)
-            n += weights(s)*
-		    S.getFockState(hpart.getBlockNumber(),fi).test(i)*
-		    std::abs(CurrentEigenState(fi)*CurrentEigenState(fi));
-    };
-    return n;
-};
-
-
-
-RealType DensityMatrixPart::getAverageDoubleOccupancy(ParticleIndex i, ParticleIndex j) const
-{
-    RealType NN=0.;
-    QuantumState partSize = weights.size();
-    for(InnerQuantumState s = 0; s < partSize; ++s){ // s is an EigenState number
-        VectorType CurrentEigenState = hpart.getEigenState(s);
-        for (InnerQuantumState fi=0; (long) fi < CurrentEigenState.size(); ++fi)
-            NN += weights(s)*
-		    S.getFockState(hpart.getBlockNumber(),fi)[i]*
-		    S.getFockState(hpart.getBlockNumber(),fi)[j]*
-		std::abs(CurrentEigenState(fi)*CurrentEigenState(fi));
-    }
-    return NN;
-};
-
-RealType DensityMatrixPart::getWeight(InnerQuantumState s) const
-{
-    return weights(s);
+RealType DensityMatrixPart::getWeight(InnerQuantumState s) const {
+    return weights(static_cast<Eigen::Index>(s));
 }
 
-void DensityMatrixPart::truncate(RealType Tolerance)
-{
-    retained = false;
+void DensityMatrixPart::truncate(RealType Tolerance) {
+    Retained = false;
     InnerQuantumState partSize = weights.size();
-    for(InnerQuantumState s = 0; s < partSize; ++s)
-        if ( weights(s) > Tolerance ){
-            retained = true;
+    for(InnerQuantumState s = 0; s < partSize; ++s) {
+        if(weights(static_cast<Eigen::Index>(s)) > Tolerance) {
+            Retained = true;
             break;
         }
+    }
 }
 
-bool DensityMatrixPart::isRetained() const
-{
-    return retained;
-}
-
-} // end of namespace Pomerol
+} // namespace Pomerol
