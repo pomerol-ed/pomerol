@@ -1,0 +1,26 @@
+{
+  "title": "pomerol: An exact diagonalization code written in C++",
+  "license": "MPL-2.0",
+  "creators": [
+    {
+      "affiliation": "Microsoft Quantum, Microsoft Station Q, University of California, Santa Barbara, CA, USA",
+      "name": "Andrey Antipov",
+      "orcid": "0000-0002-4987-7183"
+    },
+    {
+      "affiliation": "I. Institute of Theoretical Physics, University of Hamburg, Hamburg, Germany",
+      "name": "Igor Krivenko",
+      "orcid": "0000-0002-9904-1229"
+    },
+    {
+      "affiliation": "University of Michigan, Ann Arbor, MI, USA",
+      "name": "Sergei Iskakov",
+      "orcid": "0000-0001-7639-1827"
+    },
+    {
+      "affiliation": "Research Institute for Interdisciplinary Science, Okayama University, Okayama, Japan",
+      "name": "Junya Otsuki"
+    }
+  ],
+  "access_right": "open"
+}
