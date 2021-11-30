@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Antipov
+    given-names: Andrey
+    orcid: https://orcid.org/0000-0002-4987-7183
+    affiliation: "Microsoft Quantum, Microsoft Station Q, University of California, Santa Barbara, CA, USA"
+  - family-names: Krivenko
+    given-names: Igor
+    orcid: https://orcid.org/0000-0002-9904-1229
+    affiliation: "I. Institute of Theoretical Physics, University of Hamburg, Hamburg, Germany"
+  - family-names: Iskakov
+    given-names: Sergei
+    orcid: https://orcid.org/0000-0001-7639-1827
+    affiliation: "University of Michigan, Ann Arbor, MI, USA"
+  - family-names: Otsuki
+    given-names: Junya
+    affiliation: "Research Institute for Interdisciplinary Science, Okayama University, Okayama, Japan"
+title: "pomerol: An exact diagonalization code written in C++"
+version: 2.0
+license: MPL-2.0
+date-released: 2021-11-29
