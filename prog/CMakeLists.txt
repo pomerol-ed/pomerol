@@ -11,7 +11,6 @@
 set(DEFAULT_PROGS
     anderson
     hubbard2d
-    quantum_model
 )
 
 # Find or fetch gftools
