@@ -55,7 +55,7 @@ jobs:
            mkdir build
            cd build
            cmake -DCMAKE_INSTALL_PREFIX=installed                              \
-                 -Dlibcommute_DIR=${HOME}/libcommute.ins/lib/cmake             \
+                 -Dlibcommute_DIR=${HOME}/libcommute.ins/lib/cmake/libcommute  \
                  -DStaticAnalysis=OFF                                          \
                  -DUSE_OPENMP=ON                                               \
                  -DDocumentation=${DOCS}                                       \

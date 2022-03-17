@@ -6,7 +6,7 @@ It consists of just one source file, `example2site.cpp`.
 In order to compile it, run
 
 ```shell
-cmake -Dlibcommute_DIR=<libcommute_installation_dir>/lib/cmake \
+cmake -Dlibcommute_DIR=<libcommute_installation_dir>/lib/cmake/libcommute \
       -Dpomerol_DIR=<pomerol_installation_dir>/share/pomerol \
       /path/to/this/tutorial
 make
