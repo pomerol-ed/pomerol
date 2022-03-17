@@ -117,8 +117,5 @@ Please, attribute this work by a citation to
   * Nils Wentzell
   * Hugo U.R. Strand
 
-We acknowledge [NRC Kurchatov Institute](http://eng.nrcki.ru/) for providing
-computational resources.
-
 # Development/Help
 Please, feel free to contact us and to contribute!
