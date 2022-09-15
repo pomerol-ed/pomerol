@@ -49,7 +49,7 @@ void StatesClassification::checkComputed() const {
     }
 }
 
-unsigned long StatesClassification::getBlockSize(BlockNumber in) const {
+Pomerol::InnerQuantumState StatesClassification::getBlockSize(BlockNumber in) const {
     checkComputed();
     return static_cast<InnerQuantumState>(getFockStates(in).size());
 }
