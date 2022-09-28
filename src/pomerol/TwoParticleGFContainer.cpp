@@ -82,7 +82,7 @@ TwoParticleGFContainer::computeAll_split(bool clearTerms, FreqVec const& freqs, 
     MPI_Barrier(comm);
     int comp = 0;
 
-    MPI_Comm comm_split = nullptr;
+    MPI_Comm comm_split = MPI_COMM_NULL;
     MPI_Comm_split(comm, proc_colors[comm_rank], comm_rank, &comm_split);
 
     for(auto iter = NonTrivialElements.begin(); iter != NonTrivialElements.end(); iter++, comp++) {
