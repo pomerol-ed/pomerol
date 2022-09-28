@@ -89,7 +89,7 @@ MPI_Datatype TwoParticleGFPart::NonResonantTerm::mpi_datatype() {
         MPI_Datatype types[] = {
             MPI_C_DOUBLE_COMPLEX, // ComplexType Coeff
             MPI_DOUBLE,             // RealType Poles[3]
-            MPI_CXX_BOOL,           // bool isz4
+            MPI_C_BOOL,           // bool isz4
             MPI_LONG                // long Weight
         };
         MPI_Type_create_struct(4, blocklengths, displacements, types, &dt);
@@ -143,7 +143,7 @@ MPI_Datatype TwoParticleGFPart::ResonantTerm::mpi_datatype() {
             MPI_C_DOUBLE_COMPLEX, // ComplexType ResCoeff
             MPI_C_DOUBLE_COMPLEX, // ComplexType NonResCoeff
             MPI_DOUBLE,             // RealType Poles[3]
-            MPI_CXX_BOOL,           // bool isz1z2
+            MPI_C_BOOL,           // bool isz1z2
             MPI_LONG                // long Weight
         };
         MPI_Type_create_struct(5, blocklengths, displacements, types, &dt);
