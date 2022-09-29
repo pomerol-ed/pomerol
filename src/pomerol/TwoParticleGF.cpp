@@ -185,7 +185,7 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs
         MPI_Allreduce(MPI_IN_PLACE,
                       m_data.data(),
                       static_cast<int>(m_data.size()),
-                      MPI_C_DOUBLE_COMPLEX,
+                      POMEROL_MPI_DOUBLE_COMPLEX,
                       MPI_SUM,
                       comm);
 

@@ -42,7 +42,7 @@ template <bool C> void Hamiltonian::prepareImpl(LOperatorTypeRC<C> const& HOp, M
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, false);
     MPI_Barrier(comm);
 
-    MPI_Datatype H_dt = C ? MPI_C_DOUBLE_COMPLEX : MPI_DOUBLE;
+    MPI_Datatype H_dt = C ? POMEROL_MPI_DOUBLE_COMPLEX : MPI_DOUBLE;
 
     for(int p = 0; p < static_cast<int>(parts.size()); ++p) {
         auto& part = parts[p];
@@ -77,7 +77,7 @@ template <bool C> void Hamiltonian::computeImpl(MPI_Comm const& comm) {
 
     // Start distributing data
     MPI_Barrier(comm);
-    MPI_Datatype H_dt = C ? MPI_C_DOUBLE_COMPLEX : MPI_DOUBLE;
+    MPI_Datatype H_dt = C ? POMEROL_MPI_DOUBLE_COMPLEX : MPI_DOUBLE;
     for(int p = 0; p < static_cast<int>(parts.size()); ++p) {
         auto& part = parts[p];
         auto& H = part.getMatrix<C>();
