@@ -97,7 +97,7 @@ public:
     /// Return a single eigenvalue of the Hamiltonian.
     /// \param[in] state Index of the eigenvalue within the full diagonalized matrix of the Hamiltonian.
     /// \pre \ref compute() has been called.
-    RealType getEigenValue(unsigned long state) const;
+    RealType getEigenValue(QuantumState state) const;
 
     /// Return a list of eigenvalues of the Hamiltonian within a block.
     /// \param[in] Block Index of the diagonal block.
