@@ -79,6 +79,12 @@ two-particle Green's functions as well as susceptibilities.
 The library, _libpomerol_ is built. It can be used for linking with executables.
 Some working executables are given in `prog` subdirectory.
 
+> :warning: It has been [reported](https://github.com/aeantipov/pomerol/pull/60)
+that some [MPICH](https://www.mpich.org/)-based MPI implementations, such as HPE
+Cray MPI may not properly support `MPI_CXX_*` datatypes, which pomerol's code
+depends on. In case you see failing MPI unit tests when linking to said MPI
+libraries, try using CMake option `-DUse_MPI_C_datatypes=ON`.
+
 ## Interfacing with your own code and other libraries
 
 Check the `tutorial` directory for an example of a pomerol-based code that is

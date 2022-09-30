@@ -85,6 +85,22 @@ message(STATUS "MPI includes: ${MPI_CXX_INCLUDE_PATH}")
 message(STATUS "MPI C++ libs: ${MPI_CXX_LIBRARIES}")
 message(STATUS "MPI flags: ${MPI_CXX_COMPILE_FLAGS} ${MPI_C_COMPILE_FLAGS}")
 
+#
+# Workaround for MPI implementations that do not properly support
+# MPI_CXX_* datatypes
+#
+option(Use_MPI_C_datatypes
+    "Workaround: Use MPI_C_* datatypes instead of similar MPI_CXX_* datatypes"
+    OFF)
+mark_as_advanced(Use_MPI_C_datatypes)
+if(Use_MPI_C_datatypes)
+    add_definitions(-DPOMEROL_MPI_BOOL=MPI_C_BOOL
+                    -DPOMEROL_MPI_DOUBLE_COMPLEX=MPI_C_DOUBLE_COMPLEX)
+else(Use_MPI_C_datatypes)
+    add_definitions(-DPOMEROL_MPI_BOOL=MPI_CXX_BOOL
+                    -DPOMEROL_MPI_DOUBLE_COMPLEX=MPI_CXX_DOUBLE_COMPLEX)
+endif(Use_MPI_C_datatypes)
+
 # Boost
 find_package(Boost 1.54.0 REQUIRED)
 message(STATUS "Boost includes: ${Boost_INCLUDE_DIRS}" )

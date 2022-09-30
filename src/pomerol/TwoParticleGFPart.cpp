@@ -87,10 +87,10 @@ MPI_Datatype TwoParticleGFPart::NonResonantTerm::mpi_datatype() {
                                     offsetof(NonResonantTerm, Weight)};
         // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
         MPI_Datatype types[] = {
-            MPI_CXX_DOUBLE_COMPLEX, // ComplexType Coeff
-            MPI_DOUBLE,             // RealType Poles[3]
-            MPI_CXX_BOOL,           // bool isz4
-            MPI_LONG                // long Weight
+            POMEROL_MPI_DOUBLE_COMPLEX, // ComplexType Coeff
+            MPI_DOUBLE,                 // RealType Poles[3]
+            POMEROL_MPI_BOOL,           // bool isz4
+            MPI_LONG                    // long Weight
         };
         MPI_Type_create_struct(4, blocklengths, displacements, types, &dt);
         MPI_Type_commit(&dt);
@@ -140,11 +140,11 @@ MPI_Datatype TwoParticleGFPart::ResonantTerm::mpi_datatype() {
                                     offsetof(ResonantTerm, Weight)};
         // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
         MPI_Datatype types[] = {
-            MPI_CXX_DOUBLE_COMPLEX, // ComplexType ResCoeff
-            MPI_CXX_DOUBLE_COMPLEX, // ComplexType NonResCoeff
-            MPI_DOUBLE,             // RealType Poles[3]
-            MPI_CXX_BOOL,           // bool isz1z2
-            MPI_LONG                // long Weight
+            POMEROL_MPI_DOUBLE_COMPLEX, // ComplexType ResCoeff
+            POMEROL_MPI_DOUBLE_COMPLEX, // ComplexType NonResCoeff
+            MPI_DOUBLE,                 // RealType Poles[3]
+            POMEROL_MPI_BOOL,           // bool isz1z2
+            MPI_LONG                    // long Weight
         };
         MPI_Type_create_struct(5, blocklengths, displacements, types, &dt);
         MPI_Type_commit(&dt);

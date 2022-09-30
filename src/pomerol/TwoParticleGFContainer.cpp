@@ -108,11 +108,11 @@ TwoParticleGFContainer::computeAll_split(bool clearTerms, FreqVec const& freqs, 
                 freq_data = storage[iter->first];
                 freq_data_size = static_cast<int>(freq_data.size());
                 MPI_Bcast(&freq_data_size, 1, MPI_LONG, sender, comm);
-                MPI_Bcast(freq_data.data(), freq_data_size, MPI_CXX_DOUBLE_COMPLEX, sender, comm);
+                MPI_Bcast(freq_data.data(), freq_data_size, POMEROL_MPI_DOUBLE_COMPLEX, sender, comm);
             } else {
                 MPI_Bcast(&freq_data_size, 1, MPI_LONG, sender, comm);
                 freq_data.resize(freq_data_size);
-                MPI_Bcast(freq_data.data(), freq_data_size, MPI_CXX_DOUBLE_COMPLEX, sender, comm);
+                MPI_Bcast(freq_data.data(), freq_data_size, POMEROL_MPI_DOUBLE_COMPLEX, sender, comm);
             }
             out[iter->first] = freq_data;
 
