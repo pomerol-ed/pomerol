@@ -90,7 +90,8 @@ message(STATUS "MPI flags: ${MPI_CXX_COMPILE_FLAGS} ${MPI_C_COMPILE_FLAGS}")
 # MPI_CXX_* datatypes
 #
 option(Use_MPI_C_datatypes
-       "Use MPI_C_* datatypes instead of similar MPI_CXX_* datatypes" OFF)
+    "Workaround: Use MPI_C_* datatypes instead of similar MPI_CXX_* datatypes"
+    OFF)
 mark_as_advanced(Use_MPI_C_datatypes)
 if(Use_MPI_C_datatypes)
     add_definitions(-DPOMEROL_MPI_BOOL=MPI_C_BOOL
