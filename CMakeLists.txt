@@ -11,7 +11,7 @@
 cmake_minimum_required(VERSION 3.1.0)
 
 project(pomerol CXX)
-set(POMEROL_VERSION 2.0)
+set(POMEROL_VERSION 2.1)
 set(POMEROL_DESCRIPTION "An exact diagonalization library aimed at \
 solving condensed matter models of interacting fermions")
 set(POMEROL_URL "https://aeantipov.github.io/pomerol/")
