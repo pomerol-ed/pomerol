@@ -14,6 +14,7 @@
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #include "pomerol/TwoParticleGFPart.hpp"
+#include "pomerol/ChaseIndices.hpp"
 
 #include <cassert>
 #include <mutex>
@@ -22,31 +23,11 @@
 #include <vector>
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-std::mutex NonResonantTerm_mpi_datatype_mutex;
+static std::mutex NonResonantTerm_mpi_datatype_mutex;
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-std::mutex ResonantTerm_mpi_datatype_mutex;
+static std::mutex ResonantTerm_mpi_datatype_mutex;
 
 namespace Pomerol {
-
-// Make the lagging index catch up or outrun the leading index.
-template <bool Complex>
-inline bool chaseIndices(typename RowMajorMatrixType<Complex>::InnerIterator& index1_iter,
-                         typename ColMajorMatrixType<Complex>::InnerIterator& index2_iter) {
-    InnerQuantumState index1 = index1_iter.index();
-    InnerQuantumState index2 = index2_iter.index();
-
-    if(index1 == index2)
-        return true;
-
-    if(index1 < index2)
-        for(; InnerQuantumState(index1_iter.index()) < index2 && index1_iter; ++index1_iter)
-            ;
-    else
-        for(; InnerQuantumState(index2_iter.index()) < index1 && index2_iter; ++index2_iter)
-            ;
-
-    return false;
-}
 
 //
 // TwoParticleGFPart::NonResonantTerm

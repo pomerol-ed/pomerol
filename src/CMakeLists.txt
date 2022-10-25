@@ -29,6 +29,8 @@ set(SOURCES
     pomerol/Vertex4.cpp
     pomerol/SusceptibilityPart.cpp
     pomerol/Susceptibility.cpp
+    pomerol/ThreePointSusceptibility.cpp
+    pomerol/ThreePointSusceptibilityPart.cpp
     pomerol/EnsembleAverage.cpp
 )
 
