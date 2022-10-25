@@ -32,6 +32,12 @@
 #include <omp.h>
 #endif
 
+#if __cplusplus >= 201402L
+#define POMEROL_DEPRECATED [[deprecated]]
+#else
+#define POMEROL_DEPRECATED
+#endif
+
 #include <array>
 #include <complex>
 #include <cstddef>

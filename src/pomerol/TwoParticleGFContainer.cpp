@@ -32,7 +32,7 @@ void TwoParticleGFContainer::prepareAll(std::set<IndexCombination4> const& Initi
 }
 
 std::map<IndexCombination4, std::vector<ComplexType>>
-TwoParticleGFContainer::computeAll(bool clearTerms, FreqVec const& freqs, MPI_Comm const& comm, bool split) {
+TwoParticleGFContainer::computeAll(bool clearTerms, FreqVec3 const& freqs, MPI_Comm const& comm, bool split) {
     if(split)
         return computeAll_split(clearTerms, freqs, comm);
     else
@@ -40,7 +40,7 @@ TwoParticleGFContainer::computeAll(bool clearTerms, FreqVec const& freqs, MPI_Co
 }
 
 std::map<IndexCombination4, std::vector<ComplexType>>
-TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, FreqVec const& freqs, MPI_Comm const& comm) {
+TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, FreqVec3 const& freqs, MPI_Comm const& comm) {
     std::map<IndexCombination4, std::vector<ComplexType>> out;
     for(auto& el : ElementsMap) {
         INFO("Computing 2PGF for " << el.first);
@@ -50,7 +50,7 @@ TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, FreqVec const& freqs
 }
 
 std::map<IndexCombination4, std::vector<ComplexType>>
-TwoParticleGFContainer::computeAll_split(bool clearTerms, FreqVec const& freqs, MPI_Comm const& comm) {
+TwoParticleGFContainer::computeAll_split(bool clearTerms, FreqVec3 const& freqs, MPI_Comm const& comm) {
     std::map<IndexCombination4, std::vector<ComplexType>> out;
     std::map<IndexCombination4, std::vector<ComplexType>> storage;
 

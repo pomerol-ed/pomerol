@@ -38,9 +38,14 @@ namespace Pomerol {
 ///@{
 
 /// Triplet of complex frequencies.
-using FreqTuple = std::tuple<ComplexType, ComplexType, ComplexType>;
+using FreqTuple3 = std::tuple<ComplexType, ComplexType, ComplexType>;
 /// List of complex frequency triplets.
-using FreqVec = std::vector<FreqTuple>;
+using FreqVec3 = std::vector<FreqTuple3>;
+
+#ifndef DOXYGEN_SKIP
+using FreqTuple POMEROL_DEPRECATED = FreqTuple3;
+using FreqVec POMEROL_DEPRECATED = FreqVec3;
+#endif
 
 /// \brief Fermionic two-particle Matsubara Green's function.
 ///
@@ -139,7 +144,7 @@ public:
     /// \return A list of precomputed values.
     /// \pre \ref prepare() has been called.
     std::vector<ComplexType>
-    compute(bool clear = false, FreqVec const& freqs = {}, MPI_Comm const& comm = MPI_COMM_WORLD);
+    compute(bool clear = false, FreqVec3 const& freqs = {}, MPI_Comm const& comm = MPI_COMM_WORLD);
 
     /// Returns the single particle index of one of the operators \f$c_i,c_j,c^\dagger_k,c^\dagger_l\f$.
     /// \param[in] Position Position of the requested operator, 0--3.

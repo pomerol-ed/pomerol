@@ -123,7 +123,7 @@ void TwoParticleGF::prepare() {
 
 // An mpi adapter to 1) compute 2pgf terms; 2) convert them to a Matsubara Container; 3) purge terms
 struct ComputeAndClearWrap {
-    ComputeAndClearWrap(FreqVec const& freqs,
+    ComputeAndClearWrap(FreqVec3 const& freqs,
                         std::vector<ComplexType>& data,
                         TwoParticleGFPart& p,
                         bool clear,
@@ -153,14 +153,14 @@ struct ComputeAndClearWrap {
     int const complexity;
 
 private:
-    FreqVec const& freqs_;
+    FreqVec3 const& freqs_;
     std::vector<ComplexType>& data_;
     TwoParticleGFPart& p;
     bool clear_;
     bool fill_;
 };
 
-std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs, MPI_Comm const& comm) {
+std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec3 const& freqs, MPI_Comm const& comm) {
     if(getStatus() < Prepared)
         throw StatusMismatch("TwoParticleGF is not prepared yet.");
 
