@@ -52,8 +52,7 @@ namespace Pomerol {
 class ThreePointSusceptibilityPart : public Thermal, ComputableObject {
 
     friend class ThreePointSusceptibility;
-    // FIXME
-    //friend class ThreePointSusceptibilityContainer;
+    friend class ThreePointSusceptibilityContainer;
 
 public:
     /// \brief A non-resonant fermion-fermion term in the Lehmann representation of \ref ThreePointSusceptibility.

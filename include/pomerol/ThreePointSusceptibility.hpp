@@ -73,8 +73,7 @@ public:
     };
 
 private:
-    // FIXME
-    //friend class ThreePointSusceptibilityContainer;
+    friend class ThreePointSusceptibilityContainer;
 
     /// Channel
     Channel channel;
@@ -165,6 +164,10 @@ public:
 
     /// Is this susceptibility identically zero?
     bool isVanishing() const { return Vanishing; }
+
+    /// Select channel based on the form of the quadratic operator \f$\hat B\f$ used in the definition.
+    /// \param[in] B Quadratic operator \f$\hat B\f$.
+    static Channel selectChannel(QuadraticOperator const& B);
 };
 
 ///@}
