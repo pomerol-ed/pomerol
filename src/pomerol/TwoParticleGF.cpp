@@ -122,13 +122,13 @@ void TwoParticleGF::prepare() {
 }
 
 // An mpi adapter to 1) compute 2pgf terms; 2) convert them to a Matsubara Container; 3) purge terms
-struct ComputeAndClearWrap {
-    ComputeAndClearWrap(FreqVec3 const& freqs,
-                        std::vector<ComplexType>& data,
-                        TwoParticleGFPart& p,
-                        bool clear,
-                        bool fill,
-                        int complexity = 1)
+struct ComputeAndClearWrap2PGF {
+    ComputeAndClearWrap2PGF(FreqVec3 const& freqs,
+                            std::vector<ComplexType>& data,
+                            TwoParticleGFPart& p,
+                            bool clear,
+                            bool fill,
+                            int complexity = 1)
         : complexity(complexity), freqs_(freqs), data_(data), p(p), clear_(clear), fill_(fill) {}
 
     void run() {
@@ -170,7 +170,7 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec3 const& freq
 
     if(!Vanishing) {
         // Create a "skeleton" class with pointers to part that can call a compute method
-        pMPI::mpi_skel<ComputeAndClearWrap> skel;
+        pMPI::mpi_skel<ComputeAndClearWrap2PGF> skel;
         bool fill_container = !freqs.empty();
         skel.parts.reserve(parts.size());
         m_data.resize(freqs.size(), 0.0);

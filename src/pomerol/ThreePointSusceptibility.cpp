@@ -136,13 +136,13 @@ void ThreePointSusceptibility::prepare() {
 // 1) compute ThreePointSusceptibility terms;
 // 2) convert them to a Matsubara Container;
 // 3) purge terms
-struct ComputeAndClearWrap {
-    ComputeAndClearWrap(FreqVec2 const& freqs,
-                        std::vector<ComplexType>& data,
-                        ThreePointSusceptibilityPart& p,
-                        bool clear,
-                        bool fill,
-                        int complexity = 1)
+struct ComputeAndClearWrap3PSusc {
+    ComputeAndClearWrap3PSusc(FreqVec2 const& freqs,
+                              std::vector<ComplexType>& data,
+                              ThreePointSusceptibilityPart& p,
+                              bool clear,
+                              bool fill,
+                              int complexity = 1)
         : complexity(complexity), freqs_(freqs), data_(data), p(p), clear_(clear), fill_(fill) {}
 
     void run() {
@@ -184,7 +184,7 @@ std::vector<ComplexType> ThreePointSusceptibility::compute(bool clear, FreqVec2 
 
     if(!Vanishing) {
         // Create a "skeleton" class with pointers to part that can call a compute method
-        pMPI::mpi_skel<ComputeAndClearWrap> skel;
+        pMPI::mpi_skel<ComputeAndClearWrap3PSusc> skel;
         bool fill_container = !freqs.empty();
         skel.parts.reserve(parts.size());
         m_data.resize(freqs.size(), 0.0);
