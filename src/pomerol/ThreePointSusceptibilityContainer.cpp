@@ -47,7 +47,6 @@ ThreePointSusceptibilityContainer::createElement(IndexCombination2 const& Indice
                                                           B,
                                                           DM);
     case ThreePointSusceptibility::PH:
-    case ThreePointSusceptibility::CrossedPH:
         return std::make_shared<ThreePointSusceptibility>(S,
                                                           H,
                                                           CX1,

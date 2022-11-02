@@ -28,7 +28,6 @@ std::ostream& operator<<(std::ostream& os, ThreePointSusceptibility::Channel cha
     switch(channel) {
     case ThreePointSusceptibility::PP: return os << "PP";
     case ThreePointSusceptibility::PH: return os << "PH";
-    case ThreePointSusceptibility::CrossedPH: return os << "Crossed PH";
     default: return os;
     }
 }
@@ -39,8 +38,6 @@ auto ThreePointSusceptibility::selectChannel(QuadraticOperator const& B) -> Chan
         return PP;
     else if(dagger == std::make_tuple(true, false))
         return PH;
-    else if(dagger == std::make_tuple(false, true))
-        return CrossedPH;
     else
         throw std::runtime_error(
             "ThreePointSusceptibility: Cannot select a channel based on the form of the quadratic operator B");
@@ -49,24 +46,32 @@ auto ThreePointSusceptibility::selectChannel(QuadraticOperator const& B) -> Chan
 ThreePointSusceptibility::ThreePointSusceptibility(StatesClassification const& S,
                                                    Hamiltonian const& H,
                                                    CreationOperator const& CX1,
-                                                   CreationOperator const& CX2,
+                                                   CreationOperator const& CX3,
                                                    QuadraticOperator const& Delta,
                                                    DensityMatrix const& DM)
-    : Thermal(DM.beta), ComputableObject(), channel(PP), S(S), H(H), F1(CX1), F2(CX2), B(Delta), DM(DM) {
-    if(selectChannel(Delta) != PP)
+    : Thermal(DM.beta),
+      ComputableObject(),
+      channel(selectChannel(Delta)),
+      S(S),
+      H(H),
+      F1(CX1),
+      F2(CX3),
+      B(Delta),
+      DM(DM) {
+    if(channel != PP)
         throw std::runtime_error("Pairing operator for ThreePointSusceptibility must be a product of two annihilators");
 }
 
 ThreePointSusceptibility::ThreePointSusceptibility(StatesClassification const& S,
                                                    Hamiltonian const& H,
-                                                   CreationOperator const& CX,
-                                                   AnnihilationOperator const& C,
+                                                   CreationOperator const& CX1,
+                                                   AnnihilationOperator const& C2,
                                                    QuadraticOperator const& N,
                                                    DensityMatrix const& DM)
-    : Thermal(DM.beta), ComputableObject(), channel(selectChannel(N)), S(S), H(H), F1(CX), F2(C), B(N), DM(DM) {
-    if(channel != PH && channel != CrossedPH)
-        throw std::runtime_error("Density/hole density operator for ThreePointSusceptibility must be a product of one "
-                                 "creator and one annihilator");
+    : Thermal(DM.beta), ComputableObject(), channel(selectChannel(N)), S(S), H(H), F1(CX1), F2(C2), B(N), DM(DM) {
+    if(channel != PH)
+        throw std::runtime_error(
+            "Density operator for ThreePointSusceptibility must be a product of one creator and one annihilator");
 }
 
 void ThreePointSusceptibility::prepare() {
@@ -236,14 +241,6 @@ ParticleIndex ThreePointSusceptibility::getIndex(std::size_t Position) const {
         case 1: return static_cast<AnnihilationOperator const&>(F2).getIndex();
         case 2: return B.getIndex1();
         case 3: return B.getIndex2();
-        }
-    }
-    case CrossedPH: {
-        switch(Position) {
-        case 0: return F1.getIndex();
-        case 1: return B.getIndex1();
-        case 2: return B.getIndex2();
-        case 3: return static_cast<AnnihilationOperator const&>(F2).getIndex();
         }
     }
     default: assert(0);

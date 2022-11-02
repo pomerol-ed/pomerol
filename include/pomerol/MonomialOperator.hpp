@@ -292,14 +292,12 @@ public:
                       ParticleIndex Index2,
                       std::tuple<bool, bool> const& Dagger = {true, false})
         : MonomialOperator(
-            (std::get<0>(Dagger) ?
-                Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index1)) :
-                Operators::Detail::apply(Operators::c<double, IndexTypes...>, IndexInfo.getInfo(Index1))
-            ) * (
-             std::get<1>(Dagger) ?
-                Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index2)) :
-                Operators::Detail::apply(Operators::c<double, IndexTypes...>, IndexInfo.getInfo(Index2))
-              ),
+              (std::get<0>(Dagger) ?
+                   Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index1)) :
+                   Operators::Detail::apply(Operators::c<double, IndexTypes...>, IndexInfo.getInfo(Index1))) *
+                  (std::get<1>(Dagger) ?
+                       Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index2)) :
+                       Operators::Detail::apply(Operators::c<double, IndexTypes...>, IndexInfo.getInfo(Index2))),
               HS,
               S,
               H),

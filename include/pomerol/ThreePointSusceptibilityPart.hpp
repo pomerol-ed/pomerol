@@ -362,8 +362,8 @@ private:
     /// Adds a multi-term that has one of the following forms:
     /// \li PP channel, non-swapped fermionic operators: \f$C f(z_1, z_2)\f$;
     /// \li PP channel, swapped fermionic operators: \f$C f(z_2, z_1)\f$;
-    /// \li PH/crossed PH channels, non-swapped fermionic operators: \f$C f(z_1, -z_2)\f$;
-    /// \li PP/crossed PH channels, swapped fermionic operators: \f$C f(-z_2, z_1)\f$.
+    /// \li PH channel, non-swapped fermionic operators: \f$C f(z_1, -z_2)\f$;
+    /// \li PP channel, swapped fermionic operators: \f$C f(-z_2, z_1)\f$.
     ///
     /// Here, function \f$f(z_1, z_2)\f$ is defined as
     /// \f[
