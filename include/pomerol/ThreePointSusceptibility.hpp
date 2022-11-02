@@ -104,7 +104,7 @@ public:
     /// \param[in] S Information about invariant subspaces of the Hamiltonian.
     /// \param[in] H The Hamiltonian.
     /// \param[in] CX1 The creation operator \f$c^\dagger_1\f$.
-    /// \param[in] CX2 The creation operator \f$c^\dagger_3\f$.
+    /// \param[in] CX3 The creation operator \f$c^\dagger_3\f$.
     /// \param[in] Delta The pairing operator \f$\Delta_{24} = c_2 c_4\f$.
     /// \param[in] DM Many-body density matrix \f$\hat\rho\f$.
     ThreePointSusceptibility(StatesClassification const& S,

@@ -28,6 +28,7 @@ set(tests
     Vertex4Test
     SusceptibilityTest
     3PSusc1siteTest
+    3PSusc3siteTest
 )
 
 foreach(test ${tests})
