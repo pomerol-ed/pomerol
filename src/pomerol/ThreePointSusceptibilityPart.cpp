@@ -246,12 +246,12 @@ template <bool Complex> void ThreePointSusceptibilityPart::computeImpl() {
         RealType E1 = Hpart1.getEigenValue(index1);
         RealType weight1 = DMpart1.getWeight(index1);
 
-        typename ColMajorMatrixType<Complex>::InnerIterator index3bra_iter(Bmatrix, index1);
         typename RowMajorMatrixType<Complex>::InnerIterator index2ket_iter(F1matrix, index1);
         for(; index2ket_iter; ++index2ket_iter) {
             RealType E2 = Hpart2.getEigenValue(index2ket_iter.index());
             RealType weight2 = DMpart2.getWeight(index2ket_iter.index());
 
+            typename ColMajorMatrixType<Complex>::InnerIterator index3bra_iter(Bmatrix, index1);
             typename RowMajorMatrixType<Complex>::InnerIterator index3ket_iter(F2matrix, index2ket_iter.index());
             while(index3bra_iter && index3ket_iter) {
                 if(chaseIndices<Complex>(index3ket_iter, index3bra_iter)) {
