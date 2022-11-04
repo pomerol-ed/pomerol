@@ -35,7 +35,6 @@ struct dumb_task_type {
 };
 
 TEST_CASE("Test mpi_dispatcher", "[mpi_dispatcher]") {
-    std::random_device rd;
     std::mt19937 gen(100000);
     int comm_rank = pMPI::rank(MPI_COMM_WORLD);
     int const root = 0;

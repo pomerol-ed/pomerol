@@ -128,8 +128,8 @@ void MPIMaster::order_worker(WorkerId worker, JobId job) {
 
 void MPIMaster::order() {
     while(!WorkerStack.empty() && !JobStack.empty()) {
-        WorkerId& worker = WorkerStack.top();
-        JobId& job = JobStack.top();
+        WorkerId const& worker = WorkerStack.top();
+        JobId const& job = JobStack.top();
         order_worker(worker, job);
         WorkerStack.pop();
         JobStack.pop();

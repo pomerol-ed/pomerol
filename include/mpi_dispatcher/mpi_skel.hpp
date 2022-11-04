@@ -42,7 +42,6 @@ template <typename PartType> struct ComputeWrap {
     /// Complexity of a call to x.compute().
     int complexity;
 
-    ComputeWrap() = default;
     /// Constructor.
     /// \param[in] x Reference to the wrapped object.
     /// \param[in] complexity Complexity of a call to x.compute().
@@ -60,7 +59,6 @@ template <typename PartType> struct PrepareWrap {
     /// Complexity of a call to x.prepare().
     int complexity;
 
-    PrepareWrap() = default;
     /// Constructor.
     /// \param[in] x Reference to the wrapped object.
     /// \param[in] complexity Complexity of a call to x.prepare().

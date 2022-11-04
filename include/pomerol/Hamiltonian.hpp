@@ -116,6 +116,7 @@ private:
     // Implementation details
     void computeGroundEnergy();
 
+    // cppcheck-suppress unusedPrivateFunction
     template <bool C> void prepareImpl(LOperatorTypeRC<C> const& HOp, MPI_Comm const& comm);
     template <bool C> void computeImpl(MPI_Comm const& comm);
 };

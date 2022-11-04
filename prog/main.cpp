@@ -21,9 +21,11 @@
 
 int main(int argc, char* argv[]) {
 #ifdef POMEROL_ANDERSON
+    // cppcheck-suppress unreadVariable
     anderson_model m(argc, argv);
 #endif
 #ifdef POMEROL_HUBBARD2D
+    // cppcheck-suppress unreadVariable
     hubbard2d_model m(argc, argv);
 #endif
 

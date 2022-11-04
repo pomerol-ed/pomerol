@@ -21,7 +21,6 @@
 
 #include <cstddef>
 #include <set>
-#include <utility>
 #include <vector>
 
 namespace Pomerol {
@@ -90,8 +89,10 @@ public:
     /// \param[in] args Arguments to be passes to the terms.
     template <typename... Args> ComplexType operator()(Args&&... args) const {
         ComplexType res = 0;
-        for(auto const& t : data)
-            res += t(std::forward<Args>(args)...);
+        for(auto const& t : data) {
+            // cppcheck-suppress useStlAlgorithm
+            res += t(args...);
+        }
         return res;
     }
 

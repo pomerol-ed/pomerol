@@ -63,9 +63,9 @@ class SusceptibilityPart : public Thermal {
     /// a fraction of the form \f$\frac{R}{z - P}\f$.
     struct Term {
         /// Residue at the pole (\f$ R \f$).
-        ComplexType Residue;
+        ComplexType Residue = 0;
         /// Position of the pole (\f$ P \f$).
-        RealType Pole;
+        RealType Pole = 0;
 
         /// Comparator object for terms.
         struct Compare {
@@ -76,7 +76,7 @@ class SusceptibilityPart : public Thermal {
         public:
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to compare positions of the pole.
-            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             /// Are terms similar?
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
@@ -92,7 +92,7 @@ class SusceptibilityPart : public Thermal {
         public:
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to detect negligible residues.
-            IsNegligible(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit IsNegligible(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             /// Is term negligible?
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
