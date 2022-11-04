@@ -102,7 +102,7 @@ template <bool C> void HamiltonianPart::computeImpl() {
 template <bool C> MatrixType<C> const& HamiltonianPart::getMatrix() const {
     if(C != isComplex())
         throw std::runtime_error("Stored matrix type mismatch (real/complex)");
-    return *std::static_pointer_cast<const MatrixType<C>>(HMatrix);
+    return *std::static_pointer_cast<MatrixType<C> const>(HMatrix);
 }
 template MatrixType<true> const& HamiltonianPart::getMatrix<true>() const;
 template MatrixType<false> const& HamiltonianPart::getMatrix<false>() const;

@@ -137,7 +137,7 @@ template RowMajorMatrixType<false>& MonomialOperatorPart::getRowMajorValue<false
 template <bool C> RowMajorMatrixType<C> const& MonomialOperatorPart::getRowMajorValue() const {
     if(C != isComplex())
         throw std::runtime_error("Stored matrix type mismatch (real/complex)");
-    return *std::static_pointer_cast<const RowMajorMatrixType<C>>(elementsRowMajor);
+    return *std::static_pointer_cast<RowMajorMatrixType<C> const>(elementsRowMajor);
 }
 template RowMajorMatrixType<true> const& MonomialOperatorPart::getRowMajorValue<true>() const;
 template RowMajorMatrixType<false> const& MonomialOperatorPart::getRowMajorValue<false>() const;

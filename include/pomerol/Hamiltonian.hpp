@@ -116,7 +116,7 @@ private:
     // Implementation details
     void computeGroundEnergy();
 
-    template <bool C> void prepareImpl(LOperatorTypeRC<C> const& HOp, const MPI_Comm& comm);
+    template <bool C> void prepareImpl(LOperatorTypeRC<C> const& HOp, MPI_Comm const& comm);
     template <bool C> void computeImpl(MPI_Comm const& comm);
 };
 

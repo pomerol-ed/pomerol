@@ -17,6 +17,7 @@ BinPackParameters: false
 BinPackArguments: false
 SortUsingDeclarations: false
 BreakBeforeTernaryOperators: false
+QualifierAlignment: Right
 
 # Stop clang-format from messing with Doxygen comments
 ReflowComments: false
