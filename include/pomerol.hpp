@@ -32,6 +32,8 @@
 #include "pomerol/Operators.hpp"
 #include "pomerol/StatesClassification.hpp"
 #include "pomerol/Susceptibility.hpp"
+#include "pomerol/ThreePointSusceptibility.hpp"
+#include "pomerol/ThreePointSusceptibilityContainer.hpp"
 #include "pomerol/TwoParticleGF.hpp"
 #include "pomerol/TwoParticleGFContainer.hpp"
 
