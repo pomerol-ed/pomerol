@@ -103,7 +103,7 @@ TEST_CASE("3-point susceptibilities of a single Hubbard atom", "[ThreePointSusce
             for(auto index2 : {up_index, dn_index}) {
 
                 // Pairing operator
-                QuadraticOperator Delta(IndexInfo, HS, S, H, index1, index2, {false, false});
+                QuadraticOperator Delta(IndexInfo, HS, S, H, index1, index2, std::make_tuple(false, false));
                 Delta.prepare(HS);
                 Delta.compute();
 

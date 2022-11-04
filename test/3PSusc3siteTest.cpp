@@ -69,7 +69,7 @@ TEST_CASE("3-point susceptibilities of a small Hubbard cluster", "[ThreePointSus
 
     SECTION("Particle-particle channel") {
         // Pairing operator
-        QuadraticOperator Delta(IndexInfo, HS, S, H, C_up_index, C_dn_index, {false, false});
+        QuadraticOperator Delta(IndexInfo, HS, S, H, C_up_index, C_dn_index, std::make_tuple(false, false));
         Delta.prepare(HS);
         Delta.compute();
 

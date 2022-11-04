@@ -290,7 +290,7 @@ public:
                       Hamiltonian const& H,
                       ParticleIndex Index1,
                       ParticleIndex Index2,
-                      std::tuple<bool, bool> const& Dagger = {true, false})
+                      std::tuple<bool, bool> const& Dagger = std::tuple<bool, bool>(true, false))
         : MonomialOperator(
               (std::get<0>(Dagger) ?
                    Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index1)) :
