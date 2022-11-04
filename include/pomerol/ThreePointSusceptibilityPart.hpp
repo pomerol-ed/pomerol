@@ -64,7 +64,7 @@ public:
         ComplexType Coeff = 0;
 
         /// Poles \f$P_1\f$, \f$P_2\f$.
-        std::array<RealType, 2> Poles = {0, 0};
+        std::array<RealType, 2> Poles = {{0, 0}};
 
         /// Weight \f$W\f$ used in addition of terms with different poles.
         /// \see \ref operator+=()

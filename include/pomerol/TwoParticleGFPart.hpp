@@ -68,7 +68,7 @@ public:
         ComplexType Coeff = 0;
 
         /// Poles \f$P_1\f$, \f$P_2\f$, \f$P_3\f$.
-        std::array<RealType, 3> Poles = {0, 0, 0};
+        std::array<RealType, 3> Poles = {{0, 0, 0}};
 
         /// Are we using \f$z_4=z_1+z_2+z_3\f$ instead of \f$z_2\f$ in this term?
         bool isz4 = false;
@@ -176,7 +176,7 @@ public:
         ComplexType NonResCoeff = 0;
 
         /// Poles \f$P_1\f$, \f$P_2\f$, \f$P_3\f$.
-        std::array<RealType, 3> Poles = {0, 0, 0};
+        std::array<RealType, 3> Poles = {{0, 0, 0}};
 
         /// Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
         /// If not, we are using \f$ \delta(z_2+z_3-P_2-P_3) \f$.
