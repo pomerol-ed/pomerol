@@ -122,6 +122,7 @@ Please, attribute this work by a citation to
   * Hiroshi Shinaoka
   * Nils Wentzell
   * Hugo U.R. Strand
+  * Dominik Kiese
 
 # Development/Help
 Please, feel free to contact us and to contribute!

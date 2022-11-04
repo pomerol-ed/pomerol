@@ -67,6 +67,8 @@ namespace Pomerol {
 ///     - Gibbs ensemble averages of \ref MonomialOperator "operators" of physical observables (\ref EnsembleAverage).
 ///     - Single-particle fermionic Green's functions (\ref GreensFunction, \ref GFContainer).
 ///     - Dynamical susceptibilities -- correlators of two \ref MonomialOperator's (\ref Susceptibility).
+///     - 3-point susceptibilities -- correlators of two fermionic and one bosonic quadratic operator
+///       (\ref ThreePointSusceptibility).
 ///     - Two-particle fermionic Green's functions and irreducible vertices (\ref TwoParticleGF,
 ///       \ref TwoParticleGFContainer, \ref Vertex4).
 ///
