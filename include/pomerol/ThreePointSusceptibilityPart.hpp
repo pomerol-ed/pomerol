@@ -61,14 +61,14 @@ public:
     /// An explicit expression for the term reads \f$\frac{C}{(z_1-P_1)(z_2-P_2)}\f$.
     struct NonResonantFFTerm {
         /// Coefficient \f$C\f$.
-        ComplexType Coeff;
+        ComplexType Coeff = 0;
 
         /// Poles \f$P_1\f$, \f$P_2\f$.
-        std::array<RealType, 2> Poles;
+        std::array<RealType, 2> Poles = {0, 0};
 
         /// Weight \f$W\f$ used in addition of terms with different poles.
         /// \see \ref operator+=()
-        long Weight;
+        long Weight = 0;
 
         /// Comparator object for non-resonant fermion-fermion terms.
         struct Compare {
@@ -77,7 +77,7 @@ public:
             bool real_eq(RealType x1, RealType x2) const { return std::abs(x1 - x2) < Tolerance; }
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to compare positions of the poles.
-            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
 
             /// Are terms similar?
             /// \param[in] t1 First term.
@@ -98,7 +98,7 @@ public:
             double Tolerance;
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to detect negligible residues.
-            IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
+            explicit IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
             /// Is term negligible?
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
@@ -150,17 +150,17 @@ public:
         ComplexType Coeff;
 
         /// Pole \f$P_1\f$.
-        RealType P1;
+        RealType P1 = 0;
 
         /// Pole \f$P_{12}\f$.
-        RealType P12;
+        RealType P12 = 0;
 
         /// Coefficient \f$\xi\f$.
-        int xi;
+        int xi = 1;
 
         /// Weight \f$W\f$ used in addition of terms with different poles.
         /// \see \ref operator+=()
-        long Weight;
+        long Weight = 0;
 
         /// Comparator object for non-resonant fermion-boson terms.
         struct Compare {
@@ -169,7 +169,7 @@ public:
             bool real_eq(RealType x1, RealType x2) const { return std::abs(x1 - x2) < Tolerance; }
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to compare positions of the poles.
-            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
 
             /// Are terms similar?
             /// \param[in] t1 First term.
@@ -192,7 +192,7 @@ public:
             double Tolerance;
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to detect negligible residues.
-            IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
+            explicit IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
             /// Is term negligible?
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
@@ -242,17 +242,17 @@ public:
     /// An explicit expression for the term reads \f$\frac{C}{z_1-P}\delta_{z_1, \xi z_2}\f$.
     struct ResonantTerm {
         /// Coefficient \f$C\f$.
-        ComplexType Coeff;
+        ComplexType Coeff = 0;
 
         /// Pole \f$P\f$.
-        RealType P;
+        RealType P = 0;
 
         /// Coefficient \f$\xi\f$.
-        int xi;
+        int xi = 1;
 
         /// Weight \f$W\f$ used in addition of terms with different poles.
         /// \see \ref operator+=()
-        long Weight;
+        long Weight = 0;
 
         /// Comparator object for resonant terms.
         struct Compare {
@@ -261,7 +261,7 @@ public:
             bool real_eq(RealType x1, RealType x2) const { return std::abs(x1 - x2) < Tolerance; }
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to compare positions of the poles.
-            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             /// Are terms similar?
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
@@ -283,7 +283,7 @@ public:
             double Tolerance;
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to detect negligible residues.
-            IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
+            explicit IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
             /// Is term negligible?
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.

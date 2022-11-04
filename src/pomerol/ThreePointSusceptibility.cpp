@@ -231,6 +231,7 @@ ParticleIndex ThreePointSusceptibility::getIndex(std::size_t Position) const {
         switch(Position) {
         case 0: return F1.getIndex();
         case 1: return B.getIndex1();
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
         case 2: return static_cast<CreationOperator const&>(F2).getIndex();
         case 3: return B.getIndex2();
         }
@@ -238,6 +239,7 @@ ParticleIndex ThreePointSusceptibility::getIndex(std::size_t Position) const {
     case PH: {
         switch(Position) {
         case 0: return F1.getIndex();
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
         case 1: return static_cast<AnnihilationOperator const&>(F2).getIndex();
         case 2: return B.getIndex1();
         case 3: return B.getIndex2();

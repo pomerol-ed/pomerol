@@ -45,7 +45,7 @@ struct g_aux {
         std::transform(rho.begin(), rho.end(), rho.begin(), [Z](RealType w) { return w / Z; });
     }
 
-    static bool delta(RealType w1, RealType w2) { return std::abs(w1 - w2) < 1e-14 ? 1.0 : 0.0; };
+    static double delta(RealType w1, RealType w2) { return std::abs(w1 - w2) < 1e-14 ? 1.0 : 0.0; };
 
     ComplexType operator()(int i, int j, int k, RealType w1, RealType w2) const {
         if(std::abs(rho[k] - rho[i]) < 1e-14) {

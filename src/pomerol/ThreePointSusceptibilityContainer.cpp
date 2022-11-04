@@ -53,6 +53,7 @@ ThreePointSusceptibilityContainer::createElement(IndexCombination2 const& Indice
                                                           Operators.getAnnihilationOperator(Indices.Index2),
                                                           B,
                                                           DM);
+    default: assert(0);
     }
 }
 
