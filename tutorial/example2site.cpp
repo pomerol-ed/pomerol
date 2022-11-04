@@ -181,19 +181,28 @@ int main(int argc, char* argv[]) {
     // annihilation operators calculated in the eigenbasis of the Hamiltonian.
     // CreationOperator/AnnihilationOperator are the classes that compute the matrices.
 
-    // Let us create c^\dagger_{"A",up} and c_{"A",up}
+    // Let us create c^\dagger_{"A",up}, c^\dagger_{"A",down} and their conjugates
     ParticleIndex up_index = IndexInfo.getIndex("A", 0, LatticePresets::up);
-    CreationOperator CX(IndexInfo, HS, S, H, up_index);
-    CX.prepare(HS);
-    CX.compute();
-    AnnihilationOperator C(IndexInfo, HS, S, H, up_index);
-    C.prepare(HS);
-    C.compute();
+    ParticleIndex dn_index = IndexInfo.getIndex("A", 0, LatticePresets::down);
+
+    CreationOperator CX_up(IndexInfo, HS, S, H, up_index),
+                     CX_dn(IndexInfo, HS, S, H, dn_index);
+    CX_up.prepare(HS);
+    CX_up.compute();
+    CX_dn.prepare(HS);
+    CX_dn.compute();
+
+    AnnihilationOperator C_up(IndexInfo, HS, S, H, up_index),
+                         C_dn(IndexInfo, HS, S, H, dn_index);
+    C_up.prepare(HS);
+    C_up.compute();
+    C_dn.prepare(HS);
+    C_dn.compute();
 
     print_section("Single-particle Green's function");
 
     // The local Green's function in the Matsubara domain G_{"A",up}(i\omega_n)
-    GreensFunction GF(S, H, C, CX, rho);
+    GreensFunction GF(S, H, C_up, CX_up, rho);
     // Allocate GF parts.
     GF.prepare();
     // Calculate the GF.
@@ -207,7 +216,7 @@ int main(int argc, char* argv[]) {
 
     // The two-particle GF is constructed in analogy to the single-particle GF,
     // it requires 4 operators to be provided though.
-    TwoParticleGF Chi(S, H, C, C, CX, CX, rho);
+    TwoParticleGF Chi(S, H, C_up, C_up, CX_up, CX_up, rho);
 
     // Some knobs to make calculation faster; The larger the values of tolerances,
     // the faster is the calculation, but rounding errors may show.
@@ -280,6 +289,53 @@ int main(int argc, char* argv[]) {
     if(pMPI::rank(MPI_COMM_WORLD) == 0) {
         for(int n = 0; n < 10; n++) {
             std::cout << n << "|" << Sus(n) << "\n";
+        }
+    }
+
+    print_section("3-points susceptibility");
+    // The 3-point susceptibility is computed by ThreePointSusceptibility class.
+    //
+    // It is defined as a 2-dimensional Fourier transform of
+    // 1. <c_i^+(\tau_1) c_j(0) c_k^+(\tau_2) c_l(0)> in the particle-particle channel;
+    // 2. <c_i^+(\tau_1) c_j(\tau_2) c_k^+(0) c_l(0)> in the particle-hole channel;
+
+    // Particle-particle channel
+    // Define and precompute a pairing operator Delta = c_j c_l, in this
+    // case c_{"A", up} c_{"A", dn}.
+    // (the {false, false} argument indicates the both operators in the product
+    // are annihilators).
+    QuadraticOperator Delta(IndexInfo, HS, S, H, up_index, dn_index, {false, false});
+    Delta.prepare(HS);
+    Delta.compute();
+
+    // The PP-susceptibility object
+    ThreePointSusceptibility chi3pp(S, H, CX_up, CX_dn, Delta, rho);
+    chi3pp.prepare();
+    chi3pp.compute();
+    if(pMPI::rank(MPI_COMM_WORLD) == 0) {
+        for(int n1 = 0; n1 < 3; n1++) {
+            for(int n2 = 0; n2 < 3; n2++) {
+                std::cout << n1 << "," << n2 << "|" << chi3pp(n1, n2) << "\n";
+            }
+        }
+    }
+
+    // Particle-hole channel
+    // In this case we have
+    // c_i^+ = c^+_{"A", dn}
+    // c_j = c_{"A", dn}
+    // c^+_k = c^+_{"A", up}
+    // c_l = c_{"A", up}
+    // The quadratic operator N_up = c^+_{"A", up} c_{"A", up} has already
+    // been precomputed.
+    ThreePointSusceptibility chi3ph(S, H, CX_dn, C_dn, N_up, rho);
+    chi3ph.prepare();
+    chi3ph.compute();
+    if(pMPI::rank(MPI_COMM_WORLD) == 0) {
+        for(int n1 = 0; n1 < 3; n1++) {
+            for(int n2 = 0; n2 < 3; n2++) {
+                std::cout << n1 << "," << n2 << "|" << chi3ph(n1, n2) << "\n";
+            }
         }
     }
 
