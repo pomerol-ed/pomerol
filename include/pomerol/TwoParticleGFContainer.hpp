@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -91,7 +91,7 @@ public:
     /// \param[in] split Enable MPI parallelization.
     /// \pre \ref prepareAll() has been called.
     std::map<IndexCombination4, std::vector<ComplexType>> computeAll(bool clearTerms = false,
-                                                                     FreqVec const& freqs = {},
+                                                                     FreqVec3 const& freqs = {},
                                                                      MPI_Comm const& comm = MPI_COMM_WORLD,
                                                                      bool split = true);
 
@@ -115,9 +115,9 @@ protected:
 private:
     // Implementation details.
     std::map<IndexCombination4, std::vector<ComplexType>>
-    computeAll_nosplit(bool clearTerms, FreqVec const& freqs = {}, MPI_Comm const& comm = MPI_COMM_WORLD);
+    computeAll_nosplit(bool clearTerms, FreqVec3 const& freqs = {}, MPI_Comm const& comm = MPI_COMM_WORLD);
     std::map<IndexCombination4, std::vector<ComplexType>>
-    computeAll_split(bool clearTerms, FreqVec const& freqs = {}, MPI_Comm const& comm = MPI_COMM_WORLD);
+    computeAll_split(bool clearTerms, FreqVec3 const& freqs = {}, MPI_Comm const& comm = MPI_COMM_WORLD);
 };
 
 ///@}

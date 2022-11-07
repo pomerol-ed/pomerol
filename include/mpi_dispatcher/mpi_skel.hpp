@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -42,7 +42,6 @@ template <typename PartType> struct ComputeWrap {
     /// Complexity of a call to x.compute().
     int complexity;
 
-    ComputeWrap() = default;
     /// Constructor.
     /// \param[in] x Reference to the wrapped object.
     /// \param[in] complexity Complexity of a call to x.compute().
@@ -60,7 +59,6 @@ template <typename PartType> struct PrepareWrap {
     /// Complexity of a call to x.prepare().
     int complexity;
 
-    PrepareWrap() = default;
     /// Constructor.
     /// \param[in] x Reference to the wrapped object.
     /// \param[in] complexity Complexity of a call to x.prepare().

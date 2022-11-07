@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -38,9 +38,14 @@ namespace Pomerol {
 ///@{
 
 /// Triplet of complex frequencies.
-using FreqTuple = std::tuple<ComplexType, ComplexType, ComplexType>;
+using FreqTuple3 = std::tuple<ComplexType, ComplexType, ComplexType>;
 /// List of complex frequency triplets.
-using FreqVec = std::vector<FreqTuple>;
+using FreqVec3 = std::vector<FreqTuple3>;
+
+#ifndef DOXYGEN_SKIP
+using FreqTuple POMEROL_DEPRECATED = FreqTuple3;
+using FreqVec POMEROL_DEPRECATED = FreqVec3;
+#endif
 
 /// \brief Fermionic two-particle Matsubara Green's function.
 ///
@@ -139,7 +144,7 @@ public:
     /// \return A list of precomputed values.
     /// \pre \ref prepare() has been called.
     std::vector<ComplexType>
-    compute(bool clear = false, FreqVec const& freqs = {}, MPI_Comm const& comm = MPI_COMM_WORLD);
+    compute(bool clear = false, FreqVec3 const& freqs = {}, MPI_Comm const& comm = MPI_COMM_WORLD);
 
     /// Returns the single particle index of one of the operators \f$c_i,c_j,c^\dagger_k,c^\dagger_l\f$.
     /// \param[in] Position Position of the requested operator, 0--3.

@@ -1,5 +1,17 @@
-Main changes in Pomerol 2.0
-===========================
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [2.1] - Unreleased
+
+- New classes to compute the 3-point fermion-boson susceptibilities,
+  `ThreePointSusceptibility`, `ThreePointSusceptibilityPart` and
+  `ThreePointSusceptibilityContainer`.
+- `QuadraticOperator` can now be a product of two creators or two annihilators.
+- Renamed type aliases `FreqTuple` -> `FreqTuple3` and `FreqVec` -> `FreqVec3`.
+  The old names are still usable but marked as deprecated.
+
+## [2.0] - 2021-11-30
 
 - The Mozilla Public License Version 2.0 has been adopted.
 

@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -102,7 +102,7 @@ template <bool C> void HamiltonianPart::computeImpl() {
 template <bool C> MatrixType<C> const& HamiltonianPart::getMatrix() const {
     if(C != isComplex())
         throw std::runtime_error("Stored matrix type mismatch (real/complex)");
-    return *std::static_pointer_cast<const MatrixType<C>>(HMatrix);
+    return *std::static_pointer_cast<MatrixType<C> const>(HMatrix);
 }
 template MatrixType<true> const& HamiltonianPart::getMatrix<true>() const;
 template MatrixType<false> const& HamiltonianPart::getMatrix<false>() const;

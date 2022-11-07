@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -128,8 +128,8 @@ void MPIMaster::order_worker(WorkerId worker, JobId job) {
 
 void MPIMaster::order() {
     while(!WorkerStack.empty() && !JobStack.empty()) {
-        WorkerId& worker = WorkerStack.top();
-        JobId& job = JobStack.top();
+        WorkerId const& worker = WorkerStack.top();
+        JobId const& job = JobStack.top();
         order_worker(worker, job);
         WorkerStack.pop();
         JobStack.pop();

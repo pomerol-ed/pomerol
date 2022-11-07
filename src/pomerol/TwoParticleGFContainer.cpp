@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -32,7 +32,7 @@ void TwoParticleGFContainer::prepareAll(std::set<IndexCombination4> const& Initi
 }
 
 std::map<IndexCombination4, std::vector<ComplexType>>
-TwoParticleGFContainer::computeAll(bool clearTerms, FreqVec const& freqs, MPI_Comm const& comm, bool split) {
+TwoParticleGFContainer::computeAll(bool clearTerms, FreqVec3 const& freqs, MPI_Comm const& comm, bool split) {
     if(split)
         return computeAll_split(clearTerms, freqs, comm);
     else
@@ -40,7 +40,7 @@ TwoParticleGFContainer::computeAll(bool clearTerms, FreqVec const& freqs, MPI_Co
 }
 
 std::map<IndexCombination4, std::vector<ComplexType>>
-TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, FreqVec const& freqs, MPI_Comm const& comm) {
+TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, FreqVec3 const& freqs, MPI_Comm const& comm) {
     std::map<IndexCombination4, std::vector<ComplexType>> out;
     for(auto& el : ElementsMap) {
         INFO("Computing 2PGF for " << el.first);
@@ -50,7 +50,7 @@ TwoParticleGFContainer::computeAll_nosplit(bool clearTerms, FreqVec const& freqs
 }
 
 std::map<IndexCombination4, std::vector<ComplexType>>
-TwoParticleGFContainer::computeAll_split(bool clearTerms, FreqVec const& freqs, MPI_Comm const& comm) {
+TwoParticleGFContainer::computeAll_split(bool clearTerms, FreqVec3 const& freqs, MPI_Comm const& comm) {
     std::map<IndexCombination4, std::vector<ComplexType>> out;
     std::map<IndexCombination4, std::vector<ComplexType>> storage;
 

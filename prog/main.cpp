@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -21,9 +21,11 @@
 
 int main(int argc, char* argv[]) {
 #ifdef POMEROL_ANDERSON
+    // cppcheck-suppress unreadVariable
     anderson_model m(argc, argv);
 #endif
 #ifdef POMEROL_HUBBARD2D
+    // cppcheck-suppress unreadVariable
     hubbard2d_model m(argc, argv);
 #endif
 

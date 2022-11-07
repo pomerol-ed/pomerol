@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -21,7 +21,6 @@
 
 #include <cstddef>
 #include <set>
-#include <utility>
 #include <vector>
 
 namespace Pomerol {
@@ -90,8 +89,10 @@ public:
     /// \param[in] args Arguments to be passes to the terms.
     template <typename... Args> ComplexType operator()(Args&&... args) const {
         ComplexType res = 0;
-        for(auto const& t : data)
-            res += t(std::forward<Args>(args)...);
+        for(auto const& t : data) {
+            // cppcheck-suppress useStlAlgorithm
+            res += t(args...);
+        }
         return res;
     }
 

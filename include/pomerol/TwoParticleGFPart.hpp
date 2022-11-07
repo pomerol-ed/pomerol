@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -65,17 +65,17 @@ public:
     /// \li \f$\frac{C}{(z_1-P_1)(z_1+z_2+z_3-P_1-P_2-P_3)(z_3-P_3)}\f$ for \ref isz4 == true.
     struct NonResonantTerm {
         /// Coefficient \f$C\f$.
-        ComplexType Coeff;
+        ComplexType Coeff = 0;
 
         /// Poles \f$P_1\f$, \f$P_2\f$, \f$P_3\f$.
-        std::array<RealType, 3> Poles;
+        std::array<RealType, 3> Poles = {{0, 0, 0}};
 
         /// Are we using \f$z_4=z_1+z_2+z_3\f$ instead of \f$z_2\f$ in this term?
-        bool isz4;
+        bool isz4 = false;
 
         /// Weight \f$W\f$ used in addition of terms with different poles.
         /// \see \ref operator+=()
-        long Weight;
+        long Weight = 0;
 
         /// Comparator object for non-resonant terms.
         struct Compare {
@@ -84,7 +84,7 @@ public:
             bool real_eq(RealType x1, RealType x2) const { return std::abs(x1 - x2) < Tolerance; }
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to compare positions of the poles.
-            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
 
             /// Are terms similar?
             /// \param[in] t1 First term.
@@ -110,7 +110,7 @@ public:
             double Tolerance;
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to detect negligible residues.
-            IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
+            explicit IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
             /// Is term negligible?
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
@@ -171,20 +171,20 @@ public:
     struct ResonantTerm {
 
         /// Coefficient \f$R\f$.
-        ComplexType ResCoeff;
+        ComplexType ResCoeff = 0;
         /// Coefficient \f$N\f$.
-        ComplexType NonResCoeff;
+        ComplexType NonResCoeff = 0;
 
         /// Poles \f$P_1\f$, \f$P_2\f$, \f$P_3\f$.
-        std::array<RealType, 3> Poles;
+        std::array<RealType, 3> Poles = {{0, 0, 0}};
 
         /// Are we using \f$ \delta(z_1+z_2-P_1-P_2) \f$ resonance condition?
         /// If not, we are using \f$ \delta(z_2+z_3-P_2-P_3) \f$.
-        bool isz1z2;
+        bool isz1z2 = false;
 
         /// Weight \f$W\f$ used in addition of terms with different poles.
         /// \see \ref operator+=()
-        long Weight;
+        long Weight = 0;
 
         /// Comparator object for resonant terms.
         struct Compare {
@@ -193,7 +193,7 @@ public:
             bool real_eq(RealType x1, RealType x2) const { return std::abs(x1 - x2) < Tolerance; }
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to compare positions of the poles.
-            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             /// Are terms similar?
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
@@ -218,7 +218,7 @@ public:
             double Tolerance;
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to detect negligible residues.
-            IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
+            explicit IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
             /// Is term negligible?
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.

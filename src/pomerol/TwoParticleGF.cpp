@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -122,13 +122,13 @@ void TwoParticleGF::prepare() {
 }
 
 // An mpi adapter to 1) compute 2pgf terms; 2) convert them to a Matsubara Container; 3) purge terms
-struct ComputeAndClearWrap {
-    ComputeAndClearWrap(FreqVec const& freqs,
-                        std::vector<ComplexType>& data,
-                        TwoParticleGFPart& p,
-                        bool clear,
-                        bool fill,
-                        int complexity = 1)
+struct ComputeAndClearWrap2PGF {
+    ComputeAndClearWrap2PGF(FreqVec3 const& freqs,
+                            std::vector<ComplexType>& data,
+                            TwoParticleGFPart& p,
+                            bool clear,
+                            bool fill,
+                            int complexity = 1)
         : complexity(complexity), freqs_(freqs), data_(data), p(p), clear_(clear), fill_(fill) {}
 
     void run() {
@@ -153,14 +153,14 @@ struct ComputeAndClearWrap {
     int const complexity;
 
 private:
-    FreqVec const& freqs_;
+    FreqVec3 const& freqs_;
     std::vector<ComplexType>& data_;
     TwoParticleGFPart& p;
     bool clear_;
     bool fill_;
 };
 
-std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs, MPI_Comm const& comm) {
+std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec3 const& freqs, MPI_Comm const& comm) {
     if(getStatus() < Prepared)
         throw StatusMismatch("TwoParticleGF is not prepared yet.");
 
@@ -170,7 +170,7 @@ std::vector<ComplexType> TwoParticleGF::compute(bool clear, FreqVec const& freqs
 
     if(!Vanishing) {
         // Create a "skeleton" class with pointers to part that can call a compute method
-        pMPI::mpi_skel<ComputeAndClearWrap> skel;
+        pMPI::mpi_skel<ComputeAndClearWrap2PGF> skel;
         bool fill_container = !freqs.empty();
         skel.parts.reserve(parts.size());
         m_data.resize(freqs.size(), 0.0);

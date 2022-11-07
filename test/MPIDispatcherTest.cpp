@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -35,7 +35,6 @@ struct dumb_task_type {
 };
 
 TEST_CASE("Test mpi_dispatcher", "[mpi_dispatcher]") {
-    std::random_device rd;
     std::mt19937 gen(100000);
     int comm_rank = pMPI::rank(MPI_COMM_WORLD);
     int const root = 0;

@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -32,6 +32,8 @@
 #include "pomerol/Operators.hpp"
 #include "pomerol/StatesClassification.hpp"
 #include "pomerol/Susceptibility.hpp"
+#include "pomerol/ThreePointSusceptibility.hpp"
+#include "pomerol/ThreePointSusceptibilityContainer.hpp"
 #include "pomerol/TwoParticleGF.hpp"
 #include "pomerol/TwoParticleGFContainer.hpp"
 
@@ -65,6 +67,8 @@ namespace Pomerol {
 ///     - Gibbs ensemble averages of \ref MonomialOperator "operators" of physical observables (\ref EnsembleAverage).
 ///     - Single-particle fermionic Green's functions (\ref GreensFunction, \ref GFContainer).
 ///     - Dynamical susceptibilities -- correlators of two \ref MonomialOperator's (\ref Susceptibility).
+///     - 3-point susceptibilities -- correlators of two fermionic and one bosonic quadratic operator
+///       (\ref ThreePointSusceptibility).
 ///     - Two-particle fermionic Green's functions and irreducible vertices (\ref TwoParticleGF,
 ///       \ref TwoParticleGFContainer, \ref Vertex4).
 ///

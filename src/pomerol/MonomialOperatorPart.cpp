@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -137,7 +137,7 @@ template RowMajorMatrixType<false>& MonomialOperatorPart::getRowMajorValue<false
 template <bool C> RowMajorMatrixType<C> const& MonomialOperatorPart::getRowMajorValue() const {
     if(C != isComplex())
         throw std::runtime_error("Stored matrix type mismatch (real/complex)");
-    return *std::static_pointer_cast<const RowMajorMatrixType<C>>(elementsRowMajor);
+    return *std::static_pointer_cast<RowMajorMatrixType<C> const>(elementsRowMajor);
 }
 template RowMajorMatrixType<true> const& MonomialOperatorPart::getRowMajorValue<true>() const;
 template RowMajorMatrixType<false> const& MonomialOperatorPart::getRowMajorValue<false>() const;

@@ -2,7 +2,7 @@
 // This file is part of pomerol, an exact diagonalization library aimed at
 // solving condensed matter models of interacting fermions.
 //
-// Copyright (C) 2016-2021 A. Antipov, I. Krivenko and contributors
+// Copyright (C) 2016-2022 A. Antipov, I. Krivenko and contributors
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -77,7 +77,7 @@ class GreensFunctionPart : public Thermal {
         public:
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to compare positions of the pole.
-            Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             /// Are terms similar?
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
@@ -93,7 +93,7 @@ class GreensFunctionPart : public Thermal {
         public:
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to detect negligible residues.
-            IsNegligible(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit IsNegligible(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             /// Is term negligible?
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
