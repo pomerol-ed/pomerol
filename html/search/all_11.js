@@ -1,7 +1,8 @@
 var searchData=
 [
   ['single_2dparticle_20green_27s_20functions_20of_20fermions',['Single-particle Green&apos;s functions of fermions',['../group___g_f.html',1,'']]],
-  ['s',['S',['../class_pomerol_1_1_g_f_container.html#a28b996101e1a56450c422358cb016418',1,'Pomerol::GFContainer::S()'],['../class_pomerol_1_1_monomial_operator.html#a7cf42cd32a1d28868ecd0bf4bf8c8e1d',1,'Pomerol::MonomialOperator::S()'],['../class_pomerol_1_1_two_particle_g_f_container.html#af7a394278b1baa16269227684749192b',1,'Pomerol::TwoParticleGFContainer::S()']]],
+  ['s',['S',['../class_pomerol_1_1_g_f_container.html#a28b996101e1a56450c422358cb016418',1,'Pomerol::GFContainer::S()'],['../class_pomerol_1_1_monomial_operator.html#a7cf42cd32a1d28868ecd0bf4bf8c8e1d',1,'Pomerol::MonomialOperator::S()'],['../class_pomerol_1_1_three_point_susceptibility_container.html#a34de8de5f44adabfad5f46b5fe87335f',1,'Pomerol::ThreePointSusceptibilityContainer::S()'],['../class_pomerol_1_1_two_particle_g_f_container.html#af7a394278b1baa16269227684749192b',1,'Pomerol::TwoParticleGFContainer::S()']]],
+  ['selectchannel',['selectChannel',['../class_pomerol_1_1_three_point_susceptibility.html#abb0d0a5ff8a47bdd9e6ea9454879abb6',1,'Pomerol::ThreePointSusceptibility']]],
   ['setfromadjoint',['setFromAdjoint',['../class_pomerol_1_1_monomial_operator_part.html#a79510eb778b4f7acfa0c6ba619fa64cc',1,'Pomerol::MonomialOperatorPart']]],
   ['setstatus',['setStatus',['../struct_pomerol_1_1_computable_object.html#ae8fae29fd10fed2c657224d9d64731e0',1,'Pomerol::ComputableObject']]],
   ['sign',['sign',['../struct_pomerol_1_1_permutation3.html#a9a8214a46107401b9c2b97f4c9b3ac1b',1,'Pomerol::Permutation3::sign()'],['../struct_pomerol_1_1_permutation4.html#a50403dc5729902429546daa9e43d7a78',1,'Pomerol::Permutation4::sign()']]],

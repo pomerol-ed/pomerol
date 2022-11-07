@@ -28,7 +28,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">pomerol
-   &#160;<span id="projectnumber">2.0</span>
+   &#160;<span id="projectnumber">2.1</span>
    </div>
   </td>
  </tr>
@@ -89,6 +89,8 @@ $(function() {
 <code>#include &quot;<a class="el" href="_operators_8hpp_source.html">pomerol/Operators.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_states_classification_8hpp_source.html">pomerol/StatesClassification.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_susceptibility_8hpp_source.html">pomerol/Susceptibility.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="_three_point_susceptibility_8hpp_source.html">pomerol/ThreePointSusceptibility.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="_three_point_susceptibility_container_8hpp_source.html">pomerol/ThreePointSusceptibilityContainer.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_two_particle_g_f_8hpp_source.html">pomerol/TwoParticleGF.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_two_particle_g_f_container_8hpp_source.html">pomerol/TwoParticleGFContainer.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -96,32 +98,34 @@ Include dependency graph for pomerol.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="pomerol_8hpp__incl.png" border="0" usemap="#pomerol_8hpp" alt=""/></div>
 <map name="pomerol_8hpp" id="pomerol_8hpp">
-<area shape="rect" id="node2" href="mpi__dispatcher_8hpp.html" title="A master&#45;worker parallelization scheme using non&#45;blocking MPI communications. " alt="" coords="331,393,482,435"/>
-<area shape="rect" id="node8" href="mpi__skel_8hpp.html" title="Utilities for MPI&#45;parallelized calculation of computable objects. " alt="" coords="899,304,1050,345"/>
-<area shape="rect" id="node15" href="_density_matrix_8hpp.html" title="Many&#45;body Gibbs density matrix as a list of diagonal blocks. " alt="" coords="3007,229,3206,256"/>
-<area shape="rect" id="node21" href="_index_classification_8hpp.html" title="Classification of indices of fermionic creation/annihilation operators. " alt="" coords="1688,632,1861,659"/>
-<area shape="rect" id="node22" href="pomerol_2misc_8hpp.html" title="Declarations of the most basic types and macros. " alt="" coords="3874,707,3953,733"/>
-<area shape="rect" id="node29" href="_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them. " alt="" coords="1891,707,2005,733"/>
-<area shape="rect" id="node32" href="_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces. " alt="" coords="2367,483,2545,509"/>
-<area shape="rect" id="node36" href="_hamiltonian_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix. " alt="" coords="2744,311,2875,338"/>
-<area shape="rect" id="node37" href="_ensemble_average_8hpp.html" title="Ensemble average of a monomial operator representing a physical observable. " alt="" coords="3189,155,3414,181"/>
-<area shape="rect" id="node38" href="_monomial_operator_8hpp.html" title="Storage for an operator that is a product of creation/annihilation operators. " alt="" coords="1733,229,1904,256"/>
-<area shape="rect" id="node40" href="_field_operator_container_8hpp.html" title="A container for creation and annihilation operators. " alt="" coords="2073,155,2330,181"/>
-<area shape="rect" id="node42" href="_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions. " alt="" coords="2507,80,2693,107"/>
-<area shape="rect" id="node44" href="_index_8hpp.html" title="Combinations of single&#45;particle indices. " alt="" coords="3955,229,4042,256"/>
-<area shape="rect" id="node47" href="_lattice_presets_8hpp.html" title="Factory functions for terms commonly used to construct various lattice Hamiltonians. " alt="" coords="4381,632,4581,659"/>
-<area shape="rect" id="node48" href="_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation. " alt="" coords="3104,80,3299,107"/>
-<area shape="rect" id="node49" href="_two_particle_g_f_8hpp.html" title="Fermionic two&#45;particle Matsubara Green&#39;s function. " alt="" coords="1518,155,1714,181"/>
-<area shape="rect" id="node50" href="_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions. " alt="" coords="1854,80,2114,107"/>
-<area shape="rect" id="node9" href="mpi__dispatcher_2misc_8hpp.html" title="Miscellaneous MPI&#45;related functions. " alt="" coords="659,401,741,427"/>
-<area shape="rect" id="node16" href="_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc. ..." alt="" coords="2875,632,3045,659"/>
-<area shape="rect" id="node19" href="_density_matrix_part_8hpp.html" title="Diagonal block of a many&#45;body Gibbs density matrix. " alt="" coords="3305,311,3471,338"/>
-<area shape="rect" id="node34" href="_thermal_8hpp.html" title="Objects, whose definition depends on the temperature. " alt="" coords="3939,401,4043,427"/>
-<area shape="rect" id="node20" href="_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block. " alt="" coords="3253,401,3408,427"/>
-<area shape="rect" id="node23" href="_version_8hpp.html" title="Pomerol version information. " alt="" coords="3651,789,3807,815"/>
-<area shape="rect" id="node33" href="_hilbert_space_8hpp.html" title="Hilbert space of a system and invariant subspaces of its Hamiltonian. " alt="" coords="2133,557,2267,584"/>
-<area shape="rect" id="node43" href="_greens_function_8hpp.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function. " alt="" coords="2659,155,2810,181"/>
-<area shape="rect" id="node46" href="_index_container2_8hpp.html" title="A CRTP base for container types whose elements are addressable by two single&#45;particle indices..." alt="" coords="1739,155,1896,181"/>
+<area shape="rect" id="node2" href="mpi__dispatcher_8hpp.html" title="A master&#45;worker parallelization scheme using non&#45;blocking MPI communications. " alt="" coords="449,408,599,449"/>
+<area shape="rect" id="node8" href="mpi__skel_8hpp.html" title="Utilities for MPI&#45;parallelized calculation of computable objects. " alt="" coords="847,319,998,360"/>
+<area shape="rect" id="node15" href="_density_matrix_8hpp.html" title="Many&#45;body Gibbs density matrix as a list of diagonal blocks. " alt="" coords="3771,244,3970,271"/>
+<area shape="rect" id="node21" href="_index_classification_8hpp.html" title="Classification of indices of fermionic creation/annihilation operators. " alt="" coords="1656,647,1829,673"/>
+<area shape="rect" id="node22" href="pomerol_2misc_8hpp.html" title="Declarations of the most basic types and macros. " alt="" coords="4493,721,4571,748"/>
+<area shape="rect" id="node27" href="_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them. " alt="" coords="2205,721,2320,748"/>
+<area shape="rect" id="node30" href="_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces. " alt="" coords="2879,497,3057,524"/>
+<area shape="rect" id="node34" href="_hamiltonian_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix. " alt="" coords="3148,326,3279,353"/>
+<area shape="rect" id="node35" href="_ensemble_average_8hpp.html" title="Ensemble average of a monomial operator representing a physical observable. " alt="" coords="3998,169,4223,196"/>
+<area shape="rect" id="node36" href="_monomial_operator_8hpp.html" title="Storage for an operator that is a product of creation/annihilation operators. " alt="" coords="1991,244,2161,271"/>
+<area shape="rect" id="node38" href="_field_operator_container_8hpp.html" title="A container for creation and annihilation operators. " alt="" coords="2527,169,2785,196"/>
+<area shape="rect" id="node40" href="_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions. " alt="" coords="3236,87,3423,114"/>
+<area shape="rect" id="node42" href="_index_8hpp.html" title="Combinations of single&#45;particle indices. " alt="" coords="4509,244,4595,271"/>
+<area shape="rect" id="node45" href="_lattice_presets_8hpp.html" title="Factory functions for terms commonly used to construct various lattice Hamiltonians. " alt="" coords="3940,647,4140,673"/>
+<area shape="rect" id="node46" href="_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation. " alt="" coords="3913,87,4108,114"/>
+<area shape="rect" id="node47" href="_three_point_susceptibility_8hpp.html" title="3&#45;point susceptibility in the Matsubara representation. " alt="" coords="1785,169,2049,196"/>
+<area shape="rect" id="node48" href="_three_point_susceptibility_container_8hpp.html" title="Storage for multiple 3&#45;point susceptibilities in the Matsubara representation. " alt="" coords="2413,80,2651,121"/>
+<area shape="rect" id="node49" href="_two_particle_g_f_8hpp.html" title="Fermionic two&#45;particle Matsubara Green&#39;s function. " alt="" coords="2074,169,2270,196"/>
+<area shape="rect" id="node50" href="_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions. " alt="" coords="2794,87,3054,114"/>
+<area shape="rect" id="node9" href="mpi__dispatcher_2misc_8hpp.html" title="Miscellaneous MPI&#45;related functions. " alt="" coords="675,415,757,442"/>
+<area shape="rect" id="node16" href="_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc. ..." alt="" coords="3300,647,3471,673"/>
+<area shape="rect" id="node19" href="_density_matrix_part_8hpp.html" title="Diagonal block of a many&#45;body Gibbs density matrix. " alt="" coords="4013,326,4179,353"/>
+<area shape="rect" id="node32" href="_thermal_8hpp.html" title="Objects, whose definition depends on the temperature. " alt="" coords="4593,415,4697,442"/>
+<area shape="rect" id="node20" href="_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block. " alt="" coords="3959,415,4113,442"/>
+<area shape="rect" id="node23" href="_version_8hpp.html" title="Pomerol version information. " alt="" coords="4454,803,4610,830"/>
+<area shape="rect" id="node31" href="_hilbert_space_8hpp.html" title="Hilbert space of a system and invariant subspaces of its Hamiltonian. " alt="" coords="2157,572,2291,599"/>
+<area shape="rect" id="node41" href="_greens_function_8hpp.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function. " alt="" coords="3570,169,3721,196"/>
+<area shape="rect" id="node44" href="_index_container2_8hpp.html" title="A CRTP base for container types whose elements are addressable by two single&#45;particle indices..." alt="" coords="2295,169,2452,196"/>
 </map>
 </div>
 </div>
@@ -143,7 +147,7 @@ Igor Krivenko (<a href="#" onclick="location.href='mai'+'lto:'+'igo'+'r.'+'s.k'+
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Sep 30 2022 12:08:40 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Nov 7 2022 09:19:46 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

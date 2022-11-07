@@ -28,7 +28,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">pomerol
-   &#160;<span id="projectnumber">2.0</span>
+   &#160;<span id="projectnumber">2.1</span>
    </div>
   </td>
  </tr>
@@ -79,11 +79,15 @@ $(function() {
 </li>
 <li>clear()
 : <a class="el" href="class_pomerol_1_1_term_list.html#a6a243d64e0775a200ca1616716b34d90">Pomerol::TermList&lt; TermType &gt;</a>
+, <a class="el" href="class_pomerol_1_1_three_point_susceptibility_part.html#ae5e72bdcc6e449b0bcc0d8a6efd75c66">Pomerol::ThreePointSusceptibilityPart</a>
 , <a class="el" href="class_pomerol_1_1_two_particle_g_f_part.html#ae5ccb55cd377ff2bc7329354d0edec01">Pomerol::TwoParticleGFPart</a>
 </li>
 <li>Compare()
 : <a class="el" href="struct_pomerol_1_1_greens_function_part_1_1_term_1_1_compare.html#a54de347ad4358005ccc4c87cad7a3ae4">Pomerol::GreensFunctionPart::Term::Compare</a>
 , <a class="el" href="struct_pomerol_1_1_susceptibility_part_1_1_term_1_1_compare.html#a0eacdf007c67528632c541e7a3baf0f1">Pomerol::SusceptibilityPart::Term::Compare</a>
+, <a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term_1_1_compare.html#a3b8ba0a2536d59830c8950af6d27ef5a">Pomerol::ThreePointSusceptibilityPart::NonResonantFBTerm::Compare</a>
+, <a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term_1_1_compare.html#a081414536861dd918404add00017f501">Pomerol::ThreePointSusceptibilityPart::NonResonantFFTerm::Compare</a>
+, <a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_compare.html#af70136862e6a2c1ed54234f33d3df760">Pomerol::ThreePointSusceptibilityPart::ResonantTerm::Compare</a>
 , <a class="el" href="struct_pomerol_1_1_two_particle_g_f_part_1_1_non_resonant_term_1_1_compare.html#a521c4ba9032bc6e6c8d7ec5d793ae46a">Pomerol::TwoParticleGFPart::NonResonantTerm::Compare</a>
 , <a class="el" href="struct_pomerol_1_1_two_particle_g_f_part_1_1_resonant_term_1_1_compare.html#ae38b163af800c0348f4454cb501f6592">Pomerol::TwoParticleGFPart::ResonantTerm::Compare</a>
 </li>
@@ -103,14 +107,17 @@ $(function() {
 , <a class="el" href="class_pomerol_1_1_states_classification.html#a02e0624e521fe1a6d669858ea97afa61">Pomerol::StatesClassification</a>
 , <a class="el" href="class_pomerol_1_1_susceptibility.html#a9d5fd96f89c587e227cc0858cde6ad5d">Pomerol::Susceptibility</a>
 , <a class="el" href="class_pomerol_1_1_susceptibility_part.html#a3184b134fe59b24c8ce69f25249e6e6c">Pomerol::SusceptibilityPart</a>
-, <a class="el" href="class_pomerol_1_1_two_particle_g_f.html#a9bb1d252f0c802b62c62494003931397">Pomerol::TwoParticleGF</a>
+, <a class="el" href="class_pomerol_1_1_three_point_susceptibility.html#a7fe8b200c70ec89a038e9433e6ca69cb">Pomerol::ThreePointSusceptibility</a>
+, <a class="el" href="class_pomerol_1_1_three_point_susceptibility_part.html#a15ac40866bf8c0a8939d5e10cdf67b10">Pomerol::ThreePointSusceptibilityPart</a>
+, <a class="el" href="class_pomerol_1_1_two_particle_g_f.html#ac9c9b9cd217c330629a9259509a467eb">Pomerol::TwoParticleGF</a>
 , <a class="el" href="class_pomerol_1_1_two_particle_g_f_part.html#a1098eafc085ae50c3ceb21ed2490175f">Pomerol::TwoParticleGFPart</a>
 , <a class="el" href="class_pomerol_1_1_vertex4.html#a45433f93b87e350824590f49269a27b4">Pomerol::Vertex4</a>
 </li>
 <li>computeAll()
 : <a class="el" href="class_pomerol_1_1_field_operator_container.html#addd701b5778a9fb8c4f39d614a564a76">Pomerol::FieldOperatorContainer</a>
 , <a class="el" href="class_pomerol_1_1_g_f_container.html#a514b5614f580cc1301e8746bd71eb9ae">Pomerol::GFContainer</a>
-, <a class="el" href="class_pomerol_1_1_two_particle_g_f_container.html#a6fa626d77f419e1dd9758756330be78f">Pomerol::TwoParticleGFContainer</a>
+, <a class="el" href="class_pomerol_1_1_three_point_susceptibility_container.html#ad99e41d84f59b63c11da35df458323d5">Pomerol::ThreePointSusceptibilityContainer</a>
+, <a class="el" href="class_pomerol_1_1_two_particle_g_f_container.html#a1fc8462d7023cac894488932ee8ebd3b">Pomerol::TwoParticleGFContainer</a>
 </li>
 <li>computeUnnormalized()
 : <a class="el" href="class_pomerol_1_1_density_matrix_part.html#a77e84036454c014c90d75255cf8aa195">Pomerol::DensityMatrixPart</a>
@@ -124,6 +131,7 @@ $(function() {
 </li>
 <li>createElement()
 : <a class="el" href="class_pomerol_1_1_g_f_container.html#a2722b7984e65c93deea1f5d16110b398">Pomerol::GFContainer</a>
+, <a class="el" href="class_pomerol_1_1_three_point_susceptibility_container.html#a4517132f67e532b951982c37546de1b5">Pomerol::ThreePointSusceptibilityContainer</a>
 , <a class="el" href="class_pomerol_1_1_two_particle_g_f_container.html#a4f0db811697db6b774ba432a52efd6e7">Pomerol::TwoParticleGFContainer</a>
 </li>
 <li>CreationOperator()
@@ -136,7 +144,7 @@ $(function() {
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Sep 30 2022 12:08:40 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Nov 7 2022 09:19:46 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

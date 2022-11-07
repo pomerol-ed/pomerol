@@ -1,5 +1,6 @@
 <map id="pomerol/FieldOperatorContainer.hpp" name="pomerol/FieldOperatorContainer.hpp">
-<area shape="rect" id="node2" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions. " alt="" coords="5,80,192,107"/>
-<area shape="rect" id="node3" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library. " alt="" coords="177,155,281,181"/>
-<area shape="rect" id="node4" href="$_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions. " alt="" coords="266,80,526,107"/>
+<area shape="rect" id="node2" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions. " alt="" coords="5,87,192,114"/>
+<area shape="rect" id="node3" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library. " alt="" coords="256,169,360,196"/>
+<area shape="rect" id="node4" href="$_three_point_susceptibility_container_8hpp.html" title="Storage for multiple 3&#45;point susceptibilities in the Matsubara representation. " alt="" coords="267,80,506,121"/>
+<area shape="rect" id="node5" href="$_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions. " alt="" coords="530,87,790,114"/>
 </map>

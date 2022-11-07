@@ -1,15 +1,15 @@
 <map id="pomerol/MonomialOperator.hpp" name="pomerol/MonomialOperator.hpp">
-<area shape="rect" id="node2" href="$_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc. ..." alt="" coords="449,401,619,427"/>
-<area shape="rect" id="node5" href="$_hamiltonian_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix. " alt="" coords="1570,80,1701,107"/>
-<area shape="rect" id="node8" href="$pomerol_2misc_8hpp.html" title="Declarations of the most basic types and macros. " alt="" coords="2192,483,2271,509"/>
-<area shape="rect" id="node20" href="$_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them. " alt="" coords="209,483,323,509"/>
-<area shape="rect" id="node31" href="$_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces. " alt="" coords="1673,229,1851,256"/>
-<area shape="rect" id="node32" href="$_hilbert_space_8hpp.html" title="Hilbert space of a system and invariant subspaces of its Hamiltonian. " alt="" coords="1387,311,1521,338"/>
-<area shape="rect" id="node37" href="$mpi__dispatcher_2misc_8hpp.html" title="Miscellaneous MPI&#45;related functions. " alt="" coords="3372,401,3557,427"/>
-<area shape="rect" id="node40" href="$_monomial_operator_part_8hpp.html" title="Storage for a matrix block of an operator that is a product of creation/annihilation operators..." alt="" coords="2323,80,2519,107"/>
-<area shape="rect" id="node42" href="$mpi__skel_8hpp.html" title="Utilities for MPI&#45;parallelized calculation of computable objects. " alt="" coords="2884,304,3035,345"/>
-<area shape="rect" id="node6" href="$_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block. " alt="" coords="2203,155,2358,181"/>
-<area shape="rect" id="node7" href="$_index_classification_8hpp.html" title="Classification of indices of fermionic creation/annihilation operators. " alt="" coords="1339,401,1513,427"/>
-<area shape="rect" id="node9" href="$_version_8hpp.html" title="Pomerol version information. " alt="" coords="1804,565,1960,591"/>
-<area shape="rect" id="node43" href="$mpi__dispatcher_8hpp.html" title="A master&#45;worker parallelization scheme using non&#45;blocking MPI communications. " alt="" coords="3198,401,3347,427"/>
+<area shape="rect" id="node2" href="$_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc. ..." alt="" coords="565,401,735,427"/>
+<area shape="rect" id="node5" href="$_hamiltonian_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix. " alt="" coords="1667,80,1798,107"/>
+<area shape="rect" id="node8" href="$pomerol_2misc_8hpp.html" title="Declarations of the most basic types and macros. " alt="" coords="2296,483,2375,509"/>
+<area shape="rect" id="node20" href="$_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them. " alt="" coords="223,483,338,509"/>
+<area shape="rect" id="node31" href="$_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces. " alt="" coords="1890,229,2069,256"/>
+<area shape="rect" id="node32" href="$_hilbert_space_8hpp.html" title="Hilbert space of a system and invariant subspaces of its Hamiltonian. " alt="" coords="1489,311,1622,338"/>
+<area shape="rect" id="node37" href="$mpi__dispatcher_2misc_8hpp.html" title="Miscellaneous MPI&#45;related functions. " alt="" coords="3488,401,3673,427"/>
+<area shape="rect" id="node40" href="$_monomial_operator_part_8hpp.html" title="Storage for a matrix block of an operator that is a product of creation/annihilation operators..." alt="" coords="2337,80,2533,107"/>
+<area shape="rect" id="node42" href="$mpi__skel_8hpp.html" title="Utilities for MPI&#45;parallelized calculation of computable objects. " alt="" coords="2955,304,3105,345"/>
+<area shape="rect" id="node6" href="$_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block. " alt="" coords="2282,155,2437,181"/>
+<area shape="rect" id="node7" href="$_index_classification_8hpp.html" title="Classification of indices of fermionic creation/annihilation operators. " alt="" coords="1693,401,1866,427"/>
+<area shape="rect" id="node9" href="$_version_8hpp.html" title="Pomerol version information. " alt="" coords="2260,565,2416,591"/>
+<area shape="rect" id="node43" href="$mpi__dispatcher_8hpp.html" title="A master&#45;worker parallelization scheme using non&#45;blocking MPI communications. " alt="" coords="3055,401,3205,427"/>
 </map>

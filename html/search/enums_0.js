@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['spin',['spin',['../namespace_pomerol_1_1_lattice_presets.html#ab2da54046d693e6c6a4beb884d215758',1,'Pomerol::LatticePresets']]],
-  ['statusenum',['StatusEnum',['../struct_pomerol_1_1_computable_object.html#a2858165b55eb5c298d31833739836e1f',1,'Pomerol::ComputableObject']]]
+  ['channel',['Channel',['../class_pomerol_1_1_three_point_susceptibility.html#ac40dc34415d890082d25fd55a4a67064',1,'Pomerol::ThreePointSusceptibility']]]
 ];

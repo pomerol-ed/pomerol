@@ -1,6 +1,6 @@
 <map id="Pomerol::MonomialOperator" name="Pomerol::MonomialOperator">
 <area shape="rect" id="node3" href="$class_pomerol_1_1_annihilation_operator.html" title="A special case of a monomial operator: A single fermion annihilation operator . " alt="" coords="5,155,224,181"/>
 <area shape="rect" id="node4" href="$class_pomerol_1_1_creation_operator.html" title="A special case of a monomial operator: A single fermion creation operator . " alt="" coords="249,155,445,181"/>
-<area shape="rect" id="node5" href="$class_pomerol_1_1_quadratic_operator.html" title="A special case of a monomial operator: A single quadratic fermionic operator . " alt="" coords="469,155,673,181"/>
+<area shape="rect" id="node5" href="$class_pomerol_1_1_quadratic_operator.html" title="Pomerol::QuadraticOperator" alt="" coords="469,155,673,181"/>
 <area shape="rect" id="node2" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects. " alt="" coords="244,5,449,32"/>
 </map>

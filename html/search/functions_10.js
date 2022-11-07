@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['selectchannel',['selectChannel',['../class_pomerol_1_1_three_point_susceptibility.html#abb0d0a5ff8a47bdd9e6ea9454879abb6',1,'Pomerol::ThreePointSusceptibility']]],
   ['setfromadjoint',['setFromAdjoint',['../class_pomerol_1_1_monomial_operator_part.html#a79510eb778b4f7acfa0c6ba619fa64cc',1,'Pomerol::MonomialOperatorPart']]],
   ['setstatus',['setStatus',['../struct_pomerol_1_1_computable_object.html#ae8fae29fd10fed2c657224d9d64731e0',1,'Pomerol::ComputableObject']]],
   ['size',['size',['../class_pomerol_1_1_term_list.html#a6f1a5502567d19fd1250edf62fe0a1fb',1,'Pomerol::TermList::size()'],['../group___m_p_i.html#gabed2398d294ee2ac56967049c6e2d3d6',1,'pMPI::size()']]],
