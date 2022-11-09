@@ -58,8 +58,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC ${MPI_CXX_COMPILE_FLAGS}
 set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 if(OpenMP_CXX_FOUND)
-    target_compile_options(${PROJECT_NAME} PRIVATE ${CMAKE_CXX_FLAGS}
-                                                   ${OpenMP_CXX_FLAGS})
+    target_compile_options(${PROJECT_NAME} PRIVATE ${OpenMP_CXX_FLAGS})
     target_link_libraries(${PROJECT_NAME} PRIVATE ${OpenMP_CXX_FLAGS})
 endif()
 

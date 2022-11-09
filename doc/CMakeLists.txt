@@ -17,9 +17,11 @@ set(DOXYFILE_OUTPUT_DIR "${CMAKE_BINARY_DIR}/doc")
 include(UseDoxygen)
 
 # Install documentation
-include(GNUInstallDirs)
-install(DIRECTORY ${DOXYFILE_OUTPUT_DIR}/html
-        DESTINATION ${CMAKE_INSTALL_DOCDIR})
+if(DOXYGEN_FOUND)
+  include(GNUInstallDirs)
+  install(DIRECTORY ${DOXYFILE_OUTPUT_DIR}/html
+          DESTINATION ${CMAKE_INSTALL_DOCDIR})
 
-file(GLOB MD_FILES "${CMAKE_SOURCE_DIR}/*.md")
-install(FILES ${MD_FILES} DESTINATION ${CMAKE_INSTALL_DOCDIR})
+  file(GLOB MD_FILES "${CMAKE_SOURCE_DIR}/*.md")
+  install(FILES ${MD_FILES} DESTINATION ${CMAKE_INSTALL_DOCDIR})
+endif()
