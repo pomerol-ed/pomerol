@@ -80,7 +80,7 @@ get_target_property(libcommute_INCLUDE_PATH libcommute
 message(STATUS "libcommute includes: ${libcommute_INCLUDE_PATH}")
 
 # MPI
-find_package(MPI 3.0 REQUIRED)
+find_package(MPI 3 REQUIRED)
 message(STATUS "MPI includes: ${MPI_CXX_INCLUDE_PATH}")
 message(STATUS "MPI C++ libs: ${MPI_CXX_LIBRARIES}")
 message(STATUS "MPI flags: ${MPI_CXX_COMPILE_FLAGS} ${MPI_C_COMPILE_FLAGS}")
