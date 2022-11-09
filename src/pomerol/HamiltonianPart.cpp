@@ -38,6 +38,8 @@ template <bool C> void HamiltonianPart::initHMatrix() {
     InnerQuantumState BlockSize = S.getBlockSize(Block);
     HMatrix = std::make_shared<MatrixType<C>>(BlockSize, BlockSize);
 }
+template void HamiltonianPart::initHMatrix<true>();
+template void HamiltonianPart::initHMatrix<false>();
 
 void HamiltonianPart::prepare() {
     if(getStatus() >= Prepared)
