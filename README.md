@@ -32,7 +32,7 @@ two-particle Green's functions as well as susceptibilities.
   - Check the *dependencies*:
 
     * A C++11 conformant compiler
-    * CMake >= 3.1.0
+    * CMake >= 3.11.0
     * Boost >= 1.54.0 (only headers are required)
     * Eigen >= 3.1.0
     * [libcommute >= 0.7.2](https://github.com/krivenko/libcommute)
