@@ -73,11 +73,44 @@ endif(USE_OPENMP)
 find_package(Eigen3 3.1 REQUIRED)
 
 # libcommute
-find_package(libcommute 0.7.2 CONFIG REQUIRED)
-message(STATUS "Found libcommute version ${libcommute_VERSION}")
-get_target_property(libcommute_INCLUDE_PATH libcommute::libcommute
-                    INTERFACE_INCLUDE_DIRECTORIES)
-message(STATUS "libcommute includes: ${libcommute_INCLUDE_PATH}")
+find_package(libcommute 0.7.2 CONFIG)
+
+if(libcommute_FOUND)
+    message(STATUS "Found libcommute version ${libcommute_VERSION}: "
+                   "${libcommute_CONFIG}")
+else(libcommute_FOUND)
+    include(FetchContent)
+
+    set(libcommute_GIT_REPOSITORY "https://github.com/krivenko/libcommute.git")
+    set(libcommute_GIT_TAG "e3aab02e05ebdb19932539b683131c1900d2ea09") # v0.7.2
+
+    FetchContent_Declare(
+        libcommute
+        GIT_REPOSITORY ${libcommute_GIT_REPOSITORY}
+        GIT_TAG        ${libcommute_GIT_TAG}
+    )
+
+    FetchContent_GetProperties(libcommute)
+    if(NOT libcommute_POPULATED)
+        message(STATUS
+                "Fetching libcommute@${libcommute_GIT_TAG} "
+                "from ${libcommute_GIT_REPOSITORY}"
+        )
+
+        FetchContent_Populate(libcommute)
+        message(STATUS
+                "libcommute has been fetched into ${libcommute_SOURCE_DIR}"
+        )
+
+        # Suppress compilation of libcommute's examples
+        set(EXAMPLES OFF CACHE INTERNAL "" FORCE)
+        # Add libcommute as a subproject
+        add_subdirectory("${libcommute_SOURCE_DIR}" "${libcommute_BINARY_DIR}")
+    endif(NOT libcommute_POPULATED)
+
+    # Add an alias for the `libcommute` target in the subproject
+    add_library(libcommute::libcommute ALIAS libcommute)
+endif(libcommute_FOUND)
 
 # MPI
 find_package(MPI 3 REQUIRED)

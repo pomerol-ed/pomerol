@@ -35,6 +35,9 @@ set(SOURCES
     pomerol/EnsembleAverage.cpp
 )
 
+get_target_property(libcommute_INCLUDE_PATH libcommute::libcommute
+                    INTERFACE_INCLUDE_DIRECTORIES)
+
 add_library(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME}
                            PRIVATE

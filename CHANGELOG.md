@@ -12,6 +12,8 @@ All notable changes to this project will be documented in this file.
   The old names are still usable but marked as deprecated.
 - Bump required CMake version to 3.11.0.
 - Bump required libcommute version to 0.7.2.
+- Use CMake's module `FetchContent` to fetch libcommute if it is not found
+  locally.
 - Install CMake configuration files into
   ``${CMAKE_INSTALL_PREFIX}/lib/cmake/pomerol``, which is the recommended
   location.

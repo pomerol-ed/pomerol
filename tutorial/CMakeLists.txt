@@ -11,8 +11,7 @@
 cmake_minimum_required(VERSION 3.11.0)
 project(pomerol_example CXX)
 
-# Detect libcommute & pomerol
-find_package(libcommute CONFIG REQUIRED)
+# Detect pomerol
 find_package(pomerol CONFIG REQUIRED)
 
 # Print out a bit of information about pomerol

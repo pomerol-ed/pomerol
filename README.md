@@ -35,7 +35,8 @@ two-particle Green's functions as well as susceptibilities.
     * CMake >= 3.11.0
     * Boost >= 1.54.0 (only headers are required)
     * Eigen >= 3.1.0
-    * [libcommute >= 0.7.2](https://github.com/krivenko/libcommute)
+    * [libcommute >= 0.7.2](https://github.com/krivenko/libcommute) (will be
+      downloaded by CMake if not found installed locally)
     * An MPI 3.0 implementation
     * Git to fetch the sources
 
@@ -56,8 +57,10 @@ two-particle Green's functions as well as susceptibilities.
     ```
     cmake <path_to_pomerol_sources> -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<installation_path>
     ```
-    * If CMake configuration file of libcommute cannot be found, add
-      `-Dlibcommute_DIR=<libcommute_installation_path>/lib/cmake/libcommute` to the command line.
+    * CMake tries to find an installation of libcommute, whose location can be
+      specified by adding `-Dlibcommute_DIR=<libcommute_installation_path>/lib/cmake`
+      to the command line. If this attempt fails, it will download an appropriate
+      version of libcommute and co-install it alongside pomerol.
     * Add `-DTesting=OFF` to disable compilation of unit tests (not recommended).
     * Add `-DProgs=ON` to compile provided executables (from `progs`
       directory). Some of the executables depend on the
