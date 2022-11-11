@@ -97,8 +97,7 @@ readily available: <https://github.com/krivenko/pomerol2triqs>.
 Check <https://pomerol-ed.github.io/pomerol/html/> or type `make doc` during
 compilation stage to build the reference documentation.
 
-[V2-NEWS.md](V2-NEWS.md) lists main changes introduced in pomerol 2.0
-compared to the 1.x branch.
+[CHANGELOG.md](CHANGELOG.md) lists main changes introduced in each release.
 
 # License
 This Source Code Form is subject to the terms of the Mozilla Public License,
