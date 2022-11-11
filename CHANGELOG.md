@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 - Renamed type aliases `FreqTuple` -> `FreqTuple3` and `FreqVec` -> `FreqVec3`.
   The old names are still usable but marked as deprecated.
 - Bump required libcommute version to 0.7.2.
+- Install CMake configuration files into
+  ``${CMAKE_INSTALL_PREFIX}/lib/cmake/pomerol``, which is the recommended
+  location.
 
 ## [2.0] - 2021-11-30
 
