@@ -73,9 +73,9 @@ endif(USE_OPENMP)
 find_package(Eigen3 3.1 REQUIRED)
 
 # libcommute
-find_package(libcommute 0.7.0 CONFIG REQUIRED)
+find_package(libcommute 0.7.2 CONFIG REQUIRED)
 message(STATUS "Found libcommute version ${libcommute_VERSION}")
-get_target_property(libcommute_INCLUDE_PATH libcommute
+get_target_property(libcommute_INCLUDE_PATH libcommute::libcommute
                     INTERFACE_INCLUDE_DIRECTORIES)
 message(STATUS "libcommute includes: ${libcommute_INCLUDE_PATH}")
 

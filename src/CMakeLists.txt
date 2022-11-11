@@ -51,7 +51,7 @@ set_property(TARGET ${PROJECT_NAME} APPEND
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
     $<INSTALL_INTERFACE:include>)
-target_link_libraries(${PROJECT_NAME} PRIVATE libcommute)
+target_link_libraries(${PROJECT_NAME} PRIVATE libcommute::libcommute)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${MPI_CXX_LIBRARIES})
 target_compile_options(${PROJECT_NAME} PUBLIC ${MPI_CXX_COMPILE_FLAGS}
                                               ${MPI_C_COMPILE_FLAGS})
