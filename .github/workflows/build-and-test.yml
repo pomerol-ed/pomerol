@@ -11,15 +11,15 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         compiler:
-        - { name: "g++-5", cxx: "g++-5" }
-        - { name: "clang-3.9", cxx: "clang++-3.9" }
+        - { name: "g++-9", cxx: "g++-9" }
+        - { name: "clang-10", cxx: "clang++-10" }
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install dependencies
       run: |
@@ -72,6 +72,8 @@ jobs:
 
     - name: Run unit tests
       run: |
+           sudo sh -c 'echo -e "\nrmaps_base_oversubscribe = 1" >>             \
+           /etc/openmpi/openmpi-mca-params.conf'
            cd build
            CTEST_OUTPUT_ON_FAILURE=1 make test
 
@@ -90,7 +92,7 @@ jobs:
       if: |
           github.ref == 'refs/heads/master' &&
           startsWith(matrix.compiler.name, 'clang') == true
-      uses: JamesIves/github-pages-deploy-action@4.1.0
+      uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: gh-pages
         token: ${{ secrets.GITHUB_TOKEN }}
