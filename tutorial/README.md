@@ -12,5 +12,5 @@ cmake -Dlibcommute_DIR=<libcommute_installation_dir>/lib/cmake/libcommute \
 make
 ```
 
-Visit https://aeantipov.github.io/pomerol/html/ for comprehensive documentation
+Visit https://pomerol-ed.github.io/pomerol/html/ for comprehensive documentation
 of pomerol's API.

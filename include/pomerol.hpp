@@ -41,7 +41,7 @@ namespace Pomerol {
 
 /// \mainpage
 /// The source code and installation instructions are located in
-/// <a href="https://github.com/aeantipov/pomerol">project's GitHub repository</a>.
+/// <a href="https://github.com/pomerol-ed/pomerol">project's GitHub repository</a>.
 ///
 /// \section ref_API libpomerol API
 /// Most of pomerol's API is defined in \ref Pomerol namespace with an exception of the MPI tools

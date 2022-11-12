@@ -1,9 +1,9 @@
 [![DOI](https://zenodo.org/badge/4569/aeantipov/pomerol.svg)](
 http://dx.doi.org/10.5281/zenodo.17900)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-red)](
-https://aeantipov.github.io/pomerol/)
-[![Build and test](https://github.com/aeantipov/pomerol/actions/workflows/build-and-test.yml/badge.svg)](
-https://github.com/aeantipov/pomerol/actions/workflows/build-and-test.yml)
+https://pomerol-ed.github.io/pomerol/)
+[![Build and test](https://github.com/pomerol-ed/pomerol/actions/workflows/build-and-test.yml/badge.svg)](
+https://github.com/pomerol-ed/pomerol/actions/workflows/build-and-test.yml)
 
 **pomerol** is an exact diagonalization (full ED) code written in C++ aimed at
 solving condensed matter second-quantized models of interacting fermions
@@ -42,7 +42,7 @@ two-particle Green's functions as well as susceptibilities.
   - Download the latest sources:
 
     ```
-    git clone https://github.com/aeantipov/pomerol.git
+    git clone https://github.com/pomerol-ed/pomerol.git
     ```
 
   - Create a (temporary) build directory and change to it:
@@ -61,7 +61,7 @@ two-particle Green's functions as well as susceptibilities.
     * Add `-DTesting=OFF` to disable compilation of unit tests (not recommended).
     * Add `-DProgs=ON` to compile provided executables (from `progs`
       directory). Some of the executables depend on the
-      [gftools](https://github.com/aeantipov/gftools) library, which will be
+      [gftools](https://github.com/pomerol-ed/gftools) library, which will be
       automatically downloaded in case it cannot be found by CMake (use
       `-Dgftools_DIR` to specify its installation path). gftools supports saving
       to HDF5 through [ALPSCore](http://alpscore.org).
@@ -79,7 +79,7 @@ two-particle Green's functions as well as susceptibilities.
 The library, _libpomerol_ is built. It can be used for linking with executables.
 Some working executables are given in `prog` subdirectory.
 
-> :warning: It has been [reported](https://github.com/aeantipov/pomerol/pull/60)
+> :warning: It has been [reported](https://github.com/pomerol-ed/pomerol/pull/60)
 that some [MPICH](https://www.mpich.org/)-based MPI implementations, such as HPE
 Cray MPI may not properly support `MPI_CXX_*` datatypes, which pomerol's code
 depends on. In case you see failing MPI unit tests when linking to said MPI
@@ -94,7 +94,7 @@ The interface to [TRIQS library](https://triqs.github.io/triqs/latest/) is
 readily available: <https://github.com/krivenko/pomerol2triqs>.
 
 # Documentation
-Check <https://aeantipov.github.io/pomerol/html/> or type `make doc` during
+Check <https://pomerol-ed.github.io/pomerol/html/> or type `make doc` during
 compilation stage to build the reference documentation.
 
 [V2-NEWS.md](V2-NEWS.md) lists main changes introduced in pomerol 2.0

@@ -22,7 +22,7 @@ else()
     message(STATUS "Fetching gftools")
     find_package(Git REQUIRED)
     execute_process(COMMAND "${GIT_EXECUTABLE}" "clone" "--branch" "master"
-                    "https://github.com/aeantipov/gftools.git" "gftools"
+                    "https://github.com/pomerol-ed/gftools.git" "gftools"
                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
     set(GFTOOLS_INCLUDE_DIR "${CMAKE_BINARY_DIR}/gftools")
 endif()

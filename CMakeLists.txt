@@ -14,7 +14,7 @@ project(pomerol CXX)
 set(POMEROL_VERSION 2.1)
 set(POMEROL_DESCRIPTION "An exact diagonalization library aimed at \
 solving condensed matter models of interacting fermions")
-set(POMEROL_URL "https://aeantipov.github.io/pomerol/")
+set(POMEROL_URL "https://pomerol-ed.github.io/pomerol/")
 
 message(STATUS "Configuring ${PROJECT_NAME} ${POMEROL_VERSION}")
 
