@@ -1,3 +1,4 @@
 <map id="Pomerol::DensityMatrixPart" name="Pomerol::DensityMatrixPart">
-<area shape="rect" id="node2" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature. " alt="" coords="36,5,175,32"/>
+<area shape="rect" id="node1" title="Part of a many&#45;body Gibbs density matrix." alt="" coords="5,80,207,107"/>
+<area shape="rect" id="node2" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature." alt="" coords="37,5,175,32"/>
 </map>

@@ -1,4 +1,5 @@
 <map id="Pomerol::TwoParticleGFPart" name="Pomerol::TwoParticleGFPart">
-<area shape="rect" id="node2" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature. " alt="" coords="5,5,144,32"/>
-<area shape="rect" id="node3" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects. " alt="" coords="168,5,373,32"/>
+<area shape="rect" id="node1" title="Part of a fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="72,80,272,107"/>
+<area shape="rect" id="node2" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature." alt="" coords="5,5,144,32"/>
+<area shape="rect" id="node3" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects." alt="" coords="168,5,373,32"/>
 </map>

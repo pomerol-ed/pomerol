@@ -1,6 +1,7 @@
 <map id="Pomerol::CreationOperator" name="Pomerol::CreationOperator">
-<area shape="rect" id="node2" href="$class_pomerol_1_1_monomial_operator.html" title="Monomial quantum operator. " alt="" coords="26,171,231,197"/>
-<area shape="rect" id="node3" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects. " alt="" coords="26,5,231,32"/>
-<area shape="rect" id="node4" href="$class_pomerol_1_1_states_classification.html" title="Classification of many&#45;body basis states into bases of invariant subspaces. " alt="" coords="22,81,234,108"/>
-<area shape="rect" id="node5" href="$class_pomerol_1_1_hamiltonian.html" title="Hamiltonian of a quantum system. " alt="" coords="258,81,422,108"/>
+<area shape="rect" id="node1" title="A special case of a monomial operator: A single fermion creation operator ." alt="" coords="30,247,226,273"/>
+<area shape="rect" id="node2" href="$class_pomerol_1_1_monomial_operator.html" title="Monomial quantum operator." alt="" coords="25,171,232,197"/>
+<area shape="rect" id="node3" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects." alt="" coords="26,5,231,32"/>
+<area shape="rect" id="node4" href="$class_pomerol_1_1_states_classification.html" title="Classification of many&#45;body basis states into bases of invariant subspaces." alt="" coords="22,81,234,108"/>
+<area shape="rect" id="node5" href="$class_pomerol_1_1_hamiltonian.html" title="Hamiltonian of a quantum system." alt="" coords="258,81,422,108"/>
 </map>

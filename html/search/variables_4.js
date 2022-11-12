@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['frequenciespermutation',['FrequenciesPermutation',['../struct_pomerol_1_1_element_with_perm_freq.html#adff6f611d68e96bd6370773ca8e1b2b5',1,'Pomerol::ElementWithPermFreq']]]
+  ['frequenciespermutation_649',['FrequenciesPermutation',['../struct_pomerol_1_1_element_with_perm_freq.html#a6d033cef4c293d793e316b44162c8954',1,'Pomerol::ElementWithPermFreq']]]
 ];

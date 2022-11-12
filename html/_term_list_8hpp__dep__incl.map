@@ -1,15 +1,16 @@
 <map id="pomerol/TermList.hpp" name="pomerol/TermList.hpp">
-<area shape="rect" id="node2" href="$_greens_function_part_8hpp.html" title="Part of a fermionic single&#45;particle Matsubara Green&#39;s function. " alt="" coords="523,87,757,114"/>
-<area shape="rect" id="node7" href="$_susceptibility_part_8hpp.html" title="Part of a dynamical susceptibility in the Matsubara representation. " alt="" coords="7,87,228,114"/>
-<area shape="rect" id="node9" href="$_three_point_susceptibility_part_8hpp.html" title="Part of a 3&#45;point susceptibility in the Matsubara representation. " alt="" coords="261,80,499,121"/>
-<area shape="rect" id="node12" href="$_two_particle_g_f_part_8hpp.html" title="Part of a fermionic two&#45;particle Matsubara Green&#39;s function. " alt="" coords="809,87,1031,114"/>
-<area shape="rect" id="node3" href="$_greens_function_8hpp.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function. " alt="" coords="536,169,744,196"/>
-<area shape="rect" id="node4" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions. " alt="" coords="425,251,612,278"/>
-<area shape="rect" id="node6" href="$_vertex4_8hpp.html" title="Irreducible two&#45;particle vertex in the Matsubara representation. " alt="" coords="637,251,795,278"/>
-<area shape="rect" id="node5" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library. " alt="" coords="401,333,505,360"/>
-<area shape="rect" id="node8" href="$_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation. " alt="" coords="5,169,200,196"/>
-<area shape="rect" id="node10" href="$_three_point_susceptibility_8hpp.html" title="3&#45;point susceptibility in the Matsubara representation. " alt="" coords="248,169,512,196"/>
-<area shape="rect" id="node11" href="$_three_point_susceptibility_container_8hpp.html" title="Storage for multiple 3&#45;point susceptibilities in the Matsubara representation. " alt="" coords="111,244,350,285"/>
-<area shape="rect" id="node13" href="$_two_particle_g_f_8hpp.html" title="Fermionic two&#45;particle Matsubara Green&#39;s function. " alt="" coords="837,169,1033,196"/>
-<area shape="rect" id="node14" href="$_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions. " alt="" coords="819,251,1079,278"/>
+<area shape="rect" id="node1" title="List of terms forming Lehmann representation of a correlation function." alt="" coords="429,5,592,32"/>
+<area shape="rect" id="node2" href="$_greens_function_part_8hpp.html" title="Part of a fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="524,87,759,114"/>
+<area shape="rect" id="node7" href="$_susceptibility_part_8hpp.html" title="Part of a dynamical susceptibility in the Matsubara representation." alt="" coords="7,87,228,114"/>
+<area shape="rect" id="node9" href="$_three_point_susceptibility_part_8hpp.html" title="Part of a 3&#45;point susceptibility in the Matsubara representation." alt="" coords="261,80,499,121"/>
+<area shape="rect" id="node12" href="$_two_particle_g_f_part_8hpp.html" title="Part of a fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="811,87,1035,114"/>
+<area shape="rect" id="node3" href="$_greens_function_8hpp.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="537,169,746,196"/>
+<area shape="rect" id="node4" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions." alt="" coords="426,251,614,278"/>
+<area shape="rect" id="node6" href="$_vertex4_8hpp.html" title="Irreducible two&#45;particle vertex in the Matsubara representation." alt="" coords="638,251,797,278"/>
+<area shape="rect" id="node5" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="401,333,505,360"/>
+<area shape="rect" id="node8" href="$_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation." alt="" coords="5,169,200,196"/>
+<area shape="rect" id="node10" href="$_three_point_susceptibility_8hpp.html" title="3&#45;point susceptibility in the Matsubara representation." alt="" coords="248,169,512,196"/>
+<area shape="rect" id="node11" href="$_three_point_susceptibility_container_8hpp.html" title="Storage for multiple 3&#45;point susceptibilities in the Matsubara representation." alt="" coords="111,244,350,285"/>
+<area shape="rect" id="node13" href="$_two_particle_g_f_8hpp.html" title="Fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="839,169,1036,196"/>
+<area shape="rect" id="node14" href="$_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions." alt="" coords="821,251,1083,278"/>
 </map>

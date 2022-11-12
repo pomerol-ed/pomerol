@@ -1,4 +1,15 @@
 <map id="mpi_dispatcher/mpi_skel.hpp" name="mpi_dispatcher/mpi_skel.hpp">
-<area shape="rect" id="node2" href="$mpi__dispatcher_2misc_8hpp.html" title="Miscellaneous MPI&#45;related functions. " alt="" coords="5,95,87,121"/>
-<area shape="rect" id="node4" href="$mpi__dispatcher_8hpp.html" title="A master&#45;worker parallelization scheme using non&#45;blocking MPI communications. " alt="" coords="162,95,311,121"/>
+<area shape="rect" id="node1" title="Utilities for MPI&#45;parallelized calculation of computable objects." alt="" coords="364,5,515,47"/>
+<area shape="rect" id="node2" href="$mpi__dispatcher_2misc_8hpp.html" title="Miscellaneous MPI&#45;related functions." alt="" coords="5,95,87,121"/>
+<area shape="rect" id="node4" href="$mpi__dispatcher_8hpp.html" title="A master&#45;worker parallelization scheme using non&#45;blocking MPI communications." alt="" coords="162,95,311,121"/>
+<area shape="rect" id="node5" title=" " alt="" coords="111,169,181,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="291,169,342,196"/>
+<area shape="rect" id="node8" title=" " alt="" coords="367,169,429,196"/>
+<area shape="rect" id="node9" title=" " alt="" coords="437,95,522,121"/>
+<area shape="rect" id="node10" title=" " alt="" coords="546,95,626,121"/>
+<area shape="rect" id="node11" title=" " alt="" coords="650,95,727,121"/>
+<area shape="rect" id="node12" title=" " alt="" coords="751,95,826,121"/>
+<area shape="rect" id="node13" title=" " alt="" coords="851,95,905,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="21,169,79,196"/>
+<area shape="rect" id="node7" title=" " alt="" coords="208,169,265,196"/>
 </map>
