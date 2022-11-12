@@ -17,6 +17,7 @@ jobs:
         compiler:
         - { name: "g++-9", cxx: "g++-9" }
         - { name: "clang-10", cxx: "clang++-10" }
+        install-libcommute: [true, false]
 
     steps:
     - uses: actions/checkout@v3
@@ -28,10 +29,13 @@ jobs:
            sudo apt-get install -y ${{ matrix.compiler.name }}
 
     - name: Install Doxygen
-      if: startsWith(matrix.compiler.name, 'clang') == true
+      if: |
+          startsWith(matrix.compiler.name, 'clang') == true &&
+          matrix.install-libcommute
       run: sudo apt-get install -y doxygen graphviz
 
     - name: Install libcommute
+      if: matrix.install-libcommute
       env:
         CXX: ${{ matrix.compiler.cxx }}
       run: |
@@ -52,10 +56,13 @@ jobs:
            else
              DOCS=OFF
            fi
+           if [[ "${{ matrix.install-libcommute }}" == true ]]; then
+             LCA="-Dlibcommute_DIR=${HOME}/libcommute.ins/lib/cmake/libcommute"
+           fi
            mkdir build
            cd build
            cmake -DCMAKE_INSTALL_PREFIX=installed                              \
-                 -Dlibcommute_DIR=${HOME}/libcommute.ins/lib/cmake/libcommute  \
+                 ${LCA}                                                        \
                  -DStaticAnalysis=OFF                                          \
                  -DUSE_OPENMP=ON                                               \
                  -DDocumentation=${DOCS}                                       \
@@ -65,7 +72,9 @@ jobs:
            make VERBOSE=1
 
     - name: Build documentation
-      if: startsWith(matrix.compiler.name, 'clang') == true
+      if: |
+          startsWith(matrix.compiler.name, 'clang') == true &&
+          matrix.install-libcommute
       run: |
            cd build
            make doc
@@ -83,7 +92,9 @@ jobs:
            make install
 
     - name: Copy GitHub Pages Jekyll configuration file
-      if: startsWith(matrix.compiler.name, 'clang') == true
+      if: |
+          startsWith(matrix.compiler.name, 'clang') == true &&
+          matrix.install-libcommute
       run: |
            cp scripts/gh_pages_config.yml                                      \
            build/installed/share/doc/pomerol/_config.yml
@@ -91,7 +102,8 @@ jobs:
     - name: Deploy documentation
       if: |
           github.ref == 'refs/heads/master' &&
-          startsWith(matrix.compiler.name, 'clang') == true
+          startsWith(matrix.compiler.name, 'clang') == true &&
+          matrix.install-libcommute
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: gh-pages
