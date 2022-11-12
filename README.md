@@ -58,7 +58,8 @@ two-particle Green's functions as well as susceptibilities.
     cmake <path_to_pomerol_sources> -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<installation_path>
     ```
     * CMake tries to find an installation of libcommute, whose location can be
-      specified by adding `-Dlibcommute_DIR=<libcommute_installation_path>/lib/cmake`
+      specified by adding
+      `-Dlibcommute_DIR=<libcommute_installation_path>/lib/cmake/libcommute`
       to the command line. If this attempt fails, it will download an appropriate
       version of libcommute and co-install it alongside pomerol.
     * Add `-DTesting=OFF` to disable compilation of unit tests (not recommended).
