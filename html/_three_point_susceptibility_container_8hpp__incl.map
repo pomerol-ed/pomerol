@@ -13,7 +13,7 @@
 <area shape="rect" id="node37" href="$_field_operator_container_8hpp.html" title="A container for creation and annihilation operators." alt="" coords="2492,95,2692,121"/>
 <area shape="rect" id="node46" title=" " alt="" coords="3831,579,3873,606"/>
 <area shape="rect" id="node47" href="$_index_8hpp.html" title="Combinations of single&#45;particle indices." alt="" coords="3485,579,3571,606"/>
-<area shape="rect" id="node48" href="$_index_container2_8hpp.html" title="A CRTP base for container types whose elements are addressable by two single&#45;particle indices." alt="" coords="3447,497,3604,524"/>
+<area shape="rect" id="node48" href="$_index_container4_8hpp.html" title="A CRTP base for container types whose elements are addressable by four single&#45;particle indices." alt="" coords="3447,497,3604,524"/>
 <area shape="rect" id="node49" href="$_three_point_susceptibility_8hpp.html" title="3&#45;point susceptibility in the Matsubara representation." alt="" coords="1725,95,1931,121"/>
 <area shape="rect" id="node3" href="$_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc." alt="" coords="1375,579,1545,606"/>
 <area shape="rect" id="node6" href="$_density_matrix_part_8hpp.html" title="Diagonal block of a many&#45;body Gibbs density matrix." alt="" coords="789,266,955,293"/>

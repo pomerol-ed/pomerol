@@ -121,8 +121,8 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7b9918e5b7e3d9f7ec70150ea35bb805"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_three_point_susceptibility_part.html#a7b9918e5b7e3d9f7ec70150ea35bb805">ThreePointSusceptibilityPart</a> (<a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;F1, <a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;F2, <a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;B, <a class="el" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> const &amp;Hpart1, <a class="el" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> const &amp;Hpart2, <a class="el" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> const &amp;Hpart3, <a class="el" href="class_pomerol_1_1_density_matrix_part.html">DensityMatrixPart</a> const &amp;DMpart1, <a class="el" href="class_pomerol_1_1_density_matrix_part.html">DensityMatrixPart</a> const &amp;DMpart2, <a class="el" href="class_pomerol_1_1_density_matrix_part.html">DensityMatrixPart</a> const &amp;DMpart3, bool PP, bool SwappedFermionOps)</td></tr>
-<tr class="separator:a7b9918e5b7e3d9f7ec70150ea35bb805"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af658f5a862a588f6d587590c24fd2431"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_three_point_susceptibility_part.html#af658f5a862a588f6d587590c24fd2431">ThreePointSusceptibilityPart</a> (<a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;F1, <a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;F2, <a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;B1, <a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;B2, <a class="el" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> const &amp;Hpart1, <a class="el" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> const &amp;Hpart2, <a class="el" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> const &amp;Hpart3, <a class="el" href="class_pomerol_1_1_density_matrix_part.html">DensityMatrixPart</a> const &amp;DMpart1, <a class="el" href="class_pomerol_1_1_density_matrix_part.html">DensityMatrixPart</a> const &amp;DMpart2, <a class="el" href="class_pomerol_1_1_density_matrix_part.html">DensityMatrixPart</a> const &amp;DMpart3, <a class="el" href="group___basic.html#ga9f22d0ef65eea422a8814f2f5ee2eb30">Channel</a> channel, bool SwappedFermionOps)</td></tr>
+<tr class="separator:af658f5a862a588f6d587590c24fd2431"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15ac40866bf8c0a8939d5e10cdf67b10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_three_point_susceptibility_part.html#a15ac40866bf8c0a8939d5e10cdf67b10">compute</a> ()</td></tr>
 <tr class="memdesc:a15ac40866bf8c0a8939d5e10cdf67b10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the terms contributing to this part.  <a href="class_pomerol_1_1_three_point_susceptibility_part.html#a15ac40866bf8c0a8939d5e10cdf67b10">More...</a><br /></td></tr>
 <tr class="separator:a15ac40866bf8c0a8939d5e10cdf67b10"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -178,14 +178,14 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Part of a 3-point susceptibility. </p>
 <p>It includes contributions from all matrix elements of the following form, </p><p class="formulaDsp">
-\[ \langle {\rm S_1}| \hat F_1 |{\rm S_2}\rangle \langle {\rm S_2}| \hat F_2 |{\rm S_3} \rangle \langle {\rm S_3}| \hat B |{\rm S_1} \rangle, \]
+\[ \langle {\rm S_1}| \hat F_1 |{\rm S_2}\rangle \langle {\rm S_2}| \hat F_2 |{\rm S_3} \rangle \langle {\rm S_3}| \hat B_1 |{\rm S_4} \rangle \langle {\rm S_4}| \hat B_2 |{\rm S_1} \rangle, \]
 </p>
-<p> where \(\hat F_1, \hat F_2\) are fermionic field operators, and \(\hat B\) is a bosonic (quadratic) operator. \({\rm S_1}, {\rm S_2}, {\rm S_3}\) are invariant subspaces of the Hamiltonian. The contributions are stored as terms of the Lehmann representation. There are three kinds of terms contributing to the expansion, so called resonant (<a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term.html">ResonantTerm</a>), non-resonant fermion-fermion (<a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term.html">NonResonantFFTerm</a>) and non-resonant fermion-boson (<a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term.html">NonResonantFBTerm</a>) terms. </p>
+<p> where \(\hat F_1, \hat F_2, \hat B_1, \hat B_2\) are fermionic field operators, and \(\hat B = \hat B_1 \hat B_2\). \({\rm S_1}, {\rm S_2}, {\rm S_3}, {\rm S_4}\) are invariant subspaces of the Hamiltonian. The contributions are stored as terms of the Lehmann representation. There are three kinds of terms contributing to the expansion, so called resonant (<a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term.html">ResonantTerm</a>), non-resonant fermion-fermion (<a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term.html">NonResonantFFTerm</a>) and non-resonant fermion-boson (<a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term.html">NonResonantFBTerm</a>) terms. </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00052">52</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00053">53</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a7b9918e5b7e3d9f7ec70150ea35bb805"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b9918e5b7e3d9f7ec70150ea35bb805">&#9670;&nbsp;</a></span>ThreePointSusceptibilityPart()</h2>
+<a id="af658f5a862a588f6d587590c24fd2431"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af658f5a862a588f6d587590c24fd2431">&#9670;&nbsp;</a></span>ThreePointSusceptibilityPart()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -206,7 +206,13 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;&#160;</td>
-          <td class="paramname"><em>B</em>, </td>
+          <td class="paramname"><em>B1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;&#160;</td>
+          <td class="paramname"><em>B2</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -247,8 +253,8 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>PP</em>, </td>
+          <td class="paramtype"><a class="el" href="group___basic.html#ga9f22d0ef65eea422a8814f2f5ee2eb30">Channel</a>&#160;</td>
+          <td class="paramname"><em>channel</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -267,14 +273,15 @@ Additional Inherited Members</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">F1</td><td>Part of the first fermionic field operator \(\hat F_1\). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">F2</td><td>Part of the second fermionic field operator \(\hat F_2\). </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">B</td><td>Part of the quadratic bosonic operator \(\hat B\). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">B1</td><td>Part of the first multiplier of the quadratic operator \(\hat B\). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">B2</td><td>Part of the second multiplier of the quadratic operator \(\hat B\). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">Hpart1</td><td>Part of the Hamiltonian corresponding to the subspace \({\rm S_1}\). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">Hpart2</td><td>Part of the Hamiltonian corresponding to the subspace \({\rm S_2}\). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">Hpart3</td><td>Part of the Hamiltonian corresponding to the subspace \({\rm S_3}\). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">DMpart1</td><td>Part of the many-body density matrix corresponding to the subspace \({\rm S_1}\). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">DMpart2</td><td>Part of the many-body density matrix corresponding to the subspace \({\rm S_2}\). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">DMpart3</td><td>Part of the many-body density matrix corresponding to the subspace \({\rm S_3}\). </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">PP</td><td>Is this a part of the 3-point susceptibility in the PP-channel? </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">channel</td><td>Susceptibility channel. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">SwappedFermionOps</td><td>Are fermionic operators swapped with respect to their order in the definition? </td></tr>
   </table>
   </dd>
@@ -346,7 +353,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Access the list of the non-resonant fermion-boson terms. </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00458">458</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00463">463</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -375,7 +382,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Access the list of the non-resonant fermion-fermion terms. </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00456">456</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00461">461</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -404,7 +411,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Return the number of non-resonant fermion-boson terms. </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00448">448</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00453">453</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -433,7 +440,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Return the number of non-resonant fermion-fermion terms. </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00446">446</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00451">451</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -462,7 +469,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Return the number of resonant terms. </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00444">444</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00449">449</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -491,7 +498,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Access the list of the resonant terms. </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00454">454</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00459">459</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -520,7 +527,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Are fermionic operators in this part swapped with respect to their order in the definition? </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00451">451</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00456">456</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -615,7 +622,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00054">54</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00055">55</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -639,7 +646,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00055">55</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00056">56</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -649,7 +656,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Nov 12 2022 14:15:40 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Nov 15 2022 16:28:46 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

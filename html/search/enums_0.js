@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['channel_731',['Channel',['../class_pomerol_1_1_three_point_susceptibility.html#ac40dc34415d890082d25fd55a4a67064',1,'Pomerol::ThreePointSusceptibility']]]
+  ['channel_728',['Channel',['../group___basic.html#ga9f22d0ef65eea422a8814f2f5ee2eb30',1,'Pomerol']]]
 ];
