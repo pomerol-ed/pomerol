@@ -156,6 +156,14 @@ struct Permutation4 {
 /// An array of all 4! = 24 permutations of 4 elements
 extern std::array<Permutation4, 24> const permutations4;
 
+/// Channel, in which a susceptibility function is defined.
+enum Channel : int {
+    PP, ///< Particle-particle channel.
+    PH, ///< Particle-hole channel.
+    xPH ///< Crossed particle-hole channel.
+};
+std::ostream& operator<<(std::ostream& os, Channel channel);
+
 ///@}
 
 } // namespace Pomerol

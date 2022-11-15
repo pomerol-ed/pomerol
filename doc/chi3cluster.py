@@ -96,6 +96,15 @@ def chi3_ph(x1p, x1, x2p, x2, w1, w2):
         res += f(i, j, k, -w2, w1) * C_mats[x1][i, j] * Cdag_mats[x1p][j, k] * N[k, i]
     return res
 
+# \chi^{(3)}_{xph}
+def chi3_xph(x1p, x1, x2p, x2, w1, w2):
+    barN = -Cdag_mats[x2p] @ C_mats[x1]
+    res = 0
+    for i, j, k in product(range(hs.dim), repeat=3):
+        res += -f(i, j, k, w1, -w2) * Cdag_mats[x1p][i, j] * C_mats[x2][j, k] * barN[k, i]
+        res += f(i, j, k, -w2, w1) * C_mats[x2][i, j] * Cdag_mats[x1p][j, k] * barN[k, i]
+    return res
+
 # Matsubara frequency
 def nu(n):
     return np.pi*(2*n+1)/beta
@@ -117,3 +126,12 @@ x2 = (2, 0, "dn")
 
 for n1, n2 in product(range(-1, 2), repeat=2):
     print(n1, n2, chi3_ph(x1p, x1, x2p, x2, nu(n1), nu(n2)))
+
+print("Crossed particle-hole")
+x1p = (0, 0, "up")
+x1 = (2, 0, "up")
+x2p = (2, 0, "dn")
+x2 = (0, 0, "dn")
+
+for n1, n2 in product(range(-1, 2), repeat=2):
+    print(n1, n2, chi3_xph(x1p, x1, x2p, x2, nu(n1), nu(n2)))

@@ -68,16 +68,13 @@ TEST_CASE("3-point susceptibilities of a small Hubbard cluster", "[ThreePointSus
     ParticleIndex C_dn_index = IndexInfo.getIndex("C", 0, down);
 
     SECTION("Particle-particle channel") {
-        // Pairing operator
-        QuadraticOperator Delta(IndexInfo, HS, S, H, C_up_index, C_dn_index, std::make_tuple(false, false));
-        Delta.prepare(HS);
-        Delta.compute();
-
-        ThreePointSusceptibility chi3pp(S,
+        ThreePointSusceptibility chi3pp(Channel::PP,
+                                        S,
                                         H,
                                         Operators.getCreationOperator(A_up_index),
+                                        Operators.getAnnihilationOperator(C_up_index),
                                         Operators.getCreationOperator(A_dn_index),
-                                        Delta,
+                                        Operators.getAnnihilationOperator(C_dn_index),
                                         rho);
         chi3pp.prepare();
         chi3pp.compute();
@@ -100,16 +97,13 @@ TEST_CASE("3-point susceptibilities of a small Hubbard cluster", "[ThreePointSus
     }
 
     SECTION("Particle-hole channel") {
-        // Density operator
-        QuadraticOperator N(IndexInfo, HS, S, H, C_dn_index, C_dn_index);
-        N.prepare(HS);
-        N.compute();
-
-        ThreePointSusceptibility chi3ph(S,
+        ThreePointSusceptibility chi3ph(Channel::PH,
+                                        S,
                                         H,
                                         Operators.getCreationOperator(A_up_index),
                                         Operators.getAnnihilationOperator(A_up_index),
-                                        N,
+                                        Operators.getCreationOperator(C_dn_index),
+                                        Operators.getAnnihilationOperator(C_dn_index),
                                         rho);
         chi3ph.prepare();
         chi3ph.compute();
@@ -125,6 +119,35 @@ TEST_CASE("3-point susceptibilities of a small Hubbard cluster", "[ThreePointSus
         for(int n1 = -1; n1 <= 1; ++n1) {
             for(int n2 = -1; n2 <= 1; ++n2) {
                 auto result = chi3ph(n1, n2);
+                auto ref = chi3_ref(n1 + 1, n2 + 1);
+                REQUIRE_THAT(result, IsCloseTo(ref, 1e-10));
+            }
+        }
+    }
+
+    SECTION("Crossed particle-hole channel") {
+        ThreePointSusceptibility chi3xph(Channel::xPH,
+                                         S,
+                                         H,
+                                         Operators.getCreationOperator(A_up_index),
+                                         Operators.getAnnihilationOperator(C_up_index),
+                                         Operators.getCreationOperator(C_dn_index),
+                                         Operators.getAnnihilationOperator(A_dn_index),
+                                         rho);
+        chi3xph.prepare();
+        chi3xph.compute();
+
+        // Reference values from 'chi3cluster.py'
+        ComplexMatrixType chi3_ref(3, 3);
+        chi3_ref << 0.27954539611247325 - 0.16431057067114357 * I, 0.08787949653955825,
+            0.025342850143558054 - 0.003942925235138866 * I, 0.08787949653955825,
+            0.27954539611247325 + 0.16431057067114357 * I, 0.05067298632153447 + 0.02536375725665837 * I,
+            0.02534285014355848 - 0.00394292523513924 * I, 0.05067298632153436 + 0.0253637572566579 * I,
+            0.11815163820082586 + 0.06747758349542371 * I;
+
+        for(int n1 = -1; n1 <= 1; ++n1) {
+            for(int n2 = -1; n2 <= 1; ++n2) {
+                auto result = chi3xph(n1, n2);
                 auto ref = chi3_ref(n1 + 1, n2 + 1);
                 REQUIRE_THAT(result, IsCloseTo(ref, 1e-10));
             }

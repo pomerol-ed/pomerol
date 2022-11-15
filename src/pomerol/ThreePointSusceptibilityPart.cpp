@@ -192,27 +192,29 @@ MPI_Datatype ThreePointSusceptibilityPart::ResonantTerm::mpi_datatype() {
 
 ThreePointSusceptibilityPart::ThreePointSusceptibilityPart(MonomialOperatorPart const& F1,
                                                            MonomialOperatorPart const& F2,
-                                                           MonomialOperatorPart const& B,
+                                                           MonomialOperatorPart const& B1,
+                                                           MonomialOperatorPart const& B2,
                                                            HamiltonianPart const& Hpart1,
                                                            HamiltonianPart const& Hpart2,
                                                            HamiltonianPart const& Hpart3,
                                                            DensityMatrixPart const& DMpart1,
                                                            DensityMatrixPart const& DMpart2,
                                                            DensityMatrixPart const& DMpart3,
-                                                           bool PP,
+                                                           Channel channel,
                                                            bool SwappedFermionOps)
     : Thermal(DMpart1.beta),
       ComputableObject(),
       F1(F1),
       F2(F2),
-      B(B),
+      B1(B1),
+      B2(B2),
       Hpart1(Hpart1),
       Hpart2(Hpart2),
       Hpart3(Hpart3),
       DMpart1(DMpart1),
       DMpart2(DMpart2),
       DMpart3(DMpart3),
-      PP(PP),
+      channel(channel),
       SwappedFermionOps(SwappedFermionOps),
       NonResonantFFTerms(NonResonantFFTerm::Compare(), NonResonantFFTerm::IsNegligible()),
       NonResonantFBTerms(NonResonantFBTerm::Compare(), NonResonantFBTerm::IsNegligible()),
@@ -222,7 +224,7 @@ void ThreePointSusceptibilityPart::compute() {
     if(getStatus() >= Computed)
         return;
 
-    if(F1.isComplex() || F2.isComplex() || B.isComplex())
+    if(F1.isComplex() || F2.isComplex() || B1.isComplex() || B2.isComplex())
         computeImpl<true>();
     else
         computeImpl<false>();
@@ -234,12 +236,14 @@ template <bool Complex> void ThreePointSusceptibilityPart::computeImpl() {
     ResonantTerms.clear();
 
     RealType beta = DMpart1.beta;
-    RealType prefactor = (PP == SwappedFermionOps) ? -1 : 1;
+    RealType prefactor = ((channel == PH) == SwappedFermionOps) ? 1 : -1;
+
+    // B = B_1 B_2
+    ColMajorMatrixType<Complex> Bmatrix = (B1.getColMajorValue<Complex>() * B2.getColMajorValue<Complex>()).pruned();
 
     // <1| F1 |2> <2| F2 |3> <3| B |1>
     RowMajorMatrixType<Complex> const& F1matrix = F1.getRowMajorValue<Complex>();
     RowMajorMatrixType<Complex> const& F2matrix = F2.getRowMajorValue<Complex>();
-    ColMajorMatrixType<Complex> const& Bmatrix = B.getColMajorValue<Complex>();
 
     InnerQuantumState index1Max = Bmatrix.outerSize();
     for(InnerQuantumState index1 = 0; index1 < index1Max; ++index1) {
@@ -296,17 +300,18 @@ inline void ThreePointSusceptibilityPart::addMultiterm(ComplexType Coeff,
     // Non-resonant fermion-fermion term that is always present.
     ComplexType CoeffNRFF = Coeff * (Wi + Wj);
     if(std::abs(CoeffNRFF) > CoefficientTolerance) {
-        NonResonantFFTerms.add_term(NonResonantFFTerm(PP ? -CoeffNRFF : CoeffNRFF,
+        NonResonantFFTerms.add_term(NonResonantFFTerm((channel == PP) ? -CoeffNRFF : CoeffNRFF,
                                                       SwappedFermionOps ? Ejk : Eij,
-                                                      (SwappedFermionOps ? Eij : Ejk) * (PP ? 1 : -1)));
+                                                      (SwappedFermionOps ? Eij : Ejk) * ((channel == PP) ? 1 : -1)));
     }
 
     // Resonant term
     if(std::abs(Eik) < ReduceResonanceTolerance) {
         ComplexType CoeffR = -Coeff * beta * Wi;
         if(std::abs(CoeffR) > CoefficientTolerance) {
-            ResonantTerms.add_term(
-                ResonantTerm(SwappedFermionOps ? -CoeffR : CoeffR, SwappedFermionOps ? Ejk : -Ejk, PP ? -1 : 1));
+            ResonantTerms.add_term(ResonantTerm(SwappedFermionOps ? -CoeffR : CoeffR,
+                                                SwappedFermionOps ? Ejk : -Ejk,
+                                                (channel == PP) ? -1 : 1));
         }
     } else {
         // Non-resonant fermion-boson term
@@ -315,11 +320,12 @@ inline void ThreePointSusceptibilityPart::addMultiterm(ComplexType Coeff,
             NonResonantFBTerms.add_term(NonResonantFBTerm(SwappedFermionOps ? -CoeffNRFB : CoeffNRFB,
                                                           SwappedFermionOps ? Ejk : Eij,
                                                           Eik,
-                                                          PP ? -1 : 1));
+                                                          (channel == PP) ? -1 : 1));
 
             // Extra non-resonant fermion-fermion term
             if(!SwappedFermionOps) {
-                NonResonantFFTerms.add_term(NonResonantFFTerm(PP ? -CoeffNRFB : CoeffNRFB, Eij, PP ? Ejk : -Ejk));
+                NonResonantFFTerms.add_term(
+                    NonResonantFFTerm((channel == PP) ? -CoeffNRFB : CoeffNRFB, Eij, (channel == PP) ? Ejk : -Ejk));
             }
         }
     }

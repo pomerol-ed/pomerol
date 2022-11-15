@@ -16,45 +16,35 @@
 
 namespace Pomerol {
 
-void ThreePointSusceptibilityContainer::prepareAll(std::set<IndexCombination2> const& InitialIndices) {
+void ThreePointSusceptibilityContainer::prepareAll(std::set<IndexCombination4> const& InitialIndices) {
     fill(InitialIndices);
     for(auto& el : ElementsMap) {
-        el.second->ReduceResonanceTolerance = ReduceResonanceTolerance;
-        el.second->CoefficientTolerance = CoefficientTolerance;
-        el.second->prepare();
+        auto& chi3 = static_cast<ThreePointSusceptibility&>(el.second);
+        chi3.ReduceResonanceTolerance = ReduceResonanceTolerance;
+        chi3.CoefficientTolerance = CoefficientTolerance;
+        chi3.prepare();
     }
 }
 
-std::map<IndexCombination2, std::vector<ComplexType>>
+std::map<IndexCombination4, std::vector<ComplexType>>
 ThreePointSusceptibilityContainer::computeAll(bool clear, FreqVec2 const& freqs, MPI_Comm const& comm) {
-    std::map<IndexCombination2, std::vector<ComplexType>> out;
+    std::map<IndexCombination4, std::vector<ComplexType>> out;
     for(auto& el : ElementsMap) {
         INFO("Computing 3PSusceptibility for " << el.first);
-        out.emplace(el.first, el.second->compute(clear, freqs, comm));
+        auto& chi3 = static_cast<ThreePointSusceptibility&>(el.second);
+        out.emplace(el.first, chi3.compute(clear, freqs, comm));
     }
     return out;
 }
 
 std::shared_ptr<ThreePointSusceptibility>
-ThreePointSusceptibilityContainer::createElement(IndexCombination2 const& Indices) const {
+ThreePointSusceptibilityContainer::createElement(IndexCombination4 const& Indices) const {
     CreationOperator const& CX1 = Operators.getCreationOperator(Indices.Index1);
-    switch(Channel) {
-    case ThreePointSusceptibility::PP:
-        return std::make_shared<ThreePointSusceptibility>(S,
-                                                          H,
-                                                          CX1,
-                                                          Operators.getCreationOperator(Indices.Index2),
-                                                          B,
-                                                          DM);
-    case ThreePointSusceptibility::PH:
-        return std::make_shared<ThreePointSusceptibility>(S,
-                                                          H,
-                                                          CX1,
-                                                          Operators.getAnnihilationOperator(Indices.Index2),
-                                                          B,
-                                                          DM);
-    default: assert(0);
-    }
+    AnnihilationOperator const& C2 = Operators.getAnnihilationOperator(Indices.Index2);
+    CreationOperator const& CX3 = Operators.getCreationOperator(Indices.Index3);
+    AnnihilationOperator const& C4 = Operators.getAnnihilationOperator(Indices.Index4);
+
+    return std::make_shared<ThreePointSusceptibility>(channel, S, H, CX1, C2, CX3, C4, DM);
 }
 
 } // namespace Pomerol

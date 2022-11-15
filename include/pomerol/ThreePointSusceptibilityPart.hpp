@@ -41,11 +41,12 @@ namespace Pomerol {
 /// \f[
 ///  \langle {\rm S_1}| \hat F_1 |{\rm S_2}\rangle
 ///  \langle {\rm S_2}| \hat F_2 |{\rm S_3} \rangle
-///  \langle {\rm S_3}| \hat B |{\rm S_1} \rangle,
+///  \langle {\rm S_3}| \hat B_1 |{\rm S_4} \rangle
+///  \langle {\rm S_4}| \hat B_2 |{\rm S_1} \rangle,
 /// \f]
-/// where \f$\hat F_1, \hat F_2\f$ are fermionic field operators, and \f$\hat B\f$ is a bosonic
-/// (quadratic) operator.
-/// \f${\rm S_1}, {\rm S_2}, {\rm S_3}\f$ are invariant subspaces of the Hamiltonian.
+/// where \f$\hat F_1, \hat F_2, \hat B_1, \hat B_2\f$ are fermionic field operators,
+/// and \f$\hat B = \hat B_1 \hat B_2\f$.
+/// \f${\rm S_1}, {\rm S_2}, {\rm S_3}, {\rm S_4}\f$ are invariant subspaces of the Hamiltonian.
 /// The contributions are stored as terms of the Lehmann representation. There are three kinds of terms contributing
 /// to the expansion, so called resonant (\ref ResonantTerm), non-resonant fermion-fermion (\ref NonResonantFFTerm)
 /// and non-resonant fermion-boson (\ref NonResonantFBTerm) terms.
@@ -329,8 +330,10 @@ private:
     MonomialOperatorPart const& F1;
     /// Part of the second fermionic operator.
     MonomialOperatorPart const& F2;
-    /// Part of the quadratic bosonic operator.
-    MonomialOperatorPart const& B;
+    /// First multiplier of the quadratic operator \f$\hat B\f$.
+    MonomialOperatorPart const& B1;
+    /// Second multiplier of the quadratic operator \f$\hat B\f$.
+    MonomialOperatorPart const& B2;
 
     /// Diagonal block of the Hamiltonian corresponding to the subspace \f${\rm S_1}\f$.
     HamiltonianPart const& Hpart1;
@@ -346,8 +349,8 @@ private:
     /// Diagonal block of the many-body density matrix corresponding to the subspace \f${\rm S_3}\f$.
     DensityMatrixPart const& DMpart3;
 
-    /// Is this a part of the 3-point susceptibility in the PP-channel?
-    bool PP;
+    /// Channel
+    Channel channel;
 
     /// Are fermionic operators in this part swapped with respect to their order in the definition?
     bool SwappedFermionOps;
@@ -362,8 +365,8 @@ private:
     /// Adds a multi-term that has one of the following forms:
     /// \li PP channel, non-swapped fermionic operators: \f$C f(z_1, z_2)\f$;
     /// \li PP channel, swapped fermionic operators: \f$C f(z_2, z_1)\f$;
-    /// \li PH channel, non-swapped fermionic operators: \f$C f(z_1, -z_2)\f$;
-    /// \li PP channel, swapped fermionic operators: \f$C f(-z_2, z_1)\f$.
+    /// \li PH/xPH channels, non-swapped fermionic operators: \f$C f(z_1, -z_2)\f$;
+    /// \li PH/xPH channels, swapped fermionic operators: \f$C f(-z_2, z_1)\f$.
     ///
     /// Here, function \f$f(z_1, z_2)\f$ is defined as
     /// \f[
@@ -402,25 +405,27 @@ public:
     /// Constructor.
     /// \param[in] F1 Part of the first fermionic field operator \f$\hat F_1\f$.
     /// \param[in] F2 Part of the second fermionic field operator \f$\hat F_2\f$.
-    /// \param[in] B Part of the quadratic bosonic operator \f$\hat B\f$.
+    /// \param[in] B1 Part of the first multiplier of the quadratic operator \f$\hat B\f$.
+    /// \param[in] B2 Part of the second multiplier of the quadratic operator \f$\hat B\f$.
     /// \param[in] Hpart1 Part of the Hamiltonian corresponding to the subspace \f${\rm S_1}\f$.
     /// \param[in] Hpart2 Part of the Hamiltonian corresponding to the subspace \f${\rm S_2}\f$.
     /// \param[in] Hpart3 Part of the Hamiltonian corresponding to the subspace \f${\rm S_3}\f$.
     /// \param[in] DMpart1 Part of the many-body density matrix corresponding to the subspace \f${\rm S_1}\f$.
     /// \param[in] DMpart2 Part of the many-body density matrix corresponding to the subspace \f${\rm S_2}\f$.
     /// \param[in] DMpart3 Part of the many-body density matrix corresponding to the subspace \f${\rm S_3}\f$.
-    /// \param[in] PP Is this a part of the 3-point susceptibility in the PP-channel?
+    /// \param[in] channel Susceptibility channel.
     /// \param[in] SwappedFermionOps Are fermionic operators swapped with respect to their order in the definition?
     ThreePointSusceptibilityPart(MonomialOperatorPart const& F1,
                                  MonomialOperatorPart const& F2,
-                                 MonomialOperatorPart const& B,
+                                 MonomialOperatorPart const& B1,
+                                 MonomialOperatorPart const& B2,
                                  HamiltonianPart const& Hpart1,
                                  HamiltonianPart const& Hpart2,
                                  HamiltonianPart const& Hpart3,
                                  DensityMatrixPart const& DMpart1,
                                  DensityMatrixPart const& DMpart2,
                                  DensityMatrixPart const& DMpart3,
-                                 bool PP,
+                                 Channel channel,
                                  bool SwappedFermionOps);
 
     /// Compute the terms contributing to this part.

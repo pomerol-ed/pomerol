@@ -68,7 +68,7 @@ namespace Pomerol {
 ///     - Single-particle fermionic Green's functions (\ref GreensFunction, \ref GFContainer).
 ///     - Dynamical susceptibilities -- correlators of two \ref MonomialOperator's (\ref Susceptibility).
 ///     - 3-point susceptibilities -- correlators of two fermionic and one bosonic quadratic operator
-///       (\ref ThreePointSusceptibility).
+///       (\ref ThreePointSusceptibility, \ref ThreePointSusceptibilityContainer).
 ///     - Two-particle fermionic Green's functions and irreducible vertices (\ref TwoParticleGF,
 ///       \ref TwoParticleGFContainer, \ref Vertex4).
 ///

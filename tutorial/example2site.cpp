@@ -185,15 +185,13 @@ int main(int argc, char* argv[]) {
     ParticleIndex up_index = IndexInfo.getIndex("A", 0, LatticePresets::up);
     ParticleIndex dn_index = IndexInfo.getIndex("A", 0, LatticePresets::down);
 
-    CreationOperator CX_up(IndexInfo, HS, S, H, up_index),
-                     CX_dn(IndexInfo, HS, S, H, dn_index);
+    CreationOperator CX_up(IndexInfo, HS, S, H, up_index), CX_dn(IndexInfo, HS, S, H, dn_index);
     CX_up.prepare(HS);
     CX_up.compute();
     CX_dn.prepare(HS);
     CX_dn.compute();
 
-    AnnihilationOperator C_up(IndexInfo, HS, S, H, up_index),
-                         C_dn(IndexInfo, HS, S, H, dn_index);
+    AnnihilationOperator C_up(IndexInfo, HS, S, H, up_index), C_dn(IndexInfo, HS, S, H, dn_index);
     C_up.prepare(HS);
     C_up.compute();
     C_dn.prepare(HS);
@@ -295,21 +293,25 @@ int main(int argc, char* argv[]) {
     print_section("3-points susceptibility");
     // The 3-point susceptibility is computed by ThreePointSusceptibility class.
     //
-    // It is defined as a 2-dimensional Fourier transform of
-    // 1. <c_i^+(\tau_1) c_j(0) c_k^+(\tau_2) c_l(0)> in the particle-particle channel;
-    // 2. <c_i^+(\tau_1) c_j(\tau_2) c_k^+(0) c_l(0)> in the particle-hole channel;
+    // It can be defined in one of the following three channels.
+    // 1. Particle-particle channel:
+    //   \chi^{(3)}_{pp}(\omega_{n_1},\omega_{n_2}) =
+    //   \int_0^\beta d\tau_1 d\tau_2 e^{-i\omega_{n_1}\tau_1} e^{-i\omega_{n_2}\tau_2}
+    //   Tr[\mathcal{T}_\tau \hat\rho c^+_1(\tau_1) c_2(0^+) c^+_3(\tau_2) c_4(0)]
+    //
+    // 2. Particle-hole channel:
+    //   \chi^{(3)}_{ph}(\omega_{n_1},\omega_{n_2}) =
+    //   \int_0^\beta d\tau_1 d\tau_2 e^{-i\omega_{n_1}\tau_1} e^{i\omega_{n_2}\tau_2}
+    //   Tr[\mathcal{T}_\tau \hat\rho c^+_1(\tau_1) c_2(\tau_2) c^+_3(0^+) c_4(0)]
+    //
+    // 3. Crossed particle-hole channel:
+    //   \chi^{(3)}_{\bar{ph}}(\omega_{n_1},\omega_{n_2}) =
+    //   \int_0^\beta d\tau_1 d\tau_2 e^{-i\omega_{n_1}\tau_1} e^{i\omega_{n_2}\tau_2}
+    //   Tr[\mathcal{T}_\tau \hat\rho c^+_1(\tau_1) c_2(0) c^+_3(0^+) c_4(\tau_2)]
 
     // Particle-particle channel
-    // Define and precompute a pairing operator Delta = c_j c_l, in this
-    // case c_{"A", up} c_{"A", dn}.
-    // (the {false, false} argument indicates the both operators in the product
-    // are annihilators).
-    QuadraticOperator Delta(IndexInfo, HS, S, H, up_index, dn_index, {false, false});
-    Delta.prepare(HS);
-    Delta.compute();
-
-    // The PP-susceptibility object
-    ThreePointSusceptibility chi3pp(S, H, CX_up, CX_dn, Delta, rho);
+    // The PP-susceptibility object with indices (up, up, down, down)
+    ThreePointSusceptibility chi3pp(PP, S, H, CX_up, C_up, CX_dn, C_dn, rho);
     chi3pp.prepare();
     chi3pp.compute();
     if(pMPI::rank(MPI_COMM_WORLD) == 0) {
@@ -321,20 +323,27 @@ int main(int argc, char* argv[]) {
     }
 
     // Particle-hole channel
-    // In this case we have
-    // c_i^+ = c^+_{"A", dn}
-    // c_j = c_{"A", dn}
-    // c^+_k = c^+_{"A", up}
-    // c_l = c_{"A", up}
-    // The quadratic operator N_up = c^+_{"A", up} c_{"A", up} has already
-    // been precomputed.
-    ThreePointSusceptibility chi3ph(S, H, CX_dn, C_dn, N_up, rho);
+    // The PH-susceptibility object with indices (up, up, down, down)
+    ThreePointSusceptibility chi3ph(PH, S, H, CX_up, C_up, CX_dn, C_dn, rho);
     chi3ph.prepare();
     chi3ph.compute();
     if(pMPI::rank(MPI_COMM_WORLD) == 0) {
         for(int n1 = 0; n1 < 3; n1++) {
             for(int n2 = 0; n2 < 3; n2++) {
                 std::cout << n1 << "," << n2 << "|" << chi3ph(n1, n2) << "\n";
+            }
+        }
+    }
+
+    // Crossed particle-hole channel
+    // The xPH-susceptibility object with indices (up, up, down, down)
+    ThreePointSusceptibility chi3xph(xPH, S, H, CX_up, C_up, CX_dn, C_dn, rho);
+    chi3xph.prepare();
+    chi3xph.compute();
+    if(pMPI::rank(MPI_COMM_WORLD) == 0) {
+        for(int n1 = 0; n1 < 3; n1++) {
+            for(int n2 = 0; n2 < 3; n2++) {
+                std::cout << n1 << "," << n2 << "|" << chi3xph(n1, n2) << "\n";
             }
         }
     }

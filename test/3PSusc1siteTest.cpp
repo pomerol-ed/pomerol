@@ -101,17 +101,13 @@ TEST_CASE("3-point susceptibilities of a single Hubbard atom", "[ThreePointSusce
     SECTION("Particle-particle channel") {
         for(auto index1 : {up_index, dn_index}) {
             for(auto index2 : {up_index, dn_index}) {
-
-                // Pairing operator
-                QuadraticOperator Delta(IndexInfo, HS, S, H, index1, index2, std::make_tuple(false, false));
-                Delta.prepare(HS);
-                Delta.compute();
-
-                ThreePointSusceptibility chi3pp(S,
+                ThreePointSusceptibility chi3pp(Channel::PP,
+                                                S,
                                                 H,
                                                 Operators.getCreationOperator(index1),
+                                                Operators.getAnnihilationOperator(index1),
                                                 Operators.getCreationOperator(index2),
-                                                Delta,
+                                                Operators.getAnnihilationOperator(index2),
                                                 rho);
                 chi3pp.prepare();
                 chi3pp.compute();
@@ -136,17 +132,13 @@ TEST_CASE("3-point susceptibilities of a single Hubbard atom", "[ThreePointSusce
     SECTION("Particle-hole channel") {
         for(auto index1 : {up_index, dn_index}) {
             for(auto index2 : {up_index, dn_index}) {
-
-                // Density operator
-                QuadraticOperator N(IndexInfo, HS, S, H, index2, index2);
-                N.prepare(HS);
-                N.compute();
-
-                ThreePointSusceptibility chi3ph(S,
+                ThreePointSusceptibility chi3ph(Channel::PH,
+                                                S,
                                                 H,
                                                 Operators.getCreationOperator(index1),
                                                 Operators.getAnnihilationOperator(index1),
-                                                N,
+                                                Operators.getCreationOperator(index2),
+                                                Operators.getAnnihilationOperator(index2),
                                                 rho);
                 chi3ph.prepare();
                 chi3ph.compute();
@@ -170,6 +162,85 @@ TEST_CASE("3-point susceptibilities of a single Hubbard atom", "[ThreePointSusce
                     for(int n1 = -n_iw; n1 < n_iw; ++n1) {
                         for(int n2 = -n_iw; n2 < n_iw; ++n2) {
                             REQUIRE_THAT(chi3ph(n1, n2), IsCloseTo(ref(n1, n2), 1e-14));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    SECTION("Crossed particle-hole channel") {
+        for(auto index1 : {up_index, dn_index}) {
+            for(auto index2 : {up_index, dn_index}) {
+                ThreePointSusceptibility chi3xph(Channel::xPH,
+                                                 S,
+                                                 H,
+                                                 Operators.getCreationOperator(index1),
+                                                 Operators.getAnnihilationOperator(index1),
+                                                 Operators.getCreationOperator(index2),
+                                                 Operators.getAnnihilationOperator(index2),
+                                                 rho);
+                chi3xph.prepare();
+                chi3xph.compute();
+
+                if(index1 == index2) {
+                    auto ref = [&](int n1, int n2) {
+                        int st1 = index1 == up_index ? 1 : 2;
+                        int st2 = index1 == up_index ? 2 : 1;
+                        return -g(st1, 0, st1, -omega(n1), omega(n2)) - g(3, st2, 3, -omega(n1), omega(n2));
+                    };
+                    for(int n1 = -n_iw; n1 < n_iw; ++n1) {
+                        for(int n2 = -n_iw; n2 < n_iw; ++n2) {
+                            REQUIRE_THAT(chi3xph(n1, n2), IsCloseTo(ref(n1, n2), 1e-14));
+                        }
+                    }
+                } else {
+                    auto ref = [&](int n1, int n2) {
+                        int st1 = index1 == up_index ? 1 : 2;
+                        int st2 = index1 == up_index ? 2 : 1;
+                        return -g(st1, 0, st2, -omega(n1), omega(n2)) - g(st1, 3, st2, omega(n2), -omega(n1));
+                    };
+                    for(int n1 = -n_iw; n1 < n_iw; ++n1) {
+                        for(int n2 = -n_iw; n2 < n_iw; ++n2) {
+                            REQUIRE_THAT(chi3xph(n1, n2), IsCloseTo(ref(n1, n2), 1e-14));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    SECTION("Crossing symmetry") {
+        for(auto index1 : {up_index, dn_index}) {
+            for(auto index2 : {up_index, dn_index}) {
+                for(auto index3 : {up_index, dn_index}) {
+                    for(auto index4 : {up_index, dn_index}) {
+                        ThreePointSusceptibility chi3ph(Channel::PH,
+                                                        S,
+                                                        H,
+                                                        Operators.getCreationOperator(index1),
+                                                        Operators.getAnnihilationOperator(index2),
+                                                        Operators.getCreationOperator(index3),
+                                                        Operators.getAnnihilationOperator(index4),
+                                                        rho);
+                        chi3ph.prepare();
+                        chi3ph.compute();
+
+                        ThreePointSusceptibility chi3xph(Channel::xPH,
+                                                         S,
+                                                         H,
+                                                         Operators.getCreationOperator(index1),
+                                                         Operators.getAnnihilationOperator(index4),
+                                                         Operators.getCreationOperator(index3),
+                                                         Operators.getAnnihilationOperator(index2),
+                                                         rho);
+                        chi3xph.prepare();
+                        chi3xph.compute();
+
+                        for(int n1 = -n_iw; n1 < n_iw; ++n1) {
+                            for(int n2 = -n_iw; n2 < n_iw; ++n2) {
+                                REQUIRE_THAT(chi3xph(n1, n2), IsCloseTo(-chi3ph(n1, n2), 1e-14));
+                            }
                         }
                     }
                 }

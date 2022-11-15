@@ -61,4 +61,16 @@ std::array<Permutation4, 24> const permutations4 = {
      {{2, 1, 3, 0}, 1},  {{2, 3, 0, 1}, 1},  {{2, 3, 1, 0}, -1}, {{3, 0, 1, 2}, -1}, {{3, 0, 2, 1}, 1},
      {{3, 1, 0, 2}, 1},  {{3, 1, 2, 0}, -1}, {{3, 2, 0, 1}, -1}, {{3, 2, 1, 0}, 1}}};
 
+/////////////
+// Channel //
+/////////////
+std::ostream& operator<<(std::ostream& os, Channel channel) {
+    switch(channel) {
+    case Channel::PP: return os << "PP";
+    case Channel::PH: return os << "PH";
+    case Channel::xPH: return os << "xPH";
+    default: return os;
+    }
+}
+
 } // namespace Pomerol

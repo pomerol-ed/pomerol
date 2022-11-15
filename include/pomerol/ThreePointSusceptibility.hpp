@@ -43,32 +43,29 @@ using FreqVec2 = std::vector<FreqTuple2>;
 
 /// \brief 3-point fermion-boson susceptibility in the Matsubara representation.
 ///
-/// \f[ \chi^{(3)}(\omega_{n_1},\omega_{n_2}) = \int_0^\beta
-/// e^{-i\omega_{n_1}\tau_1} e^{-i\omega_{n_2}\tau_2} \chi^{(3)}(\tau_1, \tau_2) d\tau_1 d\tau_2.
-/// \f]
-/// The imaginary time susceptibility can be defined in one of the following two channels.
-/// \li Particle-particle channel: \f$\chi^{(3)}_{pp}(\tau_1, \tau_2) = Tr[\mathcal{T}_\tau \hat\rho
-/// c^\dagger_1(\tau_1) c_2(0) c^\dagger_3(\tau_2) c_4(0)]\f$;
-/// \li Particle-hole channel: \f$\chi^{(3)}_{ph}(\tau_1, \tau_2) = Tr[\mathcal{T}_\tau \hat\rho
-/// c^\dagger_1(\tau_1) c_2(\tau_2) c^\dagger_3(0) c_4(0)]\f$;
+/// The susceptibility can be defined in one of the following three channels.
+/// \li Particle-particle channel: \f[\chi^{(3)}_{pp}(\omega_{n_1},\omega_{n_2}) =
+/// \int_0^\beta d\tau_1 d\tau_2 e^{-i\omega_{n_1}\tau_1} e^{-i\omega_{n_2}\tau_2}
+/// Tr[\mathcal{T}_\tau \hat\rho c^\dagger_1(\tau_1) c_2(0^+) c^\dagger_3(\tau_2) c_4(0)]\f]
 ///
-/// These susceptibilities can be interpreted as time-ordered 3-point correlators of two fermionic
-/// operators \f$\hat F_1(\tau_1), \hat F_2(\tau_2)\f$ and one bosonic operator \f$\hat B(0)\f$.
+/// \li Particle-hole channel: \f[\chi^{(3)}_{ph}(\omega_{n_1},\omega_{n_2}) =
+/// \int_0^\beta d\tau_1 d\tau_2 e^{-i\omega_{n_1}\tau_1} e^{i\omega_{n_2}\tau_2}
+/// Tr[\mathcal{T}_\tau \hat\rho c^\dagger_1(\tau_1) c_2(\tau_2) c^\dagger_3(0^+) c_4(0)]\f]
+///
+/// \li Crossed particle-hole channel: \f[\chi^{(3)}_{\bar{ph}}(\omega_{n_1},\omega_{n_2}) =
+/// \int_0^\beta d\tau_1 d\tau_2 e^{-i\omega_{n_1}\tau_1} e^{i\omega_{n_2}\tau_2}
+/// Tr[\mathcal{T}_\tau \hat\rho c^\dagger_1(\tau_1) c_2(0) c^\dagger_3(0^+) c_4(\tau_2)]\f]
+///
+/// These susceptibilities can be interpreted as 3-point correlators of two fermionic
+/// operators \f$\hat F_1(\omega_{n_1}), \hat F_2(\omega_{n_2})\f$ and one quadratic operator \f$\hat B\f$.
 /// \li PP channel: \f$\hat F_1 = c^\dagger_1, \hat F_2 = c^\dagger_3, \hat B = \Delta_{24} = c_2 c_4 \f$;
 /// \li PH channel: \f$\hat F_1 = c^\dagger_1, \hat F_2 = c_2, \hat B = n_{34} = c^\dagger_3 c_4 \f$;
+/// \li xPH channel: \f$\hat F_1 = c^\dagger_1, \hat F_2 = c_4, \hat B = -n_{32} = -c^\dagger_3 c_2 \f$.
 ///
 /// It is actually a container class for a collection of \ref ThreePointSusceptibilityPart's
 /// (most of the real calculations take place in the parts).
 class ThreePointSusceptibility : public Thermal, public ComputableObject {
 
-public:
-    /// Channel of the 3-point susceptibility.
-    enum Channel {
-        PP, ///< Particle-particle channel.
-        PH  ///< Particle-hole channel.
-    };
-
-private:
     friend class ThreePointSusceptibilityContainer;
 
     /// Channel
@@ -78,12 +75,14 @@ private:
     StatesClassification const& S;
     /// The Hamiltonian.
     Hamiltonian const& H;
-    /// The first fermionic operator \f$\hat F_1\f$.
-    CreationOperator const& F1;
-    /// The first fermionic operator \f$\hat F_2\f$.
-    MonomialOperator const& F2;
-    /// The quadratic bosonic operator \f$\hat B\f$.
-    QuadraticOperator const& B;
+    /// The creation operator \f$c^\dagger_1\f$.
+    CreationOperator const& CX1;
+    /// The annihilation operator \f$c_2\f$.
+    AnnihilationOperator const& C2;
+    /// The creation operator \f$c^\dagger_3\f$.
+    CreationOperator const& CX3;
+    /// The annihilation operator \f$c_4\f$.
+    AnnihilationOperator const& C4;
     /// Many-body density matrix \f$\hat\rho\f$.
     DensityMatrix const& DM;
 
@@ -100,35 +99,25 @@ public:
     /// Minimal magnitude of the coefficient of a term for it to be taken into account.
     RealType CoefficientTolerance = 1e-16;
 
-    /// Constructor for the particle-particle channel.
-    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
-    /// \param[in] H The Hamiltonian.
-    /// \param[in] CX1 The creation operator \f$c^\dagger_1\f$.
-    /// \param[in] CX3 The creation operator \f$c^\dagger_3\f$.
-    /// \param[in] Delta The pairing operator \f$\Delta_{24} = c_2 c_4\f$.
-    /// \param[in] DM Many-body density matrix \f$\hat\rho\f$.
-    ThreePointSusceptibility(StatesClassification const& S,
-                             Hamiltonian const& H,
-                             CreationOperator const& CX1,
-                             CreationOperator const& CX3,
-                             QuadraticOperator const& Delta,
-                             DensityMatrix const& DM);
-
-    /// Constructor for the particle-hole channel.
+    /// Constructor
+    /// \param[in] channel Channel of the 3-point susceptibility.
     /// \param[in] S Information about invariant subspaces of the Hamiltonian.
     /// \param[in] H The Hamiltonian.
     /// \param[in] CX1 The creation operator \f$c^\dagger_1\f$.
     /// \param[in] C2 The annihilation operator \f$c_2\f$.
-    /// \param[in] N The density operator \f$n_{34} = c^\dagger_3 c_4\f$.
+    /// \param[in] CX3 The creation operator \f$c^\dagger_3\f$.
+    /// \param[in] C4 The annihilation operator \f$c_4\f$.
     /// \param[in] DM Many-body density matrix \f$\hat\rho\f$.
-    ThreePointSusceptibility(StatesClassification const& S,
+    ThreePointSusceptibility(Channel channel,
+                             StatesClassification const& S,
                              Hamiltonian const& H,
                              CreationOperator const& CX1,
                              AnnihilationOperator const& C2,
-                             QuadraticOperator const& N,
+                             CreationOperator const& CX3,
+                             AnnihilationOperator const& C4,
                              DensityMatrix const& DM);
 
-    /// Choose relevant parts of \f$\hat F_1, \hat F_2, \hat B\f$ and allocate resources for the parts.
+    /// Select relevant parts of \f$c^\dagger_1, c_2, c^\dagger_3, c_4\f$ and allocate resources for the parts.
     void prepare();
 
     /// Compute the parts in parallel and fill the internal cache of precomputed values.
@@ -160,9 +149,12 @@ public:
     /// Is this susceptibility identically zero?
     bool isVanishing() const { return Vanishing; }
 
-    /// Select channel based on the form of the quadratic operator \f$\hat B\f$ used in the definition.
-    /// \param[in] B Quadratic operator \f$\hat B\f$.
-    static Channel selectChannel(QuadraticOperator const& B);
+private:
+    /// Select operators F1, F2, B1 and B2 depending on the selected channel
+    CreationOperator const& getF1() const;
+    MonomialOperator const& getF2() const;
+    MonomialOperator const& getB1() const;
+    MonomialOperator const& getB2() const;
 };
 
 ///@}
