@@ -95,7 +95,7 @@ Check the `tutorial` directory for an example of a pomerol-based code that is
 linked to external libraries.
 
 The interface to [TRIQS library](https://triqs.github.io/triqs/latest/) is
-readily available: <https://github.com/krivenko/pomerol2triqs>.
+readily available: <https://github.com/pomerol-ed/pomerol2triqs>.
 
 # Documentation
 Check <https://pomerol-ed.github.io/pomerol/html/> or type `make doc` during
