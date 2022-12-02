@@ -1,0 +1,93 @@
+name: Build and test (macOS)
+
+on:
+  push:
+    branches:
+      - master
+      - ci
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: macos-11
+    strategy:
+      matrix:
+        compiler:
+        - { name: "g++-9", cxx: "g++-9" }
+        - { name: "clang", cxx: "clang++" }
+        install-libcommute: [true, false]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+           brew update
+           brew install eigen open-mpi boost
+
+    - name: Install Doxygen
+      if: |
+          startsWith(matrix.compiler.name, 'clang') == true &&
+          matrix.install-libcommute
+      run: brew install doxygen graphviz
+
+    - name: Install libcommute
+      if: matrix.install-libcommute
+      env:
+        CXX: ${{ matrix.compiler.cxx }}
+      run: |
+           git clone https://github.com/krivenko/libcommute ${HOME}/libcommute
+           mkdir ${HOME}/libcommute.build && cd ${HOME}/libcommute.build
+           cmake ${HOME}/libcommute                                            \
+              -DCMAKE_INSTALL_PREFIX=${HOME}/libcommute.ins                    \
+              -DTESTS=OFF                                                      \
+              -DEXAMPLES=OFF
+           make install
+
+    - name: Build
+      env:
+        CXX: ${{ matrix.compiler.cxx }}
+      run: |
+           if [[ "${{ matrix.compiler.name }}" == clang* ]]; then
+             DOCS=ON
+           else
+             DOCS=OFF
+           fi
+           if [[ "${{ matrix.install-libcommute }}" == true ]]; then
+             LCA="-Dlibcommute_DIR=${HOME}/libcommute.ins/lib/cmake/libcommute"
+           fi
+           mkdir build
+           cd build
+           cmake -DCMAKE_INSTALL_PREFIX=installed                              \
+                 ${LCA}                                                        \
+                 -DStaticAnalysis=OFF                                          \
+                 -DUSE_OPENMP=ON                                               \
+                 -DDocumentation=${DOCS}                                       \
+                 -DTesting=ON                                                  \
+                 -DProgs=ON                                                    \
+                 -Dprogs_list="anderson;hubbard2d" ..
+           make VERBOSE=1
+
+    - name: Build documentation
+      if: |
+          startsWith(matrix.compiler.name, 'clang') == true &&
+          matrix.install-libcommute
+      run: |
+           cd build
+           make doc
+
+    - name: Run unit tests
+      env:
+        TMPDIR: "/tmp"
+      run: |
+           echo -e "\nrmaps_base_oversubscribe = 1" >>                         \
+              /usr/local/etc/openmpi-mca-params.conf
+           cd build
+           CTEST_OUTPUT_ON_FAILURE=1 make test
+
+    - name: Install
+      run: |
+           cd build
+           make install
