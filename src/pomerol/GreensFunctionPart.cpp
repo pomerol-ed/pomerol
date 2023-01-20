@@ -49,7 +49,7 @@ GreensFunctionPart::GreensFunctionPart(MonomialOperatorPart const& C,
       DMpartOuter(DMpartOuter),
       C(C),
       CX(CX),
-      Terms(Term::Compare(), Term::IsNegligible()) {}
+      Terms(Term::Hash(), Term::KeyEqual(), Term::IsNegligible()) {}
 
 void GreensFunctionPart::compute() {
     if(C.isComplex() || CX.isComplex())

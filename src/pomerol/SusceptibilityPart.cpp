@@ -53,7 +53,7 @@ SusceptibilityPart::SusceptibilityPart(MonomialOperatorPart const& A,
       DMpartOuter(DMpartOuter),
       A(A),
       B(B),
-      Terms(Term::Compare(), Term::IsNegligible()) {}
+      Terms(Term::Hash(), Term::KeyEqual(), Term::IsNegligible()) {}
 
 void SusceptibilityPart::compute() {
     if(A.isComplex()) {

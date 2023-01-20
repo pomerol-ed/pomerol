@@ -67,20 +67,37 @@ class SusceptibilityPart : public Thermal {
         /// Position of the pole (\f$ P \f$).
         RealType Pole = 0;
 
-        /// Comparator object for terms.
-        struct Compare {
-        private:
-            /// Tolerance level used to compare positions of the pole.
-            double const Tolerance;
+        /// Hasher for terms.
+        struct Hash {
+            /// Poles located within this energy spacing from each other produce the same hash value.
+            double EnergySpacing;
+            /// Constructor.
+            /// \param[in] EnergySpacing Energy spacing.
+            explicit Hash(double EnergySpacing = 1e-8) : EnergySpacing(EnergySpacing) {}
+            /// Compute hash of a term.
+            /// \param[in] t Term to compute hash for.
+            std::size_t operator()(Term const& t) const { return hash_binned_real(t.Pole, EnergySpacing); }
+            /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
+            /// \param[in] comm The MPI communicator for the broadcast operation.
+            /// \param[in] root Rank of the root MPI process.
+            void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&EnergySpacing, 1, MPI_DOUBLE, root, comm); }
+        };
 
-        public:
+        /// Similarity predicate for terms.
+        struct KeyEqual {
+            /// Tolerance level used to compare positions of the pole.
+            double Tolerance;
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to compare positions of the pole.
-            explicit Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit KeyEqual(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             /// Are terms similar?
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
-            bool operator()(Term const& t1, Term const& t2) const { return t2.Pole - t1.Pole >= Tolerance; }
+            bool operator()(Term const& t1, Term const& t2) const { return std::abs(t2.Pole - t1.Pole) < Tolerance; }
+            /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
+            /// \param[in] comm The MPI communicator for the broadcast operation.
+            /// \param[in] root Rank of the root MPI process.
+            void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&Tolerance, 1, MPI_DOUBLE, root, comm); }
         };
 
         /// Predicate: Does a term have a negligible residue?

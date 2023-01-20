@@ -164,6 +164,14 @@ enum Channel : int {
 };
 std::ostream& operator<<(std::ostream& os, Channel channel);
 
+/// Hash function for real numbers that gives the same hash value for all
+/// numbers falling into the same small interval (bin).
+///
+/// \param[in] x Value to be hashed.
+/// \param[in] bin_size Size of the interval.
+/// \return Hash value
+std::size_t hash_binned_real(double x, double bin_size);
+
 ///@}
 
 } // namespace Pomerol

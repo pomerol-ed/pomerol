@@ -165,8 +165,8 @@ TwoParticleGFPart::TwoParticleGFPart(MonomialOperatorPart const& O1,
       DMpart3(DMpart3),
       DMpart4(DMpart4),
       Permutation(std::move(Permutation)),
-      NonResonantTerms(NonResonantTerm::Compare(), NonResonantTerm::IsNegligible()),
-      ResonantTerms(ResonantTerm::Compare(), ResonantTerm::IsNegligible()) {}
+      NonResonantTerms(NonResonantTerm::Hash(), NonResonantTerm::KeyEqual(), NonResonantTerm::IsNegligible()),
+      ResonantTerms(ResonantTerm::Hash(), ResonantTerm::KeyEqual(), ResonantTerm::IsNegligible()) {}
 
 void TwoParticleGFPart::compute() {
     if(getStatus() >= Computed)

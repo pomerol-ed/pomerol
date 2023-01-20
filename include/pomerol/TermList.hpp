@@ -19,8 +19,9 @@
 
 #include "mpi_dispatcher/misc.hpp"
 
+#include <algorithm>
 #include <cstddef>
-#include <set>
+#include <unordered_set>
 #include <vector>
 
 namespace Pomerol {
@@ -32,29 +33,32 @@ namespace Pomerol {
 ///
 /// A set-like container storing a list of terms contributing to the Lehmann representation of a correlation function.
 ///
-/// The terms must allow sorting using a comparison function \p TermType::Compare.
-/// Similar terms (i.e. those equivalent w.r.t. \p TermType::Compare) are automatically collected
-/// and reduced to one term using \p operator+=().
+/// The terms must support hashing using a function \p TermType::Hash and a similarity check via \p TermType::KeyEqual.
+/// Similar terms are automatically collected and reduced to one term using \p operator+=().
 /// A term T is considered negligible and is automatically removed from the
 /// container if \p TermType::IsNegligible(T, current_number_of_terms + 1) evaluates to true.
 /// \tparam TermType Type of a single term.
 template <typename TermType> class TermList {
 
-    /// Type of the term comparison predicate.
-    using Compare = typename TermType::Compare;
+    /// Hasher type for the term.
+    using Hash = typename TermType::Hash;
+    /// Type of the term similarity predicate.
+    using KeyEqual = typename TermType::KeyEqual;
     /// Type of the term 'is negligible' predicate.
     using IsNegligible = typename TermType::IsNegligible;
 
-    /// The ordered set of terms.
-    std::set<TermType, Compare> data;
+    /// The unordered set of terms.
+    std::unordered_set<TermType, Hash, KeyEqual> data;
     /// The 'is negligible' predicate.
     IsNegligible is_negligible;
 
 public:
     /// Constructor.
-    /// \param[in] compare Compare predicate for the underlying \p std::set object.
+    /// \param[in] hasher Hasher for the underlying \p std::unordered_set object.
+    /// \param[in] key_equal KeyEqual predicate for the underlying \p std::unordered_set object.
     /// \param[in] is_negligible Predicate that determines whether a term can be neglected.
-    TermList(Compare const& compare, IsNegligible const& is_negligible) : data(compare), is_negligible(is_negligible) {}
+    TermList(Hash const& hasher, KeyEqual const& key_equal, IsNegligible const& is_negligible)
+        : data(1, hasher, key_equal), is_negligible(is_negligible) {}
 
     /// Add a new term to the container
     /// \param[in] term Term to be added
@@ -78,7 +82,7 @@ public:
     void clear() { data.clear(); }
 
     /// Access the underlying set of terms.
-    std::set<TermType, Compare> const& as_set() const { return data; }
+    std::unordered_set<TermType, Hash, KeyEqual> const& as_set() const { return data; }
 
     /// Access the 'is negligible' predicate.
     IsNegligible const& get_is_negligible() const { return is_negligible; }
@@ -100,8 +104,11 @@ public:
     /// \param[in] comm The MPI communicator for the broadcast operation.
     /// \param[in] root Rank of the root MPI process.
     void broadcast(MPI_Comm const& comm, int root) {
-        auto comp = data.key_comp();
-        comp.broadcast(comm, root);
+        auto hasher = data.hash_function();
+        auto key_eq = data.key_eq();
+
+        hasher.broadcast(comm, root);
+        key_eq.broadcast(comm, root);
 
         long n_terms;
         if(pMPI::rank(comm) == root) { // Broadcast the terms from this process
@@ -113,30 +120,17 @@ public:
             MPI_Bcast(&n_terms, 1, MPI_LONG, root, comm);
             std::vector<TermType> v(n_terms);
             MPI_Bcast(v.data(), v.size(), TermType::mpi_datatype(), root, comm);
-            data = std::set<TermType, Compare>(v.begin(), v.end(), comp);
+            data = std::unordered_set<TermType, Hash, KeyEqual>(v.begin(), v.end(), 1, hasher, key_eq);
         }
 
         is_negligible.broadcast(comm, root);
     }
 
-    /// Check if all terms in the container are properly ordered and are not negligible.
+    /// Check if all terms in the container are not negligible.
     bool check_terms() const {
-        if(size() == 0)
-            return true;
-        auto prev_it = data.begin();
-        if(is_negligible(*prev_it, data.size() + 1))
-            return false;
-        if(size() == 1)
-            return true;
-
-        Compare const& compare = data.key_comp();
-
-        auto it = prev_it;
-        for(++it; it != data.end(); ++it, ++prev_it) {
-            if(is_negligible(*it, data.size() + 1) || !compare(*prev_it, *it))
-                return false;
-        }
-        return true;
+        return std::none_of(data.begin(), data.end(), [this](TermType const& t) {
+            return is_negligible(t, data.size() + 1);
+        });
     }
 };
 

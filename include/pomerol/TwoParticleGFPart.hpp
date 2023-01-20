@@ -27,6 +27,8 @@
 
 #include "mpi_dispatcher/misc.hpp"
 
+#include <boost/functional/hash.hpp>
+
 #include <array>
 #include <complex>
 #include <cstddef>
@@ -77,26 +79,42 @@ public:
         /// \see \ref operator+=()
         long Weight = 0;
 
-        /// Comparator object for non-resonant terms.
-        struct Compare {
+        /// Hasher for non-resonant terms.
+        struct Hash {
+            /// Poles located within this energy spacing from each other produce the same hash value.
+            double EnergySpacing;
+            /// Constructor.
+            /// \param[in] EnergySpacing Energy spacing.
+            explicit Hash(double EnergySpacing = 1e-8) : EnergySpacing(EnergySpacing) {}
+            /// Compute hash of a term.
+            /// \param[in] t Term to compute hash for.
+            std::size_t operator()(NonResonantTerm const& t) const {
+                auto h = boost::hash<std::tuple<bool, std::size_t, std::size_t, std::size_t>>();
+                return h(std::make_tuple(t.isz4,
+                                         hash_binned_real(t.Poles[0], EnergySpacing),
+                                         hash_binned_real(t.Poles[1], EnergySpacing),
+                                         hash_binned_real(t.Poles[2], EnergySpacing)));
+            }
+            /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
+            /// \param[in] comm The MPI communicator for the broadcast operation.
+            /// \param[in] root Rank of the root MPI process.
+            void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&EnergySpacing, 1, MPI_DOUBLE, root, comm); }
+        };
+
+        /// Similarity predicate for non-resonant terms.
+        struct KeyEqual {
             /// Tolerance level used to compare positions of the poles.
             double Tolerance;
-            bool real_eq(RealType x1, RealType x2) const { return std::abs(x1 - x2) < Tolerance; }
             /// Constructor.
-            /// \param[in] Tolerance Tolerance level used to compare positions of the poles.
-            explicit Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
-
+            /// \param[in] Tolerance Tolerance level used to compare positions of the pole.
+            explicit KeyEqual(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             /// Are terms similar?
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
             bool operator()(NonResonantTerm const& t1, NonResonantTerm const& t2) const {
-                if(t1.isz4 == t2.isz4) {
-                    return !real_eq(t1.Poles[0], t2.Poles[0]) ?
-                               t1.Poles[0] < t2.Poles[0] :
-                               (!real_eq(t1.Poles[1], t2.Poles[1]) ? t1.Poles[1] < t2.Poles[1] :
-                                                                     (t2.Poles[2] - t1.Poles[2] >= Tolerance));
-                } else
-                    return t1.isz4 < t2.isz4;
+                return t2.isz4 == t1.isz4 && (std::abs(t2.Poles[0] - t1.Poles[0]) < Tolerance) &&
+                       (std::abs(t2.Poles[1] - t1.Poles[1]) < Tolerance) &&
+                       (std::abs(t2.Poles[2] - t1.Poles[2]) < Tolerance);
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
@@ -186,25 +204,42 @@ public:
         /// \see \ref operator+=()
         long Weight = 0;
 
-        /// Comparator object for resonant terms.
-        struct Compare {
+        /// Hasher for resonant terms.
+        struct Hash {
+            /// Poles located within this energy spacing from each other produce the same hash value.
+            double EnergySpacing;
+            /// Constructor.
+            /// \param[in] EnergySpacing Energy spacing.
+            explicit Hash(double EnergySpacing = 1e-8) : EnergySpacing(EnergySpacing) {}
+            /// Compute hash of a term.
+            /// \param[in] t Term to compute hash for.
+            std::size_t operator()(ResonantTerm const& t) const {
+                auto h = boost::hash<std::tuple<bool, std::size_t, std::size_t, std::size_t>>();
+                return h(std::make_tuple(t.isz1z2,
+                                         hash_binned_real(t.Poles[0], EnergySpacing),
+                                         hash_binned_real(t.Poles[1], EnergySpacing),
+                                         hash_binned_real(t.Poles[2], EnergySpacing)));
+            }
+            /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
+            /// \param[in] comm The MPI communicator for the broadcast operation.
+            /// \param[in] root Rank of the root MPI process.
+            void broadcast(MPI_Comm const& comm, int root) { MPI_Bcast(&EnergySpacing, 1, MPI_DOUBLE, root, comm); }
+        };
+
+        /// Similarity predicate for resonant terms.
+        struct KeyEqual {
             /// Tolerance level used to compare positions of the poles.
             double Tolerance;
-            bool real_eq(RealType x1, RealType x2) const { return std::abs(x1 - x2) < Tolerance; }
             /// Constructor.
-            /// \param[in] Tolerance Tolerance level used to compare positions of the poles.
-            explicit Compare(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            /// \param[in] Tolerance Tolerance level used to compare positions of the pole.
+            explicit KeyEqual(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
             /// Are terms similar?
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
             bool operator()(ResonantTerm const& t1, ResonantTerm const& t2) const {
-                if(t1.isz1z2 == t2.isz1z2) {
-                    return !real_eq(t1.Poles[0], t2.Poles[0]) ?
-                               t1.Poles[0] < t2.Poles[0] :
-                               (!real_eq(t1.Poles[1], t2.Poles[1]) ? t1.Poles[1] < t2.Poles[1] :
-                                                                     (t2.Poles[2] - t1.Poles[2] >= Tolerance));
-                } else
-                    return t1.isz1z2 < t2.isz1z2;
+                return t2.isz1z2 == t1.isz1z2 && (std::abs(t2.Poles[0] - t1.Poles[0]) < Tolerance) &&
+                       (std::abs(t2.Poles[1] - t1.Poles[1]) < Tolerance) &&
+                       (std::abs(t2.Poles[2] - t1.Poles[2]) < Tolerance);
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.

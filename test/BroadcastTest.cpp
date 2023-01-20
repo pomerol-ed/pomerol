@@ -88,12 +88,14 @@ TEST_CASE("broadcast() methods of various objects", "[broadcast]") {
     }
 
     SECTION("TermList::broadcast()") {
-        TermList<TwoParticleGFPart::NonResonantTerm> tl(TwoParticleGFPart::NonResonantTerm::Compare(1.0 / 1024),
+        TermList<TwoParticleGFPart::NonResonantTerm> tl(TwoParticleGFPart::NonResonantTerm::Hash(1.0 / 1024),
+                                                        TwoParticleGFPart::NonResonantTerm::KeyEqual(1.0 / 1024),
                                                         TwoParticleGFPart::NonResonantTerm::IsNegligible(1.0 / 1024));
         tl.add_term(tnr_ref);
 
         TermList<TwoParticleGFPart::NonResonantTerm> tl_ref(
-            TwoParticleGFPart::NonResonantTerm::Compare(1.0 / 2048),
+            TwoParticleGFPart::NonResonantTerm::Hash(1.0 / 2048),
+            TwoParticleGFPart::NonResonantTerm::KeyEqual(1.0 / 2048),
             TwoParticleGFPart::NonResonantTerm::IsNegligible(1.0 / 2048));
         tl_ref.add_term(TwoParticleGFPart::NonResonantTerm(ComplexType(1.0, 2.0), -0.1, 0.2, 0.4, true));
         tl_ref.add_term(TwoParticleGFPart::NonResonantTerm(ComplexType(1.0, 8.0), -0.4, 0.2, 0.4, false));
@@ -105,7 +107,8 @@ TEST_CASE("broadcast() methods of various objects", "[broadcast]") {
         tl.broadcast(MPI_COMM_WORLD, 0);
 
         REQUIRE(tl.get_is_negligible().Tolerance == tl_ref.get_is_negligible().Tolerance);
-        REQUIRE(tl.as_set().key_comp().Tolerance == tl_ref.as_set().key_comp().Tolerance);
+        REQUIRE(tl.as_set().hash_function().EnergySpacing == tl_ref.as_set().hash_function().EnergySpacing);
+        REQUIRE(tl.as_set().key_eq().Tolerance == tl_ref.as_set().key_eq().Tolerance);
         REQUIRE(tl.as_set() == tl_ref.as_set());
     }
 }

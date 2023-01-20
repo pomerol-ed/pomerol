@@ -15,6 +15,10 @@
 
 #include "pomerol/Misc.hpp"
 
+#include <cmath>
+#include <cstdint>
+#include <functional>
+
 namespace Pomerol {
 
 //////////////////
@@ -71,6 +75,14 @@ std::ostream& operator<<(std::ostream& os, Channel channel) {
     case Channel::xPH: return os << "xPH";
     default: return os;
     }
+}
+
+////////////////////////
+// hash_binned_real() //
+////////////////////////
+std::size_t hash_binned_real(double x, double bin_size) {
+    auto h = std::hash<std::int64_t>();
+    return h(std::round(x / bin_size));
 }
 
 } // namespace Pomerol

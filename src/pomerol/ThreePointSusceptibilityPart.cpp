@@ -216,9 +216,9 @@ ThreePointSusceptibilityPart::ThreePointSusceptibilityPart(MonomialOperatorPart 
       DMpart3(DMpart3),
       channel(channel),
       SwappedFermionOps(SwappedFermionOps),
-      NonResonantFFTerms(NonResonantFFTerm::Compare(), NonResonantFFTerm::IsNegligible()),
-      NonResonantFBTerms(NonResonantFBTerm::Compare(), NonResonantFBTerm::IsNegligible()),
-      ResonantTerms(ResonantTerm::Compare(), ResonantTerm::IsNegligible()) {}
+      NonResonantFFTerms(NonResonantFFTerm::Hash(), NonResonantFFTerm::KeyEqual(), NonResonantFFTerm::IsNegligible()),
+      NonResonantFBTerms(NonResonantFBTerm::Hash(), NonResonantFBTerm::KeyEqual(), NonResonantFBTerm::IsNegligible()),
+      ResonantTerms(ResonantTerm::Hash(), ResonantTerm::KeyEqual(), ResonantTerm::IsNegligible()) {}
 
 void ThreePointSusceptibilityPart::compute() {
     if(getStatus() >= Computed)
