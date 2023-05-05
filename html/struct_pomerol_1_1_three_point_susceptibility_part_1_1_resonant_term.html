@@ -90,11 +90,14 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_compare.html">Compare</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Comparator object for resonant terms.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_compare.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_hash.html">Hash</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hasher for resonant terms.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_hash.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_is_negligible.html">IsNegligible</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Predicate: Does a term have a negligible residue?  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_is_negligible.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_key_equal.html">KeyEqual</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Similarity predicate for resonant terms.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_key_equal.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -132,7 +135,7 @@ Data Fields</h2></td></tr>
 <div class="textblock"><p>A resonant term in the Lehmann representation of <a class="el" href="class_pomerol_1_1_three_point_susceptibility.html">ThreePointSusceptibility</a>. </p>
 <p>It is parametrized by a complex coefficient \(C\), position of a real pole \(P\) and a coefficient \(\xi\) that controls how the bosonic frequency is computed. An explicit expression for the term reads \(\frac{C}{z_1-P}\delta_{z_1, \xi z_2}\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00244">244</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00282">282</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a82cad7c36852d47e98895feacf9adef9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a82cad7c36852d47e98895feacf9adef9">&#9670;&nbsp;</a></span>ResonantTerm() <span class="overload">[1/2]</span></h2>
@@ -207,7 +210,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00306">306</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00359">359</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -287,7 +290,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00477">477</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00530">530</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -336,7 +339,7 @@ Data Fields</h2></td></tr>
 
 <p>Coefficient \(C\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00246">246</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00284">284</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -354,7 +357,7 @@ Data Fields</h2></td></tr>
 
 <p>Pole \(P\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00249">249</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00287">287</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -371,7 +374,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Weight \(W\) used in addition of terms with different poles. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term.html#abcba99aa44893b40ae08523b70163ae4">operator+=()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00256">256</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00294">294</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -389,7 +392,7 @@ Data Fields</h2></td></tr>
 
 <p>Coefficient \(\xi\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00252">252</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_part_8hpp_source.html#l00290">290</a> of file <a class="el" href="_three_point_susceptibility_part_8hpp_source.html">ThreePointSusceptibilityPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -399,7 +402,7 @@ Data Fields</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Dec 21 2022 10:46:26 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 5 2023 09:13:54 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

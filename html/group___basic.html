@@ -163,6 +163,8 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ga52f739a996d14bb47670a6379cab9a3b"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___basic.html#ga52f739a996d14bb47670a6379cab9a3b">Pomerol::operator&lt;&lt;</a> (std::ostream &amp;os, <a class="el" href="group___basic.html#ga9f22d0ef65eea422a8814f2f5ee2eb30">Channel</a> channel)</td></tr>
 <tr class="separator:ga52f739a996d14bb47670a6379cab9a3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae90cb514ae887778c7fa1725df54e223"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___basic.html#gae90cb514ae887778c7fa1725df54e223">Pomerol::hash_binned_real</a> (double x, double bin_size)</td></tr>
+<tr class="separator:gae90cb514ae887778c7fa1725df54e223"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -589,6 +591,43 @@ template&lt;bool Complex&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="gae90cb514ae887778c7fa1725df54e223"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae90cb514ae887778c7fa1725df54e223">&#9670;&nbsp;</a></span>hash_binned_real()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t Pomerol::hash_binned_real </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>bin_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Hash function for real numbers that gives the same hash value for all numbers falling into the same small interval (bin).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">x</td><td>Value to be hashed. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">bin_size</td><td>Size of the interval. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Hash value </dd></dl>
+
+</div>
+</div>
 <a id="ga52f739a996d14bb47670a6379cab9a3b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga52f739a996d14bb47670a6379cab9a3b">&#9670;&nbsp;</a></span>operator&lt;&lt;()</h2>
 
@@ -679,7 +718,7 @@ template&lt;bool Complex&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Dec 21 2022 10:46:26 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 5 2023 09:13:53 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

@@ -193,10 +193,12 @@ $(function() {
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;};</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;std::ostream&amp; <a class="code" href="group___basic.html#ga52f739a996d14bb47670a6379cab9a3b">operator&lt;&lt;</a>(std::ostream&amp; os, <a class="code" href="group___basic.html#ga9f22d0ef65eea422a8814f2f5ee2eb30">Channel</a> channel);</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;} <span class="comment">// namespace Pomerol</span></div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="preprocessor">#endif // #ifndef POMEROL_INCLUDE_POMEROL_MISC_HPP</span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;std::size_t <a class="code" href="group___basic.html#gae90cb514ae887778c7fa1725df54e223">hash_binned_real</a>(<span class="keywordtype">double</span> x, <span class="keywordtype">double</span> bin_size);</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;} <span class="comment">// namespace Pomerol</span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160; </div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="preprocessor">#endif // #ifndef POMEROL_INCLUDE_POMEROL_MISC_HPP</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="agroup___basic_html_ga5df7bef7f33561973f4da196b1cd89d6"><div class="ttname"><a href="group___basic.html#ga5df7bef7f33561973f4da196b1cd89d6">Pomerol::ComplexMatrixType</a></div><div class="ttdeci">Eigen::Matrix&lt; ComplexType, Eigen::Dynamic, Eigen::Dynamic, Eigen::AutoAlign|Eigen::RowMajor &gt; ComplexMatrixType</div><div class="ttdoc">Dense complex matrix.</div><div class="ttdef"><b>Definition:</b> <a href="pomerol_2misc_8hpp_source.html#l00082">Misc.hpp:82</a></div></div>
 <div class="ttc" id="agroup___basic_html_ga227fa7e3221db7f390479b2a8e149c5a"><div class="ttname"><a href="group___basic.html#ga227fa7e3221db7f390479b2a8e149c5a">Pomerol::permutations3</a></div><div class="ttdeci">const std::array&lt; Permutation3, 6 &gt; permutations3</div><div class="ttdoc">An array of all 3! = 6 permutations of 3 elements.</div></div>
@@ -209,6 +211,7 @@ $(function() {
 <div class="ttc" id="agroup___basic_html_ga936407e629e8dec9e74f4a3d9d1ca5a6"><div class="ttname"><a href="group___basic.html#ga936407e629e8dec9e74f4a3d9d1ca5a6">Pomerol::LOperatorTypeRC</a></div><div class="ttdeci">libcommute::loperator&lt; MelemType&lt; Complex &gt;, libcommute::fermion, libcommute::boson &gt; LOperatorTypeRC</div><div class="ttdef"><b>Definition:</b> <a href="pomerol_2misc_8hpp_source.html#l00096">Misc.hpp:96</a></div></div>
 <div class="ttc" id="agroup___basic_html_ga73406e10de805ae4ae14ef9ac9c46964"><div class="ttname"><a href="group___basic.html#ga73406e10de805ae4ae14ef9ac9c46964">Pomerol::I</a></div><div class="ttdeci">static const ComplexType I</div><div class="ttdoc">Imaginary unit .</div><div class="ttdef"><b>Definition:</b> <a href="pomerol_2misc_8hpp_source.html#l00121">Misc.hpp:121</a></div></div>
 <div class="ttc" id="agroup___basic_html_gad729e3ce0a8593a28a75075580a72d14"><div class="ttname"><a href="group___basic.html#gad729e3ce0a8593a28a75075580a72d14">Pomerol::RowMajorMatrixType</a></div><div class="ttdeci">Eigen::SparseMatrix&lt; MelemType&lt; Complex &gt;, Eigen::RowMajor &gt; RowMajorMatrixType</div><div class="ttdef"><b>Definition:</b> <a href="pomerol_2misc_8hpp_source.html#l00118">Misc.hpp:118</a></div></div>
+<div class="ttc" id="agroup___basic_html_gae90cb514ae887778c7fa1725df54e223"><div class="ttname"><a href="group___basic.html#gae90cb514ae887778c7fa1725df54e223">Pomerol::hash_binned_real</a></div><div class="ttdeci">std::size_t hash_binned_real(double x, double bin_size)</div></div>
 <div class="ttc" id="astruct_pomerol_1_1_permutation3_html_a538c3aab15639cca241353f2b39123ae"><div class="ttname"><a href="struct_pomerol_1_1_permutation3.html#a538c3aab15639cca241353f2b39123ae">Pomerol::Permutation3::sign</a></div><div class="ttdeci">const int sign</div><div class="ttdoc">Signature of the permutation.</div><div class="ttdef"><b>Definition:</b> <a href="pomerol_2misc_8hpp_source.html#l00128">Misc.hpp:128</a></div></div>
 <div class="ttc" id="agroup___basic_html_gada96abe575221235fc2b4d3b0bff9684"><div class="ttname"><a href="group___basic.html#gada96abe575221235fc2b4d3b0bff9684">Pomerol::RealVectorType</a></div><div class="ttdeci">Eigen::Matrix&lt; RealType, Eigen::Dynamic, 1, Eigen::AutoAlign &gt; RealVectorType</div><div class="ttdoc">Dense real vector.</div><div class="ttdef"><b>Definition:</b> <a href="pomerol_2misc_8hpp_source.html#l00107">Misc.hpp:107</a></div></div>
 <div class="ttc" id="agroup___basic_html_ga9f22d0ef65eea422a8814f2f5ee2eb30"><div class="ttname"><a href="group___basic.html#ga9f22d0ef65eea422a8814f2f5ee2eb30">Pomerol::Channel</a></div><div class="ttdeci">Channel</div><div class="ttdoc">Channel, in which a susceptibility function is defined.</div><div class="ttdef"><b>Definition:</b> <a href="pomerol_2misc_8hpp_source.html#l00160">Misc.hpp:160</a></div></div>
@@ -236,7 +239,7 @@ $(function() {
 <div class="ttc" id="astruct_pomerol_1_1_permutation4_html"><div class="ttname"><a href="struct_pomerol_1_1_permutation4.html">Pomerol::Permutation4</a></div><div class="ttdoc">Permutation of 4 elements.</div><div class="ttdef"><b>Definition:</b> <a href="pomerol_2misc_8hpp_source.html#l00142">Misc.hpp:142</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Dec 21 2022 10:46:26 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 5 2023 09:13:53 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

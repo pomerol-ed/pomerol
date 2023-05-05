@@ -92,58 +92,62 @@ $(function() {
 <code>#include &quot;<a class="el" href="_term_list_8hpp_source.html">TermList.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_thermal_8hpp_source.html">Thermal.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="mpi__dispatcher_2misc_8hpp_source.html">mpi_dispatcher/misc.hpp</a>&quot;</code><br />
+<code>#include &lt;boost/functional/hash.hpp&gt;</code><br />
 <code>#include &lt;array&gt;</code><br />
 <code>#include &lt;complex&gt;</code><br />
 <code>#include &lt;cstddef&gt;</code><br />
+<code>#include &lt;tuple&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for ThreePointSusceptibilityPart.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="_three_point_susceptibility_part_8hpp__incl.png" border="0" usemap="#pomerol_2_three_point_susceptibility_part_8hpp" alt=""/></div>
 <map name="pomerol_2_three_point_susceptibility_part_8hpp" id="pomerol_2_three_point_susceptibility_part_8hpp">
-<area shape="rect" title="Part of a 3&#45;point susceptibility in the Matsubara representation." alt="" coords="840,5,1079,47"/>
-<area shape="rect" href="_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc." alt="" coords="722,401,893,427"/>
-<area shape="rect" href="_density_matrix_part_8hpp.html" title="Diagonal block of a many&#45;body Gibbs density matrix." alt="" coords="432,95,599,121"/>
-<area shape="rect" href="_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block." alt="" coords="509,169,663,196"/>
-<area shape="rect" href="pomerol_2misc_8hpp.html" title="Declarations of the most basic types and macros." alt="" coords="469,483,549,509"/>
-<area shape="rect" title=" " alt="" coords="911,565,967,591"/>
-<area shape="rect" title=" " alt="" coords="992,565,1071,591"/>
-<area shape="rect" title=" " alt="" coords="2744,565,2815,591"/>
-<area shape="rect" href="_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces." alt="" coords="874,244,1053,271"/>
-<area shape="rect" href="_thermal_8hpp.html" title="Objects, whose definition depends on the temperature." alt="" coords="87,169,191,196"/>
-<area shape="rect" href="_monomial_operator_part_8hpp.html" title="Storage for a matrix block of an operator that is a product of creation/annihilation operators." alt="" coords="674,95,871,121"/>
-<area shape="rect" href="_term_list_8hpp.html" title="List of terms forming Lehmann representation of a correlation function." alt="" coords="2456,401,2561,427"/>
-<area shape="rect" href="mpi__dispatcher_2misc_8hpp.html" title="Miscellaneous MPI&#45;related functions." alt="" coords="2709,483,2895,509"/>
-<area shape="rect" title=" " alt="" coords="1327,483,1413,509"/>
-<area shape="rect" title=" " alt="" coords="778,483,837,509"/>
-<area shape="rect" href="_index_classification_8hpp.html" title="Classification of indices of fermionic creation/annihilation operators." alt="" coords="1407,401,1581,427"/>
-<area shape="rect" title=" " alt="" coords="13,557,167,599"/>
-<area shape="rect" title=" " alt="" coords="1095,557,1258,599"/>
-<area shape="rect" title=" " alt="" coords="378,565,458,591"/>
-<area shape="rect" title=" " alt="" coords="1693,565,1785,591"/>
-<area shape="rect" title=" " alt="" coords="570,401,647,427"/>
-<area shape="rect" href="_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them." alt="" coords="2402,483,2517,509"/>
-<area shape="rect" title=" " alt="" coords="1809,565,1864,591"/>
-<area shape="rect" title=" " alt="" coords="1888,565,1951,591"/>
-<area shape="rect" title=" " alt="" coords="1489,483,1657,509"/>
-<area shape="rect" title=" " alt="" coords="1782,483,1833,509"/>
-<area shape="rect" title=" " alt="" coords="1954,483,2029,509"/>
-<area shape="rect" href="_version_8hpp.html" title="Pomerol version information." alt="" coords="731,565,887,591"/>
-<area shape="rect" title=" " alt="" coords="191,557,354,599"/>
-<area shape="rect" title=" " alt="" coords="483,565,575,591"/>
-<area shape="rect" title=" " alt="" coords="599,565,706,591"/>
-<area shape="rect" title=" " alt="" coords="1975,557,2149,599"/>
-<area shape="rect" title=" " alt="" coords="2173,557,2348,599"/>
-<area shape="rect" title=" " alt="" coords="2372,557,2547,599"/>
-<area shape="rect" title=" " alt="" coords="2571,565,2636,591"/>
-<area shape="rect" title=" " alt="" coords="2660,565,2720,591"/>
-<area shape="rect" href="_hilbert_space_8hpp.html" title="Hilbert space of a system and invariant subspaces of its Hamiltonian." alt="" coords="1365,319,1498,345"/>
-<area shape="rect" title=" " alt="" coords="1018,393,1181,435"/>
-<area shape="rect" title=" " alt="" coords="1655,393,1887,435"/>
-<area shape="rect" title=" " alt="" coords="1911,393,2074,435"/>
-<area shape="rect" title=" " alt="" coords="27,244,89,271"/>
-<area shape="rect" title=" " alt="" coords="795,169,871,196"/>
-<area shape="rect" title=" " alt="" coords="2541,483,2583,509"/>
-<area shape="rect" title=" " alt="" coords="2839,565,2898,591"/>
+<area shape="rect" title="Part of a 3&#45;point susceptibility in the Matsubara representation." alt="" coords="1895,5,2133,47"/>
+<area shape="rect" href="_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc." alt="" coords="347,401,518,427"/>
+<area shape="rect" href="_density_matrix_part_8hpp.html" title="Diagonal block of a many&#45;body Gibbs density matrix." alt="" coords="611,95,777,121"/>
+<area shape="rect" href="_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block." alt="" coords="617,169,771,196"/>
+<area shape="rect" href="pomerol_2misc_8hpp.html" title="Declarations of the most basic types and macros." alt="" coords="566,483,646,509"/>
+<area shape="rect" title=" " alt="" coords="1198,565,1254,591"/>
+<area shape="rect" title=" " alt="" coords="1492,565,1571,591"/>
+<area shape="rect" title=" " alt="" coords="2752,565,2823,591"/>
+<area shape="rect" title=" " alt="" coords="2673,565,2728,591"/>
+<area shape="rect" href="_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces." alt="" coords="1025,244,1203,271"/>
+<area shape="rect" href="_thermal_8hpp.html" title="Objects, whose definition depends on the temperature." alt="" coords="110,169,214,196"/>
+<area shape="rect" href="_monomial_operator_part_8hpp.html" title="Storage for a matrix block of an operator that is a product of creation/annihilation operators." alt="" coords="955,95,1153,121"/>
+<area shape="rect" href="_term_list_8hpp.html" title="List of terms forming Lehmann representation of a correlation function." alt="" coords="2627,401,2732,427"/>
+<area shape="rect" href="mpi__dispatcher_2misc_8hpp.html" title="Miscellaneous MPI&#45;related functions." alt="" coords="2972,483,3157,509"/>
+<area shape="rect" title=" " alt="" coords="3023,95,3213,121"/>
+<area shape="rect" title=" " alt="" coords="1185,483,1272,509"/>
+<area shape="rect" title=" " alt="" coords="403,483,462,509"/>
+<area shape="rect" href="_index_classification_8hpp.html" title="Classification of indices of fermionic creation/annihilation operators." alt="" coords="1235,401,1409,427"/>
+<area shape="rect" title=" " alt="" coords="5,557,159,599"/>
+<area shape="rect" title=" " alt="" coords="903,557,1066,599"/>
+<area shape="rect" title=" " alt="" coords="183,565,263,591"/>
+<area shape="rect" title=" " alt="" coords="1701,565,1793,591"/>
+<area shape="rect" title=" " alt="" coords="745,401,822,427"/>
+<area shape="rect" href="_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them." alt="" coords="2331,483,2446,509"/>
+<area shape="rect" title=" " alt="" coords="1817,565,1880,591"/>
+<area shape="rect" title=" " alt="" coords="1297,483,1465,509"/>
+<area shape="rect" title=" " alt="" coords="1737,483,1787,509"/>
+<area shape="rect" title=" " alt="" coords="1845,483,1919,509"/>
+<area shape="rect" href="_version_8hpp.html" title="Pomerol version information." alt="" coords="288,565,444,591"/>
+<area shape="rect" title=" " alt="" coords="469,557,631,599"/>
+<area shape="rect" title=" " alt="" coords="656,565,748,591"/>
+<area shape="rect" title=" " alt="" coords="773,565,879,591"/>
+<area shape="rect" title=" " alt="" coords="1904,557,2079,599"/>
+<area shape="rect" title=" " alt="" coords="2103,557,2277,599"/>
+<area shape="rect" title=" " alt="" coords="2301,557,2476,599"/>
+<area shape="rect" title=" " alt="" coords="2500,565,2565,591"/>
+<area shape="rect" title=" " alt="" coords="2589,565,2649,591"/>
+<area shape="rect" href="_hilbert_space_8hpp.html" title="Hilbert space of a system and invariant subspaces of its Hamiltonian." alt="" coords="1241,319,1374,345"/>
+<area shape="rect" title=" " alt="" coords="897,393,1059,435"/>
+<area shape="rect" title=" " alt="" coords="1433,393,1665,435"/>
+<area shape="rect" title=" " alt="" coords="1689,393,1851,435"/>
+<area shape="rect" title=" " alt="" coords="100,244,163,271"/>
+<area shape="rect" title=" " alt="" coords="1049,169,1125,196"/>
+<area shape="rect" title=" " alt="" coords="2811,483,2897,509"/>
+<area shape="rect" title=" " alt="" coords="2622,483,2737,509"/>
+<area shape="rect" title=" " alt="" coords="3035,565,3094,591"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -168,8 +172,11 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term.html">Pomerol::ThreePointSusceptibilityPart::NonResonantFFTerm</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A non-resonant fermion-fermion term in the Lehmann representation of <a class="el" href="class_pomerol_1_1_three_point_susceptibility.html">ThreePointSusceptibility</a>.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term_1_1_compare.html">Pomerol::ThreePointSusceptibilityPart::NonResonantFFTerm::Compare</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Comparator object for non-resonant fermion-fermion terms.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term_1_1_compare.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term_1_1_hash.html">Pomerol::ThreePointSusceptibilityPart::NonResonantFFTerm::Hash</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hasher for non-resonant fermion-fermion terms.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term_1_1_hash.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term_1_1_key_equal.html">Pomerol::ThreePointSusceptibilityPart::NonResonantFFTerm::KeyEqual</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Similarity predicate for non-resonant fermion-fermion terms.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term_1_1_key_equal.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term_1_1_is_negligible.html">Pomerol::ThreePointSusceptibilityPart::NonResonantFFTerm::IsNegligible</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Predicate: Does a term have a negligible residue?  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_f_term_1_1_is_negligible.html#details">More...</a><br /></td></tr>
@@ -177,8 +184,11 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term.html">Pomerol::ThreePointSusceptibilityPart::NonResonantFBTerm</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A non-resonant fermion-boson term in the Lehmann representation of <a class="el" href="class_pomerol_1_1_three_point_susceptibility.html">ThreePointSusceptibility</a>.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term_1_1_compare.html">Pomerol::ThreePointSusceptibilityPart::NonResonantFBTerm::Compare</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Comparator object for non-resonant fermion-boson terms.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term_1_1_compare.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term_1_1_hash.html">Pomerol::ThreePointSusceptibilityPart::NonResonantFBTerm::Hash</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hasher for non-resonant fermion-boson terms.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term_1_1_hash.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term_1_1_key_equal.html">Pomerol::ThreePointSusceptibilityPart::NonResonantFBTerm::KeyEqual</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Similarity predicate for non-resonant fermion-fermion terms.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term_1_1_key_equal.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term_1_1_is_negligible.html">Pomerol::ThreePointSusceptibilityPart::NonResonantFBTerm::IsNegligible</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Predicate: Does a term have a negligible residue?  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_non_resonant_f_b_term_1_1_is_negligible.html#details">More...</a><br /></td></tr>
@@ -186,8 +196,11 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term.html">Pomerol::ThreePointSusceptibilityPart::ResonantTerm</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A resonant term in the Lehmann representation of <a class="el" href="class_pomerol_1_1_three_point_susceptibility.html">ThreePointSusceptibility</a>.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_compare.html">Pomerol::ThreePointSusceptibilityPart::ResonantTerm::Compare</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Comparator object for resonant terms.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_compare.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_hash.html">Pomerol::ThreePointSusceptibilityPart::ResonantTerm::Hash</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hasher for resonant terms.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_hash.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_key_equal.html">Pomerol::ThreePointSusceptibilityPart::ResonantTerm::KeyEqual</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Similarity predicate for resonant terms.  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_key_equal.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_is_negligible.html">Pomerol::ThreePointSusceptibilityPart::ResonantTerm::IsNegligible</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Predicate: Does a term have a negligible residue?  <a href="struct_pomerol_1_1_three_point_susceptibility_part_1_1_resonant_term_1_1_is_negligible.html#details">More...</a><br /></td></tr>
@@ -207,7 +220,7 @@ Namespaces</h2></td></tr>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Dec 21 2022 10:46:26 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 5 2023 09:13:53 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

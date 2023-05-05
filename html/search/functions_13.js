@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['_7edensitymatrix_631',['~DensityMatrix',['../class_pomerol_1_1_density_matrix.html#ae8481925316e7adcff7f0e5cc457ff02',1,'Pomerol::DensityMatrix']]]
+  ['value_633',['value',['../class_pomerol_1_1_vertex4.html#a28113b0b7abab6566871dd80bdce052e',1,'Pomerol::Vertex4']]],
+  ['vertex4_634',['Vertex4',['../class_pomerol_1_1_vertex4.html#abb2ca6d955e9eb6382db3dfeb427aa25',1,'Pomerol::Vertex4']]]
 ];

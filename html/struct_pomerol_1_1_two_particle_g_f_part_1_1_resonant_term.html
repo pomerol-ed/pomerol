@@ -90,11 +90,14 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_two_particle_g_f_part_1_1_resonant_term_1_1_compare.html">Compare</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Comparator object for resonant terms.  <a href="struct_pomerol_1_1_two_particle_g_f_part_1_1_resonant_term_1_1_compare.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_two_particle_g_f_part_1_1_resonant_term_1_1_hash.html">Hash</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hasher for resonant terms.  <a href="struct_pomerol_1_1_two_particle_g_f_part_1_1_resonant_term_1_1_hash.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_two_particle_g_f_part_1_1_resonant_term_1_1_is_negligible.html">IsNegligible</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Predicate: Does a term have a negligible residue?  <a href="struct_pomerol_1_1_two_particle_g_f_part_1_1_resonant_term_1_1_is_negligible.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_two_particle_g_f_part_1_1_resonant_term_1_1_key_equal.html">KeyEqual</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Similarity predicate for resonant terms.  <a href="struct_pomerol_1_1_two_particle_g_f_part_1_1_resonant_term_1_1_key_equal.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -137,7 +140,7 @@ Data Fields</h2></td></tr>
 <li>\( \frac{1}{(z_1-P_1)(z_3-P_3)} \left( R \delta(z_2+z_3-P_2-P_3) + N \frac{1 - \delta(z_2+z_3-P_2-P_3)}{z_2+z_3-P_2-P_3} \right) \) for <a class="el" href="struct_pomerol_1_1_two_particle_g_f_part_1_1_resonant_term.html#ade9b39f1fb0fe1122c8a09bd867edfa1">isz1z2</a> == false. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00171">171</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00189">189</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9419318b712552759fdbf3550b1a253c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9419318b712552759fdbf3550b1a253c">&#9670;&nbsp;</a></span>ResonantTerm() <span class="overload">[1/2]</span></h2>
@@ -233,7 +236,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00244">244</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00279">279</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -320,7 +323,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00443">443</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00478">478</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -369,7 +372,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Are we using \( \delta(z_1+z_2-P_1-P_2) \) resonance condition? If not, we are using \( \delta(z_2+z_3-P_2-P_3) \). </p>
 
-<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00183">183</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00201">201</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -387,7 +390,7 @@ Data Fields</h2></td></tr>
 
 <p>Coefficient \(N\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00176">176</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00194">194</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -405,7 +408,7 @@ Data Fields</h2></td></tr>
 
 <p>Poles \(P_1\), \(P_2\), \(P_3\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00179">179</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00197">197</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -423,7 +426,7 @@ Data Fields</h2></td></tr>
 
 <p>Coefficient \(R\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00174">174</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00192">192</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -440,7 +443,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Weight \(W\) used in addition of terms with different poles. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="struct_pomerol_1_1_two_particle_g_f_part_1_1_resonant_term.html#ab30af897862ba5af415375d396672d5a">operator+=()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00187">187</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_two_particle_g_f_part_8hpp_source.html#l00205">205</a> of file <a class="el" href="_two_particle_g_f_part_8hpp_source.html">TwoParticleGFPart.hpp</a>.</p>
 
 </div>
 </div>
@@ -450,7 +453,7 @@ Data Fields</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Dec 21 2022 10:46:26 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 5 2023 09:13:54 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
