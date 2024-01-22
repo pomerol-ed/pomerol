@@ -78,9 +78,10 @@ public:
     ///            An empty set results in creation of elements for all possible index combinations \f$(i,j,k,l)\f$.
     void prepareAll(std::set<IndexCombination4> const& Indices = {});
     /// Compute all prepared elements \f$\chi^{(3)}_{ijkl}\f$.
-    /// \param[in] clear If true, computed \ref ThreePointSusceptibilityPart's of all elements will be destroyed
-    ///                  immediately after filling the precomputed value cache.
+    /// \param[in] clearTerms If true, computed \ref ThreePointSusceptibilityPart's of all elements will be destroyed
+    ///                       immediately after filling the precomputed value cache.
     /// \param[in] freqs List of frequency duplets \f$(\omega_{n_1},\omega_{n_2})\f$ for value pre-computation.
+    /// \param[in] comm MPI communicator used to parallelize the computation.
     /// \pre \ref prepareAll() has been called.
     std::map<IndexCombination4, std::vector<ComplexType>>
     computeAll(bool clearTerms = false, FreqVec2 const& freqs = {}, MPI_Comm const& comm = MPI_COMM_WORLD);

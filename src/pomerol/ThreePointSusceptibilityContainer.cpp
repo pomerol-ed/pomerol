@@ -27,12 +27,12 @@ void ThreePointSusceptibilityContainer::prepareAll(std::set<IndexCombination4> c
 }
 
 std::map<IndexCombination4, std::vector<ComplexType>>
-ThreePointSusceptibilityContainer::computeAll(bool clear, FreqVec2 const& freqs, MPI_Comm const& comm) {
+ThreePointSusceptibilityContainer::computeAll(bool clearTerms, FreqVec2 const& freqs, MPI_Comm const& comm) {
     std::map<IndexCombination4, std::vector<ComplexType>> out;
     for(auto& el : ElementsMap) {
         INFO("Computing 3PSusceptibility for " << el.first);
         auto& chi3 = static_cast<ThreePointSusceptibility&>(el.second);
-        out.emplace(el.first, chi3.compute(clear, freqs, comm));
+        out.emplace(el.first, chi3.compute(clearTerms, freqs, comm));
     }
     return out;
 }
