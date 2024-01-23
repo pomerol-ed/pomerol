@@ -323,8 +323,9 @@ template&lt;typename... IndexTypes&gt; </div>
 </div><div class="memdoc">
 <p>Compute all prepared elements \(\chi^{(3)}_{ijkl}\). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">clear</td><td>If true, computed <a class="el" href="class_pomerol_1_1_three_point_susceptibility_part.html">ThreePointSusceptibilityPart</a>'s of all elements will be destroyed immediately after filling the precomputed value cache. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">clearTerms</td><td>If true, computed <a class="el" href="class_pomerol_1_1_three_point_susceptibility_part.html">ThreePointSusceptibilityPart</a>'s of all elements will be destroyed immediately after filling the precomputed value cache. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">freqs</td><td>List of frequency duplets \((\omega_{n_1},\omega_{n_2})\) for value pre-computation. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MPI communicator used to parallelize the computation. </td></tr>
   </table>
   </dd>
 </dl>
@@ -409,7 +410,7 @@ template&lt;typename... IndexTypes&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_container_8hpp_source.html#l00089">89</a> of file <a class="el" href="_three_point_susceptibility_container_8hpp_source.html">ThreePointSusceptibilityContainer.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_container_8hpp_source.html#l00090">90</a> of file <a class="el" href="_three_point_susceptibility_container_8hpp_source.html">ThreePointSusceptibilityContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -436,7 +437,7 @@ template&lt;typename... IndexTypes&gt; </div>
 
 <p>Channel of \(\chi^{(3)}\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_container_8hpp_source.html#l00096">96</a> of file <a class="el" href="_three_point_susceptibility_container_8hpp_source.html">ThreePointSusceptibilityContainer.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_container_8hpp_source.html#l00097">97</a> of file <a class="el" href="_three_point_susceptibility_container_8hpp_source.html">ThreePointSusceptibilityContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -480,7 +481,7 @@ template&lt;typename... IndexTypes&gt; </div>
 
 <p>Many-body density matrix \(\hat\rho\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_container_8hpp_source.html#l00103">103</a> of file <a class="el" href="_three_point_susceptibility_container_8hpp_source.html">ThreePointSusceptibilityContainer.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_container_8hpp_source.html#l00104">104</a> of file <a class="el" href="_three_point_susceptibility_container_8hpp_source.html">ThreePointSusceptibilityContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -506,7 +507,7 @@ template&lt;typename... IndexTypes&gt; </div>
 
 <p>The Hamiltonian. </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_container_8hpp_source.html#l00101">101</a> of file <a class="el" href="_three_point_susceptibility_container_8hpp_source.html">ThreePointSusceptibilityContainer.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_container_8hpp_source.html#l00102">102</a> of file <a class="el" href="_three_point_susceptibility_container_8hpp_source.html">ThreePointSusceptibilityContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -532,7 +533,7 @@ template&lt;typename... IndexTypes&gt; </div>
 
 <p>A set of creation/annihilation operators \(c^\dagger\)/ \(c\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_container_8hpp_source.html#l00105">105</a> of file <a class="el" href="_three_point_susceptibility_container_8hpp_source.html">ThreePointSusceptibilityContainer.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_container_8hpp_source.html#l00106">106</a> of file <a class="el" href="_three_point_susceptibility_container_8hpp_source.html">ThreePointSusceptibilityContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -576,7 +577,7 @@ template&lt;typename... IndexTypes&gt; </div>
 
 <p>Information about invariant subspaces of the Hamiltonian. </p>
 
-<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_container_8hpp_source.html#l00099">99</a> of file <a class="el" href="_three_point_susceptibility_container_8hpp_source.html">ThreePointSusceptibilityContainer.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_three_point_susceptibility_container_8hpp_source.html#l00100">100</a> of file <a class="el" href="_three_point_susceptibility_container_8hpp_source.html">ThreePointSusceptibilityContainer.hpp</a>.</p>
 
 </div>
 </div>
@@ -586,7 +587,7 @@ template&lt;typename... IndexTypes&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jan 22 2024 16:31:01 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jan 23 2024 15:50:47 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
