@@ -150,12 +150,12 @@ struct ComputeAndClearWrap2PGF {
     }
 
     // NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
-    int const complexity;
+    int const complexity; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
 
 private:
-    FreqVec3 const& freqs_;
-    std::vector<ComplexType>& data_;
-    TwoParticleGFPart& p;
+    FreqVec3 const& freqs_; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
+    std::vector<ComplexType>& data_; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
+    TwoParticleGFPart& p; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
     bool clear_;
     bool fill_;
 };

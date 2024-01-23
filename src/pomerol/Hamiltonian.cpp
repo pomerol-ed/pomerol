@@ -37,7 +37,7 @@ template <bool C> void Hamiltonian::prepareImpl(LOperatorTypeRC<C> const& HOp, M
     pMPI::mpi_skel<pMPI::PrepareWrap<HamiltonianPart>> skel;
     skel.parts.reserve(parts.size());
     for(auto& part : parts) {
-        skel.parts.emplace_back(pMPI::PrepareWrap<HamiltonianPart>(part));
+        skel.parts.emplace_back(part);
     }
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, false);
     MPI_Barrier(comm);
@@ -70,7 +70,7 @@ template <bool C> void Hamiltonian::computeImpl(MPI_Comm const& comm) {
     pMPI::mpi_skel<pMPI::ComputeWrap<HamiltonianPart>> skel;
     skel.parts.reserve(parts.size());
     for(auto& part : parts) {
-        skel.parts.emplace_back(pMPI::ComputeWrap<HamiltonianPart>(part, static_cast<int>(part.getSize())));
+        skel.parts.emplace_back(part, static_cast<int>(part.getSize()));
     }
     std::map<pMPI::JobId, pMPI::WorkerId> job_map = skel.run(comm, true);
     int comm_rank = pMPI::rank(comm);

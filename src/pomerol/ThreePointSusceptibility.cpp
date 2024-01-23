@@ -172,12 +172,12 @@ struct ComputeAndClearWrap3PSusc {
     }
 
     // NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
-    int const complexity;
+    int const complexity; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
 
 private:
-    FreqVec2 const& freqs_;
-    std::vector<ComplexType>& data_;
-    ThreePointSusceptibilityPart& p;
+    FreqVec2 const& freqs_; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
+    std::vector<ComplexType>& data_; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
+    ThreePointSusceptibilityPart& p; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
     bool clear_;
     bool fill_;
 };

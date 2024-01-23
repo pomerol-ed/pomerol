@@ -82,7 +82,7 @@ std::ostream& operator<<(std::ostream& os, Channel channel) {
 ////////////////////////
 std::size_t hash_binned_real(double x, double bin_size) {
     auto h = std::hash<std::int64_t>();
-    return h(std::round(x / bin_size));
+    return h(static_cast<std::int64_t>(std::round(x / bin_size)));
 }
 
 } // namespace Pomerol
