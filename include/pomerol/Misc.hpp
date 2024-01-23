@@ -57,7 +57,7 @@ namespace Pomerol {
 /// Print a debugging message to the standard output with a source file name and line number annotation.
 #define DEBUG(MSG) std::cout << MSG_PREFIX << MSG << std::endl
 #else
-#define DEBUG(MSG) NULL;
+#define DEBUG(MSG)
 #endif
 /// Print a message to the standard output.
 #define INFO(MSG) std::cout << MSG << std::endl

@@ -376,7 +376,7 @@ CoulombP(std::string const& Label, RealType U, RealType U_p, RealType J, RealTyp
                 if(Orbital1 != Orbital2)
                     res += LatticePresets::NupNdown(Label, (U_p - J) / 2.0, Orbital1, Orbital2, s1, s1);
             for(spin s2 : {up, down}) {
-                if(s2 >= s1)
+                if(s2 >= s1) // cppcheck-suppress knownConditionTrueFalse
                     continue;
                 res += LatticePresets::NupNdown(Label, U, Orbital1, Orbital1, s1, s2);
                 for(unsigned short Orbital2 = 0; Orbital2 < NOrbitals; ++Orbital2) {

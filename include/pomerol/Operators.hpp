@@ -128,7 +128,7 @@ template <typename... IndexTypes>
 expression<double, IndexTypes...> N(std::vector<std::tuple<IndexTypes...>> const& Indices) {
     expression<double, IndexTypes...> res;
     for(auto const& i : Indices)
-        res += Detail::apply(n<double, IndexTypes...>, i);
+        res += Detail::apply(n<double, IndexTypes...>, i); // cppcheck-suppress useStlAlgorithm
     return res;
 }
 
@@ -147,9 +147,9 @@ expression<double, IndexTypes...> Sz(std::vector<std::tuple<IndexTypes...>> cons
                                      std::vector<std::tuple<IndexTypes...>> const& SpinDownIndices) {
     expression<double, IndexTypes...> res;
     for(auto const& i : SpinUpIndices)
-        res += 0.5 * Detail::apply(n<double, IndexTypes...>, i);
+        res += 0.5 * Detail::apply(n<double, IndexTypes...>, i); // cppcheck-suppress useStlAlgorithm
     for(auto const& i : SpinDownIndices)
-        res -= 0.5 * Detail::apply(n<double, IndexTypes...>, i);
+        res -= 0.5 * Detail::apply(n<double, IndexTypes...>, i); // cppcheck-suppress useStlAlgorithm
     return res;
 }
 

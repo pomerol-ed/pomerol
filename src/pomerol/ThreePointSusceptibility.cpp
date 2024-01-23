@@ -42,21 +42,27 @@ MonomialOperator const& ThreePointSusceptibility::getF2() const {
     case PP: return CX3;
     case PH: return C2;
     case xPH: return C4;
+    default: assert(0);
     }
+    throw std::runtime_error("ThreePointSusceptibility: Wrong channel");
 }
 MonomialOperator const& ThreePointSusceptibility::getB1() const {
     switch(channel) {
     case PP: return C2;
     case PH: return CX3;
     case xPH: return CX3;
+    default: assert(0);
     }
+    throw std::runtime_error("ThreePointSusceptibility: Wrong channel");
 }
 MonomialOperator const& ThreePointSusceptibility::getB2() const {
     switch(channel) {
     case PP: return C4;
     case PH: return C4;
     case xPH: return C2;
+    default: assert(0);
     }
+    throw std::runtime_error("ThreePointSusceptibility: Wrong channel");
 }
 
 void ThreePointSusceptibility::prepare() {

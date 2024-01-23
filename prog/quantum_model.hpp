@@ -68,7 +68,7 @@ public:
     /// Parse the command line arguments common to all ED calculations.
     /// \param[in] argc The number of command line arguments.
     /// \param[in] argv The command line arguments.
-    void parse_args(int argc, char* argv[]);
+    void parse_args(int argc, char const* const argv[]);
 
     /// Diagonalize the model and compute Green's functions.
     void compute();

@@ -59,7 +59,7 @@ quantum_model::~quantum_model() {
 }
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
-void quantum_model::parse_args(int argc, char* argv[]) {
+void quantum_model::parse_args(int argc, char const* const argv[]) {
     try {
         args_parser.ParseCLI(argc, argv);
     } catch(args::Help) {
