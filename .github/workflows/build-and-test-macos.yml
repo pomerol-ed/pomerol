@@ -11,12 +11,12 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: macos-11
+    runs-on: macos-12
     strategy:
       matrix:
         compiler:
-        - { name: "g++-10", cxx: "g++-10" }
-        - { name: "clang", cxx: "clang++" }
+        - { name: "g++-11", cxx: "g++-11" }
+        - { name: "clang", cxx: "clang++"}
         install-libcommute: [true, false]
 
     steps:
@@ -60,7 +60,8 @@ jobs:
            fi
            mkdir build
            cd build
-           cmake -DCMAKE_INSTALL_PREFIX=installed                              \
+           cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo                             \
+                 -DCMAKE_INSTALL_PREFIX=installed                              \
                  ${LCA}                                                        \
                  -DStaticAnalysis=OFF                                          \
                  -DUSE_OPENMP=ON                                               \
@@ -82,10 +83,11 @@ jobs:
       env:
         TMPDIR: "/tmp"
       run: |
-           echo -e "\nrmaps_base_oversubscribe = 1" >>                         \
-              /usr/local/etc/openmpi-mca-params.conf
+           mkdir -p $HOME/.prte
+           echo -e "\nrmaps_default_mapping_policy = :oversubscribe" >>        \
+              $HOME/.prte/mca-params.conf
            cd build
-           CTEST_OUTPUT_ON_FAILURE=1 make test
+           ctest --output-on-failure
 
     - name: Install
       run: |
