@@ -39,6 +39,7 @@ TEST_CASE("Test mpi_dispatcher", "[mpi_dispatcher]") {
     int comm_rank = pMPI::rank(MPI_COMM_WORLD);
     int const root = 0;
 
+    // cppcheck-suppress syntaxError
     SECTION("With MPIMaster") {
         std::uniform_real_distribution<double> dist(0, 0.1);
 

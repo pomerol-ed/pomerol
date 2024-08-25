@@ -54,6 +54,7 @@ TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
     H.compute(MPI_COMM_WORLD);
     INFO(H.getPart(BlockNumber(4)));
 
+    // cppcheck-suppress syntaxError
     SECTION("Ground state energy") {
         RealType E_ref = -2.8860009;
         RealType E = H.getGroundEnergy();

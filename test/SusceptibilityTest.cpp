@@ -83,6 +83,7 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
     RealType wd = weights_ref[2];
     RealType w2 = weights_ref[3];
 
+    // cppcheck-suppress syntaxError
     SECTION("Ensemble averages") {
         EnsembleAverage s_plus_aver(s_plus, rho);
         s_plus_aver.compute();

@@ -69,6 +69,7 @@ TEST_CASE("Hamiltonian of an isolated Hubbard-Holstein atom", "[HubbardHolstein]
     auto IndexInfo = MakeIndexClassification(HExpr);
     INFO("Indices\n" << IndexInfo);
 
+    // cppcheck-suppress syntaxError
     SECTION("bits_per_boson") {
         auto HS = MakeHilbertSpace(IndexInfo, HExpr, bits_per_boson);
         HS.compute();

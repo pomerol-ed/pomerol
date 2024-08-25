@@ -96,7 +96,7 @@ void TwoParticleGF::prepare() {
                 parts.emplace_back(OperatorPartAtPosition(p, 0, LeftIndices[0]),
                                    OperatorPartAtPosition(p, 1, LeftIndices[1]),
                                    OperatorPartAtPosition(p, 2, LeftIndices[2]),
-                                   (MonomialOperatorPart&)CX4.getPartFromLeftIndex(LeftIndices[3]),
+                                   const_cast<MonomialOperatorPart&>(CX4.getPartFromLeftIndex(LeftIndices[3])),
                                    H.getPart(LeftIndices[0]),
                                    H.getPart(LeftIndices[1]),
                                    H.getPart(LeftIndices[2]),

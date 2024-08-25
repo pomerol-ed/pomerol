@@ -67,6 +67,7 @@ TEST_CASE("3-point susceptibilities of a small Hubbard cluster", "[ThreePointSus
     ParticleIndex C_up_index = IndexInfo.getIndex("C", 0, up);
     ParticleIndex C_dn_index = IndexInfo.getIndex("C", 0, down);
 
+    // cppcheck-suppress syntaxError
     SECTION("Particle-particle channel") {
         ThreePointSusceptibility chi3pp(Channel::PP,
                                         S,

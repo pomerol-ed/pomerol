@@ -98,6 +98,7 @@ TEST_CASE("3-point susceptibilities of a single Hubbard atom", "[ThreePointSusce
     auto omega = [beta](int n) { return M_PI * (2 * n + 1) / beta; };
     g_aux g(beta, U, mu, h_field);
 
+    // cppcheck-suppress syntaxError
     SECTION("Particle-particle channel") {
         for(auto index1 : {up_index, dn_index}) {
             for(auto index2 : {up_index, dn_index}) {

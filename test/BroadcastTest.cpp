@@ -53,6 +53,7 @@ TEST_CASE("broadcast() methods of various objects", "[broadcast]") {
     TwoParticleGFPart::ResonantTerm tr_ref(ComplexType(4.0, 3.0), ComplexType(5.0, 6.0), -0.1, 0.2, 0.3, true);
     tr_ref.Weight = 100;
 
+    // cppcheck-suppress syntaxError
     SECTION("TwoParticleGFPart::NonResonantTerm::mpi_datatype()") {
         TwoParticleGFPart::NonResonantTerm tnr(0, 0, 0, 0, false);
         if(rank == 0)

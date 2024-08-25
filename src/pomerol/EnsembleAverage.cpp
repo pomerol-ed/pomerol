@@ -41,11 +41,11 @@ void EnsembleAverage::compute() {
             // check if retained blocks are included. If not, do not push.
             if(DM.isRetained(Aleft)) {
                 if(A.isComplex())
-                    Result +=
-                        computeImpl<true>((MonomialOperatorPart&)A.getPartFromLeftIndex(Aleft), DM.getPart(Aleft));
+                    Result += computeImpl<true>(const_cast<MonomialOperatorPart&>(A.getPartFromLeftIndex(Aleft)),
+                                                DM.getPart(Aleft));
                 else
-                    Result +=
-                        computeImpl<false>((MonomialOperatorPart&)A.getPartFromLeftIndex(Aleft), DM.getPart(Aleft));
+                    Result += computeImpl<false>(const_cast<MonomialOperatorPart&>(A.getPartFromLeftIndex(Aleft)),
+                                                 DM.getPart(Aleft));
             }
         }
     }

@@ -101,6 +101,7 @@ TEST_CASE("Green's function of a Hubbard atom", "[GF1site]") {
         REQUIRE_THAT(result, IsCloseTo(ref, 1e-14));
     }
 
+    // cppcheck-suppress syntaxError
     SECTION("GFContainer") {
         GFContainer G(IndexInfo, S, H, rho, Operators);
 

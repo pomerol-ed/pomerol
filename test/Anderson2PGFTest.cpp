@@ -107,6 +107,7 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
 
     std::vector<std::tuple<ComplexType, ComplexType, ComplexType>> freqs;
 
+    // cppcheck-suppress syntaxError
     SECTION("Chi4.computeAll() for arbitrary frequencies") {
         Chi4.computeAll(false, freqs, MPI_COMM_WORLD, true);
 

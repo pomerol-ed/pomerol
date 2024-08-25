@@ -118,6 +118,7 @@ TEST_CASE("Two-particle vertex of a single Hubbard atom", "[Vertex4]") {
     ParticleIndex up_index = IndexInfo.getIndex("A", 0, up);
     ParticleIndex down_index = IndexInfo.getIndex("A", 0, down);
 
+    // cppcheck-suppress syntaxError
     SECTION("\\chi_{\\up\\up\\up\\up} and \\Gamma_{\\up\\up\\up\\up}") {
         GreensFunction const& GF = G(up_index, up_index);
         TwoParticleGF const& Chi_uuuu = Chi(IndexCombination4(up_index, up_index, up_index, up_index));

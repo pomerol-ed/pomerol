@@ -120,7 +120,9 @@ void quantum_model::compute() {
     rho.compute(); // Evaluate thermal weights with respect to ground energy, i.e exp(-beta(e-e_0))/Z.
 
     std::pair<ParticleIndex, ParticleIndex> pair = get_node(IndexInfo);
+    // cppcheck-suppress variableScope
     ParticleIndex d0 = pair.first;
+    // cppcheck-suppress variableScope
     ParticleIndex u0 = pair.second;
 
     // Green's function calculation starts here.
