@@ -126,13 +126,13 @@ $(function() {
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#define MSG_PREFIX __FILE__ &lt;&lt; &quot;:&quot; &lt;&lt; __LINE__ &lt;&lt; &quot;: &quot;</span></div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#ifndef NDEBUG</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#define DEBUG(MSG) std::cout &lt;&lt; MSG_PREFIX &lt;&lt; MSG &lt;&lt; std::endl</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#define DEBUG(MSG) std::cout &lt;&lt; MSG_PREFIX &lt;&lt; MSG &lt;&lt; &#39;\n&#39;</span></div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#define DEBUG(MSG)</span></div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#define INFO(MSG) std::cout &lt;&lt; MSG &lt;&lt; std::endl</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#define INFO_NONEWLINE(MSG) std::cout &lt;&lt; MSG &lt;&lt; std::flush</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#define ERROR(MSG) std::cerr &lt;&lt; MSG_PREFIX &lt;&lt; MSG &lt;&lt; std::endl</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#define INFO(MSG) std::cout &lt;&lt; MSG &lt;&lt; &#39;\n&#39;</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#define INFO_NONEWLINE(MSG) std::cout &lt;&lt; MSG</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#define ERROR(MSG) std::cerr &lt;&lt; MSG_PREFIX &lt;&lt; MSG &lt;&lt; &#39;\n&#39;</span></div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
 <div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">   70</a></span>&#160;<span class="keyword">using</span> <a class="code" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> = double;</div>
 <div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="group___basic.html#ga6f6bbc04e99e3755ce3bd9eead9d4792">   72</a></span>&#160;<span class="keyword">using</span> <a class="code" href="group___basic.html#ga6f6bbc04e99e3755ce3bd9eead9d4792">ComplexType</a> = std::complex&lt;double&gt;;</div>
@@ -239,7 +239,7 @@ $(function() {
 <div class="ttc" id="astruct_pomerol_1_1_permutation4_html"><div class="ttname"><a href="struct_pomerol_1_1_permutation4.html">Pomerol::Permutation4</a></div><div class="ttdoc">Permutation of 4 elements.</div><div class="ttdef"><b>Definition:</b> <a href="pomerol_2misc_8hpp_source.html#l00142">Misc.hpp:142</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jan 24 2024 14:20:09 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Aug 25 2024 14:43:31 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

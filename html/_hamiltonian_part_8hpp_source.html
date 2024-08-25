@@ -152,9 +152,9 @@ $(function() {
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
 <div class="line"><a name="l00128"></a><span class="lineno"><a class="line" href="class_pomerol_1_1_hamiltonian_part.html#acc7a7a899d09e59771d353581d81294f">  128</a></span>&#160;    <span class="keyword">friend</span> std::ostream&amp; <a class="code" href="class_pomerol_1_1_hamiltonian_part.html#acc7a7a899d09e59771d353581d81294f">operator&lt;&lt;</a>(std::ostream&amp; os, <a class="code" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> <span class="keyword">const</span>&amp; part) {</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        <span class="keywordflow">if</span>(part.<a class="code" href="class_pomerol_1_1_hamiltonian_part.html#ad6a900a5a78034b40e6b46dc88114010">isComplex</a>())</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;            os &lt;&lt; part.<a class="code" href="class_pomerol_1_1_hamiltonian_part.html#ac28655618263651874090d083210e206">getMatrix</a>&lt;<span class="keyword">true</span>&gt;() &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;            os &lt;&lt; part.<a class="code" href="class_pomerol_1_1_hamiltonian_part.html#ac28655618263651874090d083210e206">getMatrix</a>&lt;<span class="keyword">true</span>&gt;() &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;            os &lt;&lt; part.<a class="code" href="class_pomerol_1_1_hamiltonian_part.html#ac28655618263651874090d083210e206">getMatrix</a>&lt;<span class="keyword">false</span>&gt;() &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;            os &lt;&lt; part.<a class="code" href="class_pomerol_1_1_hamiltonian_part.html#ac28655618263651874090d083210e206">getMatrix</a>&lt;<span class="keyword">false</span>&gt;() &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keywordflow">return</span> os;</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    }</div>
@@ -205,7 +205,7 @@ $(function() {
 <div class="ttc" id="aclass_pomerol_1_1_hamiltonian_part_html_ac28655618263651874090d083210e206"><div class="ttname"><a href="class_pomerol_1_1_hamiltonian_part.html#ac28655618263651874090d083210e206">Pomerol::HamiltonianPart::getMatrix</a></div><div class="ttdeci">MatrixType&lt; Complex &gt; const  &amp; getMatrix() const</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jan 24 2024 14:20:09 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Aug 25 2024 14:43:31 for pomerol by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
