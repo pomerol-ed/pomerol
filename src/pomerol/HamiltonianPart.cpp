@@ -155,7 +155,7 @@ bool HamiltonianPart::reduce(RealType Cutoff) {
     INFO("Left " << counter << " eigenvalues : ");
 
     if(counter) {
-        INFO(Eigenvalues.head(counter) << std::endl << "_________");
+        INFO(Eigenvalues.head(counter) << "\n_________");
         Eigenvalues = Eigenvalues.head(counter);
         if(isComplex()) {
             auto& HMatrix_ = getMatrix<true>();

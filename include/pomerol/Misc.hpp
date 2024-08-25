@@ -55,16 +55,16 @@ namespace Pomerol {
 #endif
 #ifndef NDEBUG
 /// Print a debugging message to the standard output with a source file name and line number annotation.
-#define DEBUG(MSG) std::cout << MSG_PREFIX << MSG << std::endl
+#define DEBUG(MSG) std::cout << MSG_PREFIX << MSG << '\n'
 #else
 #define DEBUG(MSG)
 #endif
 /// Print a message to the standard output.
-#define INFO(MSG) std::cout << MSG << std::endl
+#define INFO(MSG) std::cout << MSG << '\n'
 /// Print a message without a trailing new line character to the standard output.
-#define INFO_NONEWLINE(MSG) std::cout << MSG << std::flush
+#define INFO_NONEWLINE(MSG) std::cout << MSG
 /// Print a message to the standard error stream.
-#define ERROR(MSG) std::cerr << MSG_PREFIX << MSG << std::endl
+#define ERROR(MSG) std::cerr << MSG_PREFIX << MSG << '\n'
 
 /// Real floating point type.
 using RealType = double;

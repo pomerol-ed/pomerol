@@ -89,7 +89,7 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(MPI_Comm const& Co
     MPI_Barrier(Comm);
 
     if(comm_rank == root) {
-        std::cout << "Calculating " << parts.size() << " jobs using " << comm_size << " procs." << std::endl;
+        std::cout << "Calculating " << parts.size() << " jobs using " << comm_size << " procs.\n";
     }
 
     std::unique_ptr<pMPI::MPIMaster> disp;
@@ -117,7 +117,7 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(MPI_Comm const& Co
             JobId p = worker.current_job();
             if(VerboseOutput)
                 std::cout << "[" << p + 1 << "/" << parts.size() << "] P" << comm_rank << " : part " << p << " ["
-                          << parts[p].complexity << "] run;" << std::endl;
+                          << parts[p].complexity << "] run;\n";
             parts[p].run();
             worker.report_job_done();
         }
@@ -129,7 +129,7 @@ std::map<pMPI::JobId, pMPI::WorkerId> mpi_skel<WrapType>::run(MPI_Comm const& Co
     MPI_Barrier(Comm);
     // Now spread the information, who did what.
     if(VerboseOutput && comm_rank == root)
-        std::cout << "done." << std::endl;
+        std::cout << "done.\n";
 
     MPI_Barrier(Comm);
     std::map<pMPI::JobId, pMPI::WorkerId> job_map;

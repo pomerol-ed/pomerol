@@ -66,11 +66,11 @@ void quantum_model::parse_args(int argc, char const* const argv[]) {
         std::cout << args_parser;
         exit(0);
     } catch(args::ParseError& e) {
-        std::cerr << e.what() << std::endl;
+        std::cerr << e.what() << '\n';
         std::cerr << args_parser;
         exit(1);
     } catch(args::ValidationError& e) {
-        std::cerr << e.what() << std::endl;
+        std::cerr << e.what() << '\n';
         std::cerr << args_parser;
         exit(1);
     }
@@ -92,7 +92,7 @@ void quantum_model::compute() {
     IndexInfoType IndexInfo = MakeIndexClassification(HExpr);
     if(!rank) {
         print_section("Indices");
-        std::cout << IndexInfo << std::endl;
+        std::cout << IndexInfo << '\n';
     };
 
     auto HS = MakeHilbertSpace(IndexInfo, HExpr);
@@ -162,7 +162,7 @@ void quantum_model::compute() {
             for(auto const& ind2 : indices2) {
                 GreensFunction const& GF = G(ind2);
                 // Save Matsubara GF from pi/beta to pi/beta*(4*wf_max + 1)
-                std::cout << "Saving imfreq G" << ind2 << " on " << 4 * wf_max << " Matsubara freqs. " << std::endl;
+                std::cout << "Saving imfreq G" << ind2 << " on " << 4 * wf_max << " Matsubara freqs.\n";
                 grid_object<std::complex<double>, fmatsubara_grid> gf_imfreq(
                     fmatsubara_grid(wf_min, wf_max * 4, beta, true));
                 std::string ind_str = std::to_string(ind2.Index1) + std::to_string(ind2.Index2);
@@ -230,13 +230,13 @@ void quantum_model::compute() {
                     }
                 }
             }
-            mpi_cout << "2PGF : " << freqs_2pgf.size() << " freqs to evaluate" << std::endl;
+            mpi_cout << "2PGF : " << freqs_2pgf.size() << " freqs to evaluate\n";
 
             std::vector<ComplexType> chi_freq_data = G4.compute(true, freqs_2pgf, comm);
 
             // dump 2PGF into files - loop through 2pgf components
             if(!rank) {
-                mpi_cout << "Saving 2PGF " << index_comb << std::endl;
+                mpi_cout << "Saving 2PGF " << index_comb << '\n';
                 grid_object<std::complex<double>, bmatsubara_grid, fmatsubara_grid, fmatsubara_grid> full_vertex(
                     std::forward_as_tuple(bgrid, fgrid, fgrid));
                 grid_object<std::complex<double>, fmatsubara_grid, fmatsubara_grid> full_vertex_1freq(

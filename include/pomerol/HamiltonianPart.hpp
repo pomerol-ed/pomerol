@@ -127,9 +127,9 @@ public:
     /// \return Reference to the output stream.
     friend std::ostream& operator<<(std::ostream& os, HamiltonianPart const& part) {
         if(part.isComplex())
-            os << part.getMatrix<true>() << std::endl;
+            os << part.getMatrix<true>() << '\n';
         else
-            os << part.getMatrix<false>() << std::endl;
+            os << part.getMatrix<false>() << '\n';
 
         return os;
     }

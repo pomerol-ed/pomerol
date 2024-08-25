@@ -97,7 +97,7 @@ public:
                 auto pos_up = SiteIndexF(x, (y + 1) % size_y);
                 auto pos_dia_right = SiteIndexF((x + 1) % size_x, (y + 1) % size_y);
                 auto pos_dia_left = SiteIndexF((x + 1) % size_x, (y - 1) % size_y);
-                std::cout << pos_dia_right << " " << pos_dia_left << std::endl;
+                std::cout << pos_dia_right << " " << pos_dia_left << '\n';
                 if(size_x > 1)
                     HExpr += LatticePresets::Hopping(std::min(names[pos], names[pos_right]),
                                                      std::max(names[pos], names[pos_right]),
@@ -119,7 +119,7 @@ public:
 
         auto rank = pMPI::rank(comm);
         if(!rank)
-            mpi_cout << "Hamiltonian:\n" << HExpr << std::endl;
+            mpi_cout << "Hamiltonian:\n" << HExpr << '\n';
     }
 
     /// Prepare a set of indices to evaluate annihilation/creation operators and

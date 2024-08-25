@@ -151,7 +151,7 @@ template <bool C> void MonomialOperatorPart::streamOutputImpl(std::ostream& os) 
         for(typename ColMajorMatrixType<C>::InnerIterator it(mat, P); it; ++it) {
             QuantumState N = S.getFockState(to, it.row());
             QuantumState M = S.getFockState(from, it.col());
-            os << N << " " << M << " : " << it.value() << std::endl;
+            os << N << " " << M << " : " << it.value() << '\n';
         }
     }
 }

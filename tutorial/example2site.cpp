@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
 
     // Let us now print 'HExpr'.
     if(pMPI::rank(MPI_COMM_WORLD) == 0)
-        std::cout << "HExpr = " << HExpr << std::endl;
+        std::cout << "HExpr = " << HExpr << '\n';
 
     // In order to go further, we need to introduce the single-particle index space.
     // A single-particle index is an integer that uniquely identifies a combination of
@@ -92,7 +92,7 @@ int main(int argc, char* argv[]) {
     auto IndexInfo = MakeIndexClassification(HExpr);
     // Print which indices we have.
     if(pMPI::rank(MPI_COMM_WORLD) == 0)
-        std::cout << "Indices:\n" << IndexInfo << std::endl;
+        std::cout << "Indices:\n" << IndexInfo << '\n';
 
     // Let us make a test that our Hamiltonian expression commutes with an operator
     // that represents the total number of particles in the system.
@@ -101,8 +101,8 @@ int main(int argc, char* argv[]) {
                  Operators::n("B", (unsigned short)0, LatticePresets::up) +
                  Operators::n("B", (unsigned short)0, LatticePresets::down);
     if(pMPI::rank(MPI_COMM_WORLD) == 0) {
-        std::cout << "NExpr = " << NExpr << std::endl;
-        std::cout << "[HExpr, NExpr] = " << (HExpr * NExpr - NExpr * HExpr) << std::endl;
+        std::cout << "NExpr = " << NExpr << '\n';
+        std::cout << "[HExpr, NExpr] = " << (HExpr * NExpr - NExpr * HExpr) << '\n';
     }
 
     // Having created the Hamiltonian expression and the IndexClassification object
@@ -139,7 +139,7 @@ int main(int argc, char* argv[]) {
     H.compute(MPI_COMM_WORLD);
 
     // Get ground energy energy.
-    std::cout << "The value of ground energy is " << H.getGroundEnergy() << std::endl;
+    std::cout << "The value of ground energy is " << H.getGroundEnergy() << '\n';
 
     // Important remark 2!
     //
@@ -263,7 +263,7 @@ int main(int argc, char* argv[]) {
     EA.compute();
     RealType occup_up = real(EA());
     if(pMPI::rank(MPI_COMM_WORLD) == 0)
-        std::cout << "Occupation number of up spin is " << occup_up << std::endl;
+        std::cout << "Occupation number of up spin is " << occup_up << '\n';
 
     print_section("Dynamical susceptibility");
 
@@ -354,8 +354,8 @@ int main(int argc, char* argv[]) {
 
 void print_section(std::string const& str) {
     if(!pMPI::rank(MPI_COMM_WORLD)) {
-        std::cout << std::string(str.size(), '=') << std::endl;
-        std::cout << str << std::endl;
-        std::cout << std::string(str.size(), '=') << std::endl;
+        std::cout << std::string(str.size(), '=') << '\n';
+        std::cout << str << '\n';
+        std::cout << std::string(str.size(), '=') << '\n';
     }
 }

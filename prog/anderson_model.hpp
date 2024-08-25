@@ -50,12 +50,12 @@ public:
 
         if(levels.size() != hoppings.size()) {
             MPI_Finalize();
-            std::cerr << "Number of levels != number of hoppings" << std::endl;
+            std::cerr << "Number of levels != number of hoppings\n";
             exit(2);
         }
 
         L = levels.size();
-        mpi_cout << "Diagonalization of 1+" << L << " sites" << std::endl;
+        mpi_cout << "Diagonalization of 1+" << L << " sites\n";
 
         init_hamiltonian();
     }
@@ -95,7 +95,7 @@ public:
         }
 
         if(!rank)
-            mpi_cout << "Hamiltonian:\n" << HExpr << std::endl;
+            mpi_cout << "Hamiltonian:\n" << HExpr << '\n';
     }
 
 private:

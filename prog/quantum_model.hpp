@@ -144,9 +144,9 @@ protected:
     /// Print a line preceded and forwarded by two horizontal rules.
     void print_section(std::string const& str) {
         if(!rank) {
-            std::cout << std::string(str.size(), '=') << std::endl;
-            std::cout << str << std::endl;
-            std::cout << std::string(str.size(), '=') << std::endl;
+            std::cout << std::string(str.size(), '=') << '\n';
+            std::cout << str << '\n';
+            std::cout << std::string(str.size(), '=') << '\n';
         }
     }
 };

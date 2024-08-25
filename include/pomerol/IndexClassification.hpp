@@ -124,7 +124,7 @@ public:
         for(ParticleIndex i = 0; i < ic.InfoToIndices.size(); ++i) {
             os << "Index " << i << " = (";
             libcommute::print_tuple(os, ic.IndicesToInfo[i]);
-            os << ")" << std::endl;
+            os << ")\n";
         }
         return os;
     }
