@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         compiler:
-        - { name: "g++-11", cxx: "g++-11" }
+        - { name: "g++-12", cxx: "g++-12" }
         - { name: "clang", cxx: "clang++"}
         install-libcommute: [true, false]
 
