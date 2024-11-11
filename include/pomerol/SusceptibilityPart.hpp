@@ -11,7 +11,7 @@
 /// \file include/pomerol/SusceptibilityPart.hpp
 /// \brief Part of a dynamical susceptibility in the Matsubara representation.
 /// \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #ifndef POMEROL_INCLUDE_SUSCEPTIBILITYPART_HPP

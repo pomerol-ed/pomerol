@@ -11,7 +11,7 @@
 /// \file prog/anderson_model.hpp
 /// \brief ED calculations for the Anderson impurity model.
 /// \author Sergei Iskakov (sir.iskakoff@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_PROG_ANDERSON_MODEL_HPP
 #define POMEROL_PROG_ANDERSON_MODEL_HPP

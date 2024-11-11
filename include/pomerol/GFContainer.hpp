@@ -11,7 +11,7 @@
 /// \file include/pomerol/GFContainer.hpp
 /// \brief Storage for multiple fermionic single-particle Matsubara Green's functions.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_POMEROL_GFCONTAINER_HPP
 #define POMEROL_INCLUDE_POMEROL_GFCONTAINER_HPP

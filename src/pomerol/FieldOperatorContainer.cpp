@@ -10,7 +10,7 @@
 
 /// \file src/pomerol/FieldOperatorContainer.cpp
 /// \brief A container for creation and annihilation operators (implementation).
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #include "pomerol/FieldOperatorContainer.hpp"

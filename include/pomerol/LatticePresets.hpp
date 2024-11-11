@@ -11,7 +11,7 @@
 /// \file include/pomerol/LatticePresets.hpp
 /// \brief Factory functions for terms commonly used to construct various lattice Hamiltonians.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_HPP
 #define POMEROL_INCLUDE_POMEROL_LATTICEPRESETS_HPP

@@ -11,7 +11,7 @@
 /// \file prog/hubbard2d_model.hpp
 /// \brief ED calculations for the two-dimensional Hubbard model on an MxM cluster.
 /// \author Sergei Iskakov (sir.iskakoff@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_PROG_HUBBARD2D_MODEL_HPP
 #define POMEROL_PROG_HUBBARD2D_MODEL_HPP

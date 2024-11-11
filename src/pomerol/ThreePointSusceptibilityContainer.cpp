@@ -10,7 +10,7 @@
 
 /// \file src/pomerol/ThreePointSusceptibilityContainer.cpp
 /// \brief Storage for multiple 3-point susceptibilities in the Matsubara representation (implementation).
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include "pomerol/ThreePointSusceptibilityContainer.hpp"
 

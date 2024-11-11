@@ -11,7 +11,7 @@
 /// \file src/mpi_dispatcher/mpi_dispatcher.cpp
 /// \brief A master-worker parallelization scheme using non-blocking MPI communications (implementation).
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include "mpi_dispatcher/mpi_dispatcher.hpp"
 #include "mpi_dispatcher/misc.hpp"

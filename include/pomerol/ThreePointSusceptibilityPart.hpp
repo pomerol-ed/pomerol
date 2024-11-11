@@ -10,7 +10,7 @@
 
 /// \file include/pomerol/ThreePointSusceptibilityPart.hpp
 /// \brief Part of a 3-point susceptibility in the Matsubara representation.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_THREEPOINTSUSCEPTIBILITYPART_HPP
 #define POMEROL_INCLUDE_THREEPOINTSUSCEPTIBILITYPART_HPP

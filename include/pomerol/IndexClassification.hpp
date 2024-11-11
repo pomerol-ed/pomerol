@@ -11,7 +11,7 @@
 /// \file include/pomerol/IndexClassification.hpp
 /// \brief Classification of indices of fermionic creation/annihilation operators.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_HPP
 #define POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_HPP

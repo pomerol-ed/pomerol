@@ -10,7 +10,7 @@
 
 /// \file test/HamiltonianBosonsTest.cpp
 /// \brief Diagonalization of a Hubbard atom coupled to a boson.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include <pomerol/Hamiltonian.hpp>
 #include <pomerol/HilbertSpace.hpp>

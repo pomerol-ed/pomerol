@@ -10,7 +10,7 @@
 
 /// \file include/pomerol/TermList.hpp
 /// \brief List of terms forming Lehmann representation of a correlation function.
-/// \author Igor Krivenko (Igor.S.Krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_TERMLIST_HPP
 #define POMEROL_INCLUDE_TERMLIST_HPP

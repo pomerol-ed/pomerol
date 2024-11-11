@@ -11,7 +11,7 @@
 /// \file tutorial/example2site.cpp
 /// \brief An example of how to use the pomerol library.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 // In this file we provide a tutorial example of how to actually use the pomerol library.
 

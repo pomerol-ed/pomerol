@@ -12,7 +12,7 @@
 /// \brief Container class designed to store values of functions of
 /// multiple fermionic Matsubara frequencies.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_POMEROL_MATSUBARACONTAINERS_HPP
 #define POMEROL_INCLUDE_POMEROL_MATSUBARACONTAINERS_HPP

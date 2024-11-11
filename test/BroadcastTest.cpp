@@ -10,7 +10,7 @@
 
 /// \file test/BroadcastTest.cpp
 /// \brief Test the MPI broadcast operation for various types.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include <mpi_dispatcher/misc.hpp>
 

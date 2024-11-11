@@ -10,7 +10,7 @@
 
 /// \file include/pomerol/GreensFunction.hpp
 /// \brief Fermionic single-particle Matsubara Green's function.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #ifndef POMEROL_INCLUDE_POMEROL_GREENSFUNCTION_HPP

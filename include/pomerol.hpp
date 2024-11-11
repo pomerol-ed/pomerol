@@ -11,7 +11,7 @@
 /// \file include/pomerol.hpp
 /// \brief Main "include-all" header of the library.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_POMEROL_HPP
 #define POMEROL_INCLUDE_POMEROL_HPP

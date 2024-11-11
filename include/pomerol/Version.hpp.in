@@ -10,7 +10,7 @@
 
 /// \file include/pomerol/Version.hpp
 /// \brief Pomerol version information.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 /// \addtogroup Misc
 ///@{

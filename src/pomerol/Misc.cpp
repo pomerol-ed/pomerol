@@ -10,7 +10,7 @@
 
 /// \file src/pomerol/Misc.cpp
 /// \brief Implementation of functions and methods from Misc.hpp
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #include "pomerol/Misc.hpp"

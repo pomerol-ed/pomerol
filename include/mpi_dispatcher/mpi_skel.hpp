@@ -11,7 +11,7 @@
 /// \file include/mpi_dispatcher/mpi_skel.hpp
 /// \brief Utilities for MPI-parallelized calculation of computable objects.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MPI_SKEL_HPP
 #define POMEROL_INCLUDE_MPI_DISPATCHER_MPI_SKEL_HPP

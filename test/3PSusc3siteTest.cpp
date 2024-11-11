@@ -10,7 +10,7 @@
 
 /// \file test/3PSusc3siteTest.cpp
 /// \brief 3-point susceptibilities of a small Hubbard cluster.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>

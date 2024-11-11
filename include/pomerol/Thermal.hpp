@@ -10,7 +10,7 @@
 
 /// \file include/pomerol/Thermal.hpp
 /// \brief Objects, whose definition depends on the temperature.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_THERMAL_HPP
 #define POMEROL_INCLUDE_THERMAL_HPP

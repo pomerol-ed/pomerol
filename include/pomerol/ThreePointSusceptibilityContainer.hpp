@@ -10,7 +10,7 @@
 
 /// \file include/pomerol/ThreePointSusceptibilityContainer.hpp
 /// \brief Storage for multiple 3-point susceptibilities in the Matsubara representation.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_THREEPOINTSUSCEPTIBILITYCONTAINER_HPP
 #define POMEROL_INCLUDE_THREEPOINTSUSCEPTIBILITYCONTAINER_HPP

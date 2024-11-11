@@ -11,7 +11,7 @@
 /// \file src/pomerol/StatesClassification.cpp
 /// \brief Classification of many-body basis states (Fock states) into subspaces (implementation).
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include "pomerol/StatesClassification.hpp"
 

@@ -10,7 +10,7 @@
 
 /// \file src/pomerol/TwoParticleGF.cpp
 /// \brief Fermionic two-particle Matsubara Green's function (implementation).
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #include "pomerol/TwoParticleGF.hpp"

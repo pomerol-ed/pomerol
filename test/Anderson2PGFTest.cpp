@@ -11,7 +11,7 @@
 /// \file test/Anderson2PGFTest.cpp
 /// \brief Two-particle Green's function of the Anderson impurity model.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>

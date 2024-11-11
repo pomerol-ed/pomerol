@@ -10,7 +10,7 @@
 
 /// \file test/catch2/catch2-main.cpp
 /// \brief User-provided main() for Catch2 that takes care of MPI initialization/finalization.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"

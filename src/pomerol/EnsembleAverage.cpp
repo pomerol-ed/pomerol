@@ -11,7 +11,7 @@
 /// \file src/pomerol/EnsembleAverage.cpp
 /// \brief Ensemble average of a monomial operator representing a physical observable (implementation).
 /// \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #include "pomerol/EnsembleAverage.hpp"

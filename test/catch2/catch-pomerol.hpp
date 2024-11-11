@@ -10,7 +10,7 @@
 
 /// \file test/catch2/catch-pomerol.hpp
 /// \brief Supporting types and functions for Catch2
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_TEST_CATCH2_CATCH_POMEROL_HPP
 #define POMEROL_TEST_CATCH2_CATCH_POMEROL_HPP

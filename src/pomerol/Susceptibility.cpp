@@ -11,7 +11,7 @@
 /// \file src/pomerol/Susceptibility.cpp
 /// \brief Dynamical susceptibility in the Matsubara representation (implementation).
 /// \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #include "pomerol/Susceptibility.hpp"

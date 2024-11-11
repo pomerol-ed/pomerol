@@ -10,7 +10,7 @@
 
 /// \file src/pomerol/ThreePointSusceptibility.cpp
 /// \brief 3-point susceptibility in the Matsubara representation (implementation).
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include "pomerol/ThreePointSusceptibility.hpp"
 

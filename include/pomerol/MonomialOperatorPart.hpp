@@ -11,7 +11,7 @@
 /// \file include/pomerol/MonomialOperatorPart.hpp
 /// \brief Storage for a matrix block of an operator that is a product of creation/annihilation operators.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_MONOMIALOPERATORPART_HPP
 #define POMEROL_INCLUDE_MONOMIALOPERATORPART_HPP

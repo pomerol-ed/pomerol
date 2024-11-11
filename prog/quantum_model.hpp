@@ -11,7 +11,7 @@
 /// \file prog/quantum_model.hpp
 /// \brief Base class for ED calculations of finite quantum many-body models.
 /// \author Sergei Iskakov (sir.iskakoff@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_PROG_QUANTUM_MODEL_HPP
 #define POMEROL_PROG_QUANTUM_MODEL_HPP

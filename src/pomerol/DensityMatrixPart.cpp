@@ -10,7 +10,7 @@
 
 /// \file src/pomerol/DensityMatrixPart.cpp
 /// \brief Diagonal block of a many-body Gibbs density matrix (implementation).
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #include "pomerol/DensityMatrixPart.hpp"

@@ -11,7 +11,7 @@
 /// \file test/HamiltonianTest.cpp
 /// \brief Diagonalization of a Hubbard dimer.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include <pomerol/Hamiltonian.hpp>
 #include <pomerol/HamiltonianPart.hpp>

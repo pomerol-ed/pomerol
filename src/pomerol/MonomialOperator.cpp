@@ -10,7 +10,7 @@
 
 /// \file src/pomerol/MonomialOperator.cpp
 /// \brief Storage for an operator that is a product of creation/annihilation operators (implementation).
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #include "pomerol/MonomialOperator.hpp"

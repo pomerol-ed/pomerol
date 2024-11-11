@@ -10,7 +10,7 @@
 
 /// \file include/pomerol/TwoParticleGFPart.hpp
 /// \brief Part of a fermionic two-particle Matsubara Green's function.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #ifndef POMEROL_INCLUDE_TWOPARTICLEGFPART_HPP

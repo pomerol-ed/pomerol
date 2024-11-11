@@ -10,7 +10,7 @@
 
 /// \file include/mpi_dispatcher/misc.hpp
 /// \brief Miscellaneous MPI-related functions.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_MPI_DISPATCHER_MISC_HPP
 #define POMEROL_INCLUDE_MPI_DISPATCHER_MISC_HPP

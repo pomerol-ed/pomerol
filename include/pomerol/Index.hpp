@@ -10,7 +10,7 @@
 
 /// \file include/pomerol/Index.hpp
 /// \brief Combinations of single-particle indices.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #ifndef POMEROL_INCLUDE_POMEROL_INDEX_HPP

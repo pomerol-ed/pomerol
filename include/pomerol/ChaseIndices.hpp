@@ -10,7 +10,7 @@
 
 /// \file include/pomerol/ChaseIndices.hpp
 /// \brief `Chase indices` algorithm used in multipoint correlator calculations.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_POMEROL_CHASEINDICES_HPP
 #define POMEROL_INCLUDE_POMEROL_CHASEINDICES_HPP

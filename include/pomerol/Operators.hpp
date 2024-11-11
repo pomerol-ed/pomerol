@@ -10,7 +10,7 @@
 
 /// \file include/pomerol/Operators.hpp
 /// \brief Expressions with quantum-mechanical operators and functions to construct them.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_OPERATORS_HPP
 #define POMEROL_INCLUDE_OPERATORS_HPP

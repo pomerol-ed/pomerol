@@ -11,7 +11,7 @@
 /// \file test/MPIDispatcherTest.cpp
 /// \brief Test the MPIMaster/MPIWorker communication mechanism.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include <mpi_dispatcher/misc.hpp>
 #include <mpi_dispatcher/mpi_dispatcher.hpp>

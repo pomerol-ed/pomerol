@@ -11,7 +11,7 @@
 /// \file test/Vertex4Test.cpp
 /// \brief Two-particle Green's function and the vertex of a single Hubbard atom.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>

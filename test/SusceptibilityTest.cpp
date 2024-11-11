@@ -11,7 +11,7 @@
 /// \file test/SusceptibilityTest.cpp
 /// \brief Susceptibilities of a single Hubbard atom.
 /// \author Junya Otsuki (j.otsuki@okayama-u.ac.jp)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/EnsembleAverage.hpp>

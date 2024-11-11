@@ -11,7 +11,7 @@
 /// \file include/pomerol/HamiltonianPart.hpp
 /// \brief Storage and diagonalization of a Hamiltonian matrix block.
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_POMEROL_HAMILTONIANPART_HPP
 #define POMEROL_INCLUDE_POMEROL_HAMILTONIANPART_HPP

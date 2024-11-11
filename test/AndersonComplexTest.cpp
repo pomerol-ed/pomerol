@@ -10,7 +10,7 @@
 
 /// \file test/AndersonComplexTest.cpp
 /// \brief Single-particle Green's functions of a Hubbard atom with a complex spin-flipping term.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #include <pomerol/DensityMatrix.hpp>
 #include <pomerol/FieldOperatorContainer.hpp>

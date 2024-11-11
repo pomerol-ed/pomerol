@@ -11,7 +11,7 @@
 /// \file include/pomerol/IndexContainer4.hpp
 /// \brief A CRTP base for container types whose elements are addressable by
 /// four single-particle indices.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 
 #ifndef POMEROL_INCLUDE_POMEROL_INDEXCONTAINER4_HPP
 #define POMEROL_INCLUDE_POMEROL_INDEXCONTAINER4_HPP

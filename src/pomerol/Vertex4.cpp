@@ -10,7 +10,7 @@
 
 /// \file src/pomerol/Vertex4.cpp
 /// \brief Irreducible two-particle vertex in the Matsubara representation.
-/// \author Igor Krivenko (igor.s.krivenko@gmail.com)
+/// \author Igor Krivenko
 /// \author Andrey Antipov (andrey.e.antipov@gmail.com)
 
 #include "pomerol/Vertex4.hpp"
