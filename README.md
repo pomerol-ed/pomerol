@@ -117,7 +117,7 @@ Please, attribute this work by a citation to
 
 # Authors & Contributors
   * Andrey Antipov <Andrey.E.Antipov\at\gmail.com>
-  * Igor Krivenko <igor.s.krivenko\at\gmail.com>
+  * Igor Krivenko <iskrivenko\at\proton.me>
   * Mikhail Alejnikov
   * Alexey Rubtsov
   * Christoph Jung
