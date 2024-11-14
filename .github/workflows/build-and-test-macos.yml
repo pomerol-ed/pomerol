@@ -50,7 +50,8 @@ jobs:
       env:
         CXX: ${{ matrix.compiler.cxx }}
       run: |
-           if [[ "${{ matrix.compiler.name }}" == clang* ]]; then
+           if [[ "${{ matrix.compiler.name }}" == clang* &&
+                 "${{ matrix.install-libcommute }}" == true ]]; then
              DOCS=ON
            else
              DOCS=OFF
