@@ -1,10 +1,10 @@
 <map id="Pomerol::GFContainer" name="Pomerol::GFContainer">
-<area shape="rect" id="node1" title="Container for instances of GreensFunction." alt="" coords="612,89,777,116"/>
-<area shape="rect" id="node2" href="$class_pomerol_1_1_index_container2.html" title=" " alt="" coords="875,82,1117,123"/>
-<area shape="rect" id="node3" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature." alt="" coords="39,5,177,32"/>
-<area shape="rect" id="node7" href="$class_pomerol_1_1_density_matrix.html" title="Many&#45;body Gibbs density matrix." alt="" coords="289,39,465,65"/>
-<area shape="rect" id="node4" href="$class_pomerol_1_1_field_operator_container.html" title="Container for instances of CreationOperator and AnnihilationOperator." alt="" coords="260,191,495,217"/>
-<area shape="rect" id="node5" href="$class_pomerol_1_1_states_classification.html" title="Classification of many&#45;body basis states into bases of invariant subspaces." alt="" coords="271,89,483,116"/>
-<area shape="rect" id="node6" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects." alt="" coords="5,89,211,116"/>
-<area shape="rect" id="node8" href="$class_pomerol_1_1_hamiltonian.html" title="Hamiltonian of a quantum system." alt="" coords="295,140,459,167"/>
+<area shape="rect" id="node1" title="Container for instances of GreensFunction." alt="" coords="620,146,785,173"/>
+<area shape="rect" id="node2" href="$class_pomerol_1_1_index_container2.html" title=" " alt="" coords="260,5,503,47"/>
+<area shape="rect" id="node3" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature." alt="" coords="39,89,177,115"/>
+<area shape="rect" id="node7" href="$class_pomerol_1_1_density_matrix.html" title="Many&#45;body Gibbs density matrix." alt="" coords="293,122,469,149"/>
+<area shape="rect" id="node4" href="$class_pomerol_1_1_field_operator_container.html" title="Container for instances of CreationOperator and AnnihilationOperator." alt="" coords="264,274,499,301"/>
+<area shape="rect" id="node5" href="$class_pomerol_1_1_states_classification.html" title="Classification of many&#45;body basis states into bases of invariant subspaces." alt="" coords="275,173,487,199"/>
+<area shape="rect" id="node6" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects." alt="" coords="5,173,211,199"/>
+<area shape="rect" id="node8" href="$class_pomerol_1_1_hamiltonian.html" title="Hamiltonian of a quantum system." alt="" coords="299,223,463,250"/>
 </map>
