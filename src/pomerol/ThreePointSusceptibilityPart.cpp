@@ -306,7 +306,7 @@ inline void ThreePointSusceptibilityPart::addMultiterm(ComplexType Coeff,
     }
 
     // Resonant term
-    if(std::abs(Eik) < ReduceResonanceTolerance) {
+    if(std::abs(Eik) <= ReduceResonanceTolerance) {
         ComplexType CoeffR = -Coeff * beta * Wi;
         if(std::abs(CoeffR) > CoefficientTolerance) {
             ResonantTerms.add_term(ResonantTerm(SwappedFermionOps ? -CoeffR : CoeffR,

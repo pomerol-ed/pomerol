@@ -105,8 +105,8 @@ public:
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
             bool operator()(NonResonantFFTerm const& t1, NonResonantFFTerm const& t2) const {
-                return (std::abs(t2.Poles[0] - t1.Poles[0]) < Tolerance) &&
-                       (std::abs(t2.Poles[1] - t1.Poles[1]) < Tolerance);
+                return (std::abs(t2.Poles[0] - t1.Poles[0]) <= Tolerance) &&
+                       (std::abs(t2.Poles[1] - t1.Poles[1]) <= Tolerance);
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
@@ -125,7 +125,7 @@ public:
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
             bool operator()(NonResonantFFTerm const& t, std::size_t ToleranceDivisor) const {
-                return std::abs(t.Coeff) < Tolerance / ToleranceDivisor;
+                return std::abs(t.Coeff) <= Tolerance / ToleranceDivisor;
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
@@ -216,8 +216,8 @@ public:
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
             bool operator()(NonResonantFBTerm const& t1, NonResonantFBTerm const& t2) const {
-                return t2.xi == t1.xi && (std::abs(t2.P1 - t1.P1) < Tolerance) &&
-                       (std::abs(t2.P12 - t1.P12) < Tolerance);
+                return t2.xi == t1.xi && (std::abs(t2.P1 - t1.P1) <= Tolerance) &&
+                       (std::abs(t2.P12 - t1.P12) <= Tolerance);
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
@@ -236,7 +236,7 @@ public:
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
             bool operator()(NonResonantFBTerm const& t, std::size_t ToleranceDivisor) const {
-                return std::abs(t.Coeff) < Tolerance / ToleranceDivisor;
+                return std::abs(t.Coeff) <= Tolerance / ToleranceDivisor;
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
@@ -323,7 +323,7 @@ public:
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
             bool operator()(ResonantTerm const& t1, ResonantTerm const& t2) const {
-                return t2.xi == t1.xi && (std::abs(t2.P - t1.P) < Tolerance);
+                return t2.xi == t1.xi && (std::abs(t2.P - t1.P) <= Tolerance);
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
@@ -342,7 +342,7 @@ public:
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
             bool operator()(ResonantTerm const& t, std::size_t ToleranceDivisor) const {
-                return std::abs(t.Coeff) < Tolerance / ToleranceDivisor;
+                return std::abs(t.Coeff) <= Tolerance / ToleranceDivisor;
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
