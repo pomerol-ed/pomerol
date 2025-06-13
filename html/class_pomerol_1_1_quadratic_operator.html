@@ -115,11 +115,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a91442fd7fa3aa90f8617b29944ff1e7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_quadratic_operator.html#a91442fd7fa3aa90f8617b29944ff1e7b">getIndex2</a> () const</td></tr>
 <tr class="memdesc:a91442fd7fa3aa90f8617b29944ff1e7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the single-particle index \(j\).  <a href="class_pomerol_1_1_quadratic_operator.html#a91442fd7fa3aa90f8617b29944ff1e7b">More...</a><br /></td></tr>
 <tr class="separator:a91442fd7fa3aa90f8617b29944ff1e7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7741b60cd4110c9c49b9c9d5083ea2e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_quadratic_operator.html#a7741b60cd4110c9c49b9c9d5083ea2e3">getCXXIndex</a> () const</td></tr>
-<tr class="memdesc:a7741b60cd4110c9c49b9c9d5083ea2e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the single-particle index \(i\) under the assumption that X_i is a creation operator.  <a href="class_pomerol_1_1_quadratic_operator.html#a7741b60cd4110c9c49b9c9d5083ea2e3">More...</a><br /></td></tr>
-<tr class="separator:a7741b60cd4110c9c49b9c9d5083ea2e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d38f37e663185681d59cefaade0f471"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_quadratic_operator.html#a9d38f37e663185681d59cefaade0f471">getCXIndex</a> () const</td></tr>
+<tr class="memdesc:a9d38f37e663185681d59cefaade0f471"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the single-particle index \(i\) under the assumption that O_i is a creation operator.  <a href="class_pomerol_1_1_quadratic_operator.html#a9d38f37e663185681d59cefaade0f471">More...</a><br /></td></tr>
+<tr class="separator:a9d38f37e663185681d59cefaade0f471"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4abd117d0505e7f29cc4af06a35c7428"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_quadratic_operator.html#a4abd117d0505e7f29cc4af06a35c7428">getCIndex</a> () const</td></tr>
-<tr class="memdesc:a4abd117d0505e7f29cc4af06a35c7428"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the single-particle index \(j\) under the assumption that Y_j is an annihilation operator.  <a href="class_pomerol_1_1_quadratic_operator.html#a4abd117d0505e7f29cc4af06a35c7428">More...</a><br /></td></tr>
+<tr class="memdesc:a4abd117d0505e7f29cc4af06a35c7428"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the single-particle index \(j\) under the assumption that O_j is an annihilation operator.  <a href="class_pomerol_1_1_quadratic_operator.html#a4abd117d0505e7f29cc4af06a35c7428">More...</a><br /></td></tr>
 <tr class="separator:a4abd117d0505e7f29cc4af06a35c7428"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42fc77eca6858bebcfd58527377c3d47"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; bool, bool &gt; const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_quadratic_operator.html#a42fc77eca6858bebcfd58527377c3d47">getDagger</a> () const</td></tr>
 <tr class="memdesc:a42fc77eca6858bebcfd58527377c3d47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the creation/annihilation type of each of the two operators.  <a href="class_pomerol_1_1_quadratic_operator.html#a42fc77eca6858bebcfd58527377c3d47">More...</a><br /></td></tr>
@@ -213,7 +213,7 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:ac1ec329875aef1cf22ff2703bd0a5ad9 inherit pro_attribs_struct_pomerol_1_1_computable_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A special case of a monomial operator: A product of two fermionic operators \(X_i Y_j\). Each of \(X_i\) and \(Y_j\) can be either a creation or annihilation operator. </p>
+<div class="textblock"><p>A special case of a monomial operator: A product of two fermionic operators \(O_i O_j\). Each of \(O_i\) and \(O_j\) can be either a creation or annihilation operator. </p>
 
 <p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00268">268</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -329,14 +329,14 @@ template&lt;typename... IndexTypes&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Return the single-particle index \(j\) under the assumption that Y_j is an annihilation operator. </p>
+<p>Return the single-particle index \(j\) under the assumption that O_j is an annihilation operator. </p>
 
 <p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00319">319</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a7741b60cd4110c9c49b9c9d5083ea2e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7741b60cd4110c9c49b9c9d5083ea2e3">&#9670;&nbsp;</a></span>getCXXIndex()</h2>
+<a id="a9d38f37e663185681d59cefaade0f471"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d38f37e663185681d59cefaade0f471">&#9670;&nbsp;</a></span>getCXIndex()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -345,7 +345,7 @@ template&lt;typename... IndexTypes&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a> Pomerol::QuadraticOperator::getCXXIndex </td>
+          <td class="memname"><a class="el" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a> Pomerol::QuadraticOperator::getCXIndex </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -358,7 +358,7 @@ template&lt;typename... IndexTypes&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Return the single-particle index \(i\) under the assumption that X_i is a creation operator. </p>
+<p>Return the single-particle index \(i\) under the assumption that O_i is a creation operator. </p>
 
 <p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00314">314</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
 
@@ -457,7 +457,7 @@ template&lt;typename... IndexTypes&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon May 26 2025 12:28:59 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Fri Jun 13 2025 12:39:28 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
