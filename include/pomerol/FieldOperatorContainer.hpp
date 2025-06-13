@@ -80,8 +80,10 @@ public:
     }
 
     /// Compute all stored creation and annihilation operators.
+    /// \param[in] Tolerance Matrix elements with the absolute value equal or below this threshold
+    ///                      are considered negligible.
     /// \pre \ref prepareAll() has been called.
-    void computeAll();
+    void computeAll(RealType Tolerance = 1e-8);
 
     /// Return a reference to a creation operator by its single-particle index.
     /// \param[in] in Single-particle index.

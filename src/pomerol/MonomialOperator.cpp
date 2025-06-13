@@ -30,7 +30,7 @@ MonomialOperator::BlocksBimap const& MonomialOperator::getBlockMapping() const {
     return LeftRightBlocks;
 }
 
-void MonomialOperator::compute(MPI_Comm const& comm) {
+void MonomialOperator::compute(RealType Tolerance, MPI_Comm const& comm) {
     checkPrepared();
     if(getStatus() >= Computed)
         return;
@@ -38,7 +38,7 @@ void MonomialOperator::compute(MPI_Comm const& comm) {
     std::size_t Size = parts.size();
     for(std::size_t BlockIn = 0; BlockIn < Size; BlockIn++) {
         INFO_NONEWLINE((int)((1.0 * BlockIn / Size) * 100) << "  " << std::flush);
-        parts[BlockIn].compute();
+        parts[BlockIn].compute(Tolerance);
     };
     std::cout << '\n';
 

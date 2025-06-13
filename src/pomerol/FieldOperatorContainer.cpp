@@ -19,10 +19,10 @@
 
 namespace Pomerol {
 
-void FieldOperatorContainer::computeAll() {
+void FieldOperatorContainer::computeAll(RealType Tolerance) {
     for(auto& cdag_p : mapCreationOperators) {
         auto& cdag = cdag_p.second;
-        cdag.compute();
+        cdag.compute(Tolerance);
 
         auto& c = mapAnnihilationOperators.find(cdag_p.first)->second;
 

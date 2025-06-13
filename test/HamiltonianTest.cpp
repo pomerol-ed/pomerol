@@ -88,12 +88,12 @@ TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
 
         auto cdag1op = LOperatorT(Operators::c_dag("B", (unsigned short)0, up), HS.getFullHilbertSpace());
         MonomialOperatorPart Cdag1(cdag1op, S, HpartRHS, HpartLHS);
-        Cdag1.compute();
+        Cdag1.compute(1e-8);
         INFO(Cdag1);
 
         auto c1op = LOperatorT(Operators::c("B", (unsigned short)0, up), HS.getFullHilbertSpace());
         MonomialOperatorPart C1(c1op, S, HpartLHS, HpartRHS);
-        C1.compute();
+        C1.compute(1e-8);
         INFO(C1);
 
         // Check transposition

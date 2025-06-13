@@ -68,8 +68,6 @@ protected:
     /// Type-erased real/complex sparse matrix \f$\langle {\rm left}|\hat M|{\rm right}\rangle\f$
     /// stored in the column-major order.
     std::shared_ptr<void> elementsColMajor;
-    /// Matrix elements with the absolute value below this threshold are considered negligible.
-    RealType const MatrixElementTolerance = 1e-8;
 
 public:
     /// Constructor.
@@ -91,7 +89,9 @@ public:
           HTo(HTo) {}
 
     /// Compute and store all matrix elements of \f$\hat M\f$ in the eigenbasis of the Hamiltonian.
-    void compute();
+    /// \param[in] Tolerance Matrix elements with the absolute value equal or below this threshold
+    ///                      are considered negligible.
+    void compute(RealType Tolerance);
 
     /// Reset the stored sparse matrices to those obtained from
     /// \f$\langle {\rm right}|\hat M^\dagger|{\rm left}\rangle\f$.
@@ -137,7 +137,7 @@ public:
 
 private:
     // Implementation details
-    template <bool C, bool HC> void computeImpl();
+    template <bool C, bool HC> void computeImpl(RealType Tolerance);
     template <bool C> void streamOutputImpl(std::ostream& os) const;
 };
 

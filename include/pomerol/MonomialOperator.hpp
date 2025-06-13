@@ -196,9 +196,11 @@ public:
     }
 
     /// Compute matrix elements of all parts in parallel.
+    /// \param[in] Tolerance Matrix elements with the absolute value equal or below this threshold
+    ///                      are considered negligible.
     /// \param[in] comm MPI communicator used to parallelize the computation.
     /// \pre \ref prepare() has been called.
-    void compute(MPI_Comm const& comm = MPI_COMM_WORLD);
+    void compute(RealType Tolerance = 1e-8, MPI_Comm const& comm = MPI_COMM_WORLD);
 
 private:
     // Implementation details

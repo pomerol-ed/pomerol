@@ -29,23 +29,23 @@
 
 namespace Pomerol {
 
-void MonomialOperatorPart::compute() {
+void MonomialOperatorPart::compute(RealType Tolerance) {
     if(getStatus() >= Computed)
         return;
 
     if(MOpComplex && HFrom.isComplex())
-        computeImpl<true, true>();
+        computeImpl<true, true>(Tolerance);
     else if(MOpComplex && !HFrom.isComplex())
-        computeImpl<true, false>();
+        computeImpl<true, false>(Tolerance);
     else if(!MOpComplex && HFrom.isComplex())
-        computeImpl<false, true>();
+        computeImpl<false, true>(Tolerance);
     else
-        computeImpl<false, false>();
+        computeImpl<false, false>(Tolerance);
 
     setStatus(Computed);
 }
 
-template <bool MOpC, bool HC> void MonomialOperatorPart::computeImpl() {
+template <bool MOpC, bool HC> void MonomialOperatorPart::computeImpl(RealType Tolerance) {
     constexpr bool C = MOpC || HC;
 
     BlockNumber to = HTo.getBlockNumber();
@@ -81,10 +81,9 @@ template <bool MOpC, bool HC> void MonomialOperatorPart::computeImpl() {
 //
 // Affected versions are some betas of 3.3 but not the 3.3 release
 #if EIGEN_VERSION_AT_LEAST(3, 2, 90) && EIGEN_MAJOR_VERSION < 3
-    elementsRowMajor =
-        std::make_shared<RowMajorMatrixType<C>>(MatrixType<C>(ULeft * OURight).sparseView(MatrixElementTolerance));
+    elementsRowMajor = std::make_shared<RowMajorMatrixType<C>>(MatrixType<C>(ULeft * OURight).sparseView(Tolerance));
 #else
-    elementsRowMajor = std::make_shared<RowMajorMatrixType<C>>((ULeft * OURight).sparseView(MatrixElementTolerance));
+    elementsRowMajor = std::make_shared<RowMajorMatrixType<C>>((ULeft * OURight).sparseView(Tolerance));
 #endif
 
     elementsColMajor = std::make_shared<ColMajorMatrixType<C>>(
