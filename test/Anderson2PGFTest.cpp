@@ -98,7 +98,6 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
     TwoParticleGFContainer Chi4(IndexInfo, S, H, rho, Operators);
     Chi4.ReduceResonanceTolerance = reduce_tol;
     Chi4.CoefficientTolerance = coeff_tol;
-    Chi4.MultiTermCoefficientTolerance = 1e-6;
     Chi4.prepareAll(indices4);
     MPI_Barrier(MPI_COMM_WORLD);
 

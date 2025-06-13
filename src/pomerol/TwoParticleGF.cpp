@@ -109,7 +109,6 @@ void TwoParticleGF::prepare() {
 
                 parts.back().ReduceResonanceTolerance = ReduceResonanceTolerance;
                 parts.back().CoefficientTolerance = CoefficientTolerance;
-                parts.back().MultiTermCoefficientTolerance = MultiTermCoefficientTolerance;
             }
         }
     }

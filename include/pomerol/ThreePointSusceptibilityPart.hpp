@@ -528,7 +528,7 @@ inline ComplexType ThreePointSusceptibilityPart::NonResonantFBTerm::operator()(C
 
 inline ComplexType
 ThreePointSusceptibilityPart::ResonantTerm::operator()(ComplexType z1, ComplexType z2, RealType DeltaTolerance) const {
-    return (std::abs(z1 - double(xi) * z2) < DeltaTolerance) ? (Coeff / (z1 - P)) : 0;
+    return (std::abs(z1 - double(xi) * z2) <= DeltaTolerance) ? (Coeff / (z1 - P)) : 0;
 }
 
 } // namespace Pomerol

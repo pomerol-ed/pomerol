@@ -112,9 +112,9 @@ public:
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
             bool operator()(NonResonantTerm const& t1, NonResonantTerm const& t2) const {
-                return t2.isz4 == t1.isz4 && (std::abs(t2.Poles[0] - t1.Poles[0]) < Tolerance) &&
-                       (std::abs(t2.Poles[1] - t1.Poles[1]) < Tolerance) &&
-                       (std::abs(t2.Poles[2] - t1.Poles[2]) < Tolerance);
+                return t2.isz4 == t1.isz4 && (std::abs(t2.Poles[0] - t1.Poles[0]) <= Tolerance) &&
+                       (std::abs(t2.Poles[1] - t1.Poles[1]) <= Tolerance) &&
+                       (std::abs(t2.Poles[2] - t1.Poles[2]) <= Tolerance);
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
@@ -133,7 +133,7 @@ public:
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
             bool operator()(NonResonantTerm const& t, std::size_t ToleranceDivisor) const {
-                return std::abs(t.Coeff) < Tolerance / ToleranceDivisor;
+                return std::abs(t.Coeff) <= Tolerance / ToleranceDivisor;
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
@@ -237,9 +237,9 @@ public:
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
             bool operator()(ResonantTerm const& t1, ResonantTerm const& t2) const {
-                return t2.isz1z2 == t1.isz1z2 && (std::abs(t2.Poles[0] - t1.Poles[0]) < Tolerance) &&
-                       (std::abs(t2.Poles[1] - t1.Poles[1]) < Tolerance) &&
-                       (std::abs(t2.Poles[2] - t1.Poles[2]) < Tolerance);
+                return t2.isz1z2 == t1.isz1z2 && (std::abs(t2.Poles[0] - t1.Poles[0]) <= Tolerance) &&
+                       (std::abs(t2.Poles[1] - t1.Poles[1]) <= Tolerance) &&
+                       (std::abs(t2.Poles[2] - t1.Poles[2]) <= Tolerance);
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
@@ -258,8 +258,8 @@ public:
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
             bool operator()(ResonantTerm const& t, std::size_t ToleranceDivisor) const {
-                return std::abs(t.ResCoeff) < Tolerance / ToleranceDivisor &&
-                       std::abs(t.NonResCoeff) < Tolerance / ToleranceDivisor;
+                return std::abs(t.ResCoeff) <= Tolerance / ToleranceDivisor &&
+                       std::abs(t.NonResCoeff) <= Tolerance / ToleranceDivisor;
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
@@ -397,9 +397,6 @@ private:
     RealType ReduceResonanceTolerance = 1e-8;
     /// Minimal magnitude of the coefficient of a term for it to be taken into account.
     RealType CoefficientTolerance = 1e-16;
-    /// Minimal magnitude of the coefficient of a term for it to be taken into account with respect to
-    /// the amount of terms.
-    RealType MultiTermCoefficientTolerance = 1e-5;
 
     // compute() implementation details.
     template <bool Complex> void computeImpl();
@@ -482,11 +479,11 @@ inline ComplexType TwoParticleGFPart::ResonantTerm::operator()(ComplexType z1,
     ComplexType Diff;
     if(isz1z2) {
         Diff = z1 + z2 - Poles[0] - Poles[1];
-        return (std::abs(Diff) < DeltaTolerance ? ResCoeff : (NonResCoeff / Diff)) /
+        return (std::abs(Diff) <= DeltaTolerance ? ResCoeff : (NonResCoeff / Diff)) /
                ((z1 - Poles[0]) * (z3 - Poles[2]));
     } else {
         Diff = z2 + z3 - Poles[1] - Poles[2];
-        return (std::abs(Diff) < DeltaTolerance ? ResCoeff : (NonResCoeff / Diff)) /
+        return (std::abs(Diff) <= DeltaTolerance ? ResCoeff : (NonResCoeff / Diff)) /
                ((z1 - Poles[0]) * (z3 - Poles[2]));
     }
 }

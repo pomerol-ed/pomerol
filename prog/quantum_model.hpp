@@ -129,8 +129,6 @@ protected:
         args::ValueFlag<double> _2pgf_reduce_tol;
         /// 2PGF: Tolerance on numerators.
         args::ValueFlag<double> _2pgf_coeff_tol;
-        /// 2PGF: How often to reduce terms in 2PGF.
-        args::ValueFlag<double> _2pgf_multiterm_tol;
     } args_options;
 
     /// MPI communicator for the calculation.

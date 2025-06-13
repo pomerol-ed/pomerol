@@ -54,9 +54,6 @@ public:
     RealType ReduceResonanceTolerance = 1e-8;
     /// Minimal magnitude of the coefficient of a term for it to be taken into account.
     RealType CoefficientTolerance = 1e-16;
-    /// Minimal magnitude of the coefficient of a term for it to be taken into account with respect to
-    /// the amount of terms.
-    RealType MultiTermCoefficientTolerance = 1e-5;
 
     /// Constructor.
     /// \tparam IndexTypes Types of indices carried by the creation and annihilation operators.

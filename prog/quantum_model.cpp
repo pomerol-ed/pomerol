@@ -42,8 +42,7 @@ quantum_model::quantum_model(int argc, char* argv[], std::string const& prog_des
                {args_parser, "wb_max", "Maximum bosonic Matsubara frequency", {"wb_max"}, 0},
                {args_parser, "indices", "2PGF index combination", {"2pgf.indices"}, {0, 0, 0, 0}},
                {args_parser, "tol", "Energy resonance resolution in 2PGF", {"2pgf.reduce_tol"}, 1e-5},
-               {args_parser, "tol", "Tolerance on numerators in 2PGF", {"2pgf.coeff_tol"}, 1e-12},
-               {args_parser, "tol", "How often to reduce terms in 2PGF", {"2pgf.multiterm_tol"}, 1e-6}
+               {args_parser, "tol", "Tolerance on numerators in 2PGF", {"2pgf.coeff_tol"}, 1e-12}
   },
       // clang-format on
       comm(MPI_COMM_WORLD) {
@@ -215,8 +214,6 @@ void quantum_model::compute() {
             G4.ReduceResonanceTolerance = args::get(args_options._2pgf_reduce_tol);
             // Minimal magnitude of the coefficient of a term to take it into account - resolution of thermal weight.
             G4.CoefficientTolerance = args::get(args_options._2pgf_coeff_tol);
-            // Minimal magnitude of the coefficient of a term to take it into account with respect to amount of terms.
-            G4.MultiTermCoefficientTolerance = args::get(args_options._2pgf_multiterm_tol);
 
             G4.prepare();
             MPI_Barrier(comm);

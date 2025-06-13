@@ -230,7 +230,7 @@ template <bool Complex> void TwoParticleGFPart::computeImpl() {
                         for(unsigned long index4 : Index4List) {
                             RealType E4 = Hpart4.getEigenValue(index4);
                             RealType weight4 = DMpart4.getWeight(index4);
-                            if(weight1 + weight2 + weight3 + weight4 >= CoefficientTolerance) {
+                            if(weight1 + weight2 + weight3 + weight4 > CoefficientTolerance) {
                                 ComplexType MatrixElement = index2ket_iter.value() * index2bra_iter.value() *
                                                             O3matrix.coeff(index3, index4) *
                                                             CX4matrix.coeff(index4, index1);

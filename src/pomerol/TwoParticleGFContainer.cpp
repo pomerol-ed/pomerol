@@ -26,7 +26,6 @@ void TwoParticleGFContainer::prepareAll(std::set<IndexCombination4> const& Initi
         auto& g = static_cast<TwoParticleGF&>(el.second);
         g.ReduceResonanceTolerance = ReduceResonanceTolerance;
         g.CoefficientTolerance = CoefficientTolerance;
-        g.MultiTermCoefficientTolerance = MultiTermCoefficientTolerance;
         g.prepare();
     }
 }

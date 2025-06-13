@@ -226,9 +226,6 @@ int main(int argc, char* argv[]) {
     Chi.ReduceResonanceTolerance = 1e-8;
     // Minimal magnitude of the coefficient of a term for it to be taken into account.
     Chi.CoefficientTolerance = 1e-16;
-    // Minimal magnitude of the coefficient of a term for it to be taken into account
-    // with respect to the amount of terms.
-    Chi.MultiTermCoefficientTolerance = 1e-6;
 
     Chi.prepare();
     std::vector<std::tuple<ComplexType, ComplexType, ComplexType>> freqs_2pgf;
