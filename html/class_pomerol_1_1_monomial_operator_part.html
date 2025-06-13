@@ -110,9 +110,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a39d977ba0ef1c60631b0183df203d684"><td class="memTemplParams" colspan="2">template&lt;typename ScalarType &gt; </td></tr>
 <tr class="memitem:a39d977ba0ef1c60631b0183df203d684"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator_part.html#a39d977ba0ef1c60631b0183df203d684">MonomialOperatorPart</a> (<a class="el" href="group___basic.html#ga12489723a69b928b4e09eea194245517">LOperatorType</a>&lt; ScalarType &gt; const &amp;MOp, <a class="el" href="class_pomerol_1_1_states_classification.html">StatesClassification</a> const &amp;S, <a class="el" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> const &amp;HFrom, <a class="el" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> const &amp;HTo)</td></tr>
 <tr class="separator:a39d977ba0ef1c60631b0183df203d684"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a324c61112427ff24893068cb0cba0e45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator_part.html#a324c61112427ff24893068cb0cba0e45">compute</a> ()</td></tr>
-<tr class="memdesc:a324c61112427ff24893068cb0cba0e45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute and store all matrix elements of \(\hat M\) in the eigenbasis of the Hamiltonian.  <a href="class_pomerol_1_1_monomial_operator_part.html#a324c61112427ff24893068cb0cba0e45">More...</a><br /></td></tr>
-<tr class="separator:a324c61112427ff24893068cb0cba0e45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a951e733c15ec1819bc7cf18611c7d405"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator_part.html#a951e733c15ec1819bc7cf18611c7d405">compute</a> (<a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> Tolerance)</td></tr>
+<tr class="separator:a951e733c15ec1819bc7cf18611c7d405"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79510eb778b4f7acfa0c6ba619fa64cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator_part.html#a79510eb778b4f7acfa0c6ba619fa64cc">setFromAdjoint</a> (<a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;part)</td></tr>
 <tr class="separator:a79510eb778b4f7acfa0c6ba619fa64cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76d3fe69e93777b90aaf364eb1e5686f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator_part.html#a76d3fe69e93777b90aaf364eb1e5686f">isComplex</a> () const</td></tr>
@@ -151,9 +150,6 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a9da727bc5409c82e70d3624e3ea6c1b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a120a7bba6814bc210206bf5c972b7fda"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; void &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator_part.html#a120a7bba6814bc210206bf5c972b7fda">elementsColMajor</a></td></tr>
 <tr class="separator:a120a7bba6814bc210206bf5c972b7fda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac025a3f6bc1f70e77abbfe7515a4544"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator_part.html#aac025a3f6bc1f70e77abbfe7515a4544">MatrixElementTolerance</a> = 1e-8</td></tr>
-<tr class="memdesc:aac025a3f6bc1f70e77abbfe7515a4544"><td class="mdescLeft">&#160;</td><td class="mdescRight">Matrix elements with the absolute value below this threshold are considered negligible.  <a href="class_pomerol_1_1_monomial_operator_part.html#aac025a3f6bc1f70e77abbfe7515a4544">More...</a><br /></td></tr>
-<tr class="separator:aac025a3f6bc1f70e77abbfe7515a4544"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_struct_pomerol_1_1_computable_object"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_struct_pomerol_1_1_computable_object')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="struct_pomerol_1_1_computable_object.html">Pomerol::ComputableObject</a></td></tr>
 <tr class="memitem:ac1ec329875aef1cf22ff2703bd0a5ad9 inherit pro_attribs_struct_pomerol_1_1_computable_object"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_pomerol_1_1_computable_object.html#a2858165b55eb5c298d31833739836e1f">StatusEnum</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_computable_object.html#ac1ec329875aef1cf22ff2703bd0a5ad9">Status</a> = <a class="el" href="struct_pomerol_1_1_computable_object.html#a2858165b55eb5c298d31833739836e1fab223ee390540652ce292744492ac74bd">Constructed</a></td></tr>
 <tr class="memdesc:ac1ec329875aef1cf22ff2703bd0a5ad9 inherit pro_attribs_struct_pomerol_1_1_computable_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current computation status.  <a href="struct_pomerol_1_1_computable_object.html#ac1ec329875aef1cf22ff2703bd0a5ad9">More...</a><br /></td></tr>
@@ -247,13 +243,13 @@ template&lt;typename ScalarType &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_monomial_operator_part_8hpp_source.html#l00082">82</a> of file <a class="el" href="_monomial_operator_part_8hpp_source.html">MonomialOperatorPart.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_monomial_operator_part_8hpp_source.html#l00080">80</a> of file <a class="el" href="_monomial_operator_part_8hpp_source.html">MonomialOperatorPart.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a324c61112427ff24893068cb0cba0e45"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a324c61112427ff24893068cb0cba0e45">&#9670;&nbsp;</a></span>compute()</h2>
+<a id="a951e733c15ec1819bc7cf18611c7d405"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a951e733c15ec1819bc7cf18611c7d405">&#9670;&nbsp;</a></span>compute()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -261,13 +257,18 @@ template&lt;typename ScalarType &gt; </div>
         <tr>
           <td class="memname">void Pomerol::MonomialOperatorPart::compute </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a>&#160;</td>
+          <td class="paramname"><em>Tolerance</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Compute and store all matrix elements of \(\hat M\) in the eigenbasis of the Hamiltonian. </p>
+<p>Compute and store all matrix elements of \(\hat M\) in the eigenbasis of the Hamiltonian. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">Tolerance</td><td>Matrix elements with the absolute value equal or below this threshold are considered negligible. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -608,39 +609,13 @@ template&lt;bool C&gt; </div>
 
 </div>
 </div>
-<a id="aac025a3f6bc1f70e77abbfe7515a4544"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac025a3f6bc1f70e77abbfe7515a4544">&#9670;&nbsp;</a></span>MatrixElementTolerance</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> const Pomerol::MonomialOperatorPart::MatrixElementTolerance = 1e-8</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Matrix elements with the absolute value below this threshold are considered negligible. </p>
-
-<p class="definition">Definition at line <a class="el" href="_monomial_operator_part_8hpp_source.html#l00072">72</a> of file <a class="el" href="_monomial_operator_part_8hpp_source.html">MonomialOperatorPart.hpp</a>.</p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>pomerol/<a class="el" href="_monomial_operator_part_8hpp_source.html">MonomialOperatorPart.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jun 13 2025 14:44:13 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Fri Jun 13 2025 15:38:23 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

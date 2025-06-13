@@ -154,8 +154,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af3d060e613229da1b18e7401a79e2879"><td class="memTemplParams" colspan="2">template&lt;typename... IndexTypes&gt; </td></tr>
 <tr class="memitem:af3d060e613229da1b18e7401a79e2879"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator.html#af3d060e613229da1b18e7401a79e2879">prepare</a> (<a class="el" href="class_pomerol_1_1_hilbert_space.html">HilbertSpace</a>&lt; IndexTypes... &gt; const &amp;HS)</td></tr>
 <tr class="separator:af3d060e613229da1b18e7401a79e2879"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0351495c3d826b6706c541043defd36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator.html#ad0351495c3d826b6706c541043defd36">compute</a> (MPI_Comm const &amp;comm=MPI_COMM_WORLD)</td></tr>
-<tr class="separator:ad0351495c3d826b6706c541043defd36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30d1f11b4d74e27d1759fc6427fc37af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator.html#a30d1f11b4d74e27d1759fc6427fc37af">compute</a> (<a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> Tolerance=1e-8, MPI_Comm const &amp;comm=MPI_COMM_WORLD)</td></tr>
+<tr class="separator:a30d1f11b4d74e27d1759fc6427fc37af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_struct_pomerol_1_1_computable_object"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_struct_pomerol_1_1_computable_object')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="struct_pomerol_1_1_computable_object.html">Pomerol::ComputableObject</a></td></tr>
 <tr class="memitem:ac369ea6d260f5282b81e7dfcbe10781d inherit pub_methods_struct_pomerol_1_1_computable_object"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_computable_object.html#ac369ea6d260f5282b81e7dfcbe10781d">ComputableObject</a> ()=default</td></tr>
 <tr class="separator:ac369ea6d260f5282b81e7dfcbe10781d inherit pub_methods_struct_pomerol_1_1_computable_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -323,8 +323,8 @@ template&lt;typename ScalarType , typename... IndexTypes&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad0351495c3d826b6706c541043defd36"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0351495c3d826b6706c541043defd36">&#9670;&nbsp;</a></span>compute()</h2>
+<a id="a30d1f11b4d74e27d1759fc6427fc37af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30d1f11b4d74e27d1759fc6427fc37af">&#9670;&nbsp;</a></span>compute()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -332,14 +332,25 @@ template&lt;typename ScalarType , typename... IndexTypes&gt; </div>
         <tr>
           <td class="memname">void Pomerol::MonomialOperator::compute </td>
           <td>(</td>
-          <td class="paramtype">MPI_Comm const &amp;&#160;</td>
-          <td class="paramname"><em>comm</em> = <code>MPI_COMM_WORLD</code></td><td>)</td>
+          <td class="paramtype"><a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a>&#160;</td>
+          <td class="paramname"><em>Tolerance</em> = <code>1e-8</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">MPI_Comm const &amp;&#160;</td>
+          <td class="paramname"><em>comm</em> = <code>MPI_COMM_WORLD</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Compute matrix elements of all parts in parallel. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">Tolerance</td><td>Matrix elements with the absolute value equal or below this threshold are considered negligible. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MPI communicator used to parallelize the computation. </td></tr>
   </table>
   </dd>
@@ -891,7 +902,7 @@ template&lt;typename... IndexTypes&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jun 13 2025 14:44:13 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Fri Jun 13 2025 15:38:23 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

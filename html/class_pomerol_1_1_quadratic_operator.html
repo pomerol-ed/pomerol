@@ -148,8 +148,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af3d060e613229da1b18e7401a79e2879 inherit pub_methods_class_pomerol_1_1_monomial_operator"><td class="memTemplParams" colspan="2">template&lt;typename... IndexTypes&gt; </td></tr>
 <tr class="memitem:af3d060e613229da1b18e7401a79e2879 inherit pub_methods_class_pomerol_1_1_monomial_operator"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator.html#af3d060e613229da1b18e7401a79e2879">prepare</a> (<a class="el" href="class_pomerol_1_1_hilbert_space.html">HilbertSpace</a>&lt; IndexTypes... &gt; const &amp;HS)</td></tr>
 <tr class="separator:af3d060e613229da1b18e7401a79e2879 inherit pub_methods_class_pomerol_1_1_monomial_operator"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0351495c3d826b6706c541043defd36 inherit pub_methods_class_pomerol_1_1_monomial_operator"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator.html#ad0351495c3d826b6706c541043defd36">compute</a> (MPI_Comm const &amp;comm=MPI_COMM_WORLD)</td></tr>
-<tr class="separator:ad0351495c3d826b6706c541043defd36 inherit pub_methods_class_pomerol_1_1_monomial_operator"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30d1f11b4d74e27d1759fc6427fc37af inherit pub_methods_class_pomerol_1_1_monomial_operator"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_monomial_operator.html#a30d1f11b4d74e27d1759fc6427fc37af">compute</a> (<a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> Tolerance=1e-8, MPI_Comm const &amp;comm=MPI_COMM_WORLD)</td></tr>
+<tr class="separator:a30d1f11b4d74e27d1759fc6427fc37af inherit pub_methods_class_pomerol_1_1_monomial_operator"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_struct_pomerol_1_1_computable_object"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_struct_pomerol_1_1_computable_object')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="struct_pomerol_1_1_computable_object.html">Pomerol::ComputableObject</a></td></tr>
 <tr class="memitem:ac369ea6d260f5282b81e7dfcbe10781d inherit pub_methods_struct_pomerol_1_1_computable_object"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_computable_object.html#ac369ea6d260f5282b81e7dfcbe10781d">ComputableObject</a> ()=default</td></tr>
 <tr class="separator:ac369ea6d260f5282b81e7dfcbe10781d inherit pub_methods_struct_pomerol_1_1_computable_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -215,7 +215,7 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A special case of a monomial operator: A product of two fermionic operators \(O_i O_j\). Each of \(O_i\) and \(O_j\) can be either a creation or annihilation operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00268">268</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00270">270</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a25b2b83ba221017d50e8c4dfced12061"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a25b2b83ba221017d50e8c4dfced12061">&#9670;&nbsp;</a></span>QuadraticOperator()</h2>
@@ -301,7 +301,7 @@ template&lt;typename... IndexTypes&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00287">287</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00289">289</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
 
 </div>
 </div>
@@ -331,7 +331,7 @@ template&lt;typename... IndexTypes&gt; </div>
 
 <p>Return the single-particle index \(j\) under the assumption that O_j is an annihilation operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00319">319</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00321">321</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
 
 </div>
 </div>
@@ -360,7 +360,7 @@ template&lt;typename... IndexTypes&gt; </div>
 
 <p>Return the single-particle index \(i\) under the assumption that O_i is a creation operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00314">314</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00316">316</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
 
 </div>
 </div>
@@ -389,7 +389,7 @@ template&lt;typename... IndexTypes&gt; </div>
 
 <p>Return the creation/annihilation type of each of the two operators. </p>
 
-<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00325">325</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00327">327</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
 
 </div>
 </div>
@@ -418,7 +418,7 @@ template&lt;typename... IndexTypes&gt; </div>
 
 <p>Return the single-particle index \(i\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00309">309</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00311">311</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
 
 </div>
 </div>
@@ -447,7 +447,7 @@ template&lt;typename... IndexTypes&gt; </div>
 
 <p>Return the single-particle index \(j\). </p>
 
-<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00311">311</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_monomial_operator_8hpp_source.html#l00313">313</a> of file <a class="el" href="_monomial_operator_8hpp_source.html">MonomialOperator.hpp</a>.</p>
 
 </div>
 </div>
@@ -457,7 +457,7 @@ template&lt;typename... IndexTypes&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jun 13 2025 14:44:13 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Fri Jun 13 2025 15:38:23 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
