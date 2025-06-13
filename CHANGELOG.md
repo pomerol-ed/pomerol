@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2] - Unreleased
+
+- Speed up construction of Lehmann representations by switching from `std::set`
+  to the faster `std::unordered_set` in `TermList`.
+
 ## [2.1] - 2022-12-21
 
 - New classes to compute the 3-point fermion-boson susceptibilities,
