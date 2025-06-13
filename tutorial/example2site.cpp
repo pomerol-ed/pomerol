@@ -247,7 +247,7 @@ int main(int argc, char* argv[]) {
 
     print_section("Quadratic operator");
 
-    // We define a quadratic operator O_{ij} = c_i^+ c_j to compute its ensemble average
+    // We define a quadratic operator O_{ij} = c^+_i c_j to compute its ensemble average
     // and its fluctuations (dynamical susceptibility).
     // QuadraticOperator is the class that computes and stores the matrix of O_{ij}.
 
@@ -264,6 +264,23 @@ int main(int argc, char* argv[]) {
     RealType occup_up = real(EA());
     if(pMPI::rank(MPI_COMM_WORLD) == 0)
         std::cout << "Occupation number of up spin is " << occup_up << '\n';
+
+    print_section("Quartic operator");
+
+    // It is also possible to compute ensemble average of a quartic operator
+    // O_{ijkl} = c^+_i c^+_j c_k c_l.
+    // QuarticOperator is the class that computes and stores the matrix of O_{ijkl}.
+
+    // Define a quartic operator O = c^+_{up} c^+_{dn} c_{dn} c_{up}.
+    QuarticOperator N_up_N_dn(IndexInfo, HS, S, H, up_index, dn_index, dn_index, up_index);
+    N_up_N_dn.prepare(HS);
+    N_up_N_dn.compute();
+
+    EnsembleAverage EA2(N_up_N_dn, rho);
+    EA2.compute();
+    RealType double_occ = real(EA2());
+    if(pMPI::rank(MPI_COMM_WORLD) == 0)
+        std::cout << "Double occupancy is " << double_occ << '\n';
 
     print_section("Dynamical susceptibility");
 
