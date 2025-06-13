@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [2.2] - Unreleased
 
+- New class `QuarticOperator`. In full analogy with `QuadraticOperator`, it is
+  meant to be primarily used with `EnsembleAverage` to compute e.g. average
+  double occupancy.
+
 - Speed up construction of Lehmann representations by switching from `std::set`
   to the faster `std::unordered_set` in `TermList`.
 
@@ -12,16 +16,23 @@ All notable changes to this project will be documented in this file.
 - New classes to compute the 3-point fermion-boson susceptibilities,
   `ThreePointSusceptibility`, `ThreePointSusceptibilityPart` and
   `ThreePointSusceptibilityContainer`.
+
 - `QuadraticOperator` can now be a product of two creators or two annihilators.
+
 - Renamed type aliases `FreqTuple` -> `FreqTuple3` and `FreqVec` -> `FreqVec3`.
   The old names are still usable but marked as deprecated.
+
 - Bumped required CMake version to 3.11.0.
+
 - Bumped required libcommute version to 0.7.2.
+
 - Use CMake's module `FetchContent` to fetch libcommute if it is not found
   locally.
+
 - Install CMake configuration files into
   ``${CMAKE_INSTALL_PREFIX}/lib/cmake/pomerol``, which is the recommended
   location.
+
 - New GitHub Actions workflow that builds and installs pomerol on macOS 11.
 
 ## [2.0] - 2021-11-30

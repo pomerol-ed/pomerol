@@ -29,6 +29,7 @@
 
 using namespace Pomerol;
 
+// cppcheck-suppress syntaxError
 TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
     RealType U = 1.0;
     RealType mu = 0.4;
@@ -70,10 +71,16 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
     QuadraticOperator n_up(IndexInfo, HS, S, H, up_index, up_index);
     QuadraticOperator n_dn(IndexInfo, HS, S, H, dn_index, dn_index);
 
+    // Quartic operator n_up n_dn = c^+_up c^+_dn c_dn c_up
+    QuarticOperator n_up_n_dn(IndexInfo, HS, S, H, up_index, dn_index, dn_index, up_index);
+
     for(auto* op : {&s_plus, &s_minus, &n_up, &n_dn}) {
         op->prepare(HS);
         op->compute();
     }
+
+    n_up_n_dn.prepare(HS);
+    n_up_n_dn.compute();
 
     // Reference statistical weights of states
     RealVectorType weights_ref(4); // {0, up, down, 2}
@@ -95,15 +102,21 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
 
         EnsembleAverage n_up_aver(n_up, rho);
         n_up_aver.compute();
-        RealType n_up_ref = weights_ref[1] + weights_ref[3];
+        RealType n_up_ref = wu + w2;
         REQUIRE_THAT(n_up_aver(), IsCloseTo(n_up_ref, 1e-14));
 
         EnsembleAverage n_dn_aver(n_dn, rho);
         n_dn_aver.compute();
-        RealType n_dn_ref = weights_ref[2] + weights_ref[3];
+        RealType n_dn_ref = wd + w2;
         REQUIRE_THAT(n_dn_aver(), IsCloseTo(n_dn_ref, 1e-14));
+
+        EnsembleAverage n_up_n_dn_aver(n_up_n_dn, rho);
+        n_up_n_dn_aver.compute();
+        RealType n_up_n_dn_ref = w2;
+        REQUIRE_THAT(n_up_n_dn_aver(), IsCloseTo(n_up_n_dn_ref, 1e-14));
     }
 
+    // cppcheck-suppress syntaxError
     SECTION("<S_+; S_->") {
         Susceptibility Chi(S, H, s_plus, s_minus, rho);
         Chi.prepare();
@@ -122,6 +135,7 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
             REQUIRE_THAT(Chi(n), IsCloseTo(ref(n), 1e-14));
     }
 
+    // cppcheck-suppress syntaxError
     SECTION("<n_up; n_up>") {
         Susceptibility Chi(S, H, n_up, n_up, rho);
         Chi.prepare();
@@ -133,6 +147,7 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
             REQUIRE_THAT(Chi(n), IsCloseTo(ref(n), 1e-14));
     }
 
+    // cppcheck-suppress syntaxError
     SECTION("<n_up; n_dn>") {
         Susceptibility Chi(S, H, n_up, n_dn, rho);
         Chi.prepare();

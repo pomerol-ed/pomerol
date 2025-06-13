@@ -263,8 +263,8 @@ public:
     ParticleIndex getIndex() const { return Index; }
 };
 
-/// A special case of a monomial operator: A product of two fermionic operators \f$X_i Y_j\f$.
-/// Each of \f$X_i\f$ and \f$Y_j\f$ can be either a creation or annihilation operator.
+/// A special case of a monomial operator: A product of two fermionic operators \f$O_i O_j\f$.
+/// Each of \f$O_i\f$ and \f$O_j\f$ can be either a creation or annihilation operator.
 class QuadraticOperator : public MonomialOperator {
     /// The single-particle index corresponding to the first operator.
     ParticleIndex Index1;
@@ -310,12 +310,12 @@ public:
     /// Return the single-particle index \f$j\f$
     ParticleIndex getIndex2() const { return Index2; }
 
-    /// Return the single-particle index \f$i\f$ under the assumption that X_i is a creation operator.
-    ParticleIndex getCXXIndex() const {
+    /// Return the single-particle index \f$i\f$ under the assumption that O_i is a creation operator.
+    ParticleIndex getCXIndex() const {
         assert(std::get<0>(Dagger));
         return Index1;
     }
-    /// Return the single-particle index \f$j\f$ under the assumption that Y_j is an annihilation operator.
+    /// Return the single-particle index \f$j\f$ under the assumption that O_j is an annihilation operator.
     ParticleIndex getCIndex() const {
         assert(!std::get<1>(Dagger));
         return Index2;
@@ -323,6 +323,99 @@ public:
 
     /// Return the creation/annihilation type of each of the two operators.
     std::tuple<bool, bool> const& getDagger() const { return Dagger; }
+};
+
+/// A special case of a monomial operator: A product of four fermionic operators \f$O_i O_j O_k O_l\f$.
+/// Each of \f$O_i, O_j, O_k\f$ and \f$O_l\f$ can be either a creation or annihilation operator.
+class QuarticOperator : public MonomialOperator {
+    /// The single-particle index corresponding to the first operator.
+    ParticleIndex Index1;
+    /// The single-particle index corresponding to the second operator.
+    ParticleIndex Index2;
+    /// The single-particle index corresponding to the third operator.
+    ParticleIndex Index3;
+    /// The single-particle index corresponding to the fourth operator.
+    ParticleIndex Index4;
+    /// Indicates whether each of the four operators is a creator.
+    std::tuple<bool, bool, bool, bool> Dagger;
+
+public:
+    /// Constructor.
+    /// \tparam IndexTypes Types of indices carried by operators acting in the Hilbert space \p HS.
+    /// \param[in] IndexInfo Map for fermionic operator index tuples.
+    /// \param[in] HS Hilbert space.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
+    /// \param[in] H The Hamiltonian.
+    /// \param[in] Index1 The single-particle index \f$i\f$ of the first operator.
+    /// \param[in] Index2 The single-particle index \f$j\f$ of the second operator.
+    /// \param[in] Index3 The single-particle index \f$k\f$ of the third operator.
+    /// \param[in] Index4 The single-particle index \f$l\f$ of the fourth operator.
+    /// \param[in] Dagger Indicates whether each of the four operators is a creator.
+    template <typename... IndexTypes>
+    QuarticOperator(
+        IndexClassification<IndexTypes...> const& IndexInfo,
+        HilbertSpace<IndexTypes...> const& HS,
+        StatesClassification const& S,
+        Hamiltonian const& H,
+        ParticleIndex Index1,
+        ParticleIndex Index2,
+        ParticleIndex Index3,
+        ParticleIndex Index4,
+        std::tuple<bool, bool, bool, bool> const& Dagger = std::tuple<bool, bool, bool, bool>(true, true, false, false))
+        : MonomialOperator(
+              (std::get<0>(Dagger) ?
+                   Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index1)) :
+                   Operators::Detail::apply(Operators::c<double, IndexTypes...>, IndexInfo.getInfo(Index1))) *
+                  (std::get<1>(Dagger) ?
+                       Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index2)) :
+                       Operators::Detail::apply(Operators::c<double, IndexTypes...>, IndexInfo.getInfo(Index2))) *
+                  (std::get<2>(Dagger) ?
+                       Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index3)) :
+                       Operators::Detail::apply(Operators::c<double, IndexTypes...>, IndexInfo.getInfo(Index3))) *
+                  (std::get<3>(Dagger) ?
+                       Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index4)) :
+                       Operators::Detail::apply(Operators::c<double, IndexTypes...>, IndexInfo.getInfo(Index4))),
+              HS,
+              S,
+              H),
+          Index1(Index1),
+          Index2(Index2),
+          Index3(Index3),
+          Index4(Index4),
+          Dagger(Dagger) {}
+
+    /// Return the single-particle index \f$i\f$
+    ParticleIndex getIndex1() const { return Index1; }
+    /// Return the single-particle index \f$j\f$
+    ParticleIndex getIndex2() const { return Index2; }
+    /// Return the single-particle index \f$k\f$
+    ParticleIndex getIndex3() const { return Index3; }
+    /// Return the single-particle index \f$l\f$
+    ParticleIndex getIndex4() const { return Index4; }
+
+    /// Return the single-particle index \f$i\f$ under the assumption that O_i is a creation operator.
+    ParticleIndex getCX1Index() const {
+        assert(std::get<0>(Dagger));
+        return Index1;
+    }
+    /// Return the single-particle index \f$j\f$ under the assumption that O_j is a creation operator.
+    ParticleIndex getCX2Index() const {
+        assert(std::get<1>(Dagger));
+        return Index2;
+    }
+    /// Return the single-particle index \f$k\f$ under the assumption that O_k is an annihilation operator.
+    ParticleIndex getC1Index() const {
+        assert(!std::get<2>(Dagger));
+        return Index3;
+    }
+    /// Return the single-particle index \f$l\f$ under the assumption that O_l is an annihilation operator.
+    ParticleIndex getC2ndex() const {
+        assert(!std::get<3>(Dagger));
+        return Index4;
+    }
+
+    /// Return the creation/annihilation type of each of the four operators.
+    std::tuple<bool, bool, bool, bool> const& getDagger() const { return Dagger; }
 };
 
 ///@}
