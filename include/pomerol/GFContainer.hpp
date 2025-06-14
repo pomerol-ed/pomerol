@@ -44,6 +44,9 @@ namespace Pomerol {
 class GFContainer : public IndexContainer2<GreensFunction, GFContainer>, public Thermal {
 
 public:
+    /// Matrix elements with magnitudes equal to or below this value are treated as negligible.
+    RealType MatrixElementTolerance = 1e-8;
+
     /// Constructor.
     /// \tparam IndexTypes Types of indices carried by the creation and annihilation operators.
     /// \param[in] IndexInfo Map for fermionic operator index tuples.

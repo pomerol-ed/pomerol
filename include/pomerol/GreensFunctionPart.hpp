@@ -46,6 +46,9 @@ namespace Pomerol {
 /// fractions \f$\frac{R}{z - P}\f$ with real poles \f$P\f$ and complex residues \f$R\f$.
 /// The latter are combinations of matrix elements and statistical weights.
 class GreensFunctionPart : public Thermal {
+    friend class GreensFunction;
+    friend class GFContainer;
+
     /// Diagonal block of the Hamiltonian corresponding to the 'inner' subspace.
     HamiltonianPart const& HpartInner;
     /// Diagonal block of the Hamiltonian corresponding to the 'outer' subspace.
@@ -153,8 +156,8 @@ class GreensFunctionPart : public Thermal {
     /// List of all terms contributing to this part.
     TermList<Term> Terms;
 
-    /// Matrix elements with magnitudes below this value are treated as negligible.
-    RealType const MatrixElementTolerance = 1e-8;
+    /// Matrix elements with magnitudes equal to or below this value are treated as negligible.
+    RealType MatrixElementTolerance = 1e-8;
 
 public:
     /// Constructor.

@@ -19,8 +19,10 @@ namespace Pomerol {
 
 void GFContainer::prepareAll(std::set<IndexCombination2> const& Indices) {
     fill(Indices);
-    for(auto& el : ElementsMap)
+    for(auto& el : ElementsMap) {
+        el.second->MatrixElementTolerance = MatrixElementTolerance;
         el.second->prepare();
+    }
 }
 
 void GFContainer::computeAll() {

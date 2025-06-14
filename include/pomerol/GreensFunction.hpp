@@ -47,6 +47,8 @@ namespace Pomerol {
 /// (most of the real calculations take place in the parts).
 class GreensFunction : public Thermal, public ComputableObject {
 
+    friend class GFContainer;
+
     /// Information about invariant subspaces of the Hamiltonian.
     StatesClassification const& S;
     /// The Hamiltonian.
@@ -65,6 +67,9 @@ class GreensFunction : public Thermal, public ComputableObject {
     std::vector<GreensFunctionPart> parts;
 
 public:
+    /// Matrix elements with magnitudes equal to or below this value are treated as negligible.
+    RealType MatrixElementTolerance = 1e-8;
+
     /// Constructor.
     /// \param[in] S Information about invariant subspaces of the Hamiltonian.
     /// \param[in] H The Hamiltonian.

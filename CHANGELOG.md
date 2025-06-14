@@ -12,7 +12,8 @@ All notable changes to this project will be documented in this file.
   to `MonomialOperator::compute()`, `MonomialOperatorPart::compute()` and
   `FieldOperatorContainer::computeAll()`.
 
-- Exposed tolerance parameters in `Susceptibility` to the user.
+- Exposed tolerance parameters in `GreensFunction`, `GFContainer` and
+  `Susceptibility` to the user.
 
 - Speed up construction of Lehmann representations by switching from `std::set`
   to the faster `std::unordered_set` in `TermList`.

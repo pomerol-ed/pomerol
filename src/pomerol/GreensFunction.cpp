@@ -66,6 +66,8 @@ void GreensFunction::prepare() {
                                    H.getPart(Cleft),
                                    DM.getPart(Cright),
                                    DM.getPart(Cleft));
+
+                parts.back().MatrixElementTolerance = MatrixElementTolerance;
             }
         }
 
