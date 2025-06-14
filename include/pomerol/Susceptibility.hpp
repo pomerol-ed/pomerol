@@ -28,6 +28,7 @@
 #include "Thermal.hpp"
 
 #include <complex>
+#include <limits>
 #include <numeric>
 #include <vector>
 
@@ -77,6 +78,11 @@ class Susceptibility : public Thermal, public ComputableObject {
     ComplexType ave_A = {}, ave_B = {};
 
 public:
+    /// A difference in energies with magnitude equal to or below this value is treated as zero.
+    RealType ReduceResonanceTolerance = 1e-8;
+    /// Matrix elements with magnitudes equal to or below this value are treated as negligible.
+    RealType MatrixElementTolerance = 1e-8;
+
     /// Constructor.
     /// \param[in] S Information about invariant subspaces of the Hamiltonian.
     /// \param[in] H The Hamiltonian.
@@ -146,7 +152,7 @@ inline ComplexType Susceptibility::operator()(ComplexType z) const {
                                 ComplexType(0),
                                 [z](ComplexType s, SusceptibilityPart const& p) { return s + p(z); });
     }
-    if(SubtractDisconnected && std::abs(z) < 1e-15)
+    if(SubtractDisconnected && std::abs(z) <= std::numeric_limits<double>::epsilon())
         Value -= ave_A * ave_B * beta; // only for n=0
     return Value;
 }

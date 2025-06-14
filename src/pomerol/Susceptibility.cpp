@@ -60,13 +60,17 @@ void Susceptibility::prepare() {
         // Select a relevant 'world stripe' (sequence of blocks).
         if(Aleft == Bright && Aright == Bleft) {
             // check if retained blocks are included. If not, do not push.
-            if(DM.isRetained(Aleft) || DM.isRetained(Aright))
+            if(DM.isRetained(Aleft) || DM.isRetained(Aright)) {
                 parts.emplace_back(const_cast<MonomialOperatorPart&>(A.getPartFromLeftIndex(Aleft)),
                                    const_cast<MonomialOperatorPart&>(B.getPartFromRightIndex(Bright)),
                                    H.getPart(Aright),
                                    H.getPart(Aleft),
                                    DM.getPart(Aright),
                                    DM.getPart(Aleft));
+
+                parts.back().ReduceResonanceTolerance = ReduceResonanceTolerance;
+                parts.back().MatrixElementTolerance = MatrixElementTolerance;
+            }
         }
 
         unsigned long AleftInt = Aleft;

@@ -28,6 +28,7 @@
 
 #include <complex>
 #include <cstddef>
+#include <limits>
 #include <ostream>
 
 namespace Pomerol {
@@ -45,6 +46,8 @@ namespace Pomerol {
 /// The contributions are stored as terms of the Lehmann representation, i.e. as
 /// fractions \f$\frac{R}{z - P}\f$ with real poles \f$P\f$ and complex residues \f$R\f$.
 class SusceptibilityPart : public Thermal {
+    friend class Susceptibility;
+
     /// Diagonal block of the Hamiltonian corresponding to the 'inner' subspace.
     HamiltonianPart const& HpartInner;
     /// Diagonal block of the Hamiltonian corresponding to the 'outer' subspace.
@@ -114,7 +117,7 @@ class SusceptibilityPart : public Thermal {
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
             bool operator()(Term const& t, std::size_t ToleranceDivisor) const {
-                return std::abs(t.Residue) < Tolerance / ToleranceDivisor;
+                return std::abs(t.Residue) <= Tolerance / ToleranceDivisor;
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
@@ -152,9 +155,6 @@ class SusceptibilityPart : public Thermal {
     /// List of all terms contributing to this part.
     TermList<Term> Terms;
 
-    /// Matrix elements with magnitudes below this value are treated as negligible.
-    RealType const MatrixElementTolerance = 1e-8;
-
     /// Weight of the zero-energy pole.
     ComplexType ZeroPoleWeight = 0;
 
@@ -191,10 +191,12 @@ public:
     /// \param[in] tau Imaginary time point.
     ComplexType of_tau(RealType tau) const;
 
-    /// A difference in energies with magnitude below this value is treated as zero.
-    RealType const ReduceResonanceTolerance = 1e-8;
-
 private:
+    /// A difference in energies with magnitude below this value is treated as zero.
+    RealType ReduceResonanceTolerance = 1e-8;
+    /// Matrix elements with magnitudes below this value are treated as negligible.
+    RealType MatrixElementTolerance = 1e-8;
+
     // Implementation detail of compute().
     template <bool AComplex, bool BComplex> void computeImpl();
 };
@@ -207,7 +209,7 @@ inline ComplexType SusceptibilityPart::operator()(long MatsubaraNumber) const {
 
 inline ComplexType SusceptibilityPart::operator()(ComplexType z) const {
     // BOSON: add contribution of zero-energy pole
-    ComplexType ZeroPole = std::abs(z) < 1e-15 ? ZeroPoleWeight * beta : 0;
+    ComplexType ZeroPole = std::abs(z) <= std::numeric_limits<RealType>::epsilon() ? ZeroPoleWeight * beta : 0;
     return Terms(z) + ZeroPole;
 }
 
