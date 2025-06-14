@@ -7,10 +7,13 @@ All notable changes to this project will be documented in this file.
 - New class `QuarticOperator`. In full analogy with `QuadraticOperator`, it is
   meant to be primarily used with `EnsembleAverage` to compute e.g. average
   double occupancy.
-  
+
 - It is now possible to pass a tolerance level for the retained matrix elements
   to `MonomialOperator::compute()`, `MonomialOperatorPart::compute()` and
   `FieldOperatorContainer::computeAll()`.
+
+- Exposed tolerance parameters in `GreensFunction`, `GFContainer` and
+  `Susceptibility` to the user.
 
 - Speed up construction of Lehmann representations by switching from `std::set`
   to the faster `std::unordered_set` in `TermList`.
