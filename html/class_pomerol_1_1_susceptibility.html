@@ -149,9 +149,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a6483acf5998493099b3d0e729b040629"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_susceptibility.html#a6483acf5998493099b3d0e729b040629">ReduceResonanceTolerance</a> = 1e-8</td></tr>
 <tr class="memdesc:a6483acf5998493099b3d0e729b040629"><td class="mdescLeft">&#160;</td><td class="mdescRight">A difference in energies with magnitude equal to or below this value is treated as zero.  <a href="class_pomerol_1_1_susceptibility.html#a6483acf5998493099b3d0e729b040629">More...</a><br /></td></tr>
 <tr class="separator:a6483acf5998493099b3d0e729b040629"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c3291e6246fb7fb00280ba41282772c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_susceptibility.html#a0c3291e6246fb7fb00280ba41282772c">MatrixElementTolerance</a> = 1e-8</td></tr>
-<tr class="memdesc:a0c3291e6246fb7fb00280ba41282772c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Matrix elements with magnitudes equal to or below this value are treated as negligible.  <a href="class_pomerol_1_1_susceptibility.html#a0c3291e6246fb7fb00280ba41282772c">More...</a><br /></td></tr>
-<tr class="separator:a0c3291e6246fb7fb00280ba41282772c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74fc0eac083208ec1fb5ffa3d064ba9f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_susceptibility.html#a74fc0eac083208ec1fb5ffa3d064ba9f">CoefficientTolerance</a> = 1e-8</td></tr>
+<tr class="memdesc:a74fc0eac083208ec1fb5ffa3d064ba9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimal magnitude of the coefficient of a term for it to be taken into account.  <a href="class_pomerol_1_1_susceptibility.html#a74fc0eac083208ec1fb5ffa3d064ba9f">More...</a><br /></td></tr>
+<tr class="separator:a74fc0eac083208ec1fb5ffa3d064ba9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_struct_pomerol_1_1_thermal"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_struct_pomerol_1_1_thermal')"><img src="closed.png" alt="-"/>&#160;Data Fields inherited from <a class="el" href="struct_pomerol_1_1_thermal.html">Pomerol::Thermal</a></td></tr>
 <tr class="memitem:afea55766c7cca33a12ec67d6a0c35c98 inherit pub_attribs_struct_pomerol_1_1_thermal"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_pomerol_1_1_thermal.html#afea55766c7cca33a12ec67d6a0c35c98">beta</a></td></tr>
 <tr class="memdesc:afea55766c7cca33a12ec67d6a0c35c98 inherit pub_attribs_struct_pomerol_1_1_thermal"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inverse temperature \(\beta\).  <a href="struct_pomerol_1_1_thermal.html#afea55766c7cca33a12ec67d6a0c35c98">More...</a><br /></td></tr>
@@ -525,19 +525,19 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Field Documentation</h2>
-<a id="a0c3291e6246fb7fb00280ba41282772c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c3291e6246fb7fb00280ba41282772c">&#9670;&nbsp;</a></span>MatrixElementTolerance</h2>
+<a id="a74fc0eac083208ec1fb5ffa3d064ba9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74fc0eac083208ec1fb5ffa3d064ba9f">&#9670;&nbsp;</a></span>CoefficientTolerance</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> Pomerol::Susceptibility::MatrixElementTolerance = 1e-8</td>
+          <td class="memname"><a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> Pomerol::Susceptibility::CoefficientTolerance = 1e-8</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Matrix elements with magnitudes equal to or below this value are treated as negligible. </p>
+<p>Minimal magnitude of the coefficient of a term for it to be taken into account. </p>
 
 <p class="definition">Definition at line <a class="el" href="_susceptibility_8hpp_source.html#l00084">84</a> of file <a class="el" href="_susceptibility_8hpp_source.html">Susceptibility.hpp</a>.</p>
 
@@ -567,7 +567,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jun 14 2025 18:00:52 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Jun 16 2025 16:01:02 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
