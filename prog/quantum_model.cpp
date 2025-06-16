@@ -211,7 +211,7 @@ void quantum_model::compute() {
 
             // A difference in energies with magnitude less than this value is treated as zero
             // - resolution of energy resonances.
-            G4.ReduceResonanceTolerance = args::get(args_options._2pgf_reduce_tol);
+            G4.PoleResolution = args::get(args_options._2pgf_reduce_tol);
             // Minimal magnitude of the coefficient of a term to take it into account - resolution of thermal weight.
             G4.CoefficientTolerance = args::get(args_options._2pgf_coeff_tol);
 

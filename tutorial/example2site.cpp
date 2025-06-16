@@ -220,10 +220,10 @@ int main(int argc, char* argv[]) {
     // the faster is the calculation, but rounding errors may show.
     // Here are some settings that give very high precision. If you want to make
     // things faster, and when many values for different frequencies are required,
-    // change ReduceResonanceTolerance to something like 10^{-4}.
+    // change PoleResolution to something like 10^{-4}.
     //
     // A difference in energies with magnitude below this value is treated as zero.
-    Chi.ReduceResonanceTolerance = 1e-8;
+    Chi.PoleResolution = 1e-8;
     // Minimal magnitude of the coefficient of a term for it to be taken into account.
     Chi.CoefficientTolerance = 1e-16;
 

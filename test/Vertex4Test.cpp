@@ -109,7 +109,7 @@ TEST_CASE("Two-particle vertex of a single Hubbard atom", "[Vertex4]") {
     G.computeAll();
 
     TwoParticleGFContainer Chi(IndexInfo, S, H, rho, Operators);
-    Chi.ReduceResonanceTolerance = 1e-4;
+    Chi.PoleResolution = 1e-4;
     Chi.CoefficientTolerance = 1e-12;
     Chi.prepareAll();
     Chi.computeAll();

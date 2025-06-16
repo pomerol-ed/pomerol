@@ -12,11 +12,10 @@ All notable changes to this project will be documented in this file.
   to `MonomialOperator::compute()`, `MonomialOperatorPart::compute()` and
   `FieldOperatorContainer::computeAll()`.
 
-- Exposed tolerance parameters in `GreensFunction`, `GFContainer` and
-  `Susceptibility` to the user.
-  
-- Renamed tolerance parameter `MatrixElementTolerance` -> `CoefficientTolerance`
-  in `GreensFunction` and `Susceptibility`.
+- Lehmann representation: Reorganized handling of various adjustable tolerance
+  levels in `GreensFunction`, `Susceptibility`, `ThreePointSusceptibility`,
+  `TwoParticleGF` and related classes. All tolerance levels are now exposed to
+  the user.
 
 - Speed up construction of Lehmann representations by switching from `std::set`
   to the faster `std::unordered_set` in `TermList`.

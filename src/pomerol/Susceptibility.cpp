@@ -66,10 +66,9 @@ void Susceptibility::prepare() {
                                    H.getPart(Aright),
                                    H.getPart(Aleft),
                                    DM.getPart(Aright),
-                                   DM.getPart(Aleft));
-
-                parts.back().ReduceResonanceTolerance = ReduceResonanceTolerance;
-                parts.back().CoefficientTolerance = CoefficientTolerance;
+                                   DM.getPart(Aleft),
+                                   PoleResolution,
+                                   CoefficientTolerance);
             }
         }
 

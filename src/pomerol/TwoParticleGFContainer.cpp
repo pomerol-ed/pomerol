@@ -23,10 +23,10 @@ namespace Pomerol {
 void TwoParticleGFContainer::prepareAll(std::set<IndexCombination4> const& InitialIndices) {
     fill(InitialIndices);
     for(auto& el : ElementsMap) {
-        auto& g = static_cast<TwoParticleGF&>(el.second);
-        g.ReduceResonanceTolerance = ReduceResonanceTolerance;
-        g.CoefficientTolerance = CoefficientTolerance;
-        g.prepare();
+        auto& g2 = static_cast<TwoParticleGF&>(el.second);
+        g2.PoleResolution = PoleResolution;
+        g2.CoefficientTolerance = CoefficientTolerance;
+        g2.prepare();
     }
 }
 

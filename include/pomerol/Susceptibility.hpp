@@ -78,9 +78,9 @@ class Susceptibility : public Thermal, public ComputableObject {
     ComplexType ave_A = {}, ave_B = {};
 
 public:
-    /// A difference in energies with magnitude equal to or below this value is treated as zero.
-    RealType ReduceResonanceTolerance = 1e-8;
-    /// Minimal magnitude of the coefficient of a term for it to be taken into account.
+    /// Lehmann representation: Maximal distance between energy poles to be consider coinciding.
+    RealType PoleResolution = 1e-8;
+    /// Lehmann representation: Maximal magnitude of a term coefficient to be considered negligible.
     RealType CoefficientTolerance = 1e-8;
 
     /// Constructor.

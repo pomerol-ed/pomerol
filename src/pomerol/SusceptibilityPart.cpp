@@ -45,7 +45,9 @@ SusceptibilityPart::SusceptibilityPart(MonomialOperatorPart const& A,
                                        HamiltonianPart const& HpartInner,
                                        HamiltonianPart const& HpartOuter,
                                        DensityMatrixPart const& DMpartInner,
-                                       DensityMatrixPart const& DMpartOuter)
+                                       DensityMatrixPart const& DMpartOuter,
+                                       RealType PoleResolution,
+                                       RealType CoefficientTolerance)
     : Thermal(DMpartInner.beta),
       HpartInner(HpartInner),
       HpartOuter(HpartOuter),
@@ -53,7 +55,9 @@ SusceptibilityPart::SusceptibilityPart(MonomialOperatorPart const& A,
       DMpartOuter(DMpartOuter),
       A(A),
       B(B),
-      Terms(Term::Hash(), Term::KeyEqual(), Term::IsNegligible()) {}
+      Terms(Term::Hash(PoleResolution), Term::KeyEqual(PoleResolution), Term::IsNegligible(CoefficientTolerance)),
+      PoleResolution(PoleResolution),
+      CoefficientTolerance(CoefficientTolerance) {}
 
 void SusceptibilityPart::compute() {
     if(A.isComplex()) {
@@ -92,7 +96,7 @@ template <bool AComplex, bool BComplex> void SusceptibilityPart::computeImpl() {
             // A meaningful matrix element
             if(A_index2 == B_index2) {
                 RealType Pole = HpartInner.getEigenValue(A_index2) - HpartOuter.getEigenValue(index1);
-                if(std::abs(Pole) < ReduceResonanceTolerance) {
+                if(std::abs(Pole) < PoleResolution) {
                     // BOSON: pole at zero energy
                     ZeroPoleWeight += Ainner.value() * Binner.value() * DMpartOuter.getWeight(index1);
                 } else {

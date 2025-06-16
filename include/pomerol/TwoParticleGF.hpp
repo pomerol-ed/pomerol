@@ -109,9 +109,9 @@ protected:
     BlockNumber getRightIndex(std::size_t PermutationNumber, std::size_t OperatorPosition, BlockNumber LeftIndex) const;
 
 public:
-    /// A difference in energies with magnitude below this value is treated as zero.
-    RealType ReduceResonanceTolerance = 1e-8;
-    /// Minimal magnitude of the coefficient of a term for it to be taken into account.
+    /// Lehmann representation: Maximal distance between energy poles to be consider coinciding.
+    RealType PoleResolution = 1e-8;
+    /// Lehmann representation: Maximal magnitude of a term coefficient to be considered negligible.
     RealType CoefficientTolerance = 1e-16;
 
     /// Constructor.

@@ -102,8 +102,9 @@ void ThreePointSusceptibility::prepare() {
                                    DM.getPart(F1right),
                                    DM.getPart(B1left),
                                    channel,
-                                   false);
-                parts.back().ReduceResonanceTolerance = ReduceResonanceTolerance;
+                                   false,
+                                   PoleResolution,
+                                   CoefficientTolerance);
             }
         }
 
@@ -125,9 +126,9 @@ void ThreePointSusceptibility::prepare() {
                                    DM.getPart(F2right),
                                    DM.getPart(B1left),
                                    channel,
-                                   true);
-                parts.back().ReduceResonanceTolerance = ReduceResonanceTolerance;
-                parts.back().CoefficientTolerance = CoefficientTolerance;
+                                   true,
+                                   PoleResolution,
+                                   CoefficientTolerance);
             }
         }
     }

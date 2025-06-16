@@ -105,10 +105,9 @@ void TwoParticleGF::prepare() {
                                    DM.getPart(LeftIndices[1]),
                                    DM.getPart(LeftIndices[2]),
                                    DM.getPart(LeftIndices[3]),
-                                   permutations3[p]);
-
-                parts.back().ReduceResonanceTolerance = ReduceResonanceTolerance;
-                parts.back().CoefficientTolerance = CoefficientTolerance;
+                                   permutations3[p],
+                                   PoleResolution,
+                                   CoefficientTolerance);
             }
         }
     }

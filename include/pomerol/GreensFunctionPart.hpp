@@ -77,7 +77,7 @@ class GreensFunctionPart : public Thermal {
             double EnergySpacing;
             /// Constructor.
             /// \param[in] EnergySpacing Energy spacing.
-            explicit Hash(double EnergySpacing = 1e-8) : EnergySpacing(EnergySpacing) {}
+            explicit Hash(double EnergySpacing) : EnergySpacing(EnergySpacing) {}
             /// Compute hash of a term.
             /// \param[in] t Term to compute hash for.
             std::size_t operator()(Term const& t) const { return hash_binned_real(t.Pole, EnergySpacing); }
@@ -93,11 +93,11 @@ class GreensFunctionPart : public Thermal {
             double Tolerance;
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to compare positions of the pole.
-            explicit KeyEqual(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit KeyEqual(double Tolerance) : Tolerance(Tolerance) {}
             /// Are terms similar?
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
-            bool operator()(Term const& t1, Term const& t2) const { return std::abs(t2.Pole - t1.Pole) < Tolerance; }
+            bool operator()(Term const& t1, Term const& t2) const { return std::abs(t2.Pole - t1.Pole) <= Tolerance; }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
             /// \param[in] root Rank of the root MPI process.
@@ -113,12 +113,12 @@ class GreensFunctionPart : public Thermal {
         public:
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to detect negligible residues.
-            explicit IsNegligible(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit IsNegligible(double Tolerance) : Tolerance(Tolerance) {}
             /// Is term negligible?
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
             bool operator()(Term const& t, std::size_t ToleranceDivisor) const {
-                return std::abs(t.Residue) < Tolerance / ToleranceDivisor;
+                return std::abs(t.Residue) <= Tolerance / ToleranceDivisor;
             }
             /// Broadcast this object from a root MPI rank to all other ranks in a communicator.
             /// \param[in] comm The MPI communicator for the broadcast operation.
@@ -156,8 +156,10 @@ class GreensFunctionPart : public Thermal {
     /// List of all terms contributing to this part.
     TermList<Term> Terms;
 
-    /// Minimal magnitude of the coefficient of a term for it to be taken into account.
-    RealType CoefficientTolerance = 1e-8;
+    /// Lehmann representation: Maximal distance between energy poles to be consider coinciding.
+    RealType PoleResolution;
+    /// Lehmann representation: Maximal magnitude of a term coefficient to be considered negligible.
+    RealType CoefficientTolerance;
 
 public:
     /// Constructor.
@@ -169,12 +171,18 @@ public:
     ///                        corresponding to the 'inner' subspace.
     /// \param[in] DMpartOuter Part of the many-body density matrix \f$\hat\rho\f$
     ///                        corresponding to the 'outer' subspace.
+    /// \param[in] PoleResolution Lehmann representation: Maximal distance between energy
+    ///                           poles to be consider coinciding.
+    /// \param[in] CoefficientTolerance Lehmann representation: Maximal magnitude of a term
+    ///                                 coefficient to be considered negligible.
     GreensFunctionPart(MonomialOperatorPart const& C,
                        MonomialOperatorPart const& CX,
                        HamiltonianPart const& HpartInner,
                        HamiltonianPart const& HpartOuter,
                        DensityMatrixPart const& DMpartInner,
-                       DensityMatrixPart const& DMpartOuter);
+                       DensityMatrixPart const& DMpartOuter,
+                       RealType PoleResolution,
+                       RealType CoefficientTolerance);
 
     /// Compute the terms contributing to this part.
     void compute();

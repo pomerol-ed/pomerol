@@ -149,7 +149,9 @@ TwoParticleGFPart::TwoParticleGFPart(MonomialOperatorPart const& O1,
                                      DensityMatrixPart const& DMpart2,
                                      DensityMatrixPart const& DMpart3,
                                      DensityMatrixPart const& DMpart4,
-                                     Permutation3 Permutation)
+                                     Permutation3 Permutation,
+                                     RealType PoleResolution,
+                                     RealType CoefficientTolerance)
     : Thermal(DMpart1.beta),
       ComputableObject(),
       O1(O1),
@@ -165,8 +167,14 @@ TwoParticleGFPart::TwoParticleGFPart(MonomialOperatorPart const& O1,
       DMpart3(DMpart3),
       DMpart4(DMpart4),
       Permutation(std::move(Permutation)),
-      NonResonantTerms(NonResonantTerm::Hash(), NonResonantTerm::KeyEqual(), NonResonantTerm::IsNegligible()),
-      ResonantTerms(ResonantTerm::Hash(), ResonantTerm::KeyEqual(), ResonantTerm::IsNegligible()) {}
+      NonResonantTerms(NonResonantTerm::Hash(PoleResolution),
+                       NonResonantTerm::KeyEqual(PoleResolution),
+                       NonResonantTerm::IsNegligible(CoefficientTolerance)),
+      ResonantTerms(ResonantTerm::Hash(PoleResolution),
+                    ResonantTerm::KeyEqual(PoleResolution),
+                    ResonantTerm::IsNegligible(CoefficientTolerance)),
+      PoleResolution(PoleResolution),
+      CoefficientTolerance(CoefficientTolerance) {}
 
 void TwoParticleGFPart::compute() {
     if(getStatus() >= Computed)
@@ -310,7 +318,7 @@ ComplexType TwoParticleGFPart::operator()(ComplexType z1, ComplexType z2, Comple
             "2PGFPart: Calling operator() on uncomputed container. Did you purge all the terms when called compute()?");
     }
 
-    return NonResonantTerms(z1, z2, z3) + ResonantTerms(z1, z2, z3, ReduceResonanceTolerance);
+    return NonResonantTerms(z1, z2, z3) + ResonantTerms(z1, z2, z3, PoleResolution);
 }
 
 void TwoParticleGFPart::clear() {

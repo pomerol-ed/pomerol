@@ -41,7 +41,9 @@ GreensFunctionPart::GreensFunctionPart(MonomialOperatorPart const& C,
                                        HamiltonianPart const& HpartInner,
                                        HamiltonianPart const& HpartOuter,
                                        DensityMatrixPart const& DMpartInner,
-                                       DensityMatrixPart const& DMpartOuter)
+                                       DensityMatrixPart const& DMpartOuter,
+                                       RealType PoleResolution,
+                                       RealType CoefficientTolerance)
     : Thermal(DMpartInner.beta),
       HpartInner(HpartInner),
       HpartOuter(HpartOuter),
@@ -49,7 +51,9 @@ GreensFunctionPart::GreensFunctionPart(MonomialOperatorPart const& C,
       DMpartOuter(DMpartOuter),
       C(C),
       CX(CX),
-      Terms(Term::Hash(), Term::KeyEqual(), Term::IsNegligible()) {}
+      Terms(Term::Hash(PoleResolution), Term::KeyEqual(PoleResolution), Term::IsNegligible(CoefficientTolerance)),
+      PoleResolution(PoleResolution),
+      CoefficientTolerance(CoefficientTolerance) {}
 
 void GreensFunctionPart::compute() {
     if(C.isComplex() || CX.isComplex())

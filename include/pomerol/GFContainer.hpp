@@ -44,7 +44,9 @@ namespace Pomerol {
 class GFContainer : public IndexContainer2<GreensFunction, GFContainer>, public Thermal {
 
 public:
-    /// Minimal magnitude of the coefficient of a term for it to be taken into account.
+    /// Lehmann representation: Maximal distance between energy poles to be consider coinciding.
+    RealType PoleResolution = 1e-8;
+    /// Lehmann representation: Maximal magnitude of a term coefficient to be considered negligible.
     RealType CoefficientTolerance = 1e-8;
 
     /// Constructor.

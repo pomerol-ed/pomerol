@@ -20,7 +20,7 @@ void ThreePointSusceptibilityContainer::prepareAll(std::set<IndexCombination4> c
     fill(InitialIndices);
     for(auto& el : ElementsMap) {
         auto& chi3 = static_cast<ThreePointSusceptibility&>(el.second);
-        chi3.ReduceResonanceTolerance = ReduceResonanceTolerance;
+        chi3.PoleResolution = PoleResolution;
         chi3.CoefficientTolerance = CoefficientTolerance;
         chi3.prepare();
     }

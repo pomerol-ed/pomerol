@@ -201,7 +201,9 @@ ThreePointSusceptibilityPart::ThreePointSusceptibilityPart(MonomialOperatorPart 
                                                            DensityMatrixPart const& DMpart2,
                                                            DensityMatrixPart const& DMpart3,
                                                            Channel channel,
-                                                           bool SwappedFermionOps)
+                                                           bool SwappedFermionOps,
+                                                           RealType PoleResolution,
+                                                           RealType CoefficientTolerance)
     : Thermal(DMpart1.beta),
       ComputableObject(),
       F1(F1),
@@ -216,9 +218,17 @@ ThreePointSusceptibilityPart::ThreePointSusceptibilityPart(MonomialOperatorPart 
       DMpart3(DMpart3),
       channel(channel),
       SwappedFermionOps(SwappedFermionOps),
-      NonResonantFFTerms(NonResonantFFTerm::Hash(), NonResonantFFTerm::KeyEqual(), NonResonantFFTerm::IsNegligible()),
-      NonResonantFBTerms(NonResonantFBTerm::Hash(), NonResonantFBTerm::KeyEqual(), NonResonantFBTerm::IsNegligible()),
-      ResonantTerms(ResonantTerm::Hash(), ResonantTerm::KeyEqual(), ResonantTerm::IsNegligible()) {}
+      NonResonantFFTerms(NonResonantFFTerm::Hash(PoleResolution),
+                         NonResonantFFTerm::KeyEqual(PoleResolution),
+                         NonResonantFFTerm::IsNegligible(CoefficientTolerance)),
+      NonResonantFBTerms(NonResonantFBTerm::Hash(PoleResolution),
+                         NonResonantFBTerm::KeyEqual(PoleResolution),
+                         NonResonantFBTerm::IsNegligible(CoefficientTolerance)),
+      ResonantTerms(ResonantTerm::Hash(PoleResolution),
+                    ResonantTerm::KeyEqual(PoleResolution),
+                    ResonantTerm::IsNegligible(CoefficientTolerance)),
+      PoleResolution(PoleResolution),
+      CoefficientTolerance(CoefficientTolerance) {}
 
 void ThreePointSusceptibilityPart::compute() {
     if(getStatus() >= Computed)
@@ -306,7 +316,7 @@ inline void ThreePointSusceptibilityPart::addMultiterm(ComplexType Coeff,
     }
 
     // Resonant term
-    if(std::abs(Eik) <= ReduceResonanceTolerance) {
+    if(std::abs(Eik) <= PoleResolution) {
         ComplexType CoeffR = -Coeff * beta * Wi;
         if(std::abs(CoeffR) > CoefficientTolerance) {
             ResonantTerms.add_term(ResonantTerm(SwappedFermionOps ? -CoeffR : CoeffR,
@@ -343,7 +353,7 @@ ComplexType ThreePointSusceptibilityPart::operator()(ComplexType z1, ComplexType
                              "terms when called compute()?");
     }
 
-    return NonResonantFFTerms(z1, z2) + NonResonantFBTerms(z1, z2) + ResonantTerms(z1, z2, ReduceResonanceTolerance);
+    return NonResonantFFTerms(z1, z2) + NonResonantFBTerms(z1, z2) + ResonantTerms(z1, z2, PoleResolution);
 }
 
 void ThreePointSusceptibilityPart::clear() {

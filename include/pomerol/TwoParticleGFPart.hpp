@@ -85,7 +85,7 @@ public:
             double EnergySpacing;
             /// Constructor.
             /// \param[in] EnergySpacing Energy spacing.
-            explicit Hash(double EnergySpacing = 1e-8) : EnergySpacing(EnergySpacing) {}
+            explicit Hash(double EnergySpacing) : EnergySpacing(EnergySpacing) {}
             /// Compute hash of a term.
             /// \param[in] t Term to compute hash for.
             std::size_t operator()(NonResonantTerm const& t) const {
@@ -107,7 +107,7 @@ public:
             double Tolerance;
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to compare positions of the pole.
-            explicit KeyEqual(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit KeyEqual(double Tolerance) : Tolerance(Tolerance) {}
             /// Are terms similar?
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
@@ -128,7 +128,7 @@ public:
             double Tolerance;
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to detect negligible residues.
-            explicit IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
+            explicit IsNegligible(double Tolerance) : Tolerance(Tolerance) {}
             /// Is term negligible?
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
@@ -210,7 +210,7 @@ public:
             double EnergySpacing;
             /// Constructor.
             /// \param[in] EnergySpacing Energy spacing.
-            explicit Hash(double EnergySpacing = 1e-8) : EnergySpacing(EnergySpacing) {}
+            explicit Hash(double EnergySpacing) : EnergySpacing(EnergySpacing) {}
             /// Compute hash of a term.
             /// \param[in] t Term to compute hash for.
             std::size_t operator()(ResonantTerm const& t) const {
@@ -232,7 +232,7 @@ public:
             double Tolerance;
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to compare positions of the pole.
-            explicit KeyEqual(double Tolerance = 1e-8) : Tolerance(Tolerance) {}
+            explicit KeyEqual(double Tolerance) : Tolerance(Tolerance) {}
             /// Are terms similar?
             /// \param[in] t1 First term.
             /// \param[in] t2 Second term.
@@ -253,7 +253,7 @@ public:
             double Tolerance;
             /// Constructor.
             /// \param[in] Tolerance Tolerance level used to detect negligible residues.
-            explicit IsNegligible(double Tolerance = 1e-16) : Tolerance(Tolerance) {}
+            explicit IsNegligible(double Tolerance) : Tolerance(Tolerance) {}
             /// Is term negligible?
             /// \param[in] t Term.
             /// \param[in] ToleranceDivisor Divide tolerance by this value.
@@ -393,10 +393,10 @@ private:
                       RealType Wk,
                       RealType Wl);
 
-    /// A difference in energies with magnitude below this value is treated as zero.
-    RealType ReduceResonanceTolerance = 1e-8;
-    /// Minimal magnitude of the coefficient of a term for it to be taken into account.
-    RealType CoefficientTolerance = 1e-16;
+    /// Lehmann representation: Maximal distance between energy poles to be consider coinciding.
+    RealType PoleResolution;
+    /// Lehmann representation: Maximal magnitude of a term coefficient to be considered negligible.
+    RealType CoefficientTolerance;
 
     // compute() implementation details.
     template <bool Complex> void computeImpl();
@@ -416,6 +416,10 @@ public:
     /// \param[in] DMpart3 Part of the many-body density matrix corresponding to the subspace \f${\rm S_3}\f$.
     /// \param[in] DMpart4 Part of the many-body density matrix corresponding to the subspace \f${\rm S_4}\f$.
     /// \param[in] Permutation Permutation of operators \f$\{c_i, c_j, c^\dagger_k\}\f$ for this part.
+    /// \param[in] PoleResolution Lehmann representation: Maximal distance between energy
+    ///                           poles to be consider coinciding.
+    /// \param[in] CoefficientTolerance Lehmann representation: Maximal magnitude of a term
+    ///                                 coefficient to be considered negligible.
     TwoParticleGFPart(MonomialOperatorPart const& O1,
                       MonomialOperatorPart const& O2,
                       MonomialOperatorPart const& O3,
@@ -428,7 +432,9 @@ public:
                       DensityMatrixPart const& DMpart2,
                       DensityMatrixPart const& DMpart3,
                       DensityMatrixPart const& DMpart4,
-                      Permutation3 Permutation);
+                      Permutation3 Permutation,
+                      RealType PoleResolution,
+                      RealType CoefficientTolerance);
 
     /// Compute the terms contributing to this part.
     void compute();

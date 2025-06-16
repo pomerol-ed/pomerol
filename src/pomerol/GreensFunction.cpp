@@ -65,9 +65,9 @@ void GreensFunction::prepare() {
                                    H.getPart(Cright),
                                    H.getPart(Cleft),
                                    DM.getPart(Cright),
-                                   DM.getPart(Cleft));
-
-                parts.back().CoefficientTolerance = CoefficientTolerance;
+                                   DM.getPart(Cleft),
+                                   PoleResolution,
+                                   CoefficientTolerance);
             }
         }
 
