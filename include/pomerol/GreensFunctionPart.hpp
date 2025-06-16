@@ -156,8 +156,8 @@ class GreensFunctionPart : public Thermal {
     /// List of all terms contributing to this part.
     TermList<Term> Terms;
 
-    /// Matrix elements with magnitudes equal to or below this value are treated as negligible.
-    RealType MatrixElementTolerance = 1e-8;
+    /// Minimal magnitude of the coefficient of a term for it to be taken into account.
+    RealType CoefficientTolerance = 1e-8;
 
 public:
     /// Constructor.

@@ -20,7 +20,7 @@ namespace Pomerol {
 void GFContainer::prepareAll(std::set<IndexCombination2> const& Indices) {
     fill(Indices);
     for(auto& el : ElementsMap) {
-        el.second->MatrixElementTolerance = MatrixElementTolerance;
+        el.second->CoefficientTolerance = CoefficientTolerance;
         el.second->prepare();
     }
 }

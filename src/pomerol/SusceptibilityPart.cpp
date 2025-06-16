@@ -99,7 +99,7 @@ template <bool AComplex, bool BComplex> void SusceptibilityPart::computeImpl() {
                     // BOSON: minus sign before the second term
                     ComplexType Residue = Ainner.value() * Binner.value() *
                                           (DMpartOuter.getWeight(index1) - DMpartInner.getWeight(A_index2));
-                    if(std::abs(Residue) > MatrixElementTolerance) // Is the residue relevant?
+                    if(std::abs(Residue) > CoefficientTolerance) // Is the residue relevant?
                     {
                         // Create a new term and append it to the list.
                         Terms.add_term(Term(Residue, Pole));

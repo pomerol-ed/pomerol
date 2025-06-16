@@ -14,6 +14,9 @@ All notable changes to this project will be documented in this file.
 
 - Exposed tolerance parameters in `GreensFunction`, `GFContainer` and
   `Susceptibility` to the user.
+  
+- Renamed tolerance parameter `MatrixElementTolerance` -> `CoefficientTolerance`
+  in `GreensFunction` and `Susceptibility`.
 
 - Speed up construction of Lehmann representations by switching from `std::set`
   to the faster `std::unordered_set` in `TermList`.

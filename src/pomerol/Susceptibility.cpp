@@ -69,7 +69,7 @@ void Susceptibility::prepare() {
                                    DM.getPart(Aleft));
 
                 parts.back().ReduceResonanceTolerance = ReduceResonanceTolerance;
-                parts.back().MatrixElementTolerance = MatrixElementTolerance;
+                parts.back().CoefficientTolerance = CoefficientTolerance;
             }
         }
 

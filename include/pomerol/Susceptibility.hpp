@@ -80,8 +80,8 @@ class Susceptibility : public Thermal, public ComputableObject {
 public:
     /// A difference in energies with magnitude equal to or below this value is treated as zero.
     RealType ReduceResonanceTolerance = 1e-8;
-    /// Matrix elements with magnitudes equal to or below this value are treated as negligible.
-    RealType MatrixElementTolerance = 1e-8;
+    /// Minimal magnitude of the coefficient of a term for it to be taken into account.
+    RealType CoefficientTolerance = 1e-8;
 
     /// Constructor.
     /// \param[in] S Information about invariant subspaces of the Hamiltonian.

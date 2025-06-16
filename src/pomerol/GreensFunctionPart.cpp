@@ -82,7 +82,7 @@ template <bool Complex> void GreensFunctionPart::computeImpl() {
             if(C_index2 == CX_index2) {
                 ComplexType Residue = Cinner.value() * CXinner.value() *
                                       (DMpartOuter.getWeight(index1) + DMpartInner.getWeight(C_index2));
-                if(std::abs(Residue) > MatrixElementTolerance) // Is the residue relevant?
+                if(std::abs(Residue) > CoefficientTolerance) // Is the residue relevant?
                 {
                     // Create a new term and append it to the list.
                     RealType Pole = HpartInner.getEigenValue(C_index2) - HpartOuter.getEigenValue(index1);
