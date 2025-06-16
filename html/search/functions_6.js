@@ -60,5 +60,5 @@ var searchData=
   ['getweight_562',['getWeight',['../class_pomerol_1_1_density_matrix.html#ac28e0ec7c17d085fdd99fe2b411e748b',1,'Pomerol::DensityMatrix::getWeight()'],['../class_pomerol_1_1_density_matrix_part.html#a2598db98e29199fce5290201c9792777',1,'Pomerol::DensityMatrixPart::getWeight()']]],
   ['gfcontainer_563',['GFContainer',['../class_pomerol_1_1_g_f_container.html#adcd4d8109399f2301dd21ed9cb5dc517',1,'Pomerol::GFContainer']]],
   ['greensfunction_564',['GreensFunction',['../class_pomerol_1_1_greens_function.html#a7b366706e1d626d74fed89f5aa38bfbc',1,'Pomerol::GreensFunction::GreensFunction(StatesClassification const &amp;S, Hamiltonian const &amp;H, AnnihilationOperator const &amp;C, CreationOperator const &amp;CX, DensityMatrix const &amp;DM)'],['../class_pomerol_1_1_greens_function.html#a42f3319d2de0b265dff052226af08537',1,'Pomerol::GreensFunction::GreensFunction(GreensFunction const &amp;GF)']]],
-  ['greensfunctionpart_565',['GreensFunctionPart',['../class_pomerol_1_1_greens_function_part.html#a0f7e8415a50e98b96ea7e5c82d50ab82',1,'Pomerol::GreensFunctionPart']]]
+  ['greensfunctionpart_565',['GreensFunctionPart',['../class_pomerol_1_1_greens_function_part.html#a79dd4286c78fb8f0d5272bb37fe149ca',1,'Pomerol::GreensFunctionPart']]]
 ];

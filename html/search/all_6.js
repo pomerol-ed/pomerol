@@ -62,6 +62,6 @@ var searchData=
   ['gfcontainer_2ehpp_143',['GFContainer.hpp',['../_g_f_container_8hpp.html',1,'']]],
   ['greensfunction_144',['GreensFunction',['../class_pomerol_1_1_greens_function_part.html#ace32eac3b8562de54b5fde16d4d1df3f',1,'Pomerol::GreensFunctionPart::GreensFunction()'],['../class_pomerol_1_1_greens_function.html#a7b366706e1d626d74fed89f5aa38bfbc',1,'Pomerol::GreensFunction::GreensFunction(StatesClassification const &amp;S, Hamiltonian const &amp;H, AnnihilationOperator const &amp;C, CreationOperator const &amp;CX, DensityMatrix const &amp;DM)'],['../class_pomerol_1_1_greens_function.html#a42f3319d2de0b265dff052226af08537',1,'Pomerol::GreensFunction::GreensFunction(GreensFunction const &amp;GF)'],['../class_pomerol_1_1_greens_function.html',1,'Pomerol::GreensFunction']]],
   ['greensfunction_2ehpp_145',['GreensFunction.hpp',['../_greens_function_8hpp.html',1,'']]],
-  ['greensfunctionpart_146',['GreensFunctionPart',['../class_pomerol_1_1_greens_function_part.html#a0f7e8415a50e98b96ea7e5c82d50ab82',1,'Pomerol::GreensFunctionPart::GreensFunctionPart()'],['../class_pomerol_1_1_greens_function_part.html',1,'Pomerol::GreensFunctionPart']]],
+  ['greensfunctionpart_146',['GreensFunctionPart',['../class_pomerol_1_1_greens_function_part.html#a79dd4286c78fb8f0d5272bb37fe149ca',1,'Pomerol::GreensFunctionPart::GreensFunctionPart()'],['../class_pomerol_1_1_greens_function_part.html',1,'Pomerol::GreensFunctionPart']]],
   ['greensfunctionpart_2ehpp_147',['GreensFunctionPart.hpp',['../_greens_function_part_8hpp.html',1,'']]]
 ];
