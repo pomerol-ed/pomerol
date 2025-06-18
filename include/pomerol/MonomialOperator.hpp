@@ -207,11 +207,38 @@ private:
     void checkPrepared() const;
 };
 
-/// A special case of a monomial operator: A single fermion creation operator \f$c^\dagger_i\f$.
-class CreationOperator : public MonomialOperator {
-    /// The single-particle index corresponding to the creation operator.
+/// A special case of a monomial operator: A single fermion creation or annihilation operator \f$\hat F_i\f$.
+class FieldOperator : public MonomialOperator {
+    /// The single-particle index corresponding to the field operator.
     ParticleIndex Index;
 
+public:
+    /// Constructor.
+    /// \tparam ScalarType Scalar type (either double or std::complex<double>) of the expression \p FO.
+    /// \tparam IndexTypes Types of indices carried by operators in the expression \p FO.
+    /// \param[in] FO Expression of the field operator \f$\hat F_i\f$.
+    /// \param[in] HS Hilbert space.
+    /// \param[in] S Information about invariant subspaces of the Hamiltonian.
+    /// \param[in] H The Hamiltonian.
+    /// \pre \p FO is a field operator.
+    template <typename ScalarType, typename... IndexTypes>
+    FieldOperator(libcommute::expression<ScalarType, IndexTypes...> const& FO,
+                  HilbertSpace<IndexTypes...> const& HS,
+                  StatesClassification const& S,
+                  Hamiltonian const& H,
+                  ParticleIndex Index)
+        : MonomialOperator(FO, HS, S, H), Index(Index) {
+        auto const& mon = FO.get_monomials().cbegin()->first;
+        if(mon.size() != 1 || !is_fermion(mon[0]))
+            throw std::runtime_error("Expected a single-fermion monomial expression");
+    }
+
+    /// Return the single-particle index \f$i\f$.
+    ParticleIndex getIndex() const { return Index; }
+};
+
+/// A special case of a monomial operator: A single fermion creation operator \f$c^\dagger_i\f$.
+class CreationOperator : public FieldOperator {
 public:
     /// Constructor.
     /// \tparam IndexTypes Types of indices carried by operators acting in the Hilbert space \p HS.
@@ -226,21 +253,15 @@ public:
                      StatesClassification const& S,
                      Hamiltonian const& H,
                      ParticleIndex Index)
-        : MonomialOperator(Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index)),
-                           HS,
-                           S,
-                           H),
-          Index(Index) {}
-
-    /// Return the single-particle index \f$i\f$.
-    ParticleIndex getIndex() const { return Index; }
+        : FieldOperator(Operators::Detail::apply(Operators::c_dag<double, IndexTypes...>, IndexInfo.getInfo(Index)),
+                        HS,
+                        S,
+                        H,
+                        Index) {}
 };
 
 /// A special case of a monomial operator: A single fermion annihilation operator \f$c_i\f$.
-class AnnihilationOperator : public MonomialOperator {
-    /// The single-particle index corresponding to the annihilation operator.
-    ParticleIndex Index;
-
+class AnnihilationOperator : public FieldOperator {
 public:
     /// Constructor.
     /// \tparam IndexTypes Types of indices carried by operators acting in the Hilbert space \p HS.
@@ -255,14 +276,11 @@ public:
                          StatesClassification const& S,
                          Hamiltonian const& H,
                          ParticleIndex Index)
-        : MonomialOperator(Operators::Detail::apply(Operators::c<double, IndexTypes...>, IndexInfo.getInfo(Index)),
-                           HS,
-                           S,
-                           H),
-          Index(Index) {}
-
-    /// Return the single-particle index \f$i\f$.
-    ParticleIndex getIndex() const { return Index; }
+        : FieldOperator(Operators::Detail::apply(Operators::c<double, IndexTypes...>, IndexInfo.getInfo(Index)),
+                        HS,
+                        S,
+                        H,
+                        Index) {}
 };
 
 /// A special case of a monomial operator: A product of two fermionic operators \f$O_i O_j\f$.
