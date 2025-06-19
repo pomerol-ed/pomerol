@@ -32,11 +32,19 @@ void GFContainer::computeAll() {
 }
 
 std::shared_ptr<GreensFunction> GFContainer::createElement(IndexCombination2 const& Indices) const {
-    return std::make_shared<GreensFunction>(S,
-                                            H,
-                                            Operators.getAnnihilationOperator(Indices.Index1),
-                                            Operators.getCreationOperator(Indices.Index2),
-                                            DM);
+    if(Anomalous) {
+        return std::make_shared<GreensFunction>(S,
+                                                H,
+                                                Operators.getAnnihilationOperator(Indices.Index1),
+                                                Operators.getAnnihilationOperator(Indices.Index2),
+                                                DM);
+    } else {
+        return std::make_shared<GreensFunction>(S,
+                                                H,
+                                                Operators.getAnnihilationOperator(Indices.Index1),
+                                                Operators.getCreationOperator(Indices.Index2),
+                                                DM);
+    }
 }
 
 } // namespace Pomerol

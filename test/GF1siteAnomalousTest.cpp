@@ -126,4 +126,33 @@ TEST_CASE("Anomalous Green's function of a Hubbard atom", "[GF1siteAn]") {
         REQUIRE_THAT(G(n), IsCloseTo(G_ref(n), 1e-14));
         REQUIRE_THAT(F(n), IsCloseTo(F_ref(n), 1e-14));
     }
+
+    // cppcheck-suppress syntaxError
+    SECTION("GFContainer") {
+        GFContainer G(IndexInfo, S, H, rho, Operators);
+        GFContainer F(IndexInfo, S, H, rho, Operators, true);
+
+        std::set<IndexCombination2> indices;
+        indices.insert(IndexCombination2(0, 0));
+        indices.insert(IndexCombination2(0, 1));
+        indices.insert(IndexCombination2(1, 0));
+        indices.insert(IndexCombination2(1, 1));
+
+        G.prepareAll(indices);
+        G.computeAll();
+        F.prepareAll(indices);
+        F.computeAll();
+
+        for(int n = -100; n < 100; ++n) {
+            REQUIRE_THAT(G(0, 0)(n), IsCloseTo(G_ref(n), 1e-14));
+            REQUIRE_THAT(G(0, 1)(n), IsCloseTo(0, 1e-14));
+            REQUIRE_THAT(G(1, 0)(n), IsCloseTo(0, 1e-14));
+            REQUIRE_THAT(G(1, 1)(n), IsCloseTo(G_ref(n), 1e-14));
+
+            REQUIRE_THAT(F(0, 0)(n), IsCloseTo(0, 1e-14));
+            REQUIRE_THAT(F(0, 1)(n), IsCloseTo(-F_ref(n), 1e-14));
+            REQUIRE_THAT(F(1, 0)(n), IsCloseTo(F_ref(n), 1e-14));
+            REQUIRE_THAT(F(1, 1)(n), IsCloseTo(0, 1e-14));
+        }
+    }
 }
