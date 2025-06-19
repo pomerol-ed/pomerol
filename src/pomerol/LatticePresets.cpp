@@ -166,7 +166,7 @@ RealExpr Pairing(std::string const& Label1,
                  unsigned short Orbital2,
                  spin Spin1,
                  spin Spin2) {
-    return (Delta * c(Label1, Orbital1, Spin1) * c(Label2, Orbital2, Spin2)) + Operators::hc;
+    return (Delta * c_dag(Label1, Orbital1, Spin1) * c_dag(Label2, Orbital2, Spin2)) + Operators::hc;
 }
 
 ComplexExpr Pairing(std::string const& Label1,
@@ -176,7 +176,7 @@ ComplexExpr Pairing(std::string const& Label1,
                     unsigned short Orbital2,
                     spin Spin1,
                     spin Spin2) {
-    return (Delta * c(Label1, Orbital1, Spin1) * c(Label2, Orbital2, Spin2)) + Operators::hc;
+    return (Delta * c_dag(Label1, Orbital1, Spin1) * c_dag(Label2, Orbital2, Spin2)) + Operators::hc;
 }
 
 RealExpr Pairing(std::string const& Label1,

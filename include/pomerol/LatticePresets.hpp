@@ -218,7 +218,7 @@ ComplexExpr Magnetization(std::string const& Label, ComplexType H, unsigned shor
 /// \defgroup Pairing Factory functions for pairing terms
 ///@{
 
-/// Make a pairing term \f$\Delta c_{i\alpha_1\sigma_1}c_{j\alpha_2\sigma_2} + h.c.\f$
+/// Make a pairing term \f$\Delta c^\dagger_{i\alpha_1\sigma_1}c^\dagger_{j\alpha_2\sigma_2} + h.c.\f$
 /// with a real pairing amplitude \f$\Delta\f$.
 /// \param[in] Label1 The first lattice site \f$i\f$.
 /// \param[in] Label2 The second lattice site \f$j\f$.
@@ -234,7 +234,7 @@ RealExpr Pairing(std::string const& Label1,
                  unsigned short Orbital2,
                  spin Spin1,
                  spin Spin2);
-/// Make a pairing term \f$\Delta c_{i\alpha_1\sigma_1}c_{j\alpha_2\sigma_2} + h.c.\f$
+/// Make a pairing term \f$\Delta c^\dagger_{i\alpha_1\sigma_1}c^\dagger_{j\alpha_2\sigma_2} + h.c.\f$
 /// with a complex pairing amplitude \f$\Delta\f$.
 /// \param[in] Label1 The first lattice site \f$i\f$.
 /// \param[in] Label2 The second lattice site \f$j\f$.
@@ -251,7 +251,7 @@ ComplexExpr Pairing(std::string const& Label1,
                     spin Spin1,
                     spin Spin2);
 
-/// Make a pairing term \f$\Delta c_{i\alpha_1\uparrow}c_{j\alpha_2\downarrow} + h.c.\f$
+/// Make a pairing term \f$\Delta c^\dagger_{i\alpha_1\uparrow}c^\dagger_{j\alpha_2\downarrow} + h.c.\f$
 /// with a real pairing amplitude \f$\Delta\f$.
 /// \param[in] Label1 The first lattice site \f$i\f$.
 /// \param[in] Label2 The second lattice site \f$j\f$.
@@ -263,7 +263,7 @@ RealExpr Pairing(std::string const& Label1,
                  RealType Delta,
                  unsigned short Orbital1,
                  unsigned short Orbital2);
-/// Make a pairing term \f$\Delta c_{i\alpha_1\uparrow}c_{j\alpha_2\downarrow} + h.c.\f$
+/// Make a pairing term \f$\Delta c^\dagger_{i\alpha_1\uparrow}c^\dagger_{j\alpha_2\downarrow} + h.c.\f$
 /// with a complex pairing amplitude \f$\Delta\f$.
 /// \param[in] Label1 The first lattice site \f$i\f$.
 /// \param[in] Label2 The second lattice site \f$j\f$.
@@ -276,13 +276,13 @@ ComplexExpr Pairing(std::string const& Label1,
                     unsigned short Orbital1,
                     unsigned short Orbital2);
 
-/// Make a local pairing term \f$\Delta \sum_\alpha c_{i\alpha\uparrow}c_{i\alpha\downarrow} + h.c.\f$
+/// Make a local pairing term \f$\Delta \sum_\alpha c^\dagger_{i\alpha\uparrow}c^\dagger_{i\alpha\downarrow} + h.c.\f$
 /// with a real pairing amplitude \f$\Delta\f$.
 /// \param[in] Label The lattice site \f$i\f$.
 /// \param[in] Delta Pairing amplitude \f$\Delta\f$.
 /// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
 RealExpr Pairing(std::string const& Label, RealType Delta, unsigned short NOrbitals = 1);
-/// Make a local pairing term \f$\Delta \sum_\alpha c_{i\alpha\uparrow}c_{i\alpha\downarrow} + h.c.\f$
+/// Make a local pairing term \f$\Delta \sum_\alpha c^\dagger_{i\alpha\uparrow}c^\dagger_{i\alpha\downarrow} + h.c.\f$
 /// with a complex pairing amplitude \f$\Delta\f$.
 /// \param[in] Label The lattice site \f$i\f$.
 /// \param[in] Delta Pairing amplitude \f$\Delta\f$.

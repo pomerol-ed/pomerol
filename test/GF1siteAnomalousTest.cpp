@@ -45,8 +45,8 @@ TEST_CASE("Anomalous Green's function of a Hubbard atom", "[GF1siteAn]") {
     RealType esc1 = 0.5 * (e2 - ep);
     RealType esc2 = 0.5 * (e2 + ep);
 
-    RealType a = esc2 / std::sqrt(Delta * Delta + esc2 * esc2);
-    RealType b = esc1 / std::sqrt(Delta * Delta + esc1 * esc1);
+    RealType a = -esc2 / std::sqrt(Delta * Delta + esc2 * esc2);
+    RealType b = -esc1 / std::sqrt(Delta * Delta + esc1 * esc1);
 
     RealType w1 = std::exp(-beta * e1);
     RealType wsc1 = std::exp(-beta * esc1);
@@ -67,8 +67,8 @@ TEST_CASE("Anomalous Green's function of a Hubbard atom", "[GF1siteAn]") {
     // Reference anomalous Green's function
     auto F_ref = [&](int n) {
         RealType omega = M_PI * (2 * n + 1) / beta;
-        return (Delta / ep) * (-(w1 + wsc1) / (I * omega - (e1 - esc1)) + (w1 + wsc2) / (I * omega - (e1 - esc2)) +
-                               (wsc1 + w1) / (I * omega - (esc1 - e1)) -(wsc2 + w1) / (I * omega - (esc2 - e1)));
+        return (Delta / ep) * ((w1 + wsc1) / (I * omega - (e1 - esc1)) - (w1 + wsc2) / (I * omega - (e1 - esc2)) +
+                               -(wsc1 + w1) / (I * omega - (esc1 - e1)) + (wsc2 + w1) / (I * omega - (esc2 - e1)));
     };
 
     using namespace LatticePresets;
@@ -101,17 +101,13 @@ TEST_CASE("Anomalous Green's function of a Hubbard atom", "[GF1siteAn]") {
     Operators.computeAll();
 
     ParticleIndex up_index = IndexInfo.getIndex("A", 0, up);
-    ParticleIndex down_index = IndexInfo.getIndex("A", 0, down);
+    ParticleIndex dn_index = IndexInfo.getIndex("A", 0, down);
 
-    GreensFunction G(S,
-                     H,
-                     Operators.getAnnihilationOperator(down_index),
-                     Operators.getCreationOperator(down_index),
-                     rho);
+    GreensFunction G(S, H, Operators.getAnnihilationOperator(dn_index), Operators.getCreationOperator(dn_index), rho);
     GreensFunction F(S,
                      H,
                      Operators.getAnnihilationOperator(up_index),
-                     Operators.getAnnihilationOperator(down_index),
+                     Operators.getAnnihilationOperator(dn_index),
                      rho);
 
     G.prepare();
@@ -147,8 +143,8 @@ TEST_CASE("Anomalous Green's function of a Hubbard atom", "[GF1siteAn]") {
             REQUIRE_THAT(G(1, 1)(n), IsCloseTo(G_ref(n), 1e-14));
 
             REQUIRE_THAT(F(0, 0)(n), IsCloseTo(0, 1e-14));
-            REQUIRE_THAT(F(0, 1)(n), IsCloseTo(-F_ref(n), 1e-14));
-            REQUIRE_THAT(F(1, 0)(n), IsCloseTo(F_ref(n), 1e-14));
+            REQUIRE_THAT(F(up_index, dn_index)(n), IsCloseTo(F_ref(n), 1e-14));
+            REQUIRE_THAT(F(dn_index, up_index)(n), IsCloseTo(-F_ref(n), 1e-14));
             REQUIRE_THAT(F(1, 1)(n), IsCloseTo(0, 1e-14));
         }
     }
