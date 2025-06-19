@@ -22,18 +22,18 @@ namespace Pomerol {
 
 GreensFunction::GreensFunction(StatesClassification const& S,
                                Hamiltonian const& H,
-                               AnnihilationOperator const& C,
-                               CreationOperator const& CX,
+                               FieldOperator const& F1,
+                               FieldOperator const& F2,
                                DensityMatrix const& DM)
-    : Thermal(DM.beta), ComputableObject(), S(S), H(H), C(C), CX(CX), DM(DM) {}
+    : Thermal(DM.beta), ComputableObject(), S(S), H(H), F1(F1), F2(F2), DM(DM) {}
 
 GreensFunction::GreensFunction(GreensFunction const& GF)
     : Thermal(GF.beta),
       ComputableObject(GF),
       S(GF.S),
       H(GF.H),
-      C(GF.C),
-      CX(GF.CX),
+      F1(GF.F1),
+      F2(GF.F2),
       DM(GF.DM),
       Vanishing(GF.Vanishing),
       parts(GF.parts) {}
@@ -42,42 +42,42 @@ void GreensFunction::prepare() {
     if(getStatus() >= Prepared)
         return;
 
-    // Find out non-trivial blocks of C and CX.
-    MonomialOperator::BlocksBimap const& CNontrivialBlocks = C.getBlockMapping();
-    MonomialOperator::BlocksBimap const& CXNontrivialBlocks = CX.getBlockMapping();
+    // Find out non-trivial blocks of F1 and F2.
+    MonomialOperator::BlocksBimap const& F1NontrivialBlocks = F1.getBlockMapping();
+    MonomialOperator::BlocksBimap const& F2NontrivialBlocks = F2.getBlockMapping();
 
-    auto Citer = CNontrivialBlocks.left.begin();
-    auto CXiter = CXNontrivialBlocks.right.begin();
+    auto F1iter = F1NontrivialBlocks.left.begin();
+    auto F2iter = F2NontrivialBlocks.right.begin();
 
-    while(Citer != CNontrivialBlocks.left.end() && CXiter != CXNontrivialBlocks.right.end()) {
-        // <Cleft|C|Cright><CXleft|CX|CXright>
-        BlockNumber Cleft = Citer->first;
-        BlockNumber Cright = Citer->second;
-        BlockNumber CXleft = CXiter->second;
-        BlockNumber CXright = CXiter->first;
+    while(F1iter != F1NontrivialBlocks.left.end() && F2iter != F2NontrivialBlocks.right.end()) {
+        // <F1left|F1|F1right><F2left|F2|F2right>
+        BlockNumber F1left = F1iter->first;
+        BlockNumber F1right = F1iter->second;
+        BlockNumber F2left = F2iter->second;
+        BlockNumber F2right = F2iter->first;
 
         // Select a relevant 'world stripe' (sequence of blocks).
-        if(Cleft == CXright && Cright == CXleft) {
+        if(F1left == F2right && F1right == F2left) {
             // check if retained blocks are included. If not, do not push.
-            if(DM.isRetained(Cleft) || DM.isRetained(Cright)) {
-                parts.emplace_back(C.getPartFromLeftIndex(Cleft),
-                                   CX.getPartFromRightIndex(CXright),
-                                   H.getPart(Cright),
-                                   H.getPart(Cleft),
-                                   DM.getPart(Cright),
-                                   DM.getPart(Cleft),
+            if(DM.isRetained(F1left) || DM.isRetained(F1right)) {
+                parts.emplace_back(F1.getPartFromLeftIndex(F1left),
+                                   F2.getPartFromRightIndex(F2right),
+                                   H.getPart(F1right),
+                                   H.getPart(F1left),
+                                   DM.getPart(F1right),
+                                   DM.getPart(F1left),
                                    PoleResolution,
                                    CoefficientTolerance);
             }
         }
 
-        unsigned long CleftInt = Cleft;
-        unsigned long CXrightInt = CXright;
+        unsigned long F1leftInt = F1left;
+        unsigned long F2rightInt = F2right;
 
-        if(CleftInt <= CXrightInt)
-            Citer++;
-        if(CleftInt >= CXrightInt)
-            CXiter++;
+        if(F1leftInt <= F2rightInt)
+            F1iter++;
+        if(F1leftInt >= F2rightInt)
+            F2iter++;
     }
     if(!parts.empty())
         Vanishing = false;
@@ -101,8 +101,8 @@ void GreensFunction::compute() {
 
 ParticleIndex GreensFunction::getIndex(std::size_t Position) const {
     switch(Position) {
-    case 0: return C.getIndex();
-    case 1: return CX.getIndex();
+    case 0: return F1.getIndex();
+    case 1: return F2.getIndex();
     default: throw std::runtime_error("GreensFunction: Wrong operator");
     }
 }

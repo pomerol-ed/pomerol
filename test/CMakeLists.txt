@@ -23,6 +23,7 @@ set(tests
     GF1siteTest
     GF2siteTest
     GF4siteTest
+    GF1siteAnomalousTest
     AndersonTest
     AndersonComplexTest
     Anderson2PGFTest

@@ -37,12 +37,14 @@ namespace Pomerol {
 ///
 /// This class gives access to the GF values both in imaginary time representation,
 /// \f[
-///  G(\tau) = -Tr[\mathcal{T}_\tau \hat\rho c(\tau) c^\dagger(0)]
+///  G(\tau) = -Tr[\mathcal{T}_\tau \hat\rho F_1(\tau) F_2(0)]
 /// \f]
 /// and at the imaginary Matsubara frequencies \f$\omega_n = \pi(2n+1)/\beta\f$,
 /// \f[
 ///  G(i\omega_n) = \int_0^\beta d\tau e^{i\omega_n\tau} G(\tau).
 /// \f]
+/// Here, the operators \f$F_1\f$ and \f$F_2\f$ can be either creation or annihilation
+/// operators of fermions.
 /// It is actually a container class for a collection of \ref GreensFunctionPart's
 /// (most of the real calculations take place in the parts).
 class GreensFunction : public Thermal, public ComputableObject {
@@ -53,10 +55,10 @@ class GreensFunction : public Thermal, public ComputableObject {
     StatesClassification const& S;
     /// The Hamiltonian.
     Hamiltonian const& H;
-    /// The annihilation operator \f$c\f$.
-    AnnihilationOperator const& C;
-    /// The creation operator \f$c^\dagger\f$.
-    CreationOperator const& CX;
+    /// The first operator \f$F_1\f$.
+    FieldOperator const& F1;
+    /// The second operator \f$F_2\f$.
+    FieldOperator const& F2;
     /// Many-body density matrix \f$\hat\rho\f$.
     DensityMatrix const& DM;
 
@@ -75,28 +77,28 @@ public:
     /// Constructor.
     /// \param[in] S Information about invariant subspaces of the Hamiltonian.
     /// \param[in] H The Hamiltonian.
-    /// \param[in] C The annihilation operator \f$c\f$.
-    /// \param[in] CX The creation operator \f$c^\dagger\f$.
+    /// \param[in] F1 The first operator \f$F_1\f$.
+    /// \param[in] F2 The second operator \f$F_2\f$.
     /// \param[in] DM Many-body density matrix \f$\hat\rho\f$.
     GreensFunction(StatesClassification const& S,
                    Hamiltonian const& H,
-                   AnnihilationOperator const& C,
-                   CreationOperator const& CX,
+                   FieldOperator const& F1,
+                   FieldOperator const& F2,
                    DensityMatrix const& DM);
 
     /// Copy-constructor.
     /// \param[in] GF \ref GreensFunction object to be copied.
     GreensFunction(GreensFunction const& GF);
 
-    /// Select all relevant parts of \f$c\f$ and \f$c^\dagger\f$
+    /// Select all relevant parts of \f$F_1\f$ and \f$F_2\f$
     /// and allocate resources for the \ref GreensFunctionPart's.
     void prepare();
 
     /// Actually computes the parts.
     void compute();
 
-    /// Returns the single-particle index of either \f$c\f$ or \f$c^\dagger\f$.
-    /// \param[in] Position Select \f$c\f$ for Position==0 and \f$c^\dagger\f$ for Position==1.
+    /// Returns the single-particle index of either \f$F_1\f$ or \f$F_2\f$.
+    /// \param[in] Position Select \f$F_1\f$ for Position==0 and \f$F_2\f$ for Position==1.
     ///            Throws for other values of this argument.
     ParticleIndex getIndex(std::size_t Position) const;
 

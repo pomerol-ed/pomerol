@@ -39,7 +39,7 @@ namespace Pomerol {
 ///
 /// It includes contributions from all matrix elements of the following form,
 /// \f[
-///  \langle {\rm outer} | c | {\rm inner} \rangle\langle {\rm inner}  | c^\dagger | {\rm outer} \rangle
+///  \langle {\rm outer} | F_1 | {\rm inner} \rangle\langle {\rm inner}  | F_2 | {\rm outer} \rangle
 /// \f]
 /// with (inner, outer) being a certain pair of Hamiltonian's invariant subspaces.
 /// The contributions are stored as terms of the Lehmann representation, i.e. as
@@ -58,10 +58,10 @@ class GreensFunctionPart : public Thermal {
     /// Diagonal block of the many-body density matrix corresponding to the 'outer' subspace.
     DensityMatrixPart const& DMpartOuter;
 
-    /// Block of the annihilation operator, \f$\langle{\rm outer}|c|{\rm inner}\rangle\f$.
-    MonomialOperatorPart const& C;
-    /// Block of the creation operator, \f$\langle{\rm inner}|c^\dagger|{\rm outer}\rangle\f$.
-    MonomialOperatorPart const& CX;
+    /// Block of the first operator, \f$\langle{\rm outer}|F_1|{\rm inner}\rangle\f$.
+    MonomialOperatorPart const& F1;
+    /// Block of the second operator, \f$\langle{\rm inner}|F_2|{\rm outer}\rangle\f$.
+    MonomialOperatorPart const& F2;
 
     /// A contribution to the Lehmann representation of a single-particle Green's function,
     /// a fraction of the form \f$\frac{R}{z - P}\f$.
@@ -163,8 +163,8 @@ class GreensFunctionPart : public Thermal {
 
 public:
     /// Constructor.
-    /// \param[in] C Part of the annihilation operator \f$c\f$.
-    /// \param[in] CX Part of the creation operator \f$c^\dagger\f$.
+    /// \param[in] F1 Part of the first operator \f$F_1\f$.
+    /// \param[in] F2 Part of the second operator \f$F_2\f$.
     /// \param[in] HpartInner Part of the Hamiltonian corresponding to the 'inner' subspace.
     /// \param[in] HpartOuter Part of the Hamiltonian corresponding to the 'outer' subspace.
     /// \param[in] DMpartInner Part of the many-body density matrix \f$\hat\rho\f$

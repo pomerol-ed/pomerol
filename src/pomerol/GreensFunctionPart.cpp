@@ -36,8 +36,8 @@ inline GreensFunctionPart::Term& GreensFunctionPart::Term::operator+=(Term const
     return *this;
 }
 
-GreensFunctionPart::GreensFunctionPart(MonomialOperatorPart const& C,
-                                       MonomialOperatorPart const& CX,
+GreensFunctionPart::GreensFunctionPart(MonomialOperatorPart const& F1,
+                                       MonomialOperatorPart const& F2,
                                        HamiltonianPart const& HpartInner,
                                        HamiltonianPart const& HpartOuter,
                                        DensityMatrixPart const& DMpartInner,
@@ -49,14 +49,14 @@ GreensFunctionPart::GreensFunctionPart(MonomialOperatorPart const& C,
       HpartOuter(HpartOuter),
       DMpartInner(DMpartInner),
       DMpartOuter(DMpartOuter),
-      C(C),
-      CX(CX),
+      F1(F1),
+      F2(F2),
       Terms(Term::Hash(PoleResolution), Term::KeyEqual(PoleResolution), Term::IsNegligible(CoefficientTolerance)),
       PoleResolution(PoleResolution),
       CoefficientTolerance(CoefficientTolerance) {}
 
 void GreensFunctionPart::compute() {
-    if(C.isComplex() || CX.isComplex())
+    if(F1.isComplex() || F2.isComplex())
         computeImpl<true>();
     else
         computeImpl<false>();
@@ -65,42 +65,42 @@ void GreensFunctionPart::compute() {
 template <bool Complex> void GreensFunctionPart::computeImpl() {
     Terms.clear();
 
-    // Blocks (submatrices) of C and CX
-    RowMajorMatrixType<Complex> const& Cmatrix = C.template getRowMajorValue<Complex>();
-    ColMajorMatrixType<Complex> const& CXmatrix = CX.template getColMajorValue<Complex>();
-    QuantumState outerSize = Cmatrix.outerSize();
+    // Blocks (submatrices) of F1 and F2
+    RowMajorMatrixType<Complex> const& F1matrix = F1.template getRowMajorValue<Complex>();
+    ColMajorMatrixType<Complex> const& F2matrix = F2.template getColMajorValue<Complex>();
+    QuantumState outerSize = F1matrix.outerSize();
 
     // Iterate over all values of the outer index.
-    // TODO: should be optimized - skip empty rows of Cmatrix and empty columns of CXmatrix.
+    // TODO: should be optimized - skip empty rows of F1matrix and empty columns of F2matrix.
     for(QuantumState index1 = 0; index1 < outerSize; ++index1) {
-        // <index1|C|Cinner><CXinner|CX|index1>
-        typename RowMajorMatrixType<Complex>::InnerIterator Cinner(Cmatrix, index1);
-        typename ColMajorMatrixType<Complex>::InnerIterator CXinner(CXmatrix, index1);
+        // <index1|F1|F1inner><F2inner|F2|index1>
+        typename RowMajorMatrixType<Complex>::InnerIterator F1inner(F1matrix, index1);
+        typename ColMajorMatrixType<Complex>::InnerIterator F2inner(F2matrix, index1);
 
-        // While we are not at the last column of Cmatrix or at the last row of CXmatrix.
-        while(Cinner && CXinner) {
-            QuantumState C_index2 = Cinner.index();
-            QuantumState CX_index2 = CXinner.index();
+        // While we are not at the last column of F1matrix or at the last row of F2matrix.
+        while(F1inner && F2inner) {
+            QuantumState F1_index2 = F1inner.index();
+            QuantumState F2_index2 = F2inner.index();
 
             // A meaningful matrix element
-            if(C_index2 == CX_index2) {
-                ComplexType Residue = Cinner.value() * CXinner.value() *
-                                      (DMpartOuter.getWeight(index1) + DMpartInner.getWeight(C_index2));
+            if(F1_index2 == F2_index2) {
+                ComplexType Residue = F1inner.value() * F2inner.value() *
+                                      (DMpartOuter.getWeight(index1) + DMpartInner.getWeight(F1_index2));
                 if(std::abs(Residue) > CoefficientTolerance) // Is the residue relevant?
                 {
                     // Create a new term and append it to the list.
-                    RealType Pole = HpartInner.getEigenValue(C_index2) - HpartOuter.getEigenValue(index1);
+                    RealType Pole = HpartInner.getEigenValue(F1_index2) - HpartOuter.getEigenValue(index1);
                     Terms.add_term(Term(Residue, Pole));
                 };
-                ++Cinner;  // The next non-zero element
-                ++CXinner; // The next non-zero element
+                ++F1inner; // The next non-zero element
+                ++F2inner; // The next non-zero element
             } else {
                 // Chasing: one index runs down the other index
-                if(CX_index2 < C_index2)
-                    for(; QuantumState(CXinner.index()) < C_index2; ++CXinner)
+                if(F2_index2 < F1_index2)
+                    for(; QuantumState(F2inner.index()) < F1_index2; ++F2inner)
                         ;
                 else
-                    for(; QuantumState(Cinner.index()) < CX_index2; ++Cinner)
+                    for(; QuantumState(F1inner.index()) < F2_index2; ++F1inner)
                         ;
             }
         }
