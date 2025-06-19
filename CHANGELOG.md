@@ -15,6 +15,9 @@ All notable changes to this project will be documented in this file.
 - `GFContainer` can now store anomalous Green's functions (an extra boolean
   argument has been added to its constructor to control this new feature).
 
+- Added a new family of functions `LatticePresets::Pairing()` that return
+  expressions for superconducting pairing terms.
+
 - New class `QuarticOperator`. In full analogy with `QuadraticOperator`, it is
   meant to be primarily used with `EnsembleAverage` to compute e.g. average
   double occupancy.

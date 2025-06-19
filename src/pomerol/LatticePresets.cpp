@@ -156,6 +156,62 @@ ComplexExpr Magnetization(std::string const& Label, ComplexType H, unsigned shor
 }
 
 //
+// Overloads of Pairing()
+//
+
+RealExpr Pairing(std::string const& Label1,
+                 std::string const& Label2,
+                 RealType Delta,
+                 unsigned short Orbital1,
+                 unsigned short Orbital2,
+                 spin Spin1,
+                 spin Spin2) {
+    return (Delta * c(Label1, Orbital1, Spin1) * c(Label2, Orbital2, Spin2)) + Operators::hc;
+}
+
+ComplexExpr Pairing(std::string const& Label1,
+                    std::string const& Label2,
+                    ComplexType Delta,
+                    unsigned short Orbital1,
+                    unsigned short Orbital2,
+                    spin Spin1,
+                    spin Spin2) {
+    return (Delta * c(Label1, Orbital1, Spin1) * c(Label2, Orbital2, Spin2)) + Operators::hc;
+}
+
+RealExpr Pairing(std::string const& Label1,
+                 std::string const& Label2,
+                 RealType Delta,
+                 unsigned short Orbital1,
+                 unsigned short Orbital2) {
+    return Pairing(Label1, Label2, Delta, Orbital1, Orbital2, up, down);
+}
+
+ComplexExpr Pairing(std::string const& Label1,
+                    std::string const& Label2,
+                    ComplexType Delta,
+                    unsigned short Orbital1,
+                    unsigned short Orbital2) {
+    return Pairing(Label1, Label2, Delta, Orbital1, Orbital2, up, down);
+}
+
+RealExpr Pairing(std::string const& Label, RealType Delta, unsigned short NOrbitals) {
+    RealExpr res;
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        res += LatticePresets::Pairing(Label, Label, Delta, Orbital, Orbital);
+    }
+    return res;
+}
+
+ComplexExpr Pairing(std::string const& Label, ComplexType Delta, unsigned short NOrbitals) {
+    ComplexExpr res;
+    for(unsigned short Orbital = 0; Orbital < NOrbitals; ++Orbital) {
+        res += LatticePresets::Pairing(Label, Label, Delta, Orbital, Orbital);
+    }
+    return res;
+}
+
+//
 // Overloads of NupNdown()
 //
 

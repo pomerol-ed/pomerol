@@ -71,12 +71,8 @@ TEST_CASE("Anomalous Green's function of a Hubbard atom", "[GF1siteAn]") {
     };
 
     using namespace LatticePresets;
-    using Operators::c;
-    using Operators::c_dag;
 
-    auto HExpr =
-        CoulombS("A", U, -mu) + Delta * (c("A", (unsigned short)0, up) * c("A", (unsigned short)0, down) +
-                                         c_dag("A", (unsigned short)0, down) * c_dag("A", (unsigned short)0, up));
+    auto HExpr = CoulombS("A", U, -mu) + Pairing("A", Delta);
     INFO("Hamiltonian\n" << HExpr);
 
     auto IndexInfo = MakeIndexClassification(HExpr);

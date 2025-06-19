@@ -212,6 +212,86 @@ ComplexExpr Magnetization(std::string const& Label, ComplexType H, unsigned shor
 ///@}
 
 //
+// Overloads of Pairing()
+//
+
+/// \defgroup Pairing Factory functions for pairing terms
+///@{
+
+/// Make a pairing term \f$\Delta c_{i\alpha_1\sigma_1}c_{j\alpha_2\sigma_2} + h.c.\f$
+/// with a real pairing amplitude \f$\Delta\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] Delta Pairing amplitude \f$\Delta\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$ on site \f$i\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$ on site \f$j\f$.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$ on site \f$i\f$.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$ on site \f$j\f$.
+RealExpr Pairing(std::string const& Label1,
+                 std::string const& Label2,
+                 RealType Delta,
+                 unsigned short Orbital1,
+                 unsigned short Orbital2,
+                 spin Spin1,
+                 spin Spin2);
+/// Make a pairing term \f$\Delta c_{i\alpha_1\sigma_1}c_{j\alpha_2\sigma_2} + h.c.\f$
+/// with a complex pairing amplitude \f$\Delta\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] Delta Pairing amplitude \f$\Delta\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$ on site \f$i\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$ on site \f$j\f$.
+/// \param[in] Spin1 Spin component \f$\sigma_1\f$ on site \f$i\f$.
+/// \param[in] Spin2 Spin component \f$\sigma_2\f$ on site \f$j\f$.
+ComplexExpr Pairing(std::string const& Label1,
+                    std::string const& Label2,
+                    ComplexType Delta,
+                    unsigned short Orbital1,
+                    unsigned short Orbital2,
+                    spin Spin1,
+                    spin Spin2);
+
+/// Make a pairing term \f$\Delta c_{i\alpha_1\uparrow}c_{j\alpha_2\downarrow} + h.c.\f$
+/// with a real pairing amplitude \f$\Delta\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] Delta Pairing amplitude \f$\Delta\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$ on site \f$i\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$ on site \f$j\f$.
+RealExpr Pairing(std::string const& Label1,
+                 std::string const& Label2,
+                 RealType Delta,
+                 unsigned short Orbital1,
+                 unsigned short Orbital2);
+/// Make a pairing term \f$\Delta c_{i\alpha_1\uparrow}c_{j\alpha_2\downarrow} + h.c.\f$
+/// with a complex pairing amplitude \f$\Delta\f$.
+/// \param[in] Label1 The first lattice site \f$i\f$.
+/// \param[in] Label2 The second lattice site \f$j\f$.
+/// \param[in] Delta Pairing amplitude \f$\Delta\f$.
+/// \param[in] Orbital1 Orbital index \f$\alpha_1\f$ on site \f$i\f$.
+/// \param[in] Orbital2 Orbital index \f$\alpha_2\f$ on site \f$j\f$.
+ComplexExpr Pairing(std::string const& Label1,
+                    std::string const& Label2,
+                    ComplexType Delta,
+                    unsigned short Orbital1,
+                    unsigned short Orbital2);
+
+/// Make a local pairing term \f$\Delta \sum_\alpha c_{i\alpha\uparrow}c_{i\alpha\downarrow} + h.c.\f$
+/// with a real pairing amplitude \f$\Delta\f$.
+/// \param[in] Label The lattice site \f$i\f$.
+/// \param[in] Delta Pairing amplitude \f$\Delta\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
+RealExpr Pairing(std::string const& Label, RealType Delta, unsigned short NOrbitals = 1);
+/// Make a local pairing term \f$\Delta \sum_\alpha c_{i\alpha\uparrow}c_{i\alpha\downarrow} + h.c.\f$
+/// with a complex pairing amplitude \f$\Delta\f$.
+/// \param[in] Label The lattice site \f$i\f$.
+/// \param[in] Delta Pairing amplitude \f$\Delta\f$.
+/// \param[in] NOrbitals Number of orbitals \f$\alpha\f$ to sum over.
+ComplexExpr Pairing(std::string const& Label, ComplexType Delta, unsigned short NOrbitals = 1);
+
+///@}
+
+//
 // Overloads of NupNdown()
 //
 
