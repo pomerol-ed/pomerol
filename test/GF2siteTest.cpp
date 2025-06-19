@@ -30,6 +30,7 @@
 
 using namespace Pomerol;
 
+// cppcheck-suppress syntaxError
 TEST_CASE("Green's function of a Hubbard dimer", "[GF2site]") {
     RealType U = 1.0;
     RealType mu = 0.5;

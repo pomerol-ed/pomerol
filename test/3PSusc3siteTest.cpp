@@ -26,6 +26,7 @@
 
 using namespace Pomerol;
 
+// cppcheck-suppress syntaxError
 TEST_CASE("3-point susceptibilities of a small Hubbard cluster", "[ThreePointSusceptibility]") {
     RealType U = 4.0;
     RealType mu = 0.6 * U;

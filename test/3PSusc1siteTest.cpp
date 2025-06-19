@@ -58,6 +58,7 @@ struct g_aux {
     }
 };
 
+// cppcheck-suppress syntaxError
 TEST_CASE("3-point susceptibilities of a single Hubbard atom", "[ThreePointSusceptibility]") {
     RealType U = 1.0;
     RealType mu = 0.4;

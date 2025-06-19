@@ -84,6 +84,7 @@ struct GF_ref {
     }
 };
 
+// cppcheck-suppress syntaxError
 TEST_CASE("Bare Anderson atom with complex spin mixing", "[AndersonComplex]") {
 
     // Execute this test case for a few values of 'J'

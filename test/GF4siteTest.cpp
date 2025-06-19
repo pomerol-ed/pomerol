@@ -27,6 +27,7 @@
 
 using namespace Pomerol;
 
+// cppcheck-suppress syntaxError
 TEST_CASE("Green's function of a Hubbard plaquette", "[GF4site]") {
     RealType beta = 10.0;
 

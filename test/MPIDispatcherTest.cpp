@@ -34,6 +34,7 @@ struct dumb_task_type {
     }
 };
 
+// cppcheck-suppress syntaxError
 TEST_CASE("Test mpi_dispatcher", "[mpi_dispatcher]") {
     std::mt19937 gen(100000);
     int comm_rank = pMPI::rank(MPI_COMM_WORLD);

@@ -29,6 +29,7 @@
 
 using namespace Pomerol;
 
+// cppcheck-suppress syntaxError
 TEST_CASE("Hamiltonian of an isolated Hubbard-Holstein atom", "[HubbardHolstein]") {
     using namespace LatticePresets;
     using namespace Operators;

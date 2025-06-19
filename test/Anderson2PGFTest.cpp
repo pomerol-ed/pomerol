@@ -32,6 +32,7 @@
 
 using namespace Pomerol;
 
+// cppcheck-suppress syntaxError
 TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
     RealType U = 0.5;
     RealType mu = 0.25;

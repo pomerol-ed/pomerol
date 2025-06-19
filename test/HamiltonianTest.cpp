@@ -31,6 +31,7 @@
 
 using namespace Pomerol;
 
+// cppcheck-suppress syntaxError
 TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
     using namespace LatticePresets;
 

@@ -27,6 +27,7 @@
 
 using namespace Pomerol;
 
+// cppcheck-suppress syntaxError
 TEST_CASE("Anderson model with 2 bath sites", "[Anderson]") {
     RealType U = 3.7;
     RealType mu = 0.6 * U;

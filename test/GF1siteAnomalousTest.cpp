@@ -32,6 +32,7 @@
 
 using namespace Pomerol;
 
+// cppcheck-suppress syntaxError
 TEST_CASE("Anomalous Green's function of a Hubbard atom", "[GF1siteAn]") {
     RealType U = 1.0;
     RealType mu = 0.4;

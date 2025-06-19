@@ -36,6 +36,7 @@ template <typename T> inline T sqr(T x) {
 
 using namespace Pomerol;
 
+// cppcheck-suppress syntaxError
 TEST_CASE("Two-particle vertex of a single Hubbard atom", "[Vertex4]") {
     // Parameters
     RealType U = 1.0;
