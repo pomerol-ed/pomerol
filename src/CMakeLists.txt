@@ -35,6 +35,11 @@ set(SOURCES
     pomerol/EnsembleAverage.cpp
 )
 
+message(STATUS "CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES:"
+        "${CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES}")
+message(STATUS "CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES:"
+        "${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES}")
+
 get_target_property(libcommute_INCLUDE_PATH libcommute::libcommute
                     INTERFACE_INCLUDE_DIRECTORIES)
 
