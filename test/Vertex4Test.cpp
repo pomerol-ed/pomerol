@@ -117,6 +117,7 @@ TEST_CASE("Two-particle vertex of a single Hubbard atom", "[Vertex4]") {
     MPI_Barrier(MPI_COMM_WORLD);
 
     ParticleIndex up_index = IndexInfo.getIndex("A", 0, up);
+    // cppcheck-suppress variableScope
     ParticleIndex down_index = IndexInfo.getIndex("A", 0, down);
 
     // cppcheck-suppress syntaxError

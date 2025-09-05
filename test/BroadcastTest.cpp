@@ -44,6 +44,7 @@ bool operator!=(TwoParticleGFPart::ResonantTerm const& t1, TwoParticleGFPart::Re
 
 using namespace Pomerol;
 
+// cppcheck-suppress syntaxError
 TEST_CASE("broadcast() methods of various objects", "[broadcast]") {
     int rank = pMPI::rank(MPI_COMM_WORLD);
 
