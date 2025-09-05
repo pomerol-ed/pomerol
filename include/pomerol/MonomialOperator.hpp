@@ -220,6 +220,7 @@ public:
     /// \param[in] HS Hilbert space.
     /// \param[in] S Information about invariant subspaces of the Hamiltonian.
     /// \param[in] H The Hamiltonian.
+    /// \param[in] Index The single-particle index \f$i\f$.
     /// \pre \p FO is a field operator.
     template <typename ScalarType, typename... IndexTypes>
     FieldOperator(libcommute::expression<ScalarType, IndexTypes...> const& FO,

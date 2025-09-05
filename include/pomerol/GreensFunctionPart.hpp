@@ -175,8 +175,8 @@ public:
     ///                           poles to be consider coinciding.
     /// \param[in] CoefficientTolerance Lehmann representation: Maximal magnitude of a term
     ///                                 coefficient to be considered negligible.
-    GreensFunctionPart(MonomialOperatorPart const& C,
-                       MonomialOperatorPart const& CX,
+    GreensFunctionPart(MonomialOperatorPart const& F1,
+                       MonomialOperatorPart const& F2,
                        HamiltonianPart const& HpartInner,
                        HamiltonianPart const& HpartOuter,
                        DensityMatrixPart const& DMpartInner,
