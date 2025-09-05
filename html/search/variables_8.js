@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['leftrightblocks_679',['LeftRightBlocks',['../class_pomerol_1_1_monomial_operator.html#aab203d473defe7d826b1109d80e5f649',1,'Pomerol::MonomialOperator']]]
+  ['jobstack_686',['JobStack',['../structp_m_p_i_1_1_m_p_i_master.html#a88aba92e02697d9c4acf47279921b739',1,'pMPI::MPIMaster']]]
 ];

@@ -107,8 +107,8 @@ Collaboration diagram for Pomerol::GreensFunctionPart:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a79dd4286c78fb8f0d5272bb37fe149ca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_greens_function_part.html#a79dd4286c78fb8f0d5272bb37fe149ca">GreensFunctionPart</a> (<a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;C, <a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;CX, <a class="el" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> const &amp;HpartInner, <a class="el" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> const &amp;HpartOuter, <a class="el" href="class_pomerol_1_1_density_matrix_part.html">DensityMatrixPart</a> const &amp;DMpartInner, <a class="el" href="class_pomerol_1_1_density_matrix_part.html">DensityMatrixPart</a> const &amp;DMpartOuter, <a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> PoleResolution, <a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> CoefficientTolerance)</td></tr>
-<tr class="separator:a79dd4286c78fb8f0d5272bb37fe149ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f2e401be2e88e081d28eb5229c633c0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_greens_function_part.html#a1f2e401be2e88e081d28eb5229c633c0">GreensFunctionPart</a> (<a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;F1, <a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;F2, <a class="el" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> const &amp;HpartInner, <a class="el" href="class_pomerol_1_1_hamiltonian_part.html">HamiltonianPart</a> const &amp;HpartOuter, <a class="el" href="class_pomerol_1_1_density_matrix_part.html">DensityMatrixPart</a> const &amp;DMpartInner, <a class="el" href="class_pomerol_1_1_density_matrix_part.html">DensityMatrixPart</a> const &amp;DMpartOuter, <a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> PoleResolution, <a class="el" href="group___basic.html#gaccfb59ebce467c7ba5b1a2265919a338">RealType</a> CoefficientTolerance)</td></tr>
+<tr class="separator:a1f2e401be2e88e081d28eb5229c633c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2467c3d5508b79519a074f92bbae1051"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_greens_function_part.html#a2467c3d5508b79519a074f92bbae1051">compute</a> ()</td></tr>
 <tr class="memdesc:a2467c3d5508b79519a074f92bbae1051"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the terms contributing to this part.  <a href="class_pomerol_1_1_greens_function_part.html#a2467c3d5508b79519a074f92bbae1051">More...</a><br /></td></tr>
 <tr class="separator:a2467c3d5508b79519a074f92bbae1051"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -144,14 +144,14 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Part of a fermionic single-particle Matsubara Green's function. </p>
 <p>It includes contributions from all matrix elements of the following form, </p><p class="formulaDsp">
-\[ \langle {\rm outer} | c | {\rm inner} \rangle\langle {\rm inner} | c^\dagger | {\rm outer} \rangle \]
+\[ \langle {\rm outer} | F_1 | {\rm inner} \rangle\langle {\rm inner} | F_2 | {\rm outer} \rangle \]
 </p>
 <p> with (inner, outer) being a certain pair of Hamiltonian's invariant subspaces. The contributions are stored as terms of the Lehmann representation, i.e. as fractions \(\frac{R}{z - P}\) with real poles \(P\) and complex residues \(R\). The latter are combinations of matrix elements and statistical weights. </p>
 
 <p class="definition">Definition at line <a class="el" href="_greens_function_part_8hpp_source.html#l00048">48</a> of file <a class="el" href="_greens_function_part_8hpp_source.html">GreensFunctionPart.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a79dd4286c78fb8f0d5272bb37fe149ca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a79dd4286c78fb8f0d5272bb37fe149ca">&#9670;&nbsp;</a></span>GreensFunctionPart()</h2>
+<a id="a1f2e401be2e88e081d28eb5229c633c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f2e401be2e88e081d28eb5229c633c0">&#9670;&nbsp;</a></span>GreensFunctionPart()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -160,13 +160,13 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">Pomerol::GreensFunctionPart::GreensFunctionPart </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;&#160;</td>
-          <td class="paramname"><em>C</em>, </td>
+          <td class="paramname"><em>F1</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="class_pomerol_1_1_monomial_operator_part.html">MonomialOperatorPart</a> const &amp;&#160;</td>
-          <td class="paramname"><em>CX</em>, </td>
+          <td class="paramname"><em>F2</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -213,8 +213,8 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 <p>Constructor. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">C</td><td>Part of the annihilation operator \(c\). </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">CX</td><td>Part of the creation operator \(c^\dagger\). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">F1</td><td>Part of the first operator \(F_1\). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">F2</td><td>Part of the second operator \(F_2\). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">HpartInner</td><td>Part of the Hamiltonian corresponding to the 'inner' subspace. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">HpartOuter</td><td>Part of the Hamiltonian corresponding to the 'outer' subspace. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">DMpartInner</td><td>Part of the many-body density matrix \(\hat\rho\) corresponding to the 'inner' subspace. </td></tr>
@@ -450,7 +450,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 16 2025 19:59:32 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

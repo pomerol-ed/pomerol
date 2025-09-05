@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [2.2] - Unreleased
 
+- New class `FieldOperator`. This class is an intermediate layer in the
+  inheritance hierarchy between `MonomialOperator` and
+  `CreationOperator`/`AnnihilationOperator`.
+
+- `GreensFunction` has been extended to compute anomalous GFs. This can be
+  achieved by passing two `AnnihilationOperator` objects to the constructor.
+  A unit test for this new functionality has been added.
+
+- `GFContainer` can now store anomalous Green's functions (an extra boolean
+  argument has been added to its constructor to control this new feature).
+
+- Added a new family of functions `LatticePresets::Pairing()` that return
+  expressions for superconducting pairing terms.
+
 - New class `QuarticOperator`. In full analogy with `QuadraticOperator`, it is
   meant to be primarily used with `EnsembleAverage` to compute e.g. average
   double occupancy.

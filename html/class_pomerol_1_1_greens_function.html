@@ -109,8 +109,8 @@ Collaboration diagram for Pomerol::GreensFunction:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7b366706e1d626d74fed89f5aa38bfbc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_greens_function.html#a7b366706e1d626d74fed89f5aa38bfbc">GreensFunction</a> (<a class="el" href="class_pomerol_1_1_states_classification.html">StatesClassification</a> const &amp;S, <a class="el" href="class_pomerol_1_1_hamiltonian.html">Hamiltonian</a> const &amp;H, <a class="el" href="class_pomerol_1_1_annihilation_operator.html">AnnihilationOperator</a> const &amp;C, <a class="el" href="class_pomerol_1_1_creation_operator.html">CreationOperator</a> const &amp;CX, <a class="el" href="class_pomerol_1_1_density_matrix.html">DensityMatrix</a> const &amp;DM)</td></tr>
-<tr class="separator:a7b366706e1d626d74fed89f5aa38bfbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af864e4b9834a2d2f716c086900993939"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_greens_function.html#af864e4b9834a2d2f716c086900993939">GreensFunction</a> (<a class="el" href="class_pomerol_1_1_states_classification.html">StatesClassification</a> const &amp;S, <a class="el" href="class_pomerol_1_1_hamiltonian.html">Hamiltonian</a> const &amp;H, <a class="el" href="class_pomerol_1_1_field_operator.html">FieldOperator</a> const &amp;F1, <a class="el" href="class_pomerol_1_1_field_operator.html">FieldOperator</a> const &amp;F2, <a class="el" href="class_pomerol_1_1_density_matrix.html">DensityMatrix</a> const &amp;DM)</td></tr>
+<tr class="separator:af864e4b9834a2d2f716c086900993939"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42f3319d2de0b265dff052226af08537"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_greens_function.html#a42f3319d2de0b265dff052226af08537">GreensFunction</a> (<a class="el" href="class_pomerol_1_1_greens_function.html">GreensFunction</a> const &amp;GF)</td></tr>
 <tr class="separator:a42f3319d2de0b265dff052226af08537"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56913587c506e37bd0b5588989044231"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pomerol_1_1_greens_function.html#a56913587c506e37bd0b5588989044231">prepare</a> ()</td></tr>
@@ -179,17 +179,17 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Fermionic single-particle Matsubara Green's function. </p>
 <p>This class gives access to the GF values both in imaginary time representation, </p><p class="formulaDsp">
-\[ G(\tau) = -Tr[\mathcal{T}_\tau \hat\rho c(\tau) c^\dagger(0)] \]
+\[ G(\tau) = -Tr[\mathcal{T}_\tau \hat\rho F_1(\tau) F_2(0)] \]
 </p>
 <p> and at the imaginary Matsubara frequencies \(\omega_n = \pi(2n+1)/\beta\), </p><p class="formulaDsp">
 \[ G(i\omega_n) = \int_0^\beta d\tau e^{i\omega_n\tau} G(\tau). \]
 </p>
-<p> It is actually a container class for a collection of <a class="el" href="class_pomerol_1_1_greens_function_part.html">GreensFunctionPart</a>'s (most of the real calculations take place in the parts). </p>
+<p> Here, the operators \(F_1\) and \(F_2\) can be either creation or annihilation operators of fermions. It is actually a container class for a collection of <a class="el" href="class_pomerol_1_1_greens_function_part.html">GreensFunctionPart</a>'s (most of the real calculations take place in the parts). </p>
 
-<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00048">48</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00050">50</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a7b366706e1d626d74fed89f5aa38bfbc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b366706e1d626d74fed89f5aa38bfbc">&#9670;&nbsp;</a></span>GreensFunction() <span class="overload">[1/2]</span></h2>
+<a id="af864e4b9834a2d2f716c086900993939"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af864e4b9834a2d2f716c086900993939">&#9670;&nbsp;</a></span>GreensFunction() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -209,14 +209,14 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="class_pomerol_1_1_annihilation_operator.html">AnnihilationOperator</a> const &amp;&#160;</td>
-          <td class="paramname"><em>C</em>, </td>
+          <td class="paramtype"><a class="el" href="class_pomerol_1_1_field_operator.html">FieldOperator</a> const &amp;&#160;</td>
+          <td class="paramname"><em>F1</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="class_pomerol_1_1_creation_operator.html">CreationOperator</a> const &amp;&#160;</td>
-          <td class="paramname"><em>CX</em>, </td>
+          <td class="paramtype"><a class="el" href="class_pomerol_1_1_field_operator.html">FieldOperator</a> const &amp;&#160;</td>
+          <td class="paramname"><em>F2</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -235,8 +235,8 @@ Additional Inherited Members</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">S</td><td>Information about invariant subspaces of the Hamiltonian. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">H</td><td>The Hamiltonian. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">C</td><td>The annihilation operator \(c\). </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">CX</td><td>The creation operator \(c^\dagger\). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">F1</td><td>The first operator \(F_1\). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">F2</td><td>The second operator \(F_2\). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">DM</td><td>Many-body density matrix \(\hat\rho\). </td></tr>
   </table>
   </dd>
@@ -303,9 +303,9 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns the single-particle index of either \(c\) or \(c^\dagger\). </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Returns the single-particle index of either \(F_1\) or \(F_2\). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">Position</td><td>Select \(c\) for Position==0 and \(c^\dagger\) for Position==1. Throws for other values of this argument. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">Position</td><td>Select \(F_1\) for Position==0 and \(F_2\) for Position==1. Throws for other values of this argument. </td></tr>
   </table>
   </dd>
 </dl>
@@ -337,7 +337,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Is this Green's function identically zero? </p>
 
-<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00116">116</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00118">118</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
 
 </div>
 </div>
@@ -371,7 +371,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00136">136</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00138">138</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
 
 </div>
 </div>
@@ -405,7 +405,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00125">125</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00127">127</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
 
 </div>
 </div>
@@ -439,7 +439,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00121">121</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00123">123</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
 
 </div>
 </div>
@@ -457,7 +457,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Select all relevant parts of \(c\) and \(c^\dagger\) and allocate resources for the <a class="el" href="class_pomerol_1_1_greens_function_part.html">GreensFunctionPart</a>'s. </p>
+<p>Select all relevant parts of \(F_1\) and \(F_2\) and allocate resources for the <a class="el" href="class_pomerol_1_1_greens_function_part.html">GreensFunctionPart</a>'s. </p>
 
 </div>
 </div>
@@ -482,7 +482,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00050">50</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00052">52</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
 
 </div>
 </div>
@@ -501,7 +501,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Lehmann representation: Maximal magnitude of a term coefficient to be considered negligible. </p>
 
-<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00073">73</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00075">75</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
 
 </div>
 </div>
@@ -519,7 +519,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Lehmann representation: Maximal distance between energy poles to be consider coinciding. </p>
 
-<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00071">71</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_greens_function_8hpp_source.html#l00073">73</a> of file <a class="el" href="_greens_function_8hpp_source.html">GreensFunction.hpp</a>.</p>
 
 </div>
 </div>
@@ -529,7 +529,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 16 2025 19:59:32 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
