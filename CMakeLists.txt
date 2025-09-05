@@ -135,6 +135,9 @@ else(Use_MPI_C_datatypes)
 endif(Use_MPI_C_datatypes)
 
 # Boost
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 OLD)
+endif()
 find_package(Boost 1.54.0 REQUIRED)
 message(STATUS "Boost includes: ${Boost_INCLUDE_DIRS}" )
 
