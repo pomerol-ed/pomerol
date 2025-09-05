@@ -54,9 +54,9 @@ using ComplexExpr = Operators::expression<ComplexType, std::string, unsigned sho
 //
 
 /// \defgroup LatticePresets Factory functions to construct widely used lattice models
-///@{
 
 /// \defgroup Level Factory functions for single fermion level terms
+/// \ingroup LatticePresets
 ///@{
 
 /// Make a single energy level term \f$\varepsilon c^{\dagger}_{i\alpha\sigma}c_{i\alpha\sigma}\f$
@@ -94,6 +94,7 @@ ComplexExpr Level(std::string const& Label, ComplexType Eps, unsigned short NOrb
 //
 
 /// \defgroup Hopping Factory functions for fermionic hopping terms
+/// \ingroup LatticePresets
 ///@{
 
 /// Make a fermionic hopping term \f$t c^\dagger_{i\alpha_1\sigma_1}c_{j\alpha_2\sigma_2} + h.c.\f$
@@ -194,6 +195,7 @@ ComplexExpr Hopping(std::string const& Label1, std::string const& Label2, Comple
 //
 
 /// \defgroup Magnetization Factory functions for magnetization terms
+/// \ingroup LatticePresets
 ///@{
 
 /// Make a magnetic splitting term \f$H \sum_\alpha (n_{i\alpha\uparrow} - n_{i\alpha\downarrow})\f$
@@ -216,6 +218,7 @@ ComplexExpr Magnetization(std::string const& Label, ComplexType H, unsigned shor
 //
 
 /// \defgroup Pairing Factory functions for pairing terms
+/// \ingroup LatticePresets
 ///@{
 
 /// Make a pairing term \f$\Delta c^\dagger_{i\alpha_1\sigma_1}c^\dagger_{j\alpha_2\sigma_2} + h.c.\f$
@@ -296,6 +299,7 @@ ComplexExpr Pairing(std::string const& Label, ComplexType Delta, unsigned short 
 //
 
 /// \defgroup NupNdown Factory functions for fermionic density-density interaction terms
+/// \ingroup LatticePresets
 ///@{
 
 /// Make a fermionic density-density interaction term \f$ U n_{i\alpha_1\sigma_1}n_{j\alpha_2\sigma_2}\f$
@@ -396,6 +400,7 @@ NupNdown(std::string const& Label, ComplexType U, unsigned short Orbital, spin S
 ///@}
 
 /// \defgroup SpinflipPairHopping Factory functions for spin-flip and pair-hopping terms
+/// \ingroup LatticePresets
 ///@{
 
 //
@@ -471,6 +476,7 @@ ComplexExpr PairHopping(std::string const& Label,
 ///@}
 
 /// \defgroup SS Factory functions for spin coupling terms
+/// \ingroup LatticePresets
 ///@{
 
 //
@@ -572,6 +578,7 @@ ComplexExpr SS(std::string const& Label1, std::string const& Label2, ComplexType
 ///@}
 
 /// \defgroup Coulomb Factory functions for Coulomb interaction terms
+/// \ingroup LatticePresets
 ///@{
 
 //
@@ -695,6 +702,7 @@ CoulombP(std::string const& Label, ComplexType U, ComplexType J, ComplexType Eps
 //
 
 /// \defgroup Boson Factory functions for terms with bosonic degrees of freedom
+/// \ingroup LatticePresets
 ///@{
 
 /// Make a single energy level term \f$\varepsilon a^{\dagger}_{i\alpha} a_{i\alpha}\f$
@@ -749,8 +757,6 @@ ComplexExpr HolsteinInteraction(std::string const& Label,
                                 ComplexType Lambda,
                                 unsigned short Orbital,
                                 unsigned short BosonExtraIndex);
-
-///@}
 
 ///@}
 
