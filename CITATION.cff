@@ -17,6 +17,6 @@ authors:
     given-names: Junya
     affiliation: "Research Institute for Interdisciplinary Science, Okayama University, Okayama, Japan"
 title: "pomerol: An exact diagonalization code written in C++"
-version: 2.0
+version: 2.2
 license: MPL-2.0
 date-released: 2021-11-29
