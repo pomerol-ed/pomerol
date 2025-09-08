@@ -40,6 +40,7 @@ void print_section(std::string const& str);
 //                  -> GreensFunction
 //                  -> TwoParticleGF -> Vertex4
 //                  -> Susceptibility
+//                  -> ThreePointSusceptibility
 // The detailed explanation of each class is given below.
 
 int main(int argc, char* argv[]) {
@@ -138,7 +139,7 @@ int main(int argc, char* argv[]) {
     // Diagonalize the blocks.
     H.compute(MPI_COMM_WORLD);
 
-    // Get ground energy energy.
+    // Get ground state energy.
     std::cout << "The value of ground energy is " << H.getGroundEnergy() << '\n';
 
     // Important remark 2!
@@ -208,6 +209,21 @@ int main(int argc, char* argv[]) {
 
     for(int n = 0; n < 10; ++n) {
         std::cout << n << " | " << GF(n) << "\n";
+    }
+
+    print_section("Anomalous single-particle Green's function");
+
+    // The local anomalous Green's function in the Matsubara domain
+    // F_{"A"}(i\omega_n) (Fourier transform of
+    // -<\mathcal{T} c_{"A",up}(\tau) c_{"A",dn}(0)>).
+    GreensFunction GF_an(S, H, C_up, C_dn, rho);
+    // Allocate GF parts.
+    GF_an.prepare();
+    // Calculate the GF.
+    GF_an.compute();
+
+    for(int n = 0; n < 10; ++n) {
+        std::cout << n << " | " << GF_an(n) << "\n";
     }
 
     print_section("Two-particle Green's function");
