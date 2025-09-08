@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.2] - Unreleased
+## [2.2] - 2025-09-08
 
 - New class `FieldOperator`. This class is an intermediate layer in the
   inheritance hierarchy between `MonomialOperator` and
@@ -33,6 +33,8 @@ All notable changes to this project will be documented in this file.
 
 - Speed up construction of Lehmann representations by switching from `std::set`
   to the faster `std::unordered_set` in `TermList`.
+
+- The tutorial has been extended to demonstrate the use of the new features.
 
 ## [2.1] - 2022-12-21
 
