@@ -23,6 +23,7 @@
 
 namespace Pomerol {
 
+// cppcheck-suppress unusedPrivateFunction
 template <bool C> void Hamiltonian::prepareImpl(LOperatorTypeRC<C> const& HOp, MPI_Comm const& comm) {
     BlockNumber NumberOfBlocks = S.getNumberOfBlocks();
     int comm_rank = pMPI::rank(comm);

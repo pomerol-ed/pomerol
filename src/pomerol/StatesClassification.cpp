@@ -33,16 +33,6 @@ void StatesClassification::initSingleBlock(QuantumState Dim) {
     std::iota(StatesContainer.back().begin(), StatesContainer.back().end(), 0);
 }
 
-void StatesClassification::initMultipleBlocks(libcommute::space_partition const& partition) {
-    StateBlockIndex.resize(partition.dim());
-    StatesContainer.resize(partition.n_subspaces(), std::vector<QuantumState>());
-    foreach(partition, [this](QuantumState State, BlockNumber Block) {
-        StateBlockIndex[State] = Block;
-        StatesContainer[Block].push_back(State);
-    })
-        ;
-}
-
 void StatesClassification::checkComputed() const {
     if(getStatus() < Computed) {
         throw StatusMismatch("StatesClassification is not computed yet.");

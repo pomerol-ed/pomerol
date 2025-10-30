@@ -52,7 +52,7 @@ public:
     /// Type of the full Hilbert space.
     using FullHilbertSpaceType = libcommute::hilbert_space<IndexTypes...>;
     /// Type of the partition into invariant subspaces.
-    using SpacePartitionType = libcommute::space_partition;
+    using SpacePartitionType = libcommute::space_partition<FullHilbertSpaceType>;
 
 private:
     /// Parent operator index tuple map.
@@ -87,7 +87,7 @@ private:
             } else if(is_boson(g)) {
                 auto it = bits_per_boson.find(g.indices());
                 unsigned int bits = (it == bits_per_boson.end()) ? 1 : it->second;
-                return make_unique<elementary_space_boson<IndexTypes...>>(bits, g.indices());
+                return make_unique<elementary_space_boson<IndexTypes...>>(1 << bits, g.indices());
             } else {
                 std::stringstream ss;
                 ss << "Unexpected algebra generator " << g;
@@ -111,9 +111,12 @@ public:
                  Operators::expression<ScalarType, IndexTypes...> const& H,
                  unsigned int bits_per_boson = 1)
         : IndexInfo(IndexInfo),
-          FullHilbertSpace(H, libcommute::boson_es_constructor(bits_per_boson)),
+          FullHilbertSpace(H, libcommute::boson_es_constructor(1 << bits_per_boson)),
           HamiltonianComplex(std::is_same<ScalarType, ComplexType>::value),
-          HOp(std::make_shared<LOperatorType<ScalarType>>(H, FullHilbertSpace)) {}
+          HOp(std::make_shared<LOperatorType<ScalarType>>(H, FullHilbertSpace)) {
+        if(FullHilbertSpace.is_sparse())
+            throw std::runtime_error("libcommute's sparse Hilbert spaces are not supported by Pomerol");
+    }
 
     /// Construct a full Hilbert space from an \ref IndexClassification object and
     /// a \ref Operators "polynomial expression" of system's Hamiltonian. The Hilbert space is constructed
@@ -145,10 +148,10 @@ public:
         // Phase I of auto-partition algorithm
         if(HamiltonianComplex) {
             auto const& op = *std::static_pointer_cast<LOperatorTypeRC<true>>(HOp);
-            Partition.reset(new libcommute::space_partition(op, FullHilbertSpace));
+            Partition.reset(new SpacePartitionType(op, FullHilbertSpace));
         } else {
             auto const& op = *std::static_pointer_cast<LOperatorTypeRC<false>>(HOp);
-            Partition.reset(new libcommute::space_partition(op, FullHilbertSpace));
+            Partition.reset(new SpacePartitionType(op, FullHilbertSpace));
         }
         // Phase II of auto-partition algorithm
         for(ParticleIndex in = 0; in < IndexInfo.getIndexSize(); ++in) {
@@ -159,7 +162,7 @@ public:
                 LOperatorType<RealType>(Operators::Detail::apply(c_dag<double, IndexTypes...>, info), FullHilbertSpace);
             auto C =
                 LOperatorType<RealType>(Operators::Detail::apply(c<double, IndexTypes...>, info), FullHilbertSpace);
-            Partition->merge_subspaces(Cd, C, FullHilbertSpace, false);
+            Partition->merge_subspaces(Cd, C, false);
         }
 
         setStatus(Computed);

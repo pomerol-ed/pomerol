@@ -84,6 +84,7 @@ public:
             mu = U / 2;
 
         for(std::size_t i = 0; i < L; i++)
+            // cppcheck-suppress useStlAlgorithm
             HExpr += LatticePresets::CoulombS(names[i], U, -mu);
 
         /* Add hopping */

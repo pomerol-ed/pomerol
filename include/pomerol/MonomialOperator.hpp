@@ -175,10 +175,9 @@ public:
             return;
         }
 
-        auto const& FullHS = HS.getFullHilbertSpace();
         auto const& Partition = HS.getSpacePartition();
-        auto Connections = MOpComplex ? Partition.find_connections(getMOp<true>(), FullHS) :
-                                        Partition.find_connections(getMOp<false>(), FullHS);
+        auto Connections =
+            MOpComplex ? Partition.find_connections(getMOp<true>()) : Partition.find_connections(getMOp<false>());
 
         parts.reserve(Connections.size());
         for(auto const& Conn : Connections) {

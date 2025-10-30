@@ -73,7 +73,7 @@ endif(USE_OPENMP)
 find_package(Eigen3 3.1 REQUIRED)
 
 # libcommute
-find_package(libcommute 0.7.2 CONFIG)
+find_package(libcommute 1.0.0 CONFIG)
 
 if(libcommute_FOUND)
     message(STATUS "Found libcommute version ${libcommute_VERSION}: "

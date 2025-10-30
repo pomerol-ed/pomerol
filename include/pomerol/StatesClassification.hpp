@@ -107,7 +107,15 @@ private:
     void initSingleBlock(QuantumState Dim);
     /// Initialize data members for a partitioned Hilbert space.
     /// \param[in] partition Partition of the full Hilbert space into invariant subspaces.
-    void initMultipleBlocks(libcommute::space_partition const& partition);
+    template <typename SpacePartitionType> void initMultipleBlocks(SpacePartitionType const& partition) {
+        StateBlockIndex.resize(partition.dim());
+        StatesContainer.resize(partition.n_subspaces(), std::vector<QuantumState>());
+        foreach(partition, [this](QuantumState State, BlockNumber Block) {
+            StateBlockIndex[State] = Block;
+            StatesContainer[Block].push_back(State);
+        })
+            ;
+    }
     /// Check if \ref compute() has already been called.
     void checkComputed() const;
 };
