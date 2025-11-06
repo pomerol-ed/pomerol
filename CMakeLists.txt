@@ -104,6 +104,8 @@ else(libcommute_FOUND)
 
         # Suppress compilation of libcommute's examples
         set(EXAMPLES OFF CACHE INTERNAL "" FORCE)
+        # Disable compilation of libcommute's tests depending on GMPXX
+        set(USE_GMPXX OFF CACHE INTERNAL "" FORCE)
         # Add libcommute as a subproject
         add_subdirectory("${libcommute_SOURCE_DIR}" "${libcommute_BINARY_DIR}")
     endif(NOT libcommute_POPULATED)
