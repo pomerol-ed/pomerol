@@ -25,7 +25,7 @@ jobs:
     - name: Install dependencies
       run: |
            brew update
-           brew install eigen open-mpi boost
+           brew install eigen@3 open-mpi boost
 
     - name: Install Doxygen
       if: |
@@ -49,6 +49,7 @@ jobs:
     - name: Build
       env:
         CXX: ${{ matrix.compiler.cxx }}
+        EIGEN_ROOT: /usr/local/opt/eigen@3
       run: |
            if [[ "${{ matrix.compiler.name }}" == clang* &&
                  "${{ matrix.install-libcommute }}" == true ]]; then
