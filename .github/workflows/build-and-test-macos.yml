@@ -11,11 +11,11 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: macos-13
+    runs-on: macos-15
     strategy:
       matrix:
         compiler:
-        - { name: "g++-12", cxx: "g++-12" }
+        - { name: "g++-13", cxx: "g++-13" }
         - { name: "clang", cxx: "clang++"}
         install-libcommute: [true, false]
 
@@ -49,7 +49,7 @@ jobs:
     - name: Build
       env:
         CXX: ${{ matrix.compiler.cxx }}
-        EIGEN_ROOT: /usr/local/opt/eigen@3
+        EIGEN_ROOT: /opt/homebrew/opt/eigen@3
       run: |
            if [[ "${{ matrix.compiler.name }}" == clang* &&
                  "${{ matrix.install-libcommute }}" == true ]]; then
