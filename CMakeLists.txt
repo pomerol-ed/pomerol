@@ -82,7 +82,7 @@ else(libcommute_FOUND)
     include(FetchContent)
 
     set(libcommute_GIT_REPOSITORY "https://github.com/krivenko/libcommute.git")
-    set(libcommute_GIT_TAG "8f51813a7bb287c905bae6ba7c5de77d886ac9cb") # v0.7.2
+    set(libcommute_GIT_TAG "23e3fab3af8bb9ac77f79f75088a83f06bf91b21") # v1.0.0
 
     FetchContent_Declare(
         libcommute
