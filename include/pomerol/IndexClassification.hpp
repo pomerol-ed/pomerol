@@ -23,7 +23,6 @@
 
 #include <iostream>
 #include <map>
-#include <sstream>
 #include <stdexcept>
 #include <tuple>
 #include <vector>
@@ -94,9 +93,7 @@ public:
         if(it != InfoToIndices.end())
             return it->second;
         else {
-            std::stringstream ss;
-            libcommute::print_tuple(ss, info);
-            throw std::runtime_error("Wrong indices " + ss.str());
+            throw std::runtime_error("Wrong indices " + libcommute::tuple_to_string(info));
         }
     }
 
@@ -123,7 +120,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, IndexClassification const& ic) {
         for(ParticleIndex i = 0; i < ic.InfoToIndices.size(); ++i) {
             os << "Index " << i << " = (";
-            libcommute::print_tuple(os, ic.IndicesToInfo[i]);
+            os << libcommute::tuple_to_string(ic.IndicesToInfo[i]);
             os << ")\n";
         }
         return os;
