@@ -1,13 +1,13 @@
 var searchData=
 [
-  ['factory_20functions_20for_20coulomb_20interaction_20terms_789',['Factory functions for Coulomb interaction terms',['../group___coulomb.html',1,'']]],
-  ['factory_20functions_20for_20fermionic_20density_2ddensity_20interaction_20terms_790',['Factory functions for fermionic density-density interaction terms',['../group___nup_ndown.html',1,'']]],
-  ['factory_20functions_20for_20fermionic_20hopping_20terms_791',['Factory functions for fermionic hopping terms',['../group___hopping.html',1,'']]],
-  ['factory_20functions_20for_20magnetization_20terms_792',['Factory functions for magnetization terms',['../group___magnetization.html',1,'']]],
-  ['factory_20functions_20for_20pairing_20terms_793',['Factory functions for pairing terms',['../group___pairing.html',1,'']]],
-  ['factory_20functions_20for_20single_20fermion_20level_20terms_794',['Factory functions for single fermion level terms',['../group___level.html',1,'']]],
-  ['factory_20functions_20for_20spin_20coupling_20terms_795',['Factory functions for spin coupling terms',['../group___s_s.html',1,'']]],
-  ['factory_20functions_20for_20spin_2dflip_20and_20pair_2dhopping_20terms_796',['Factory functions for spin-flip and pair-hopping terms',['../group___spinflip_pair_hopping.html',1,'']]],
-  ['factory_20functions_20for_20terms_20with_20bosonic_20degrees_20of_20freedom_797',['Factory functions for terms with bosonic degrees of freedom',['../group___boson.html',1,'']]],
-  ['factory_20functions_20to_20construct_20widely_20used_20lattice_20models_798',['Factory functions to construct widely used lattice models',['../group___lattice_presets.html',1,'']]]
+  ['factory_20functions_20for_20coulomb_20interaction_20terms_791',['Factory functions for Coulomb interaction terms',['../group___coulomb.html',1,'']]],
+  ['factory_20functions_20for_20fermionic_20density_2ddensity_20interaction_20terms_792',['Factory functions for fermionic density-density interaction terms',['../group___nup_ndown.html',1,'']]],
+  ['factory_20functions_20for_20fermionic_20hopping_20terms_793',['Factory functions for fermionic hopping terms',['../group___hopping.html',1,'']]],
+  ['factory_20functions_20for_20magnetization_20terms_794',['Factory functions for magnetization terms',['../group___magnetization.html',1,'']]],
+  ['factory_20functions_20for_20pairing_20terms_795',['Factory functions for pairing terms',['../group___pairing.html',1,'']]],
+  ['factory_20functions_20for_20single_20fermion_20level_20terms_796',['Factory functions for single fermion level terms',['../group___level.html',1,'']]],
+  ['factory_20functions_20for_20spin_20coupling_20terms_797',['Factory functions for spin coupling terms',['../group___s_s.html',1,'']]],
+  ['factory_20functions_20for_20spin_2dflip_20and_20pair_2dhopping_20terms_798',['Factory functions for spin-flip and pair-hopping terms',['../group___spinflip_pair_hopping.html',1,'']]],
+  ['factory_20functions_20for_20terms_20with_20bosonic_20degrees_20of_20freedom_799',['Factory functions for terms with bosonic degrees of freedom',['../group___boson.html',1,'']]],
+  ['factory_20functions_20to_20construct_20widely_20used_20lattice_20models_800',['Factory functions to construct widely used lattice models',['../group___lattice_presets.html',1,'']]]
 ];
