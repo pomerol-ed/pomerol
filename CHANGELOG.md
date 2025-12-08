@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3] - Unreleased
+
+- This release introduces the fixes necessary for compatibility with
+  [libcommute 1.0.0](https://github.com/krivenko/libcommute/releases/tag/v1.0.0)
+  .
+
 ## [2.2] - 2025-09-08
 
 - New class `FieldOperator`. This class is an intermediate layer in the
