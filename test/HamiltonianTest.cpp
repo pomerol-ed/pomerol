@@ -29,6 +29,8 @@
 
 #include "catch2/catch-pomerol.hpp"
 
+#include <vector>
+
 using namespace Pomerol;
 
 // cppcheck-suppress syntaxError
@@ -49,6 +51,14 @@ TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
 
     Hamiltonian H(S);
     H.prepare(HExpr, HS, MPI_COMM_WORLD);
+
+    // Store matrices of H' parts
+    std::vector<MatrixType<false>> mats;
+    mats.reserve(H.getNumBlocks());
+    for(BlockNumber Block = 0; Block < H.getNumBlocks(); ++Block) {
+        mats.push_back(H.getPart(Block).getMatrix<false>());
+    }
+
     H.compute(MPI_COMM_WORLD);
 
     INFO(H.getPart(BlockNumber(4)));
@@ -61,6 +71,18 @@ TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
         RealType E = H.getGroundEnergy();
 
         REQUIRE_THAT(E, IsCloseTo(E_ref, 1e-7));
+    }
+
+    SECTION("Eigensystem") {
+        for(BlockNumber Block = 0; Block < H.getNumBlocks(); ++Block) {
+            auto const& part = H.getPart(Block);
+            auto const& mat = mats[Block];
+            for(InnerQuantumState Inner = 0; Inner < H.getBlockSize(Block); ++Inner) {
+                RealType E = part.getEigenValue(Inner);
+                auto state = part.getEigenState<false>(Inner);
+                REQUIRE_THAT((mat * state - E * state).cwiseAbs().maxCoeff(), IsCloseTo(0, 1e-10));
+            }
+        }
     }
 
     SECTION("Monomial operators") {

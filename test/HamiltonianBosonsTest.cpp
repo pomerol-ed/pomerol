@@ -79,6 +79,14 @@ TEST_CASE("Hamiltonian of an isolated Hubbard-Holstein atom", "[HubbardHolstein]
 
         Hamiltonian H(S);
         H.prepare(HExpr, HS, MPI_COMM_WORLD);
+
+        // Store matrices of H' parts
+        std::vector<MatrixType<false>> mats;
+        mats.reserve(H.getNumBlocks());
+        for(BlockNumber Block = 0; Block < H.getNumBlocks(); ++Block) {
+            mats.push_back(H.getPart(Block).getMatrix<false>());
+        }
+
         H.compute(MPI_COMM_WORLD);
 
         // Sorted list of eigenvalues
@@ -90,6 +98,18 @@ TEST_CASE("Hamiltonian of an isolated Hubbard-Holstein atom", "[HubbardHolstein]
         REQUIRE(ev.size() == ev_ref.size());
         for(int n = 0; n < n_ev_to_check; ++n)
             REQUIRE_THAT(ev(n), IsCloseTo(ev_ref[n], 1e-10));
+
+        SECTION("Eigensystem") {
+            for(BlockNumber Block = 0; Block < H.getNumBlocks(); ++Block) {
+                auto const& part = H.getPart(Block);
+                auto const& mat = mats[Block];
+                for(InnerQuantumState Inner = 0; Inner < H.getBlockSize(Block); ++Inner) {
+                    RealType E = part.getEigenValue(Inner);
+                    auto state = part.getEigenState<false>(Inner);
+                    REQUIRE_THAT((mat * state - E * state).cwiseAbs().maxCoeff(), IsCloseTo(0, 1e-10));
+                }
+            }
+        }
     }
 
     SECTION("bits_per_boson_map") {
