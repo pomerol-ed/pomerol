@@ -1,0 +1,61 @@
+context:
+  name: pomerol
+  version: ${{ env.get('POMEROL_VERSION') }}
+  number: 0
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+about:
+  homepage: https://pomerol-ed.github.io/pomerol/
+  license: MPL-2.0
+  license_file: LICENSE
+  summary: >
+    A C++ exact diagonalization (full ED) library aimed at solving condensed
+    matter second-quantized models of interacting fermions and bosons
+  description: >
+    The library is designed to solve models on finite size lattices at finite
+    temperature and to compute thermal expectation values of static observables,
+    single- and two-particle Green's functions as well as susceptibilities.
+    Main features of the library:
+
+      - High performance exact calculation of Green's functions, two-particle
+        Green's functions and susceptibilities in Matsubara domain.
+      - Many-body Hamiltonians can be specified in a natural mathematical form
+        using libcommute's Domain-Specific Language. Hamiltonian presets for
+        commonly used lattice models are also available.
+      - Automatic symmetry analysis of the many-body Hamiltonians drastically
+        reduces computational costs.
+      - Eigen 3 is used for numerical linear algebra.
+      - MPI and OpenMP support.
+
+  repository: https://github.com/pomerol-ed/pomerol
+  documentation: https://pomerol-ed.github.io/pomerol/
+
+source:
+  git: https://github.com/pomerol-ed/pomerol.git
+  tag: ${{ version }}
+
+build:
+  number: ${{ number }}
+  string: ${{ mpi }}_h${{ hash }}_${{ number }}
+  script: build.sh
+
+requirements:
+  build:
+    - ${{ compiler('cxx') }}
+    - ${{ mpi }}
+    - cmake
+    - make
+  host:
+    - ${{ mpi }}
+    - libboost-headers >=1.54.0
+    - eigen >= 3.1.0
+    - libcommute >=1.0.0
+  run:
+    - ${{ mpi }}
+
+tests:
+  - script: anderson.pomerol
+  - script: hubbard2d.pomerol

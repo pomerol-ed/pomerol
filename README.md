@@ -1,11 +1,13 @@
-[![DOI](https://zenodo.org/badge/4569/aeantipov/pomerol.svg)](
-http://dx.doi.org/10.5281/zenodo.17900)
+[![Package on Anaconda.org](https://anaconda.org/krivenko/pomerol/badges/version.svg)](
+https://anaconda.org/channels/krivenko/packages/pomerol/overview)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-red)](
 https://pomerol-ed.github.io/pomerol/)
 [![Build and test (Ubuntu)](https://github.com/pomerol-ed/pomerol/actions/workflows/build-and-test-ubuntu.yml/badge.svg)](
 https://github.com/pomerol-ed/pomerol/actions/workflows/build-and-test-ubuntu.yml)
 [![Build and test (macOS)](https://github.com/pomerol-ed/pomerol/actions/workflows/build-and-test-macos.yml/badge.svg)](
 https://github.com/pomerol-ed/pomerol/actions/workflows/build-and-test-macos.yml)
+[![DOI](https://zenodo.org/badge/4569/aeantipov/pomerol.svg)](
+http://dx.doi.org/10.5281/zenodo.17900)
 
 **pomerol** is an exact diagonalization (full ED) code written in C++ aimed at
 solving condensed matter second-quantized models of interacting fermions
@@ -13,7 +15,7 @@ and bosons on finite size lattices at finite temperatures.
 It is designed to compute thermal expectation values of observables, single- and
 two-particle Green's functions as well as susceptibilities.
 
-##  Features
+## Features
 
   * High performance exact calculation of Green's functions, two-particle
     Green's functions and susceptibilities in Matsubara domain.
@@ -29,6 +31,19 @@ two-particle Green's functions as well as susceptibilities.
     [OpenMP](https://en.wikipedia.org/wiki/OpenMP) support.
 
 ## Installation
+
+### `conda`/`mamba` package from Anaconda.org
+
+**pomerol** is available as a conda/mamba package from [Anaconda.org](
+https://anaconda.org/channels/krivenko/packages/pomerol/overview)
+since the release 2.3. It is packaged for three platforms (linux-64, osx-64,
+osx-arm64) and is linked to either OpenMPI or MPICH libraries.
+
+```
+conda install krivenko::pomerol
+mamba install krivenko::pomerol
+```
+
 ### From source
 
   - Check the *dependencies*:
@@ -99,23 +114,23 @@ linked to external libraries.
 The interface to [TRIQS library](https://triqs.github.io/triqs/latest/) is
 readily available: <https://github.com/pomerol-ed/pomerol2triqs>.
 
-# Documentation
+## Documentation
 Check <https://pomerol-ed.github.io/pomerol/html/> or type `make doc` during
 compilation stage to build the reference documentation.
 
 [CHANGELOG.md](CHANGELOG.md) lists main changes introduced in each release.
 
-# License
+## License
 This Source Code Form is subject to the terms of the Mozilla Public License,
 v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain
 one at <http://mozilla.org/MPL/2.0/>.
 
-# Academic usage
+## Academic usage
 
 Please, attribute this work by a citation to
 <http://dx.doi.org/10.5281/zenodo.17900>.
 
-# Authors & Contributors
+## Authors & Contributors
   * Andrey Antipov <Andrey.E.Antipov\at\gmail.com>
   * Igor Krivenko <iskrivenko\at\proton.me>
   * Mikhail Alejnikov
@@ -129,5 +144,5 @@ Please, attribute this work by a citation to
   * Hugo U.R. Strand
   * Dominik Kiese
 
-# Development/Help
+## Development/Help
 Please, feel free to contact us and to contribute!

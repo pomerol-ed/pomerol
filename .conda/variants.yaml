@@ -1,0 +1,7 @@
+mpi:
+  - mpich
+  - openmpi
+mpich:
+  - '4'
+openmpi:
+  - '5'

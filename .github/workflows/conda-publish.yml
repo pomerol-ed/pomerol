@@ -1,0 +1,78 @@
+name: Build conda package and upload to Anaconda.org
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+'
+
+jobs:
+  build-upload:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-15, macos-15-intel]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up micromamba (Linux)
+        if: runner.os == 'Linux'
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-name: build-env
+          condarc: |
+            channels:
+              - krivenko
+              - conda-forge
+          create-args: >-
+            python
+            rattler-build
+            compilers
+            sysroot_linux-64=2.17
+            cmake
+            make
+
+      - name: Set up micromamba (macOS)
+        if: runner.os == 'macOS'
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-name: build-env
+          condarc: |
+            channels:
+              - krivenko
+              - conda-forge
+          create-args: >-
+            python
+            rattler-build
+            compilers
+            cmake
+            make
+
+      - name: Detect version of pomerol
+        shell: "bash -l {0}"
+        run: |
+             VERSION=${{ github.ref_name }}
+             echo "pomerol version: ${VERSION}"
+             echo "POMEROL_VERSION=${VERSION}" >> $GITHUB_ENV
+
+      - name: Build Conda Package
+        id: build
+        shell: "bash -l {0}"
+        run: |
+             eval "$(micromamba shell hook --shell=bash)"
+             micromamba activate build-env
+             rattler-build build -c krivenko -c conda-forge \
+                  --recipe .conda/recipe.yaml --output-dir ${HOME}/output
+
+      - name: Upload package to Anaconda
+        shell: "bash -l {0}"
+        env:
+          ANACONDA_API_KEY: ${{ secrets.ANACONDA_API_TOKEN }}
+        run: |
+             # Get the path to the built packages from the output folder
+             BUILT_PKG=$(find "${HOME}/output" -type f -name "*.conda")
+             BUILT_PKG=$(echo ${BUILT_PKG} | tr '\n' ' ')
+             echo "Built packages: ${BUILT_PKG}"
+
+             rattler-build upload anaconda -f -o krivenko ${BUILT_PKG}

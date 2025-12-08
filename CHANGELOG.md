@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 - Bumped required libcommute version to 1.0.0.
 
+- A [conda package](
+  https://anaconda.org/channels/krivenko/packages/pomerol/overview) is now
+  being provided.
+
 ## [2.2] - 2025-09-08
 
 - New class `FieldOperator`. This class is an intermediate layer in the
