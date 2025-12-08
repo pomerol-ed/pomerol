@@ -138,8 +138,10 @@ InnerQuantumState HamiltonianPart::getSize() const {
 
 template <bool C> VectorType<C> HamiltonianPart::getEigenState(InnerQuantumState state) const {
     checkComputed();
-    return getMatrix<C>()->col(state);
+    return getMatrix<C>().col(state);
 }
+template VectorType<true> HamiltonianPart::getEigenState<true>(InnerQuantumState) const;
+template VectorType<false> HamiltonianPart::getEigenState<false>(InnerQuantumState) const;
 
 RealType HamiltonianPart::getMinimumEigenvalue() const {
     checkComputed();
