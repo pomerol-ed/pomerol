@@ -84,10 +84,6 @@ public:
     /// Is the Hamiltonian a complex-valued matrix?
     bool isComplex() const { return Complex; }
 
-    /// Return the number of parts (diagonal blocks) of the Hamiltonian.
-    /// \pre \ref prepare() has been called.
-    BlockNumber getNumBlocks() const { return parts.size(); }
-
     /// Access a part (diagonal block) of the Hamiltonian.
     /// \param[in] Block Index of the diagonal block.
     /// \pre \ref prepare() has been called.

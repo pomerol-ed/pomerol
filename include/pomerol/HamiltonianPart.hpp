@@ -100,12 +100,16 @@ public:
     /// \pre \ref compute() has been called.
     RealType getEigenValue(InnerQuantumState State) const;
 
-    /// Return a constant reference to the stored matrix.
+    /// Return a constant reference to the stored matrix. Before \ref compute() has been called,
+    /// this matrix is the diagonal block of the Hamiltonian. After the call it becomes a unitary
+    /// matrix, whose columns are eigenvectors of the block.
     /// \tparam Complex Request a reference to a complex-valued matrix.
     /// \pre \ref prepare() has been called.
     /// \pre The compile-time value of \p Complex must agree with the result of \ref isComplex().
     template <bool Complex> MatrixType<Complex> const& getMatrix() const;
-    /// Return a reference to the stored matrix.
+    /// Return a reference to the stored matrix. Before \ref compute() has been called,
+    /// this matrix is the diagonal block of the Hamiltonian. After the call it becomes a unitary
+    /// matrix, whose columns are eigenvectors of the block.
     /// \tparam Complex Request a reference to a complex-valued matrix.
     /// \pre \ref prepare() has been called.
     /// \pre The compile-time value of \p Complex must agree with the result of \ref isComplex().

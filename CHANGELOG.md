@@ -4,8 +4,6 @@ All notable changes to this project will be documented in this file.
 
 ## [2.3] - Unreleased
 
-- Added new method `Hamiltonian::getNumBlocks()`.
-
 - Bumped required libcommute version to 1.0.0.
 
 ## [2.2] - 2025-09-08
