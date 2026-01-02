@@ -16,7 +16,7 @@ jobs:
       matrix:
         compiler:
         - { name: "gcc", cxx: "g++-15" }
-        - { name: "clang", cxx: "clang++"}
+        - { name: "clang", cxx: "/opt/homebrew/opt/llvm/bin/clang++" }
         install-libcommute: [true, false]
 
     steps:
@@ -25,7 +25,14 @@ jobs:
     - name: Install dependencies
       run: |
            brew update
-           brew install eigen@3 open-mpi boost
+           brew install llvm libomp open-mpi boost eigen@3
+
+    - name: Set LDFLAGS for Clang
+      if: startsWith(matrix.compiler.name, 'clang')
+      run: |
+           LDFLAGS="-L/opt/homebrew/opt/llvm/lib/c++ \
+                    -L/opt/homebrew/opt/llvm/lib/unwind -lunwind"
+           echo "LDFLAGS=${LDFLAGS}" >> $GITHUB_ENV
 
     - name: Install Doxygen
       if: |
@@ -37,6 +44,7 @@ jobs:
       if: matrix.install-libcommute
       env:
         CXX: ${{ matrix.compiler.cxx }}
+        EIGEN_ROOT: /opt/homebrew/opt/eigen@3
       run: |
            git clone https://github.com/krivenko/libcommute ${HOME}/libcommute
            mkdir ${HOME}/libcommute.build && cd ${HOME}/libcommute.build
