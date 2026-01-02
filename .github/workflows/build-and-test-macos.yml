@@ -11,11 +11,11 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: macos-15
+    runs-on: macos-latest
     strategy:
       matrix:
         compiler:
-        - { name: "g++-13", cxx: "g++-13" }
+        - { name: "gcc", cxx: "g++-15" }
         - { name: "clang", cxx: "clang++"}
         install-libcommute: [true, false]
 

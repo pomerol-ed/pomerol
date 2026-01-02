@@ -11,12 +11,12 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         compiler:
-        - { name: "g++-10", cxx: "g++-10" }
-        - { name: "clang-13", cxx: "clang++-13" }
+        - { name: "gcc", cxx: "g++-14" }
+        - { name: "clang", cxx: "clang++" }
         install-libcommute: [true, false]
 
     steps:
@@ -26,7 +26,6 @@ jobs:
       run: |
            sudo apt-get update -q
            sudo apt-get install -y libeigen3-dev libopenmpi-dev libboost-all-dev
-           sudo apt-get install -y ${{ matrix.compiler.name }}
 
     - name: Install Doxygen
       if: |
