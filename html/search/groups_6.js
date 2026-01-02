@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['single_2dparticle_20green_27s_20functions_20of_20fermions_802',['Single-particle Green&apos;s functions of fermions',['../group___g_f.html',1,'']]]
+  ['green_20s_20functions_20of_20fermions_0',['green s functions of fermions',['../group___g_f.html',1,'Single-particle Green&apos;s functions of fermions'],['../group___p_g_f.html',1,'Two-particle Green&apos;s functions of fermions']]]
 ];

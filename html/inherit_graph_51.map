@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$struct_pomerol_1_1_two_particle_g_f_part_1_1_resonant_term_1_1_key_equal.html" title="Similarity predicate for resonant terms." alt="" coords="5,5,205,47"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,13,144,38"/>
+<area shape="rect" id="Node000001" href="$class_pomerol_1_1_computable_object_1_1_status_mismatch.html" title="Exception: Unexpected computation status of a computable object." alt="" coords="192,5,397,45"/>
+<area shape="poly" id="edge39_Node000000_Node000001" title=" " alt="" coords="158,23,192,23,192,28,158,28"/>
 </map>

@@ -1,13 +1,9 @@
 var searchData=
 [
-  ['factory_20functions_20for_20coulomb_20interaction_20terms_789',['Factory functions for Coulomb interaction terms',['../group___coulomb.html',1,'']]],
-  ['factory_20functions_20for_20fermionic_20density_2ddensity_20interaction_20terms_790',['Factory functions for fermionic density-density interaction terms',['../group___nup_ndown.html',1,'']]],
-  ['factory_20functions_20for_20fermionic_20hopping_20terms_791',['Factory functions for fermionic hopping terms',['../group___hopping.html',1,'']]],
-  ['factory_20functions_20for_20magnetization_20terms_792',['Factory functions for magnetization terms',['../group___magnetization.html',1,'']]],
-  ['factory_20functions_20for_20pairing_20terms_793',['Factory functions for pairing terms',['../group___pairing.html',1,'']]],
-  ['factory_20functions_20for_20single_20fermion_20level_20terms_794',['Factory functions for single fermion level terms',['../group___level.html',1,'']]],
-  ['factory_20functions_20for_20spin_20coupling_20terms_795',['Factory functions for spin coupling terms',['../group___s_s.html',1,'']]],
-  ['factory_20functions_20for_20spin_2dflip_20and_20pair_2dhopping_20terms_796',['Factory functions for spin-flip and pair-hopping terms',['../group___spinflip_pair_hopping.html',1,'']]],
-  ['factory_20functions_20for_20terms_20with_20bosonic_20degrees_20of_20freedom_797',['Factory functions for terms with bosonic degrees of freedom',['../group___boson.html',1,'']]],
-  ['factory_20functions_20to_20construct_20widely_20used_20lattice_20models_798',['Factory functions to construct widely used lattice models',['../group___lattice_presets.html',1,'']]]
+  ['declarations_0',['Basic declarations',['../group___basic.html',1,'']]],
+  ['degrees_20of_20freedom_1',['Factory functions for terms with bosonic degrees of freedom',['../group___boson.html',1,'']]],
+  ['density_20density_20interaction_20terms_2',['Factory functions for fermionic density-density interaction terms',['../group___nup_ndown.html',1,'']]],
+  ['density_20matrix_3',['Exact diagonalization: Hilbert space, Hamiltonian, monomial operators and density matrix',['../group___e_d.html',1,'']]],
+  ['diagonalization_3a_20hilbert_20space_20hamiltonian_20monomial_20operators_20and_20density_20matrix_4',['Exact diagonalization: Hilbert space, Hamiltonian, monomial operators and density matrix',['../group___e_d.html',1,'']]],
+  ['dynamical_20susceptibilities_5',['Dynamical susceptibilities',['../group___susc.html',1,'']]]
 ];

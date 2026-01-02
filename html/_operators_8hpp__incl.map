@@ -1,11 +1,19 @@
 <map id="pomerol/Operators.hpp" name="pomerol/Operators.hpp">
-<area shape="rect" id="node1" title="Expressions with quantum&#45;mechanical operators and functions to construct them." alt="" coords="589,5,761,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,80,180,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="204,80,379,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="403,80,577,121"/>
-<area shape="rect" id="node5" title=" " alt="" coords="601,87,667,114"/>
-<area shape="rect" id="node6" title=" " alt="" coords="691,87,745,114"/>
-<area shape="rect" id="node7" title=" " alt="" coords="769,87,861,114"/>
-<area shape="rect" id="node8" title=" " alt="" coords="885,87,945,114"/>
-<area shape="rect" id="node9" title=" " alt="" coords="969,87,1032,114"/>
+<area shape="rect" id="Node000001" title="Expressions with quantum&#45;mechanical operators and functions to construct them." alt="" coords="589,5,761,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,180,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="589,31,411,51,194,81,193,76,410,46,589,26"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="204,79,379,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="620,33,393,79,392,74,619,28"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="403,79,577,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="649,33,548,76,546,71,647,28"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="601,86,667,111"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="672,32,649,75,644,73,667,30"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="691,86,745,111"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="684,30,708,73,703,75,679,32"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="769,86,861,111"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="697,29,784,77,781,82,695,33"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="885,86,945,111"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="720,28,793,49,875,76,880,78,878,83,873,81,792,54,719,33"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="969,86,1032,111"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="751,28,850,47,959,76,965,78,964,83,957,81,849,53,750,33"/>
 </map>

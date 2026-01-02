@@ -1,4 +1,5 @@
 <map id="pomerol/Susceptibility.hpp" name="pomerol/Susceptibility.hpp">
-<area shape="rect" id="node1" title="Dynamical susceptibility in the Matsubara representation." alt="" coords="5,5,200,32"/>
-<area shape="rect" id="node2" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="51,80,155,107"/>
+<area shape="rect" id="Node000001" title="Dynamical susceptibility in the Matsubara representation." alt="" coords="5,5,200,31"/>
+<area shape="rect" id="Node000002" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="51,79,155,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="105,44,105,79,100,79,100,44"/>
 </map>

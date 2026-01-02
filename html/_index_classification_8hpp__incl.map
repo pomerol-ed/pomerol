@@ -1,26 +1,53 @@
 <map id="pomerol/IndexClassification.hpp" name="pomerol/IndexClassification.hpp">
-<area shape="rect" id="node1" title="Classification of indices of fermionic creation/annihilation operators." alt="" coords="1957,5,2188,32"/>
-<area shape="rect" id="node2" href="$pomerol_2misc_8hpp.html" title="Declarations of the most basic types and macros." alt="" coords="921,80,1001,107"/>
-<area shape="rect" id="node12" title=" " alt="" coords="1263,162,1343,189"/>
-<area shape="rect" id="node14" href="$_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them." alt="" coords="1895,80,2010,107"/>
-<area shape="rect" id="node19" title=" " alt="" coords="2253,162,2308,189"/>
-<area shape="rect" id="node21" title=" " alt="" coords="2332,162,2395,189"/>
-<area shape="rect" id="node22" title=" " alt="" coords="2135,80,2303,107"/>
-<area shape="rect" id="node23" title=" " alt="" coords="2327,80,2378,107"/>
-<area shape="rect" id="node24" title=" " alt="" coords="2403,80,2489,107"/>
-<area shape="rect" id="node3" href="$_version_8hpp.html" title="Pomerol version information." alt="" coords="5,162,161,189"/>
-<area shape="rect" id="node4" title=" " alt="" coords="185,155,339,196"/>
-<area shape="rect" id="node5" title=" " alt="" coords="363,155,526,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="550,155,713,196"/>
-<area shape="rect" id="node7" title=" " alt="" coords="737,162,829,189"/>
-<area shape="rect" id="node8" title=" " alt="" coords="854,162,961,189"/>
-<area shape="rect" id="node9" title=" " alt="" coords="985,162,1041,189"/>
-<area shape="rect" id="node10" title=" " alt="" coords="1065,162,1144,189"/>
-<area shape="rect" id="node11" title=" " alt="" coords="1168,162,1239,189"/>
-<area shape="rect" id="node13" title=" " alt="" coords="1368,162,1460,189"/>
-<area shape="rect" id="node15" title=" " alt="" coords="1568,155,1743,196"/>
-<area shape="rect" id="node16" title=" " alt="" coords="1767,155,1941,196"/>
-<area shape="rect" id="node17" title=" " alt="" coords="1965,155,2140,196"/>
-<area shape="rect" id="node18" title=" " alt="" coords="2164,162,2229,189"/>
-<area shape="rect" id="node20" title=" " alt="" coords="1484,162,1544,189"/>
+<area shape="rect" id="Node000001" title="Classification of indices of fermionic creation/annihilation operators." alt="" coords="1957,5,2188,31"/>
+<area shape="rect" id="Node000002" href="$pomerol_2_misc_8hpp.html" title="Declarations of the most basic types and macros." alt="" coords="921,79,1001,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1958,29,1015,89,1014,84,1957,24"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="1263,159,1343,185"/>
+<area shape="poly" id="edge23_Node000001_Node000012" title=" " alt="" coords="1987,33,1704,78,1530,113,1356,155,1346,157,1345,152,1355,149,1529,108,1703,73,1986,28"/>
+<area shape="rect" id="Node000014" href="$_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them." alt="" coords="1895,79,2010,104"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="2055,33,1986,74,1983,69,2052,28"/>
+<area shape="rect" id="Node000019" title=" " alt="" coords="2253,159,2308,185"/>
+<area shape="poly" id="edge26_Node000001_Node000019" title=" " alt="" coords="2072,31,2070,66,2073,86,2081,102,2099,120,2116,130,2134,135,2152,137,2194,139,2217,142,2243,149,2247,151,2245,156,2241,155,2216,147,2193,144,2152,142,2133,140,2114,135,2095,124,2077,106,2068,87,2064,67,2067,31"/>
+<area shape="rect" id="Node000021" title=" " alt="" coords="2332,159,2395,185"/>
+<area shape="poly" id="edge27_Node000001_Node000021" title=" " alt="" coords="2079,30,2095,66,2108,86,2125,102,2150,118,2174,127,2217,135,2264,137,2321,149,2327,152,2326,157,2320,155,2264,142,2217,140,2172,133,2148,123,2122,106,2104,89,2090,69,2074,32"/>
+<area shape="rect" id="Node000022" title=" " alt="" coords="2135,79,2303,104"/>
+<area shape="poly" id="edge22_Node000001_Node000022" title=" " alt="" coords="2097,28,2184,70,2182,75,2095,33"/>
+<area shape="rect" id="Node000023" title=" " alt="" coords="2327,79,2378,104"/>
+<area shape="poly" id="edge24_Node000001_Node000023" title=" " alt="" coords="2123,28,2314,76,2313,81,2122,33"/>
+<area shape="rect" id="Node000024" title=" " alt="" coords="2403,79,2489,104"/>
+<area shape="poly" id="edge25_Node000001_Node000024" title=" " alt="" coords="2136,28,2389,76,2389,81,2135,33"/>
+<area shape="rect" id="Node000003" href="$_version_8hpp.html" title="Pomerol version information." alt="" coords="5,159,161,185"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="920,97,610,112,393,129,173,155,146,159,145,154,172,149,393,124,609,107,920,91"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="185,152,339,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="921,98,684,116,522,133,353,155,352,149,521,127,684,111,920,92"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="363,152,526,192"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="921,100,758,121,540,154,539,149,758,116,920,95"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="550,152,713,192"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="921,105,724,151,723,146,920,100"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="737,159,829,185"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="936,106,823,156,820,151,934,102"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="854,159,961,185"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="955,106,925,149,921,146,951,103"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="985,159,1041,185"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="971,103,1000,146,995,149,966,106"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="1065,159,1144,185"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="983,102,1073,150,1070,155,981,107"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="1168,159,1239,185"/>
+<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="1002,101,1156,149,1163,152,1161,157,1154,155,1000,107"/>
+<area shape="poly" id="edge11_Node000002_Node000012" title=" " alt="" coords="1001,97,1114,117,1251,149,1261,152,1259,158,1249,155,1113,123,1000,102"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="1368,159,1460,185"/>
+<area shape="poly" id="edge12_Node000002_Node000013" title=" " alt="" coords="1001,94,1157,113,1257,129,1356,149,1369,153,1368,158,1355,155,1256,134,1157,119,1001,99"/>
+<area shape="poly" id="edge19_Node000014_Node000013" title=" " alt="" coords="1895,99,1706,117,1589,133,1472,155,1459,158,1458,153,1471,149,1588,127,1705,111,1895,94"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="1568,152,1743,192"/>
+<area shape="poly" id="edge14_Node000014_Node000015" title=" " alt="" coords="1910,107,1740,151,1739,146,1909,101"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="1767,152,1941,192"/>
+<area shape="poly" id="edge15_Node000014_Node000016" title=" " alt="" coords="1940,106,1890,145,1887,141,1936,102"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="1965,152,2140,192"/>
+<area shape="poly" id="edge16_Node000014_Node000017" title=" " alt="" coords="1969,102,2019,141,2016,145,1966,106"/>
+<area shape="rect" id="Node000018" title=" " alt="" coords="2164,159,2229,185"/>
+<area shape="poly" id="edge17_Node000014_Node000018" title=" " alt="" coords="1997,101,2070,122,2154,149,2159,152,2158,157,2152,155,2069,128,1995,107"/>
+<area shape="poly" id="edge18_Node000014_Node000019" title=" " alt="" coords="2011,100,2138,124,2243,149,2248,151,2246,156,2241,155,2137,129,2010,105"/>
+<area shape="rect" id="Node000020" title=" " alt="" coords="1484,159,1544,185"/>
+<area shape="poly" id="edge20_Node000014_Node000020" title=" " alt="" coords="1895,99,1740,116,1648,132,1556,155,1550,157,1548,152,1555,149,1647,127,1740,111,1895,94"/>
+<area shape="poly" id="edge21_Node000014_Node000021" title=" " alt="" coords="2011,95,2153,113,2238,129,2321,149,2328,152,2327,157,2320,155,2237,134,2152,118,2010,100"/>
 </map>

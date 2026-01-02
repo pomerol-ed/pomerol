@@ -1,43 +1,124 @@
 <map id="pomerol/DensityMatrix.hpp" name="pomerol/DensityMatrix.hpp">
-<area shape="rect" id="node1" title="Many&#45;body Gibbs density matrix as a list of diagonal blocks." alt="" coords="1206,5,1406,32"/>
-<area shape="rect" id="node2" href="$_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc." alt="" coords="2545,386,2715,413"/>
-<area shape="rect" id="node5" href="$_density_matrix_part_8hpp.html" title="Diagonal block of a many&#45;body Gibbs density matrix." alt="" coords="921,80,1088,107"/>
-<area shape="rect" id="node7" href="$_index_classification_8hpp.html" title="Classification of indices of fermionic creation/annihilation operators." alt="" coords="2145,386,2318,413"/>
-<area shape="rect" id="node8" href="$pomerol_2misc_8hpp.html" title="Declarations of the most basic types and macros." alt="" coords="630,468,710,495"/>
-<area shape="rect" id="node27" title=" " alt="" coords="2720,550,2783,577"/>
-<area shape="rect" id="node30" href="$_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces." alt="" coords="1147,229,1326,256"/>
-<area shape="rect" id="node37" href="$_thermal_8hpp.html" title="Objects, whose definition depends on the temperature." alt="" coords="429,155,533,181"/>
-<area shape="rect" id="node39" href="$_hamiltonian_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix." alt="" coords="1298,80,1429,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="2495,468,2581,495"/>
-<area shape="rect" id="node4" title=" " alt="" coords="2657,468,2715,495"/>
-<area shape="rect" id="node6" href="$_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block." alt="" coords="927,155,1082,181"/>
-<area shape="rect" id="node10" title=" " alt="" coords="899,543,1052,584"/>
-<area shape="rect" id="node11" title=" " alt="" coords="1077,543,1239,584"/>
-<area shape="rect" id="node18" title=" " alt="" coords="1263,550,1343,577"/>
-<area shape="rect" id="node19" title=" " alt="" coords="1368,550,1460,577"/>
-<area shape="rect" id="node35" title=" " alt="" coords="1011,386,1089,413"/>
-<area shape="rect" id="node20" href="$_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them." alt="" coords="2305,468,2419,495"/>
-<area shape="rect" id="node25" title=" " alt="" coords="1872,550,1927,577"/>
-<area shape="rect" id="node28" title=" " alt="" coords="2113,468,2281,495"/>
-<area shape="rect" id="node29" title=" " alt="" coords="1937,468,1987,495"/>
-<area shape="rect" id="node9" href="$_version_8hpp.html" title="Pomerol version information." alt="" coords="531,550,687,577"/>
-<area shape="rect" id="node12" title=" " alt="" coords="711,543,874,584"/>
-<area shape="rect" id="node13" title=" " alt="" coords="5,550,97,577"/>
-<area shape="rect" id="node14" title=" " alt="" coords="122,550,229,577"/>
-<area shape="rect" id="node15" title=" " alt="" coords="253,550,309,577"/>
-<area shape="rect" id="node16" title=" " alt="" coords="333,550,412,577"/>
-<area shape="rect" id="node17" title=" " alt="" coords="436,550,507,577"/>
-<area shape="rect" id="node21" title=" " alt="" coords="2521,543,2696,584"/>
-<area shape="rect" id="node22" title=" " alt="" coords="1951,543,2125,584"/>
-<area shape="rect" id="node23" title=" " alt="" coords="2149,543,2324,584"/>
-<area shape="rect" id="node24" title=" " alt="" coords="2348,550,2413,577"/>
-<area shape="rect" id="node26" title=" " alt="" coords="2437,550,2497,577"/>
-<area shape="rect" id="node31" href="$_hilbert_space_8hpp.html" title="Hilbert space of a system and invariant subspaces of its Hamiltonian." alt="" coords="1401,304,1534,331"/>
-<area shape="rect" id="node34" title=" " alt="" coords="1113,379,1275,420"/>
-<area shape="rect" id="node32" title=" " alt="" coords="1601,379,1833,420"/>
-<area shape="rect" id="node33" title=" " alt="" coords="1857,379,2019,420"/>
-<area shape="rect" id="node36" title=" " alt="" coords="1502,386,1577,413"/>
-<area shape="rect" id="node38" title=" " alt="" coords="519,229,581,256"/>
-<area shape="rect" id="node40" href="$mpi__dispatcher_2misc_8hpp.html" title="Miscellaneous MPI&#45;related functions." alt="" coords="2356,155,2541,181"/>
-<area shape="rect" id="node41" title=" " alt="" coords="2483,229,2542,256"/>
+<area shape="rect" id="Node000001" title="Many&#45;body Gibbs density matrix as a list of diagonal blocks." alt="" coords="1206,5,1406,31"/>
+<area shape="rect" id="Node000002" href="$_computable_object_8hpp.html" title="A base class for computable objects, e.g. Green&#39;s function, two&#45;particle GF, etc." alt="" coords="2545,379,2715,405"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1407,17,1739,22,1949,29,2163,41,2361,59,2527,84,2591,100,2640,118,2672,139,2680,151,2683,163,2683,239,2680,276,2670,311,2646,368,2641,366,2665,309,2674,275,2678,239,2678,164,2675,153,2668,143,2638,123,2589,105,2526,90,2361,64,2162,46,1949,34,1739,27,1406,22"/>
+<area shape="rect" id="Node000005" href="$_density_matrix_part_8hpp.html" title="Diagonal block of a many&#45;body Gibbs density matrix." alt="" coords="921,79,1088,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1258,33,1067,78,1066,73,1257,28"/>
+<area shape="rect" id="Node000007" href="$_index_classification_8hpp.html" title="Classification of indices of fermionic creation/annihilation operators." alt="" coords="2145,379,2318,405"/>
+<area shape="poly" id="edge77_Node000001_Node000007" title=" " alt="" coords="1406,20,1694,33,2057,57,2231,74,2381,95,2494,120,2531,134,2555,150,2571,175,2576,200,2571,225,2556,252,2535,279,2511,302,2454,338,2392,363,2332,379,2331,374,2390,358,2451,333,2508,297,2531,275,2552,249,2566,223,2571,200,2566,177,2551,154,2529,139,2492,125,2380,100,2230,79,2056,62,1694,38,1406,25"/>
+<area shape="rect" id="Node000008" href="$pomerol_2_misc_8hpp.html" title="Declarations of the most basic types and macros." alt="" coords="630,460,710,485"/>
+<area shape="poly" id="edge78_Node000001_Node000008" title=" " alt="" coords="1206,27,979,44,710,71,587,90,486,112,447,124,418,137,400,150,394,164,394,312,400,347,417,376,443,400,475,420,510,436,547,448,617,462,616,468,546,453,508,441,472,425,439,405,413,380,395,349,389,313,389,163,396,147,415,132,445,119,485,107,586,85,709,66,978,38,1206,22"/>
+<area shape="rect" id="Node000027" title=" " alt="" coords="2720,541,2783,566"/>
+<area shape="poly" id="edge81_Node000001_Node000027" title=" " alt="" coords="1407,16,1766,18,1996,24,2231,35,2450,53,2547,64,2633,78,2704,95,2758,114,2793,137,2803,149,2806,163,2806,393,2802,432,2792,469,2767,529,2762,527,2787,467,2797,431,2801,393,2801,164,2798,152,2790,140,2756,119,2702,100,2632,84,2547,70,2450,58,2231,40,1996,29,1766,23,1407,21"/>
+<area shape="rect" id="Node000030" href="$_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces." alt="" coords="1147,225,1326,251"/>
+<area shape="poly" id="edge79_Node000001_Node000030" title=" " alt="" coords="1305,32,1289,79,1247,213,1242,212,1283,78,1300,30"/>
+<area shape="rect" id="Node000037" href="$_thermal_8hpp.html" title="Objects, whose definition depends on the temperature." alt="" coords="429,152,533,177"/>
+<area shape="poly" id="edge80_Node000001_Node000037" title=" " alt="" coords="1223,33,909,81,711,118,547,152,546,147,710,113,908,76,1222,28"/>
+<area shape="rect" id="Node000039" href="$_hamiltonian_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix." alt="" coords="1298,79,1429,104"/>
+<area shape="poly" id="edge65_Node000001_Node000039" title=" " alt="" coords="1318,29,1347,66,1343,70,1313,33"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="2495,460,2581,485"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="2618,407,2564,453,2560,449,2615,403"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="2657,460,2715,485"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="2640,403,2672,447,2668,450,2636,406"/>
+<area shape="rect" id="Node000006" href="$_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block." alt="" coords="927,152,1082,177"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="1007,104,1007,138,1002,138,1002,104"/>
+<area shape="poly" id="edge60_Node000005_Node000008" title=" " alt="" coords="921,104,757,126,689,140,666,147,655,154,633,188,622,226,618,268,621,309,639,388,661,446,656,448,634,389,616,310,613,267,616,225,628,186,651,150,664,142,687,134,756,120,921,99"/>
+<area shape="poly" id="edge61_Node000005_Node000030" title=" " alt="" coords="1025,102,1207,215,1205,220,1022,106"/>
+<area shape="poly" id="edge62_Node000005_Node000037" title=" " alt="" coords="921,106,552,155,547,155,546,150,551,149,921,100"/>
+<area shape="poly" id="edge6_Node000006_Node000002" title=" " alt="" coords="1082,166,1370,180,1769,206,1975,224,2168,245,2332,269,2456,296,2498,311,2538,331,2603,369,2601,374,2536,335,2496,316,2455,301,2332,274,2167,250,1975,229,1769,212,1370,186,1082,172"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="1019,175,1069,212,1101,232,1136,248,1196,267,1247,279,1293,285,1337,287,1429,288,1546,296,2098,369,2138,375,2137,380,2098,375,1546,301,1429,293,1337,292,1293,290,1246,284,1194,272,1134,253,1099,237,1066,217,1016,180"/>
+<area shape="poly" id="edge35_Node000006_Node000008" title=" " alt="" coords="927,179,826,198,783,212,755,227,724,315,680,448,675,446,719,314,751,224,780,207,825,193,926,173"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="899,533,1052,573"/>
+<area shape="poly" id="edge55_Node000006_Node000010" title=" " alt="" coords="940,180,885,196,831,222,808,239,790,260,778,283,774,310,774,393,777,417,786,438,799,458,816,475,857,504,902,526,900,531,855,509,813,479,795,461,781,441,772,418,769,394,769,310,773,281,786,257,804,236,828,218,883,191,938,175"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="1077,533,1239,573"/>
+<area shape="poly" id="edge56_Node000006_Node000011" title=" " alt="" coords="976,180,940,199,907,227,891,247,881,265,877,285,875,310,875,393,876,422,879,444,888,463,906,483,926,493,964,504,1064,529,1063,534,963,510,924,498,903,487,884,466,874,445,871,422,870,393,870,310,871,284,876,263,887,244,903,223,937,194,973,175"/>
+<area shape="rect" id="Node000018" title=" " alt="" coords="1263,541,1343,566"/>
+<area shape="poly" id="edge57_Node000006_Node000018" title=" " alt="" coords="995,179,974,202,952,233,934,270,926,310,926,392,935,401,963,416,1055,455,1260,533,1258,538,1053,460,961,420,932,405,921,394,921,310,928,268,947,230,970,198,991,176"/>
+<area shape="rect" id="Node000019" title=" " alt="" coords="1368,541,1460,566"/>
+<area shape="poly" id="edge59_Node000006_Node000019" title=" " alt="" coords="1003,179,989,221,977,282,975,315,978,349,986,381,1001,410,1045,427,1145,462,1366,534,1365,539,1143,467,1043,432,998,414,981,383,972,350,970,315,972,281,984,219,997,177"/>
+<area shape="poly" id="edge36_Node000006_Node000030" title=" " alt="" coords="1043,175,1187,219,1185,224,1041,180"/>
+<area shape="rect" id="Node000035" title=" " alt="" coords="1011,379,1089,405"/>
+<area shape="poly" id="edge58_Node000006_Node000035" title=" " alt="" coords="1010,177,1047,365,1042,366,1004,178"/>
+<area shape="poly" id="edge32_Node000007_Node000003" title=" " alt="" coords="2277,402,2482,454,2480,459,2275,407"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="2145,405,2032,415,1638,438,1255,455,724,473,723,467,1255,450,1638,432,2031,409,2144,400"/>
+<area shape="poly" id="edge30_Node000007_Node000018" title=" " alt="" coords="2194,407,2123,431,2045,462,2023,476,2000,488,1905,512,1823,523,1749,525,1680,521,1610,517,1536,515,1453,520,1356,536,1344,539,1343,534,1355,531,1452,515,1536,510,1610,511,1680,516,1749,519,1822,517,1904,507,1998,483,2020,471,2042,458,2121,426,2192,402"/>
+<area shape="rect" id="Node000020" href="$_operators_8hpp.html" title="Expressions with quantum&#45;mechanical operators and functions to construct them." alt="" coords="2305,460,2419,485"/>
+<area shape="poly" id="edge20_Node000007_Node000020" title=" " alt="" coords="2252,403,2332,450,2330,455,2249,407"/>
+<area shape="rect" id="Node000025" title=" " alt="" coords="1872,541,1927,566"/>
+<area shape="poly" id="edge33_Node000007_Node000025" title=" " alt="" coords="2209,407,2044,488,1939,536,1936,537,1934,532,1937,531,2042,483,2207,402"/>
+<area shape="poly" id="edge34_Node000007_Node000027" title=" " alt="" coords="2272,402,2347,426,2432,458,2458,471,2483,483,2545,500,2595,508,2645,515,2708,531,2715,533,2713,538,2707,536,2644,520,2594,513,2544,505,2481,488,2455,476,2430,462,2345,431,2270,407"/>
+<area shape="rect" id="Node000028" title=" " alt="" coords="2113,460,2281,485"/>
+<area shape="poly" id="edge29_Node000007_Node000028" title=" " alt="" coords="2229,406,2210,449,2205,446,2224,404"/>
+<area shape="rect" id="Node000029" title=" " alt="" coords="1937,460,1987,485"/>
+<area shape="poly" id="edge31_Node000007_Node000029" title=" " alt="" coords="2193,407,2002,463,2000,458,2191,402"/>
+<area shape="rect" id="Node000009" href="$_version_8hpp.html" title="Pomerol version information." alt="" coords="531,541,687,566"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="663,487,628,532,624,528,659,484"/>
+<area shape="poly" id="edge10_Node000008_Node000010" title=" " alt="" coords="711,482,889,527,888,532,710,487"/>
+<area shape="poly" id="edge11_Node000008_Node000011" title=" " alt="" coords="711,477,1064,531,1063,536,710,482"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="711,533,874,573"/>
+<area shape="poly" id="edge12_Node000008_Node000012" title=" " alt="" coords="690,483,753,524,750,528,687,488"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="5,541,97,566"/>
+<area shape="poly" id="edge13_Node000008_Node000013" title=" " alt="" coords="630,478,407,493,260,510,111,536,97,539,96,534,109,531,259,505,407,488,630,473"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="122,541,229,566"/>
+<area shape="poly" id="edge14_Node000008_Node000014" title=" " alt="" coords="630,480,460,500,351,516,241,536,225,540,224,534,240,531,350,510,459,494,629,475"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="253,541,309,566"/>
+<area shape="poly" id="edge15_Node000008_Node000015" title=" " alt="" coords="630,480,492,498,406,514,321,536,316,538,314,533,320,531,405,509,491,492,630,475"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="333,541,412,566"/>
+<area shape="poly" id="edge16_Node000008_Node000016" title=" " alt="" coords="630,485,536,506,424,536,415,539,414,534,423,531,534,501,629,480"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="436,541,507,566"/>
+<area shape="poly" id="edge17_Node000008_Node000017" title=" " alt="" coords="641,488,519,536,513,538,511,533,517,531,639,483"/>
+<area shape="poly" id="edge18_Node000008_Node000018" title=" " alt="" coords="711,474,985,497,1139,513,1252,531,1264,534,1262,539,1251,536,1139,518,984,502,710,479"/>
+<area shape="poly" id="edge19_Node000008_Node000019" title=" " alt="" coords="710,472,822,475,982,484,1168,501,1356,531,1370,534,1369,539,1355,536,1167,507,982,489,822,480,710,477"/>
+<area shape="poly" id="edge26_Node000020_Node000019" title=" " alt="" coords="2305,486,2293,488,2055,512,1822,531,1474,552,1474,547,1821,526,2055,507,2292,483,2304,481"/>
+<area shape="rect" id="Node000021" title=" " alt="" coords="2521,533,2696,573"/>
+<area shape="poly" id="edge21_Node000020_Node000021" title=" " alt="" coords="2399,483,2537,527,2535,532,2397,488"/>
+<area shape="rect" id="Node000022" title=" " alt="" coords="1951,533,2125,573"/>
+<area shape="poly" id="edge22_Node000020_Node000022" title=" " alt="" coords="2316,488,2130,533,2128,528,2314,483"/>
+<area shape="rect" id="Node000023" title=" " alt="" coords="2149,533,2324,573"/>
+<area shape="poly" id="edge23_Node000020_Node000023" title=" " alt="" coords="2345,488,2280,528,2277,524,2342,483"/>
+<area shape="rect" id="Node000024" title=" " alt="" coords="2348,541,2413,566"/>
+<area shape="poly" id="edge24_Node000020_Node000024" title=" " alt="" coords="2367,485,2377,527,2372,528,2362,486"/>
+<area shape="poly" id="edge25_Node000020_Node000025" title=" " alt="" coords="2305,486,2293,488,2193,499,2114,504,2036,512,1939,536,1934,538,1932,533,1937,531,2035,507,2113,498,2192,494,2292,483,2304,481"/>
+<area shape="rect" id="Node000026" title=" " alt="" coords="2437,541,2497,566"/>
+<area shape="poly" id="edge27_Node000020_Node000026" title=" " alt="" coords="2379,483,2442,530,2439,535,2376,488"/>
+<area shape="poly" id="edge28_Node000020_Node000027" title=" " alt="" coords="2420,481,2588,508,2708,531,2715,533,2713,538,2707,536,2587,513,2419,486"/>
+<area shape="poly" id="edge52_Node000030_Node000008" title=" " alt="" coords="1210,253,712,457,710,452,1208,248"/>
+<area shape="poly" id="edge54_Node000030_Node000027" title=" " alt="" coords="1326,236,1527,239,1658,246,1802,257,1956,274,2115,297,2272,329,2426,369,2489,397,2572,442,2723,531,2720,536,2569,446,2486,402,2424,375,2271,334,2114,303,1956,279,1802,262,1657,251,1527,245,1326,241"/>
+<area shape="rect" id="Node000031" href="$_hilbert_space_8hpp.html" title="Hilbert space of a system and invariant subspaces of its Hamiltonian." alt="" coords="1401,299,1534,324"/>
+<area shape="poly" id="edge37_Node000030_Node000031" title=" " alt="" coords="1275,248,1418,292,1416,297,1273,253"/>
+<area shape="rect" id="Node000034" title=" " alt="" coords="1113,372,1275,412"/>
+<area shape="poly" id="edge53_Node000030_Node000034" title=" " alt="" coords="1236,251,1206,359,1201,358,1231,250"/>
+<area shape="poly" id="edge38_Node000031_Node000002" title=" " alt="" coords="1534,313,1913,335,2425,369,2531,378,2531,384,2424,375,1912,340,1534,319"/>
+<area shape="poly" id="edge49_Node000031_Node000003" title=" " alt="" coords="1534,311,1718,314,1958,323,2193,341,2290,354,2363,369,2406,386,2448,407,2514,450,2511,454,2445,412,2404,391,2361,375,2289,359,2192,346,1957,329,1718,320,1534,316"/>
+<area shape="poly" id="edge39_Node000031_Node000007" title=" " alt="" coords="1535,319,1553,321,1714,336,1840,343,1965,352,2126,369,2160,374,2159,380,2126,375,1965,357,1839,349,1714,341,1552,327,1534,325"/>
+<area shape="poly" id="edge40_Node000031_Node000008" title=" " alt="" coords="1453,326,1384,371,1338,395,1288,415,1239,426,1174,436,1015,453,724,472,723,466,1015,448,1173,431,1238,421,1287,409,1336,390,1382,366,1451,322"/>
+<area shape="poly" id="edge44_Node000031_Node000011" title=" " alt="" coords="1456,326,1352,414,1198,527,1195,523,1348,410,1453,322"/>
+<area shape="poly" id="edge51_Node000031_Node000019" title=" " alt="" coords="1467,325,1422,528,1417,527,1462,324"/>
+<area shape="poly" id="edge41_Node000031_Node000020" title=" " alt="" coords="1534,310,1731,313,1981,322,2102,330,2207,340,2286,353,2314,361,2332,370,2346,386,2356,406,2364,446,2359,447,2351,408,2342,389,2328,374,2312,366,2285,358,2206,345,2101,335,1981,328,1731,319,1534,316"/>
+<area shape="poly" id="edge50_Node000031_Node000025" title=" " alt="" coords="1535,319,1553,321,1799,333,1949,346,2003,356,2033,370,2049,394,2048,412,2034,425,2013,433,1962,445,1941,452,1927,462,1917,477,1910,494,1903,527,1898,526,1905,492,1912,474,1923,458,1938,448,1961,440,2011,428,2031,420,2043,410,2044,395,2030,374,2002,361,1949,351,1798,338,1552,327,1534,324"/>
+<area shape="poly" id="edge46_Node000031_Node000029" title=" " alt="" coords="1535,319,1553,321,1821,332,1986,345,2045,355,2065,362,2077,370,2084,381,2086,391,2078,413,2066,425,2047,437,2001,459,1999,454,2044,433,2062,421,2073,411,2081,391,2079,383,2073,374,2062,367,2043,360,1985,350,1821,337,1552,327,1534,324"/>
+<area shape="rect" id="Node000032" title=" " alt="" coords="1601,372,1833,412"/>
+<area shape="poly" id="edge42_Node000031_Node000032" title=" " alt="" coords="1504,321,1644,365,1643,370,1503,327"/>
+<area shape="rect" id="Node000033" title=" " alt="" coords="1857,372,2019,412"/>
+<area shape="poly" id="edge43_Node000031_Node000033" title=" " alt="" coords="1535,320,1844,369,1843,374,1534,325"/>
+<area shape="poly" id="edge45_Node000031_Node000034" title=" " alt="" coords="1428,327,1274,371,1272,366,1427,321"/>
+<area shape="poly" id="edge47_Node000031_Node000035" title=" " alt="" coords="1401,322,1262,341,1181,356,1101,375,1091,377,1090,372,1100,369,1180,351,1261,336,1400,317"/>
+<area shape="rect" id="Node000036" title=" " alt="" coords="1502,379,1577,405"/>
+<area shape="poly" id="edge48_Node000031_Node000036" title=" " alt="" coords="1480,322,1521,367,1517,371,1476,326"/>
+<area shape="poly" id="edge63_Node000037_Node000008" title=" " alt="" coords="486,177,495,210,508,250,548,335,570,369,603,410,645,450,641,454,599,414,566,372,543,337,504,252,489,212,481,178"/>
+<area shape="rect" id="Node000038" title=" " alt="" coords="519,225,581,251"/>
+<area shape="poly" id="edge64_Node000037_Node000038" title=" " alt="" coords="494,176,531,214,527,217,490,180"/>
+<area shape="poly" id="edge66_Node000039_Node000002" title=" " alt="" coords="1429,91,1700,97,2065,109,2392,126,2502,137,2536,143,2554,150,2577,172,2596,199,2609,228,2619,259,2630,318,2633,366,2628,366,2625,319,2614,260,2604,230,2591,202,2573,176,2551,154,2535,148,2501,142,2392,132,2065,115,1700,103,1429,97"/>
+<area shape="poly" id="edge67_Node000039_Node000006" title=" " alt="" coords="1306,107,1077,152,1076,147,1305,101"/>
+<area shape="poly" id="edge69_Node000039_Node000008" title=" " alt="" coords="1298,100,1160,113,992,138,911,155,838,175,779,199,757,213,740,227,720,252,705,280,685,342,675,400,672,446,667,446,670,399,680,340,700,278,716,249,736,223,754,208,777,195,836,170,910,150,991,133,1159,108,1297,95"/>
+<area shape="poly" id="edge75_Node000039_Node000019" title=" " alt="" coords="1366,104,1366,237,1366,393,1370,431,1379,467,1404,527,1399,529,1374,469,1365,432,1361,393,1361,237,1361,104"/>
+<area shape="poly" id="edge70_Node000039_Node000020" title=" " alt="" coords="1429,98,1645,130,1784,155,1929,187,2070,224,2197,266,2251,290,2298,315,2336,342,2364,370,2373,389,2376,409,2372,446,2367,446,2371,409,2368,390,2360,374,2333,346,2296,320,2249,295,2195,271,2069,229,1928,192,1783,161,1644,136,1429,103"/>
+<area shape="poly" id="edge76_Node000039_Node000027" title=" " alt="" coords="1429,90,1671,91,2006,98,2179,105,2341,116,2480,130,2584,149,2645,160,2699,168,2722,176,2740,189,2751,209,2755,236,2755,393,2754,527,2749,527,2750,393,2750,237,2746,211,2736,193,2719,181,2698,173,2644,165,2583,155,2479,135,2340,121,2179,110,2006,103,1671,96,1429,95"/>
+<area shape="poly" id="edge71_Node000039_Node000030" title=" " alt="" coords="1355,106,1258,217,1254,213,1351,103"/>
+<area shape="poly" id="edge68_Node000039_Node000031" title=" " alt="" coords="1371,103,1458,284,1453,287,1367,106"/>
+<area shape="poly" id="edge74_Node000039_Node000038" title=" " alt="" coords="1298,99,936,121,755,137,691,146,654,155,630,167,607,183,571,217,567,213,604,179,627,162,652,149,690,140,755,132,935,115,1297,93"/>
+<area shape="rect" id="Node000040" href="$mpi__dispatcher_2_misc_8hpp.html" title="Miscellaneous MPI&#45;related functions." alt="" coords="2356,152,2541,177"/>
+<area shape="poly" id="edge72_Node000039_Node000040" title=" " alt="" coords="1429,93,1814,114,2337,149,2342,150,2342,155,2336,155,1813,119,1429,98"/>
+<area shape="rect" id="Node000041" title=" " alt="" coords="2483,225,2542,251"/>
+<area shape="poly" id="edge73_Node000040_Node000041" title=" " alt="" coords="2461,176,2495,213,2491,217,2457,179"/>
 </map>

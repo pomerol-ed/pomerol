@@ -1,6 +1,9 @@
 <map id="Pomerol::CreationOperator" name="Pomerol::CreationOperator">
-<area shape="rect" id="node1" title="A special case of a monomial operator: A single fermion creation operator ." alt="" coords="11,229,207,256"/>
-<area shape="rect" id="node2" href="$class_pomerol_1_1_field_operator.html" title="A special case of a monomial operator: A single fermion creation or annihilation operator ." alt="" coords="23,155,195,181"/>
-<area shape="rect" id="node3" href="$class_pomerol_1_1_monomial_operator.html" title="Monomial quantum operator." alt="" coords="5,80,212,107"/>
-<area shape="rect" id="node4" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects." alt="" coords="6,5,211,32"/>
+<area shape="rect" id="Node000001" title="A special case of a monomial operator: A single fermion creation operator ." alt="" coords="11,225,207,251"/>
+<area shape="rect" id="Node000002" href="$class_pomerol_1_1_field_operator.html" title="A special case of a monomial operator: A single fermion creation or annihilation operator ." alt="" coords="23,152,195,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,191,111,225,106,225,106,191"/>
+<area shape="rect" id="Node000003" href="$class_pomerol_1_1_monomial_operator.html" title="Monomial quantum operator." alt="" coords="5,79,212,104"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="111,118,111,152,106,152,106,118"/>
+<area shape="rect" id="Node000004" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects." alt="" coords="6,5,211,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="111,44,111,79,106,79,106,44"/>
 </map>

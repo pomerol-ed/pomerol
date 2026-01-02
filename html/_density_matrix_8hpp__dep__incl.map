@@ -1,13 +1,35 @@
 <map id="pomerol/DensityMatrix.hpp" name="pomerol/DensityMatrix.hpp">
-<area shape="rect" id="node1" title="Many&#45;body Gibbs density matrix as a list of diagonal blocks." alt="" coords="532,5,732,32"/>
-<area shape="rect" id="node2" href="$_ensemble_average_8hpp.html" title="Ensemble average of a monomial operator representing a physical observable." alt="" coords="370,80,596,107"/>
-<area shape="rect" id="node3" href="$_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation." alt="" coords="411,162,606,189"/>
-<area shape="rect" id="node4" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="388,244,492,271"/>
-<area shape="rect" id="node5" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions." alt="" coords="630,162,818,189"/>
-<area shape="rect" id="node6" href="$_greens_function_8hpp.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="721,80,930,107"/>
-<area shape="rect" id="node8" href="$_three_point_susceptibility_8hpp.html" title="3&#45;point susceptibility in the Matsubara representation." alt="" coords="32,80,296,107"/>
-<area shape="rect" id="node9" href="$_three_point_susceptibility_container_8hpp.html" title="Storage for multiple 3&#45;point susceptibilities in the Matsubara representation." alt="" coords="97,155,336,196"/>
-<area shape="rect" id="node10" href="$_two_particle_g_f_8hpp.html" title="Fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="955,80,1152,107"/>
-<area shape="rect" id="node11" href="$_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions." alt="" coords="1076,162,1338,189"/>
-<area shape="rect" id="node7" href="$_vertex4_8hpp.html" title="Irreducible two&#45;particle vertex in the Matsubara representation." alt="" coords="842,162,1001,189"/>
+<area shape="rect" id="Node000001" title="Many&#45;body Gibbs density matrix as a list of diagonal blocks." alt="" coords="557,5,757,31"/>
+<area shape="rect" id="Node000002" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="534,240,638,265"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="771,20,858,26,959,36,1064,53,1168,76,1238,95,1304,117,1329,132,1344,149,1346,170,1332,194,1317,203,1294,212,1225,225,1134,235,1028,243,808,251,639,254,638,248,808,246,1027,238,1133,230,1225,220,1293,206,1315,199,1328,190,1341,169,1339,151,1326,136,1302,122,1236,100,1167,81,1063,58,958,41,858,31,770,25"/>
+<area shape="rect" id="Node000003" href="$_ensemble_average_8hpp.html" title="Ensemble average of a monomial operator representing a physical observable." alt="" coords="5,79,231,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="557,35,205,81,204,76,556,30"/>
+<area shape="rect" id="Node000004" href="$_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation." alt="" coords="78,159,273,185"/>
+<area shape="poly" id="edge11_Node000001_Node000004" title=" " alt="" coords="543,26,484,32,420,43,356,59,294,81,261,99,232,121,188,161,185,157,228,116,259,94,292,76,354,54,419,38,483,27,543,21"/>
+<area shape="rect" id="Node000005" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions." alt="" coords="611,159,799,185"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="667,43,686,103,703,158,698,160,681,105,662,45"/>
+<area shape="rect" id="Node000006" href="$_greens_function_8hpp.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="695,79,904,104"/>
+<area shape="poly" id="edge8_Node000001_Node000006" title=" " alt="" coords="693,34,777,76,775,81,690,39"/>
+<area shape="rect" id="Node000008" href="$_three_point_susceptibility_8hpp.html" title="3&#45;point susceptibility in the Matsubara representation." alt="" coords="305,79,569,104"/>
+<area shape="poly" id="edge12_Node000001_Node000008" title=" " alt="" coords="609,37,473,81,471,76,607,32"/>
+<area shape="rect" id="Node000009" href="$_three_point_susceptibility_container_8hpp.html" title="Storage for multiple 3&#45;point susceptibilities in the Matsubara representation." alt="" coords="348,152,587,192"/>
+<area shape="poly" id="edge16_Node000001_Node000009" title=" " alt="" coords="642,43,615,74,582,106,545,133,507,154,505,149,542,128,579,102,612,71,638,40"/>
+<area shape="rect" id="Node000010" href="$_two_particle_g_f_8hpp.html" title="Fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="929,79,1126,104"/>
+<area shape="poly" id="edge17_Node000001_Node000010" title=" " alt="" coords="730,31,968,76,967,81,729,36"/>
+<area shape="rect" id="Node000011" href="$_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions." alt="" coords="1057,159,1318,185"/>
+<area shape="poly" id="edge22_Node000001_Node000011" title=" " alt="" coords="770,19,872,24,979,34,1074,51,1112,63,1140,76,1159,95,1172,117,1187,158,1182,160,1168,120,1154,98,1136,81,1110,67,1073,56,978,39,871,29,770,24"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="95,115,79,133,66,153,61,173,63,182,68,190,91,202,135,212,265,229,412,240,534,247,534,252,412,245,264,234,134,217,89,207,64,194,58,184,56,173,61,151,75,130,91,112"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="137,114,169,158,165,161,132,117"/>
+<area shape="poly" id="edge5_Node000004_Node000002" title=" " alt="" coords="249,185,534,239,533,244,248,190"/>
+<area shape="poly" id="edge7_Node000005_Node000002" title=" " alt="" coords="677,195,605,242,602,238,674,190"/>
+<area shape="poly" id="edge9_Node000006_Node000005" title=" " alt="" coords="776,115,720,161,717,157,773,111"/>
+<area shape="rect" id="Node000007" href="$_vertex4_8hpp.html" title="Irreducible two&#45;particle vertex in the Matsubara representation." alt="" coords="823,159,981,185"/>
+<area shape="poly" id="edge10_Node000006_Node000007" title=" " alt="" coords="827,110,888,157,885,161,824,115"/>
+<area shape="poly" id="edge13_Node000008_Node000002" title=" " alt="" coords="389,112,361,129,339,153,332,173,339,190,351,201,369,210,420,225,534,244,533,249,419,230,367,215,348,205,334,194,327,173,334,151,357,125,386,107"/>
+<area shape="poly" id="edge14_Node000008_Node000009" title=" " alt="" coords="449,116,462,151,457,153,444,118"/>
+<area shape="poly" id="edge15_Node000009_Node000002" title=" " alt="" coords="509,198,570,238,567,242,506,202"/>
+<area shape="poly" id="edge18_Node000010_Node000002" title=" " alt="" coords="1029,118,1020,157,1010,177,996,194,969,210,930,222,833,239,728,249,638,253,638,248,727,244,833,234,929,217,966,205,992,190,1006,174,1015,156,1023,117"/>
+<area shape="poly" id="edge21_Node000010_Node000007" title=" " alt="" coords="999,114,922,161,919,157,996,109"/>
+<area shape="poly" id="edge19_Node000010_Node000011" title=" " alt="" coords="1064,108,1165,157,1163,162,1062,112"/>
+<area shape="poly" id="edge20_Node000011_Node000002" title=" " alt="" coords="1087,189,639,247,638,242,1086,184"/>
 </map>

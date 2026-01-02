@@ -1,6 +1,10 @@
 <map id="pomerol/ThreePointSusceptibilityPart.hpp" name="pomerol/ThreePointSusceptibilityPart.hpp">
-<area shape="rect" id="node1" title="Part of a 3&#45;point susceptibility in the Matsubara representation." alt="" coords="84,5,323,47"/>
-<area shape="rect" id="node2" href="$_three_point_susceptibility_8hpp.html" title="3&#45;point susceptibility in the Matsubara representation." alt="" coords="71,95,335,121"/>
-<area shape="rect" id="node3" href="$_three_point_susceptibility_container_8hpp.html" title="Storage for multiple 3&#45;point susceptibilities in the Matsubara representation." alt="" coords="5,169,244,211"/>
-<area shape="rect" id="node4" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="151,259,255,285"/>
+<area shape="rect" id="Node000001" title="Part of a 3&#45;point susceptibility in the Matsubara representation." alt="" coords="18,5,257,45"/>
+<area shape="rect" id="Node000002" href="$_three_point_susceptibility_8hpp.html" title="3&#45;point susceptibility in the Matsubara representation." alt="" coords="5,93,269,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="140,59,140,93,135,93,135,59"/>
+<area shape="rect" id="Node000003" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="85,255,189,280"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="114,130,98,147,86,168,82,187,86,206,103,232,124,252,120,256,99,235,82,208,77,187,82,166,94,144,110,126"/>
+<area shape="rect" id="Node000004" href="$_three_point_susceptibility_container_8hpp.html" title="Storage for multiple 3&#45;point susceptibilities in the Matsubara representation." alt="" coords="97,167,335,207"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="160,127,199,165,195,168,157,130"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="189,218,151,256,147,252,185,215"/>
 </map>

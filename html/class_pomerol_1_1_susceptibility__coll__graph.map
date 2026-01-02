@@ -1,5 +1,7 @@
 <map id="Pomerol::Susceptibility" name="Pomerol::Susceptibility">
-<area shape="rect" id="node1" title="Dynamical susceptibility." alt="" coords="86,80,258,107"/>
-<area shape="rect" id="node2" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature." alt="" coords="5,5,144,32"/>
-<area shape="rect" id="node3" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects." alt="" coords="168,5,373,32"/>
+<area shape="rect" id="Node000001" title="Dynamical susceptibility." alt="" coords="86,79,258,104"/>
+<area shape="rect" id="Node000002" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature." alt="" coords="5,5,144,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="103,37,158,76,155,81,100,41"/>
+<area shape="rect" id="Node000003" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects." alt="" coords="168,5,373,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="246,41,190,81,187,76,242,36"/>
 </map>

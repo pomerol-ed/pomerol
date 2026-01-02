@@ -1,4 +1,5 @@
 <map id="pomerol/LatticePresets.hpp" name="pomerol/LatticePresets.hpp">
-<area shape="rect" id="node1" title="Factory functions for terms commonly used to construct various lattice Hamiltonians." alt="" coords="5,5,205,32"/>
-<area shape="rect" id="node2" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="53,80,157,107"/>
+<area shape="rect" id="Node000001" title="Factory functions for terms commonly used to construct various lattice Hamiltonians." alt="" coords="5,5,205,31"/>
+<area shape="rect" id="Node000002" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="53,79,157,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,44,108,79,103,79,103,44"/>
 </map>

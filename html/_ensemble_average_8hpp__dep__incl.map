@@ -1,5 +1,8 @@
 <map id="pomerol/EnsembleAverage.hpp" name="pomerol/EnsembleAverage.hpp">
-<area shape="rect" id="node1" title="Ensemble average of a monomial operator representing a physical observable." alt="" coords="57,5,282,32"/>
-<area shape="rect" id="node2" href="$_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation." alt="" coords="5,80,200,107"/>
-<area shape="rect" id="node3" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="117,155,221,181"/>
+<area shape="rect" id="Node000001" title="Ensemble average of a monomial operator representing a physical observable." alt="" coords="5,5,231,31"/>
+<area shape="rect" id="Node000002" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="66,152,170,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,43,82,72,78,87,79,103,92,129,109,150,105,153,88,132,74,105,72,87,77,69,95,40"/>
+<area shape="rect" id="Node000003" href="$_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation." alt="" coords="89,79,283,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="140,39,177,77,173,80,137,42"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="167,116,131,154,127,150,164,112"/>
 </map>

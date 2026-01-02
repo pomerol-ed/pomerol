@@ -1,5 +1,7 @@
 <map id="Pomerol::ThreePointSusceptibilityContainer" name="Pomerol::ThreePointSusceptibilityContainer">
-<area shape="rect" id="node1" title="Container for instances of ThreePointSusceptibility." alt="" coords="316,46,559,87"/>
-<area shape="rect" id="node2" href="$class_pomerol_1_1_index_container4.html" title=" " alt="" coords="5,5,268,61"/>
-<area shape="rect" id="node3" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature." alt="" coords="67,85,206,112"/>
+<area shape="rect" id="Node000001" title="Container for instances of ThreePointSusceptibility." alt="" coords="316,45,559,85"/>
+<area shape="rect" id="Node000002" href="$class_pomerol_1_1_index_container4.html" title=" " alt="" coords="5,5,268,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="282,45,316,49,316,54,281,51"/>
+<area shape="rect" id="Node000003" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature." alt="" coords="67,84,206,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="219,85,316,75,316,80,220,91"/>
 </map>

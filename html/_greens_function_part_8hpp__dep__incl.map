@@ -1,7 +1,11 @@
 <map id="pomerol/GreensFunctionPart.hpp" name="pomerol/GreensFunctionPart.hpp">
-<area shape="rect" id="node1" title="Part of a fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="81,5,315,32"/>
-<area shape="rect" id="node2" href="$_greens_function_8hpp.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="93,80,303,107"/>
-<area shape="rect" id="node3" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions." alt="" coords="5,155,193,181"/>
-<area shape="rect" id="node5" href="$_vertex4_8hpp.html" title="Irreducible two&#45;particle vertex in the Matsubara representation." alt="" coords="217,155,376,181"/>
-<area shape="rect" id="node4" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="47,229,151,256"/>
+<area shape="rect" id="Node000001" title="Part of a fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="81,5,315,31"/>
+<area shape="rect" id="Node000002" href="$_greens_function_8hpp.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="93,79,303,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="201,44,201,79,195,79,195,44"/>
+<area shape="rect" id="Node000003" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions." alt="" coords="5,152,193,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="173,114,117,154,114,150,170,110"/>
+<area shape="rect" id="Node000005" href="$_vertex4_8hpp.html" title="Irreducible two&#45;particle vertex in the Matsubara representation." alt="" coords="217,152,376,177"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="226,110,282,150,279,154,223,114"/>
+<area shape="rect" id="Node000004" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="47,225,151,251"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="102,191,102,225,97,225,97,191"/>
 </map>

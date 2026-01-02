@@ -1,5 +1,7 @@
 <map id="pomerol/SusceptibilityPart.hpp" name="pomerol/SusceptibilityPart.hpp">
-<area shape="rect" id="node1" title="Part of a dynamical susceptibility in the Matsubara representation." alt="" coords="5,5,227,32"/>
-<area shape="rect" id="node2" href="$_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation." alt="" coords="19,80,213,107"/>
-<area shape="rect" id="node3" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="64,155,168,181"/>
+<area shape="rect" id="Node000001" title="Part of a dynamical susceptibility in the Matsubara representation." alt="" coords="5,5,227,31"/>
+<area shape="rect" id="Node000002" href="$_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation." alt="" coords="19,79,213,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="119,44,119,79,113,79,113,44"/>
+<area shape="rect" id="Node000003" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="64,152,168,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="119,118,119,152,113,152,113,118"/>
 </map>

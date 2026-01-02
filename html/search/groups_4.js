@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['miscellaneous_799',['Miscellaneous',['../group___misc.html',1,'']]],
-  ['mpi_20tools_800',['MPI tools',['../group___m_p_i.html',1,'']]]
+  ['exact_20diagonalization_3a_20hilbert_20space_20hamiltonian_20monomial_20operators_20and_20density_20matrix_0',['Exact diagonalization: Hilbert space, Hamiltonian, monomial operators and density matrix',['../group___e_d.html',1,'']]],
+  ['expressions_1',['Operator expressions',['../group___operators.html',1,'']]]
 ];

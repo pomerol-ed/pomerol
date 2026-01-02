@@ -1,26 +1,117 @@
 <map id="pomerol/HilbertSpace.hpp" name="pomerol/HilbertSpace.hpp">
-<area shape="rect" id="node1" title="Hilbert space of a system and invariant subspaces of its Hamiltonian." alt="" coords="747,5,938,32"/>
-<area shape="rect" id="node2" href="$_hamiltonian_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix." alt="" coords="803,237,991,263"/>
-<area shape="rect" id="node15" href="$_monomial_operator_8hpp.html" title="Storage for an operator that is a product of creation/annihilation operators." alt="" coords="499,326,728,353"/>
-<area shape="rect" id="node16" href="$_monomial_operator_part_8hpp.html" title="Storage for a matrix block of an operator that is a product of creation/annihilation operators." alt="" coords="1181,229,1384,271"/>
-<area shape="rect" id="node21" href="$_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces." alt="" coords="1375,80,1611,107"/>
-<area shape="rect" id="node3" href="$_density_matrix_8hpp.html" title="Many&#45;body Gibbs density matrix as a list of diagonal blocks." alt="" coords="2173,326,2373,353"/>
-<area shape="rect" id="node4" href="$_ensemble_average_8hpp.html" title="Ensemble average of a monomial operator representing a physical observable." alt="" coords="194,408,419,435"/>
-<area shape="rect" id="node5" href="$_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation." alt="" coords="409,490,604,517"/>
-<area shape="rect" id="node6" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="939,572,1043,599"/>
-<area shape="rect" id="node7" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions." alt="" coords="826,490,1014,517"/>
-<area shape="rect" id="node8" href="$_greens_function_8hpp.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="1437,408,1646,435"/>
-<area shape="rect" id="node10" href="$_three_point_susceptibility_8hpp.html" title="3&#45;point susceptibility in the Matsubara representation." alt="" coords="928,408,1192,435"/>
-<area shape="rect" id="node11" href="$_three_point_susceptibility_container_8hpp.html" title="Storage for multiple 3&#45;point susceptibilities in the Matsubara representation." alt="" coords="1098,483,1337,524"/>
-<area shape="rect" id="node12" href="$_two_particle_g_f_8hpp.html" title="Fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="1873,408,2071,435"/>
-<area shape="rect" id="node13" href="$_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions." alt="" coords="1663,490,1924,517"/>
-<area shape="rect" id="node14" href="$_field_operator_container_8hpp.html" title="A container for creation and annihilation operators." alt="" coords="645,408,904,435"/>
-<area shape="rect" id="node9" href="$_vertex4_8hpp.html" title="Irreducible two&#45;particle vertex in the Matsubara representation." alt="" coords="1466,490,1625,517"/>
-<area shape="rect" id="node17" href="$_greens_function_part_8hpp.html" title="Part of a fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="1864,326,2099,353"/>
-<area shape="rect" id="node18" href="$_susceptibility_part_8hpp.html" title="Part of a dynamical susceptibility in the Matsubara representation." alt="" coords="1107,326,1328,353"/>
-<area shape="rect" id="node19" href="$_three_point_susceptibility_part_8hpp.html" title="Part of a 3&#45;point susceptibility in the Matsubara representation." alt="" coords="1353,319,1591,360"/>
-<area shape="rect" id="node20" href="$_two_particle_g_f_part_8hpp.html" title="Part of a fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="1616,326,1840,353"/>
-<area shape="rect" id="node22" href="$_chase_indices_8hpp.html" title="Chase indices algorithm used in multipoint correlator calculations." alt="" coords="2229,155,2424,181"/>
-<area shape="rect" id="node23" href="$_density_matrix_part_8hpp.html" title="Diagonal block of a many&#45;body Gibbs density matrix." alt="" coords="1613,237,1838,263"/>
-<area shape="rect" id="node24" href="$_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block." alt="" coords="1315,155,1528,181"/>
+<area shape="rect" id="Node000001" title="Hilbert space of a system and invariant subspaces of its Hamiltonian." alt="" coords="1887,5,2078,31"/>
+<area shape="rect" id="Node000002" href="$_hamiltonian_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix." alt="" coords="773,233,961,258"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1874,23,1707,32,1494,53,1378,70,1260,92,1143,120,1030,155,987,173,946,195,884,235,881,230,943,190,985,168,1028,149,1142,115,1259,87,1377,65,1493,48,1706,27,1873,18"/>
+<area shape="rect" id="Node000015" href="$_monomial_operator_8hpp.html" title="Storage for an operator that is a product of creation/annihilation operators." alt="" coords="1877,321,2107,346"/>
+<area shape="poly" id="edge47_Node000001_Node000015" title=" " alt="" coords="2093,29,2148,47,2175,60,2199,77,2216,93,2227,109,2239,152,2240,186,2229,217,2207,244,2178,266,2144,286,2108,301,2042,323,2040,318,2106,296,2142,281,2175,262,2203,240,2224,214,2235,185,2233,152,2222,112,2212,97,2196,81,2172,65,2146,52,2091,34"/>
+<area shape="rect" id="Node000016" href="$_monomial_operator_part_8hpp.html" title="Storage for a matrix block of an operator that is a product of creation/annihilation operators." alt="" coords="1627,225,1829,265"/>
+<area shape="poly" id="edge48_Node000001_Node000016" title=" " alt="" coords="2043,32,2114,55,2183,88,2208,107,2225,129,2228,154,2214,179,2188,199,2150,214,2104,226,2051,234,1936,244,1830,248,1830,242,1936,239,2050,229,2103,220,2149,209,2186,194,2210,176,2222,153,2220,131,2205,111,2180,92,2112,60,2042,37"/>
+<area shape="rect" id="Node000021" href="$_states_classification_8hpp.html" title="Classification of many&#45;body basis states (Fock states) into subspaces." alt="" coords="1515,79,1751,104"/>
+<area shape="poly" id="edge58_Node000001_Node000021" title=" " alt="" coords="1914,36,1690,81,1689,76,1913,31"/>
+<area shape="rect" id="Node000003" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="1292,563,1396,588"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="879,270,902,312,920,334,940,351,976,371,1008,382,1038,387,1068,387,1131,387,1167,390,1209,399,1313,426,1369,446,1390,459,1405,473,1410,486,1411,499,1400,524,1381,547,1361,565,1358,561,1377,543,1396,522,1406,498,1405,487,1400,476,1387,463,1366,451,1311,431,1207,404,1167,395,1131,392,1068,393,1038,392,1007,387,974,376,937,356,916,337,898,315,874,272"/>
+<area shape="rect" id="Node000004" href="$_density_matrix_8hpp.html" title="Many&#45;body Gibbs density matrix as a list of diagonal blocks." alt="" coords="629,321,829,346"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="838,268,749,323,747,318,835,263"/>
+<area shape="rect" id="Node000005" href="$_ensemble_average_8hpp.html" title="Ensemble average of a monomial operator representing a physical observable." alt="" coords="1626,401,1851,427"/>
+<area shape="poly" id="edge26_Node000002_Node000005" title=" " alt="" coords="917,260,976,282,1039,311,1067,333,1079,342,1095,351,1626,400,1626,405,1094,356,1076,347,1064,337,1036,316,974,287,915,265"/>
+<area shape="rect" id="Node000006" href="$_susceptibility_8hpp.html" title="Dynamical susceptibility in the Matsubara representation." alt="" coords="1641,482,1836,507"/>
+<area shape="poly" id="edge42_Node000002_Node000006" title=" " alt="" coords="905,262,948,284,992,311,1015,333,1024,343,1038,351,1114,376,1180,387,1240,388,1297,384,1355,378,1417,376,1486,381,1565,399,1719,479,1716,484,1563,404,1485,387,1417,381,1356,384,1298,389,1240,394,1179,393,1112,382,1036,356,1021,347,1011,337,989,315,945,289,903,266"/>
+<area shape="rect" id="Node000007" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions." alt="" coords="147,482,335,507"/>
+<area shape="poly" id="edge32_Node000002_Node000007" title=" " alt="" coords="759,256,601,272,423,299,340,319,266,342,209,370,188,386,173,403,168,413,169,423,180,445,201,464,223,480,220,484,197,468,176,448,163,425,163,412,168,400,184,382,206,366,264,337,338,314,422,294,601,266,758,251"/>
+<area shape="rect" id="Node000008" href="$_greens_function_8hpp.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="529,401,738,427"/>
+<area shape="poly" id="edge33_Node000002_Node000008" title=" " alt="" coords="760,263,663,284,625,298,602,315,597,325,595,336,600,359,612,381,625,399,621,403,607,384,595,361,590,336,592,323,598,312,623,293,662,278,759,257"/>
+<area shape="rect" id="Node000010" href="$_three_point_susceptibility_8hpp.html" title="3&#45;point susceptibility in the Matsubara representation." alt="" coords="813,401,1077,427"/>
+<area shape="poly" id="edge43_Node000002_Node000010" title=" " alt="" coords="760,260,694,272,639,291,620,304,610,317,609,333,619,352,631,362,648,371,696,386,753,396,814,403,813,408,752,401,694,391,646,376,628,366,615,355,604,334,605,316,617,300,637,287,693,267,759,255"/>
+<area shape="rect" id="Node000011" href="$_three_point_susceptibility_container_8hpp.html" title="Storage for multiple 3&#45;point susceptibilities in the Matsubara representation." alt="" coords="566,475,805,515"/>
+<area shape="poly" id="edge44_Node000002_Node000011" title=" " alt="" coords="760,258,672,278,629,294,588,316,562,334,544,351,532,373,520,402,517,415,519,426,531,445,553,460,582,472,580,477,551,465,527,449,514,428,512,415,515,401,527,370,540,348,559,330,585,311,626,289,671,273,758,253"/>
+<area shape="rect" id="Node000012" href="$_two_particle_g_f_8hpp.html" title="Fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="1355,401,1552,427"/>
+<area shape="poly" id="edge45_Node000002_Node000012" title=" " alt="" coords="891,265,949,315,1001,351,1052,362,1143,376,1355,400,1354,405,1143,381,1051,368,999,356,945,319,887,269"/>
+<area shape="rect" id="Node000013" href="$_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions." alt="" coords="1129,482,1391,507"/>
+<area shape="poly" id="edge46_Node000002_Node000013" title=" " alt="" coords="870,271,877,313,886,334,900,351,934,374,966,385,997,387,1030,384,1063,379,1098,378,1135,383,1175,399,1201,417,1224,439,1255,480,1250,483,1220,443,1197,421,1172,404,1133,388,1097,383,1063,385,1030,389,998,392,965,390,931,379,897,355,882,337,872,315,864,272"/>
+<area shape="rect" id="Node000014" href="$_field_operator_container_8hpp.html" title="A container for creation and annihilation operators." alt="" coords="195,401,453,427"/>
+<area shape="poly" id="edge27_Node000002_Node000014" title=" " alt="" coords="759,255,693,263,620,275,545,292,473,316,415,352,342,404,339,399,412,348,471,311,544,287,619,269,692,257,758,250"/>
+<area shape="poly" id="edge34_Node000002_Node000015" title=" " alt="" coords="974,248,1367,270,1616,287,1866,311,1922,318,1921,323,1865,316,1615,293,1367,275,974,254"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="818,346,990,374,1058,388,1091,399,1097,414,1092,428,1074,445,1054,453,1012,453,971,453,953,461,937,476,929,495,931,504,937,513,960,530,996,544,1042,554,1093,562,1200,570,1292,572,1292,577,1200,575,1093,567,1041,559,995,549,958,535,933,516,926,506,924,495,932,473,950,456,970,448,1012,448,1053,448,1071,441,1087,425,1092,414,1088,403,1057,393,989,380,817,351"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="843,341,1626,401,1626,407,843,346"/>
+<area shape="poly" id="edge14_Node000004_Node000006" title=" " alt="" coords="821,345,1174,399,1671,479,1670,485,1173,404,820,351"/>
+<area shape="poly" id="edge9_Node000004_Node000007" title=" " alt="" coords="616,343,488,352,353,365,241,382,204,392,185,403,179,412,179,422,188,443,206,463,226,480,223,484,203,467,183,446,173,423,174,411,181,399,202,387,240,377,352,360,488,347,615,338"/>
+<area shape="poly" id="edge11_Node000004_Node000008" title=" " alt="" coords="706,357,649,403,646,399,703,353"/>
+<area shape="poly" id="edge15_Node000004_Node000010" title=" " alt="" coords="774,348,915,399,913,404,773,353"/>
+<area shape="poly" id="edge19_Node000004_Node000011" title=" " alt="" coords="745,358,756,391,757,410,753,428,736,455,714,476,710,472,732,452,748,426,752,409,751,392,740,359"/>
+<area shape="poly" id="edge20_Node000004_Node000012" title=" " alt="" coords="843,344,1355,399,1354,405,843,350"/>
+<area shape="poly" id="edge25_Node000004_Node000013" title=" " alt="" coords="815,346,1134,399,1170,417,1202,439,1250,480,1247,484,1199,444,1167,422,1132,404,814,351"/>
+<area shape="poly" id="edge6_Node000005_Node000003" title=" " alt="" coords="1699,434,1374,565,1372,560,1697,429"/>
+<area shape="poly" id="edge7_Node000005_Node000006" title=" " alt="" coords="1741,440,1741,482,1736,482,1736,440"/>
+<area shape="poly" id="edge8_Node000006_Node000003" title=" " alt="" coords="1668,513,1397,566,1396,561,1667,507"/>
+<area shape="poly" id="edge10_Node000007_Node000003" title=" " alt="" coords="349,502,479,512,1292,568,1292,573,478,517,349,507"/>
+<area shape="poly" id="edge12_Node000008_Node000007" title=" " alt="" coords="564,432,299,485,298,479,563,427"/>
+<area shape="rect" id="Node000009" href="$_vertex4_8hpp.html" title="Irreducible two&#45;particle vertex in the Matsubara representation." alt="" coords="946,482,1105,507"/>
+<area shape="poly" id="edge13_Node000008_Node000009" title=" " alt="" coords="704,427,969,479,968,485,703,432"/>
+<area shape="poly" id="edge16_Node000010_Node000003" title=" " alt="" coords="922,437,904,455,890,475,885,495,886,504,891,513,910,523,948,532,1058,549,1292,568,1291,574,1057,554,947,538,909,528,888,517,881,506,879,495,886,473,900,452,918,434"/>
+<area shape="poly" id="edge17_Node000010_Node000011" title=" " alt="" coords="895,433,749,477,747,472,894,428"/>
+<area shape="poly" id="edge18_Node000011_Node000003" title=" " alt="" coords="819,510,839,512,1292,565,1292,571,838,517,818,515"/>
+<area shape="poly" id="edge21_Node000012_Node000003" title=" " alt="" coords="1461,440,1461,477,1457,498,1449,516,1435,533,1419,546,1383,565,1380,560,1416,542,1432,529,1444,513,1452,496,1456,477,1455,440"/>
+<area shape="poly" id="edge24_Node000012_Node000009" title=" " alt="" coords="1373,432,1118,477,1081,485,1080,479,1117,472,1372,426"/>
+<area shape="poly" id="edge22_Node000012_Node000013" title=" " alt="" coords="1414,434,1289,484,1287,480,1412,429"/>
+<area shape="poly" id="edge23_Node000013_Node000003" title=" " alt="" coords="1284,515,1333,560,1330,564,1281,519"/>
+<area shape="poly" id="edge28_Node000014_Node000003" title=" " alt="" coords="357,431,445,473,499,495,555,512,621,524,708,535,919,552,1292,570,1292,575,919,557,707,540,620,529,554,517,497,500,443,478,355,436"/>
+<area shape="poly" id="edge29_Node000014_Node000007" title=" " alt="" coords="304,438,255,484,252,480,300,434"/>
+<area shape="poly" id="edge30_Node000014_Node000011" title=" " alt="" coords="390,427,599,472,598,477,389,432"/>
+<area shape="poly" id="edge31_Node000014_Node000013" title=" " alt="" coords="467,421,767,441,1118,472,1180,479,1179,485,1117,477,766,447,467,426"/>
+<area shape="poly" id="edge35_Node000015_Node000003" title=" " alt="" coords="1983,360,1963,396,1934,439,1895,482,1849,517,1812,532,1761,544,1636,561,1504,571,1396,575,1396,570,1503,566,1635,556,1760,539,1810,527,1847,512,1892,479,1929,436,1958,393,1978,357"/>
+<area shape="poly" id="edge36_Node000015_Node000005" title=" " alt="" coords="1943,353,1776,404,1775,399,1941,348"/>
+<area shape="poly" id="edge39_Node000015_Node000006" title=" " alt="" coords="1968,357,1865,429,1764,484,1761,480,1863,424,1965,352"/>
+<area shape="poly" id="edge38_Node000015_Node000008" title=" " alt="" coords="1911,351,1866,356,1567,379,1334,387,1101,392,801,404,738,408,738,403,801,399,1101,386,1334,382,1567,374,1865,351,1910,345"/>
+<area shape="poly" id="edge40_Node000015_Node000010" title=" " alt="" coords="1909,351,1866,356,1650,376,1434,391,1078,410,1077,405,1433,386,1649,371,1865,351,1908,345"/>
+<area shape="poly" id="edge41_Node000015_Node000012" title=" " alt="" coords="1902,351,1866,356,1533,404,1532,399,1865,351,1902,345"/>
+<area shape="poly" id="edge37_Node000015_Node000014" title=" " alt="" coords="1911,351,1866,356,1661,373,1487,383,1192,390,897,392,517,404,454,407,453,402,517,399,897,387,1192,385,1487,377,1660,367,1865,351,1910,345"/>
+<area shape="poly" id="edge51_Node000016_Node000015" title=" " alt="" coords="1800,267,1958,318,1956,323,1798,272"/>
+<area shape="rect" id="Node000017" href="$_greens_function_part_8hpp.html" title="Part of a fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="1107,321,1341,346"/>
+<area shape="poly" id="edge49_Node000016_Node000017" title=" " alt="" coords="1613,269,1291,323,1291,318,1612,264"/>
+<area shape="rect" id="Node000018" href="$_susceptibility_part_8hpp.html" title="Part of a dynamical susceptibility in the Matsubara representation." alt="" coords="2131,321,2352,346"/>
+<area shape="poly" id="edge52_Node000016_Node000018" title=" " alt="" coords="1843,263,2173,318,2172,323,1842,268"/>
+<area shape="rect" id="Node000019" href="$_three_point_susceptibility_part_8hpp.html" title="Part of a 3&#45;point susceptibility in the Matsubara representation." alt="" coords="1366,313,1605,353"/>
+<area shape="poly" id="edge54_Node000016_Node000019" title=" " alt="" coords="1663,272,1539,316,1538,311,1661,267"/>
+<area shape="rect" id="Node000020" href="$_two_particle_g_f_part_8hpp.html" title="Part of a fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="1629,321,1853,346"/>
+<area shape="poly" id="edge56_Node000016_Node000020" title=" " alt="" coords="1736,279,1742,320,1737,321,1730,280"/>
+<area shape="poly" id="edge50_Node000017_Node000008" title=" " alt="" coords="1125,350,720,404,719,399,1124,345"/>
+<area shape="poly" id="edge53_Node000018_Node000006" title=" " alt="" coords="2193,353,1776,484,1774,479,2192,348"/>
+<area shape="poly" id="edge55_Node000019_Node000010" title=" " alt="" coords="1353,357,1024,404,1024,399,1352,351"/>
+<area shape="poly" id="edge57_Node000020_Node000012" title=" " alt="" coords="1687,352,1496,404,1495,399,1686,347"/>
+<area shape="poly" id="edge73_Node000021_Node000002" title=" " alt="" coords="1502,102,1320,120,1219,135,1121,155,1055,173,991,195,893,235,891,230,990,190,1054,168,1119,149,1218,129,1319,115,1501,97"/>
+<area shape="poly" id="edge59_Node000021_Node000003" title=" " alt="" coords="1765,92,1976,97,2216,107,2424,124,2497,136,2540,150,2566,168,2583,188,2592,213,2595,244,2595,416,2592,428,2583,439,2551,459,2503,477,2439,494,2276,520,2083,541,1878,556,1683,566,1396,576,1396,570,1682,561,1878,550,2082,535,2276,515,2438,488,2501,472,2549,455,2579,435,2587,425,2589,415,2589,244,2587,214,2578,191,2562,172,2537,154,2496,141,2424,129,2216,113,1976,102,1765,97"/>
+<area shape="poly" id="edge61_Node000021_Node000004" title=" " alt="" coords="1502,102,1280,120,1154,135,1030,155,949,163,883,167,854,173,825,183,795,201,763,227,748,249,738,275,732,321,727,320,733,274,743,247,759,224,792,196,822,178,852,168,883,162,948,158,1029,149,1153,130,1279,115,1501,97"/>
+<area shape="poly" id="edge68_Node000021_Node000005" title=" " alt="" coords="1765,91,1941,98,2040,107,2137,119,2228,136,2308,158,2370,187,2393,205,2410,224,2429,259,2437,291,2431,323,2410,355,2382,370,2331,381,2184,398,2010,408,1851,413,1851,408,2009,403,2184,393,2331,376,2380,365,2406,351,2426,321,2431,292,2424,260,2406,227,2390,209,2367,192,2306,163,2227,141,2136,124,2039,112,1941,104,1765,96"/>
+<area shape="poly" id="edge84_Node000021_Node000006" title=" " alt="" coords="1765,91,1970,95,2202,105,2401,122,2471,134,2511,150,2531,170,2541,191,2544,215,2544,244,2544,335,2538,361,2522,384,2496,404,2462,422,2422,437,2375,450,2269,470,2154,484,2037,492,1836,497,1836,492,2037,486,2153,478,2269,465,2374,445,2420,432,2460,417,2493,400,2518,380,2533,359,2539,334,2539,244,2539,215,2536,192,2527,173,2508,154,2470,140,2401,127,2202,110,1970,101,1765,96"/>
+<area shape="poly" id="edge70_Node000021_Node000007" title=" " alt="" coords="1501,97,1167,103,751,113,376,130,240,142,161,155,104,167,55,179,36,188,21,201,11,219,8,244,8,334,13,364,26,390,46,413,71,432,130,461,187,479,186,485,128,466,68,436,42,417,22,393,8,366,3,335,3,244,6,217,17,197,33,184,53,174,103,162,159,149,240,136,375,125,751,108,1167,97,1501,92"/>
+<area shape="poly" id="edge71_Node000021_Node000008" title=" " alt="" coords="1501,97,1314,102,1098,112,896,129,814,140,751,155,688,178,663,192,641,208,624,228,610,251,598,280,589,314,586,334,589,352,604,379,622,399,618,403,599,382,584,354,580,334,584,313,593,278,605,249,620,225,638,204,660,188,686,173,750,149,813,135,896,123,1098,106,1314,96,1501,92"/>
+<area shape="poly" id="edge86_Node000021_Node000010" title=" " alt="" coords="1501,96,1330,101,1135,110,955,128,882,140,826,155,750,182,692,210,667,227,645,250,623,278,602,314,595,334,597,343,602,352,615,362,634,372,685,387,748,398,814,405,813,410,747,403,684,393,632,377,612,367,598,355,592,344,590,334,598,312,619,275,641,246,664,223,689,205,748,177,825,149,880,134,954,122,1135,105,1330,95,1501,91"/>
+<area shape="poly" id="edge87_Node000021_Node000011" title=" " alt="" coords="1501,94,1115,97,877,104,636,116,413,134,315,147,229,162,158,179,104,198,70,220,61,232,59,244,59,334,62,352,72,369,89,384,111,398,170,423,243,443,325,459,409,470,566,485,566,490,409,476,324,464,242,448,168,428,109,403,86,388,68,372,57,354,53,335,53,244,57,230,66,216,101,193,156,174,228,156,314,142,413,129,636,110,877,98,1115,92,1501,89"/>
+<area shape="poly" id="edge89_Node000021_Node000012" title=" " alt="" coords="1687,105,1839,149,1938,171,2046,185,2256,208,2337,226,2367,238,2390,253,2402,272,2403,296,2391,323,2366,355,2348,366,2319,375,2235,388,2124,396,1999,401,1615,404,1552,408,1552,403,1615,399,1999,395,2124,391,2234,383,2318,370,2346,361,2362,351,2387,320,2398,295,2397,274,2386,257,2365,243,2335,231,2255,214,2046,191,1937,176,1838,155,1686,110"/>
+<area shape="poly" id="edge90_Node000021_Node000013" title=" " alt="" coords="1765,93,1912,99,2075,110,2223,126,2284,137,2330,149,2365,165,2398,185,2425,209,2447,235,2460,264,2465,295,2458,325,2439,355,2419,370,2386,383,2287,408,2154,429,1998,447,1668,474,1391,490,1391,485,1668,469,1998,441,2153,423,2286,402,2384,378,2416,365,2435,351,2453,323,2460,294,2455,266,2442,238,2421,212,2394,189,2363,170,2328,155,2283,142,2223,131,2074,115,1912,105,1765,99"/>
+<area shape="poly" id="edge69_Node000021_Node000014" title=" " alt="" coords="1502,94,1299,96,1062,105,945,112,839,123,749,137,681,155,623,180,567,211,514,247,465,284,386,354,337,403,333,399,382,350,462,280,511,242,564,207,621,175,679,149,748,132,838,117,945,107,1061,99,1299,91,1501,89"/>
+<area shape="poly" id="edge82_Node000021_Node000015" title=" " alt="" coords="1697,105,1751,123,1805,150,1864,193,1916,241,1985,319,1981,322,1912,245,1861,197,1803,154,1749,128,1696,110"/>
+<area shape="poly" id="edge83_Node000021_Node000016" title=" " alt="" coords="1654,113,1682,151,1722,224,1717,226,1678,153,1650,116"/>
+<area shape="poly" id="edge72_Node000021_Node000017" title=" " alt="" coords="1504,108,1387,127,1338,140,1304,154,1284,171,1268,191,1245,239,1233,286,1228,321,1222,320,1227,285,1240,237,1263,189,1280,167,1301,150,1336,135,1386,122,1503,103"/>
+<area shape="poly" id="edge85_Node000021_Node000018" title=" " alt="" coords="1765,95,1898,103,2037,114,2152,129,2191,139,2214,150,2230,170,2241,192,2251,241,2250,287,2246,321,2241,320,2245,287,2245,242,2236,194,2225,172,2210,154,2189,144,2151,135,2037,119,1898,108,1765,100"/>
+<area shape="poly" id="edge88_Node000021_Node000019" title=" " alt="" coords="1502,103,1437,117,1372,141,1341,157,1313,176,1288,200,1268,227,1261,243,1261,257,1268,270,1281,281,1319,300,1367,313,1365,319,1317,305,1278,286,1264,273,1256,259,1256,242,1263,224,1284,196,1310,172,1338,152,1369,136,1435,112,1501,98"/>
+<area shape="poly" id="edge91_Node000021_Node000020" title=" " alt="" coords="1685,106,1726,124,1770,149,1812,182,1844,224,1850,245,1844,267,1830,286,1812,301,1774,323,1772,318,1809,297,1826,282,1839,264,1845,245,1839,227,1808,186,1767,154,1724,129,1683,111"/>
+<area shape="rect" id="Node000022" href="$_chase_indices_8hpp.html" title="Chase indices algorithm used in multipoint correlator calculations." alt="" coords="2005,152,2200,177"/>
+<area shape="poly" id="edge60_Node000021_Node000022" title=" " alt="" coords="1722,103,2027,149,2027,155,1722,109"/>
+<area shape="rect" id="Node000023" href="$_density_matrix_part_8hpp.html" title="Diagonal block of a many&#45;body Gibbs density matrix." alt="" coords="1277,233,1502,258"/>
+<area shape="poly" id="edge62_Node000021_Node000023" title=" " alt="" coords="1540,110,1490,127,1444,154,1426,173,1412,194,1395,234,1390,231,1408,192,1422,169,1441,150,1488,122,1538,105"/>
+<area shape="rect" id="Node000024" href="$_hamiltonian_part_8hpp.html" title="Storage and diagonalization of a Hamiltonian matrix block." alt="" coords="1455,152,1668,177"/>
+<area shape="poly" id="edge74_Node000021_Node000024" title=" " alt="" coords="1613,116,1575,154,1571,150,1610,112"/>
+<area shape="poly" id="edge63_Node000023_Node000004" title=" " alt="" coords="1288,262,818,323,817,318,1288,257"/>
+<area shape="poly" id="edge64_Node000023_Node000017" title=" " alt="" coords="1356,267,1248,323,1245,318,1354,262"/>
+<area shape="poly" id="edge65_Node000023_Node000018" title=" " alt="" coords="1516,255,1841,283,2119,311,2172,318,2171,323,2118,316,1841,288,1515,260"/>
+<area shape="poly" id="edge66_Node000023_Node000019" title=" " alt="" coords="1414,265,1466,311,1462,315,1410,269"/>
+<area shape="poly" id="edge67_Node000023_Node000020" title=" " alt="" coords="1450,259,1695,318,1694,323,1449,264"/>
+<area shape="poly" id="edge77_Node000024_Node000002" title=" " alt="" coords="1447,181,961,236,961,231,1447,176"/>
+<area shape="poly" id="edge78_Node000024_Node000016" title=" " alt="" coords="1599,181,1689,223,1686,228,1597,185"/>
+<area shape="poly" id="edge76_Node000024_Node000017" title=" " alt="" coords="1442,181,1338,199,1295,212,1267,227,1249,249,1238,275,1228,321,1222,320,1232,273,1245,246,1264,223,1293,207,1336,194,1441,176"/>
+<area shape="poly" id="edge79_Node000024_Node000018" title=" " alt="" coords="1633,177,1842,223,2045,275,2202,318,2200,323,2043,280,1841,228,1632,183"/>
+<area shape="poly" id="edge80_Node000024_Node000019" title=" " alt="" coords="1553,191,1496,314,1492,312,1548,189"/>
+<area shape="poly" id="edge81_Node000024_Node000020" title=" " alt="" coords="1572,189,1590,227,1617,264,1638,281,1662,296,1708,318,1706,323,1659,301,1635,286,1613,267,1585,230,1567,192"/>
+<area shape="poly" id="edge75_Node000024_Node000023" title=" " alt="" coords="1525,185,1415,235,1413,230,1523,181"/>
 </map>

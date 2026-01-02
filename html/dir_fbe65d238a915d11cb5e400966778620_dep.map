@@ -1,7 +1,9 @@
 <map id="pomerol" name="pomerol">
-<area shape="rect" id="node1" href="dir_fbe65d238a915d11cb5e400966778620.html" title="pomerol" alt="" coords="67,5,143,53"/>
-<area shape="rect" id="node2" href="dir_23665defaf1f4df705f7dc415ca2f3ce.html" title="pomerol" alt="" coords="5,101,81,149"/>
-<area shape="rect" id="edge1-headlabel" href="dir_000002_000000.html" title="1" alt="" coords="71,83,80,98"/>
-<area shape="rect" id="node3" href="dir_7df34cd3e49c885ea4ab5d300b9866b3.html" title="mpi_dispatcher" alt="" coords="106,101,229,149"/>
-<area shape="rect" id="edge2-headlabel" href="dir_000002_000001.html" title="12" alt="" coords="140,74,158,89"/>
+<area shape="rect" id="node1" href="dir_fbe65d238a915d11cb5e400966778620.html" title="pomerol" alt="" coords="67,5,143,31"/>
+<area shape="rect" id="node2" href="dir_23665defaf1f4df705f7dc415ca2f3ce.html" title="pomerol" alt="" coords="5,79,81,104"/>
+<area shape="poly" id="edge1" href="dir_000002_000001.html" alt="" coords="97,33,64,70,60,66,93,29"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000002_000001.html" title="1" alt="" coords="67,63,76,78"/>
+<area shape="rect" id="node3" href="dir_7df34cd3e49c885ea4ab5d300b9866b3.html" title="mpi_dispatcher" alt="" coords="106,79,229,104"/>
+<area shape="poly" id="edge2" href="dir_000002_000000.html" alt="" coords="117,29,150,66,146,70,113,33"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000002_000000.html" title="12" alt="" coords="143,52,160,67"/>
 </map>

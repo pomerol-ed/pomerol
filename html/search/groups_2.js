@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['exact_20diagonalization_3a_20hilbert_20space_2c_20hamiltonian_2c_20monomial_20operators_20and_20density_20matrix_788',['Exact diagonalization: Hilbert space, Hamiltonian, monomial operators and density matrix',['../group___e_d.html',1,'']]]
+  ['construct_20widely_20used_20lattice_20models_0',['Factory functions to construct widely used lattice models',['../group___lattice_presets.html',1,'']]],
+  ['coulomb_20interaction_20terms_1',['Factory functions for Coulomb interaction terms',['../group___coulomb.html',1,'']]],
+  ['coupling_20terms_2',['Factory functions for spin coupling terms',['../group___s_s.html',1,'']]]
 ];

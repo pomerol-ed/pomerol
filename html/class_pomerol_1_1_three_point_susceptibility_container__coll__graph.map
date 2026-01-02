@@ -1,10 +1,21 @@
 <map id="Pomerol::ThreePointSusceptibilityContainer" name="Pomerol::ThreePointSusceptibilityContainer">
-<area shape="rect" id="node1" title="Container for instances of ThreePointSusceptibility." alt="" coords="640,151,883,193"/>
-<area shape="rect" id="node2" href="$class_pomerol_1_1_index_container4.html" title=" " alt="" coords="260,5,523,61"/>
-<area shape="rect" id="node3" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature." alt="" coords="39,103,177,129"/>
-<area shape="rect" id="node7" href="$class_pomerol_1_1_density_matrix.html" title="Many&#45;body Gibbs density matrix." alt="" coords="303,136,479,163"/>
-<area shape="rect" id="node4" href="$class_pomerol_1_1_field_operator_container.html" title="Container for instances of CreationOperator and AnnihilationOperator." alt="" coords="274,288,509,315"/>
-<area shape="rect" id="node5" href="$class_pomerol_1_1_states_classification.html" title="Classification of many&#45;body basis states into bases of invariant subspaces." alt="" coords="285,187,497,213"/>
-<area shape="rect" id="node6" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects." alt="" coords="5,187,211,213"/>
-<area shape="rect" id="node8" href="$class_pomerol_1_1_hamiltonian.html" title="Hamiltonian of a quantum system." alt="" coords="309,237,473,264"/>
+<area shape="rect" id="Node000001" title="Container for instances of ThreePointSusceptibility." alt="" coords="612,81,855,121"/>
+<area shape="rect" id="Node000002" href="$class_pomerol_1_1_index_container4.html" title=" " alt="" coords="952,73,1215,128"/>
+<area shape="poly" id="edge2_Node000002_Node000001" title=" " alt="" coords="868,98,952,98,952,103,868,103"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="938,106,879,106,855,106,855,100,879,101,938,101"/>
+<area shape="rect" id="Node000003" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature." alt="" coords="39,5,177,31"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="191,16,236,17,366,14,423,15,495,23,543,34,589,50,675,78,673,83,587,55,541,40,494,29,422,21,366,20,236,22,191,21"/>
+<area shape="rect" id="Node000007" href="$class_pomerol_1_1_density_matrix.html" title="Many&#45;body Gibbs density matrix." alt="" coords="289,39,465,64"/>
+<area shape="poly" id="edge9_Node000007_Node000003" title=" " alt="" coords="191,26,290,38,289,43,191,31"/>
+<area shape="rect" id="Node000004" href="$class_pomerol_1_1_states_classification.html" title="Classification of many&#45;body basis states into bases of invariant subspaces." alt="" coords="271,88,483,113"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="497,98,612,98,612,103,497,103"/>
+<area shape="rect" id="Node000005" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects." alt="" coords="5,88,211,113"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="224,98,271,98,271,103,224,103"/>
+<area shape="rect" id="Node000006" href="$class_pomerol_1_1_hamiltonian.html" title="Hamiltonian of a quantum system." alt="" coords="295,137,459,163"/>
+<area shape="poly" id="edge7_Node000006_Node000005" title=" " alt="" coords="192,113,308,135,307,140,191,118"/>
+<area shape="poly" id="edge10_Node000007_Node000005" title=" " alt="" coords="191,83,307,61,308,67,192,88"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="473,134,611,115,612,120,474,139"/>
+<area shape="poly" id="edge8_Node000001_Node000007" title=" " alt="" coords="480,63,612,81,611,87,479,68"/>
+<area shape="rect" id="Node000008" href="$class_pomerol_1_1_field_operator_container.html" title="Container for instances of CreationOperator and AnnihilationOperator." alt="" coords="260,187,495,212"/>
+<area shape="poly" id="edge11_Node000001_Node000008" title=" " alt="" coords="457,181,494,173,587,147,675,118,677,123,589,153,495,178,458,186"/>
 </map>

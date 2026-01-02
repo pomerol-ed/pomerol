@@ -1,9 +1,21 @@
 <map id="pomerol/Index.hpp" name="pomerol/Index.hpp">
-<area shape="rect" id="node1" title="Combinations of single&#45;particle indices." alt="" coords="232,5,376,32"/>
-<area shape="rect" id="node2" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions." alt="" coords="39,162,227,189"/>
-<area shape="rect" id="node3" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="305,244,409,271"/>
-<area shape="rect" id="node4" href="$_index_container2_8hpp.html" title="A CRTP base for container types whose elements are addressable by two single&#45;particle indices." alt="" coords="26,80,240,107"/>
-<area shape="rect" id="node5" href="$_index_container4_8hpp.html" title="A CRTP base for container types whose elements are addressable by four single&#45;particle indices." alt="" coords="367,80,582,107"/>
-<area shape="rect" id="node6" href="$_three_point_susceptibility_container_8hpp.html" title="Storage for multiple 3&#45;point susceptibilities in the Matsubara representation." alt="" coords="316,155,555,196"/>
-<area shape="rect" id="node7" href="$_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions." alt="" coords="580,162,841,189"/>
+<area shape="rect" id="Node000001" title="Combinations of single&#45;particle indices." alt="" coords="193,5,337,31"/>
+<area shape="rect" id="Node000002" href="$pomerol_8hpp.html" title="Main &quot;include&#45;all&quot; header of the library." alt="" coords="184,240,288,265"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,34,120,51,91,64,64,81,44,97,32,111,14,153,8,173,9,181,14,190,24,199,40,208,84,223,184,242,183,247,82,228,38,213,21,204,10,194,4,183,3,173,9,151,27,108,41,93,61,76,88,60,118,46,179,28"/>
+<area shape="rect" id="Node000003" href="$_g_f_container_8hpp.html" title="Storage for multiple fermionic single&#45;particle Matsubara Green&#39;s functions." alt="" coords="23,159,211,185"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="180,26,151,33,123,44,97,59,77,80,72,90,71,99,78,121,91,141,106,157,102,161,87,144,73,123,66,100,67,88,72,77,94,55,120,39,149,28,179,21"/>
+<area shape="rect" id="Node000004" href="$_index_container2_8hpp.html" title="A CRTP base for container types whose elements are addressable by two single&#45;particle indices." alt="" coords="86,79,300,104"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="245,43,207,80,203,77,241,39"/>
+<area shape="rect" id="Node000005" href="$_index_container4_8hpp.html" title="A CRTP base for container types whose elements are addressable by four single&#45;particle indices." alt="" coords="376,79,591,104"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="314,32,449,76,448,81,313,37"/>
+<area shape="rect" id="Node000006" href="$_three_point_susceptibility_container_8hpp.html" title="Storage for multiple 3&#45;point susceptibilities in the Matsubara representation." alt="" coords="235,152,474,192"/>
+<area shape="poly" id="edge11_Node000001_Node000006" title=" " alt="" coords="287,39,315,77,336,116,350,151,345,153,331,118,311,80,283,43"/>
+<area shape="rect" id="Node000007" href="$_two_particle_g_f_container_8hpp.html" title="Storage for multiple fermionic two&#45;particle Matsubara Green&#39;s functions." alt="" coords="498,159,760,185"/>
+<area shape="poly" id="edge12_Node000001_Node000007" title=" " alt="" coords="351,21,423,28,497,39,562,55,587,65,606,77,620,96,628,119,632,159,627,159,623,120,615,99,602,81,585,70,560,60,496,44,422,33,351,27"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="148,190,220,238,217,242,145,195"/>
+<area shape="poly" id="edge5_Node000004_Node000003" title=" " alt="" coords="174,116,130,161,126,157,170,112"/>
+<area shape="poly" id="edge7_Node000005_Node000006" title=" " alt="" coords="454,114,387,154,384,150,452,109"/>
+<area shape="poly" id="edge9_Node000005_Node000007" title=" " alt="" coords="518,108,609,157,606,161,516,113"/>
+<area shape="poly" id="edge8_Node000006_Node000002" title=" " alt="" coords="315,202,255,242,252,238,312,198"/>
+<area shape="poly" id="edge10_Node000007_Node000002" title=" " alt="" coords="559,190,288,244,287,238,558,185"/>
 </map>

@@ -1,33 +1,71 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects." alt="" coords="55,452,261,479"/>
-<area shape="rect" id="node2" href="$class_pomerol_1_1_density_matrix.html" title="Many&#45;body Gibbs density matrix." alt="" coords="404,705,580,732"/>
-<area shape="rect" id="node3" href="$class_pomerol_1_1_ensemble_average.html" title="Canonical ensemble average of a monomial operator." alt="" coords="391,756,593,783"/>
-<area shape="rect" id="node4" href="$class_pomerol_1_1_greens_function.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="399,807,585,833"/>
-<area shape="rect" id="node5" href="$class_pomerol_1_1_hamiltonian.html" title="Hamiltonian of a quantum system." alt="" coords="410,233,574,260"/>
-<area shape="rect" id="node6" href="$class_pomerol_1_1_hamiltonian_part.html" title="Part of a Hamiltonian of a quantum system." alt="" coords="397,284,587,311"/>
-<area shape="rect" id="node7" href="$class_pomerol_1_1_hilbert_space.html" title="Hilbert space of a quantum system." alt="" coords="409,335,575,377"/>
-<area shape="rect" id="node8" href="$class_pomerol_1_1_monomial_operator.html" title="Monomial quantum operator." alt="" coords="389,81,595,108"/>
-<area shape="rect" id="node14" href="$class_pomerol_1_1_monomial_operator_part.html" title="Part of a monomial quantum operator." alt="" coords="377,132,607,159"/>
-<area shape="rect" id="node15" href="$class_pomerol_1_1_states_classification.html" title="Classification of many&#45;body basis states into bases of invariant subspaces." alt="" coords="386,183,598,209"/>
-<area shape="rect" id="node16" href="$class_pomerol_1_1_susceptibility.html" title="Dynamical susceptibility." alt="" coords="406,401,578,428"/>
-<area shape="rect" id="node17" href="$class_pomerol_1_1_three_point_susceptibility.html" title="3&#45;point fermion&#45;boson susceptibility in the Matsubara representation." alt="" coords="371,452,613,479"/>
-<area shape="rect" id="node18" href="$class_pomerol_1_1_three_point_susceptibility_part.html" title="Part of a 3&#45;point susceptibility." alt="" coords="359,503,625,529"/>
-<area shape="rect" id="node19" href="$class_pomerol_1_1_two_particle_g_f.html" title="Fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="405,553,579,580"/>
-<area shape="rect" id="node20" href="$class_pomerol_1_1_two_particle_g_f_part.html" title="Part of a fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="392,604,592,631"/>
-<area shape="rect" id="node21" href="$class_pomerol_1_1_vertex4.html" title="Irreducible two&#45;particle vertex." alt="" coords="425,655,559,681"/>
-<area shape="rect" id="node9" href="$class_pomerol_1_1_field_operator.html" title="A special case of a monomial operator: A single fermion creation or annihilation operator ." alt="" coords="689,31,861,57"/>
-<area shape="rect" id="node12" href="$class_pomerol_1_1_quadratic_operator.html" title=" " alt="" coords="673,81,877,108"/>
-<area shape="rect" id="node13" href="$class_pomerol_1_1_quartic_operator.html" title=" " alt="" coords="681,132,869,159"/>
-<area shape="rect" id="node10" href="$class_pomerol_1_1_annihilation_operator.html" title="A special case of a monomial operator: A single fermion annihilation operator ." alt="" coords="925,5,1144,32"/>
-<area shape="rect" id="node11" href="$class_pomerol_1_1_creation_operator.html" title="A special case of a monomial operator: A single fermion creation operator ." alt="" coords="937,56,1133,83"/>
-<area shape="rect" id="node22" href="$class_pomerol_1_1_index_container2.html" title=" " alt="" coords="37,987,279,1029"/>
-<area shape="rect" id="node23" href="$class_pomerol_1_1_g_f_container.html" title="Container for instances of GreensFunction." alt="" coords="409,1009,575,1036"/>
-<area shape="rect" id="node24" href="$class_pomerol_1_1_index_container4.html" title=" " alt="" coords="27,1053,289,1109"/>
-<area shape="rect" id="node25" href="$class_pomerol_1_1_three_point_susceptibility_container.html" title="Container for instances of ThreePointSusceptibility." alt="" coords="371,1061,613,1102"/>
-<area shape="rect" id="node26" href="$class_pomerol_1_1_index_container4.html" title=" " alt="" coords="5,1134,311,1175"/>
-<area shape="rect" id="node27" href="$class_pomerol_1_1_two_particle_g_f_container.html" title="Container for instances of TwoParticleGF." alt="" coords="373,1133,611,1160"/>
-<area shape="rect" id="node28" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature." alt="" coords="89,756,227,783"/>
-<area shape="rect" id="node29" href="$class_pomerol_1_1_density_matrix_part.html" title="Part of a many&#45;body Gibbs density matrix." alt="" coords="391,857,593,884"/>
-<area shape="rect" id="node30" href="$class_pomerol_1_1_greens_function_part.html" title="Part of a fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="387,908,597,935"/>
-<area shape="rect" id="node31" href="$class_pomerol_1_1_susceptibility_part.html" title="Part of a dynamical susceptibility." alt="" coords="393,959,591,985"/>
+<area shape="rect" id="Node000000" href="$struct_pomerol_1_1_computable_object.html" title="A base class for computable objects." alt="" coords="55,440,261,465"/>
+<area shape="rect" id="Node000001" href="$class_pomerol_1_1_density_matrix.html" title="Many&#45;body Gibbs density matrix." alt="" coords="404,687,580,712"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="176,476,204,519,246,574,299,628,328,652,360,673,405,689,403,694,357,678,325,657,295,632,242,577,200,522,171,478"/>
+<area shape="rect" id="Node000004" href="$class_pomerol_1_1_ensemble_average.html" title="Canonical ensemble average of a monomial operator." alt="" coords="391,736,593,761"/>
+<area shape="poly" id="edge2_Node000000_Node000004" title=" " alt="" coords="172,477,198,530,239,597,293,666,325,697,360,722,392,737,390,742,357,727,322,701,289,670,234,600,194,532,168,479"/>
+<area shape="rect" id="Node000007" href="$class_pomerol_1_1_greens_function.html" title="Fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="399,785,585,811"/>
+<area shape="poly" id="edge3_Node000000_Node000007" title=" " alt="" coords="174,476,209,546,259,636,312,720,338,751,360,772,379,782,400,789,398,794,377,787,357,776,334,755,308,723,254,639,205,549,169,479"/>
+<area shape="rect" id="Node000020" href="$class_pomerol_1_1_hamiltonian.html" title="Hamiltonian of a quantum system." alt="" coords="410,227,574,252"/>
+<area shape="poly" id="edge4_Node000000_Node000020" title=" " alt="" coords="175,427,205,390,248,345,299,300,358,262,409,245,411,250,360,267,303,304,252,349,209,393,179,430"/>
+<area shape="rect" id="Node000021" href="$class_pomerol_1_1_hamiltonian_part.html" title="Part of a Hamiltonian of a quantum system." alt="" coords="397,276,587,301"/>
+<area shape="poly" id="edge5_Node000000_Node000021" title=" " alt="" coords="182,429,257,370,306,338,358,312,397,299,399,304,360,316,308,343,260,374,185,433"/>
+<area shape="rect" id="Node000022" href="$class_pomerol_1_1_hilbert_space.html" title="Hilbert space of a quantum system." alt="" coords="409,326,575,366"/>
+<area shape="poly" id="edge6_Node000000_Node000022" title=" " alt="" coords="203,432,358,377,408,363,409,368,359,382,204,437"/>
+<area shape="rect" id="Node000023" href="$class_pomerol_1_1_monomial_operator.html" title="Monomial quantum operator." alt="" coords="389,79,595,104"/>
+<area shape="poly" id="edge7_Node000000_Node000023" title=" " alt="" coords="164,426,186,361,225,276,251,231,282,188,317,148,357,114,387,99,390,104,360,119,321,152,286,191,255,234,230,279,191,363,169,428"/>
+<area shape="rect" id="Node000029" href="$class_pomerol_1_1_monomial_operator_part.html" title="Part of a monomial quantum operator." alt="" coords="377,128,607,153"/>
+<area shape="poly" id="edge13_Node000000_Node000029" title=" " alt="" coords="167,426,192,370,232,298,258,261,287,225,321,192,357,164,383,151,386,156,360,168,324,196,291,228,262,264,237,301,197,373,172,428"/>
+<area shape="rect" id="Node000030" href="$class_pomerol_1_1_states_classification.html" title="Classification of many&#45;body basis states into bases of invariant subspaces." alt="" coords="386,177,598,203"/>
+<area shape="poly" id="edge14_Node000000_Node000030" title=" " alt="" coords="170,426,198,379,240,321,293,262,324,236,357,213,386,200,388,205,360,218,327,240,297,266,244,324,203,382,175,429"/>
+<area shape="rect" id="Node000009" href="$class_pomerol_1_1_susceptibility.html" title="Dynamical susceptibility." alt="" coords="406,391,578,416"/>
+<area shape="poly" id="edge15_Node000000_Node000009" title=" " alt="" coords="258,435,405,413,406,419,259,441"/>
+<area shape="rect" id="Node000011" href="$class_pomerol_1_1_three_point_susceptibility.html" title="3&#45;point fermion&#45;boson susceptibility in the Matsubara representation." alt="" coords="371,440,613,465"/>
+<area shape="poly" id="edge16_Node000000_Node000011" title=" " alt="" coords="275,450,371,450,371,455,275,455"/>
+<area shape="rect" id="Node000014" href="$class_pomerol_1_1_three_point_susceptibility_part.html" title="Part of a 3&#45;point susceptibility." alt="" coords="359,489,625,515"/>
+<area shape="poly" id="edge17_Node000000_Node000014" title=" " alt="" coords="259,465,405,487,405,492,258,470"/>
+<area shape="rect" id="Node000015" href="$class_pomerol_1_1_two_particle_g_f.html" title="Fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="405,539,579,564"/>
+<area shape="poly" id="edge18_Node000000_Node000015" title=" " alt="" coords="202,468,275,497,359,525,408,536,407,541,358,530,273,502,200,473"/>
+<area shape="rect" id="Node000018" href="$class_pomerol_1_1_two_particle_g_f_part.html" title="Part of a fermionic two&#45;particle Matsubara Green&#39;s function." alt="" coords="392,588,592,613"/>
+<area shape="poly" id="edge19_Node000000_Node000018" title=" " alt="" coords="188,472,262,524,310,551,360,574,397,585,395,591,358,579,307,556,260,528,184,476"/>
+<area shape="rect" id="Node000019" href="$class_pomerol_1_1_vertex4.html" title="Irreducible two&#45;particle vertex." alt="" coords="425,637,559,663"/>
+<area shape="poly" id="edge20_Node000000_Node000019" title=" " alt="" coords="181,475,212,509,254,550,304,590,360,624,392,635,425,642,424,648,390,640,358,628,301,595,250,554,208,512,177,478"/>
+<area shape="rect" id="Node000024" href="$class_pomerol_1_1_field_operator.html" title="A special case of a monomial operator: A single fermion creation or annihilation operator ." alt="" coords="689,29,861,55"/>
+<area shape="poly" id="edge8_Node000023_Node000024" title=" " alt="" coords="579,74,701,52,702,57,580,79"/>
+<area shape="rect" id="Node000027" href="$class_pomerol_1_1_quadratic_operator.html" title=" " alt="" coords="673,79,877,104"/>
+<area shape="poly" id="edge11_Node000023_Node000027" title=" " alt="" coords="609,89,673,89,673,94,609,94"/>
+<area shape="rect" id="Node000028" href="$class_pomerol_1_1_quartic_operator.html" title=" " alt="" coords="681,128,869,153"/>
+<area shape="poly" id="edge12_Node000023_Node000028" title=" " alt="" coords="580,104,702,125,701,131,579,109"/>
+<area shape="rect" id="Node000025" href="$class_pomerol_1_1_annihilation_operator.html" title="A special case of a monomial operator: A single fermion annihilation operator ." alt="" coords="925,5,1144,31"/>
+<area shape="poly" id="edge9_Node000024_Node000025" title=" " alt="" coords="875,30,925,25,926,31,875,35"/>
+<area shape="rect" id="Node000026" href="$class_pomerol_1_1_creation_operator.html" title="A special case of a monomial operator: A single fermion creation operator ." alt="" coords="937,55,1133,80"/>
+<area shape="poly" id="edge10_Node000024_Node000026" title=" " alt="" coords="875,49,936,55,936,60,875,54"/>
+<area shape="rect" id="Node000006" href="$class_pomerol_1_1_index_container2.html" title=" " alt="" coords="37,961,279,1001"/>
+<area shape="rect" id="Node000005" href="$class_pomerol_1_1_g_f_container.html" title="Container for instances of GreensFunction." alt="" coords="409,983,575,1008"/>
+<area shape="poly" id="edge21_Node000006_Node000005" title=" " alt="" coords="293,984,409,989,409,994,293,989"/>
+<area shape="rect" id="Node000013" href="$class_pomerol_1_1_index_container4.html" title=" " alt="" coords="27,1025,289,1080"/>
+<area shape="rect" id="Node000012" href="$class_pomerol_1_1_three_point_susceptibility_container.html" title="Container for instances of ThreePointSusceptibility." alt="" coords="371,1033,613,1073"/>
+<area shape="poly" id="edge22_Node000013_Node000012" title=" " alt="" coords="303,1050,370,1050,370,1055,303,1055"/>
+<area shape="rect" id="Node000017" href="$class_pomerol_1_1_index_container4.html" title=" " alt="" coords="5,1105,311,1145"/>
+<area shape="rect" id="Node000016" href="$class_pomerol_1_1_two_particle_g_f_container.html" title="Container for instances of TwoParticleGF." alt="" coords="373,1104,611,1129"/>
+<area shape="poly" id="edge23_Node000017_Node000016" title=" " alt="" coords="324,1118,372,1117,372,1122,325,1123"/>
+<area shape="rect" id="Node000002" href="$struct_pomerol_1_1_thermal.html" title="Base class for objects whose definition depends on the temperature." alt="" coords="89,736,227,761"/>
+<area shape="poly" id="edge24_Node000002_Node000001" title=" " alt="" coords="241,734,405,709,406,715,242,739"/>
+<area shape="poly" id="edge26_Node000002_Node000004" title=" " alt="" coords="241,746,391,746,391,751,241,751"/>
+<area shape="poly" id="edge28_Node000002_Node000007" title=" " alt="" coords="242,758,406,783,405,788,241,764"/>
+<area shape="poly" id="edge30_Node000002_Node000009" title=" " alt="" coords="169,723,205,653,254,564,308,480,334,448,357,426,380,414,405,406,407,412,382,419,360,431,338,451,313,483,259,566,210,656,174,725"/>
+<area shape="poly" id="edge32_Node000002_Node000011" title=" " alt="" coords="168,722,194,669,235,602,289,533,322,502,357,476,384,463,386,468,360,480,325,506,293,537,239,605,198,672,172,725"/>
+<area shape="poly" id="edge34_Node000002_Node000014" title=" " alt="" coords="172,722,201,679,242,625,295,570,325,546,357,525,387,512,389,517,360,530,329,550,299,574,247,628,205,682,176,725"/>
+<area shape="poly" id="edge35_Node000002_Node000015" title=" " alt="" coords="177,723,208,689,251,649,301,608,358,574,404,559,405,564,360,579,304,612,254,653,212,693,181,727"/>
+<area shape="poly" id="edge37_Node000002_Node000018" title=" " alt="" coords="185,726,260,674,308,647,358,624,400,611,401,616,360,628,310,651,263,678,188,730"/>
+<area shape="poly" id="edge38_Node000002_Node000019" title=" " alt="" coords="201,728,274,700,358,673,424,658,425,663,359,678,275,705,203,733"/>
+<area shape="poly" id="edge27_Node000002_Node000005" title=" " alt="" coords="176,772,204,815,246,870,299,924,328,948,360,969,384,980,410,987,409,992,382,985,357,974,325,953,295,928,242,873,200,818,171,774"/>
+<area shape="poly" id="edge33_Node000002_Node000012" title=" " alt="" coords="180,771,313,947,334,987,343,1003,360,1019,381,1030,379,1035,357,1023,339,1006,329,989,308,950,176,774"/>
+<area shape="poly" id="edge36_Node000002_Node000016" title=" " alt="" coords="183,770,246,846,281,895,313,948,327,987,331,1021,338,1052,346,1067,360,1083,392,1101,389,1106,357,1087,342,1070,333,1054,326,1022,322,988,308,950,277,898,242,849,179,774"/>
+<area shape="rect" id="Node000003" href="$class_pomerol_1_1_density_matrix_part.html" title="Part of a many&#45;body Gibbs density matrix." alt="" coords="391,835,593,860"/>
+<area shape="poly" id="edge25_Node000002_Node000003" title=" " alt="" coords="202,764,275,793,359,821,408,832,407,837,358,826,273,798,200,769"/>
+<area shape="rect" id="Node000008" href="$class_pomerol_1_1_greens_function_part.html" title="Part of a fermionic single&#45;particle Matsubara Green&#39;s function." alt="" coords="387,884,597,909"/>
+<area shape="poly" id="edge29_Node000002_Node000008" title=" " alt="" coords="188,768,262,820,310,847,360,870,397,881,395,887,358,875,307,852,260,824,184,772"/>
+<area shape="rect" id="Node000010" href="$class_pomerol_1_1_susceptibility_part.html" title="Part of a dynamical susceptibility." alt="" coords="393,933,591,959"/>
+<area shape="poly" id="edge31_Node000002_Node000010" title=" " alt="" coords="181,771,212,805,254,846,304,886,360,920,394,932,392,937,358,924,301,891,250,850,208,808,177,774"/>
 </map>

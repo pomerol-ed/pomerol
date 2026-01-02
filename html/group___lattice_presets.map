@@ -1,12 +1,12 @@
 <map id="Factory functions to construct widely used lattice models" name="Factory functions to construct widely used lattice models">
-<area shape="rect" id="node1" href="$group___magnetization.html" title=" " alt="" coords="257,5,420,45"/>
-<area shape="rect" id="node2" href="$group___coulomb.html" title=" " alt="" coords="239,69,439,109"/>
-<area shape="rect" id="node3" href="$group___nup_ndown.html" title=" " alt="" coords="242,134,435,189"/>
-<area shape="rect" id="node4" title=" " alt="" coords="5,278,173,333"/>
-<area shape="rect" id="node5" href="$group___s_s.html" title=" " alt="" coords="261,213,416,253"/>
-<area shape="rect" id="node6" href="$group___boson.html" title=" " alt="" coords="235,278,442,333"/>
-<area shape="rect" id="node7" href="$group___spinflip_pair_hopping.html" title=" " alt="" coords="221,357,456,397"/>
-<area shape="rect" id="node8" href="$group___pairing.html" title=" " alt="" coords="261,421,416,461"/>
-<area shape="rect" id="node9" href="$group___hopping.html" title=" " alt="" coords="245,485,432,525"/>
-<area shape="rect" id="node10" href="$group___level.html" title=" " alt="" coords="239,549,438,589"/>
+<area shape="rect" id="Node000010" href="$group___boson.html" title=" " alt="" coords="235,5,442,60"/>
+<area shape="rect" id="Node000002" href="$group___coulomb.html" title=" " alt="" coords="239,85,439,125"/>
+<area shape="rect" id="Node000004" href="$group___hopping.html" title=" " alt="" coords="245,149,432,189"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,269,173,324"/>
+<area shape="rect" id="Node000007" href="$group___level.html" title=" " alt="" coords="239,213,438,253"/>
+<area shape="rect" id="Node000005" href="$group___magnetization.html" title=" " alt="" coords="257,277,420,317"/>
+<area shape="rect" id="Node000003" href="$group___nup_ndown.html" title=" " alt="" coords="242,341,435,396"/>
+<area shape="rect" id="Node000006" href="$group___pairing.html" title=" " alt="" coords="261,421,416,461"/>
+<area shape="rect" id="Node000008" href="$group___s_s.html" title=" " alt="" coords="261,485,416,525"/>
+<area shape="rect" id="Node000009" href="$group___spinflip_pair_hopping.html" title=" " alt="" coords="221,549,456,589"/>
 </map>
