@@ -115,13 +115,18 @@ jobs:
 
   macos:
     name: macOS
-    runs-on: macos-latest
     strategy:
       matrix:
+        os:
+        - "macos-latest"
+        # macos-15-intel is probably the last supported macOS x86-64 runner
+        # https://github.com/actions/runner-images/issues/13074
+        - "macos-15-intel"
         compiler:
         - { name: "gcc", cxx: "g++-15" }
-        - { name: "clang", cxx: "/opt/homebrew/opt/llvm/bin/clang++" }
+        - { name: "clang", cxx: "clang++" }
         install-libcommute: [true, false]
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v6
@@ -130,12 +135,14 @@ jobs:
       run: |
            brew update
            brew install llvm libomp open-mpi boost eigen@3
+           echo "EIGEN_ROOT=$(brew --prefix eigen@3)" >> $GITHUB_ENV
 
-    - name: Set LDFLAGS for Clang
-      if: startsWith(matrix.compiler.name, 'clang')
+    - name: Set PATH and LDFLAGS for Clang
+      if: matrix.compiler.name == 'clang'
       run: |
-           LDFLAGS="-L/opt/homebrew/opt/llvm/lib/c++ \
-                    -L/opt/homebrew/opt/llvm/lib/unwind -lunwind"
+           PREFIX="$(brew --prefix llvm)"
+           echo "PATH=${PREFIX}/bin:${PATH}" >> $GITHUB_ENV
+           LDFLAGS="-L${PREFIX}/lib/c++ -L${PREFIX}/lib/unwind -lunwind"
            echo "LDFLAGS=${LDFLAGS}" >> $GITHUB_ENV
 
     - name: Install Doxygen
@@ -146,7 +153,6 @@ jobs:
       if: matrix.install-libcommute
       env:
         CXX: ${{ matrix.compiler.cxx }}
-        EIGEN_ROOT: /opt/homebrew/opt/eigen@3
       run: |
            git clone https://github.com/krivenko/libcommute ${HOME}/libcommute
            mkdir ${HOME}/libcommute.build && cd ${HOME}/libcommute.build
@@ -159,7 +165,6 @@ jobs:
     - name: Build
       env:
         CXX: ${{ matrix.compiler.cxx }}
-        EIGEN_ROOT: /opt/homebrew/opt/eigen@3
       run: |
            if [[ "${{ matrix.compiler.name }}" == "clang" &&
                  "${{ matrix.install-libcommute }}" == true ]]; then
