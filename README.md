@@ -2,10 +2,9 @@
 https://anaconda.org/channels/krivenko/packages/pomerol/overview)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-red)](
 https://pomerol-ed.github.io/pomerol/)
-[![Build and test (Ubuntu)](https://github.com/pomerol-ed/pomerol/actions/workflows/build-and-test-ubuntu.yml/badge.svg)](
-https://github.com/pomerol-ed/pomerol/actions/workflows/build-and-test-ubuntu.yml)
-[![Build and test (macOS)](https://github.com/pomerol-ed/pomerol/actions/workflows/build-and-test-macos.yml/badge.svg)](
-https://github.com/pomerol-ed/pomerol/actions/workflows/build-and-test-macos.yml)
+[![Build, test and deploy docs](
+https://github.com/pomerol-ed/pomerol/actions/workflows/build-test-deploy.yml/badge.svg)](
+https://github.com/pomerol-ed/pomerol/actions/workflows/build-test-deploy.yml)
 [![DOI](https://zenodo.org/badge/4569/aeantipov/pomerol.svg)](
 http://dx.doi.org/10.5281/zenodo.17900)
 
