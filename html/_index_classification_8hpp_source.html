@@ -28,7 +28,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">pomerol<span id="projectnumber">&#160;2.2</span>
+   <div id="projectname">pomerol<span id="projectnumber">&#160;2.3</span>
    </div>
   </td>
  </tr>
@@ -168,52 +168,56 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    }</div>
 </div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno"><a class="line" href="class_pomerol_1_1_index_classification.html#ab1498f7b03bca9ca23b665829843277f">  103</a></span>    <a class="code hl_typedef" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a> <a class="code hl_function" href="class_pomerol_1_1_index_classification.html#ab1498f7b03bca9ca23b665829843277f">getIndex</a>(IndexTypes... indices)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_function" href="class_pomerol_1_1_index_classification.html#ab1498f7b03bca9ca23b665829843277f">getIndex</a>(std::make_tuple(indices...)); }</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
-<div class="foldopen" id="foldopen00107" data-start="{" data-end="}">
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno"><a class="line" href="class_pomerol_1_1_index_classification.html#ac3ded93e8fd90054570d1993b571864b">  107</a></span>    <a class="code hl_typedef" href="class_pomerol_1_1_index_classification.html#a0c2362e2bec048a13bde479e88dd669b">IndexInfo</a> <span class="keyword">const</span>&amp; <a class="code hl_function" href="class_pomerol_1_1_index_classification.html#ac3ded93e8fd90054570d1993b571864b">getInfo</a>(<a class="code hl_typedef" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a> in)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>        <span class="keywordflow">if</span>(in &gt;= InfoToIndices.size())</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>            <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Wrong particle index &quot;</span> + std::to_string(in));</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>        <span class="keywordflow">return</span> IndicesToInfo[in];</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    }</div>
+<div class="foldopen" id="foldopen00103" data-start="{" data-end="}">
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno"><a class="line" href="class_pomerol_1_1_index_classification.html#ab1498f7b03bca9ca23b665829843277f">  103</a></span>    <a class="code hl_typedef" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a> <a class="code hl_function" href="class_pomerol_1_1_index_classification.html#ab1498f7b03bca9ca23b665829843277f">getIndex</a>(IndexTypes... indices)<span class="keyword"> const </span>{ <span class="comment">// cppcheck-suppress functionStatic</span></div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="class_pomerol_1_1_index_classification.html#a3cc6215e0ecc92af352c5bdccb1fe997">getIndex</a>(std::make_tuple(indices...));</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    }</div>
 </div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno"><a class="line" href="class_pomerol_1_1_index_classification.html#a69744c5e1dd9ba9acdf84c6d3caaf6a1">  114</a></span>    <a class="code hl_typedef" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a> <a class="code hl_function" href="class_pomerol_1_1_index_classification.html#a69744c5e1dd9ba9acdf84c6d3caaf6a1">getIndexSize</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> InfoToIndices.size(); }</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
-<div class="foldopen" id="foldopen00120" data-start="{" data-end="};">
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno"><a class="line" href="class_pomerol_1_1_index_classification.html#ae8dc08d72c05bfab114c9a26697bca0a">  120</a></span>    <span class="keyword">friend</span> std::ostream&amp; <a class="code hl_friend" href="class_pomerol_1_1_index_classification.html#ae8dc08d72c05bfab114c9a26697bca0a">operator&lt;&lt;</a>(std::ostream&amp; os, <a class="code hl_class" href="class_pomerol_1_1_index_classification.html">IndexClassification</a> <span class="keyword">const</span>&amp; ic) {</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        <span class="keywordflow">for</span>(<a class="code hl_typedef" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a> i = 0; i &lt; ic.InfoToIndices.size(); ++i) {</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>            os &lt;&lt; <span class="stringliteral">&quot;Index &quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot; = (&quot;</span>;</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>            os &lt;&lt; libcommute::tuple_to_string(ic.IndicesToInfo[i]);</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>            os &lt;&lt; <span class="stringliteral">&quot;)\n&quot;</span>;</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        }</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        <span class="keywordflow">return</span> os;</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>    }</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
+<div class="foldopen" id="foldopen00109" data-start="{" data-end="}">
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno"><a class="line" href="class_pomerol_1_1_index_classification.html#ac3ded93e8fd90054570d1993b571864b">  109</a></span>    <a class="code hl_typedef" href="class_pomerol_1_1_index_classification.html#a0c2362e2bec048a13bde479e88dd669b">IndexInfo</a> <span class="keyword">const</span>&amp; <a class="code hl_function" href="class_pomerol_1_1_index_classification.html#ac3ded93e8fd90054570d1993b571864b">getInfo</a>(<a class="code hl_typedef" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a> in)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>        <span class="keywordflow">if</span>(in &gt;= InfoToIndices.size())</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>            <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Wrong particle index &quot;</span> + std::to_string(in));</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        <span class="keywordflow">return</span> IndicesToInfo[in];</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    }</div>
 </div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span> </div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    <span class="keywordtype">void</span> UpdateMaps() {</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        IndicesToInfo.clear();</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        IndicesToInfo.reserve(InfoToIndices.size());</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; ii : InfoToIndices) {</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>            ii.second = IndicesToInfo.size();</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>            IndicesToInfo.emplace_back(ii.first);</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>        }</div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    }</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>};</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno"><a class="line" href="class_pomerol_1_1_index_classification.html#a69744c5e1dd9ba9acdf84c6d3caaf6a1">  116</a></span>    <a class="code hl_typedef" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a> <a class="code hl_function" href="class_pomerol_1_1_index_classification.html#a69744c5e1dd9ba9acdf84c6d3caaf6a1">getIndexSize</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> InfoToIndices.size(); }</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
+<div class="foldopen" id="foldopen00122" data-start="{" data-end="};">
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno"><a class="line" href="class_pomerol_1_1_index_classification.html#ae8dc08d72c05bfab114c9a26697bca0a">  122</a></span>    <span class="keyword">friend</span> std::ostream&amp; <a class="code hl_friend" href="class_pomerol_1_1_index_classification.html#ae8dc08d72c05bfab114c9a26697bca0a">operator&lt;&lt;</a>(std::ostream&amp; os, <a class="code hl_class" href="class_pomerol_1_1_index_classification.html">IndexClassification</a> <span class="keyword">const</span>&amp; ic) {</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        <span class="keywordflow">for</span>(<a class="code hl_typedef" href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">ParticleIndex</a> i = 0; i &lt; ic.InfoToIndices.size(); ++i) {</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>            os &lt;&lt; <span class="stringliteral">&quot;Index &quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot; = (&quot;</span>;</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>            os &lt;&lt; libcommute::tuple_to_string(ic.IndicesToInfo[i]);</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>            os &lt;&lt; <span class="stringliteral">&quot;)\n&quot;</span>;</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        }</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>        <span class="keywordflow">return</span> os;</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    }</div>
 </div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span> </div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> ScalarType, <span class="keyword">typename</span>... IndexTypes&gt;</div>
-<div class="foldopen" id="foldopen00147" data-start="{" data-end="}">
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno"><a class="line" href="group___e_d.html#gae5c5715fbb0598a134a6c41d1fe9dd70">  147</a></span><a class="code hl_class" href="class_pomerol_1_1_index_classification.html">IndexClassification</a>&lt;IndexTypes...&gt; <a class="code hl_function" href="group___e_d.html#gae5c5715fbb0598a134a6c41d1fe9dd70">MakeIndexClassification</a>(Operators::expression&lt;ScalarType, IndexTypes...&gt; <span class="keyword">const</span>&amp; H) {</div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    <span class="keywordflow">return</span> <a class="code hl_class" href="class_pomerol_1_1_index_classification.html">IndexClassification</a>&lt;IndexTypes...&gt;(H);</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>}</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    <span class="keywordtype">void</span> UpdateMaps() {</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>        IndicesToInfo.clear();</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>        IndicesToInfo.reserve(InfoToIndices.size());</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; ii : InfoToIndices) {</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>            ii.second = IndicesToInfo.size();</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>            IndicesToInfo.emplace_back(ii.first);</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>        }</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    }</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>};</div>
 </div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span> </div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span> </div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> ScalarType, <span class="keyword">typename</span>... IndexTypes&gt;</div>
+<div class="foldopen" id="foldopen00149" data-start="{" data-end="}">
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno"><a class="line" href="group___e_d.html#gae5c5715fbb0598a134a6c41d1fe9dd70">  149</a></span><a class="code hl_class" href="class_pomerol_1_1_index_classification.html">IndexClassification</a>&lt;IndexTypes...&gt; <a class="code hl_function" href="group___e_d.html#gae5c5715fbb0598a134a6c41d1fe9dd70">MakeIndexClassification</a>(Operators::expression&lt;ScalarType, IndexTypes...&gt; <span class="keyword">const</span>&amp; H) {</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    <span class="keywordflow">return</span> <a class="code hl_class" href="class_pomerol_1_1_index_classification.html">IndexClassification</a>&lt;IndexTypes...&gt;(H);</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>}</div>
+</div>
 <div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>} <span class="comment">// namespace Pomerol</span></div>
 <div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span> </div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span><span class="preprocessor">#endif </span><span class="comment">// #ifndef POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_HPP</span></div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>} <span class="comment">// namespace Pomerol</span></div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span> </div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span><span class="preprocessor">#endif </span><span class="comment">// #ifndef POMEROL_INCLUDE_POMEROL_INDEXCLASSIFICATION_HPP</span></div>
 <div class="ttc" id="a_operators_8hpp_html"><div class="ttname"><a href="_operators_8hpp.html">Operators.hpp</a></div><div class="ttdoc">Expressions with quantum-mechanical operators and functions to construct them.</div></div>
 <div class="ttc" id="aclass_pomerol_1_1_index_classification_html"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html">Pomerol::IndexClassification</a></div><div class="ttdoc">Contiguous list of operator index tuples.</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00040">IndexClassification.hpp:40</a></div></div>
 <div class="ttc" id="aclass_pomerol_1_1_index_classification_html_a0c2362e2bec048a13bde479e88dd669b"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html#a0c2362e2bec048a13bde479e88dd669b">Pomerol::IndexClassification::IndexInfo</a></div><div class="ttdeci">std::tuple&lt; IndexTypes... &gt; IndexInfo</div><div class="ttdoc">Tuple of indices carried by a single creation/annihilation operator.</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00043">IndexClassification.hpp:43</a></div></div>
@@ -222,19 +226,19 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclass_pomerol_1_1_index_classification_html_a3cc6215e0ecc92af352c5bdccb1fe997"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html#a3cc6215e0ecc92af352c5bdccb1fe997">Pomerol::IndexClassification::getIndex</a></div><div class="ttdeci">ParticleIndex getIndex(IndexInfo const &amp;info) const</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00091">IndexClassification.hpp:91</a></div></div>
 <div class="ttc" id="aclass_pomerol_1_1_index_classification_html_a41540700fb595c4a3045f75358ab4e44"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html#a41540700fb595c4a3045f75358ab4e44">Pomerol::IndexClassification::IndexClassification</a></div><div class="ttdeci">IndexClassification()=default</div><div class="ttdoc">Construct an empty map.</div></div>
 <div class="ttc" id="aclass_pomerol_1_1_index_classification_html_a50a60332f4af0b5f18512a8fa60fb712"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html#a50a60332f4af0b5f18512a8fa60fb712">Pomerol::IndexClassification::IndexClassification</a></div><div class="ttdeci">IndexClassification(Operators::expression&lt; ScalarType, IndexTypes... &gt; const &amp;H)</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00058">IndexClassification.hpp:58</a></div></div>
-<div class="ttc" id="aclass_pomerol_1_1_index_classification_html_a69744c5e1dd9ba9acdf84c6d3caaf6a1"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html#a69744c5e1dd9ba9acdf84c6d3caaf6a1">Pomerol::IndexClassification::getIndexSize</a></div><div class="ttdeci">ParticleIndex getIndexSize() const</div><div class="ttdoc">Return the total number of elements in the map.</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00114">IndexClassification.hpp:114</a></div></div>
+<div class="ttc" id="aclass_pomerol_1_1_index_classification_html_a69744c5e1dd9ba9acdf84c6d3caaf6a1"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html#a69744c5e1dd9ba9acdf84c6d3caaf6a1">Pomerol::IndexClassification::getIndexSize</a></div><div class="ttdeci">ParticleIndex getIndexSize() const</div><div class="ttdoc">Return the total number of elements in the map.</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00116">IndexClassification.hpp:116</a></div></div>
 <div class="ttc" id="aclass_pomerol_1_1_index_classification_html_a848c6fa1d8d6107acc9069290a68551a"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html#a848c6fa1d8d6107acc9069290a68551a">Pomerol::IndexClassification::addInfo</a></div><div class="ttdeci">void addInfo(IndexInfo const &amp;info)</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00073">IndexClassification.hpp:73</a></div></div>
 <div class="ttc" id="aclass_pomerol_1_1_index_classification_html_ab1498f7b03bca9ca23b665829843277f"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html#ab1498f7b03bca9ca23b665829843277f">Pomerol::IndexClassification::getIndex</a></div><div class="ttdeci">ParticleIndex getIndex(IndexTypes... indices) const</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00103">IndexClassification.hpp:103</a></div></div>
-<div class="ttc" id="aclass_pomerol_1_1_index_classification_html_ac3ded93e8fd90054570d1993b571864b"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html#ac3ded93e8fd90054570d1993b571864b">Pomerol::IndexClassification::getInfo</a></div><div class="ttdeci">IndexInfo const &amp; getInfo(ParticleIndex in) const</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00107">IndexClassification.hpp:107</a></div></div>
-<div class="ttc" id="aclass_pomerol_1_1_index_classification_html_ae8dc08d72c05bfab114c9a26697bca0a"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html#ae8dc08d72c05bfab114c9a26697bca0a">Pomerol::IndexClassification::operator&lt;&lt;</a></div><div class="ttdeci">friend std::ostream &amp; operator&lt;&lt;(std::ostream &amp;os, IndexClassification const &amp;ic)</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00120">IndexClassification.hpp:120</a></div></div>
+<div class="ttc" id="aclass_pomerol_1_1_index_classification_html_ac3ded93e8fd90054570d1993b571864b"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html#ac3ded93e8fd90054570d1993b571864b">Pomerol::IndexClassification::getInfo</a></div><div class="ttdeci">IndexInfo const &amp; getInfo(ParticleIndex in) const</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00109">IndexClassification.hpp:109</a></div></div>
+<div class="ttc" id="aclass_pomerol_1_1_index_classification_html_ae8dc08d72c05bfab114c9a26697bca0a"><div class="ttname"><a href="class_pomerol_1_1_index_classification.html#ae8dc08d72c05bfab114c9a26697bca0a">Pomerol::IndexClassification::operator&lt;&lt;</a></div><div class="ttdeci">friend std::ostream &amp; operator&lt;&lt;(std::ostream &amp;os, IndexClassification const &amp;ic)</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00122">IndexClassification.hpp:122</a></div></div>
 <div class="ttc" id="agroup___basic_html_ga9f0612342568e874dc77cd526649ae70"><div class="ttname"><a href="group___basic.html#ga9f0612342568e874dc77cd526649ae70">Pomerol::ParticleIndex</a></div><div class="ttdeci">unsigned int ParticleIndex</div><div class="ttdoc">Index of a single particle degree of freedom.</div><div class="ttdef"><b>Definition</b> <a href="pomerol_2_misc_8hpp_source.html#l00075">Misc.hpp:75</a></div></div>
-<div class="ttc" id="agroup___e_d_html_gae5c5715fbb0598a134a6c41d1fe9dd70"><div class="ttname"><a href="group___e_d.html#gae5c5715fbb0598a134a6c41d1fe9dd70">Pomerol::MakeIndexClassification</a></div><div class="ttdeci">IndexClassification&lt; IndexTypes... &gt; MakeIndexClassification(Operators::expression&lt; ScalarType, IndexTypes... &gt; const &amp;H)</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00147">IndexClassification.hpp:147</a></div></div>
+<div class="ttc" id="agroup___e_d_html_gae5c5715fbb0598a134a6c41d1fe9dd70"><div class="ttname"><a href="group___e_d.html#gae5c5715fbb0598a134a6c41d1fe9dd70">Pomerol::MakeIndexClassification</a></div><div class="ttdeci">IndexClassification&lt; IndexTypes... &gt; MakeIndexClassification(Operators::expression&lt; ScalarType, IndexTypes... &gt; const &amp;H)</div><div class="ttdef"><b>Definition</b> <a href="_index_classification_8hpp_source.html#l00149">IndexClassification.hpp:149</a></div></div>
 <div class="ttc" id="anamespace_pomerol_html"><div class="ttname"><a href="namespace_pomerol.html">Pomerol</a></div><div class="ttdoc">The main namespace of the library.</div><div class="ttdef"><b>Definition</b> <a href="pomerol_8hpp_source.html#l00040">pomerol.hpp:40</a></div></div>
 <div class="ttc" id="apomerol_2_misc_8hpp_html"><div class="ttname"><a href="pomerol_2_misc_8hpp.html">Misc.hpp</a></div><div class="ttdoc">Declarations of the most basic types and macros.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat May 9 2026 12:53:03 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat May 9 2026 15:57:08 for pomerol by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
