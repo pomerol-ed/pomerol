@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.3] - Unreleased
+## [2.3] - 2026-05-09
 
 - Bumped required libcommute version to 1.0.0.
 
