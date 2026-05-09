@@ -23,13 +23,13 @@ conflict $name
 
 setenv      POMEROL_DIR       $root
 setenv      POMEROL_ROOT      $root
-setenv      POMEROL_LIB       $root/lib
-setenv      POMEROL_INC       $root/include
-setenv      POMEROL_BIN       $root/bin
+setenv      POMEROL_LIB       $root/@CMAKE_INSTALL_LIBDIR@
+setenv      POMEROL_INC       $root/@CMAKE_INSTALL_INCLUDEDIR@
+setenv      POMEROL_BIN       $root/@CMAKE_INSTALL_BINDIR@
 setenv      POMEROL_VERSION   $version
 
-prepend-path      PATH                  $root/bin
-prepend-path      LD_LIBRARY_PATH       $root/lib
-prepend-path      CPLUS_INCLUDE_PATH    $root/include
+prepend-path      PATH                  $root/@CMAKE_INSTALL_BINDIR@
+prepend-path      LD_LIBRARY_PATH       $root/@CMAKE_INSTALL_LIBDIR@
+prepend-path      CPLUS_INCLUDE_PATH    $root/@CMAKE_INSTALL_INCLUDEDIR@
 prepend-path      CMAKE_MODULE_PATH     $root/share/pomerol
 prepend-path      PKG_CONFIG_PATH       $root/lib/pkgconfig

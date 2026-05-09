@@ -52,7 +52,7 @@ foreach(model ${progs_list})
         target_link_libraries(${prog_name} ${PROJECT_NAME})
         set_target_properties(${prog_name} PROPERTIES
                               RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-        install(TARGETS ${prog_name} DESTINATION bin)
+        install(TARGETS ${prog_name} DESTINATION ${CMAKE_INSTALL_BINDIR})
     else()
         message(WARNING "Unknown program \"${model}\" has been skipped.")
     endif()

@@ -18,7 +18,6 @@ include(UseDoxygen)
 
 # Install documentation
 if(DOXYGEN_FOUND)
-  include(GNUInstallDirs)
   install(DIRECTORY ${DOXYFILE_OUTPUT_DIR}/html
           DESTINATION ${CMAKE_INSTALL_DOCDIR})
 

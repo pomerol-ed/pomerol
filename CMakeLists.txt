@@ -154,6 +154,9 @@ include(cmake/StaticAnalysis.cmake)
 # Build parts of the project
 #
 
+# Provide GNU Installation directories
+include(GNUInstallDirs)
+
 # Main library
 add_subdirectory(include)
 add_subdirectory(src)
