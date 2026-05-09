@@ -122,6 +122,7 @@ TEST_CASE("Two-particle vertex of a single Hubbard atom", "[Vertex4]") {
 
     // cppcheck-suppress syntaxError
     SECTION("\\chi_{\\up\\up\\up\\up} and \\Gamma_{\\up\\up\\up\\up}") {
+        // cppcheck-suppress-begin unreadVariable
         GreensFunction const& GF = G(up_index, up_index);
         TwoParticleGF const& Chi_uuuu = Chi(IndexCombination4(up_index, up_index, up_index, up_index));
         Vertex4 Gamma4_uuuu(Chi_uuuu, GF, GF, GF, GF);
@@ -145,9 +146,11 @@ TEST_CASE("Two-particle vertex of a single Hubbard atom", "[Vertex4]") {
                 }
             }
         }
+        // cppcheck-suppress-end unreadVariable
     }
 
     SECTION("\\chi_{\\up\\down\\up\\down}") {
+        // cppcheck-suppress-begin unreadVariable
         GreensFunction const& GF_up = G(up_index, up_index);
         GreensFunction const& GF_down = G(down_index, down_index);
         TwoParticleGF const& Chi_udud = Chi(IndexCombination4(up_index, down_index, up_index, down_index));
@@ -165,5 +168,6 @@ TEST_CASE("Two-particle vertex of a single Hubbard atom", "[Vertex4]") {
                 }
             }
         }
+        // cppcheck-suppress-end unreadVariable
     }
 }

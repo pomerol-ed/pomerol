@@ -99,6 +99,7 @@ TEST_CASE("Hamiltonian of an isolated Hubbard-Holstein atom", "[HubbardHolstein]
         for(int n = 0; n < n_ev_to_check; ++n)
             REQUIRE_THAT(ev(n), IsCloseTo(ev_ref[n], 1e-10));
 
+        // cppcheck-suppress-begin unreadVariable
         SECTION("Eigensystem") {
             for(BlockNumber Block = 0; Block < S.getNumberOfBlocks(); ++Block) {
                 auto const& part = H.getPart(Block);
@@ -112,6 +113,7 @@ TEST_CASE("Hamiltonian of an isolated Hubbard-Holstein atom", "[HubbardHolstein]
                 }
             }
         }
+        // cppcheck-suppress-end unreadVariable
     }
 
     SECTION("bits_per_boson_map") {

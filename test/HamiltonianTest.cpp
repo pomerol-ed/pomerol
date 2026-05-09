@@ -65,6 +65,7 @@ TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
     H.compute(MPI_COMM_WORLD);
     INFO(H.getPart(BlockNumber(4)));
 
+    // cppcheck-suppress-begin unreadVariable
     // cppcheck-suppress syntaxError
     SECTION("Ground state energy") {
         RealType E_ref = -2.8860009;
@@ -86,6 +87,7 @@ TEST_CASE("Simple Hamiltonian test", "[hamiltonian]") {
             }
         }
     }
+    // cppcheck-suppress-end unreadVariable
 
     SECTION("Monomial operators") {
         ParticleIndex op_index = IndexInfo.getIndex("B", 0, up);

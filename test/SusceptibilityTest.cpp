@@ -92,6 +92,7 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
 
     // cppcheck-suppress syntaxError
     SECTION("Ensemble averages") {
+        // cppcheck-suppress-begin unreadVariable
         EnsembleAverage s_plus_aver(s_plus, rho);
         s_plus_aver.compute();
         REQUIRE_THAT(s_plus_aver(), IsCloseTo(0, 1e-14));
@@ -114,6 +115,7 @@ TEST_CASE("Susceptibilities of a single Hubbard atom", "[Susceptibility]") {
         n_up_n_dn_aver.compute();
         RealType n_up_n_dn_ref = w2;
         REQUIRE_THAT(n_up_n_dn_aver(), IsCloseTo(n_up_n_dn_ref, 1e-14));
+        // cppcheck-suppress-end unreadVariable
     }
 
     // cppcheck-suppress syntaxError

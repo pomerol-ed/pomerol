@@ -80,11 +80,11 @@ public:
     /// Return fermionic Matsubara frequency \f$\omega_n = \pi(2n+1)/\beta\f$.
     /// \param[in] n Index of the Matsubara frequency \f$n\f$.
     /// \param[in] beta Inverse temperature \f$\beta\f$.
-    inline double FMatsubara(int n, double beta) { return M_PI / beta * (2. * n + 1); }
+    inline static double FMatsubara(int n, double beta) { return M_PI / beta * (2. * n + 1); }
     /// Return bosonic Matsubara frequency \f$\nu_n = \pi(2n)/\beta\f$.
     /// \param[in] n Index of the Matsubara frequency \f$n\f$.
     /// \param[in] beta Inverse temperature \f$\beta\f$.
-    inline double BMatsubara(int n, double beta) { return M_PI / beta * (2. * n); }
+    inline static double BMatsubara(int n, double beta) { return M_PI / beta * (2. * n); }
 
     /// Prepare a set of indices to evaluate annihilation/creation operators and
     /// a set of pairs of indices to evaluate single-particle Green's functions.

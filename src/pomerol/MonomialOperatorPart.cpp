@@ -80,6 +80,7 @@ template <bool MOpC, bool HC> void MonomialOperatorPart::computeImpl(RealType To
 // https://gitlab.com/libeigen/eigen/-/issues/1224
 //
 // Affected versions are some betas of 3.3 but not the 3.3 release
+// cppcheck-suppress syntaxError
 #if EIGEN_VERSION_AT_LEAST(3, 2, 90) && EIGEN_MAJOR_VERSION < 3
     elementsRowMajor = std::make_shared<RowMajorMatrixType<C>>(MatrixType<C>(ULeft * OURight).sparseView(Tolerance));
 #else

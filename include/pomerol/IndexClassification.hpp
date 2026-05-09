@@ -100,7 +100,9 @@ public:
     /// Return the \ref ParticleIndex corresponding to a given operator index tuple.
     /// Elements of the tuple are provided as a sequence of argument.
     /// \param[in] indices A pack of operator indices.
-    ParticleIndex getIndex(IndexTypes... indices) const { return getIndex(std::make_tuple(indices...)); }
+    ParticleIndex getIndex(IndexTypes... indices) const { // cppcheck-suppress functionStatic
+        return getIndex(std::make_tuple(indices...));
+    }
 
     /// Return the operator index tuple corresponding to a given \ref ParticleIndex.
     /// \param[in] in Particle index to retrieve information for.

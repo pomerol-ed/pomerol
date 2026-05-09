@@ -109,6 +109,7 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
 
     // cppcheck-suppress syntaxError
     SECTION("Chi4.computeAll() for arbitrary frequencies") {
+        // cppcheck-suppress-begin unreadVariable
         Chi4.computeAll(false, freqs, MPI_COMM_WORLD, true);
 
         TwoParticleGF const& chi_uuuu = Chi4(IndexCombination4(u0, u0, u0, u0));
@@ -123,9 +124,11 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
             REQUIRE_THAT(chi_uuuu_val, IsCloseTo(ref, 1e-6));
             REQUIRE_THAT(chi_dddd_val, IsCloseTo(ref, 1e-6));
         }
+        // cppcheck-suppress-end unreadVariable
     }
 
     SECTION("Chi4.computeAll() with precomputation for specific frequencies") {
+        // cppcheck-suppress-begin unreadVariable
         freqs.resize(chi_ref.size());
         for(int i = 0; i < chi_ref.size(); ++i) {
             ComplexType w_p = I * (2. * i + 1.) * M_PI / beta;
@@ -145,5 +148,6 @@ TEST_CASE("Two-particle GF of the Anderson model", "[Anderson2PGF]") {
             REQUIRE_THAT(chi_uuuu_val, IsCloseTo(ref, 1e-6));
             REQUIRE_THAT(chi_dddd_val, IsCloseTo(ref, 1e-6));
         }
+        // cppcheck-suppress-end unreadVariable
     }
 }

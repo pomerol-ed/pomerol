@@ -79,6 +79,7 @@ TEST_CASE("Test mpi_dispatcher", "[mpi_dispatcher]") {
         std::uniform_real_distribution<double> dist(0, 0.001);
 
         dumb_task_type dumb_task;
+        // cppcheck-suppress variableScope
         int ntasks = 45;
 
         if(comm_rank == root) {
