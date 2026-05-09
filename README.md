@@ -24,7 +24,7 @@ two-particle Green's functions as well as susceptibilities.
     available.
   * Automatic symmetry analysis of the many-body Hamiltonians drastically
     reduces computational costs.
-  * [Eigen 3](http://eigen.tuxfamily.org) template library is used for numerical
+  * [Eigen 3](https://libeigen.gitlab.io) template library is used for numerical
     linear algebra.
   * [MPI](http://en.wikipedia.org/wiki/Message_Passing_Interface) +
     [OpenMP](https://en.wikipedia.org/wiki/OpenMP) support.
@@ -50,7 +50,7 @@ mamba install krivenko::pomerol
     * A C++11 conformant compiler
     * CMake >= 3.11.0
     * Boost >= 1.54.0 (only headers are required)
-    * Eigen >= 3.1.0
+    * Eigen >= 3.1.0, < 5.0.0
     * [libcommute >= 1.0.0](https://github.com/krivenko/libcommute) (will be
       downloaded by CMake if not found installed locally)
     * An MPI 3.0 implementation
