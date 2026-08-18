@@ -558,6 +558,7 @@ namespace Catch {
 
 // end catch_tag_alias_autoregistrar.h
 // start catch_test_registry.h
+#include <new> // Pomerol: no longer included transitively by libc++
 
 // start catch_interfaces_testcase.h
 
