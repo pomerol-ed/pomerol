@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - ci
+      - debug/*
   pull_request:
     branches:
       - master
