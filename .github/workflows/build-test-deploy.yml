@@ -118,16 +118,11 @@ jobs:
     name: macOS
     strategy:
       matrix:
-        os:
-        - "macos-latest"
-        # macos-15-intel is probably the last supported macOS x86-64 runner
-        # https://github.com/actions/runner-images/issues/13074
-        - "macos-15-intel"
         compiler:
         - { name: "gcc", cxx: "g++-15" }
         - { name: "clang", cxx: "clang++" }
         install-libcommute: [true, false]
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v6
