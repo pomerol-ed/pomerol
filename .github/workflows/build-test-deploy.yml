@@ -191,6 +191,15 @@ jobs:
                  -DTesting=ON                                                  \
                  -DProgs=ON                                                    \
                  -Dprogs_list="anderson;hubbard2d" ..
+
+           # Patch `catch.hpp` of downloaded libcommute
+           if [[ "${{ matrix.install-libcommute }}" == false ]]; then
+              F=_deps/libcommute-src/test/catch2/catch.hpp
+              mv $F "${F}.orig"
+              echo "#include <new>" > $F
+              cat "${F}.orig" >> $F
+           fi
+
            make VERBOSE=1
 
     - name: Build documentation
